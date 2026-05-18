@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DisasterData.IO — FEMA Declaration Map</title>
 
-  <script type="text/javascript" nonce="9abb47b143bf4c298f2cbf88d01" src="//local.adguard.org?ts=1775011027201&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_0000000042ec71f5bd22e9995c5eb2f2%26ts%3D493058%26p%3Dfs%26cid%3D1%26sig%3D6b7348faf9ae1b392f6fc2031031869222fbc38ad9710b68eab420e780f47132%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-java&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />
 
@@ -396,9 +396,219 @@
       }
     }
 
+    /* ═══════════════════════════════════════════
+       SHARED HEADER
+    ═══════════════════════════════════════════ */
+    :root {
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'IBM Plex Sans', sans-serif;
+      --font-mono:    'IBM Plex Mono', monospace;
+      --radius: 6px;
+    }
+
+    header {
+      background: var(--navy2);
+      border-bottom: 2px solid var(--blue);
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      flex-shrink: 0;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-badge {
+      background: var(--blue);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+    nav { display: flex; gap: 2px; align-items: center; }
+    nav a.nav-tab {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 13px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all .15s;
+      letter-spacing: .5px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    nav a.nav-tab:hover { color: var(--white); background: var(--navy3); }
+    nav a.nav-tab.active {
+      color: var(--sky);
+      background: rgba(74,179,247,.12);
+      border-bottom: 2px solid var(--sky);
+      border-radius: 4px 4px 0 0;
+    }
+    .nav-back-link {
+      background: rgba(79,179,247,.12);
+      border: 1px solid rgba(79,179,247,.35);
+      color: var(--sky);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 13px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      letter-spacing: .5px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .nav-back-link:hover { background: rgba(79,179,247,.22); color: var(--white); }
+
+    /* Hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      padding: 6px;
+      flex-shrink: 0;
+    }
+    .nav-hamburger span {
+      display: block;
+      height: 2px;
+      background: var(--muted);
+      border-radius: 2px;
+      transition: all .2s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .mobile-nav-drawer {
+      display: none;
+      position: fixed;
+      top: 56px;
+      left: 0; right: 0;
+      background: var(--navy2);
+      border-bottom: 2px solid var(--blue);
+      z-index: 999;
+      padding: 8px 0 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    }
+    .mobile-nav-drawer.open { display: block; }
+    .mobile-nav-drawer a {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 12px 24px;
+      text-align: left;
+      cursor: pointer;
+      letter-spacing: .5px;
+      border-left: 3px solid transparent;
+      transition: all .15s;
+      text-decoration: none;
+    }
+    .mobile-nav-drawer a:hover { color: var(--white); background: var(--navy3); }
+    .mobile-nav-drawer a.active {
+      color: var(--sky);
+      background: rgba(74,179,247,.1);
+      border-left-color: var(--sky);
+    }
+    .mobile-nav-back {
+      background: rgba(79,179,247,.08) !important;
+      border-left: 3px solid var(--sky) !important;
+      color: var(--sky) !important;
+      margin-top: 4px;
+    }
+    .mobile-nav-back:hover { background: rgba(79,179,247,.15) !important; color: var(--white) !important; }
+
+    /* Header responsive */
+    @media (max-width: 640px) {
+      header { padding: 0 14px; height: 52px; }
+      .logo { font-size: 13px; gap: 7px; }
+      .logo-badge { display: none; }
+      nav { display: none; }
+      .nav-hamburger { display: flex; }
+      .mobile-nav-drawer { top: 52px; }
+    }
+    @media (max-width: 375px) {
+      .logo { font-size: 12px; }
+    }
+
+    /* Push layout below header */
+    body { display: flex; flex-direction: column; }
+    .layout { height: calc(100vh - 56px); }
+    @media (max-width: 640px) { .layout { height: calc(100vh - 52px); } }
+
   </style>
 </head>
 <body>
+
+<header>
+  <a href="index.html" class="logo">FEMA Disaster Explorer (BETA) <span class="logo-badge">2000–2026</span></a>
+  <nav>
+    <a href="index.html" class="nav-tab">Overview</a>
+    <a href="index.html#declarations" class="nav-tab">Declarations</a>
+    <a href="index.html#denials" class="nav-tab">Denials</a>
+    <a href="index.html#states" class="nav-tab">By State</a>
+    <a href="index.html#localities" class="nav-tab">Localities</a>
+    <a href="index.html#processing" class="nav-tab">Processing Time</a>
+    <a href="index.html#presidents" class="nav-tab">By President</a>
+    <a href="index.html#pa" class="nav-tab">Public Assistance</a>
+    <a href="index.html#hm" class="nav-tab">Hazard Mitigation</a>
+    <a href="index.html#about" class="nav-tab">About</a>
+    <a href="map.html" class="nav-back-link active">🗺 Map</a>
+  </nav>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open navigation" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobile-nav">
+  <a href="index.html">Overview</a>
+  <a href="index.html">Declarations</a>
+  <a href="index.html">Denials</a>
+  <a href="index.html">By State</a>
+  <a href="index.html">Localities</a>
+  <a href="index.html">Processing Time</a>
+  <a href="index.html">By President</a>
+  <a href="index.html">Public Assistance</a>
+  <a href="index.html">Hazard Mitigation</a>
+  <a href="index.html">About</a>
+  <a href="map.html" class="mobile-nav-back active">🗺 Map</a>
+</div>
+
   <div class="layout">
     <aside class="sidebar">
 
@@ -836,6 +1046,25 @@
     init().catch(err => {
       console.error(err);
       alert('Could not load county boundaries. Check your internet connection and reload the page.');
+    });
+  </script>
+
+  <script>
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobile-nav');
+      const burger = document.getElementById('hamburger');
+      drawer.classList.toggle('open');
+      burger.classList.toggle('open');
+    }
+    // Close drawer on outside tap
+    document.addEventListener('click', function(e) {
+      const drawer = document.getElementById('mobile-nav');
+      const burger = document.getElementById('hamburger');
+      if (drawer.classList.contains('open') &&
+          !drawer.contains(e.target) && !burger.contains(e.target)) {
+        drawer.classList.remove('open');
+        burger.classList.remove('open');
+      }
     });
   </script>
 </body>
