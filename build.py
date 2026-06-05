@@ -984,7 +984,7 @@ if os.path.exists("index.html"):
     with open("index.html", encoding="utf-8") as f:
         html = f.read()
     # Update last-updated stamp
-    html = re.sub(r'Last updated:.*?(?=<)', f'Last updated: {TODAY}', html)
+    html = re.sub(r'Last updated:.*?</span>', f'Last updated: <span id="about-last-updated">{TODAY}</span>', html)
     # Inject PA_NATIONAL and HM_NATIONAL using line-based replacement
     # (regex approach breaks when JSON contains semicolons in string values)
     pa_json = json.dumps(pa_national, separators=(",",":"))
