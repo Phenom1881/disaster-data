@@ -21,6 +21,10 @@ PAGE_SIZE  = 10000         # max the API allows per call
 SLEEP_SEC  = 0.5           # polite pause between paginated requests
 TODAY      = datetime.date.today().isoformat()
 
+# Federal fiscal year: Oct 1 – Sep 30.  If we're in Oct–Dec, FY = calendar year + 1.
+_today      = datetime.date.today()
+CURRENT_FY  = _today.year if _today.month < 10 else _today.year + 1
+
 
 # ═════════════════════════════════════════════════════════════════════════
 # 1. FETCH FROM API
@@ -152,7 +156,7 @@ print("Processing declarations...")
 dec_processed = []
 for r in raw_dec:
     fy = safe_int(r.get("fyDeclared"))
-    if not fy or fy < START_YEAR or fy > 2026:
+    if not fy or fy < START_YEAR or fy > CURRENT_FY:
         continue
     dec_date    = parse_date(r.get("declarationDate"))
     begin_date  = parse_date(r.get("incidentBeginDate"))
@@ -469,14 +473,14 @@ def avg(lst):
 yoy_dec = defaultdict(lambda: {"declarations": 0, "days": []})
 for r in dec_valid:
     fy = r["fyDeclared"]
-    if fy <= 2025:
+    if fy <= CURRENT_FY:
         yoy_dec[fy]["declarations"] += 1
         yoy_dec[fy]["days"].append(r["days_to_approve"])
 
 yoy_den = defaultdict(lambda: {"denials": 0, "days": []})
 for r in den_valid:
     yr = int(r["declarationRequestDate"][:4]) if r["declarationRequestDate"] else 0
-    if 2000 <= yr <= 2025:
+    if 2000 <= yr <= CURRENT_FY:
         yoy_den[yr]["denials"] += 1
         yoy_den[yr]["days"].append(r["days_to_deny"])
 
@@ -557,7 +561,7 @@ swva = ['Bland','Buchanan','Carroll','Craig','Dickenson','Floyd','Giles',
 state_dec_map  = defaultdict(lambda: {"declarations": 0, "days": [], "incidents": defaultdict(int), "top_incident": ""})
 for r in dec_valid:
     st = r["state"]
-    if r["fyDeclared"] <= 2025:
+    if r["fyDeclared"] <= CURRENT_FY:
         state_dec_map[st]["declarations"] += 1
         state_dec_map[st]["days"].append(r["days_to_approve"])
         state_dec_map[st]["incidents"][r["incidentType"] or "Unknown"] += 1
@@ -565,7 +569,7 @@ for r in dec_valid:
 state_den_map = defaultdict(lambda: {"denials": 0, "days": []})
 for r in den_valid:
     yr = int(r["declarationRequestDate"][:4]) if r["declarationRequestDate"] else 0
-    if yr <= 2025:
+    if yr <= CURRENT_FY:
         st = r["stateAbbreviation"]
         state_den_map[st]["denials"] += 1
         state_den_map[st]["days"].append(r["days_to_deny"])
@@ -591,7 +595,7 @@ for st, d in state_dec_map.items():
 # State YoY
 state_yoy_map = defaultdict(list)
 for r in dec_valid:
-    if r["fyDeclared"] <= 2025:
+    if r["fyDeclared"] <= CURRENT_FY:
         state_yoy_map[r["state"]].append(r["fyDeclared"])
 
 state_yoy = {}
@@ -603,7 +607,7 @@ for st, years_list in state_yoy_map.items():
 # State incident breakdown
 state_inc_map2 = defaultdict(lambda: defaultdict(int))
 for r in dec_valid:
-    if r["fyDeclared"] <= 2025:
+    if r["fyDeclared"] <= CURRENT_FY:
         state_inc_map2[r["state"]][r["incidentType"] or "Unknown"] += 1
 
 state_inc = {
@@ -615,7 +619,7 @@ state_inc = {
 state_disasters = defaultdict(list)
 seen = set()
 for r in sorted(dec_valid, key=lambda x: x["declarationDate"], reverse=True):
-    if r["fyDeclared"] > 2025:
+    if r["fyDeclared"] > CURRENT_FY:
         continue
     key = r["femaDeclarationString"]
     if key in seen:
@@ -636,7 +640,7 @@ for r in sorted(dec_valid, key=lambda x: x["declarationDate"], reverse=True):
 browse = []
 seen2 = set()
 for r in sorted(dec_valid, key=lambda x: x["declarationDate"], reverse=True):
-    if r["fyDeclared"] > 2025:
+    if r["fyDeclared"] > CURRENT_FY:
         continue
     key = r["femaDeclarationString"]
     if key in seen2:
@@ -662,7 +666,7 @@ ERA_MAP = {
     2013:"Obama T2",2014:"Obama T2",2015:"Obama T2",2016:"Obama T2",
     2017:"Trump T1",2018:"Trump T1",2019:"Trump T1",2020:"Trump T1",
     2021:"Biden",2022:"Biden",2023:"Biden",2024:"Biden",
-    2025:"Trump T2",
+    **{fy: "Trump T2" for fy in range(2025, CURRENT_FY + 1)},
 }
 
 era_dec_map = defaultdict(lambda: {"declarations": 0, "days": [], "incidents": defaultdict(int)})
@@ -817,7 +821,7 @@ ERA_FY_MAP = {
     2013:"obama_t2",2014:"obama_t2",2015:"obama_t2",2016:"obama_t2",
     2017:"trump_t1",2018:"trump_t1",2019:"trump_t1",2020:"trump_t1",
     2021:"biden",2022:"biden",2023:"biden",2024:"biden",
-    2025:"trump_t2",
+    **{fy: "trump_t2" for fy in range(2025, CURRENT_FY + 1)},
 }
 ERA_TOTAL_KEYS = {
     "bush_total":  ["bush_t1","bush_t2"],
@@ -855,11 +859,16 @@ def era_stats_dict(keys):
         "avg_deny_days":round(sum(nd)/len(nd), 1) if nd else 0,
     }
 
+_t2_start = 2025
+_t2_label = f"{_t2_start}–{CURRENT_FY}" if CURRENT_FY > _t2_start else f"{_t2_start} (partial)"
+_t2_total = f"2017–2020 + {_t2_start}–{CURRENT_FY}" if CURRENT_FY > _t2_start else f"2017–2020 + {_t2_start}"
+
 YEARS_MAP = {
-    "bush_t1":"2001-2004","bush_t2":"2005-2008","bush_total":"2001-2008",
-    "obama_t1":"2009-2012","obama_t2":"2013-2016","obama_total":"2009-2016",
-    "trump_t1":"2017-2020","biden":"2021-2024",
-    "trump_t2":"2025 (partial)","trump_total":"2017-2020 + 2025",
+    "bush_t1":"2001–2004","bush_t2":"2005–2008","bush_total":"2001–2008",
+    "obama_t1":"2009–2012","obama_t2":"2013–2016","obama_total":"2009–2016",
+    "trump_t1":"2017–2020","biden":"2021–2024",
+    "trump_t2": _t2_label,
+    "trump_total": _t2_total,
 }
 LABEL_MAP = {
     "bush_t1":"Bush T1","bush_t2":"Bush T2","bush_total":"Bush Total",
@@ -904,16 +913,16 @@ for group_keys, key in [
     }
 
 PRES_ORDER = [
-    ["bush_t1","Bush — Term 1","2001-2004"],
-    ["bush_t2","Bush — Term 2","2005-2008"],
-    ["bush_total","Bush — Total","2001-2008"],
-    ["obama_t1","Obama — Term 1","2009-2012"],
-    ["obama_t2","Obama — Term 2","2013-2016"],
-    ["obama_total","Obama — Total","2009-2016"],
-    ["trump_t1","Trump — Term 1","2017-2020"],
-    ["biden","Biden","2021-2024"],
-    ["trump_t2","Trump — Term 2","2025 (partial)"],
-    ["trump_total","Trump — Total","2017-2020 + 2025"],
+    ["bush_t1","Bush — Term 1","2001–2004"],
+    ["bush_t2","Bush — Term 2","2005–2008"],
+    ["bush_total","Bush — Total","2001–2008"],
+    ["obama_t1","Obama — Term 1","2009–2012"],
+    ["obama_t2","Obama — Term 2","2013–2016"],
+    ["obama_total","Obama — Total","2009–2016"],
+    ["trump_t1","Trump — Term 1","2017–2020"],
+    ["biden","Biden","2021–2024"],
+    ["trump_t2", f"Trump — Term 2", _t2_label],
+    ["trump_total","Trump — Total", _t2_total],
 ]
 
 # Build locality data (compact: IDs only, client looks up in BROWSE)
