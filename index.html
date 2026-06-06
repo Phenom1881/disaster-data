@@ -200,8 +200,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="container">
   <header class="masthead">
     <div class="kicker reveal">Twenty-five years of federal disaster declarations</div>
-    <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes — <em>and how often.</em></h1>
-    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000 — major disasters, emergencies, and fire-management programs — mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
+    <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes -<em>and how often.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000 - major disasters, emergencies, and fire-management programs mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
     <div class="stats reveal" style="animation-delay:.18s">
       <div class="stat"><div class="num" id="st-total">3,404</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num">57</div><div class="lab">states &amp; territories</div></div>
@@ -251,7 +251,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="container">
 
   <section style="border-top:none;padding-top:clamp(40px,5vw,64px)">
-    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years — record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
+    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years - record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
     <div class="chartcard">
       <svg id="timeline" viewBox="0 0 1000 330" role="img" aria-label="Area chart of FEMA disaster declarations by fiscal year, 2000 to 2025"></svg>
       <div class="tip" id="tip"></div>
@@ -269,7 +269,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
   <section>
     <div class="shead">
-      <div><h2>What kind of disaster?</h2><p>Wildfire looks like the nation's top hazard — until you separate out fire-management declarations, a faster, lower-threshold program of its own.</p></div>
+      <div><h2>What kind of disaster?</h2><p>Wildfire looks like the nation's top hazard until you separate out fire-management declarations, a faster, lower-threshold program of its own.</p></div>
       <div class="toggseg" id="haztog"><button class="on" data-h="all">All declarations</button><button data-h="nofm">Disasters only</button></div>
     </div>
     <div class="haz" id="hazbars"></div>
@@ -283,19 +283,19 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         <div class="tcode" style="color:var(--ink)">DR</div>
         <div class="tname">Major Disaster</div>
         <div class="tstat">1,589 declarations · ~45 days to a decision</div>
-        <p class="tdesc">The broadest declaration. A governor requests one when an event overwhelms state and local resources, and it can unlock FEMA's full toolkit — individual assistance, public assistance, and hazard-mitigation funding. Reserved for the most serious disasters, and the slowest to approve.</p>
+        <p class="tdesc">The broadest declaration. A governor requests one when an event overwhelms state and local resources, and it can unlock FEMA's full toolkit - individual assistance, public assistance, and hazard-mitigation funding. Reserved for the most serious disasters, and the slowest to approve.</p>
       </div>
       <div class="tcard">
         <div class="tcode" style="color:var(--accent)">EM</div>
         <div class="tname">Emergency</div>
         <div class="tstat">485 declarations · ~22 days to a decision</div>
-        <p class="tdesc">A narrower, often faster form of help to protect lives, property, and public health — sometimes declared before an event even arrives. More limited in scope and funding than a major disaster. The nationwide COVID-19 response in 2020 came as emergency declarations.</p>
+        <p class="tdesc">A narrower, often faster form of help to protect lives, property, and public health sometimes declared before an event even arrives. More limited in scope and funding than a major disaster. The nationwide COVID-19 response in 2020 came as emergency declarations.</p>
       </div>
       <div class="tcard">
         <div class="tcode" style="color:var(--ember)">FM</div>
         <div class="tname">Fire Management Assistance</div>
         <div class="tstat">1,330 declarations · approved within a day</div>
-        <p class="tdesc">Funds the fighting of wildfires that threaten to become major disasters. Approved fast — often within hours — with a narrow scope and a lower bar than a major disaster. Its sheer volume is why fire tops the raw declaration counts.</p>
+        <p class="tdesc">Funds the fighting of wildfires that threaten to become major disasters. Approved fast often within hours with a narrow scope and a lower bar than a major disaster. Its sheer volume is why fire tops the raw declaration counts.</p>
       </div>
     </div>
   </section>
@@ -414,7 +414,7 @@ function renderHaz(){
     row.querySelector('.hv').textContent=x[key].toLocaleString();
   });
   document.getElementById('haznote').innerHTML = key==='all'
-    ? 'Counting every declaration, <strong style="color:var(--ink)">fire ranks first at 1,399</strong> — but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.'
+    ? 'Counting every declaration, <strong style="color:var(--ink)">fire ranks first at 1,399</strong> but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.'
     : 'Set fire-management aside and the picture flips: <strong style="color:var(--ink)">severe storms lead at 887</strong>, followed by hurricanes and floods. Fire as a major-disaster or emergency falls to just 69.';
 }
 
