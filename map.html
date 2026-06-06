@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FEMA Disaster Explorer (BETA) — Map</title>
+  <title>FEMA Disaster Explorer (BETA) · Map</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -15,7 +15,7 @@
 
   <style>
     :root {
-      /* FEMA Disaster Explorer — warm editorial palette */
+      /* FEMA Disaster Explorer, warm editorial palette */
       --navy:    #f6f1e7;
       --navy2:   #fcfaf3;
       --navy3:   #f1ead9;
@@ -45,7 +45,7 @@
       --accent-soft:#dceaef;
       --serif:'Fraunces',Georgia,serif;
       --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-      /* Choropleth 8-stop ramp (low -> high) — warm sequential */
+      /* Choropleth 8-stop ramp (low -> high), warm sequential */
       --ramp-1: #f2d9a0;
       --ramp-2: #ecc278;
       --ramp-3: #e3a652;
@@ -610,7 +610,7 @@
 <nav>
   <div class="brand"><span class="mark">FEMA Disaster Explorer</span><span class="beta">Beta</span></div>
   <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="#" class="on">Map</a><a href="index.html#about">About</a></div>
-  <div class="navmeta">FY 2000–2026 · OpenFEMA</div>
+  <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
 </nav>
 
   <div class="layout">
@@ -621,7 +621,7 @@
                 <h1 class="page-title">FEMA <em>Declaration</em> Map</h1>
         <div class="rule-line"></div>
         <p>
-          County-level choropleth of FEMA disaster declaration activity across the United States. Filter by declaration type — DR (Major Disaster), EM (Emergency), or FM (Fire Management Assistance Grant) — and by year. Click any county to list matching declaration numbers.
+          County-level choropleth of FEMA disaster declaration activity across the United States. Filter by year, or by declaration type: DR (Major Disaster), EM (Emergency), or FM (Fire Management Assistance Grant). Click any county to list matching declaration numbers.
         </p>
       </div>
 
@@ -646,9 +646,9 @@
           <label for="typeSelect">Declaration type</label>
           <select id="typeSelect">
             <option value="ALL" selected>All types</option>
-            <option value="DR">DR — Major Disaster</option>
-            <option value="EM">EM — Emergency Declaration</option>
-            <option value="FM">FM — Fire Management Assistance Grant (FMAG)</option>
+            <option value="DR">DR: Major Disaster</option>
+            <option value="EM">EM: Emergency Declaration</option>
+            <option value="FM">FM: Fire Management Assistance Grant (FMAG)</option>
           </select>
         </div>
       </div>
@@ -691,12 +691,12 @@
 
       <!-- Top counties -->
       <div class="top-section">
-        <div class="section-label">Top counties — full workbook</div>
+        <div class="section-label">Top counties · full workbook</div>
         <ol id="topCounties"></ol>
       </div>
 
       <div class="footer-note">
-        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map — they are not tied to a single county boundary. Data sourced from FEMA's OpenFEMA dataset. Not endorsed by FEMA.
+        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map. They are not tied to a single county boundary. Data sourced from FEMA's OpenFEMA dataset. Not endorsed by FEMA.
       </div>
     </aside>
 
@@ -735,7 +735,7 @@
 
     topCounties.forEach(item => {
       const li = document.createElement('li');
-      li.textContent = `${item.label} — ${item.value.toLocaleString()}`;
+      li.textContent = `${item.label} · ${item.value.toLocaleString()}`;
       topCountiesEl.appendChild(li);
     });
 
@@ -790,14 +790,14 @@
     function getColor(value, breaks) {
       if (!value || value <= 0) return '#e9e5da'; /* navy2 near-transparent for empty */
       /* 8-stop ramp: sky → blue → teal → green → gold → orange → red → deep red */
-      return value > breaks[7] ? '#7a2c14' :   /* deep red — highest impact */
+      return value > breaks[7] ? '#7a2c14' :   /* deep red, highest impact */
              value > breaks[6] ? '#97391b' :   /* red2 */
              value > breaks[5] ? '#b35024' :   /* orange */
              value > breaks[4] ? '#c96a2e' :   /* gold */
              value > breaks[3] ? '#d8853a' :   /* green */
              value > breaks[2] ? '#e3a652' :   /* teal */
              value > breaks[1] ? '#ecc278' :   /* blue */
-             value > breaks[0] ? '#f2d9a0' :   /* sky — lowest impact */
+             value > breaks[0] ? '#f2d9a0' :   /* sky, lowest impact */
                                  '#e9e5da';
     }
 
@@ -911,7 +911,7 @@
         const to = grades[i + 1];
         div.innerHTML +=
           '<div style="margin-bottom:3px;"><i style="background:' + getColor(from + 0.01, grades) + '"></i> ' +
-          from.toLocaleString() + (to ? '&ndash;' + to.toLocaleString() : '+') +
+          from.toLocaleString() + (to ? ' to ' + to.toLocaleString() : '+') +
           '</div>';
       }
       div.innerHTML += '<div style="margin-top:4px;"><i style="background:#e9e5da;border:1px solid #e0d8c5;"></i> 0 / no data</div>';
@@ -1065,7 +1065,7 @@
       const btn = '<button id="stateFocusReset" style="background:#1c5c79;border:none;color:#fff;font:600 11px system-ui,sans-serif;letter-spacing:.4px;padding:5px 11px;border-radius:7px;cursor:pointer">' + (found ? 'View entire U.S.' : 'Dismiss') + '</button>';
       b.innerHTML = (found
         ? '<span>Focused on <strong style="color:#1c5c79;font-weight:700">' + name + '</strong></span>'
-        : '<span><strong style="color:#1c5c79;font-weight:700">' + name + '</strong> &mdash; county detail not available on the map</span>') + btn;
+        : '<span><strong style="color:#1c5c79;font-weight:700">' + name + '</strong> has no county detail on this map</span>') + btn;
       document.getElementById('stateFocusReset').onclick = function () { b.remove(); map.setView([37.8, -96], 4); };
     }
 

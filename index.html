@@ -194,14 +194,14 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <nav>
   <div class="brand"><span class="mark">FEMA Disaster Explorer</span><span class="beta">Beta</span></div>
   <div class="navlinks"><a href="#" class="on">Overview</a><a href="#board">Explore</a><a href="map.html">Map</a><a href="#about">About</a></div>
-  <div class="navmeta">FY 2000–2026 · OpenFEMA</div>
+  <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
 </nav>
 
 <div class="container">
   <header class="masthead">
     <div class="kicker reveal">Twenty-five years of federal disaster declarations</div>
-    <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes — <em>and how often.</em></h1>
-    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000 — major disasters, emergencies, and fire-management programs — mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
+    <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes, <em>and how often.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000: major disasters, emergencies, and fire-management programs. Mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
     <div class="stats reveal" style="animation-delay:.18s">
       <div class="stat"><div class="num" id="st-total">3,404</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num">57</div><div class="lab">states &amp; territories</div></div>
@@ -215,7 +215,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <div class="container">
     <div class="deck">
       <div class="fgroup">
-        <div class="flabel">Years <span class="v" id="yr-read">2000 – 2026</span></div>
+        <div class="flabel">Years <span class="v" id="yr-read">2000 to 2026</span></div>
         <div class="range" id="range">
           <div class="track"></div><div class="fill" id="rfill"></div>
           <input type="range" id="rmin" min="2000" max="2026" value="2000" step="1" aria-label="Start year">
@@ -251,7 +251,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="container">
 
   <section style="border-top:none;padding-top:clamp(40px,5vw,64px)">
-    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years — record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
+    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years: record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
     <div class="chartcard">
       <svg id="timeline" viewBox="0 0 1000 330" role="img" aria-label="Area chart of FEMA disaster declarations by fiscal year, 2000 to 2025"></svg>
       <div class="tip" id="tip"></div>
@@ -269,7 +269,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
   <section>
     <div class="shead">
-      <div><h2>What kind of disaster?</h2><p>Wildfire looks like the nation's top hazard — until you separate out fire-management declarations, a faster, lower-threshold program of its own.</p></div>
+      <div><h2>What kind of disaster?</h2><p>Wildfire looks like the nation's top hazard, until you separate out fire-management declarations, a faster, lower-threshold program of its own.</p></div>
       <div class="toggseg" id="haztog"><button class="on" data-h="all">All declarations</button><button data-h="nofm">Disasters only</button></div>
     </div>
     <div class="haz" id="hazbars"></div>
@@ -283,19 +283,19 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         <div class="tcode" style="color:var(--ink)">DR</div>
         <div class="tname">Major Disaster</div>
         <div class="tstat">1,589 declarations · ~45 days to a decision</div>
-        <p class="tdesc">The broadest declaration. A governor requests one when an event overwhelms state and local resources, and it can unlock FEMA's full toolkit — individual assistance, public assistance, and hazard-mitigation funding. Reserved for the most serious disasters, and the slowest to approve.</p>
+        <p class="tdesc">The broadest declaration. A governor requests one when an event overwhelms state and local resources, and it can unlock FEMA's full toolkit: individual assistance, public assistance, and hazard-mitigation funding. Reserved for the most serious disasters, and the slowest to approve.</p>
       </div>
       <div class="tcard">
         <div class="tcode" style="color:var(--accent)">EM</div>
         <div class="tname">Emergency</div>
         <div class="tstat">485 declarations · ~22 days to a decision</div>
-        <p class="tdesc">A narrower, often faster form of help to protect lives, property, and public health — sometimes declared before an event even arrives. More limited in scope and funding than a major disaster. The nationwide COVID-19 response in 2020 came as emergency declarations.</p>
+        <p class="tdesc">A narrower, often faster form of help to protect lives, property, and public health, sometimes declared before an event even arrives. More limited in scope and funding than a major disaster. The nationwide COVID-19 response in 2020 came as emergency declarations.</p>
       </div>
       <div class="tcard">
         <div class="tcode" style="color:var(--ember)">FM</div>
         <div class="tname">Fire Management Assistance</div>
         <div class="tstat">1,330 declarations · approved within a day</div>
-        <p class="tdesc">Funds the fighting of wildfires that threaten to become major disasters. Approved fast — often within hours — with a narrow scope and a lower bar than a major disaster. Its sheer volume is why fire tops the raw declaration counts.</p>
+        <p class="tdesc">Funds the fighting of wildfires that threaten to become major disasters. Approved fast, often within hours, with a narrow scope and a lower bar than a major disaster. Its sheer volume is why fire tops the raw declaration counts.</p>
       </div>
     </div>
   </section>
@@ -305,7 +305,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <footer id="about">
   <div class="container">
     <div class="foot">
-      <div class="disc">Built from OpenFEMA Disaster Declarations Summaries, FY2000–FY2026. Uses OpenFEMA data but is not endorsed by FEMA. Figures reflect declaration records, not official financial reporting.</div>
+      <div class="disc">Built from OpenFEMA Disaster Declarations Summaries, FY2000 to FY2026. Uses OpenFEMA data but is not endorsed by FEMA. Figures reflect declaration records, not official financial reporting.</div>
       <div style="text-align:right;">Source: <a href="#">OpenFEMA</a><br>FEMA Disaster Explorer (BETA)</div>
     </div>
   </div>
@@ -348,7 +348,7 @@ const heat=['#efddb9','#e6c089','#d98c4e','#c85c2e','#9e3a1e'];
 function heatFor(v){ if(v>=200)return heat[4]; if(v>=100)return heat[3]; if(v>=50)return heat[2]; if(v>=20)return heat[1]; return heat[0]; }
 function rateColor(r){ if(r>=25)return '#9e3a1e'; if(r>=15)return '#c85c2e'; if(r>=8)return '#d98c4e'; if(r>0)return '#5b5346'; return '#1d9e75'; }
 const maxRate=Math.max(...STATES.map(s=>s.rate));
-const TIERS=[{t:"Most disaster-prone",sub:"100+ declarations",min:100},{t:"Frequently declared",sub:"50–99",min:50},{t:"Periodically hit",sub:"20–49",min:20},{t:"Rarely declared",sub:"fewer than 20",min:0}];
+const TIERS=[{t:"Most disaster-prone",sub:"100+ declarations",min:100},{t:"Frequently declared",sub:"50 to 99",min:50},{t:"Periodically hit",sub:"20 to 49",min:20},{t:"Rarely declared",sub:"fewer than 20",min:0}];
 
 function activeTypes(){ return [...document.querySelectorAll('#dtype button.on')].map(b=>b.dataset.d); }
 function cntFor(s,t){ return t.reduce((n,x)=> n + (x==='DR'?s.dr:x==='EM'?s.em:s.fm),0); }
@@ -360,7 +360,7 @@ function rowHTML(s,rank,metric,curMax,fmOff){
   const barVal=isRate?s.rate:s.cnt, barMax=isRate?maxRate:curMax;
   const pct=Math.max(3,(barVal/barMax)*100);
   const barCol=isRate?rateColor(s.rate):heatFor(s.cnt);
-  const haz=hazardsFor(s,fmOff).join(' · ')||'—';
+  const haz=hazardsFor(s,fmOff).join(' · ')||'None';
   const bignum=isRate?s.rate.toFixed(1)+'%':s.cnt;
   return `<div class="row" data-ab="${s.ab}">
     <div class="rank">${rank}</div>
@@ -414,7 +414,7 @@ function renderHaz(){
     row.querySelector('.hv').textContent=x[key].toLocaleString();
   });
   document.getElementById('haznote').innerHTML = key==='all'
-    ? 'Counting every declaration, <strong style="color:var(--ink)">fire ranks first at 1,399</strong> — but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.'
+    ? 'Counting every declaration, <strong style="color:var(--ink)">fire ranks first at 1,399</strong>, but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.'
     : 'Set fire-management aside and the picture flips: <strong style="color:var(--ink)">severe storms lead at 887</strong>, followed by hurricanes and floods. Fire as a major-disaster or emergency falls to just 69.';
 }
 
@@ -472,7 +472,7 @@ function updateRange(){
   const lo=(a-2000)/26*100, hi=(b-2000)/26*100;
   document.getElementById('rfill').style.left=lo+'%';
   document.getElementById('rfill').style.width=(hi-lo)+'%';
-  document.getElementById('yr-read').textContent=a+' – '+b;
+  document.getElementById('yr-read').textContent=a+' to '+b;
   const w=YOY.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
   document.getElementById('st-total').textContent=w.toLocaleString();
   document.getElementById('tl-sum').textContent=w.toLocaleString();
@@ -510,7 +510,7 @@ function openState(ab){
   const hmax=s.inc.length?s.inc[0][1]:1;
   document.getElementById('m-haz').innerHTML=mbars(s.inc.map(h=>({l:h[0],v:h[1],c:heatFor(h[1])})),hmax);
   const nf=s.inc.find(h=>h[0]!=='Fire');
-  document.getElementById('m-note').textContent = nf ? `Set fire-management aside, and ${s.name}'s leading disaster is ${nf[0].toLowerCase()} — ${nf[1]} declarations.` : '';
+  document.getElementById('m-note').textContent = nf ? `Set fire-management aside, and ${s.name}'s leading disaster is ${nf[0].toLowerCase()} (${nf[1]} declarations).` : '';
   document.getElementById('m-loc').textContent='County-level breakdown for '+s.name+' will live here once the locality dataset is connected.';
   document.getElementById('m-map').href='map.html?state='+ab;
   recState=s; recMode='decl';
