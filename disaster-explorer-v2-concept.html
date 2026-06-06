@@ -9,59 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f6f1e7;
-  --paper-2:#fcfaf3;
-  --paper-3:#f1ead9;
-  --ink:#1d1813;
-  --ink-2:#5b5346;
-  --ink-3:#938a78;
-  --rule:#e0d8c5;
-  --rule-2:#cfc6b0;
-  --accent:#1c5c79;
-  --accent-2:#27778f;
-  --accent-soft:#dceaef;
-  /* frequency heat ramp (sand -> brick) */
-  --h1:#efddb9;
-  --h2:#e6c089;
-  --h3:#d98c4e;
-  --h4:#c85c2e;
-  --h5:#9e3a1e;
-  --serif:'Fraunces',Georgia,serif;
-  --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#1c5c79;--accent-2:#27778f;--accent-soft:#dceaef;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{
-  background:var(--paper);
-  color:var(--ink);
-  font-family:var(--sans);
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 ::selection{background:var(--accent);color:#fff;}
-
-/* faint paper grain via repeating dots */
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);
-  background-size:4px 4px;
-}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
 .wrap{position:relative;z-index:1;}
 
-/* ── NAV ───────────────────────────────────── */
-nav{
-  position:sticky;top:0;z-index:50;
-  background:rgba(246,241,231,.86);
-  backdrop-filter:saturate(140%) blur(10px);
-  border-bottom:1px solid var(--rule);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 clamp(18px,4vw,48px);height:60px;
-}
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
 .brand{display:flex;align-items:baseline;gap:10px;}
-.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--ink);}
-.brand .beta{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
+.brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
 .navlinks{display:flex;align-items:center;gap:4px;}
 .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
 .navlinks a:hover{color:var(--ink);background:var(--paper-3);}
@@ -71,17 +37,11 @@ nav{
 
 .container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
 
-/* ── MASTHEAD ──────────────────────────────── */
 .masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,44px);}
 .kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
-.headline{
-  font-family:var(--serif);font-weight:400;
-  font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;
-  max-width:16ch;color:var(--ink);
-}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:17ch;}
 .headline em{font-style:italic;font-weight:300;}
-.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:54ch;margin-top:24px;line-height:1.55;}
-
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:56ch;margin-top:24px;line-height:1.55;}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
 .stat{background:var(--paper-2);padding:20px 22px;}
 .stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
@@ -89,14 +49,11 @@ nav{
 .stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
 @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
 
-/* ── FILTER DECK ───────────────────────────── */
 .deck-shell{position:sticky;top:60px;z-index:40;background:var(--paper);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
 .deck{display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(18px,3vw,36px);padding:16px 0;}
 .fgroup{display:flex;flex-direction:column;gap:9px;}
 .flabel{font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-3);}
 .flabel .v{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:700;}
-
-/* dual range */
 .range{position:relative;width:clamp(180px,22vw,240px);height:24px;display:flex;align-items:center;}
 .range .track{position:absolute;left:0;right:0;height:4px;background:var(--rule-2);border-radius:4px;}
 .range .fill{position:absolute;height:4px;background:var(--accent);border-radius:4px;}
@@ -104,86 +61,76 @@ nav{
 .range input::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:17px;height:17px;border-radius:50%;background:var(--paper-2);border:2px solid var(--accent);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .12s;}
 .range input::-webkit-slider-thumb:active{transform:scale(1.12);}
 .range input::-moz-range-thumb{pointer-events:auto;width:17px;height:17px;border-radius:50%;background:var(--paper-2);border:2px solid var(--accent);cursor:pointer;}
-
 .pills{display:flex;flex-wrap:wrap;gap:6px;}
 .pill{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:20px;padding:5px 12px;cursor:pointer;transition:.13s;white-space:nowrap;}
 .pill:hover{border-color:var(--accent);color:var(--ink);}
 .pill.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-
 .seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden;background:var(--paper-2);}
-.seg button{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.4px;color:var(--ink-2);background:none;border:none;border-right:1px solid var(--rule-2);padding:6px 13px;cursor:pointer;transition:.12s;}
+.seg button{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);background:none;border:none;border-right:1px solid var(--rule-2);padding:6px 13px;cursor:pointer;transition:.12s;}
 .seg button:last-child{border-right:none;}
-.seg button.on{background:var(--accent-soft);color:var(--accent);}
+.seg button.on{background:var(--accent);color:#fff;}
 .seg button:hover:not(.on){background:var(--paper-3);}
-
 .reset{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-2);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;padding:6px 4px;transition:.12s;}
 .reset:hover{color:var(--accent);}
 .reset svg{width:13px;height:13px;}
 
-/* ── SECTION SHELL ─────────────────────────── */
 section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
 .shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(24px,3vw,38px);}
 .shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
-.shead p{font-size:14px;color:var(--ink-2);max-width:46ch;margin-top:8px;}
-.sortseg{display:inline-flex;border:1px solid var(--rule-2);border-radius:8px;overflow:hidden;background:var(--paper-2);}
-.sortseg button{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--ink-2);background:none;border:none;border-right:1px solid var(--rule-2);padding:9px 16px;cursor:pointer;transition:.12s;}
-.sortseg button:last-child{border-right:none;}
-.sortseg button.on{background:var(--ink);color:var(--paper);}
-.sortseg button:hover:not(.on){background:var(--paper-3);}
+.shead p{font-size:14px;color:var(--ink-2);max-width:52ch;margin-top:8px;}
+.sortseg,.toggseg{display:inline-flex;border:1px solid var(--rule-2);border-radius:8px;overflow:hidden;background:var(--paper-2);}
+.sortseg button,.toggseg button{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--ink-2);background:none;border:none;border-right:1px solid var(--rule-2);padding:9px 16px;cursor:pointer;transition:.12s;white-space:nowrap;}
+.sortseg button:last-child,.toggseg button:last-child{border-right:none;}
+.sortseg button.on,.toggseg button.on{background:var(--ink);color:var(--paper);}
+.sortseg button:hover:not(.on),.toggseg button:hover:not(.on){background:var(--paper-3);}
 
-/* ── TIMELINE ──────────────────────────────── */
-.chartcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:clamp(18px,3vw,30px);}
+.chartcard{position:relative;background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:clamp(18px,3vw,30px);}
 #timeline{width:100%;height:auto;display:block;}
+.hit{cursor:pointer;}
 .tl-cap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12.5px;color:var(--ink-2);}
 .tl-cap b{font-family:var(--serif);font-weight:600;color:var(--ink);font-size:15px;font-variant-numeric:tabular-nums;}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-130%);background:var(--ink);color:var(--paper);font-size:12px;font-weight:500;padding:7px 11px;border-radius:7px;white-space:nowrap;transition:opacity .12s;z-index:5;line-height:1.3;}
+.tip b{font-family:var(--serif);font-weight:600;font-size:14px;}
+.tip::after{content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--ink);}
 
-/* ── SCOREBOARD ────────────────────────────── */
 .tier{margin-bottom:30px;}
 .tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
 .tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
 .tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
-
-.row{display:grid;grid-template-columns:34px 1.6fr 2.4fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .12s,transform .12s;border-radius:6px;position:relative;}
+.row{display:grid;grid-template-columns:34px 1.6fr 2.4fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .12s,transform .12s;border-radius:6px;}
 .row:hover{background:var(--paper-2);transform:translateX(3px);}
-.row.va{box-shadow:inset 3px 0 0 var(--accent);}
 .rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;}
 .sname{display:flex;flex-direction:column;gap:1px;min-width:0;}
 .sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sname .n .vatag{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.8px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 4px;margin-left:7px;vertical-align:2px;}
 .sname .meta{font-size:11.5px;color:var(--ink-3);}
 .bar-wrap{display:flex;align-items:center;gap:12px;}
 .bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
 .bar{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,1,.36,1);}
 .barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:38px;text-align:right;}
-.tag{font-size:10.5px;font-weight:600;letter-spacing:.3px;padding:3px 8px;border-radius:4px;white-space:nowrap;}
 .right{display:flex;align-items:center;gap:14px;}
 .deny{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:54px;}
 .deny .d{font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums;}
 .deny .dl{font-size:9.5px;color:var(--ink-3);letter-spacing:.6px;text-transform:uppercase;}
 .chev{color:var(--rule-2);transition:.13s;}
 .row:hover .chev{color:var(--accent);transform:translateX(2px);}
-@media(max-width:720px){
-  .row{grid-template-columns:26px 1fr;gap:8px 10px;}
-  .bar-wrap{grid-column:1/-1;}
-  .right{grid-column:1/-1;justify-content:space-between;}
-  .tag{order:-1;}
-}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:8px 10px;}.bar-wrap{grid-column:1/-1;}.right{grid-column:1/-1;justify-content:space-between;}}
 
-/* ── CODA ──────────────────────────────────── */
-.coda{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,48px);}
-.coda .take h3{font-family:var(--serif);font-weight:500;font-size:20px;letter-spacing:-.3px;margin-bottom:10px;}
-.coda .take h3 .big{display:block;font-size:46px;line-height:1;color:var(--h4);margin-bottom:6px;font-weight:600;font-variant-numeric:tabular-nums;}
-.coda .take p{font-size:14.5px;color:var(--ink-2);line-height:1.62;}
-@media(max-width:720px){.coda{grid-template-columns:1fr;}}
+.haz{display:flex;flex-direction:column;gap:11px;}
+.hrow{display:grid;grid-template-columns:130px 1fr 52px;align-items:center;gap:14px;}
+.hrow .hn{font-size:13.5px;font-weight:500;text-align:right;}
+.hrow .ht{height:22px;background:var(--paper-3);border-radius:4px;overflow:hidden;}
+.hrow .hb{height:100%;border-radius:4px;background:var(--accent);transition:width .6s cubic-bezier(.22,1,.36,1);}
+.hrow.fire .hb{background:var(--ember);}
+.hrow .hv{font-family:var(--serif);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;}
+.hnote{margin-top:22px;font-size:13.5px;color:var(--ink-2);max-width:64ch;line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;border-radius:0;}
+@media(max-width:720px){.hrow{grid-template-columns:96px 1fr 44px;gap:10px;}.hrow .hn{font-size:12px;}}
 
-/* ── FOOTER ────────────────────────────────── */
 footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
 .foot a{color:var(--accent);text-decoration:none;}
 .foot a:hover{text-decoration:underline;}
 .foot .disc{max-width:62ch;}
 
-/* load-in animation */
 @media(prefers-reduced-motion:no-preference){
   .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
   @keyframes rise{to{opacity:1;transform:none;}}
@@ -194,30 +141,21 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="wrap">
 
 <nav>
-  <div class="brand">
-    <span class="mark">FEMA Disaster Data Explorer</span>
-    <span class="beta">Beta</span>
-  </div>
-  <div class="navlinks">
-    <a href="#" class="on">Overview</a>
-    <a href="#board">Explore</a>
-    <a href="#">Map</a>
-    <a href="#">About</a>
-  </div>
+  <div class="brand"><span class="mark">FEMA Disaster Data Explorer</span><span class="beta">Beta</span></div>
+  <div class="navlinks"><a href="#" class="on">Overview</a><a href="#board">Explore</a><a href="#">Map</a><a href="#">About</a></div>
   <div class="navmeta">FY 2000–2026 · OpenFEMA</div>
 </nav>
 
 <div class="container">
   <header class="masthead">
     <div class="kicker reveal">Twenty-five years of federal disaster declarations</div>
-    <h1 class="headline reveal" style="animation-delay:.06s">Where America declares disaster — <em>and how often Washington says yes.</em></h1>
-    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000 — major disasters, emergencies, and fire management — mapped, ranked, and open to explore. Drag the years, pick a hazard, and watch the country reorder.</p>
-
+    <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes — <em>and how often.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000 — major disasters, emergencies, and fire-management programs — mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
     <div class="stats reveal" style="animation-delay:.18s">
       <div class="stat"><div class="num" id="st-total">3,404</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num">57</div><div class="lab">states &amp; territories</div></div>
       <div class="stat"><div class="num">11.8<small>%</small></div><div class="lab">of requests denied</div></div>
-      <div class="stat"><div class="num">Fire</div><div class="lab">most common incident</div></div>
+      <div class="stat"><div class="num">25</div><div class="lab">hazard types tracked</div></div>
     </div>
   </header>
 </div>
@@ -233,18 +171,17 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
           <input type="range" id="rmax" min="2000" max="2026" value="2026" step="1" aria-label="End year">
         </div>
       </div>
-
       <div class="fgroup">
         <div class="flabel">Incident type</div>
         <div class="pills" id="pills">
           <button class="pill on" data-inc="All">All</button>
-          <button class="pill" data-inc="Fire">Fire</button>
           <button class="pill" data-inc="Severe Storm">Severe storm</button>
           <button class="pill" data-inc="Hurricane">Hurricane</button>
+          <button class="pill" data-inc="Flood">Flood</button>
           <button class="pill" data-inc="Typhoon">Typhoon</button>
+          <button class="pill" data-inc="Fire">Fire</button>
         </div>
       </div>
-
       <div class="fgroup">
         <div class="flabel">Declaration type</div>
         <div class="seg" id="dtype">
@@ -253,10 +190,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
           <button class="on" data-d="FM">FM</button>
         </div>
       </div>
-
       <button class="reset" id="reset" aria-label="Reset filters">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
-        Reset
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset
       </button>
     </div>
   </div>
@@ -265,51 +200,29 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="container">
 
   <section style="border-top:none;padding-top:clamp(40px,5vw,64px)">
-    <div class="shead">
-      <div>
-        <h2>The shape of a quarter-century</h2>
-        <p>Declarations spike with the country's worst years — record tornado outbreaks in 2011, the pandemic in 2020.</p>
-      </div>
-    </div>
+    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years — record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
     <div class="chartcard">
-      <svg id="timeline" viewBox="0 0 1000 320" role="img" aria-label="Area chart of FEMA disaster declarations by fiscal year, 2000 to 2025"></svg>
-      <div class="tl-cap">
-        <span>Federal disaster &amp; emergency declarations, by fiscal year</span>
-        <span><b id="tl-sum">3,370</b> declarations across the selected window</span>
-      </div>
+      <svg id="timeline" viewBox="0 0 1000 330" role="img" aria-label="Area chart of FEMA disaster declarations by fiscal year, 2000 to 2025"></svg>
+      <div class="tip" id="tip"></div>
+      <div class="tl-cap"><span>Federal disaster &amp; emergency declarations, by fiscal year</span><span><b id="tl-sum">3,370</b> declarations across the selected window</span></div>
     </div>
   </section>
 
   <section id="board">
     <div class="shead">
-      <div>
-        <h2>The states, ranked</h2>
-        <p>Two numbers tell the story: how often a state is declared, and how often Washington turns its requests down.</p>
-      </div>
-      <div class="sortseg" id="sortseg">
-        <button class="on" data-sort="decl">By declarations</button>
-        <button data-sort="rate">By denial rate</button>
-      </div>
+      <div><h2>The states, ranked</h2><p>Ranked by federal declarations since 2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
+      <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
     </div>
     <div id="scoreboard"></div>
   </section>
 
   <section>
-    <div class="shead"><div><h2>Reading the rankings</h2></div></div>
-    <div class="coda">
-      <div class="take">
-        <h3><span class="big">10</span>Western states where fire ranks first</h3>
-        <p>From California to Montana, wildfire is the single most-declared hazard across the West. Fire declarations also clear fastest — often approved in days, not weeks — because the fire-management track is built for speed.</p>
-      </div>
-      <div class="take">
-        <h3><span class="big">33%</span>Illinois' denial rate — the highest of any active state</h3>
-        <p>Being hit often and being approved are not the same thing. Illinois requests frequently but is turned down on roughly a third of them, while Nevada and Colorado are almost never denied.</p>
-      </div>
-      <div class="take">
-        <h3><span class="big">106</span>Florida declarations — hit hard, and scrutinized</h3>
-        <p>Hurricane states carry both ends of the burden: Florida and Louisiana rank among the most-declared <em>and</em> the most-denied, a sign of how often coastal requests push the edge of eligibility.</p>
-      </div>
+    <div class="shead">
+      <div><h2>What kind of disaster?</h2><p>Wildfire looks like the nation's top hazard — until you separate out fire-management declarations, a faster, lower-threshold program of its own.</p></div>
+      <div class="toggseg" id="haztog"><button class="on" data-h="all">All declarations</button><button data-h="nofm">Disasters only</button></div>
     </div>
+    <div class="haz" id="hazbars"></div>
+    <p class="hnote" id="haznote"></p>
   </section>
 
 </div>
@@ -317,13 +230,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <footer>
   <div class="container">
     <div class="foot">
-      <div class="disc">
-        <strong style="color:var(--ink-2);font-weight:600;">Design concept — v2.</strong> Built from OpenFEMA Disaster Declarations Summaries, FY2000–FY2026. This visualization uses OpenFEMA data but is not endorsed by FEMA. Figures are nominal and reflect declaration records, not official financial reporting.
-      </div>
-      <div style="text-align:right;">
-        Source: <a href="#">OpenFEMA</a><br>
-        FEMA Disaster Data Explorer (BETA)
-      </div>
+      <div class="disc"><strong style="color:var(--ink-2);font-weight:600;">Design concept — v2.</strong> Built from OpenFEMA Disaster Declarations Summaries, FY2000–FY2026. Uses OpenFEMA data but is not endorsed by FEMA. Figures reflect declaration records, not official financial reporting.</div>
+      <div style="text-align:right;">Source: <a href="#">OpenFEMA</a><br>FEMA Disaster Data Explorer (BETA)</div>
     </div>
   </div>
 </footer>
@@ -331,168 +239,164 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 </div>
 
 <script>
-const STATES = [{"ab":"CA","name":"California","decl":317,"den":13,"rate":3.94,"days":8.6,"top":"Fire"},{"ab":"TX","name":"Texas","decl":214,"den":24,"rate":10.08,"days":8.0,"top":"Fire"},{"ab":"OK","name":"Oklahoma","decl":202,"den":13,"rate":6.05,"days":17.8,"top":"Fire"},{"ab":"WA","name":"Washington","decl":156,"den":8,"rate":4.88,"days":17.1,"top":"Fire"},{"ab":"OR","name":"Oregon","decl":119,"den":6,"rate":4.8,"days":17.0,"top":"Fire"},{"ab":"FL","name":"Florida","decl":106,"den":19,"rate":15.2,"days":10.8,"top":"Hurricane"},{"ab":"NM","name":"New Mexico","decl":103,"den":6,"rate":5.5,"days":17.0,"top":"Fire"},{"ab":"AZ","name":"Arizona","decl":88,"den":7,"rate":7.37,"days":21.9,"top":"Fire"},{"ab":"CO","name":"Colorado","decl":86,"den":1,"rate":1.15,"days":8.3,"top":"Fire"},{"ab":"MT","name":"Montana","decl":83,"den":6,"rate":6.74,"days":23.6,"top":"Fire"},{"ab":"NV","name":"Nevada","decl":82,"den":0,"rate":0.0,"days":7.5,"top":"Fire"},{"ab":"KS","name":"Kansas","decl":70,"den":3,"rate":4.11,"days":46.2,"top":"Severe Storm"},{"ab":"NY","name":"New York","decl":68,"den":8,"rate":10.53,"days":37.9,"top":"Severe Storm"},{"ab":"LA","name":"Louisiana","decl":66,"den":17,"rate":20.48,"days":18.5,"top":"Hurricane"},{"ab":"SD","name":"South Dakota","decl":66,"den":9,"rate":12.0,"days":41.7,"top":"Severe Storm"},{"ab":"TN","name":"Tennessee","decl":66,"den":3,"rate":4.35,"days":25.4,"top":"Severe Storm"},{"ab":"AK","name":"Alaska","decl":64,"den":13,"rate":16.88,"days":53.8,"top":"Severe Storm"},{"ab":"KY","name":"Kentucky","decl":62,"den":6,"rate":8.82,"days":27.9,"top":"Severe Storm"},{"ab":"NE","name":"Nebraska","decl":59,"den":5,"rate":7.81,"days":44.0,"top":"Severe Storm"},{"ab":"MS","name":"Mississippi","decl":58,"den":11,"rate":15.94,"days":24.6,"top":"Severe Storm"},{"ab":"MO","name":"Missouri","decl":55,"den":6,"rate":9.84,"days":35.4,"top":"Severe Storm"},{"ab":"AL","name":"Alabama","decl":54,"den":5,"rate":8.47,"days":30.5,"top":"Severe Storm"},{"ab":"WV","name":"West Virginia","decl":52,"den":6,"rate":10.34,"days":33.7,"top":"Severe Storm"},{"ab":"NC","name":"North Carolina","decl":51,"den":6,"rate":10.53,"days":22.9,"top":"Hurricane"},{"ab":"AR","name":"Arkansas","decl":49,"den":7,"rate":12.5,"days":31.9,"top":"Severe Storm"},{"ab":"ND","name":"North Dakota","decl":48,"den":7,"rate":12.73,"days":53.6,"top":"Severe Storm"},{"ab":"UT","name":"Utah","decl":48,"den":2,"rate":4.0,"days":23.6,"top":"Fire"},{"ab":"GA","name":"Georgia","decl":47,"den":8,"rate":14.55,"days":13.3,"top":"Hurricane"},{"ab":"HI","name":"Hawaii","decl":47,"den":3,"rate":6.0,"days":21.1,"top":"Fire"},{"ab":"NH","name":"New Hampshire","decl":46,"den":6,"rate":11.54,"days":43.5,"top":"Severe Storm"},{"ab":"VA","name":"Virginia","decl":46,"den":6,"rate":11.54,"days":28.0,"top":"Severe Storm"},{"ab":"IA","name":"Iowa","decl":45,"den":8,"rate":15.09,"days":38.0,"top":"Severe Storm"},{"ab":"VT","name":"Vermont","decl":44,"den":3,"rate":6.38,"days":44.9,"top":"Severe Storm"},{"ab":"ME","name":"Maine","decl":43,"den":4,"rate":8.51,"days":51.6,"top":"Severe Storm"},{"ab":"MN","name":"Minnesota","decl":40,"den":3,"rate":6.98,"days":41.6,"top":"Severe Storm"},{"ab":"SC","name":"South Carolina","decl":40,"den":6,"rate":13.04,"days":17.2,"top":"Hurricane"},{"ab":"ID","name":"Idaho","decl":38,"den":4,"rate":9.52,"days":31.9,"top":"Fire"},{"ab":"WY","name":"Wyoming","decl":38,"den":2,"rate":5.0,"days":16.5,"top":"Fire"},{"ab":"MA","name":"Massachusetts","decl":37,"den":2,"rate":5.13,"days":39.7,"top":"Severe Storm"},{"ab":"NJ","name":"New Jersey","decl":37,"den":7,"rate":15.91,"days":31.7,"top":"Severe Storm"},{"ab":"PR","name":"Puerto Rico","decl":32,"den":0,"rate":0.0,"days":23.3,"top":"Hurricane"},{"ab":"IL","name":"Illinois","decl":31,"den":15,"rate":32.61,"days":42.1,"top":"Severe Storm"},{"ab":"CT","name":"Connecticut","decl":30,"den":5,"rate":14.29,"days":35.6,"top":"Severe Storm"},{"ab":"OH","name":"Ohio","decl":30,"den":5,"rate":14.29,"days":32.9,"top":"Severe Storm"},{"ab":"IN","name":"Indiana","decl":28,"den":6,"rate":17.65,"days":37.1,"top":"Severe Storm"},{"ab":"PA","name":"Pennsylvania","decl":28,"den":8,"rate":22.22,"days":34.4,"top":"Severe Storm"},{"ab":"WI","name":"Wisconsin","decl":25,"den":5,"rate":16.67,"days":39.3,"top":"Severe Storm"},{"ab":"MD","name":"Maryland","decl":23,"den":8,"rate":25.81,"days":40.4,"top":"Hurricane"},{"ab":"RI","name":"Rhode Island","decl":21,"den":4,"rate":16.0,"days":40.6,"top":"Severe Storm"},{"ab":"DC","name":"Washington D.C.","decl":19,"den":0,"rate":0.0,"days":33.2,"top":"Severe Storm"},{"ab":"MI","name":"Michigan","decl":19,"den":9,"rate":32.14,"days":80.6,"top":"Severe Storm"},{"ab":"VI","name":"U.S. Virgin Islands","decl":18,"den":0,"rate":0.0,"days":22.1,"top":"Hurricane"},{"ab":"DE","name":"Delaware","decl":16,"den":1,"rate":5.88,"days":34.1,"top":"Hurricane"},{"ab":"MP","name":"N. Mariana Islands","decl":15,"den":0,"rate":0.0,"days":20.3,"top":"Typhoon"},{"ab":"GU","name":"Guam","decl":13,"den":0,"rate":0.0,"days":28.5,"top":"Typhoon"},{"ab":"AS","name":"American Samoa","decl":10,"den":0,"rate":0.0,"days":30.8,"top":"Severe Storm"},{"ab":"FM","name":"Fed. States of Micronesia","decl":6,"den":2,"rate":25.0,"days":51.7,"top":"Typhoon"}];
+const STATES = [{"ab":"CA","name":"California","decl":317,"dr":53,"em":12,"fm":252,"den":13,"rate":3.94,"days":8.6,"inc":[["Fire",273],["Severe Storm",19],["Flood",8]]},{"ab":"TX","name":"Texas","decl":214,"dr":39,"em":14,"fm":161,"den":24,"rate":10.08,"days":8.0,"inc":[["Fire",165],["Hurricane",16],["Flood",11]]},{"ab":"OK","name":"Oklahoma","decl":202,"dr":61,"em":25,"fm":116,"den":13,"rate":6.05,"days":17.8,"inc":[["Fire",121],["Severe Storm",43],["Biological",17]]},{"ab":"WA","name":"Washington","decl":156,"dr":32,"em":7,"fm":117,"den":8,"rate":4.88,"days":17.1,"inc":[["Fire",126],["Severe Storm",15],["Flood",8]]},{"ab":"OR","name":"Oregon","decl":119,"dr":24,"em":3,"fm":92,"den":6,"rate":4.8,"days":17.0,"inc":[["Fire",95],["Severe Storm",16],["Flood",3]]},{"ab":"FL","name":"Florida","decl":106,"dr":43,"em":27,"fm":36,"den":19,"rate":15.2,"days":10.8,"inc":[["Hurricane",40],["Fire",36],["Severe Storm",16]]},{"ab":"NM","name":"New Mexico","decl":103,"dr":22,"em":15,"fm":66,"den":6,"rate":5.5,"days":17.0,"inc":[["Fire",70],["Biological",13],["Severe Storm",10]]},{"ab":"AZ","name":"Arizona","decl":88,"dr":22,"em":3,"fm":63,"den":7,"rate":7.37,"days":21.9,"inc":[["Fire",66],["Severe Storm",12],["Flood",5]]},{"ab":"CO","name":"Colorado","decl":86,"dr":12,"em":6,"fm":68,"den":1,"rate":1.15,"days":8.3,"inc":[["Fire",74],["Flood",4],["Snowstorm",3]]},{"ab":"MT","name":"Montana","decl":83,"dr":27,"em":4,"fm":52,"den":6,"rate":6.74,"days":23.6,"inc":[["Fire",55],["Severe Storm",11],["Flood",10]]},{"ab":"NV","name":"Nevada","decl":82,"dr":9,"em":4,"fm":69,"den":0,"rate":0.0,"days":7.5,"inc":[["Fire",70],["Severe Storm",5],["Flood",2]]},{"ab":"KS","name":"Kansas","decl":70,"dr":48,"em":8,"fm":14,"den":3,"rate":4.11,"days":46.2,"inc":[["Severe Storm",42],["Fire",14],["Biological",5]]},{"ab":"NY","name":"New York","decl":68,"dr":45,"em":22,"fm":1,"den":8,"rate":10.53,"days":37.9,"inc":[["Severe Storm",26],["Snowstorm",11],["Hurricane",10]]},{"ab":"SD","name":"South Dakota","decl":66,"dr":42,"em":5,"fm":19,"den":9,"rate":12.0,"days":41.7,"inc":[["Severe Storm",27],["Fire",19],["Flood",9]]},{"ab":"LA","name":"Louisiana","decl":66,"dr":36,"em":25,"fm":5,"den":17,"rate":20.48,"days":18.5,"inc":[["Hurricane",28],["Flood",9],["Severe Storm",7]]},{"ab":"TN","name":"Tennessee","decl":66,"dr":49,"em":8,"fm":9,"den":3,"rate":4.35,"days":25.4,"inc":[["Severe Storm",36],["Fire",10],["Tornado",4]]},{"ab":"AK","name":"Alaska","decl":64,"dr":44,"em":2,"fm":18,"den":13,"rate":16.88,"days":53.8,"inc":[["Severe Storm",22],["Fire",19],["Flood",11]]},{"ab":"KY","name":"Kentucky","decl":62,"dr":48,"em":7,"fm":7,"den":6,"rate":8.82,"days":27.9,"inc":[["Severe Storm",35],["Flood",7],["Fire",7]]},{"ab":"NE","name":"Nebraska","decl":59,"dr":44,"em":7,"fm":8,"den":5,"rate":7.81,"days":44.0,"inc":[["Severe Storm",34],["Fire",8],["Biological",6]]},{"ab":"MS","name":"Mississippi","decl":58,"dr":45,"em":13,"fm":0,"den":11,"rate":15.94,"days":24.6,"inc":[["Severe Storm",29],["Hurricane",18],["Flood",3]]},{"ab":"MO","name":"Missouri","decl":55,"dr":46,"em":8,"fm":1,"den":6,"rate":9.84,"days":35.4,"inc":[["Severe Storm",37],["Flood",8],["Severe Ice Storm",6]]},{"ab":"AL","name":"Alabama","decl":54,"dr":41,"em":11,"fm":2,"den":5,"rate":8.47,"days":30.5,"inc":[["Severe Storm",28],["Hurricane",19],["Biological",4]]},{"ab":"WV","name":"West Virginia","decl":52,"dr":44,"em":6,"fm":2,"den":6,"rate":10.34,"days":33.7,"inc":[["Severe Storm",25],["Flood",12],["Hurricane",4]]},{"ab":"NC","name":"North Carolina","decl":51,"dr":29,"em":13,"fm":9,"den":6,"rate":10.53,"days":22.9,"inc":[["Hurricane",20],["Fire",9],["Severe Storm",8]]},{"ab":"AR","name":"Arkansas","decl":49,"dr":41,"em":8,"fm":0,"den":7,"rate":12.5,"days":31.9,"inc":[["Severe Storm",28],["Severe Ice Storm",6],["Flood",4]]},{"ab":"ND","name":"North Dakota","decl":48,"dr":38,"em":7,"fm":3,"den":7,"rate":12.73,"days":53.6,"inc":[["Severe Storm",21],["Flood",14],["Fire",4]]},{"ab":"UT","name":"Utah","decl":48,"dr":11,"em":2,"fm":35,"den":2,"rate":4.0,"days":23.6,"inc":[["Fire",35],["Flood",6],["Severe Storm",3]]},{"ab":"GA","name":"Georgia","decl":47,"dr":25,"em":10,"fm":12,"den":8,"rate":14.55,"days":13.3,"inc":[["Hurricane",13],["Severe Storm",12],["Fire",12]]},{"ab":"HI","name":"Hawaii","decl":47,"dr":20,"em":4,"fm":23,"den":3,"rate":6.0,"days":21.1,"inc":[["Fire",24],["Severe Storm",8],["Flood",4]]},{"ab":"VA","name":"Virginia","decl":46,"dr":32,"em":7,"fm":7,"den":6,"rate":11.54,"days":28.0,"inc":[["Severe Storm",17],["Hurricane",9],["Fire",8]]},{"ab":"NH","name":"New Hampshire","decl":46,"dr":33,"em":12,"fm":1,"den":6,"rate":11.54,"days":43.5,"inc":[["Severe Storm",25],["Snowstorm",7],["Hurricane",5]]},{"ab":"IA","name":"Iowa","decl":45,"dr":41,"em":4,"fm":0,"den":8,"rate":15.09,"days":38.0,"inc":[["Severe Storm",28],["Flood",9],["Biological",3]]},{"ab":"VT","name":"Vermont","decl":44,"dr":38,"em":6,"fm":0,"den":3,"rate":6.38,"days":44.9,"inc":[["Severe Storm",25],["Flood",10],["Hurricane",3]]},{"ab":"ME","name":"Maine","decl":43,"dr":30,"em":13,"fm":0,"den":4,"rate":8.51,"days":51.6,"inc":[["Severe Storm",19],["Snowstorm",10],["Flood",5]]},{"ab":"SC","name":"South Carolina","decl":40,"dr":20,"em":13,"fm":7,"den":6,"rate":13.04,"days":17.2,"inc":[["Hurricane",15],["Fire",7],["Severe Storm",5]]},{"ab":"MN","name":"Minnesota","decl":40,"dr":30,"em":7,"fm":3,"den":3,"rate":6.98,"days":41.6,"inc":[["Severe Storm",16],["Flood",13],["Biological",4]]},{"ab":"WY","name":"Wyoming","decl":38,"dr":10,"em":1,"fm":27,"den":2,"rate":5.0,"days":16.5,"inc":[["Fire",28],["Flood",4],["Severe Storm",3]]},{"ab":"ID","name":"Idaho","decl":38,"dr":16,"em":2,"fm":20,"den":4,"rate":9.52,"days":31.9,"inc":[["Fire",21],["Flood",9],["Severe Storm",5]]},{"ab":"NJ","name":"New Jersey","decl":37,"dr":25,"em":9,"fm":3,"den":7,"rate":15.91,"days":31.7,"inc":[["Severe Storm",16],["Hurricane",8],["Snowstorm",5]]},{"ab":"MA","name":"Massachusetts","decl":37,"dr":19,"em":18,"fm":0,"den":2,"rate":5.13,"days":39.7,"inc":[["Severe Storm",12],["Hurricane",8],["Snowstorm",7]]},{"ab":"PR","name":"Puerto Rico","decl":32,"dr":21,"em":11,"fm":0,"den":0,"rate":0.0,"days":23.3,"inc":[["Hurricane",12],["Severe Storm",11],["Flood",3]]},{"ab":"IL","name":"Illinois","decl":31,"dr":24,"em":7,"fm":0,"den":15,"rate":32.61,"days":42.1,"inc":[["Severe Storm",13],["Flood",6],["Snowstorm",5]]},{"ab":"CT","name":"Connecticut","decl":30,"dr":15,"em":14,"fm":1,"den":5,"rate":14.29,"days":35.6,"inc":[["Severe Storm",12],["Hurricane",9],["Snowstorm",5]]},{"ab":"OH","name":"Ohio","decl":30,"dr":24,"em":6,"fm":0,"den":5,"rate":14.29,"days":32.9,"inc":[["Severe Storm",18],["Tornado",3],["Biological",2]]},{"ab":"IN","name":"Indiana","decl":28,"dr":22,"em":6,"fm":0,"den":6,"rate":17.65,"days":37.1,"inc":[["Severe Storm",18],["Snowstorm",3],["Flood",2]]},{"ab":"PA","name":"Pennsylvania","decl":28,"dr":21,"em":7,"fm":0,"den":8,"rate":22.22,"days":34.4,"inc":[["Severe Storm",12],["Hurricane",7],["Flood",3]]},{"ab":"WI","name":"Wisconsin","decl":25,"dr":21,"em":4,"fm":0,"den":5,"rate":16.67,"days":39.3,"inc":[["Severe Storm",11],["Flood",7],["Snowstorm",3]]},{"ab":"MD","name":"Maryland","decl":23,"dr":17,"em":6,"fm":0,"den":8,"rate":25.81,"days":40.4,"inc":[["Hurricane",7],["Severe Storm",6],["Flood",3]]},{"ab":"RI","name":"Rhode Island","decl":21,"dr":11,"em":9,"fm":1,"den":4,"rate":16.0,"days":40.6,"inc":[["Severe Storm",8],["Hurricane",6],["Snowstorm",3]]},{"ab":"DC","name":"Washington D.C.","decl":19,"dr":12,"em":7,"fm":0,"den":0,"rate":0.0,"days":33.2,"inc":[["Hurricane",6],["Severe Storm",6],["Other",2]]},{"ab":"MI","name":"Michigan","decl":19,"dr":13,"em":6,"fm":0,"den":9,"rate":32.14,"days":80.6,"inc":[["Flood",5],["Severe Storm",5],["Dam/Levee Break",2]]},{"ab":"VI","name":"U.S. Virgin Islands","decl":18,"dr":10,"em":8,"fm":0,"den":0,"rate":0.0,"days":22.1,"inc":[["Hurricane",9],["Severe Storm",3],["Tropical Storm",2]]},{"ab":"DE","name":"Delaware","decl":16,"dr":11,"em":5,"fm":0,"den":1,"rate":5.88,"days":34.1,"inc":[["Hurricane",9],["Snowstorm",3],["Biological",2]]},{"ab":"MP","name":"N. Mariana Islands","decl":15,"dr":10,"em":5,"fm":0,"den":0,"rate":0.0,"days":20.3,"inc":[["Typhoon",11],["Tropical Storm",2],["Biological",2]]},{"ab":"GU","name":"Guam","decl":13,"dr":10,"em":3,"fm":0,"den":0,"rate":0.0,"days":28.5,"inc":[["Typhoon",5],["Tropical Storm",2],["Biological",2]]},{"ab":"AS","name":"American Samoa","decl":10,"dr":8,"em":2,"fm":0,"den":0,"rate":0.0,"days":30.8,"inc":[["Severe Storm",3],["Biological",2],["Hurricane",2]]},{"ab":"FM","name":"Fed. States of Micronesia","decl":6,"dr":5,"em":1,"fm":0,"den":2,"rate":25.0,"days":51.7,"inc":[["Typhoon",5],["Drought",1]]}];
 
 const YOY = [[2000,87],[2001,103],[2002,125],[2003,115],[2004,129],[2005,139],[2006,151],[2007,133],[2008,140],[2009,123],[2010,109],[2011,236],[2012,103],[2013,111],[2014,85],[2015,78],[2016,84],[2017,135],[2018,130],[2019,101],[2020,315],[2021,123],[2022,98],[2023,113],[2024,161],[2025,143]];
+const ANNOT = {2011:["Record tornado &","flood outbreaks"],2020:["COVID-19 emergency","declarations"]};
+const HAZ = [{n:"Fire",all:1399,nofm:69,fire:true},{n:"Severe Storm",all:887,nofm:887},{n:"Hurricane",all:315,nofm:315},{n:"Flood",all:258,nofm:258},{n:"Biological",all:167,nofm:167},{n:"Snowstorm",all:97,nofm:97},{n:"Severe Ice Storm",all:63,nofm:63},{n:"Tornado",all:40,nofm:40}];
 
-const ANNOT = {2011:"Record tornado &\nflood outbreaks",2020:"COVID-19 emergency\ndeclarations"};
-
-let sortMode='decl', incFilter='All', yrMin=2000, yrMax=2026;
+let sortMode='decl', incFilter='All', yrMin=2000, yrMax=2026, hazMode='all';
 const heat=['#efddb9','#e6c089','#d98c4e','#c85c2e','#9e3a1e'];
 function heatFor(v){ if(v>=200)return heat[4]; if(v>=100)return heat[3]; if(v>=50)return heat[2]; if(v>=20)return heat[1]; return heat[0]; }
 function rateColor(r){ if(r>=25)return '#9e3a1e'; if(r>=15)return '#c85c2e'; if(r>=8)return '#d98c4e'; if(r>0)return '#5b5346'; return '#1d9e75'; }
-const maxDecl=Math.max(...STATES.map(s=>s.decl));
 const maxRate=Math.max(...STATES.map(s=>s.rate));
+const TIERS=[{t:"Most disaster-prone",sub:"100+ declarations",min:100},{t:"Frequently declared",sub:"50–99",min:50},{t:"Periodically hit",sub:"20–49",min:20},{t:"Rarely declared",sub:"fewer than 20",min:0}];
 
-const TIERS=[
-  {t:"Most disaster-prone",sub:"100+ declarations",min:100},
-  {t:"Frequently declared",sub:"50–99",min:50},
-  {t:"Periodically hit",sub:"20–49",min:20},
-  {t:"Rarely declared",sub:"fewer than 20",min:0},
-];
-
+function activeTypes(){ return [...document.querySelectorAll('#dtype button.on')].map(b=>b.dataset.d); }
+function cntFor(s,t){ return t.reduce((n,x)=> n + (x==='DR'?s.dr:x==='EM'?s.em:s.fm),0); }
+function hazardsFor(s,fmOff){ let l=s.inc.map(x=>x[0]); if(fmOff) l=l.filter(h=>h!=='Fire'); return l.slice(0,2); }
 function chev(){return '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';}
 
-function rowHTML(s,rank,metric){
-  const isRate = metric==='rate';
-  const barVal = isRate ? s.rate : s.decl;
-  const barMax = isRate ? maxRate : maxDecl;
-  const pct = Math.max(3,(barVal/barMax)*100);
-  const barCol = isRate ? rateColor(s.rate) : heatFor(s.decl);
-  const va = s.ab==='VA' ? ' va':'';
-  const vatag = s.ab==='VA' ? '<span class="vatag">VA</span>':'';
-  const bignum = isRate ? s.rate.toFixed(1)+'%' : s.decl;
-  return `<div class="row${va}">
+function rowHTML(s,rank,metric,curMax,fmOff){
+  const isRate=metric==='rate';
+  const barVal=isRate?s.rate:s.cnt, barMax=isRate?maxRate:curMax;
+  const pct=Math.max(3,(barVal/barMax)*100);
+  const barCol=isRate?rateColor(s.rate):heatFor(s.cnt);
+  const haz=hazardsFor(s,fmOff).join(' · ')||'—';
+  const bignum=isRate?s.rate.toFixed(1)+'%':s.cnt;
+  return `<div class="row">
     <div class="rank">${rank}</div>
-    <div class="sname"><div class="n">${s.name}${vatag}</div><div class="meta">${s.ab} · top hazard: ${s.top}</div></div>
-    <div class="bar-wrap">
-      <div class="bar-track"><div class="bar" style="width:${pct}%;background:${barCol}"></div></div>
-      <div class="barnum">${bignum}</div>
-    </div>
-    <div class="right">
-      ${ isRate
-        ? `<div class="deny"><div class="d" style="color:${heatFor(s.decl)}">${s.decl}</div><div class="dl">declared</div></div>`
-        : `<div class="deny"><div class="d" style="color:${rateColor(s.rate)}">${s.rate.toFixed(1)}%</div><div class="dl">denied</div></div>` }
-      ${chev()}
-    </div>
+    <div class="sname"><div class="n">${s.name}</div><div class="meta">${s.ab} · ${haz}</div></div>
+    <div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:${pct}%;background:${barCol}"></div></div><div class="barnum">${bignum}</div></div>
+    <div class="right">${ isRate ? `<div class="deny"><div class="d" style="color:${heatFor(s.cnt)}">${s.cnt}</div><div class="dl">declared</div></div>` : `<div class="deny"><div class="d" style="color:${rateColor(s.rate)}">${s.rate.toFixed(1)}%</div><div class="dl">denied</div></div>` }${chev()}</div>
   </div>`;
 }
 
 function render(){
-  const board=document.getElementById('scoreboard');
-  let data=STATES.filter(s=> incFilter==='All' || s.top===incFilter);
+  const types=activeTypes(), fmOff=!types.includes('FM'), board=document.getElementById('scoreboard');
+  let data=STATES.map(s=>Object.assign({},s,{cnt:cntFor(s,types)})).filter(s=>s.cnt>0);
+  data=data.filter(s=> incFilter==='All' || hazardsFor(s,false).includes(incFilter));
+  if(!data.length){ board.innerHTML='<p style="color:var(--ink-3);padding:20px 0">No states match these filters.</p>'; return; }
+  const curMax=Math.max(...data.map(s=>s.cnt));
 
   if(sortMode==='rate'){
-    data=data.slice().sort((a,b)=> b.rate-a.rate || b.decl-a.decl);
-    let html='<div class="tier"><div class="tier-h"><span class="t">Ranked by denial rate</span><span class="c">share of requests turned down · '+data.length+' shown</span></div>';
-    data.forEach((s,i)=> html+=rowHTML(s,i+1,'rate'));
-    html+='</div>';
-    board.innerHTML=html;
+    data.sort((a,b)=> b.rate-a.rate || b.cnt-a.cnt);
+    let h='<div class="tier"><div class="tier-h"><span class="t">Ranked by denial rate</span><span class="c">denial rate, highest first · '+data.length+' shown</span></div>';
+    data.forEach((s,i)=> h+=rowHTML(s,i+1,'rate',curMax,fmOff));
+    board.innerHTML=h+'</div>';
   } else {
-    data=data.slice().sort((a,b)=> b.decl-a.decl);
-    let html='';
+    data.sort((a,b)=> b.cnt-a.cnt);
+    data.forEach((s,i)=> s._r=i+1);
+    let h='';
     TIERS.forEach((tier,ti)=>{
-      const upper = ti===0 ? Infinity : TIERS[ti-1].min;
-      const inTier=data.filter(s=> s.decl>=tier.min && s.decl<upper);
-      if(!inTier.length) return;
-      html+='<div class="tier"><div class="tier-h"><span class="t">'+tier.t+'</span><span class="c">'+tier.sub+' · '+inTier.length+' '+(inTier.length===1?'state':'states')+'</span></div>';
-      inTier.forEach(s=> html+=rowHTML(s, STATES.slice().sort((a,b)=>b.decl-a.decl).indexOf(s)+1, 'decl'));
-      html+='</div>';
+      const upper= ti===0?Infinity:TIERS[ti-1].min;
+      const inT=data.filter(s=> s.cnt>=tier.min && s.cnt<upper);
+      if(!inT.length) return;
+      h+='<div class="tier"><div class="tier-h"><span class="t">'+tier.t+'</span><span class="c">'+tier.sub+' · '+inT.length+(inT.length===1?' state':' states')+'</span></div>';
+      inT.forEach(s=> h+=rowHTML(s,s._r,'decl',curMax,fmOff));
+      h+='</div>';
     });
-    board.innerHTML=html;
+    board.innerHTML=h;
   }
+}
+
+/* ── hazard breakdown ── */
+function renderHaz(){
+  const box=document.getElementById('hazbars'), key=hazMode;
+  const sorted=HAZ.slice().sort((a,b)=> b[key]-a[key]);
+  const max=Math.max(...HAZ.map(x=>x[key]));
+  if(!box.dataset.built){
+    box.innerHTML=HAZ.map(x=>`<div class="hrow${x.fire?' fire':''}" data-n="${x.n}"><div class="hn">${x.n}</div><div class="ht"><div class="hb"></div></div><div class="hv"></div></div>`).join('');
+    box.dataset.built='1';
+  }
+  sorted.forEach((x,i)=>{
+    const row=box.querySelector(`[data-n="${x.n}"]`);
+    row.style.order=i;
+    row.querySelector('.hb').style.width=Math.max(2,(x[key]/max)*100)+'%';
+    row.querySelector('.hv').textContent=x[key].toLocaleString();
+  });
+  document.getElementById('haznote').innerHTML = key==='all'
+    ? 'Counting every declaration, <strong style="color:var(--ink)">fire ranks first at 1,399</strong> — but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.'
+    : 'Set fire-management aside and the picture flips: <strong style="color:var(--ink)">severe storms lead at 887</strong>, followed by hurricanes and floods. Fire as a major-disaster or emergency falls to just 69.';
 }
 
 /* ── timeline ── */
 function drawTimeline(){
   const svg=document.getElementById('timeline');
-  const W=1000,H=320,padL=46,padR=24,padT=34,padB=42;
-  const maxY=Math.max(...YOY.map(d=>d[1]));
+  const W=1000,H=330,padL=46,padR=24,padT=58,padB=44,yMax=360;
   const xs=i=> padL + i*((W-padL-padR)/(YOY.length-1));
-  const ys=v=> H-padB - (v/maxY)*(H-padT-padB);
+  const ys=v=> H-padB - (v/yMax)*(H-padT-padB);
   let g='';
-  /* gridlines */
-  [0,100,200,300].forEach(v=>{ const y=ys(v); g+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e0d8c5" stroke-width="1"/><text x="${padL-10}" y="${y+4}" text-anchor="end" font-family="Public Sans" font-size="11" fill="#938a78">${v}</text>`; });
-
-  /* split path: in-range bright, out-of-range muted */
-  const pts=YOY.map((d,i)=>[xs(i),ys(d[1]),d[0]]);
-  const areaPath = pts.map((p,i)=> (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ') + ` L ${xs(YOY.length-1).toFixed(1)} ${H-padB} L ${padL} ${H-padB} Z`;
-  g+=`<path d="${areaPath}" fill="#d98c4e" fill-opacity="0.16"/>`;
-  /* line */
-  const linePath = pts.map((p,i)=> (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  g+=`<path d="${linePath}" fill="none" stroke="#c85c2e" stroke-width="2.4" stroke-linejoin="round"/>`;
-
-  /* in-range emphasis overlay (dim outside selected years) */
-  const x0=xs(YOY.findIndex(d=>d[0]>=yrMin)===-1?0:YOY.findIndex(d=>d[0]>=yrMin));
-  let lastIdx=0; YOY.forEach((d,i)=>{ if(d[0]<=yrMax) lastIdx=i; });
-  const x1=xs(lastIdx);
-  if(yrMin>2000) g+=`<rect x="${padL}" y="${padT}" width="${Math.max(0,x0-padL)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.62"/>`;
-  if(yrMax<2025) g+=`<rect x="${x1}" y="${padT}" width="${Math.max(0,W-padR-x1)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.62"/>`;
-
-  /* points + annotations */
-  pts.forEach((p)=>{
-    const inrange = p[2]>=yrMin && p[2]<=yrMax;
+  [0,100,200,300].forEach(v=>{const y=ys(v);g+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e0d8c5" stroke-width="1"/><text x="${padL-10}" y="${y+4}" text-anchor="end" font-family="Public Sans" font-size="11" fill="#938a78">${v}</text>`;});
+  const pts=YOY.map((d,i)=>[xs(i),ys(d[1]),d[0],d[1]]);
+  const area=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+` L ${xs(YOY.length-1).toFixed(1)} ${H-padB} L ${padL} ${H-padB} Z`;
+  g+=`<path d="${area}" fill="#d98c4e" fill-opacity="0.16"/>`;
+  g+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="#c85c2e" stroke-width="2.4" stroke-linejoin="round"/>`;
+  let lo=0; YOY.forEach((d,i)=>{ if(d[0]<yrMin) lo=i+1; });
+  let hi=YOY.length-1; for(let i=YOY.length-1;i>=0;i--){ if(YOY[i][0]>yrMax) hi=i-1; }
+  const x0=xs(Math.min(lo,YOY.length-1)), x1=xs(Math.max(hi,0));
+  if(yrMin>2000) g+=`<rect x="${padL}" y="${padT}" width="${Math.max(0,x0-padL)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.64"/>`;
+  if(yrMax<2025) g+=`<rect x="${x1}" y="${padT}" width="${Math.max(0,W-padR-x1)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.64"/>`;
+  pts.forEach(p=>{
+    const inr=p[2]>=yrMin&&p[2]<=yrMax;
     if(ANNOT[p[2]]){
       g+=`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#9e3a1e"/>`;
-      const lines=ANNOT[p[2]].split('\n');
-      const ty=p[1]-16;
-      g+=`<text x="${p[0]}" y="${ty-13}" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="15" fill="#1d1813">${p[2]}</text>`;
-      lines.forEach((ln,li)=> g+=`<text x="${p[0]}" y="${ty+li*12}" text-anchor="middle" font-family="Public Sans" font-size="10.5" fill="#5b5346">${ln}</text>`);
-    } else if(inrange){
-      g+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="#c85c2e"/>`;
-    }
+      g+=`<text x="${p[0]}" y="${p[1]-30}" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="15" fill="#1d1813">${p[2]}</text>`;
+      ANNOT[p[2]].forEach((ln,li)=> g+=`<text x="${p[0]}" y="${p[1]-16+li*12}" text-anchor="middle" font-family="Public Sans" font-size="10.5" fill="#5b5346">${ln}</text>`);
+    } else if(inr){ g+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="#c85c2e"/>`; }
   });
-
-  /* x labels every 5 yrs */
-  YOY.forEach((d,i)=>{ if(d[0]%5===0||i===YOY.length-1){ g+=`<text x="${xs(i)}" y="${H-padB+22}" text-anchor="middle" font-family="Public Sans" font-size="11" fill="#938a78">${d[0]}</text>`; }});
-
+  YOY.forEach((d,i)=>{ if(d[0]%5===0||i===YOY.length-1) g+=`<text x="${xs(i)}" y="${H-padB+22}" text-anchor="middle" font-family="Public Sans" font-size="11" fill="#938a78">${d[0]}</text>`; });
+  g+=`<circle id="tl-dot" r="5.5" fill="none" stroke="#1d1813" stroke-width="2" opacity="0"/>`;
+  pts.forEach(p=> g+=`<circle class="hit" cx="${p[0]}" cy="${p[1]}" r="16" fill="transparent" data-y="${p[2]}" data-c="${p[3]}"/>`);
   svg.innerHTML=g;
 }
 
-/* ── dual range ── */
+const tip=document.getElementById('tip');
+function showTip(c){
+  const card=document.querySelector('.chartcard').getBoundingClientRect(), r=c.getBoundingClientRect();
+  tip.innerHTML='<b>'+c.dataset.c+'</b> declarations<br>fiscal year '+c.dataset.y;
+  tip.style.left=(r.left+r.width/2-card.left)+'px';
+  tip.style.top=(r.top+r.height/2-card.top)+'px';
+  tip.style.opacity='1';
+  const dot=document.getElementById('tl-dot');
+  if(dot){ dot.setAttribute('cx',c.getAttribute('cx')); dot.setAttribute('cy',c.getAttribute('cy')); dot.setAttribute('opacity','1'); }
+}
+function hideTip(){ tip.style.opacity='0'; const d=document.getElementById('tl-dot'); if(d) d.setAttribute('opacity','0'); }
+const svg=document.getElementById('timeline');
+svg.addEventListener('mouseover',e=>{ if(e.target.classList.contains('hit')) showTip(e.target); });
+svg.addEventListener('mouseout',e=>{ if(e.target.classList.contains('hit')) hideTip(); });
+svg.addEventListener('click',e=>{ if(e.target.classList.contains('hit')) showTip(e.target); });
+
 function updateRange(){
-  const rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
-  let a=+rmin.value, b=+rmax.value;
-  if(a>b){ [a,b]=[b,a]; }
+  const a0=+document.getElementById('rmin').value, b0=+document.getElementById('rmax').value;
+  let a=Math.min(a0,b0), b=Math.max(a0,b0);
   yrMin=a; yrMax=b;
   const lo=(a-2000)/26*100, hi=(b-2000)/26*100;
   document.getElementById('rfill').style.left=lo+'%';
   document.getElementById('rfill').style.width=(hi-lo)+'%';
   document.getElementById('yr-read').textContent=a+' – '+b;
-  const inWindow=YOY.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
-  document.getElementById('st-total').textContent=inWindow.toLocaleString();
-  document.getElementById('tl-sum').textContent=inWindow.toLocaleString();
+  const w=YOY.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
+  document.getElementById('st-total').textContent=w.toLocaleString();
+  document.getElementById('tl-sum').textContent=w.toLocaleString();
   drawTimeline();
 }
 
-/* ── wire up ── */
 document.getElementById('rmin').addEventListener('input',updateRange);
 document.getElementById('rmax').addEventListener('input',updateRange);
-document.getElementById('sortseg').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b)return;
-  document.querySelectorAll('#sortseg button').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on'); sortMode=b.dataset.sort; render();
-});
-document.getElementById('pills').addEventListener('click',e=>{
-  const b=e.target.closest('.pill'); if(!b)return;
-  document.querySelectorAll('#pills .pill').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on'); incFilter=b.dataset.inc; render();
-});
-document.getElementById('dtype').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b)return;
-  b.classList.toggle('on');
-});
+document.getElementById('sortseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#sortseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');sortMode=b.dataset.sort;render();});
+document.getElementById('pills').addEventListener('click',e=>{const b=e.target.closest('.pill');if(!b)return;document.querySelectorAll('#pills .pill').forEach(x=>x.classList.remove('on'));b.classList.add('on');incFilter=b.dataset.inc;render();});
+document.getElementById('dtype').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.classList.contains('on')&&activeTypes().length===1)return;b.classList.toggle('on');render();});
+document.getElementById('haztog').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#haztog button').forEach(x=>x.classList.remove('on'));b.classList.add('on');hazMode=b.dataset.h;renderHaz();});
 document.getElementById('reset').addEventListener('click',()=>{
   sortMode='decl'; incFilter='All';
   document.getElementById('rmin').value=2000; document.getElementById('rmax').value=2026;
   document.querySelectorAll('#sortseg button').forEach((x,i)=>x.classList.toggle('on',i===0));
-  document.querySelectorAll('#pills .pill').forEach((x)=>x.classList.toggle('on',x.dataset.inc==='All'));
+  document.querySelectorAll('#pills .pill').forEach(x=>x.classList.toggle('on',x.dataset.inc==='All'));
   document.querySelectorAll('#dtype button').forEach(x=>x.classList.add('on'));
   updateRange(); render();
 });
 
-updateRange();
-render();
+updateRange(); render(); renderHaz();
 </script>
 </body>
 </html>
