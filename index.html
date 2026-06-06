@@ -156,7 +156,6 @@ section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
 .mbar .mbf{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,1,.36,1);}
 .mbar .mbv{font-family:var(--serif);font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;}
 .m-note{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:22px;border-left:3px solid var(--ember);padding-left:13px;}
-.m-loc{font-size:12px;color:var(--ink-3);margin-top:18px;padding:12px 14px;border:1px dashed var(--rule-2);border-radius:8px;font-style:italic;}
 @media(max-width:560px){.m-stats{grid-template-columns:repeat(2,1fr);}.mbar{grid-template-columns:84px 1fr 30px;}}
 .m-recs-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
 .recseg{display:inline-flex;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden;background:var(--paper-2);}
@@ -328,7 +327,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <div class="m-sec"><div class="m-h">Most common hazards</div><div id="m-haz" class="mbars"></div></div>
     <div class="m-sec"><div class="m-recs-head"><div class="m-h" style="margin:0">Records</div><div class="recseg" id="recseg"><button class="on" data-r="decl">Declarations <b id="rc-d">0</b></button><button data-r="den">Denials <b id="rc-n">0</b></button></div></div><div class="m-reclist" id="m-reclist"></div></div>
     <p class="m-note" id="m-note"></p>
-    <div class="m-loc" id="m-loc"></div>
   </div>
 </div>
 
@@ -511,7 +509,6 @@ function openState(ab){
   document.getElementById('m-haz').innerHTML=mbars(s.inc.map(h=>({l:h[0],v:h[1],c:heatFor(h[1])})),hmax);
   const nf=s.inc.find(h=>h[0]!=='Fire');
   document.getElementById('m-note').textContent = nf ? `Set fire-management aside, and ${s.name}'s leading disaster is ${nf[0].toLowerCase()} (${nf[1]} declarations).` : '';
-  document.getElementById('m-loc').textContent='County-level breakdown for '+s.name+' will live here once the locality dataset is connected.';
   document.getElementById('m-map').href='map.html?state='+ab;
   recState=s; recMode='decl';
   document.getElementById('rc-d').textContent=(DECLS[ab]||[]).length;
