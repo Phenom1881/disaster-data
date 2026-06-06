@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DisasterData.IO — FEMA Declaration Map</title>
+  <title>FEMA Disaster Explorer (BETA) — Map</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -11,39 +11,49 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* DisasterData.IO brand palette */
-      --navy:    #0d1b2a;
-      --navy2:   #162032;
-      --navy3:   #1e2d40;
-      --blue:    #1a6fb5;
-      --blue2:   #2389d7;
-      --sky:     #4fb3f7;
-      --red:     #c0392b;
-      --red2:    #e74c3c;
-      --orange:  #e67e22;
-      --gold:    #f0b429;
-      --green:   #27ae60;
-      --teal:    #16a085;
-      --white:   #f4f8fc;
-      --muted:   #8fa3b8;
-      --border:  #243548;
-      --card:    #162032;
-      --card2:   #1a2840;
-      --text:    #cfe2f3;
-
-      /* Choropleth 8-stop ramp (low → high) */
-      --ramp-1: #4fb3f7;   /* sky — lowest */
-      --ramp-2: #1a6fb5;   /* blue */
-      --ramp-3: #16a085;   /* teal */
-      --ramp-4: #27ae60;   /* green */
-      --ramp-5: #f0b429;   /* gold */
-      --ramp-6: #e67e22;   /* orange */
-      --ramp-7: #e74c3c;   /* red2 */
-      --ramp-8: #7a1a12;   /* deep red — highest */
+      /* FEMA Disaster Explorer — warm editorial palette */
+      --navy:    #f6f1e7;
+      --navy2:   #fcfaf3;
+      --navy3:   #f1ead9;
+      --blue:    #1c5c79;
+      --blue2:   #27778f;
+      --sky:     #dceaef;
+      --red:     #b35024;
+      --red2:    #97391b;
+      --orange:  #c96a2e;
+      --gold:    #e3a652;
+      --green:   #6f7f3a;
+      --teal:    #27778f;
+      --white:   #1d1813;
+      --muted:   #5b5346;
+      --border:  #e0d8c5;
+      --card:    #fcfaf3;
+      --card2:   #ffffff;
+      --text:    #1d1813;
+      --ink-3:   #938a78;
+      --rule-2:  #cfc6b0;
+      --paper:   #f6f1e7;
+      --paper-2: #fcfaf3;
+      --paper-3: #f1ead9;
+      --ink:     #1d1813;
+      --ink-2:   #5b5346;
+      --accent:  #1c5c79;
+      --accent-soft:#dceaef;
+      --serif:'Fraunces',Georgia,serif;
+      --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      /* Choropleth 8-stop ramp (low -> high) — warm sequential */
+      --ramp-1: #f2d9a0;
+      --ramp-2: #ecc278;
+      --ramp-3: #e3a652;
+      --ramp-4: #d8853a;
+      --ramp-5: #c96a2e;
+      --ramp-6: #b35024;
+      --ramp-7: #97391b;
+      --ramp-8: #7a2c14;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -51,7 +61,7 @@
     html, body {
       margin: 0;
       height: 100%;
-      font-family: 'IBM Plex Sans', sans-serif;
+      font-family: 'Public Sans', sans-serif;
       background: var(--navy);
       color: var(--white);
     }
@@ -104,7 +114,7 @@
     }
 
     .brand-wordmark {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-weight: 900;
       font-size: 17px;
       letter-spacing: 0.04em;
@@ -118,7 +128,7 @@
     }
 
     .page-title {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-weight: 800;
       font-size: 28px;
       line-height: 1.05;
@@ -161,7 +171,7 @@
     label {
       display: block;
       margin-bottom: 5px;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -171,7 +181,7 @@
 
     select {
       width: 100%;
-      font-family: 'IBM Plex Sans', sans-serif;
+      font-family: 'Public Sans', sans-serif;
       font-size: 13px;
       font-weight: 500;
       padding: 9px 12px;
@@ -199,7 +209,7 @@
     }
 
     .section-label {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.12em;
@@ -213,7 +223,7 @@
     }
 
     .big {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 48px;
       font-weight: 900;
       color: var(--sky);
@@ -242,7 +252,7 @@
     }
 
     .kpi .label {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -252,7 +262,7 @@
     }
 
     .kpi .value {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 22px;
       font-weight: 800;
       color: var(--white);
@@ -267,7 +277,7 @@
     }
 
     #selectedCountyTitle {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 16px;
       font-weight: 700;
       text-transform: uppercase;
@@ -301,7 +311,7 @@
     }
 
     .event-item .num {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-weight: 700;
       font-size: 14px;
       color: var(--white);
@@ -357,7 +367,7 @@
 
     .info h4 {
       margin: 0 0 6px 0;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'Public Sans', sans-serif;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -400,9 +410,9 @@
        SHARED HEADER
     ═══════════════════════════════════════════ */
     :root {
-      --font-display: 'Syne', sans-serif;
-      --font-body:    'IBM Plex Sans', sans-serif;
-      --font-mono:    'IBM Plex Mono', monospace;
+      --font-display: 'Fraunces', sans-serif;
+      --font-body:    'Public Sans', sans-serif;
+      --font-mono:    'Public Sans', sans-serif;
       --radius: 6px;
     }
 
@@ -567,62 +577,48 @@
 
     /* Push layout below header */
     body { display: flex; flex-direction: column; }
-    .layout { height: calc(100vh - 56px); }
-    @media (max-width: 640px) { .layout { height: calc(100vh - 52px); } }
+    .layout { height: calc(100vh - 60px); }
+    @media (max-width: 640px) { .layout { height: calc(100dvh - 60px); } }
 
+
+    /* ===== Match FEMA Disaster Explorer design language ===== */
+    nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.9);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule,#e0d8c5);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3.5vw,40px);height:60px;flex:0 0 60px;}
+    nav .brand{display:flex;align-items:baseline;gap:10px;}
+    nav .brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--ink);}
+    nav .brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
+    nav .navlinks{display:flex;align-items:center;gap:4px;}
+    nav .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+    nav .navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+    nav .navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+    nav .navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+    @media(max-width:720px){nav .navlinks a:not(.on){display:none;}nav .navmeta{display:none;}}
+    .page-title{font-family:var(--serif)!important;font-weight:400!important;letter-spacing:-.8px;}
+    .page-title em{font-style:italic;font-weight:300;}
+    .big{font-family:var(--serif)!important;font-weight:500!important;letter-spacing:-1px;}
+    select:focus{outline:2px solid var(--accent);outline-offset:1px;}
+    /* Light Leaflet surfaces */
+    .leaflet-container{background:#e9e5da;font-family:var(--sans);}
+    .leaflet-tooltip{background:var(--paper-2);color:var(--ink);border:1px solid var(--rule-2);box-shadow:0 4px 14px rgba(60,50,30,.12);font-family:var(--sans);font-weight:500;}
+    .leaflet-tooltip-top:before{border-top-color:var(--rule-2);}
+    .leaflet-bar a,.leaflet-bar a:hover{background:var(--paper-2);color:var(--ink);border-bottom:1px solid var(--rule);}
+    .leaflet-control-attribution{background:rgba(252,250,243,.82)!important;color:var(--ink-3)!important;}
+    .leaflet-control-attribution a{color:var(--accent)!important;}
   </style>
 </head>
 <body>
 
-<header>
-  <a href="index.html" class="logo">FEMA Disaster Explorer (BETA) <span class="logo-badge">2000–2026</span></a>
-  <nav>
-    <a href="index.html" class="nav-tab">Overview</a>
-    <a href="index.html#declarations" class="nav-tab">Declarations</a>
-    <a href="index.html#denials" class="nav-tab">Denials</a>
-    <a href="index.html#states" class="nav-tab">By State</a>
-    <a href="index.html#localities" class="nav-tab">Localities</a>
-    <a href="index.html#processing" class="nav-tab">Processing Time</a>
-    <a href="index.html#presidents" class="nav-tab">By President</a>
-    <a href="index.html#pa" class="nav-tab">Public Assistance</a>
-    <a href="index.html#hm" class="nav-tab">Hazard Mitigation</a>
-    <a href="index.html#about" class="nav-tab">About</a>
-    <a href="map.html" class="nav-back-link active">🗺 Map</a>
-  </nav>
-  <button class="nav-hamburger" id="hamburger" aria-label="Open navigation" onclick="toggleMobileNav()">
-    <span></span><span></span><span></span>
-  </button>
-</header>
-
-<!-- Mobile nav drawer -->
-<div class="mobile-nav-drawer" id="mobile-nav">
-  <a href="index.html">Overview</a>
-  <a href="index.html">Declarations</a>
-  <a href="index.html">Denials</a>
-  <a href="index.html">By State</a>
-  <a href="index.html">Localities</a>
-  <a href="index.html">Processing Time</a>
-  <a href="index.html">By President</a>
-  <a href="index.html">Public Assistance</a>
-  <a href="index.html">Hazard Mitigation</a>
-  <a href="index.html">About</a>
-  <a href="map.html" class="mobile-nav-back active">🗺 Map</a>
-</div>
+<nav>
+  <div class="brand"><span class="mark">FEMA Disaster Explorer</span><span class="beta">Beta</span></div>
+  <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="#" class="on">Map</a><a href="index.html#about">About</a></div>
+  <div class="navmeta">FY 2000–2026 · OpenFEMA</div>
+</nav>
 
   <div class="layout">
     <aside class="sidebar">
 
       <!-- Masthead -->
       <div class="masthead">
-        <div class="brand-lockup">
-          <div class="brand-mark">
-            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 2L3 6v8l7 4 7-4V6L10 2zm0 2.5l4.5 2.6v5.2L10 14.8 5.5 12.3V7.1L10 4.5z"/>
-            </svg>
-          </div>
-          <div class="brand-wordmark">Disaster<span>Data</span>.IO</div>
-        </div>
-        <h1 class="page-title">FEMA <em>Declaration</em> Map</h1>
+                <h1 class="page-title">FEMA <em>Declaration</em> Map</h1>
         <div class="rule-line"></div>
         <p>
           County-level choropleth of FEMA disaster declaration activity across the United States. Filter by declaration type — DR (Major Disaster), EM (Emergency), or FM (Fire Management Assistance Grant) — and by year. Click any county to list matching declaration numbers.
@@ -700,7 +696,7 @@
       </div>
 
       <div class="footer-note">
-        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map — they are not tied to a single county boundary. Data sourced from FEMA's OpenFEMA dataset. &mdash; <strong>DisasterData.IO</strong>
+        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map — they are not tied to a single county boundary. Data sourced from FEMA's OpenFEMA dataset. Not endorsed by FEMA.
       </div>
     </aside>
 
@@ -748,7 +744,7 @@
       zoomSnap: 0.25
     }).setView([37.8, -96], 4);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
     }).addTo(map);
@@ -792,17 +788,17 @@
     }
 
     function getColor(value, breaks) {
-      if (!value || value <= 0) return 'rgba(22,32,50,0.6)'; /* navy2 near-transparent for empty */
+      if (!value || value <= 0) return '#e9e5da'; /* navy2 near-transparent for empty */
       /* 8-stop ramp: sky → blue → teal → green → gold → orange → red → deep red */
-      return value > breaks[7] ? '#7a1a12' :   /* deep red — highest impact */
-             value > breaks[6] ? '#e74c3c' :   /* red2 */
-             value > breaks[5] ? '#e67e22' :   /* orange */
-             value > breaks[4] ? '#f0b429' :   /* gold */
-             value > breaks[3] ? '#27ae60' :   /* green */
-             value > breaks[2] ? '#16a085' :   /* teal */
-             value > breaks[1] ? '#1a6fb5' :   /* blue */
-             value > breaks[0] ? '#4fb3f7' :   /* sky — lowest impact */
-                                 'rgba(22,32,50,0.6)';
+      return value > breaks[7] ? '#7a2c14' :   /* deep red — highest impact */
+             value > breaks[6] ? '#97391b' :   /* red2 */
+             value > breaks[5] ? '#b35024' :   /* orange */
+             value > breaks[4] ? '#c96a2e' :   /* gold */
+             value > breaks[3] ? '#d8853a' :   /* green */
+             value > breaks[2] ? '#e3a652' :   /* teal */
+             value > breaks[1] ? '#ecc278' :   /* blue */
+             value > breaks[0] ? '#f2d9a0' :   /* sky — lowest impact */
+                                 '#e9e5da';
     }
 
 
@@ -884,7 +880,7 @@
       })();
 
       if (!feature) {
-        this._div.innerHTML = `<h4>${currentMetricLabel()}</h4>Hover over a county<br/><span style="color:#64748b">${yearText} · ${typeText}</span>`;
+        this._div.innerHTML = `<h4>${currentMetricLabel()}</h4>Hover over a county<br/><span style="color:#938a78">${yearText} · ${typeText}</span>`;
         return;
       }
 
@@ -893,7 +889,7 @@
       this._div.innerHTML =
         `<h4>${currentMetricLabel()}</h4>` +
         `<b>${label}</b><br/>Value: <strong>${(value || 0).toLocaleString()}</strong><br/>` +
-        `<span style="color:#64748b">${yearText} · ${typeText} · FIPS ${fips}</span>`;
+        `<span style="color:#938a78">${yearText} · ${typeText} · FIPS ${fips}</span>`;
     };
 
     info.addTo(map);
@@ -909,7 +905,7 @@
     legend.update = function () {
       const div = this._div;
       const grades = currentBreaks;
-      div.innerHTML = `<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4fb3f7;margin-bottom:8px;">${currentMetricLabel()}</div>`;
+      div.innerHTML = `<div style="font-family:'Public Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1c5c79;margin-bottom:8px;">${currentMetricLabel()}</div>`;
       for (let i = 0; i < grades.length; i++) {
         const from = grades[i];
         const to = grades[i + 1];
@@ -918,7 +914,7 @@
           from.toLocaleString() + (to ? '&ndash;' + to.toLocaleString() : '+') +
           '</div>';
       }
-      div.innerHTML += '<div style="margin-top:4px;"><i style="background:rgba(22,32,50,0.6);border:1px solid #243548;"></i> 0 / no data</div>';
+      div.innerHTML += '<div style="margin-top:4px;"><i style="background:#e9e5da;border:1px solid #e0d8c5;"></i> 0 / no data</div>';
     };
 
     legend.addTo(map);
@@ -929,19 +925,19 @@
       const value = values[fips] || 0;
       return {
         fillColor: getColor(value, currentBreaks),
-        weight: 0.25,
+        weight: 0.4,
         opacity: 1,
-        color: '#ffffff',
-        fillOpacity: 0.85
+        color: '#d3c9b2',
+        fillOpacity: 0.9
       };
     }
 
     function styleStateOutline() {
       return {
-        color: '#334155',
-        weight: 1,
+        color: '#8a7c5e',
+        weight: 1.1,
         fill: false,
-        opacity: 0.45,
+        opacity: 0.65,
         interactive: false
       };
     }
@@ -953,8 +949,8 @@
       const value = values[fips] || 0;
 
       layer.setStyle({
-        weight: 1.3,
-        color: '#0f172a',
+        weight: 1.4,
+        color: '#1d1813',
         fillOpacity: 0.95
       });
 
@@ -1037,6 +1033,40 @@
       }).addTo(map);
 
       refreshMap();
+      focusStateFromUrl();
+    }
+
+    const STMAP={AL:['01','Alabama'],AK:['02','Alaska'],AZ:['04','Arizona'],AR:['05','Arkansas'],CA:['06','California'],CO:['08','Colorado'],CT:['09','Connecticut'],DE:['10','Delaware'],DC:['11','Washington D.C.'],FL:['12','Florida'],GA:['13','Georgia'],HI:['15','Hawaii'],ID:['16','Idaho'],IL:['17','Illinois'],IN:['18','Indiana'],IA:['19','Iowa'],KS:['20','Kansas'],KY:['21','Kentucky'],LA:['22','Louisiana'],ME:['23','Maine'],MD:['24','Maryland'],MA:['25','Massachusetts'],MI:['26','Michigan'],MN:['27','Minnesota'],MS:['28','Mississippi'],MO:['29','Missouri'],MT:['30','Montana'],NE:['31','Nebraska'],NV:['32','Nevada'],NH:['33','New Hampshire'],NJ:['34','New Jersey'],NM:['35','New Mexico'],NY:['36','New York'],NC:['37','North Carolina'],ND:['38','North Dakota'],OH:['39','Ohio'],OK:['40','Oklahoma'],OR:['41','Oregon'],PA:['42','Pennsylvania'],RI:['44','Rhode Island'],SC:['45','South Carolina'],SD:['46','South Dakota'],TN:['47','Tennessee'],TX:['48','Texas'],UT:['49','Utah'],VT:['50','Vermont'],VA:['51','Virginia'],WA:['53','Washington'],WV:['54','West Virginia'],WI:['55','Wisconsin'],WY:['56','Wyoming'],PR:['72','Puerto Rico'],VI:['78','U.S. Virgin Islands'],GU:['66','Guam'],AS:['60','American Samoa'],MP:['69','N. Mariana Islands']};
+
+    function focusStateFromUrl() {
+      const ab = (new URLSearchParams(location.search).get('state') || '').toUpperCase();
+      if (!ab || !STMAP[ab] || !countyLayer) return;
+      const fips = STMAP[ab][0], name = STMAP[ab][1];
+      const bounds = L.latLngBounds([]);
+      countyLayer.eachLayer(function (l) {
+        const id = String(l.feature.id || (l.feature.properties && l.feature.properties.GEOID) || '').padStart(5, '0');
+        if (id.slice(0, 2) === fips) bounds.extend(l.getBounds());
+      });
+      const found = bounds.isValid();
+      showStateBanner(name, found);
+      if (found) map.fitBounds(bounds, { padding: [24, 24], maxZoom: 7 });
+    }
+
+    function showStateBanner(name, found) {
+      const host = document.getElementById('map') || document.body;
+      if (host.id === 'map' && getComputedStyle(host).position === 'static') host.style.position = 'relative';
+      let b = document.getElementById('stateFocusBanner');
+      if (!b) {
+        b = document.createElement('div');
+        b.id = 'stateFocusBanner';
+        b.style.cssText = 'position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(252,250,243,.96);color:#1d1813;font:500 13px/1.4 "Public Sans",system-ui,sans-serif;padding:9px 15px;border-radius:10px;box-shadow:0 8px 24px rgba(60,50,30,.18);border:1px solid #cfc6b0;display:flex;align-items:center;gap:13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);';
+        host.appendChild(b);
+      }
+      const btn = '<button id="stateFocusReset" style="background:#1c5c79;border:none;color:#fff;font:600 11px system-ui,sans-serif;letter-spacing:.4px;padding:5px 11px;border-radius:7px;cursor:pointer">' + (found ? 'View entire U.S.' : 'Dismiss') + '</button>';
+      b.innerHTML = (found
+        ? '<span>Focused on <strong style="color:#1c5c79;font-weight:700">' + name + '</strong></span>'
+        : '<span><strong style="color:#1c5c79;font-weight:700">' + name + '</strong> &mdash; county detail not available on the map</span>') + btn;
+      document.getElementById('stateFocusReset').onclick = function () { b.remove(); map.setView([37.8, -96], 4); };
     }
 
     metricSelect.addEventListener('change', refreshMap);
@@ -1050,22 +1080,7 @@
   </script>
 
   <script>
-    function toggleMobileNav() {
-      const drawer = document.getElementById('mobile-nav');
-      const burger = document.getElementById('hamburger');
-      drawer.classList.toggle('open');
-      burger.classList.toggle('open');
-    }
-    // Close drawer on outside tap
-    document.addEventListener('click', function(e) {
-      const drawer = document.getElementById('mobile-nav');
-      const burger = document.getElementById('hamburger');
-      if (drawer.classList.contains('open') &&
-          !drawer.contains(e.target) && !burger.contains(e.target)) {
-        drawer.classList.remove('open');
-        burger.classList.remove('open');
-      }
-    });
+    function toggleMobileNav(){}
   </script>
 </body>
 </html>
