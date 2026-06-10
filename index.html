@@ -123,6 +123,8 @@ section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
 .hrow.fire .hb{background:var(--ember);}
 .hrow .hv{font-family:var(--serif);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;}
 .hnote{margin-top:22px;font-size:13.5px;color:var(--ink-2);max-width:64ch;line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;border-radius:0;}
+.hazmore{margin-top:16px;background:none;border:none;color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;padding:3px 0;border-bottom:1px solid transparent;transition:border-color .15s;}
+.hazmore:hover{border-bottom-color:var(--accent);}
 @media(max-width:720px){.hrow{grid-template-columns:96px 1fr 44px;gap:10px;}.hrow .hn{font-size:12px;}}
 
 .types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,28px);}
@@ -285,6 +287,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <div class="toggseg" id="haztog"><button class="on" data-h="all">All declarations</button><button data-h="nofm">Disasters only</button></div>
     </div>
     <div class="haz" id="hazbars"></div>
+    <button class="hazmore" id="hazmore" hidden>Show all 25 hazard types &darr;</button>
     <p class="hnote" id="haznote"></p>
   </section>
 
@@ -321,7 +324,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <div class="container">
     <div class="foot">
       <div class="disc">Built from OpenFEMA Disaster Declarations Summaries, <span id="foot-range">FY2000 to FY2026</span>. Uses OpenFEMA data but is not endorsed by FEMA. Figures reflect declaration records, not official financial reporting.<span id="foot-asof"></span></div>
-      <div style="text-align:right;">Source: <a href="#">OpenFEMA</a><br>FEMA Disaster Explorer (BETA)</div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>FEMA Disaster Explorer (BETA)</div>
     </div>
   </div>
 </footer>
@@ -475,25 +478,46 @@ function render(){
 }
 
 /* ── hazard breakdown ── */
+let hazExpanded=false, HAZ_TYPES=null;
 function renderHaz(){
   const box=document.getElementById('hazbars'), key=hazMode;
-  const sorted=HAZ.slice().sort((a,b)=> b[key]-a[key]);
-  const max=Math.max(...HAZ.map(x=>x[key]));
+  if(!HAZ_TYPES){ const set={}; for(const st in DECLS){ const A=DECLS[st]; for(let i=0;i<A.length;i++) set[A[i][2]||'Unknown']=1; } HAZ_TYPES=Object.keys(set); }
+  /* hazard counts within the selected year range, honoring the tribal filter (fiscal year from each record's date) */
+  const allC={}, nofmC={};
+  for(const st in DECLS){ const A=DECLS[st]; for(let i=0;i<A.length;i++){ const r=A[i]; if(excludeTribal&&r[5]) continue; const p=(r[3]||'').split('-'), fy=(+p[0])+((+p[1])>=10?1:0); if(fy<yrMin||fy>yrMax) continue; const it=r[2]||'Unknown'; allC[it]=(allC[it]||0)+1; if(r[1]!=='FM') nofmC[it]=(nofmC[it]||0)+1; } }
   if(!box.dataset.built){
-    box.innerHTML=HAZ.map(x=>`<div class="hrow${x.fire?' fire':''}" data-n="${x.n}"><div class="hn">${x.n}</div><div class="ht"><div class="hb"></div></div><div class="hv"></div></div>`).join('');
+    box.innerHTML=HAZ_TYPES.map(n=>`<div class="hrow${n==='Fire'?' fire':''}" data-n="${n}"><div class="hn">${n}</div><div class="ht"><div class="hb"></div></div><div class="hv"></div></div>`).join('');
     box.dataset.built='1';
   }
-  sorted.forEach((x,i)=>{
-    const row=box.querySelector(`[data-n="${x.n}"]`);
-    row.style.order=i;
-    row.querySelector('.hb').style.width=Math.max(2,(x[key]/max)*100)+'%';
-    row.querySelector('.hv').textContent=x[key].toLocaleString();
+  const present=HAZ_TYPES.map(n=>({n:n,v:(key==='all'?(allC[n]||0):(nofmC[n]||0))})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  const max=present.length?present[0].v:1;
+  const rankOf={}; present.forEach((x,i)=>rankOf[x.n]=i);
+  HAZ_TYPES.forEach(n=>{
+    const row=box.querySelector('[data-n="'+n+'"]'); if(!row) return;
+    const rank=rankOf[n];
+    if(rank===undefined || (rank>=8 && !hazExpanded)){ row.style.display='none'; return; }
+    const v=(key==='all'?(allC[n]||0):(nofmC[n]||0));
+    row.style.display=''; row.style.order=rank;
+    row.querySelector('.hb').style.width=Math.max(2,(v/max)*100)+'%';
+    row.querySelector('.hv').textContent=v.toLocaleString();
   });
-  const _fire=HAZ.find(h=>h.n==='Fire'), _fa=_fire?_fire.all:0, _fn=_fire?_fire.nofm:0;
-  const _tn=HAZ.slice().sort((a,b)=>b.nofm-a.nofm)[0]||{n:'severe storm',nofm:0};
-  document.getElementById('haznote').innerHTML = key==='all'
-    ? `Counting every declaration, <strong style="color:var(--ink)">fire ranks first at ${_fa.toLocaleString()}</strong>, but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.`
-    : `Set fire-management aside and the picture flips: <strong style="color:var(--ink)">${_tn.n.toLowerCase()} leads at ${_tn.nofm.toLocaleString()}</strong>. Fire as a major-disaster or emergency falls to just ${_fn.toLocaleString()}.`;
+  const btn=document.getElementById('hazmore');
+  if(btn){ if(present.length>8){ btn.hidden=false; btn.textContent=hazExpanded?'Show top 8 \u2191':('Show all '+present.length+' hazard types \u2193'); } else { btn.hidden=true; } }
+  /* narrative note, range-aware */
+  const fa=allC['Fire']||0, fn=nofmC['Fire']||0;
+  const topAll=present[0];
+  const topNofm=HAZ_TYPES.map(n=>({n:n,v:nofmC[n]||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v)[0];
+  let note='';
+  if(key==='all'){
+    if(topAll && topAll.n==='Fire')
+      note=`Counting every declaration, <strong style="color:var(--ink)">fire ranks first at ${fa.toLocaleString()}</strong>, but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.`;
+    else if(topAll)
+      note=`In the selected window, <strong style="color:var(--ink)">${topAll.n.toLowerCase()} leads at ${topAll.v.toLocaleString()}</strong> declarations.`;
+  } else {
+    if(topNofm)
+      note=`Set fire-management aside and the picture flips: <strong style="color:var(--ink)">${topNofm.n.toLowerCase()} leads at ${topNofm.v.toLocaleString()}</strong>${fa>0?`. Fire as a major-disaster or emergency falls to just ${fn.toLocaleString()}`:''}.`;
+  }
+  document.getElementById('haznote').innerHTML=note;
 }
 
 /* ── timeline ── */
@@ -554,7 +578,15 @@ function updateRange(){
   const w=YOY.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
   document.getElementById('st-total').textContent=w.toLocaleString();
   document.getElementById('tl-sum').textContent=w.toLocaleString();
+  /* headline stats follow the selected range too (fiscal year derived from each record's date) */
+  var stSet={}, hzSet={}, dnR=0;
+  for(var _s in DECLS){ var _A=DECLS[_s]; for(var _i=0;_i<_A.length;_i++){ if(excludeTribal&&_A[_i][5]) continue; var _p=(_A[_i][3]||'').split('-'), _fy=(+_p[0])+((+_p[1])>=10?1:0); if(_fy>=a&&_fy<=b){ stSet[_s]=1; hzSet[_A[_i][2]||'Unknown']=1; } } }
+  for(var _x in DENS){ var _D=DENS[_x]; for(var _j=0;_j<_D.length;_j++){ var _q=(_D[_j][3]||'').split('-'), _fd=(+_q[0])+((+_q[1])>=10?1:0); if(_fd>=a&&_fd<=b) dnR++; } }
+  var _es=document.getElementById('st-states'); if(_es) _es.textContent=Object.keys(stSet).length;
+  var _eh=document.getElementById('st-haz');    if(_eh) _eh.textContent=Object.keys(hzSet).length;
+  var _ed=document.getElementById('st-denied'); if(_ed) _ed.innerHTML=(dnR/((w+dnR)||1)*100).toFixed(1)+'<small>%</small>';
   drawTimeline();
+  renderHaz();
 }
 
 document.getElementById('rmin').addEventListener('input',updateRange);
@@ -564,6 +596,7 @@ document.getElementById('pills').addEventListener('click',e=>{const b=e.target.c
 document.getElementById('dtype').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.classList.contains('on')&&activeTypes().length===1)return;b.classList.toggle('on');render();});
 document.getElementById('tribalseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#tribalseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');excludeTribal=b.dataset.t==='exc';buildFromBrowse();render();renderHaz();updateRange();if(!document.getElementById('mback').hidden&&recState)openState(recState.ab);});
 document.getElementById('haztog').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#haztog button').forEach(x=>x.classList.remove('on'));b.classList.add('on');hazMode=b.dataset.h;renderHaz();});
+document.getElementById('hazmore').addEventListener('click',()=>{hazExpanded=!hazExpanded;renderHaz();});
 document.getElementById('reset').addEventListener('click',()=>{
   sortMode='decl'; incFilter='All';
   document.getElementById('rmin').value=Y_MIN; document.getElementById('rmax').value=Y_MAX;

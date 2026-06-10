@@ -92,7 +92,7 @@ def fetch_all(endpoint, extra_filter="", fields=None):
 DEC_FIELDS = [
     "femaDeclarationString", "disasterNumber", "state", "declarationType",
     "declarationDate", "fyDeclared", "incidentType", "declarationTitle",
-    "incidentBeginDate", "designatedArea", "region", "id"
+    "incidentBeginDate", "designatedArea", "tribalRequest", "region", "id"
 ]
 
 # Denials — only fields we need
@@ -170,6 +170,7 @@ for r in raw_dec:
         "incidentType":          r.get("incidentType", ""),
         "declarationTitle":      r.get("declarationTitle", ""),
         "designatedArea":        r.get("designatedArea", ""),
+        "tribalRequest":         1 if r.get("tribalRequest") in (True, 1, "true", "True", "1") else 0,
         "region":                r.get("region"),
         "days_to_approve":       days_app if days_app is not None else -1,
     })
@@ -462,16 +463,38 @@ if raw_hm:
 
 print("Building aggregates...")
 
-# Filter valid processing times
+# Filter valid processing times (used ONLY for timing averages)
 dec_valid = [r for r in dec_processed if r["days_to_approve"] >= 0]
 den_valid = [r for r in den_processed if r["days_to_deny"] >= 0]
 
+# Deduplicate to ONE row per declaration. The summaries dataset returns one row per
+# county/designated area, so per-row counting inflates totals, while filtering on a valid
+# begin date (dec_valid) silently drops legitimate declarations. dec_unique is the complete,
+# deduplicated set used for ALL counts; timing averages still ignore missing begin dates via avg().
+dec_unique = list({r["femaDeclarationString"]: r for r in dec_processed}.values())
+
+# ── DATA INTEGRITY REPORT ─────────────────────────────────────────────────
+from collections import Counter as _Counter
+_dropped = sum(1 for r in dec_unique if r["days_to_approve"] < 0)
+_bytype  = _Counter(r["declarationType"] for r in dec_unique)
+_byfy    = _Counter(r["fyDeclared"] for r in dec_unique)
+print("\n──────── DATA INTEGRITY ────────")
+print(f"Rows fetched (per county/area): {len(dec_processed)}")
+print(f"Unique declarations:            {len(dec_unique)}")
+print(f"  by type: {dict(_bytype)}")
+print(f"  missing begin-date:           {_dropped}  (counted; excluded from timing averages only)")
+print("  by fiscal year:")
+for _y in sorted(_byfy):
+    print(f"    FY{_y}: {_byfy[_y]}")
+print("────────────────────────────────\n")
+
 def avg(lst):
-    return round(sum(lst) / len(lst), 1) if lst else 0
+    vals = [x for x in lst if x is not None and x >= 0]
+    return round(sum(vals) / len(vals), 1) if vals else 0
 
 # Year-over-year
 yoy_dec = defaultdict(lambda: {"declarations": 0, "days": []})
-for r in dec_valid:
+for r in dec_unique:
     fy = r["fyDeclared"]
     if fy <= CURRENT_FY:
         yoy_dec[fy]["declarations"] += 1
@@ -499,7 +522,7 @@ for yr in all_years:
 
 # By incident type
 inc_map = defaultdict(lambda: {"count": 0, "days": []})
-for r in dec_valid:
+for r in dec_unique:
     it = r["incidentType"] or "Unknown"
     inc_map[it]["count"] += 1
     inc_map[it]["days"].append(r["days_to_approve"])
@@ -510,7 +533,7 @@ by_incident = sorted(
 
 # By state
 state_map = defaultdict(lambda: {"count": 0, "days": []})
-for r in dec_valid:
+for r in dec_unique:
     state_map[r["state"]]["count"] += 1
     state_map[r["state"]]["days"].append(r["days_to_approve"])
 by_state = sorted(
@@ -520,7 +543,7 @@ by_state = sorted(
 
 # By declaration type
 dec_type_map = defaultdict(lambda: {"count": 0, "days": []})
-for r in dec_valid:
+for r in dec_unique:
     dec_type_map[r["declarationType"]]["count"] += 1
     dec_type_map[r["declarationType"]]["days"].append(r["days_to_approve"])
 by_dec_type = [{"declarationType": k, "count": v["count"], "avg_days": avg(v["days"])} for k, v in dec_type_map.items()]
@@ -559,7 +582,7 @@ swva = ['Bland','Buchanan','Carroll','Craig','Dickenson','Floyd','Giles',
         'Bristol','Galax','Norton','Radford']
 
 state_dec_map  = defaultdict(lambda: {"declarations": 0, "days": [], "incidents": defaultdict(int), "top_incident": ""})
-for r in dec_valid:
+for r in dec_unique:
     st = r["state"]
     if r["fyDeclared"] <= CURRENT_FY:
         state_dec_map[st]["declarations"] += 1
@@ -594,7 +617,7 @@ for st, d in state_dec_map.items():
 
 # State YoY
 state_yoy_map = defaultdict(list)
-for r in dec_valid:
+for r in dec_unique:
     if r["fyDeclared"] <= CURRENT_FY:
         state_yoy_map[r["state"]].append(r["fyDeclared"])
 
@@ -606,7 +629,7 @@ for st, years_list in state_yoy_map.items():
 
 # State incident breakdown
 state_inc_map2 = defaultdict(lambda: defaultdict(int))
-for r in dec_valid:
+for r in dec_unique:
     if r["fyDeclared"] <= CURRENT_FY:
         state_inc_map2[r["state"]][r["incidentType"] or "Unknown"] += 1
 
@@ -639,7 +662,7 @@ for r in sorted(dec_valid, key=lambda x: x["declarationDate"], reverse=True):
 # Browse list (unique disasters, national)
 browse = []
 seen2 = set()
-for r in sorted(dec_valid, key=lambda x: x["declarationDate"], reverse=True):
+for r in sorted(dec_unique, key=lambda x: x["declarationDate"], reverse=True):
     if r["fyDeclared"] > CURRENT_FY:
         continue
     key = r["femaDeclarationString"]
@@ -656,6 +679,8 @@ for r in sorted(dec_valid, key=lambda x: x["declarationDate"], reverse=True):
         "declarationTitle":      r["declarationTitle"],
         "region":                r["region"],
         "days_to_approve":       r["days_to_approve"],
+        "tribal":                r.get("tribalRequest", 0),
+        "area":                  r.get("designatedArea", "") if r.get("tribalRequest") else "",
     })
 
 # ── Presidential era aggregates ───────────────────────────────────────────
@@ -949,6 +974,14 @@ for state, grp in groupby_state(dec_valid):
             "ids": sorted(v["ids"]),
         })
     locality_data[state] = sorted(locs, key=lambda x: -x["c"])
+
+# ── Integrity guardrail: counts MUST reconcile before writing data.js ─────
+_browse_n  = len(browse)
+_state_sum = sum(s["declarations"] for s in state_summary)
+_uniq_n    = len({r["femaDeclarationString"] for r in dec_processed})
+assert _browse_n == _uniq_n,   f"BROWSE ({_browse_n}) != unique declarations ({_uniq_n}) — refusing to write data.js"
+assert _browse_n == _state_sum, f"BROWSE ({_browse_n}) != per-state total ({_state_sum}) — refusing to write data.js"
+print(f"  integrity OK: {_browse_n} unique declarations reconcile across BROWSE and per-state totals")
 
 # Write data.js — all window.VAR = ... assignments
 lines = [
