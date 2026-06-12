@@ -15,7 +15,8 @@ import urllib.parse
 from collections import defaultdict
 
 # ── CONFIG ────────────────────────────────────────────────────────────────
-BASE_URL   = "https://www.fema.gov/api/open/v2"
+API_ROOT   = "https://www.fema.gov/api/open"
+BASE_URL   = f"{API_ROOT}/v2"   # most datasets are v2
 START_YEAR = 2000          # filter records from this fiscal year forward
 PAGE_SIZE  = 10000         # max the API allows per call
 SLEEP_SEC  = 0.5           # polite pause between paginated requests
@@ -30,7 +31,7 @@ CURRENT_FY  = _today.year if _today.month < 10 else _today.year + 1
 # 1. FETCH FROM API
 # ═════════════════════════════════════════════════════════════════════════
 
-def fetch_all(endpoint, extra_filter="", fields=None):
+def fetch_all(endpoint, extra_filter="", fields=None, version="v2"):
     """Page through an OpenFEMA endpoint and return all records."""
     records = []
     skip    = 0
@@ -56,7 +57,7 @@ def fetch_all(endpoint, extra_filter="", fields=None):
             f"&$orderby=id%20asc"
             + select_param
         )
-        url = f"{BASE_URL}/{endpoint}{params}"
+        url = f"{API_ROOT}/{version}/{endpoint}{params}"
 
         for attempt in range(5):
             try:
@@ -113,14 +114,23 @@ except Exception as e:
     raise SystemExit(1)
 
 print("Fetching denials...")
+raw_den = []
 try:
-    raw_den = fetch_all("DeclarationDenials", extra_filter="currentRequestStatus eq 'Turndown'", fields=DEN_FIELDS)
-    print(f"  → {len(raw_den)} denial records\n")
+    # Declaration Denials is a v1-ONLY dataset — must not be requested from v2.
+    raw_den = fetch_all("DeclarationDenials", extra_filter="currentRequestStatus eq 'Turndown'", fields=DEN_FIELDS, version="v1")
+    print(f"  → {len(raw_den)} denial records (Turndown filter)")
+    if not raw_den:
+        # Filter matched nothing (e.g. status value changed) — pull all denials instead.
+        print("  Turndown filter returned 0 — fetching all denials...")
+        raw_den = fetch_all("DeclarationDenials", fields=DEN_FIELDS, version="v1")
+        print(f"  → {len(raw_den)} denial records (unfiltered)\n")
+    else:
+        print()
 except Exception as e:
     print(f"  WARNING: Denials fetch failed: {e}")
     print("  Trying without status filter...")
     try:
-        raw_den = fetch_all("DeclarationDenials", fields=DEN_FIELDS)
+        raw_den = fetch_all("DeclarationDenials", fields=DEN_FIELDS, version="v1")
         print(f"  → {len(raw_den)} denial records\n")
     except Exception as e2:
         print(f"  WARNING: Denials unavailable: {e2}\n")
