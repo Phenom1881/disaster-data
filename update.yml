@@ -1,13 +1,14 @@
-name: Refresh FEMA Data
 
+name: Refresh FEMA Data
+ 
 on:
   schedule:
     - cron: '0 4 * * 0'
   workflow_dispatch:
-
+ 
 permissions:
   contents: write
-
+ 
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -34,3 +35,4 @@ jobs:
             git commit -m "Auto-refresh FEMA data $(date -u '+%Y-%m-%d')"
             git push
           fi
+ 
