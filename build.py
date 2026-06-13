@@ -93,7 +93,8 @@ def fetch_all(endpoint, extra_filter="", fields=None, version="v2"):
 DEC_FIELDS = [
     "femaDeclarationString", "disasterNumber", "state", "declarationType",
     "declarationDate", "fyDeclared", "incidentType", "declarationTitle",
-    "incidentBeginDate", "designatedArea", "tribalRequest", "region", "id"
+    "incidentBeginDate", "designatedArea", "tribalRequest", "region", "id",
+    "fipsStateCode", "fipsCountyCode"
 ]
 
 # Denials — only fields we need
@@ -1021,6 +1022,95 @@ with open("data.js", "w", encoding="utf-8") as f:
 
 data_kb = len(data_js_content) // 1024
 print(f"  data.js written ({data_kb} KB)")
+
+# ── Build map-data.js (county choropleth + per-county declaration lists) ──────
+# map.html loads this instead of embedding ~8 MB of county data inline, so the
+# map refreshes on the same schedule as the home page. If anything here fails,
+# data.js is already written — the home page still refreshes; only the map lags.
+def _clean_area(area):
+    return re.sub(r"\s*\([^)]*\)\s*$", "", area or "").strip()
+
+def build_map_data(rows, start_year, current_fy):
+    from collections import defaultdict
+    nd_set  = lambda: defaultdict(lambda: defaultdict(set))
+    nd_set2 = lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(set)))
+    nd_int  = lambda: defaultdict(lambda: defaultdict(int))
+    nd_int2 = lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    ud_o = defaultdict(set); ud_y = nd_set(); ud_t = nd_set(); ud_yt = nd_set2()
+    dar_o = defaultdict(int); dar_y = nd_int(); dar_t = nd_int(); dar_yt = nd_int2()
+    cde = defaultdict(dict); labels = {}
+    det_o = set(); det_y = defaultdict(set); det_t = defaultdict(set); det_yt = nd_set()
+    county_rows = 0; statewide = 0; decls_county = set(); years_seen = set()
+    for r in rows:
+        try:
+            fy = int(r.get("fyDeclared"))
+        except (TypeError, ValueError):
+            continue
+        if fy < start_year or fy > current_fy:
+            continue
+        dn = r.get("femaDeclarationString")
+        if not dn:
+            continue
+        ty = (r.get("declarationType") or "").strip()
+        det_o.add(dn)                                   # overall = every distinct declaration (county + statewide)
+        date = (r.get("declarationDate") or "")[:10]
+        if not date:
+            continue
+        yr = date[:4]; years_seen.add(yr)
+        det_y[yr].add(dn); det_t[ty].add(dn); det_yt[yr][ty].add(dn)
+        cc = (r.get("fipsCountyCode") or "")
+        if not cc or cc.zfill(3) == "000":             # statewide / jurisdiction-wide row — not on the county map
+            statewide += 1
+            continue
+        fips = (r.get("fipsStateCode") or "").zfill(2) + cc.zfill(3)
+        county_rows += 1; decls_county.add(dn)
+        label = f"{_clean_area(r.get('designatedArea'))}, {r.get('state','')}"
+        labels[fips] = label
+        dar_o[fips] += 1; dar_y[yr][fips] += 1; dar_t[ty][fips] += 1; dar_yt[yr][ty][fips] += 1
+        ud_o[fips].add(dn); ud_y[yr][fips].add(dn); ud_t[ty][fips].add(dn); ud_yt[yr][ty][fips].add(dn)
+        if dn not in cde[fips]:
+            cde[fips][dn] = {"declarationNumber": dn, "type": ty, "year": int(yr),
+                             "date": date, "title": r.get("incidentType", ""), "countyLabel": label}
+    sl  = lambda d: {k: len(v) for k, v in d.items()}
+    sl2 = lambda d: {k: sl(v) for k, v in d.items()}
+    sl3 = lambda d: {k: sl2(v) for k, v in d.items()}
+    pd2 = lambda d: {k: dict(v) for k, v in d.items()}
+    pd3 = lambda d: {k: pd2(v) for k, v in d.items()}
+    counts = {
+        "uniqueDeclarations":    {"overall": sl(ud_o),  "byYear": sl2(ud_y),  "byType": sl2(ud_t),  "byYearType": sl3(ud_yt)},
+        "designatedAreaRecords": {"overall": dict(dar_o), "byYear": pd2(dar_y), "byType": pd2(dar_t), "byYearType": pd3(dar_yt)},
+    }
+    det = {"overall": len(det_o), "byYear": sl(det_y), "byType": sl(det_t), "byYearType": sl2(det_yt)}
+    top = sorted(({"fips": f, "label": labels[f], "value": counts["uniqueDeclarations"]["overall"][f]} for f in labels),
+                 key=lambda x: (-x["value"], x["fips"]))[:10]
+    cde_out = {f: sorted(ev.values(), key=lambda e: (-e["year"], e["declarationNumber"])) for f, ev in cde.items()}
+    return {
+        "counts": counts,
+        "countyDeclarationEvents": cde_out,
+        "countyLabels": labels,
+        "years": sorted(int(y) for y in years_seen),
+        "topCounties": top,
+        "declarationEventTotals": det,
+        "summary": {"countyRows": county_rows, "statewideExcluded": statewide,
+                    "countyFipsWithData": len(labels), "uniqueDeclarations": len(decls_county)},
+    }
+
+try:
+    print("Building map-data.js...")
+    map_data = build_map_data(raw_dec, START_YEAR, CURRENT_FY)
+    _det = map_data["declarationEventTotals"]["overall"]
+    _brw = len(browse)
+    if _det != _brw:
+        print(f"  NOTE: map declaration events ({_det}) != home declarations ({_brw}); these are expected to match.")
+    map_js = "window.MAP_DATA = " + json.dumps(map_data, separators=(",", ":")) + ";\n"
+    with open("map-data.js", "w", encoding="utf-8") as f:
+        f.write(map_js)
+    print(f"  map-data.js written ({len(map_js)//1024} KB) — "
+          f"{map_data['summary']['countyFipsWithData']:,} counties, "
+          f"{_det:,} declaration events, "
+          f"{map_data['summary']['uniqueDeclarations']:,} county-mapped declarations")
+except Exception as e:
+    print(f"  WARNING: map-data.js build failed: {e} (home-page data.js still updated)")
 
 # Update index.html: inject PA_NATIONAL and refresh last-updated stamp
 if os.path.exists("index.html"):
