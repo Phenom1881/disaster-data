@@ -18,7 +18,7 @@ from collections import defaultdict
 API_ROOT   = "https://www.fema.gov/api/open"
 BASE_URL   = f"{API_ROOT}/v2"   # most datasets are v2
 START_YEAR = 2000          # filter records from this fiscal year forward
-PAGE_SIZE  = 10000         # max the API allows per call
+PAGE_SIZE  = 5000          # records per page (moderate, so a dropped transfer retries cheaply)
 SLEEP_SEC  = 0.5           # polite pause between paginated requests
 TODAY      = datetime.date.today().isoformat()
 
@@ -238,17 +238,18 @@ def fetch_pa_all():
                f"&$select={select}"
                f"&$inlinecount=allpages")
 
-        for attempt in range(3):
+        for attempt in range(5):
             try:
                 req = urllib.request.Request(url, headers={"User-Agent": "DisasterData-Explorer/1.0"})
                 with urllib.request.urlopen(req, timeout=90) as resp:
                     data = json.loads(resp.read())
                 break
             except Exception as e:
-                if attempt == 2:
+                if attempt == 4:
                     raise
-                print(f"    Retry {attempt+1}: {e}")
-                time.sleep(5)
+                wait = 10 * (attempt + 1)
+                print(f"    Retry {attempt+1}/4: {e} (waiting {wait}s)")
+                time.sleep(wait)
 
         batch = data.get("PublicAssistanceFundedProjectsDetails", [])
         records.extend(batch)
@@ -379,17 +380,18 @@ def fetch_hm_all():
                f"&$select={select}"
                f"&$inlinecount=allpages")
 
-        for attempt in range(3):
+        for attempt in range(5):
             try:
                 req = urllib.request.Request(url, headers={"User-Agent": "DisasterData-Explorer/1.0"})
                 with urllib.request.urlopen(req, timeout=90) as resp:
                     data = json.loads(resp.read())
                 break
             except Exception as e:
-                if attempt == 2:
+                if attempt == 4:
                     raise
-                print(f"    Retry {attempt+1}: {e}")
-                time.sleep(5)
+                wait = 10 * (attempt + 1)
+                print(f"    Retry {attempt+1}/4: {e} (waiting {wait}s)")
+                time.sleep(wait)
 
         # Correct response key matches dataset name
         batch = data.get("HazardMitigationAssistanceProjects", [])
