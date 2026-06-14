@@ -3,16 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FEMA Disaster Explorer (BETA)</title>
+<meta name="color-scheme" content="light">
+<title>Disaster Data</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
+  color-scheme:light;            /* render in the intended light theme even on dark-mode devices */
   --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
   --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
   --rule:#e0d8c5;--rule-2:#cfc6b0;
-  --accent:#1c5c79;--accent-2:#27778f;--accent-soft:#dceaef;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
   --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
   --ember:#c85c2e;
   --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
@@ -199,7 +201,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="wrap">
 
 <nav>
-  <div class="brand"><span class="mark">FEMA Disaster Explorer</span><span class="beta">Beta</span></div>
+  <div class="brand"><span class="mark">Disaster Data</span></div>
   <div class="navlinks"><a href="#" class="on">Overview</a><a href="#board">Explore</a><a href="map.html">Map</a><a href="#about">About</a></div>
   <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
 </nav>
@@ -323,8 +325,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <footer id="about">
   <div class="container">
     <div class="foot">
-      <div class="disc">Built from OpenFEMA Disaster Declarations Summaries, <span id="foot-range">FY2000 to FY2026</span>. Uses OpenFEMA data but is not endorsed by FEMA. Figures reflect declaration records, not official financial reporting.<span id="foot-asof"></span></div>
-      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>FEMA Disaster Explorer (BETA)</div>
+      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries (<span id="foot-range">FY2000 to FY2026</span>) — uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Counts reflect declaration records, not official financial or loss reporting.<span id="foot-asof"></span></div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a></div>
     </div>
   </div>
 </footer>
@@ -386,8 +388,8 @@ var RAW_BROWSE=null, RAW_NAMES={}, DEN_MAP={}, HAS_TRIBAL=false, excludeTribal=f
     HAS_TRIBAL = B.some(function(r){ return r.tribal; });
     if(HAS_TRIBAL){ var tf=document.getElementById('tribal-fgroup'); if(tf) tf.hidden=false; }
     buildFromBrowse();   /* initial counts, tribal included */
-    console.log('FEMA Disaster Explorer: live data.js loaded \u2014 '+B.length+' declarations'+(HAS_TRIBAL?', tribal-aware':'')+', as of '+(window.DATA_DATE||'unknown')+'.');
-  }catch(e){ console.warn('FEMA Disaster Explorer: data.js present but could not be parsed; using baked-in data.', e); }
+    console.log('Disaster Data: live data.js loaded \u2014 '+B.length+' declarations'+(HAS_TRIBAL?', tribal-aware':'')+', as of '+(window.DATA_DATE||'unknown')+'.');
+  }catch(e){ console.warn('Disaster Data: data.js present but could not be parsed; using baked-in data.', e); }
 })();
 
 /* Derive declaration counts from the deduped BROWSE list (single source). When excludeTribal is on, tribal-requested declarations are set aside. Denials come from the denial dataset and are unaffected. */
@@ -421,12 +423,42 @@ function buildFromBrowse(){
   var sh=document.getElementById('st-haz');    if(sh) sh.textContent=Object.keys(typeSet).length;
 }
 
+/* Re-aggregate the per-state board for a fiscal-year window [a,b].
+   Declarations come from RAW_BROWSE, denials from DENS, both filtered by fiscal year.
+   Leaves YOY (timeline) and the hazard chart untouched — they window themselves. */
+function buildStatesForWindow(a,b){
+  if(!RAW_BROWSE){ return; }
+  function _fy(iso){ var p=(iso||'').split('-'); return (+p[0])+((+p[1])>=10?1:0); }
+  var B = excludeTribal ? RAW_BROWSE.filter(function(r){ return !r.tribal; }) : RAW_BROWSE;
+  B = B.filter(function(r){ return r.fyDeclared>=a && r.fyDeclared<=b; });
+  var byState={}; B.forEach(function(r){ (byState[r.state]=byState[r.state]||[]).push(r); });
+  var denW={};
+  Object.keys(DENS).forEach(function(st){ var A=DENS[st], n=0; for(var i=0;i<A.length;i++){ var f=_fy(A[i][3]); if(f>=a&&f<=b) n++; } if(n) denW[st]=n; });
+  var states=[], typeSet={}, totD=0, totN=0;
+  Object.keys(byState).forEach(function(st){
+    var rows=byState[st], c={DR:0,EM:0,FM:0}, incC={}, dsum=0, dn=0;
+    rows.forEach(function(r){
+      if(c[r.declarationType]!=null) c[r.declarationType]++;
+      var it=r.incidentType||'Unknown'; incC[it]=(incC[it]||0)+1; typeSet[it]=1;
+      if(typeof r.days_to_approve==='number' && r.days_to_approve>=0){ dsum+=r.days_to_approve; dn++; }
+    });
+    var inc=Object.keys(incC).map(function(it){ return [it,incC[it]]; }).sort(function(x,y){ return y[1]-x[1]; });
+    var decl=rows.length, den=denW[st]||0; totD+=decl; totN+=den;
+    states.push({ab:st,name:RAW_NAMES[st]||st,decl:decl,dr:c.DR,em:c.EM,fm:c.FM,den:den,
+      rate:(decl+den)?+(den/(decl+den)*100).toFixed(2):0, days:dn?+(dsum/dn).toFixed(1):0, inc:inc});
+  });
+  STATES=states;
+  var ss=document.getElementById('st-states'); if(ss) ss.textContent=states.length;
+  var sd=document.getElementById('st-denied'); if(sd) sd.innerHTML=(totN/((totD+totN)||1)*100).toFixed(1)+'<small>%</small>';
+  var sh=document.getElementById('st-haz');    if(sh) sh.textContent=Object.keys(typeSet).length;
+}
+
 let sortMode='decl', incFilter='All', yrMin=2000, yrMax=2026, hazMode='all', Y_MIN=2000, Y_MAX=2026;
 Y_MIN = (YOY[0]?YOY[0][0]:2000); Y_MAX = (YOY.length?YOY[YOY.length-1][0]:2026);
 const heat=['#efddb9','#e6c089','#d98c4e','#c85c2e','#9e3a1e'];
 function heatFor(v){ if(v>=200)return heat[4]; if(v>=100)return heat[3]; if(v>=50)return heat[2]; if(v>=20)return heat[1]; return heat[0]; }
 function rateColor(r){ if(r>=25)return '#9e3a1e'; if(r>=15)return '#c85c2e'; if(r>=8)return '#d98c4e'; if(r>0)return '#5b5346'; return '#1d9e75'; }
-const maxRate=Math.max(...STATES.map(s=>s.rate));
+let maxRate=Math.max(...STATES.map(s=>s.rate));
 const TIERS=[{t:"Most disaster-prone",sub:"100+ declarations",min:100},{t:"Frequently declared",sub:"50 to 99",min:50},{t:"Periodically hit",sub:"20 to 49",min:20},{t:"Rarely declared",sub:"fewer than 20",min:0}];
 
 function activeTypes(){ return [...document.querySelectorAll('#dtype button.on')].map(b=>b.dataset.d); }
@@ -455,6 +487,7 @@ function render(){
   data=data.filter(s=> incFilter==='All' || hazardsFor(s,false).includes(incFilter));
   if(!data.length){ board.innerHTML='<p style="color:var(--ink-3);padding:20px 0">No states match these filters.</p>'; return; }
   const curMax=Math.max(...data.map(s=>s.cnt));
+  maxRate=Math.max(...data.map(s=>s.rate),0.01); /* scale rate bars to the current window */
 
   if(sortMode==='rate'){
     data.sort((a,b)=> b.rate-a.rate || b.cnt-a.cnt);
@@ -578,13 +611,9 @@ function updateRange(){
   const w=YOY.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
   document.getElementById('st-total').textContent=w.toLocaleString();
   document.getElementById('tl-sum').textContent=w.toLocaleString();
-  /* headline stats follow the selected range too (fiscal year derived from each record's date) */
-  var stSet={}, hzSet={}, dnR=0;
-  for(var _s in DECLS){ var _A=DECLS[_s]; for(var _i=0;_i<_A.length;_i++){ if(excludeTribal&&_A[_i][5]) continue; var _p=(_A[_i][3]||'').split('-'), _fy=(+_p[0])+((+_p[1])>=10?1:0); if(_fy>=a&&_fy<=b){ stSet[_s]=1; hzSet[_A[_i][2]||'Unknown']=1; } } }
-  for(var _x in DENS){ var _D=DENS[_x]; for(var _j=0;_j<_D.length;_j++){ var _q=(_D[_j][3]||'').split('-'), _fd=(+_q[0])+((+_q[1])>=10?1:0); if(_fd>=a&&_fd<=b) dnR++; } }
-  var _es=document.getElementById('st-states'); if(_es) _es.textContent=Object.keys(stSet).length;
-  var _eh=document.getElementById('st-haz');    if(_eh) _eh.textContent=Object.keys(hzSet).length;
-  var _ed=document.getElementById('st-denied'); if(_ed) _ed.innerHTML=(dnR/((w+dnR)||1)*100).toFixed(1)+'<small>%</small>';
+  /* re-aggregate the per-state board + headline stats for the selected window, then redraw it */
+  buildStatesForWindow(a,b);
+  render();
   drawTimeline();
   renderHaz();
 }
@@ -613,7 +642,7 @@ const rankByDecl=STATES.slice().sort((a,b)=>b.decl-a.decl);
 function mbars(arr,max){ return arr.map(x=>`<div class="mbar"><div class="mbl">${x.l}${x.s?` <span>${x.s}</span>`:''}</div><div class="mbt"><div class="mbf" style="width:${Math.max(2,x.v/max*100)}%;background:${x.c}"></div></div><div class="mbv">${x.v}</div></div>`).join(''); }
 function openState(ab){
   const s=STATES.find(x=>x.ab===ab); if(!s) return;
-  document.getElementById('m-rank').textContent='#'+(rankByDecl.indexOf(s)+1)+' by declarations';
+  document.getElementById('m-rank').textContent='#'+(STATES.slice().sort(function(x,y){return y.decl-x.decl;}).indexOf(s)+1)+' by declarations';
   document.getElementById('m-name').textContent=s.name;
   document.getElementById('m-sub').textContent=s.ab+' · '+s.inc.slice(0,2).map(x=>x[0]).join(' · ');
   document.getElementById('m-decl').textContent=s.decl;
@@ -621,18 +650,18 @@ function openState(ab){
   document.getElementById('m-rate').textContent=s.rate.toFixed(1)+'%';
   document.getElementById('m-days').textContent=s.days.toFixed(1);
   const tmax=Math.max(s.dr,s.em,s.fm,1);
-  document.getElementById('m-types').innerHTML=mbars([{l:'DR',s:'Major Disaster',v:s.dr,c:'#1d1813'},{l:'EM',s:'Emergency',v:s.em,c:'#1c5c79'},{l:'FM',s:'Fire Mgmt',v:s.fm,c:'#c85c2e'}],tmax);
+  document.getElementById('m-types').innerHTML=mbars([{l:'DR',s:'Major Disaster',v:s.dr,c:'#1d1813'},{l:'EM',s:'Emergency',v:s.em,c:'#004c53'},{l:'FM',s:'Fire Mgmt',v:s.fm,c:'#c85c2e'}],tmax);
   const hmax=s.inc.length?s.inc[0][1]:1;
   document.getElementById('m-haz').innerHTML=mbars(s.inc.map(h=>({l:h[0],v:h[1],c:heatFor(h[1])})),hmax);
   const nf=s.inc.find(h=>h[0]!=='Fire');
-  const trbN=(DECLS[ab]||[]).filter(r=>r[5]).length;
+  const trbN=(DECLS[ab]||[]).filter(r=>r[5]&&inWin(r)).length;
   let _note = nf ? `Set fire-management aside, and ${s.name}'s leading disaster is ${nf[0].toLowerCase()} (${nf[1]} declarations).` : '';
   if(trbN) _note += (_note?' ':'')+`${trbN} of these ${trbN===1?'was':'were'} requested directly by a federally recognized tribal nation \u2014 a sovereign government's own declaration, counted separately.`;
   document.getElementById('m-note').textContent = _note;
   document.getElementById('m-map').href='map.html?state='+ab;
   recState=s; recMode='decl';
-  document.getElementById('rc-d').textContent=(DECLS[ab]||[]).length;
-  document.getElementById('rc-n').textContent=(DENS[ab]||[]).length;
+  document.getElementById('rc-d').textContent=(DECLS[ab]||[]).filter(inWin).length;
+  document.getElementById('rc-n').textContent=(DENS[ab]||[]).filter(inWin).length;
   document.querySelectorAll('#recseg button').forEach((x,i)=>x.classList.toggle('on',i===0));
   renderRecs();
   document.getElementById('mback').hidden=false; document.getElementById('mclose').focus();
@@ -646,19 +675,21 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !document.getEle
 let recState=null, recMode='decl';
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function fdate(iso){ const p=(iso||'').split('-'); return p.length>=2 ? MON[+p[1]-1]+' '+p[0] : (iso||''); }
-const TCOL={DR:'#1d1813',EM:'#1c5c79',FM:'#c85c2e'};
+/* is a DECLS/DENS record (date at index 3) inside the currently selected fiscal-year window? */
+function inWin(rec){ const p=(rec[3]||'').split('-'); const f=(+p[0])+((+p[1])>=10?1:0); return f>=yrMin && f<=yrMax; }
+const TCOL={DR:'#1d1813',EM:'#004c53',FM:'#c85c2e'};
 function renderRecs(){
   if(!recState) return;
   const ab=recState.ab, box=document.getElementById('m-reclist');
   if(recMode==='decl'){
-    const list=DECLS[ab]||[];
+    const list=(DECLS[ab]||[]).filter(inWin);
     box.innerHTML = list.length ? list.map(r=>{
       const trb=r[5]?'<span class="rec-tribal">Tribal Nation</span>':'';
       const area=(r[5]&&r[6])?` &middot; <span class="rec-area">${r[6]}</span>`:'';
       return `<div class="rec"><div class="rec-top"><span class="rec-idwrap"><span class="rec-id" style="color:${TCOL[r[1]]||'#1d1813'}">${r[0]}</span>${trb}</span><span class="rec-date">${fdate(r[3])}</span></div><div class="rec-sub">${r[2]} &middot; <span class="rec-title">${r[4]}</span>${area}</div></div>`;
     }).join('') : '<div class="rec-empty">No declarations in the dataset.</div>';
   } else {
-    const list=DENS[ab]||[];
+    const list=(DENS[ab]||[]).filter(inWin);
     box.innerHTML = list.length ? list.map(r=>`<div class="rec"><div class="rec-top"><span class="rec-id">Request #${r[0]}</span><span class="rec-date">${fdate(r[3])}<span class="rec-deny">Denied</span></span></div><div class="rec-sub">${r[1]} &middot; ${r[2]}</div></div>`).join('') : '<div class="rec-empty">No denied requests on record.</div>';
   }
 }
