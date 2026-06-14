@@ -764,17 +764,16 @@
     function getBreaks(maxValue) {
       if (!maxValue || maxValue <= 0) return [1, 2, 3, 5, 8, 13, 20, 35];
       const pcts = [0.03, 0.08, 0.15, 0.25, 0.38, 0.55, 0.72, 0.88];
-      const candidates = pcts.map(p => Math.ceil(maxValue * p)).filter(v => v > 0);
-
-      const uniq = [...new Set(candidates)].sort((a, b) => a - b);
-      while (uniq.length < 8) {
-        uniq.unshift(Math.max(1, uniq.length ? uniq[0] - 1 : 1));
-        uniq.sort((a, b) => a - b);
-        for (let i = uniq.length - 1; i > 0; i--) {
-          if (uniq[i] === uniq[i - 1]) uniq.splice(i, 1);
-        }
+      // Scale 8 thresholds to the data, then force them strictly ascending.
+      // When maxValue is small the scaled values collapse to duplicates; we bump
+      // each up to at least prev+1 in a single pass. (The old code padded with a
+      // while-loop that spun forever once the minimum hit the floor of 1 — which
+      // is exactly what froze the page on single-year filters.)
+      const breaks = pcts.map(p => Math.max(1, Math.ceil(maxValue * p)));
+      for (let i = 1; i < breaks.length; i++) {
+        if (breaks[i] <= breaks[i - 1]) breaks[i] = breaks[i - 1] + 1;
       }
-      return uniq.slice(0, 8);
+      return breaks;
     }
 
     function getColor(value, breaks) {
