@@ -627,7 +627,7 @@
                 <h1 class="page-title">FEMA <em>Declaration</em> Map</h1>
         <div class="rule-line"></div>
         <p>
-          County-level choropleth of FEMA disaster declaration activity across the United States. Filter by year, or by declaration type: DR (Major Disaster), EM (Emergency), or FM (Fire Management Assistance Grant). Click any county to list matching declaration numbers.
+          A county-by-county map of FEMA disaster declarations across the U.S. Filter by year or declaration type — DR (Major Disaster), EM (Emergency), FM (Fire Management Assistance Grant) — then click any county to see its declarations.
         </p>
       </div>
 
@@ -661,30 +661,11 @@
 
       <!-- Filtered total -->
       <div class="stats-section">
-        <div class="section-label">Filtered declaration events</div>
+        <div class="section-label">Declarations in view</div>
         <div class="big-stat">
           <div class="big" id="filteredTotal">0</div>
         </div>
-        <div class="muted" id="filteredSubtitle">Unique FEMA declaration events matching the filters</div>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="label">County rows</div>
-            <div class="value" id="kpiCountyRows">48,997</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Statewide excluded</div>
-            <div class="value" id="kpiStatewide">1,089</div>
-          </div>
-          <div class="kpi">
-            <div class="label">County FIPS w/ data</div>
-            <div class="value" id="kpiCountyFips">3,241</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Unique declarations</div>
-            <div class="value" id="kpiUniqueDecl">3,288</div>
-          </div>
-        </div>
+        <div class="muted" id="filteredSubtitle">Mapped across U.S. counties, parishes, and boroughs</div>
       </div>
 
       <!-- Selected county -->
@@ -724,15 +705,6 @@
     const topCounties = MAP_DATA.topCounties || [];
     const declarationEventTotals = MAP_DATA.declarationEventTotals || {overall:0, byYear:{}, byType:{}, byYearType:{}};
     const countyDeclarationEvents = MAP_DATA.countyDeclarationEvents || {};
-    (function fillKpis() {
-      const s = MAP_DATA.summary || {};
-      const fmt = n => (n == null ? "\u2014" : Number(n).toLocaleString());
-      const setKpi = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = fmt(v); };
-      setKpi("kpiCountyRows", s.countyRows);
-      setKpi("kpiStatewide", s.statewideExcluded);
-      setKpi("kpiCountyFips", s.countyFipsWithData);
-      setKpi("kpiUniqueDecl", s.uniqueDeclarations);
-    })();
 
     const metricSelect = document.getElementById('metricSelect');
     const yearSelect = document.getElementById('yearSelect');
@@ -1025,7 +997,7 @@
       }
 
       filteredTotalEl.textContent = eventTotal.toLocaleString();
-      filteredSubtitleEl.textContent = `${Object.keys(values).length.toLocaleString()} counties/parishes/boroughs have mapped records for those declaration events`;
+      filteredSubtitleEl.textContent = `Mapped across ${Object.keys(values).length.toLocaleString()} counties, parishes, and boroughs`;
 
       if (countyLayer) countyLayer.setStyle(styleCounty);
       legend.update();
