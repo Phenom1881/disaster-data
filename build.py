@@ -285,6 +285,14 @@ if raw_pa:
     pa_by_state   = {}
     pa_by_cat     = {}
     pa_by_disaster = {}
+    pa_by_year    = {}
+
+    # disasterNumber -> declaration title (from declarations fetched earlier)
+    dn_title = {}
+    for _d in raw_dec:
+        _dn = _d.get("disasterNumber")
+        if _dn is not None and _dn not in dn_title:
+            dn_title[_dn] = (_d.get("declarationTitle") or "").strip()
     pa_total_obl  = 0
     pa_total_proj = 0
     pa_disasters  = set()
@@ -300,8 +308,9 @@ if raw_pa:
         st   = r.get("stateAbbreviation") or "Unknown"
         obl  = float(r.get("federalShareObligated") or 0)
         tot  = float(r.get("totalObligated") or 0)
-        cat  = r.get("damageCategoryDescrip") or DCC_LABELS.get(r.get("damageCategoryCode",""), "Other")
+        code = (r.get("damageCategoryCode") or "?").strip().upper()
         dn   = r.get("disasterNumber")
+        yr   = (r.get("declarationDate") or "")[:4]
 
         pa_total_obl  += obl
         pa_total_proj += 1
@@ -313,22 +322,47 @@ if raw_pa:
         pa_by_state[st]["tot"]  += tot
         pa_by_state[st]["proj"] += 1
 
-        if cat not in pa_by_cat:
-            pa_by_cat[cat] = {"obl": 0, "proj": 0}
-        pa_by_cat[cat]["obl"]  += obl
-        pa_by_cat[cat]["proj"] += 1
+        if code not in pa_by_cat:
+            pa_by_cat[code] = {"obl": 0, "proj": 0}
+        pa_by_cat[code]["obl"]  += obl
+        pa_by_cat[code]["proj"] += 1
+
+        if yr.isdigit():
+            pa_by_year[yr] = pa_by_year.get(yr, 0) + obl
+
+        if dn is not None:
+            if dn not in pa_by_disaster:
+                pa_by_disaster[dn] = {"obl": 0, "proj": 0,
+                                      "inc": r.get("incidentType") or "",
+                                      "year": yr if yr.isdigit() else ""}
+            pa_by_disaster[dn]["obl"]  += obl
+            pa_by_disaster[dn]["proj"] += 1
 
     # Top 15 states by federal share
     top_states = sorted(
         [{"state": k, "obl": round(v["obl"],2), "proj": v["proj"]} for k,v in pa_by_state.items()],
         key=lambda x: -x["obl"]
-    )[:15]
+    )
 
     # All categories sorted by federal share
     top_cats = sorted(
-        [{"cat": k, "obl": round(v["obl"],2), "proj": v["proj"]} for k,v in pa_by_cat.items()],
+        [{"code": k, "cat": DCC_LABELS.get(k, "Other"), "obl": round(v["obl"],2), "proj": v["proj"]} for k,v in pa_by_cat.items()],
         key=lambda x: -x["obl"]
     )
+
+    by_year = sorted(
+        [{"year": int(k), "obl": round(v,2)} for k,v in pa_by_year.items()],
+        key=lambda x: x["year"]
+    )
+
+    top_disasters = sorted(
+        [{"num": k,
+          "name": dn_title.get(k) or ((v["inc"] + (" " + v["year"] if v["year"] else "")).strip()) or f"DR-{k}",
+          "inc":  v["inc"], "year": v["year"],
+          "obl":  round(v["obl"],2), "proj": v["proj"]}
+         for k,v in pa_by_disaster.items()],
+        key=lambda x: -x["obl"]
+    )[:10]
 
     # Largest single project
     largest = max((float(r.get("federalShareObligated") or 0) for r in raw_pa), default=0)
@@ -342,131 +376,10 @@ if raw_pa:
         "topCategory":     top_cats[0]["cat"] if top_cats else "—",
         "topStates":       top_states,
         "topCategories":   top_cats,
+        "byYear":          by_year,
+        "topDisasters":    top_disasters,
     }
     print(f"  PA summary: ${pa_total_obl/1e9:.1f}B total, {len(pa_disasters):,} disasters, {pa_total_proj:,} projects")
-
-
-
-# ═════════════════════════════════════════════════════════════════════════
-# 2c. FETCH HAZARD MITIGATION GRANTS NATIONAL SUMMARY
-# ═════════════════════════════════════════════════════════════════════════
-
-HM_FIELDS = [
-    # Correct field names from OpenFEMA HazardMitigationAssistanceProjects v4 data dictionary
-    "programArea", "state", "federalShareObligated",
-    "typeOfProject", "subrecipient", "disasterNumber", "programFy", "region"
-]
-
-def classify_hm(r):
-    # programArea values are exact short codes: HMGP, FMA, BRIC, PDM, RFC, SRL
-    prog = (r.get("programArea") or "").strip().upper()
-    if prog in ("HMGP",): return "HMGP"
-    if prog in ("BRIC",): return "BRIC"
-    if prog in ("FMA",):  return "FMA"
-    # PDM is legacy (replaced by BRIC 2020), RFC/SRL folded into FMA — exclude
-    return None
-
-def fetch_hm_all():
-    """Fetch all HazardMitigationAssistanceProjects records for national summary."""
-    records = []
-    skip    = 0
-    total   = None
-    select  = ",".join(HM_FIELDS)
-    print("  Fetching HazardMitigationAssistanceProjects (national)...")
-
-    while True:
-        url = (f"{BASE_URL}/HazardMitigationAssistanceProjects"
-               f"?$top={PAGE_SIZE}&$skip={skip}"
-               f"&$select={select}"
-               f"&$inlinecount=allpages")
-
-        for attempt in range(5):
-            try:
-                req = urllib.request.Request(url, headers={"User-Agent": "DisasterData-Explorer/1.0"})
-                with urllib.request.urlopen(req, timeout=90) as resp:
-                    data = json.loads(resp.read())
-                break
-            except Exception as e:
-                if attempt == 4:
-                    raise
-                wait = 10 * (attempt + 1)
-                print(f"    Retry {attempt+1}/4: {e} (waiting {wait}s)")
-                time.sleep(wait)
-
-        # Correct response key matches dataset name
-        batch = data.get("HazardMitigationAssistanceProjects", [])
-        records.extend(batch)
-
-        if total is None:
-            total = int(data.get("metadata", {}).get("count", 0))
-            print(f"    Total HM records: {total:,}")
-
-        skip += len(batch)
-        if skip % 50000 == 0 or (total and skip >= total):
-            print(f"    Fetched {skip:,}/{total:,}")
-
-        if not batch or (total and skip >= total):
-            break
-        time.sleep(SLEEP_SEC)
-
-    return records
-
-print("Fetching Hazard Mitigation grant data...")
-try:
-    raw_hm = fetch_hm_all()
-    print(f"  → {len(raw_hm):,} HM grant records\n")
-    HM_AVAILABLE = True
-except Exception as e:
-    print(f"  WARNING: HM fetch failed: {e}\n")
-    raw_hm = []
-    HM_AVAILABLE = False
-
-# Build HM national summary aggregates per program
-def agg_hm_program(records):
-    by_state = defaultdict(float)
-    by_type  = defaultdict(float)
-    total_obl = 0.0
-    subgrantees = set()
-    projects = 0
-    for r in records:
-        st  = r.get("state") or "Unknown"
-        obl = float(r.get("federalShareObligated") or 0)
-        typ = (r.get("typeOfProject") or "Other").strip()
-        by_state[st] += obl
-        by_type[typ]  += obl
-        total_obl    += obl
-        projects     += 1
-        sg = r.get("subrecipient")
-        if sg: subgrantees.add(sg)
-    top_states = sorted([{"state": k, "obl": round(v, 2)} for k,v in by_state.items()],
-                        key=lambda x: -x["obl"])[:15]
-    top_types  = sorted([{"type": k, "obl": round(v, 2)} for k,v in by_type.items()],
-                        key=lambda x: -x["obl"])[:10]
-    return {
-        "totalObligated":  round(total_obl, 2),
-        "totalProjects":   projects,
-        "subgrantees":     len(subgrantees),
-        "topState":        top_states[0]["state"] if top_states else "—",
-        "topStates":       top_states,
-        "topTypes":        top_types,
-    }
-
-hm_national = {}
-if raw_hm:
-    buckets = {"HMGP": [], "BRIC": [], "FMA": []}
-    for r in raw_hm:
-        bucket = classify_hm(r)
-        if bucket:
-            buckets[bucket].append(r)
-
-    hm_national = {
-        "HMGP": agg_hm_program(buckets["HMGP"]),
-        "BRIC": agg_hm_program(buckets["BRIC"]),
-        "FMA":  agg_hm_program(buckets["FMA"]),
-    }
-    total_all = sum(hm_national[p]["totalObligated"] for p in hm_national)
-    print(f"  HM summary: ${total_all/1e9:.1f}B total | "
-          f"HMGP {len(buckets['HMGP']):,} | BRIC {len(buckets['BRIC']):,} | FMA {len(buckets['FMA']):,}")
 
 
 
@@ -1013,7 +926,6 @@ lines = [
     f'window.ERA_TOTAL_KEYS   ={json.dumps(ERA_TOTAL_KEYS,  separators=(",",":"))}',
     f'window.DATA_DATE        ="{TODAY}"',
     f'window.PA_NATIONAL      ={json.dumps(pa_national,  separators=(",",":"))}',
-    f'window.HM_NATIONAL      ={json.dumps(hm_national,  separators=(",",":"))}',
     "document.dispatchEvent(new Event('dataReady'));",
 ]
 
@@ -1120,18 +1032,14 @@ if os.path.exists("index.html"):
         html = f.read()
     # Update last-updated stamp
     html = re.sub(r'Last updated:.*?</span>', f'Last updated: <span id="about-last-updated">{TODAY}</span>', html)
-    # Inject PA_NATIONAL and HM_NATIONAL using line-based replacement
+    # Inject PA_NATIONAL using line-based replacement
     # (regex approach breaks when JSON contains semicolons in string values)
     pa_json = json.dumps(pa_national, separators=(",",":"))
-    # Only inject HM_NATIONAL if we have real data — never overwrite baked-in data with {}
-    hm_json = json.dumps(hm_national, separators=(",",":")) if hm_national else None
     lines_out = []
     for line in html.splitlines(keepends=True):
         stripped = line.strip()
         if stripped.startswith('let PA_NATIONAL') and stripped.endswith(';'):
             line = f'let PA_NATIONAL = {pa_json};\n'
-        elif stripped.startswith('let HM_NATIONAL') and stripped.endswith(';') and hm_json:
-            line = f'let HM_NATIONAL = {hm_json};\n'
         lines_out.append(line)
     html = ''.join(lines_out)
     with open("index.html", "w", encoding="utf-8") as f:

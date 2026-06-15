@@ -25,7 +25,6 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
 .wrap{position:relative;z-index:1;}
 
-/* ── nav ── */
 nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
 .brand{display:flex;align-items:baseline;gap:10px;}
 .brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
@@ -38,7 +37,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 
 .container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
 
-/* ── masthead ── */
 .masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,40px);}
 .kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
 .headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:15ch;}
@@ -51,20 +49,17 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 .stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
 @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
 
-/* ── preview banner (remove once wired to live data) ── */
-.preview{display:flex;align-items:flex-start;gap:12px;margin-top:26px;padding:14px 16px;background:var(--paper-3);border-left:3px solid var(--ember);border-radius:0 8px 8px 0;font-size:13px;color:var(--ink-2);line-height:1.55;max-width:72ch;}
+.preview{display:flex;align-items:flex-start;gap:12px;margin-top:26px;padding:14px 16px;background:var(--paper-3);border-left:3px solid var(--ember);border-radius:0 8px 8px 0;font-size:13px;color:var(--ink-2);line-height:1.55;max-width:74ch;}
 .preview b{color:var(--ink);font-weight:600;}
 .preview .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ember);margin-top:6px;}
 
-/* ── section scaffold ── */
 .sec{padding:clamp(46px,6vw,76px) 0;border-top:1px solid var(--rule);}
 .shead{margin-bottom:clamp(26px,3.5vw,40px);}
-.shead .k{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.shead .k{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
 .lead{font-size:clamp(15px,1.7vw,17px);color:var(--ink-2);max-width:64ch;margin-top:15px;line-height:1.6;}
-.opt{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ember);border:1px solid var(--h3);border-radius:3px;padding:2px 6px;}
+.ptag{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ember);border:1px solid var(--h3);border-radius:3px;padding:2px 6px;}
 
-/* ── ranked rows (states, disasters) ── */
 .tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
 .tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
 .tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
@@ -77,9 +72,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 .bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
 .bar{height:100%;border-radius:3px;background:var(--accent);}
 .barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:62px;text-align:right;}
-@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:6px 10px;}.bar-wrap{grid-column:1/-1;}.barnum{min-width:52px;}}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:6px 10px;}.bar-wrap{grid-column:1/-1;}.barnum{min-width:52px;text-align:left;}}
+.morebtn{margin-top:16px;background:none;border:none;color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;padding:3px 0;border-bottom:1px solid transparent;transition:border-color .15s;}
+.morebtn:hover{border-bottom-color:var(--accent);}
 
-/* ── category cards ── */
 .catgroup{margin-bottom:clamp(26px,3.5vw,38px);}
 .types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.2vw,24px);margin-top:14px;}
 .tcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;}
@@ -92,7 +88,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 @media(max-width:860px){.types-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.types-grid{grid-template-columns:1fr;}}
 
-/* ── year column chart ── */
 .years{display:flex;align-items:flex-end;gap:clamp(2px,.8vw,7px);height:220px;margin-top:8px;padding-top:24px;border-bottom:1px solid var(--rule-2);}
 .ycol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative;}
 .ybar{width:100%;max-width:24px;background:var(--accent-soft);border-radius:3px 3px 0 0;min-height:2px;}
@@ -102,7 +97,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 .ytick{flex:1;text-align:center;font-size:9.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;}
 .ytick.show{color:var(--ink-2);font-weight:600;}
 
-/* ── notes & footer ── */
 .note{margin-top:24px;font-size:13.5px;color:var(--ink-2);line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;max-width:66ch;}
 .maplink{display:inline-flex;align-items:center;gap:6px;margin-top:22px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--rule-2);border-radius:7px;padding:8px 14px;transition:.12s;}
 .maplink:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
@@ -111,11 +105,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 .foot a{color:var(--accent);text-decoration:none;}
 .foot a:hover{text-decoration:underline;}
 .foot .disc{max-width:62ch;}
-
-@media(prefers-reduced-motion:no-preference){
-  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
-  @keyframes rise{to{opacity:1;transform:none;}}
-}
 </style>
 </head>
 <body>
@@ -127,7 +116,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <a href="index.html">Overview</a>
     <a href="index.html#board">Explore</a>
     <a href="map.html">Map</a>
-    <a href="pa.html" class="on">Funding</a>
+    <a href="public-assistance-projects.html" class="on">Funding</a>
     <a href="index.html#about">About</a>
   </div>
   <div class="navmeta">Public Assistance · OpenFEMA</div>
@@ -136,153 +125,70 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <div class="container">
 
   <header class="masthead">
-    <div class="kicker reveal">FEMA Public Assistance · 2000–present</div>
-    <h1 class="headline reveal" style="animation-delay:.06s">Where the recovery <em>dollars go.</em></h1>
-    <p class="standfirst reveal" style="animation-delay:.12s">When a disaster overwhelms a community, FEMA's Public Assistance program reimburses state, local, and tribal governments — for the emergency response, and for rebuilding the public infrastructure the storm took out. Here is where that money has gone.</p>
+    <div class="kicker">FEMA Public Assistance · 2000–present</div>
+    <h1 class="headline">Where the recovery <em>dollars go.</em></h1>
+    <p class="standfirst">When a disaster overwhelms a community, FEMA's Public Assistance program reimburses state, local, and tribal governments — for the emergency response, and for rebuilding the public infrastructure the storm took out. Here is where that money has gone.</p>
 
-    <div class="stats reveal" style="animation-delay:.18s">
-      <div class="stat"><div class="num">$283.6<small>B</small></div><div class="lab">federal share obligated</div></div>
-      <div class="stat"><div class="num">788,478</div><div class="lab">projects funded</div></div>
-      <div class="stat"><div class="num">1,712</div><div class="lab">disasters covered</div></div>
-      <div class="stat"><div class="num">$2.1<small>B</small></div><div class="lab">largest single project</div></div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="pa-total">—</div><div class="lab">federal share obligated</div></div>
+      <div class="stat"><div class="num" id="pa-projects">—</div><div class="lab">projects funded</div></div>
+      <div class="stat"><div class="num" id="pa-disasters">—</div><div class="lab">disasters covered</div></div>
+      <div class="stat"><div class="num" id="pa-largest">—</div><div class="lab">largest single project</div></div>
     </div>
 
-    <div class="preview">
+    <div class="preview" id="preview" style="display:none">
       <span class="dot"></span>
-      <div><b>Preview layout.</b> National totals and the eight damage categories are real; the state, year, and per-disaster splits below are representative placeholders. Live values wire in straight from the Public Assistance dataset the moment the fetch completes — nothing here is hand-maintained.</div>
+      <div id="preview-text"></div>
     </div>
   </header>
 
-  <!-- ════════ WHERE IT WENT ════════ -->
+  <!-- WHERE IT WENT -->
   <section class="sec">
     <div class="shead">
-      <div class="k">By state</div>
+      <div class="k">By state <span class="ptag" id="tag-states" style="display:none">Preview</span></div>
       <h2>Where the money landed</h2>
       <p class="lead">Federal share obligated, by state and territory. A handful of catastrophic storms — Katrina, Sandy, Harvey, Maria — concentrate most of the spending in a few places.</p>
     </div>
-
-    <div class="tier-h"><span class="t">Top states &amp; territories</span><span class="c">by federal share · all 56 in the live version</span></div>
-
-    <div class="row"><div class="rank">1</div><div class="sname"><div class="n">Louisiana</div><div class="meta">Katrina, Rita, Ida</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:100%"></div></div></div><div class="barnum">$34.8B</div></div>
-    <div class="row"><div class="rank">2</div><div class="sname"><div class="n">New York</div><div class="meta">Sandy, COVID-19</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:84%"></div></div></div><div class="barnum">$29.2B</div></div>
-    <div class="row"><div class="rank">3</div><div class="sname"><div class="n">Texas</div><div class="meta">Harvey, Ike, Uri</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:76%"></div></div></div><div class="barnum">$26.5B</div></div>
-    <div class="row"><div class="rank">4</div><div class="sname"><div class="n">Florida</div><div class="meta">Irma, Michael, Ian</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:64%"></div></div></div><div class="barnum">$22.1B</div></div>
-    <div class="row"><div class="rank">5</div><div class="sname"><div class="n">Puerto Rico</div><div class="meta">Maria, Irma</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:59%"></div></div></div><div class="barnum">$20.4B</div></div>
-    <div class="row"><div class="rank">6</div><div class="sname"><div class="n">California</div><div class="meta">Wildfires, COVID-19</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:54%"></div></div></div><div class="barnum">$18.7B</div></div>
-    <div class="row"><div class="rank">7</div><div class="sname"><div class="n">New Jersey</div><div class="meta">Sandy</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:41%"></div></div></div><div class="barnum">$14.3B</div></div>
-    <div class="row"><div class="rank">8</div><div class="sname"><div class="n">Mississippi</div><div class="meta">Katrina</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:28%"></div></div></div><div class="barnum">$9.8B</div></div>
-    <div class="row"><div class="rank">9</div><div class="sname"><div class="n">North Carolina</div><div class="meta">Florence, Helene</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:21%"></div></div></div><div class="barnum">$7.2B</div></div>
-    <div class="row"><div class="rank">10</div><div class="sname"><div class="n">Pennsylvania</div><div class="meta">Sandy, Ida</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:15%"></div></div></div><div class="barnum">$5.1B</div></div>
-    <div class="row"><div class="rank">11</div><div class="sname"><div class="n">Iowa</div><div class="meta">Derecho, flooding</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:12%"></div></div></div><div class="barnum">$4.3B</div></div>
-    <div class="row"><div class="rank">12</div><div class="sname"><div class="n">Alabama</div><div class="meta">Tornadoes, Sally</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:11%"></div></div></div><div class="barnum">$3.9B</div></div>
-
-    <div class="note">In the live page, every state and territory is listed — so a Southwest Virginia official can scroll straight to Virginia, not just the headline names.</div>
+    <div class="tier-h"><span class="t">States &amp; territories</span><span class="c" id="states-count">by federal share</span></div>
+    <div id="pa-states"></div>
+    <div id="pa-states-more" hidden></div>
+    <button class="morebtn" id="states-toggle" hidden></button>
   </section>
 
-  <!-- ════════ WHAT IT PAID FOR ════════ -->
+  <!-- WHAT IT PAID FOR -->
   <section class="sec">
     <div class="shead">
-      <div class="k">By category</div>
+      <div class="k">By category <span class="ptag" id="tag-cats" style="display:none">Preview</span></div>
       <h2>What the money paid for</h2>
       <p class="lead">Every PA project falls into one of eight damage categories — grouped into the immediate <em>emergency work</em>, the longer <em>permanent work</em> of rebuilding, and the <em>management cost</em> of running the grants.</p>
     </div>
-
-    <div class="catgroup">
-      <div class="tier-h"><span class="t">Emergency work</span><span class="c">A–B · response &amp; protection</span></div>
-      <div class="types-grid">
-        <div class="tcard"><div class="top"><span class="tcode">A</span><span class="tname">Debris Removal</span></div><div class="tstat"><b>$38.4B</b> · 121K projects</div><div class="tdesc">Clearing and disposing of disaster debris — downed trees, wreckage, sediment — from public roads and property to make an area safe and passable.</div></div>
-        <div class="tcard"><div class="top"><span class="tcode">B</span><span class="tname">Emergency Protective Measures</span></div><div class="tstat"><b>$96.2B</b> · 214K projects</div><div class="tdesc">Actions to save lives and protect property before, during, and right after an event — evacuations, sandbagging, sheltering, and the bulk of the 2020 pandemic response.</div></div>
-      </div>
-    </div>
-
-    <div class="catgroup">
-      <div class="tier-h"><span class="t">Permanent work</span><span class="c">C–G · rebuilding infrastructure</span></div>
-      <div class="types-grid">
-        <div class="tcard"><div class="top"><span class="tcode">C</span><span class="tname">Roads &amp; Bridges</span></div><div class="tstat"><b>$24.6B</b> · 96K projects</div><div class="tdesc">Repairing or replacing the roads, bridges, culverts, and traffic controls that move people and goods.</div></div>
-        <div class="tcard"><div class="top"><span class="tcode">D</span><span class="tname">Water Control Facilities</span></div><div class="tstat"><b>$9.1B</b> · 18K projects</div><div class="tdesc">Restoring dams, levees, channels, and drainage works that hold water back or carry it away safely.</div></div>
-        <div class="tcard"><div class="top"><span class="tcode">E</span><span class="tname">Buildings &amp; Equipment</span></div><div class="tstat"><b>$41.8B</b> · 132K projects</div><div class="tdesc">Rebuilding public buildings — schools, hospitals, offices — and replacing the equipment and vehicles inside them.</div></div>
-        <div class="tcard"><div class="top"><span class="tcode">F</span><span class="tname">Utilities</span></div><div class="tstat"><b>$33.5B</b> · 74K projects</div><div class="tdesc">Restoring public water, sewer, power, and communications systems.</div></div>
-        <div class="tcard"><div class="top"><span class="tcode">G</span><span class="tname">Parks, Recreational &amp; Other</span></div><div class="tstat"><b>$16.2B</b> · 58K projects</div><div class="tdesc">Repairing parks, playgrounds, and other public facilities that don't fall under the categories above.</div></div>
-      </div>
-    </div>
-
-    <div class="catgroup">
-      <div class="tier-h"><span class="t">Management</span><span class="c">Z · administering the grants</span></div>
-      <div class="types-grid">
-        <div class="tcard"><div class="top"><span class="tcode">Z</span><span class="tname">Management Costs</span></div><div class="tstat"><b>$23.8B</b> · 75K projects</div><div class="tdesc">The administrative cost of running these grants — staff time and overhead to document, manage, and close out projects.</div></div>
-      </div>
-    </div>
+    <div id="pa-cats"></div>
   </section>
 
-  <!-- ════════ PA OVER TIME (proposed add) ════════ -->
+  <!-- PA OVER TIME -->
   <section class="sec">
     <div class="shead">
-      <div class="k">By year <span class="opt">Proposed add</span></div>
+      <div class="k">By year <span class="ptag" id="tag-years" style="display:none">Preview</span></div>
       <h2>Twenty-five years, a few defining storms</h2>
       <p class="lead">Federal share obligated by year. Recovery spending isn't steady — it spikes with the catastrophic events that drive it: Katrina in 2005, Sandy in 2012, the 2017 hurricane season, and the pandemic in 2020.</p>
     </div>
-
-    <div class="years">
-      <div class="ycol"><div class="ybar" style="height:7%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:10%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:21%"></div></div>
-      <div class="ycol big"><span class="yval">$42B</span><div class="ybar" style="height:100%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:19%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:26%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:14%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:21%"></div></div>
-      <div class="ycol big"><span class="yval">$24B</span><div class="ybar" style="height:57%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:17%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:14%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:19%"></div></div>
-      <div class="ycol big"><span class="yval">$38B</span><div class="ybar" style="height:90%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:29%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:17%"></div></div>
-      <div class="ycol big"><span class="yval">$35B</span><div class="ybar" style="height:83%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:33%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:26%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:21%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:24%"></div></div>
-      <div class="ycol"><div class="ybar" style="height:14%"></div></div>
-    </div>
-    <div class="yaxis">
-      <div class="ytick show">'00</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
-      <div class="ytick show">'05</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
-      <div class="ytick show">'10</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
-      <div class="ytick show">'15</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
-      <div class="ytick show">'20</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
-      <div class="ytick show">'25</div>
-    </div>
+    <div class="years" id="pa-years"></div>
+    <div class="yaxis" id="pa-years-axis"></div>
   </section>
 
-  <!-- ════════ BIGGEST DISASTERS (proposed add) ════════ -->
+  <!-- BIGGEST DISASTERS -->
   <section class="sec">
     <div class="shead">
-      <div class="k">By disaster <span class="opt">Proposed add</span></div>
+      <div class="k">By disaster <span class="ptag" id="tag-disasters" style="display:none">Preview</span></div>
       <h2>The costliest events</h2>
       <p class="lead">Which individual declarations drew the most Public Assistance dollars. The list is a roll call of the worst storms of the century — plus the one event that wasn't a storm at all.</p>
     </div>
-
     <div class="tier-h"><span class="t">Top events by federal share</span><span class="c">single declarations</span></div>
-
-    <div class="row"><div class="rank">1</div><div class="sname"><div class="n">Hurricane Katrina</div><div class="meta">2005 · LA, MS</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:100%"></div></div></div><div class="barnum">$30.1B</div></div>
-    <div class="row"><div class="rank">2</div><div class="sname"><div class="n">COVID-19 Pandemic</div><div class="meta">2020 · nationwide</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:95%;background:var(--ember)"></div></div></div><div class="barnum">$28.6B</div></div>
-    <div class="row"><div class="rank">3</div><div class="sname"><div class="n">Hurricane Sandy</div><div class="meta">2012 · NY, NJ</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:56%"></div></div></div><div class="barnum">$16.8B</div></div>
-    <div class="row"><div class="rank">4</div><div class="sname"><div class="n">Hurricane Maria</div><div class="meta">2017 · PR</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:47%"></div></div></div><div class="barnum">$14.2B</div></div>
-    <div class="row"><div class="rank">5</div><div class="sname"><div class="n">Hurricane Harvey</div><div class="meta">2017 · TX</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:45%"></div></div></div><div class="barnum">$13.5B</div></div>
-    <div class="row"><div class="rank">6</div><div class="sname"><div class="n">Hurricane Irma</div><div class="meta">2017 · FL</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:30%"></div></div></div><div class="barnum">$8.9B</div></div>
-    <div class="row"><div class="rank">7</div><div class="sname"><div class="n">Hurricane Ida</div><div class="meta">2021 · LA, NJ, NY</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:21%"></div></div></div><div class="barnum">$6.4B</div></div>
-    <div class="row"><div class="rank">8</div><div class="sname"><div class="n">Hurricane Ian</div><div class="meta">2022 · FL</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:19%"></div></div></div><div class="barnum">$5.8B</div></div>
-
+    <div id="pa-disasters-list"></div>
     <a href="map.html" class="maplink">See these on the county map →</a>
   </section>
 
-  <!-- ════════ METHOD ════════ -->
+  <!-- METHOD -->
   <section class="sec">
     <div class="shead">
       <div class="k">Method</div>
@@ -303,5 +209,204 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 </footer>
 
 </div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ── reference maps ──
+  var STATES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia",PR:"Puerto Rico",VI:"U.S. Virgin Islands",GU:"Guam",AS:"American Samoa",MP:"N. Mariana Islands",FM:"Micronesia",MH:"Marshall Islands",PW:"Palau"};
+
+  var CAT = {
+    A:{g:0,d:"Clearing and disposing of disaster debris — downed trees, wreckage, sediment — from public roads and property to make an area safe and passable."},
+    B:{g:0,d:"Actions to save lives and protect property before, during, and right after an event — evacuations, sandbagging, sheltering, and the bulk of the 2020 pandemic response."},
+    C:{g:1,d:"Repairing or replacing the roads, bridges, culverts, and traffic controls that move people and goods."},
+    D:{g:1,d:"Restoring dams, levees, channels, and drainage works that hold water back or carry it away safely."},
+    E:{g:1,d:"Rebuilding public buildings — schools, hospitals, offices — and replacing the equipment and vehicles inside them."},
+    F:{g:1,d:"Restoring public water, sewer, power, and communications systems."},
+    G:{g:1,d:"Repairing parks, playgrounds, and other public facilities that don't fall under the categories above."},
+    Z:{g:2,d:"The administrative cost of running these grants — staff time and overhead to document, manage, and close out projects."}
+  };
+  var CAT_NAME = {A:"Debris Removal",B:"Emergency Protective Measures",C:"Roads & Bridges",D:"Water Control Facilities",E:"Buildings & Equipment",F:"Utilities",G:"Parks, Recreational & Other",Z:"Management Costs"};
+  var GROUPS = [
+    {label:"Emergency work", sub:"A–B · response & protection", codes:["A","B"]},
+    {label:"Permanent work", sub:"C–G · rebuilding infrastructure", codes:["C","D","E","F","G"]},
+    {label:"Management", sub:"Z · administering the grants", codes:["Z"]}
+  ];
+
+  // ── representative fallback (used only when live data is absent) ──
+  var FB = {
+    totalObligated:283600000000, totalProjects:788478, totalDisasters:1712, largestProject:2100000000,
+    topStates:[
+      {state:"LA",obl:34.8e9,proj:8200},{state:"NY",obl:29.2e9,proj:41000},{state:"TX",obl:26.5e9,proj:62000},
+      {state:"FL",obl:22.1e9,proj:58000},{state:"PR",obl:20.4e9,proj:39000},{state:"CA",obl:18.7e9,proj:71000},
+      {state:"NJ",obl:14.3e9,proj:18000},{state:"MS",obl:9.8e9,proj:9000},{state:"NC",obl:7.2e9,proj:21000},
+      {state:"PA",obl:5.1e9,proj:14000},{state:"IA",obl:4.3e9,proj:8000},{state:"AL",obl:3.9e9,proj:12000},
+      {state:"OK",obl:3.6e9,proj:11000},{state:"VT",obl:2.4e9,proj:5000},{state:"VA",obl:2.1e9,proj:9000}
+    ],
+    topCategories:[
+      {code:"B",cat:"Emergency Protective Measures",obl:96.2e9,proj:214000},
+      {code:"E",cat:"Buildings & Equipment",obl:41.8e9,proj:132000},
+      {code:"A",cat:"Debris Removal",obl:38.4e9,proj:121000},
+      {code:"F",cat:"Utilities",obl:33.5e9,proj:74000},
+      {code:"C",cat:"Roads & Bridges",obl:24.6e9,proj:96000},
+      {code:"Z",cat:"Management Costs",obl:23.8e9,proj:75000},
+      {code:"G",cat:"Parks, Recreational & Other",obl:16.2e9,proj:58000},
+      {code:"D",cat:"Water Control Facilities",obl:9.1e9,proj:18000}
+    ],
+    byYear:[
+      {year:2000,obl:3e9},{year:2001,obl:5e9},{year:2002,obl:4e9},{year:2003,obl:5e9},{year:2004,obl:9e9},
+      {year:2005,obl:42e9},{year:2006,obl:8e9},{year:2007,obl:5e9},{year:2008,obl:11e9},{year:2009,obl:5e9},
+      {year:2010,obl:6e9},{year:2011,obl:9e9},{year:2012,obl:24e9},{year:2013,obl:7e9},{year:2014,obl:5e9},
+      {year:2015,obl:6e9},{year:2016,obl:8e9},{year:2017,obl:38e9},{year:2018,obl:12e9},{year:2019,obl:7e9},
+      {year:2020,obl:35e9},{year:2021,obl:14e9},{year:2022,obl:11e9},{year:2023,obl:9e9},{year:2024,obl:10e9},{year:2025,obl:6e9}
+    ],
+    topDisasters:[
+      {name:"Hurricane Katrina",year:"2005",inc:"Hurricane",obl:30.1e9},
+      {name:"COVID-19 Pandemic",year:"2020",inc:"Biological",obl:28.6e9},
+      {name:"Hurricane Sandy",year:"2012",inc:"Hurricane",obl:16.8e9},
+      {name:"Hurricane Maria",year:"2017",inc:"Hurricane",obl:14.2e9},
+      {name:"Hurricane Harvey",year:"2017",inc:"Hurricane",obl:13.5e9},
+      {name:"Hurricane Irma",year:"2017",inc:"Hurricane",obl:8.9e9},
+      {name:"Hurricane Ida",year:"2021",inc:"Hurricane",obl:6.4e9},
+      {name:"Hurricane Ian",year:"2022",inc:"Hurricane",obl:5.8e9}
+    ]
+  };
+
+  var PA = (window.PA_NATIONAL && window.PA_NATIONAL.totalObligated) ? window.PA_NATIONAL : null;
+  function live(f){ return !!(PA && PA[f] && (PA[f].length === undefined || PA[f].length)); }
+  function get(f){ return live(f) ? PA[f] : FB[f]; }
+
+  // ── formatters ──
+  function money(n){
+    n = +n || 0;
+    if (n >= 1e9) return "$" + (n/1e9).toFixed(1).replace(/\.0$/,"") + "B";
+    if (n >= 1e6) return "$" + Math.round(n/1e6) + "M";
+    if (n >= 1e3) return "$" + Math.round(n/1e3) + "K";
+    return "$" + Math.round(n);
+  }
+  function num(n){ return (+n || 0).toLocaleString("en-US"); }
+  function projTxt(n){ n = +n || 0; return n >= 1000 ? Math.round(n/1000) + "K projects" : n + " projects"; }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>]/g, function(c){ return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;"; }); }
+
+  // ── stats ──
+  function statVal(real, fb){ return (PA && PA[real] != null) ? PA[real] : fb; }
+  function moneyStat(n){
+    n = +n || 0;
+    if (n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,"") + '<small>B</small>';
+    if (n >= 1e6) return Math.round(n/1e6) + '<small>M</small>';
+    return num(n);
+  }
+  document.getElementById("pa-total").innerHTML    = "$" + moneyStat(statVal("totalObligated", FB.totalObligated));
+  document.getElementById("pa-projects").innerHTML = num(statVal("totalProjects", FB.totalProjects));
+  document.getElementById("pa-disasters").innerHTML= num(statVal("totalDisasters", FB.totalDisasters));
+  document.getElementById("pa-largest").innerHTML  = "$" + moneyStat(statVal("largestProject", FB.largestProject));
+
+  // ── ranked row builder ──
+  function rankRow(i, name, meta, w, val){
+    return '<div class="row"><div class="rank">' + i + '</div>' +
+      '<div class="sname"><div class="n">' + esc(name) + '</div><div class="meta">' + esc(meta) + '</div></div>' +
+      '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:' + w + '%"></div></div></div>' +
+      '<div class="barnum">' + val + '</div></div>';
+  }
+
+  // ── states ──
+  (function(){
+    var data = get("topStates").slice().sort(function(a,b){ return b.obl - a.obl; });
+    var max = data.length ? data[0].obl : 1;
+    var head = data.slice(0, 15), rest = data.slice(15);
+    function rows(arr, start){ return arr.map(function(d,k){
+      return rankRow(start + k, STATES[d.state] || d.state, projTxt(d.proj), Math.max(2, Math.round(d.obl/max*100)), money(d.obl));
+    }).join(""); }
+    document.getElementById("pa-states").innerHTML = rows(head, 1);
+    document.getElementById("states-count").textContent = "by federal share · " + data.length + " in all";
+    if (rest.length){
+      var moreEl = document.getElementById("pa-states-more");
+      moreEl.innerHTML = rows(rest, 16);
+      var btn = document.getElementById("states-toggle");
+      btn.hidden = false;
+      btn.textContent = "Show all " + data.length + " states & territories";
+      btn.addEventListener("click", function(){
+        var hidden = moreEl.hasAttribute("hidden");
+        if (hidden){ moreEl.removeAttribute("hidden"); btn.textContent = "Show top 15 only"; }
+        else { moreEl.setAttribute("hidden",""); btn.textContent = "Show all " + data.length + " states & territories"; }
+      });
+    }
+  })();
+
+  // ── categories ──
+  (function(){
+    var data = get("topCategories");
+    var byCode = {};
+    data.forEach(function(d){ byCode[d.code] = d; });
+    var html = "";
+    GROUPS.forEach(function(g){
+      var cards = g.codes.map(function(code){
+        var d = byCode[code];
+        if (!d) return "";
+        var name = CAT_NAME[code] || d.cat || code;
+        var desc = (CAT[code] && CAT[code].d) || "";
+        return '<div class="tcard"><div class="top"><span class="tcode">' + code + '</span><span class="tname">' + esc(name) + '</span></div>' +
+          '<div class="tstat"><b>' + money(d.obl) + '</b> · ' + projTxt(d.proj) + '</div>' +
+          '<div class="tdesc">' + esc(desc) + '</div></div>';
+      }).join("");
+      if (cards){
+        html += '<div class="catgroup"><div class="tier-h"><span class="t">' + g.label + '</span><span class="c">' + g.sub + '</span></div>' +
+          '<div class="types-grid">' + cards + '</div></div>';
+      }
+    });
+    document.getElementById("pa-cats").innerHTML = html;
+  })();
+
+  // ── years ──
+  (function(){
+    var data = get("byYear").slice().sort(function(a,b){ return a.year - b.year; });
+    var max = data.reduce(function(m,d){ return Math.max(m, d.obl); }, 1);
+    var big = data.slice().sort(function(a,b){ return b.obl - a.obl; }).slice(0,4).reduce(function(s,d){ s[d.year]=1; return s; }, {});
+    var cols = "", axis = "";
+    data.forEach(function(d){
+      var h = Math.max(2, Math.round(d.obl/max*100));
+      var isBig = big[d.year];
+      cols += '<div class="ycol' + (isBig ? " big" : "") + '">' + (isBig ? '<span class="yval">' + money(d.obl) + '</span>' : "") +
+        '<div class="ybar" style="height:' + h + '%"></div></div>';
+      var show = (d.year % 5 === 0);
+      axis += '<div class="ytick' + (show ? " show" : "") + '">' + (show ? "\u2019" + String(d.year).slice(2) : "") + '</div>';
+    });
+    document.getElementById("pa-years").innerHTML = cols;
+    document.getElementById("pa-years-axis").innerHTML = axis;
+  })();
+
+  // ── disasters ──
+  (function(){
+    var data = get("topDisasters").slice().sort(function(a,b){ return b.obl - a.obl; }).slice(0,10);
+    var max = data.length ? data[0].obl : 1;
+    document.getElementById("pa-disasters-list").innerHTML = data.map(function(d,k){
+      var meta = [d.year, d.inc].filter(Boolean).join(" · ");
+      return rankRow(k+1, d.name, meta, Math.max(2, Math.round(d.obl/max*100)), money(d.obl));
+    }).join("");
+  })();
+
+  // ── preview flags ──
+  function flag(id, f){ document.getElementById(id).style.display = live(f) ? "none" : "inline-block"; }
+  flag("tag-states","topStates"); flag("tag-cats","topCategories"); flag("tag-years","byYear"); flag("tag-disasters","topDisasters");
+
+  var allLive = !!PA && live("topStates") && live("topCategories") && live("byYear") && live("topDisasters");
+  var pv = document.getElementById("preview");
+  if (allLive){
+    pv.style.display = "none";
+  } else {
+    pv.style.display = "flex";
+    var msg;
+    if (!PA){
+      msg = "<b>Preview layout.</b> This page is showing representative figures because the live Public Assistance data isn't loaded in this view. On the site it renders the real numbers straight from the dataset.";
+    } else {
+      msg = "<b>Live data, with two previews.</b> The headline, states, and categories are real. The <b>by-year</b> and <b>costliest-events</b> sections are still representative — they populate from the dataset on the next refresh after the build update ships.";
+    }
+    document.getElementById("preview-text").innerHTML = msg;
+  }
+})();
+</script>
+
 </body>
 </html>
