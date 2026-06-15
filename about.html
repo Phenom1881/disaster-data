@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>About · Disaster Data</title>
+<meta name="description" content="What Disaster Data is, where the numbers come from, and the 25 federal hazard types it tracks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+.wrap{position:relative;z-index:1;}
+
+/* ---- nav (matches dashboard) ---- */
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
+a.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:inherit;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
+.navlinks{display:flex;align-items:center;gap:4px;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+.navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+@media(max-width:720px){.navlinks a:not(.on){display:none;}.navmeta{display:none;}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+/* ---- masthead ---- */
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,40px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,64px);line-height:1.03;letter-spacing:-1.5px;max-width:18ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:60ch;margin-top:24px;line-height:1.55;}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(30px,4vw,42px);}
+.fact{background:var(--paper-2);padding:20px 22px;}
+.fact .n{font-family:var(--serif);font-weight:500;font-size:clamp(22px,3vw,32px);line-height:1;letter-spacing:-.8px;}
+.fact .l{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+@media(max-width:560px){.facts{grid-template-columns:1fr;}}
+
+/* ---- sections ---- */
+main{display:block;}
+.section{padding:clamp(34px,5vw,58px) 0;border-top:1px solid var(--rule);}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;}
+.section h2{font-family:var(--serif);font-weight:500;font-size:clamp(23px,3.3vw,33px);letter-spacing:-.8px;line-height:1.1;max-width:22ch;margin-bottom:18px;}
+.prose{max-width:64ch;color:var(--ink-2);font-size:clamp(15px,1.6vw,17px);line-height:1.7;}
+.prose p+p{margin-top:14px;}
+.prose strong{color:var(--ink);font-weight:600;}
+.prose a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);transition:border-color .15s;}
+.prose a:hover{border-bottom-color:var(--accent);}
+
+/* ---- declaration types ---- */
+.dtypes{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px;}
+.dtype{flex:1 1 220px;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;}
+.dt-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.swatch{width:13px;height:13px;border-radius:3px;flex:none;}
+.dt-code{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:-.2px;}
+.dt-name{font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-3);}
+.dtype p{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+
+/* ---- hazard families ---- */
+.families{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:24px;}
+.fam{background:var(--paper-2);padding:22px 22px 20px;}
+.fam-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:-.2px;margin-bottom:7px;}
+.fam-desc{font-size:13px;color:var(--ink-2);line-height:1.5;margin-bottom:14px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;}
+.type-tag{font-family:var(--sans);font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--paper-3);border:1px solid var(--rule-2);border-radius:5px;padding:3px 9px;letter-spacing:.2px;}
+@media(max-width:720px){.families{grid-template-columns:1fr;}}
+
+/* ---- term definitions ---- */
+.defs{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:24px;max-width:780px;}
+.def{background:var(--paper-2);padding:16px 20px;}
+.def-t{font-family:var(--serif);font-weight:600;font-size:15px;margin-bottom:4px;}
+.def-d{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+
+/* ---- cta ---- */
+.cta-band{padding:clamp(44px,6vw,76px) 0;border-top:1px solid var(--rule);text-align:center;}
+.cta-band h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.6vw,38px);letter-spacing:-1px;margin-bottom:22px;max-width:20ch;margin-left:auto;margin-right:auto;}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:14px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:12px 22px;text-decoration:none;transition:.15s;}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2);}
+
+/* ---- footer (matches dashboard) ---- */
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <a class="brand" href="index.html"><span class="mark">Disaster Data</span></a>
+  <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="map.html">Map</a><a href="about.html" class="on">About</a></div>
+  <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
+</nav>
+
+<div class="container">
+  <header class="masthead">
+    <div class="kicker reveal">About</div>
+    <h1 class="headline reveal" style="animation-delay:.06s">The federal disaster record, <em>made legible.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">Disaster Data is a free, open window into every federal disaster and emergency declaration since 2000 — built so a county commissioner, a reporter, or a resident can explore it without a FEMA login or a GIS background.</p>
+    <div class="facts">
+      <div class="fact"><div class="n">Since FY2000</div><div class="l">25 years of declarations</div></div>
+      <div class="fact"><div class="n">57</div><div class="l">states &amp; territories</div></div>
+      <div class="fact"><div class="n">25</div><div class="l">hazard types tracked</div></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="eyebrow">What this is</div>
+      <h2>Every federal declaration since 2000, mapped and ranked.</h2>
+      <div class="prose">
+        <p>Since 2000, the federal government has issued thousands of disaster and emergency declarations — the formal decisions that unlock federal help after a hurricane, flood, wildfire, ice storm, or public-health crisis. The full record is public, but it lives in spreadsheets and APIs built for analysts.</p>
+        <p>Disaster Data puts that record on a map and a scoreboard. Drag the year range to watch a decade reshape the rankings, filter by hazard, and drill into any state to see its individual declarations and how often requests were denied. No account, no cost, nothing to install.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Where the data comes from</div>
+      <h2>Straight from OpenFEMA, refreshed automatically.</h2>
+      <div class="prose">
+        <p>Every figure here is drawn from FEMA's <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">Disaster Declarations Summaries (v2)</a>, published through the OpenFEMA program and refreshed on a schedule so the dashboard stays current.</p>
+        <p>Disaster Data uses OpenFEMA data but is <strong>not endorsed by or affiliated with FEMA</strong>. It's an independent project — any errors or interpretations are ours, not the agency's. Where a number here disagrees with an official FEMA source, treat the official source as authoritative.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">What the numbers mean</div>
+      <h2>Declarations, not dollars.</h2>
+      <div class="prose">
+        <p>Every count on this site is a count of <strong>declaration records</strong> — how many times a federal declaration was issued — not a measure of damage, cost, or lives affected. A small county flood and a multi-state hurricane each register as one declaration; the dollars behind them can differ by orders of magnitude.</p>
+        <p>A few things worth knowing before you cite a figure. <strong>Fire</strong> is the largest category by far, but that's inflated by Fire Management Assistance declarations, which a single fast-moving wildfire can generate quickly — it doesn't mean fire is the most damaging hazard. The four biggest categories — Fire, Severe Storm, Hurricane, and Flood — make up roughly five of every six declarations. And a <strong>denial</strong> reflects an assistance request that was turned down, which is a measure of process and eligibility, not of how severe an event was.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">How declarations are classified</div>
+      <h2>Three kinds of declaration.</h2>
+      <div class="prose">
+        <p>FEMA issues declarations under three programs. Disaster Data color-codes them the same way everywhere they appear.</p>
+      </div>
+      <div class="dtypes">
+        <div class="dtype">
+          <div class="dt-head"><span class="swatch" style="background:#1d1813"></span><span class="dt-code">DR</span><span class="dt-name">Major Disaster</span></div>
+          <p>The broadest and most common. Issued for events that overwhelm state and local resources, unlocking the widest range of federal assistance.</p>
+        </div>
+        <div class="dtype">
+          <div class="dt-head"><span class="swatch" style="background:#004c53"></span><span class="dt-code">EM</span><span class="dt-name">Emergency</span></div>
+          <p>A narrower, faster declaration to protect lives and property — often issued ahead of, or alongside, a major disaster.</p>
+        </div>
+        <div class="dtype">
+          <div class="dt-head"><span class="swatch" style="background:#c85c2e"></span><span class="dt-code">FM</span><span class="dt-name">Fire Management</span></div>
+          <p>Fire Management Assistance, for wildfires threatening to become major disasters. Busy fire seasons can generate many of these in a short window.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">What we track</div>
+      <h2>The 25 hazard types.</h2>
+      <div class="prose">
+        <p>FEMA tags every declaration with an incident type. Disaster Data tracks all 25 that appear in the record, grouped here into families. On the dashboard the hazard count ticks down as you narrow the years — the rarest types drop out of short windows.</p>
+      </div>
+      <div class="families">
+        <div class="fam">
+          <div class="fam-name">Tropical &amp; coastal</div>
+          <div class="fam-desc">Storms that form over warm water and come ashore.</div>
+          <div class="tags"><span class="type-tag">Hurricane</span><span class="type-tag">Typhoon</span><span class="type-tag">Tropical Storm</span><span class="type-tag">Tropical Depression</span><span class="type-tag">Coastal Storm</span></div>
+        </div>
+        <div class="fam">
+          <div class="fam-name">Severe storms &amp; wind</div>
+          <div class="fam-desc">Thunderstorm systems, tornado outbreaks, and damaging straight-line winds.</div>
+          <div class="tags"><span class="type-tag">Severe Storm</span><span class="type-tag">Tornado</span><span class="type-tag">Straight-Line Winds</span></div>
+        </div>
+        <div class="fam">
+          <div class="fam-name">Flooding &amp; water</div>
+          <div class="fam-desc">Inundation from rivers, failed dams and levees, and sea waves.</div>
+          <div class="tags"><span class="type-tag">Flood</span><span class="type-tag">Dam/Levee Break</span><span class="type-tag">Tsunami</span></div>
+        </div>
+        <div class="fam">
+          <div class="fam-name">Fire &amp; drought</div>
+          <div class="fam-desc">Wildfire and the dry conditions that feed it.</div>
+          <div class="tags"><span class="type-tag">Fire</span><span class="type-tag">Drought</span></div>
+        </div>
+        <div class="fam">
+          <div class="fam-name">Winter weather</div>
+          <div class="fam-desc">Snow, ice, and hard freezes.</div>
+          <div class="tags"><span class="type-tag">Snowstorm</span><span class="type-tag">Severe Ice Storm</span><span class="type-tag">Winter Storm</span><span class="type-tag">Freezing</span></div>
+        </div>
+        <div class="fam">
+          <div class="fam-name">Earth &amp; ground</div>
+          <div class="fam-desc">Hazards from the ground itself.</div>
+          <div class="tags"><span class="type-tag">Earthquake</span><span class="type-tag">Volcanic Eruption</span><span class="type-tag">Mud/Landslide</span></div>
+        </div>
+        <div class="fam">
+          <div class="fam-name">Biological, chemical &amp; other</div>
+          <div class="fam-desc">Public-health, hazardous-material, and human-caused events.</div>
+          <div class="tags"><span class="type-tag">Biological</span><span class="type-tag">Chemical</span><span class="type-tag">Toxic Substances</span><span class="type-tag">Terrorist</span><span class="type-tag">Other</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Reading the dashboard</div>
+      <h2>A few terms.</h2>
+      <div class="defs">
+        <div class="def"><div class="def-t">Fiscal year</div><div class="def-d">Declarations are grouped by federal fiscal year, which runs October through September. A declaration issued in October 2025 counts toward FY2026 — so recent-year totals can look different from calendar-year ones.</div></div>
+        <div class="def"><div class="def-t">Denial rate</div><div class="def-d">The share of a state's assistance requests that were denied, out of all requests (approved plus denied). It reflects process and eligibility, not how severe an event was.</div></div>
+        <div class="def"><div class="def-t">Days to approve</div><div class="def-d">The average time between a request and its decision — a rough read on how quickly assistance moved.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Who's behind it</div>
+      <h2>Part of CompliAid.</h2>
+      <div class="prose">
+        <p>Disaster Data is built and maintained as part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a>, and shares its principles: privacy-first, no ads, nothing tracked for sale, and tools designed for the real constraints of rural and local government.</p>
+        <p>The aim is simple — make public disaster data genuinely usable by the people who live with disasters, not just the people who study them.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>See where disaster strikes, and how often.</h2>
+    <a class="btn" href="index.html">Explore the dashboard &rarr;</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries (FY2000–FY2026) — uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Counts reflect declaration records, not official financial or loss reporting.</div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a></div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

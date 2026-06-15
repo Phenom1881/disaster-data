@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Public Assistance — Disaster Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
+
+/* ── nav ── */
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
+.brand{display:flex;align-items:baseline;gap:10px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
+.navlinks{display:flex;align-items:center;gap:4px;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+.navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+@media(max-width:720px){.navlinks a:not(.on){display:none;}.navmeta{display:none;}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+/* ── masthead ── */
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,40px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:15ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:60ch;margin-top:24px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+/* ── preview banner (remove once wired to live data) ── */
+.preview{display:flex;align-items:flex-start;gap:12px;margin-top:26px;padding:14px 16px;background:var(--paper-3);border-left:3px solid var(--ember);border-radius:0 8px 8px 0;font-size:13px;color:var(--ink-2);line-height:1.55;max-width:72ch;}
+.preview b{color:var(--ink);font-weight:600;}
+.preview .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ember);margin-top:6px;}
+
+/* ── section scaffold ── */
+.sec{padding:clamp(46px,6vw,76px) 0;border-top:1px solid var(--rule);}
+.shead{margin-bottom:clamp(26px,3.5vw,40px);}
+.shead .k{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
+.lead{font-size:clamp(15px,1.7vw,17px);color:var(--ink-2);max-width:64ch;margin-top:15px;line-height:1.6;}
+.opt{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ember);border:1px solid var(--h3);border-radius:3px;padding:2px 6px;}
+
+/* ── ranked rows (states, disasters) ── */
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
+.row{display:grid;grid-template-columns:34px 1.7fr 3fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);border-radius:6px;}
+.rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;}
+.sname{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sname .meta{font-size:11.5px;color:var(--ink-3);}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;background:var(--accent);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:62px;text-align:right;}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:6px 10px;}.bar-wrap{grid-column:1/-1;}.barnum{min-width:52px;}}
+
+/* ── category cards ── */
+.catgroup{margin-bottom:clamp(26px,3.5vw,38px);}
+.types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.2vw,24px);margin-top:14px;}
+.tcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;}
+.tcard .top{display:flex;align-items:baseline;gap:12px;}
+.tcode{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.5px;line-height:1;color:var(--accent);}
+.tname{font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:-.2px;line-height:1.15;}
+.tstat{font-size:11px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);margin-top:12px;font-variant-numeric:tabular-nums;text-transform:uppercase;}
+.tstat b{color:var(--ink);font-weight:700;font-size:13px;}
+.tdesc{font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:11px;}
+@media(max-width:860px){.types-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.types-grid{grid-template-columns:1fr;}}
+
+/* ── year column chart ── */
+.years{display:flex;align-items:flex-end;gap:clamp(2px,.8vw,7px);height:220px;margin-top:8px;padding-top:24px;border-bottom:1px solid var(--rule-2);}
+.ycol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative;}
+.ybar{width:100%;max-width:24px;background:var(--accent-soft);border-radius:3px 3px 0 0;min-height:2px;}
+.ycol.big .ybar{background:var(--ember);}
+.yval{position:absolute;top:-18px;font-family:var(--serif);font-weight:600;font-size:10px;color:var(--ember);white-space:nowrap;}
+.yaxis{display:flex;gap:clamp(2px,.8vw,7px);margin-top:7px;}
+.ytick{flex:1;text-align:center;font-size:9.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;}
+.ytick.show{color:var(--ink-2);font-weight:600;}
+
+/* ── notes & footer ── */
+.note{margin-top:24px;font-size:13.5px;color:var(--ink-2);line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;max-width:66ch;}
+.maplink{display:inline-flex;align-items:center;gap:6px;margin-top:22px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--rule-2);border-radius:7px;padding:8px 14px;transition:.12s;}
+.maplink:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="brand"><span class="mark">Disaster Data</span></div>
+  <div class="navlinks">
+    <a href="index.html">Overview</a>
+    <a href="index.html#board">Explore</a>
+    <a href="map.html">Map</a>
+    <a href="pa.html" class="on">Funding</a>
+    <a href="index.html#about">About</a>
+  </div>
+  <div class="navmeta">Public Assistance · OpenFEMA</div>
+</nav>
+
+<div class="container">
+
+  <header class="masthead">
+    <div class="kicker reveal">FEMA Public Assistance · 2000–present</div>
+    <h1 class="headline reveal" style="animation-delay:.06s">Where the recovery <em>dollars go.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">When a disaster overwhelms a community, FEMA's Public Assistance program reimburses state, local, and tribal governments — for the emergency response, and for rebuilding the public infrastructure the storm took out. Here is where that money has gone.</p>
+
+    <div class="stats reveal" style="animation-delay:.18s">
+      <div class="stat"><div class="num">$283.6<small>B</small></div><div class="lab">federal share obligated</div></div>
+      <div class="stat"><div class="num">788,478</div><div class="lab">projects funded</div></div>
+      <div class="stat"><div class="num">1,712</div><div class="lab">disasters covered</div></div>
+      <div class="stat"><div class="num">$2.1<small>B</small></div><div class="lab">largest single project</div></div>
+    </div>
+
+    <div class="preview">
+      <span class="dot"></span>
+      <div><b>Preview layout.</b> National totals and the eight damage categories are real; the state, year, and per-disaster splits below are representative placeholders. Live values wire in straight from the Public Assistance dataset the moment the fetch completes — nothing here is hand-maintained.</div>
+    </div>
+  </header>
+
+  <!-- ════════ WHERE IT WENT ════════ -->
+  <section class="sec">
+    <div class="shead">
+      <div class="k">By state</div>
+      <h2>Where the money landed</h2>
+      <p class="lead">Federal share obligated, by state and territory. A handful of catastrophic storms — Katrina, Sandy, Harvey, Maria — concentrate most of the spending in a few places.</p>
+    </div>
+
+    <div class="tier-h"><span class="t">Top states &amp; territories</span><span class="c">by federal share · all 56 in the live version</span></div>
+
+    <div class="row"><div class="rank">1</div><div class="sname"><div class="n">Louisiana</div><div class="meta">Katrina, Rita, Ida</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:100%"></div></div></div><div class="barnum">$34.8B</div></div>
+    <div class="row"><div class="rank">2</div><div class="sname"><div class="n">New York</div><div class="meta">Sandy, COVID-19</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:84%"></div></div></div><div class="barnum">$29.2B</div></div>
+    <div class="row"><div class="rank">3</div><div class="sname"><div class="n">Texas</div><div class="meta">Harvey, Ike, Uri</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:76%"></div></div></div><div class="barnum">$26.5B</div></div>
+    <div class="row"><div class="rank">4</div><div class="sname"><div class="n">Florida</div><div class="meta">Irma, Michael, Ian</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:64%"></div></div></div><div class="barnum">$22.1B</div></div>
+    <div class="row"><div class="rank">5</div><div class="sname"><div class="n">Puerto Rico</div><div class="meta">Maria, Irma</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:59%"></div></div></div><div class="barnum">$20.4B</div></div>
+    <div class="row"><div class="rank">6</div><div class="sname"><div class="n">California</div><div class="meta">Wildfires, COVID-19</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:54%"></div></div></div><div class="barnum">$18.7B</div></div>
+    <div class="row"><div class="rank">7</div><div class="sname"><div class="n">New Jersey</div><div class="meta">Sandy</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:41%"></div></div></div><div class="barnum">$14.3B</div></div>
+    <div class="row"><div class="rank">8</div><div class="sname"><div class="n">Mississippi</div><div class="meta">Katrina</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:28%"></div></div></div><div class="barnum">$9.8B</div></div>
+    <div class="row"><div class="rank">9</div><div class="sname"><div class="n">North Carolina</div><div class="meta">Florence, Helene</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:21%"></div></div></div><div class="barnum">$7.2B</div></div>
+    <div class="row"><div class="rank">10</div><div class="sname"><div class="n">Pennsylvania</div><div class="meta">Sandy, Ida</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:15%"></div></div></div><div class="barnum">$5.1B</div></div>
+    <div class="row"><div class="rank">11</div><div class="sname"><div class="n">Iowa</div><div class="meta">Derecho, flooding</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:12%"></div></div></div><div class="barnum">$4.3B</div></div>
+    <div class="row"><div class="rank">12</div><div class="sname"><div class="n">Alabama</div><div class="meta">Tornadoes, Sally</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:11%"></div></div></div><div class="barnum">$3.9B</div></div>
+
+    <div class="note">In the live page, every state and territory is listed — so a Southwest Virginia official can scroll straight to Virginia, not just the headline names.</div>
+  </section>
+
+  <!-- ════════ WHAT IT PAID FOR ════════ -->
+  <section class="sec">
+    <div class="shead">
+      <div class="k">By category</div>
+      <h2>What the money paid for</h2>
+      <p class="lead">Every PA project falls into one of eight damage categories — grouped into the immediate <em>emergency work</em>, the longer <em>permanent work</em> of rebuilding, and the <em>management cost</em> of running the grants.</p>
+    </div>
+
+    <div class="catgroup">
+      <div class="tier-h"><span class="t">Emergency work</span><span class="c">A–B · response &amp; protection</span></div>
+      <div class="types-grid">
+        <div class="tcard"><div class="top"><span class="tcode">A</span><span class="tname">Debris Removal</span></div><div class="tstat"><b>$38.4B</b> · 121K projects</div><div class="tdesc">Clearing and disposing of disaster debris — downed trees, wreckage, sediment — from public roads and property to make an area safe and passable.</div></div>
+        <div class="tcard"><div class="top"><span class="tcode">B</span><span class="tname">Emergency Protective Measures</span></div><div class="tstat"><b>$96.2B</b> · 214K projects</div><div class="tdesc">Actions to save lives and protect property before, during, and right after an event — evacuations, sandbagging, sheltering, and the bulk of the 2020 pandemic response.</div></div>
+      </div>
+    </div>
+
+    <div class="catgroup">
+      <div class="tier-h"><span class="t">Permanent work</span><span class="c">C–G · rebuilding infrastructure</span></div>
+      <div class="types-grid">
+        <div class="tcard"><div class="top"><span class="tcode">C</span><span class="tname">Roads &amp; Bridges</span></div><div class="tstat"><b>$24.6B</b> · 96K projects</div><div class="tdesc">Repairing or replacing the roads, bridges, culverts, and traffic controls that move people and goods.</div></div>
+        <div class="tcard"><div class="top"><span class="tcode">D</span><span class="tname">Water Control Facilities</span></div><div class="tstat"><b>$9.1B</b> · 18K projects</div><div class="tdesc">Restoring dams, levees, channels, and drainage works that hold water back or carry it away safely.</div></div>
+        <div class="tcard"><div class="top"><span class="tcode">E</span><span class="tname">Buildings &amp; Equipment</span></div><div class="tstat"><b>$41.8B</b> · 132K projects</div><div class="tdesc">Rebuilding public buildings — schools, hospitals, offices — and replacing the equipment and vehicles inside them.</div></div>
+        <div class="tcard"><div class="top"><span class="tcode">F</span><span class="tname">Utilities</span></div><div class="tstat"><b>$33.5B</b> · 74K projects</div><div class="tdesc">Restoring public water, sewer, power, and communications systems.</div></div>
+        <div class="tcard"><div class="top"><span class="tcode">G</span><span class="tname">Parks, Recreational &amp; Other</span></div><div class="tstat"><b>$16.2B</b> · 58K projects</div><div class="tdesc">Repairing parks, playgrounds, and other public facilities that don't fall under the categories above.</div></div>
+      </div>
+    </div>
+
+    <div class="catgroup">
+      <div class="tier-h"><span class="t">Management</span><span class="c">Z · administering the grants</span></div>
+      <div class="types-grid">
+        <div class="tcard"><div class="top"><span class="tcode">Z</span><span class="tname">Management Costs</span></div><div class="tstat"><b>$23.8B</b> · 75K projects</div><div class="tdesc">The administrative cost of running these grants — staff time and overhead to document, manage, and close out projects.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ PA OVER TIME (proposed add) ════════ -->
+  <section class="sec">
+    <div class="shead">
+      <div class="k">By year <span class="opt">Proposed add</span></div>
+      <h2>Twenty-five years, a few defining storms</h2>
+      <p class="lead">Federal share obligated by year. Recovery spending isn't steady — it spikes with the catastrophic events that drive it: Katrina in 2005, Sandy in 2012, the 2017 hurricane season, and the pandemic in 2020.</p>
+    </div>
+
+    <div class="years">
+      <div class="ycol"><div class="ybar" style="height:7%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:10%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:21%"></div></div>
+      <div class="ycol big"><span class="yval">$42B</span><div class="ybar" style="height:100%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:19%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:26%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:14%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:21%"></div></div>
+      <div class="ycol big"><span class="yval">$24B</span><div class="ybar" style="height:57%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:17%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:12%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:14%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:19%"></div></div>
+      <div class="ycol big"><span class="yval">$38B</span><div class="ybar" style="height:90%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:29%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:17%"></div></div>
+      <div class="ycol big"><span class="yval">$35B</span><div class="ybar" style="height:83%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:33%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:26%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:21%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:24%"></div></div>
+      <div class="ycol"><div class="ybar" style="height:14%"></div></div>
+    </div>
+    <div class="yaxis">
+      <div class="ytick show">'00</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
+      <div class="ytick show">'05</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
+      <div class="ytick show">'10</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
+      <div class="ytick show">'15</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
+      <div class="ytick show">'20</div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div><div class="ytick"></div>
+      <div class="ytick show">'25</div>
+    </div>
+  </section>
+
+  <!-- ════════ BIGGEST DISASTERS (proposed add) ════════ -->
+  <section class="sec">
+    <div class="shead">
+      <div class="k">By disaster <span class="opt">Proposed add</span></div>
+      <h2>The costliest events</h2>
+      <p class="lead">Which individual declarations drew the most Public Assistance dollars. The list is a roll call of the worst storms of the century — plus the one event that wasn't a storm at all.</p>
+    </div>
+
+    <div class="tier-h"><span class="t">Top events by federal share</span><span class="c">single declarations</span></div>
+
+    <div class="row"><div class="rank">1</div><div class="sname"><div class="n">Hurricane Katrina</div><div class="meta">2005 · LA, MS</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:100%"></div></div></div><div class="barnum">$30.1B</div></div>
+    <div class="row"><div class="rank">2</div><div class="sname"><div class="n">COVID-19 Pandemic</div><div class="meta">2020 · nationwide</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:95%;background:var(--ember)"></div></div></div><div class="barnum">$28.6B</div></div>
+    <div class="row"><div class="rank">3</div><div class="sname"><div class="n">Hurricane Sandy</div><div class="meta">2012 · NY, NJ</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:56%"></div></div></div><div class="barnum">$16.8B</div></div>
+    <div class="row"><div class="rank">4</div><div class="sname"><div class="n">Hurricane Maria</div><div class="meta">2017 · PR</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:47%"></div></div></div><div class="barnum">$14.2B</div></div>
+    <div class="row"><div class="rank">5</div><div class="sname"><div class="n">Hurricane Harvey</div><div class="meta">2017 · TX</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:45%"></div></div></div><div class="barnum">$13.5B</div></div>
+    <div class="row"><div class="rank">6</div><div class="sname"><div class="n">Hurricane Irma</div><div class="meta">2017 · FL</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:30%"></div></div></div><div class="barnum">$8.9B</div></div>
+    <div class="row"><div class="rank">7</div><div class="sname"><div class="n">Hurricane Ida</div><div class="meta">2021 · LA, NJ, NY</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:21%"></div></div></div><div class="barnum">$6.4B</div></div>
+    <div class="row"><div class="rank">8</div><div class="sname"><div class="n">Hurricane Ian</div><div class="meta">2022 · FL</div></div><div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:19%"></div></div></div><div class="barnum">$5.8B</div></div>
+
+    <a href="map.html" class="maplink">See these on the county map →</a>
+  </section>
+
+  <!-- ════════ METHOD ════════ -->
+  <section class="sec">
+    <div class="shead">
+      <div class="k">Method</div>
+      <h2>About this data</h2>
+      <p class="lead">Figures come from OpenFEMA's <em>Public Assistance Funded Projects Details</em>, every funded project with a declaration date in 2000 or later. "Federal share obligated" is the federal government's committed portion — not the full project cost, and not necessarily the amount finally spent. One disaster can fund tens of thousands of separate projects across many applicants.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="disc">Disaster Data · A community project. Public Assistance figures from OpenFEMA, refreshed weekly. Federal share obligated reflects committed funding and may be revised as projects close out. Not affiliated with FEMA or DHS.</div>
+      <div><a href="index.html">Overview</a> · <a href="map.html">Map</a> · <a href="https://www.fema.gov/openfema" target="_blank" rel="noopener">OpenFEMA</a></div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
