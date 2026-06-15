@@ -286,6 +286,7 @@ if raw_pa:
     pa_by_cat     = {}
     pa_by_disaster = {}
     pa_by_year    = {}
+    pa_state_dis  = {}   # state -> {disasterNumber -> {obl, proj, inc, year}} (drill-down)
 
     # disasterNumber -> declaration title (from declarations fetched earlier)
     dn_title = {}
@@ -338,6 +339,16 @@ if raw_pa:
             pa_by_disaster[dn]["obl"]  += obl
             pa_by_disaster[dn]["proj"] += 1
 
+            # per-state disaster rollup (powers state → disasters drill-down)
+            _sd = pa_state_dis.setdefault(st, {})
+            _e  = _sd.get(dn)
+            if _e is None:
+                _e = _sd[dn] = {"obl": 0, "proj": 0,
+                                "inc": r.get("incidentType") or "",
+                                "year": yr if yr.isdigit() else ""}
+            _e["obl"]  += obl
+            _e["proj"] += 1
+
     # Top 15 states by federal share
     top_states = sorted(
         [{"state": k, "obl": round(v["obl"],2), "proj": v["proj"]} for k,v in pa_by_state.items()],
@@ -364,6 +375,18 @@ if raw_pa:
         key=lambda x: -x["obl"]
     )[:10]
 
+    # state -> its disasters, each sorted by federal share (names from declarations)
+    state_disasters = {}
+    for _st, _sd in pa_state_dis.items():
+        state_disasters[_st] = sorted(
+            [{"num":  k,
+              "name": dn_title.get(k) or ((v["inc"] + (" " + v["year"] if v["year"] else "")).strip()) or f"DR-{k}",
+              "inc":  v["inc"], "year": v["year"],
+              "obl":  round(v["obl"], 2), "proj": v["proj"]}
+             for k, v in _sd.items()],
+            key=lambda x: -x["obl"]
+        )
+
     # Largest single project
     largest = max((float(r.get("federalShareObligated") or 0) for r in raw_pa), default=0)
 
@@ -378,6 +401,7 @@ if raw_pa:
         "topCategories":   top_cats,
         "byYear":          by_year,
         "topDisasters":    top_disasters,
+        "stateDisasters":  state_disasters,
     }
     print(f"  PA summary: ${pa_total_obl/1e9:.1f}B total, {len(pa_disasters):,} disasters, {pa_total_proj:,} projects")
 

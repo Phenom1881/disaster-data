@@ -105,6 +105,53 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 .foot a{color:var(--accent);text-decoration:none;}
 .foot a:hover{text-decoration:underline;}
 .foot .disc{max-width:62ch;}
+
+/* ── state → disaster → project drill-down ── */
+.xrow{cursor:pointer;transition:background .12s;}
+.xrow:hover{background:var(--paper-3);}
+.xrow:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.chev{display:inline-block;width:0;height:0;border-left:5px solid var(--ink-3);border-top:4px solid transparent;border-bottom:4px solid transparent;margin-right:9px;vertical-align:middle;transition:transform .15s;flex:none;}
+[aria-expanded="true"] > .chev,
+[aria-expanded="true"] > .sname .chev,
+[aria-expanded="true"] > .dis-name .chev{transform:rotate(90deg);}
+.xitem{border-bottom:1px solid var(--rule);}
+.xitem > .row{border-bottom:none;}
+.xpanel{background:var(--paper-3);border-radius:0 0 8px 8px;max-height:440px;overflow-y:auto;overscroll-behavior:contain;}
+
+.dis-item{border-top:1px solid var(--rule);}
+.dis-item:first-child{border-top:none;}
+.dis-head{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,2.1fr) auto auto;align-items:center;gap:14px;padding:9px 14px 9px 20px;cursor:pointer;transition:background .12s;}
+.dis-head:hover{background:var(--paper-2);}
+.dis-head:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.dis-name{font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-.1px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dis-name .chev{border-left-color:var(--accent-2);}
+.dis-meta{font-weight:400;color:var(--ink-3);font-size:11.5px;margin-left:7px;}
+.dis-bar{height:9px;background:var(--paper);border-radius:2px;overflow:hidden;}
+.dis-bar-fill{height:100%;background:var(--accent-2);border-radius:2px;}
+.dis-proj{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
+.dis-obl{font-family:var(--serif);font-weight:600;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right;min-width:50px;}
+.dis-detail{background:var(--paper);border-top:1px dashed var(--rule-2);}
+
+.proj-list{padding:2px 0;}
+.proj-line{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:12px;padding:6px 16px 6px 30px;font-size:12.5px;border-top:1px solid var(--paper-3);}
+.proj-line:first-child{border-top:none;}
+.proj-cat{font-family:var(--serif);font-weight:700;font-size:11.5px;color:#fff;background:var(--accent);width:22px;height:22px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;}
+.proj-title{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.proj-obl{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);text-align:right;}
+.proj-status{padding:9px 16px 12px 30px;font-size:11.5px;color:var(--ink-3);letter-spacing:.2px;}
+.proj-status a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s;}
+.proj-status a:hover{border-bottom-color:var(--accent);}
+.proj-status.proj-err{color:var(--ember);}
+.proj-status.proj-err a{color:var(--accent);}
+.xempty{padding:12px 16px;font-size:12.5px;color:var(--ink-3);}
+@media(max-width:720px){
+  .dis-head{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 14px 8px 16px;}
+  .dis-bar{display:none;}
+  .dis-name{grid-column:1;grid-row:1;}
+  .dis-obl{grid-column:2;grid-row:1;}
+  .dis-proj{grid-column:1/-1;grid-row:2;text-align:left;}
+  .proj-line{padding-left:18px;}
+}
 </style>
 </head>
 <body>
@@ -311,16 +358,33 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       '<div class="barnum">' + val + '</div></div>';
   }
 
-  // ── states ──
+  // ── states (expandable: state → disasters → projects) ──
   (function(){
     var data = get("topStates").slice().sort(function(a,b){ return b.obl - a.obl; });
     var max = data.length ? data[0].obl : 1;
+    var SD = (PA && PA.stateDisasters) || null;
+    var DRILL = !!(SD && Object.keys(SD).length);   // off until stateDisasters ships in data.js
+
+    function stateRow(i, d){
+      var w = Math.max(2, Math.round(d.obl/max*100));
+      var nm = STATES[d.state] || d.state;
+      var bar = '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:' + w + '%"></div></div></div>';
+      var chev = DRILL ? '<span class="chev"></span>' : '';
+      var attrs = DRILL ? ' role="button" tabindex="0" aria-expanded="false" data-st="' + esc(d.state) + '"' : '';
+      var head = '<div class="row' + (DRILL ? ' xrow' : '') + '"' + attrs + '>' +
+          '<div class="rank">' + i + '</div>' +
+          '<div class="sname"><div class="n">' + chev + esc(nm) + '</div><div class="meta">' + projTxt(d.proj) + '</div></div>' +
+          bar +
+          '<div class="barnum">' + money(d.obl) + '</div>' +
+        '</div>';
+      return DRILL ? ('<div class="xitem">' + head + '<div class="xpanel" hidden></div></div>') : head;
+    }
+    function rows(arr, start){ return arr.map(function(d,k){ return stateRow(start + k, d); }).join(""); }
+
     var head = data.slice(0, 15), rest = data.slice(15);
-    function rows(arr, start){ return arr.map(function(d,k){
-      return rankRow(start + k, STATES[d.state] || d.state, projTxt(d.proj), Math.max(2, Math.round(d.obl/max*100)), money(d.obl));
-    }).join(""); }
     document.getElementById("pa-states").innerHTML = rows(head, 1);
-    document.getElementById("states-count").textContent = "by federal share · " + data.length + " in all";
+    document.getElementById("states-count").textContent =
+      "by federal share · " + data.length + " in all" + (DRILL ? " · tap a row for its disasters" : "");
     if (rest.length){
       var moreEl = document.getElementById("pa-states-more");
       moreEl.innerHTML = rows(rest, 16);
@@ -333,6 +397,107 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         else { moreEl.setAttribute("hidden",""); btn.textContent = "Show all " + data.length + " states & territories"; }
       });
     }
+
+    if (!DRILL) return;   // no drill-down data yet → page behaves exactly as before
+
+    // ---- a state's disasters, from embedded data ----
+    function disasterRows(st){
+      var list = SD[st] || [];
+      if (!list.length) return '<div class="xempty">No itemized disasters for this state.</div>';
+      var dmax = list[0].obl || 1;
+      return list.map(function(d){
+        var w = Math.max(2, Math.round((d.obl/dmax)*100));
+        var meta = [d.year, d.inc].filter(Boolean).join(" \u00b7 ");
+        return '<div class="dis-item">' +
+          '<div class="dis-head" role="button" tabindex="0" aria-expanded="false"' +
+            ' data-dn="' + esc(d.num) + '" data-st="' + esc(st) + '" data-nm="' + esc(d.name) + '">' +
+            '<div class="dis-name"><span class="chev"></span>' + esc(d.name) +
+              (meta ? '<span class="dis-meta">' + esc(meta) + '</span>' : '') + '</div>' +
+            '<div class="dis-bar"><div class="dis-bar-fill" style="width:' + w + '%"></div></div>' +
+            '<div class="dis-proj">' + projTxt(d.proj) + '</div>' +
+            '<div class="dis-obl">' + money(d.obl) + '</div>' +
+          '</div>' +
+          '<div class="dis-detail" hidden></div>' +
+        '</div>';
+      }).join("");
+    }
+
+    // ---- a single disaster's projects, fetched live from OpenFEMA on demand ----
+    var PA_API = "https://www.fema.gov/api/open/v2/PublicAssistanceFundedProjectsDetails";
+    var DS_PAGE = "https://www.fema.gov/openfema-data-page/public-assistance-funded-projects-details-v2";
+    function loadProjects(dn, st, nm, el){
+      el.innerHTML = '<div class="proj-status">Loading projects from OpenFEMA\u2026</div>';
+      var filter = "disasterNumber eq " + dn + " and stateAbbreviation eq '" + st + "'";
+      var url = PA_API + "?$filter=" + encodeURIComponent(filter) +
+                "&$orderby=" + encodeURIComponent("federalShareObligated desc") +
+                "&$top=500&$inlinecount=allpages";
+      fetch(url).then(function(r){
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      }).then(function(j){
+        var arr = (j && j.PublicAssistanceFundedProjectsDetails) || [];
+        var total = (j && j.metadata && j.metadata.count) || arr.length;
+        if (!arr.length){
+          el.innerHTML = '<div class="proj-status">No itemized projects returned for this declaration.</div>';
+          return;
+        }
+        var lines = arr.map(function(p){
+          var raw = (p.damageCategoryCode || "").toString().trim().toUpperCase();
+          var code = raw ? raw.charAt(0) : "\u2014";
+          var label = p.applicationTitle || p.projectTitle || p.applicantName ||
+                      (p.pwNumber != null ? ("Project Worksheet " + p.pwNumber) : "Project");
+          var fed = +p.federalShareObligated || 0;
+          return '<div class="proj-line">' +
+              '<span class="proj-cat">' + esc(code) + '</span>' +
+              '<span class="proj-title">' + esc(label) + '</span>' +
+              '<span class="proj-obl">' + money(fed) + '</span>' +
+            '</div>';
+        }).join("");
+        var foot = (total > arr.length)
+          ? '<div class="proj-status">Showing the ' + num(arr.length) + ' largest of ' + num(total) +
+            ' projects \u00b7 <a href="' + DS_PAGE + '" target="_blank" rel="noopener">full dataset on OpenFEMA \u2192</a></div>'
+          : '<div class="proj-status">' + num(arr.length) + (arr.length === 1 ? " project" : " projects") + '</div>';
+        el.innerHTML = '<div class="proj-list">' + lines + '</div>' + foot;
+      }).catch(function(){
+        el.innerHTML = '<div class="proj-status proj-err">Couldn\u2019t load the project list here. ' +
+          '<a href="' + DS_PAGE + '" target="_blank" rel="noopener">View ' + esc(nm) + ' on OpenFEMA \u2192</a></div>';
+      });
+    }
+
+    function toggle(el, panel, onFirstOpen){
+      var open = el.getAttribute("aria-expanded") === "true";
+      el.setAttribute("aria-expanded", open ? "false" : "true");
+      if (open){ panel.setAttribute("hidden", ""); return; }
+      panel.removeAttribute("hidden");
+      if (!panel.getAttribute("data-loaded")){
+        panel.setAttribute("data-loaded", "1");
+        onFirstOpen(panel);
+      }
+    }
+    function activate(t){
+      if (!t || !t.closest) return;
+      var dh = t.closest(".dis-head[data-dn]");
+      if (dh){
+        toggle(dh, dh.parentNode.querySelector(".dis-detail"), function(panel){
+          loadProjects(dh.getAttribute("data-dn"), dh.getAttribute("data-st"), dh.getAttribute("data-nm"), panel);
+        });
+        return;
+      }
+      var sr = t.closest(".row[data-st]");
+      if (sr){
+        toggle(sr, sr.parentNode.querySelector(".xpanel"), function(panel){
+          panel.innerHTML = disasterRows(sr.getAttribute("data-st"));
+        });
+      }
+    }
+    document.addEventListener("click", function(e){ activate(e.target); });
+    document.addEventListener("keydown", function(e){
+      if (e.key !== "Enter" && e.key !== " ") return;
+      var t = e.target;
+      if (t && t.matches && (t.matches(".row[data-st]") || t.matches(".dis-head[data-dn]"))){
+        e.preventDefault(); activate(t);
+      }
+    });
   })();
 
   // ── categories ──
