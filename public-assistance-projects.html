@@ -498,6 +498,21 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         e.preventDefault(); activate(t);
       }
     });
+
+    // deep link from the homepage: ?state=XX opens that state's disasters
+    var qsState = (location.search.match(/[?&]state=([A-Za-z]{2})/) || [])[1];
+    if (qsState){
+      var tgt = document.querySelector('.row[data-st="' + qsState.toUpperCase() + '"]');
+      if (tgt){
+        var moreWrap = document.getElementById("pa-states-more");
+        if (moreWrap && moreWrap.contains(tgt) && moreWrap.hasAttribute("hidden")){
+          var tb = document.getElementById("states-toggle");
+          if (tb) tb.click();
+        }
+        activate(tgt);
+        tgt.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
   })();
 
   // ── categories ──
