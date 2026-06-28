@@ -4,7 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>Disaster Data</title>
+<title>Disaster Data: Federal disaster declarations, mapped and ranked</title>
+<meta name="description" content="Explore every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.">
+<meta property="og:title" content="Disaster Data: Federal disaster declarations, mapped and ranked">
+<meta property="og:description" content="Every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -215,10 +221,10 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <header class="masthead">
     <div class="kicker reveal">Twenty-five years of federal disaster declarations</div>
     <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes, <em>and how often.</em></h1>
-    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since 2000: major disasters, emergencies, and fire-management programs. Mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
+    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since FY2000: major disasters, emergencies, and fire-management programs. Mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
     <div class="hero-cta reveal" style="animation-delay:.16s"><a class="btn" href="#board">Explore the data <span aria-hidden="true">&rarr;</span></a></div>
     <div class="stats reveal" style="animation-delay:.18s">
-      <div class="stat"><div class="num" id="st-total">3,404</div><div class="lab">declarations in range</div></div>
+      <div class="stat"><div class="num" id="st-total">3,370</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num" id="st-states">57</div><div class="lab">states &amp; territories</div></div>
       <div class="stat"><div class="num" id="st-denied">11.8<small>%</small></div><div class="lab">of requests denied</div></div>
       <div class="stat"><div class="num" id="st-haz">25</div><div class="lab">hazard types tracked</div></div>
@@ -230,7 +236,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <div class="container">
     <div class="deck">
       <div class="fgroup">
-        <div class="flabel">Years <span class="v" id="yr-read">2000 to 2026</span></div>
+        <div class="flabel">Years <span class="v" id="yr-read">2000 to 2025</span></div>
         <div class="range" id="range">
           <div class="track"></div><div class="fill" id="rfill"></div>
           <input type="range" id="rmin" min="2000" max="2026" value="2000" step="1" aria-label="Start year">
@@ -283,7 +289,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
   <section id="board">
     <div class="shead">
-      <div><h2>The states, ranked</h2><p>Ranked by federal declarations since 2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
+      <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
       <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
     </div>
     <div id="scoreboard"></div>
@@ -328,11 +334,21 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
 </div>
 
+<section id="methodology" aria-label="Methodology and sources" style="max-width:680px;margin:3.5rem auto;padding:1.75rem 2rem;background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;font-family:'Public Sans',system-ui,sans-serif;color:#2b2b2b;line-height:1.6">
+  <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.35rem;margin:0 0 1rem">How these numbers are built</h2>
+  <p style="margin:0 0 .9rem"><strong>Source.</strong> Every figure is drawn from FEMA's OpenFEMA datasets: <em>Disaster Declarations Summaries</em> (v2) for declarations and <em>Declaration Denials</em> (v1) for turndowns. It is rebuilt automatically each week. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p>
+  <p style="margin:0 0 .9rem"><strong>What counts as a &ldquo;declaration.&rdquo;</strong> FEMA's file lists one row per county per declaration. We collapse those to one row per <em>declaration</em>: a unique combination of declaration type (DR / EM / FM), disaster number, and state. A single disaster affecting five states therefore counts as five declarations. Counts reflect declaration records, not dollars, damage, or loss.</p>
+  <p style="margin:0 0 .9rem"><strong>Years are federal fiscal years</strong> (Oct 1 to Sep 30), matching FEMA's own <code>fyDeclared</code> field. FY2000 begins October 1, 1999. The headline view shows complete fiscal years only; the current, in-progress year stays one slider-drag away.</p>
+  <p style="margin:0 0 .9rem"><strong>Denial rate.</strong> The share of requests turned down = turndowns &divide; (declarations + turndowns). Denials are tracked in a separate FEMA dataset from approved declarations, so this figure cannot be reproduced from the summaries file alone.</p>
+  <p style="margin:0 0 1.25rem"><strong>Fire-management (FM)</strong> declarations fund wildfire suppression under a faster, lower-threshold program. They're counted as their own type. Toggle FM off anywhere on the site to see the disaster picture underneath.</p>
+  <button id="dd-cite-btn" type="button" style="font:600 .82rem 'Public Sans',system-ui,sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Cite this view</button>
+</section>
+
 <footer id="about">
   <div class="container">
     <div class="foot">
       <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries (<span id="foot-range">FY2000 to FY2026</span>) — uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Counts reflect declaration records, not official financial or loss reporting.<span id="foot-asof"></span></div>
-      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a></div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="states/index.html">Disaster declarations by state</a></div>
     </div>
   </div>
 </footer>
@@ -464,6 +480,9 @@ function buildStatesForWindow(a,b){
 
 let sortMode='decl', incFilter='All', yrMin=2000, yrMax=2026, hazMode='all', Y_MIN=2000, Y_MAX=2026;
 Y_MIN = (YOY[0]?YOY[0][0]:2000); Y_MAX = (YOY.length?YOY[YOY.length-1][0]:2026);
+/* default the view to the last COMPLETE fiscal year (FY runs Oct 1 to Sep 30), so the
+   headline never includes an in-progress year; the partial year stays one slider-drag away */
+var Y_DEF_MAX = (function(){ var n=new Date(), curFY=(n.getMonth()>=9?n.getFullYear()+1:n.getFullYear()), d=Math.min(Y_MAX,curFY-1); return (d>=Y_MIN)?d:Y_MAX; })();
 const heat=['#efddb9','#e6c089','#d98c4e','#c85c2e','#9e3a1e'];
 function heatFor(v){ if(v>=200)return heat[4]; if(v>=100)return heat[3]; if(v>=50)return heat[2]; if(v>=20)return heat[1]; return heat[0]; }
 function rateColor(r){ if(r>=25)return '#9e3a1e'; if(r>=15)return '#c85c2e'; if(r>=8)return '#d98c4e'; if(r>0)return '#5b5346'; return '#1d9e75'; }
@@ -637,7 +656,7 @@ document.getElementById('haztog').addEventListener('click',e=>{const b=e.target.
 document.getElementById('hazmore').addEventListener('click',()=>{hazExpanded=!hazExpanded;renderHaz();});
 document.getElementById('reset').addEventListener('click',()=>{
   sortMode='decl'; incFilter='All';
-  document.getElementById('rmin').value=Y_MIN; document.getElementById('rmax').value=Y_MAX;
+  document.getElementById('rmin').value=Y_MIN; document.getElementById('rmax').value=Y_DEF_MAX;
   document.querySelectorAll('#sortseg button').forEach((x,i)=>x.classList.toggle('on',i===0));
   document.querySelectorAll('#pills .pill').forEach(x=>x.classList.toggle('on',x.dataset.inc==='All'));
   document.querySelectorAll('#dtype button').forEach(x=>x.classList.toggle('on',x.dataset.d==='DR'));
@@ -708,14 +727,190 @@ document.getElementById('recseg').addEventListener('click',e=>{const b=e.target.
 function initBounds(){
   const rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
   rmin.min=rmax.min=Y_MIN; rmin.max=rmax.max=Y_MAX;
-  rmin.value=Y_MIN; rmax.value=Y_MAX;
-  document.getElementById('yr-read').textContent=Y_MIN+' to '+Y_MAX;
+  rmin.value=Y_MIN; rmax.value=Y_DEF_MAX;
+  document.getElementById('yr-read').textContent=Y_MIN+' to '+Y_DEF_MAX;
   var fr=document.getElementById('foot-range'); if(fr) fr.textContent='FY'+Y_MIN+' to FY'+Y_MAX;
   var fa=document.getElementById('foot-asof');
   if(fa){ var d=window.DATA_DATE, mm=d?/^(\d{4})-(\d{2})-(\d{2})/.exec(d):null;
     fa.textContent = mm ? ' Data current through '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mm[2]-1]+' '+(+mm[3])+', '+mm[1]+'.' : ''; }
 }
 initBounds(); updateRange(); render(); renderHaz();
+</script>
+<script>
+/* Disaster Data — chart export, citation, and shareable filtered views (vanilla, all client-side) */
+(function () {
+  function exportSvgToPng(svgEl, filename, scale) {
+    if (!svgEl) return;
+    filename = filename || 'disaster-data'; scale = scale || 2;
+    var r = svgEl.getBoundingClientRect();
+    var w = Math.ceil(r.width) || 1000, h = Math.ceil(r.height) || 330;
+    var SVGNS = 'http://www.w3.org/2000/svg';
+    var clone = svgEl.cloneNode(true);
+    clone.setAttribute('xmlns', SVGNS);
+    clone.setAttribute('width', w); clone.setAttribute('height', h);
+    var style = document.createElementNS(SVGNS, 'style');
+    style.textContent = "text{font-family:'Public Sans',system-ui,sans-serif}";
+    clone.insertBefore(style, clone.firstChild);
+    var bg = document.createElementNS(SVGNS, 'rect');
+    bg.setAttribute('width', '100%'); bg.setAttribute('height', '100%'); bg.setAttribute('fill', '#f6f1e7');
+    clone.insertBefore(bg, style.nextSibling);
+    var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone));
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement('canvas');
+      c.width = w * scale; c.height = h * scale;
+      var ctx = c.getContext('2d'); ctx.scale(scale, scale); ctx.drawImage(img, 0, 0);
+      c.toBlob(function (b) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(b); a.download = filename + '.png'; a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    };
+    img.src = url;
+  }
+
+  /* describe / link / cite the CURRENT filtered view (reads the page's own filter state) */
+  function viewLabel() {
+    var bits = ['FY' + yrMin + ' to FY' + yrMax];
+    if (typeof incFilter === 'string' && incFilter !== 'All') bits.unshift(incFilter + ' declarations');
+    return bits.join(', ');
+  }
+  function viewLink() {
+    var base = location.origin + location.pathname, p = new URLSearchParams();
+    if (!(yrMin === Y_MIN && yrMax === Y_DEF_MAX)) p.set('y', yrMin + '-' + yrMax);
+    if (typeof incFilter === 'string' && incFilter !== 'All') p.set('h', incFilter);
+    var types = activeTypes();
+    if (!(types.length === 1 && types[0] === 'DR')) p.set('t', types.join('.'));
+    var q = p.toString();
+    return q ? base + '?' + q : base;
+  }
+  function citation() {
+    var d = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return 'Disaster Data (' + viewLabel() + '). Derived from FEMA OpenFEMA Disaster Declarations Summaries. Accessed ' + d + '. ' + viewLink();
+  }
+
+  /* apply ?y / ?h / ?t from a shared link onto the controls; returns true if anything changed */
+  function applyURLState() {
+    var changed = false;
+    try {
+      var p = new URLSearchParams(location.search);
+      var y = p.get('y');
+      if (y) { var mm = y.split('-');
+        if (mm.length === 2) { var a = +mm[0], b = +mm[1];
+          if (!isNaN(a) && !isNaN(b)) {
+            a = Math.max(Y_MIN, Math.min(Y_MAX, a)); b = Math.max(Y_MIN, Math.min(Y_MAX, b));
+            if (a > b) { var sw = a; a = b; b = sw; }
+            document.getElementById('rmin').value = a; document.getElementById('rmax').value = b; changed = true;
+          }
+        }
+      }
+      var h = p.get('h');
+      if (h) { var pills = document.querySelectorAll('#pills .pill'), found = null;
+        pills.forEach(function (x) { if (x.dataset.inc === h) found = x; });
+        if (found) { pills.forEach(function (x) { x.classList.remove('on'); }); found.classList.add('on'); incFilter = h; changed = true; }
+      }
+      var tt = p.get('t');
+      if (tt) { var want = tt.split('.').filter(Boolean), btns = document.querySelectorAll('#dtype button'), any = false;
+        btns.forEach(function (b) { var on = want.indexOf(b.dataset.d) >= 0; b.classList.toggle('on', on); if (on) any = true; });
+        if (!any) btns.forEach(function (b) { b.classList.toggle('on', b.dataset.d === 'DR'); });
+        else changed = true;
+      }
+    } catch (e) {}
+    return changed;
+  }
+
+  /* inject "Download chart (PNG)" under the timeline */
+  var tl = document.getElementById('timeline');
+  var card = tl && tl.closest ? tl.closest('.chartcard') : null;
+  if (card) {
+    var dl = document.createElement('button');
+    dl.type = 'button'; dl.textContent = '\u2193 Download chart (PNG)';
+    dl.setAttribute('style', "display:inline-block;margin-top:.6rem;font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .8rem;cursor:pointer");
+    dl.addEventListener('click', function () { exportSvgToPng(tl, 'disaster-data-timeline'); });
+    card.appendChild(dl);
+  }
+
+  /* wire the "Cite this view" button */
+  var ci = document.getElementById('dd-cite-btn');
+  if (ci) {
+    ci.addEventListener('click', function () {
+      var txt = citation();
+      var done = function () { var prev = ci.textContent; ci.textContent = 'Copied to clipboard'; setTimeout(function () { ci.textContent = prev; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, function () { window.prompt('Copy citation:', txt); });
+      } else { window.prompt('Copy citation:', txt); }
+    });
+  }
+
+  /* ---- download the current ranking as CSV / JSON (reuses the page's own render pipeline) ---- */
+  function currentRanking() {
+    var types = activeTypes();
+    var fmOff = types.indexOf('FM') === -1;
+    var rows = STATES.map(function (s) { return Object.assign({}, s, { cnt: cntFor(s, types) }); })
+                     .filter(function (s) { return s.cnt > 0; })
+                     .filter(function (s) { return incFilter === 'All' || hazardsFor(s, false).indexOf(incFilter) >= 0; });
+    rows.sort(sortMode === 'rate'
+      ? function (a, b) { return b.rate - a.rate || b.cnt - a.cnt; }
+      : function (a, b) { return b.cnt - a.cnt; });
+    return { rows: rows, types: types, fmOff: fmOff };
+  }
+  function csvCell(v) { v = (v == null) ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function downloadBlob(text, mime, filename) {
+    var blob = new Blob([text], { type: mime }), a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+  }
+  function fileStub() {
+    var bits = ['disaster-data', 'FY' + yrMin + '-' + yrMax];
+    if (typeof incFilter === 'string' && incFilter !== 'All') bits.push(incFilter.replace(/\s+/g, '-'));
+    return bits.join('_');
+  }
+  function exportCSV() {
+    var r = currentRanking();
+    var head = ['Rank', 'State', 'Abbr', 'DR (major disaster)', 'EM (emergency)', 'FM (fire mgmt)', 'Total declarations', 'Denials', 'Denial rate (%)', 'Avg days to a decision', 'Top hazards'];
+    var lines = [head.map(csvCell).join(',')];
+    r.rows.forEach(function (s, i) {
+      lines.push([i + 1, s.name, s.ab, s.dr, s.em, s.fm, s.decl, s.den,
+        (typeof s.rate === 'number' ? s.rate.toFixed(2) : ''),
+        (typeof s.days === 'number' ? s.days.toFixed(1) : ''),
+        hazardsFor(s, r.fmOff).join('; ')].map(csvCell).join(','));
+    });
+    downloadBlob(lines.join('\r\n'), 'text/csv;charset=utf-8', fileStub() + '.csv');
+  }
+  function exportJSON() {
+    var r = currentRanking();
+    var payload = {
+      source: 'FEMA OpenFEMA Disaster Declarations Summaries and Declaration Denials',
+      generated: new Date().toISOString().slice(0, 10),
+      view: { fiscalYears: 'FY' + yrMin + ' to FY' + yrMax, hazardFilter: incFilter, declarationTypes: r.types, sortedBy: sortMode === 'rate' ? 'denial rate' : 'declarations' },
+      url: viewLink(),
+      states: r.rows.map(function (s, i) {
+        return { rank: i + 1, state: s.name, abbr: s.ab, dr: s.dr, em: s.em, fm: s.fm, totalDeclarations: s.decl, denials: s.den, denialRatePct: s.rate, avgDaysToDecision: s.days, topHazards: hazardsFor(s, r.fmOff) };
+      })
+    };
+    downloadBlob(JSON.stringify(payload, null, 2), 'application/json', fileStub() + '.json');
+  }
+  /* inject the download control just above the ranking */
+  var sb = document.getElementById('scoreboard');
+  if (sb && sb.parentNode) {
+    var bar = document.createElement('div');
+    bar.setAttribute('style', 'display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:0 0 1rem');
+    var lbl = document.createElement('span');
+    lbl.textContent = 'Download this view:';
+    lbl.setAttribute('style', "font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#5b5347");
+    bar.appendChild(lbl);
+    [['CSV', exportCSV], ['JSON', exportJSON]].forEach(function (pair) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = pair[0];
+      b.setAttribute('style', "font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.35rem .75rem;cursor:pointer");
+      b.addEventListener('click', pair[1]);
+      bar.appendChild(b);
+    });
+    sb.parentNode.insertBefore(bar, sb);
+  }
+
+  /* if opened from a shared link, restore that exact view */
+  if (applyURLState() && typeof updateRange === 'function') { updateRange(); }
+})();
 </script>
 </body>
 </html>

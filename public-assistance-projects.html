@@ -117,6 +117,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 .xitem{border-bottom:1px solid var(--rule);}
 .xitem > .row{border-bottom:none;}
 .xpanel{background:var(--paper-3);border-radius:0 0 8px 8px;max-height:440px;overflow-y:auto;overscroll-behavior:contain;}
+.state-maplink{display:inline-flex;align-items:center;gap:6px;margin:10px 14px 2px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--rule-2);border-radius:7px;padding:7px 12px;background:var(--paper-2);transition:background .12s,color .12s,border-color .12s;}
+.state-maplink:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 
 .dis-item{border-top:1px solid var(--rule);}
 .dis-item:first-child{border-top:none;}
@@ -364,6 +366,9 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     var max = data.length ? data[0].obl : 1;
     var SD = (PA && PA.stateDisasters) || null;
     var DRILL = !!(SD && Object.keys(SD).length);   // off until stateDisasters ships in data.js
+    var PA_SNAP = (PA && PA.projectSnapshots) || []; // (state,disaster) pairs baked as fallback files
+    var SNAP_SET = {};
+    for (var _si = 0; _si < PA_SNAP.length; _si++){ SNAP_SET[PA_SNAP[_si]] = 1; }
 
     function stateRow(i, d){
       var w = Math.max(2, Math.round(d.obl/max*100));
@@ -402,10 +407,11 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
     // ---- a state's disasters, from embedded data ----
     function disasterRows(st){
+      var mapLink = '<a class="state-maplink" href="map.html?state=' + esc(st) + '">View ' + esc(STATES[st] || st) + ' on the map \u2192</a>';
       var list = SD[st] || [];
-      if (!list.length) return '<div class="xempty">No itemized disasters for this state.</div>';
+      if (!list.length) return mapLink + '<div class="xempty">No itemized disasters for this state.</div>';
       var dmax = list[0].obl || 1;
-      return list.map(function(d){
+      return mapLink + list.map(function(d){
         var w = Math.max(2, Math.round((d.obl/dmax)*100));
         var meta = [d.year, d.inc].filter(Boolean).join(" \u00b7 ");
         return '<div class="dis-item">' +
@@ -422,45 +428,84 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       }).join("");
     }
 
-    // ---- a single disaster's projects, fetched live from OpenFEMA on demand ----
+    // ---- a single disaster's projects: live from OpenFEMA, archived copy as fallback ----
     var PA_API = "https://www.fema.gov/api/open/v2/PublicAssistanceFundedProjectsDetails";
     var DS_PAGE = "https://www.fema.gov/openfema-data-page/public-assistance-funded-projects-details-v2";
-    function loadProjects(dn, st, nm, el){
-      el.innerHTML = '<div class="proj-status">Loading projects from OpenFEMA\u2026</div>';
+
+    function projLines(arr){
+      return arr.map(function(p){
+        var raw = (p.damageCategoryCode || "").toString().trim().toUpperCase();
+        var code = raw ? raw.charAt(0) : "\u2014";
+        var label = p.applicationTitle || p.projectTitle || p.applicantName ||
+                    (p.pwNumber != null ? ("Project Worksheet " + p.pwNumber) : "Project");
+        var fed = +p.federalShareObligated || 0;
+        return '<div class="proj-line">' +
+            '<span class="proj-cat">' + esc(code) + '</span>' +
+            '<span class="proj-title">' + esc(label) + '</span>' +
+            '<span class="proj-obl">' + money(fed) + '</span>' +
+          '</div>';
+      }).join("");
+    }
+    function renderProjects(el, arr, total, opts){
+      opts = opts || {};
+      if (!arr.length){
+        el.innerHTML = '<div class="proj-status">No itemized projects returned for this declaration.</div>';
+        return;
+      }
+      total = total || arr.length;
+      var src = (opts.mode === "archive")
+        ? '<span style="color:var(--ember);font-weight:600">Archived snapshot' +
+          (opts.date ? ' \u00b7 as of ' + esc(opts.date) : '') + '</span> \u00b7 live FEMA data was unavailable \u00b7 '
+        : '';
+      var foot = (total > arr.length)
+        ? '<div class="proj-status">' + src + 'Showing the ' + num(arr.length) + ' largest of ' + num(total) +
+          ' projects \u00b7 <a href="' + DS_PAGE + '" target="_blank" rel="noopener">full dataset on OpenFEMA \u2192</a></div>'
+        : '<div class="proj-status">' + src + num(arr.length) + (arr.length === 1 ? " project" : " projects") + '</div>';
+      el.innerHTML = '<div class="proj-list">' + projLines(arr) + '</div>' + foot;
+    }
+    function fetchLive(dn, st){
       var filter = "disasterNumber eq " + dn + " and stateAbbreviation eq '" + st + "'";
       var url = PA_API + "?$filter=" + encodeURIComponent(filter) +
                 "&$orderby=" + encodeURIComponent("federalShareObligated desc") +
                 "&$top=500&$inlinecount=allpages";
-      fetch(url).then(function(r){
+      var ctrl = ("AbortController" in window) ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 8000) : null;
+      return fetch(url, ctrl ? { signal: ctrl.signal } : undefined).then(function(r){
+        if (timer) clearTimeout(timer);
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       }).then(function(j){
-        var arr = (j && j.PublicAssistanceFundedProjectsDetails) || [];
-        var total = (j && j.metadata && j.metadata.count) || arr.length;
-        if (!arr.length){
-          el.innerHTML = '<div class="proj-status">No itemized projects returned for this declaration.</div>';
-          return;
-        }
-        var lines = arr.map(function(p){
-          var raw = (p.damageCategoryCode || "").toString().trim().toUpperCase();
-          var code = raw ? raw.charAt(0) : "\u2014";
-          var label = p.applicationTitle || p.projectTitle || p.applicantName ||
-                      (p.pwNumber != null ? ("Project Worksheet " + p.pwNumber) : "Project");
-          var fed = +p.federalShareObligated || 0;
-          return '<div class="proj-line">' +
-              '<span class="proj-cat">' + esc(code) + '</span>' +
-              '<span class="proj-title">' + esc(label) + '</span>' +
-              '<span class="proj-obl">' + money(fed) + '</span>' +
-            '</div>';
-        }).join("");
-        var foot = (total > arr.length)
-          ? '<div class="proj-status">Showing the ' + num(arr.length) + ' largest of ' + num(total) +
-            ' projects \u00b7 <a href="' + DS_PAGE + '" target="_blank" rel="noopener">full dataset on OpenFEMA \u2192</a></div>'
-          : '<div class="proj-status">' + num(arr.length) + (arr.length === 1 ? " project" : " projects") + '</div>';
-        el.innerHTML = '<div class="proj-list">' + lines + '</div>' + foot;
+        return { arr: (j && j.PublicAssistanceFundedProjectsDetails) || [],
+                 total: (j && j.metadata && j.metadata.count) || 0 };
+      });
+    }
+    function fetchSnapshot(dn, st){
+      return fetch("pa-projects/" + dn + "-" + st + ".json").then(function(r){
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      }).then(function(j){
+        return { arr: (j && j.projects) || [], total: (j && j.count) || 0, date: j && j.date };
+      });
+    }
+    function projErr(nm, el){
+      el.innerHTML = '<div class="proj-status proj-err">Couldn\u2019t load the project list here. ' +
+        '<a href="' + DS_PAGE + '" target="_blank" rel="noopener">View ' + esc(nm) + ' on OpenFEMA \u2192</a></div>';
+    }
+    function loadProjects(dn, st, nm, el){
+      el.innerHTML = '<div class="proj-status">Loading projects from OpenFEMA\u2026</div>';
+      var key = dn + "-" + st;
+      fetchLive(dn, st).then(function(res){
+        if (!res.arr.length && SNAP_SET[key]) throw new Error("empty-live");
+        renderProjects(el, res.arr, res.total, { mode: "live" });
       }).catch(function(){
-        el.innerHTML = '<div class="proj-status proj-err">Couldn\u2019t load the project list here. ' +
-          '<a href="' + DS_PAGE + '" target="_blank" rel="noopener">View ' + esc(nm) + ' on OpenFEMA \u2192</a></div>';
+        if (SNAP_SET[key]){
+          el.innerHTML = '<div class="proj-status">FEMA didn\u2019t respond \u2014 loading the archived copy\u2026</div>';
+          fetchSnapshot(dn, st).then(function(res){
+            renderProjects(el, res.arr, res.total, { mode: "archive", date: res.date });
+          }).catch(function(){ projErr(nm, el); });
+        } else {
+          projErr(nm, el);
+        }
       });
     }
 
