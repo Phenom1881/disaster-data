@@ -240,7 +240,8 @@ def method_html():
 def footer_html():
     return ('<footer class="site"><div class="wrap">'
             'Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; '
-            '<a href="../about.html">About and contact</a></div></footer>'
+            '<a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a>'
+            ' &middot; <a href="../about.html">About and contact</a></div></footer>'
             '<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
             'data-cf-beacon=\'{"token": "ceea2416f66a424981ba37fcb9440d68"}\'></script>'
             '<!-- End Cloudflare Web Analytics -->')
