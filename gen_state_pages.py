@@ -21,6 +21,7 @@ No arguments needed. Re-running overwrites cleanly and is idempotent.
 """
 
 import os, re, json, html, datetime
+from dd_classify import classify
 
 SITE = "https://www.disasterdata.io"
 OUT_ROOT = os.environ.get("DD_OUT", ".")           # repo root (output)
@@ -43,11 +44,26 @@ def _grab_js(text, name):
     return json.JSONDecoder().raw_decode(text, m.end())[0]
 
 def build_from_live(text):
-    """Reconstruct (STATES, DECLS, DENS, YOY) from the live data.js variables."""
+    """Reconstruct (STATES, DECLS, DENS, YOY, KEEP) from the live data.js variables.
+    KEEP[ab] = {"ids": set of declaration strings that land on a jurisdiction page,
+    "n": number of jurisdiction pages} -- used to find declarations that belong to
+    no single locality (shown on the statewide page instead)."""
     names   = _grab_js(text, "STATE_NAMES")
     browse  = _grab_js(text, "BROWSE")
     denials = _grab_js(text, "DENIALS")
     summary = _grab_js(text, "SUMMARY")
+    try:
+        loc = _grab_js(text, "LOCALITY_DATA")
+    except Exception:
+        loc = {}
+    KEEP = {}
+    for ab, entries in loc.items():
+        ids, n = set(), 0
+        for en in entries:
+            if classify(ab, en["n"])["keep"]:
+                n += 1
+                ids.update(en.get("ids", []))
+        KEEP[ab] = {"ids": ids, "n": n}
     DECLS, DENS, day_sum, day_n = {}, {}, {}, {}
     for r in browse:
         ab = r["state"]
@@ -68,7 +84,7 @@ def build_from_live(text):
                "days": round(day_sum[ab] / day_n[ab], 1) if day_n.get(ab) else 0}
               for ab, nm in names.items()]
     YOY = [[row["fyDeclared"], row["declarations"]] for row in summary.get("yoy", [])]
-    return STATES, DECLS, DENS, YOY
+    return STATES, DECLS, DENS, YOY, KEEP
 
 def load_data():
     # live data.js first (fresh weekly data); baked index.html only as a fallback
@@ -81,7 +97,7 @@ def load_data():
     p = os.path.join(SRC_ROOT, "index.html")
     if os.path.exists(p):
         t = open(p, encoding="utf-8").read()
-        return (_grab(t, "STATES"), _grab(t, "DECLS"), _grab(t, "DENS"), _grab(t, "YOY"))
+        return (_grab(t, "STATES"), _grab(t, "DECLS"), _grab(t, "DENS"), _grab(t, "YOY"), {})
     raise SystemExit("no data.js or index.html found")
 
 # ---------------------------------------------------------------- helpers
@@ -115,7 +131,7 @@ def last_complete_fy(YOY):
     return min(cur_fy - 1, avail)
 
 # ---------------------------------------------------------------- per-state stats
-def state_stats(ab, name, days, decls, dens, lcfy):
+def state_stats(ab, name, days, decls, dens, lcfy, keep):
     complete = [r for r in decls if fy_of(r[3]) <= lcfy]
     by_type = {"DR": 0, "EM": 0, "FM": 0}
     haz = {}
@@ -128,12 +144,16 @@ def state_stats(ab, name, days, decls, dens, lcfy):
     rate = round(100.0 * den / (decl + den), 1) if (decl + den) else 0.0
     hazards = sorted(haz.items(), key=lambda kv: -kv[1])
     recent = sorted(decls, key=lambda r: r[3], reverse=True)[:40]
+    keep_ids = keep.get("ids", set())
+    orphans = sorted([r for r in complete if r[0] not in keep_ids],
+                     key=lambda r: r[3], reverse=True)
     return {
         "ab": ab, "name": name, "slug": slugify(name),
         "decl": decl, "dr": by_type["DR"], "em": by_type["EM"], "fm": by_type["FM"],
         "den": den, "rate": rate, "days": days,
         "hazards": hazards, "recent": recent,
         "recent_dens": sorted(den_c, key=lambda d: d[3], reverse=True)[:10],
+        "orphans": orphans, "jur_n": keep.get("n", 0),
     }
 
 # ---------------------------------------------------------------- CSS
@@ -304,6 +324,32 @@ def render_state_page(s, states, lcfy):
     grid = "".join('<a href="%s.html">%s</a>' % (o["slug"], e(o["name"]))
                    for o in states if o["ab"] != ab)
 
+    # link down to the per-jurisdiction hub for this state
+    jlink = ('<p class="jlink"><a href="%s/"><b>Browse all %d jurisdictions in %s</b>, each with '
+             'its full declaration history and a ready-to-use mitigation-plan table &rarr;</a></p>'
+             % (slug, s["jur_n"], e(name))) if s.get("jur_n") else ''
+
+    # declarations that belong to no single locality -> listed here, on the state page
+    if s["orphans"]:
+        orows = "".join(
+            "<tr><td>%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td>"
+            "<td>%s</td><td>%s</td></tr>"
+            % (fmt_date(r[3]), e(r[0]), TYPE_LONG.get(r[1], r[1]), e(r[1]),
+               e(r[2]), e(pretty_title(r[4])))
+            for r in s["orphans"])
+        n = len(s["orphans"])
+        orphan_html = ('<h2>Declarations not attributed to a specific locality</h2>'
+                       '<p>%d declaration%s in %s applied statewide, or to areas FEMA did not tie '
+                       'to a single county or equivalent, such as wildfire management zones. They '
+                       'are included in the state totals above but do not appear on any individual '
+                       'jurisdiction page.</p>'
+                       '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Number</th>'
+                       '<th>Type</th><th>Hazard</th><th>Title</th></tr></thead><tbody>%s'
+                       '</tbody></table></div>'
+                       % (n, "" if n == 1 else "s", e(name), orows))
+    else:
+        orphan_html = ''
+
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
             '<title>%s FEMA Disaster Declarations: Federal Disaster History Since FY2000</title>'
@@ -321,9 +367,11 @@ def render_state_page(s, states, lcfy):
             '<h1>%s: Federal Disaster Declarations</h1>'
             '<p class="lede">%s</p>'
             '<div class="stats">%s</div>'
+            '%s'
             '<h2>Most common hazards</h2><ul class="haz">%s</ul>'
             '<h2>Most recent declarations</h2>%s'
             '<h2>Denied requests</h2>%s'
+            '%s'
             '<div class="audience"><strong>Built for emergency managers, grant writers, and '
             'analysts.</strong> Explore %s in the interactive tools: '
             '<a href="../map.html?state=%s">view the county map</a>, or '
@@ -334,7 +382,7 @@ def render_state_page(s, states, lcfy):
             '</div></main>%s</body></html>'
             % (e(name), e(desc), canonical, e(name), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
-               e(name), e(name), lede, stats, haz, recent_tbl, denials,
+               e(name), e(name), lede, stats, jlink, haz, recent_tbl, denials, orphan_html,
                e(name), ab, method_html(), grid, footer_html()))
 
 
@@ -397,12 +445,13 @@ def render_robots():
 
 # ---------------------------------------------------------------- main
 def main():
-    STATES, DECLS, DENS, YOY = load_data()
+    STATES, DECLS, DENS, YOY, KEEP = load_data()
     lcfy = last_complete_fy(YOY)
     meta = {s["ab"]: s for s in STATES}
 
     rows = [state_stats(ab, m["name"], m.get("days", 0),
-                        DECLS.get(ab, []), DENS.get(ab, []), lcfy)
+                        DECLS.get(ab, []), DENS.get(ab, []), lcfy,
+                        KEEP.get(ab, {"ids": set(), "n": 0}))
             for ab, m in meta.items()]
     rows.sort(key=lambda s: -s["decl"])
     for i, s in enumerate(rows):
