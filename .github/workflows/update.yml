@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.js map-data.js index.html sitemap.xml robots.txt states/
+          git add data.js map-data.js index.html sitemap.xml robots.txt locality-index.js states/
           if git diff --staged --quiet; then
             echo "No changes to commit, data is already up to date."
           else
