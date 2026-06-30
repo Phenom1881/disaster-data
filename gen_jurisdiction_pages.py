@@ -196,7 +196,10 @@ def header_html():
 
 def footer_html():
     return ('<footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, '
-            'refreshed weekly &middot; <a href="../../about.html">About and contact</a></div></footer>')
+            'refreshed weekly &middot; <a href="../../about.html">About and contact</a></div></footer>'
+            '<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+            'data-cf-beacon=\'{"token": "ceea2416f66a424981ba37fcb9440d68"}\'></script>'
+            '<!-- End Cloudflare Web Analytics -->')
 
 def method_html(kind):
     extra = {
@@ -355,7 +358,7 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES):
     js = [s for s in stats if s is not None]
     dropped = len(stats) - len(js)
     if not js:
-        return (0, dropped)
+        return (0, dropped, [])
 
     seen = {}
     for j in js:
@@ -368,7 +371,7 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES):
     for j in js:
         open(os.path.join(OUT_DIR, j["slug"] + ".html"), "w", encoding="utf-8").write(render_page(j, js))
     open(os.path.join(OUT_DIR, "index.html"), "w", encoding="utf-8").write(render_hub(js))
-    return (len(js), dropped)
+    return (len(js), dropped, js)
 
 def main():
     LOCALITY, BROWSE, NAMES = load_data()
@@ -383,19 +386,35 @@ def main():
         targets = sorted(LOCALITY.keys(), key=lambda s: NAMES.get(s, s))
 
     grand_pages = grand_states = grand_drop = 0
+    all_jurisdictions = []
     for st in targets:
-        kept, dropped = build_state(st, LOCALITY, by_id, lcfy, NAMES)
+        kept, dropped, js = build_state(st, LOCALITY, by_id, lcfy, NAMES)
         grand_drop += dropped
         if kept:
             grand_states += 1
             grand_pages += kept
+            state_name = NAMES.get(st, st)
+            state_slug = slugify(state_name)
+            for j in js:
+                all_jurisdictions.append([
+                    j["name"], st, state_name,
+                    "states/%s/%s.html" % (state_slug, j["slug"]),
+                    j["decl"], j["kind"], j["noun"]
+                ])
             if one:
                 print("generated %d %s jurisdiction pages + hub, through FY%d" % (kept, STATE_NAME, lcfy))
 
+    # write search/map index (used by homepage search + map click-through)
     if not one:
+        idx_path = os.path.join(OUT_ROOT, "locality-index.js")
+        # compact JSON array: [name, stateAB, stateName, url, declCount, kind, noun]
+        idx_js = "window.LOCALITY_INDEX=" + json.dumps(all_jurisdictions, separators=(",", ":")) + ";"
+        open(idx_path, "w", encoding="utf-8").write(idx_js)
         print("generated %d jurisdiction pages + %d hubs across %d states/territories, "
               "through FY%d (skipped %d non-locality entries)"
               % (grand_pages, grand_states, grand_states, lcfy, grand_drop))
+        print("wrote locality-index.js (%d entries, %d KB)"
+              % (len(all_jurisdictions), len(idx_js) // 1024))
 
 if __name__ == "__main__":
     main()

@@ -232,6 +232,16 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   </header>
 </div>
 
+<!-- Locality search -->
+<section id="loc-search" style="max-width:980px;margin:1.5rem auto 2rem;padding:0 clamp(18px,4vw,40px)">
+<h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .5rem">Find your locality</h2>
+<div id="lsBox" style="position:relative;max-width:520px">
+<svg style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#938a78;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" id="lsQ" placeholder="Search counties, parishes, boroughs, tribes..." autocomplete="off" aria-label="Search localities" style="width:100%;font:400 1rem 'Public Sans',sans-serif;padding:.7rem 1rem .7rem 2.6rem;border:1px solid #e4dccb;border-radius:10px;background:#fffdf7;color:#2b2b2b;outline:none;box-sizing:border-box">
+<div id="lsR" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fffdf7;border:1px solid #e4dccb;border-radius:10px;box-shadow:0 8px 24px rgba(40,30,10,.12);max-height:340px;overflow-y:auto;z-index:100"></div>
+</div>
+</section>
+
 <div class="deck-shell">
   <div class="container">
     <div class="deck">
@@ -912,5 +922,50 @@ initBounds(); updateRange(); render(); renderHaz();
   if (applyURLState() && typeof updateRange === 'function') { updateRange(); }
 })();
 </script>
+<script src="locality-index.js"></script>
+<script>
+(function(){
+  var input=document.getElementById('lsQ'),box=document.getElementById('lsR'),wrap=document.getElementById('lsBox');
+  if(!input||!window.LOCALITY_INDEX)return;
+  var IDX=window.LOCALITY_INDEX,aidx=-1;
+  function norm(s){return s.toLowerCase().replace(/[^a-z0-9 ]/g,'');}
+  function find(q){
+    if(!q||q.length<2)return[];
+    var nq=norm(q),parts=nq.split(/\s+/),out=[];
+    for(var i=0;i<IDX.length;i++){
+      var r=IDX[i],nn=norm(r[0]+' '+r[1]+' '+r[2]);
+      var ok=true;for(var p=0;p<parts.length;p++){if(nn.indexOf(parts[p])<0){ok=false;break;}}
+      if(!ok)continue;
+      var ns=norm(r[0]),sc=r[4];
+      if(ns.indexOf(parts[0])===0)sc+=10000;
+      if(ns===nq)sc+=50000;
+      out.push([sc,r]);
+    }
+    out.sort(function(a,b){return b[0]-a[0];});
+    return out.slice(0,12).map(function(s){return s[1];});
+  }
+  function render(hits){
+    if(!hits.length){box.innerHTML='<div style="padding:.8rem 1rem;color:#6b6357;font-size:.9rem">No matching localities found.</div>';box.style.display='block';return;}
+    box.innerHTML=hits.map(function(r,i){
+      return '<a href="'+r[3]+'" data-i="'+i+'" style="display:flex;align-items:baseline;gap:.5rem;padding:.55rem 1rem;text-decoration:none;color:#2b2b2b;border-bottom:1px solid #f0ebe0">'
+        +'<span style="font-weight:600;color:#004c53">'+r[0]+'</span>'
+        +'<span style="color:#6b6357;font-size:.85rem">'+r[1]+'</span>'
+        +'<span style="margin-left:auto;color:#6b6357;font-size:.82rem;white-space:nowrap">'+r[4]+' decl.</span></a>';
+    }).join('');
+    box.style.display='block';aidx=-1;
+  }
+  input.addEventListener('input',function(){var q=this.value.trim();if(q.length<2){box.style.display='none';return;}render(find(q));});
+  input.addEventListener('keydown',function(e){
+    var links=box.querySelectorAll('a');if(!links.length)return;
+    if(e.key==='ArrowDown'){e.preventDefault();aidx=Math.min(aidx+1,links.length-1);links.forEach(function(a,i){a.style.background=i===aidx?'#d7e9ea':'';});}
+    else if(e.key==='ArrowUp'){e.preventDefault();aidx=Math.max(aidx-1,0);links.forEach(function(a,i){a.style.background=i===aidx?'#d7e9ea':'';});}
+    else if(e.key==='Enter'&&aidx>=0){e.preventDefault();links[aidx].click();}
+    else if(e.key==='Escape'){box.style.display='none';}
+  });
+  document.addEventListener('click',function(e){if(!wrap.contains(e.target))box.style.display='none';});
+  input.addEventListener('focus',function(){if(this.value.trim().length>=2){var h=find(this.value.trim());if(h.length)render(h);}});
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
