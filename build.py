@@ -220,7 +220,7 @@ PA_BASE    = "https://www.fema.gov/api/open/v2"
 PA_FIELDS  = [
     "disasterNumber", "stateAbbreviation", "federalShareObligated",
     "totalObligated", "damageCategoryCode", "damageCategoryDescrip",
-    "declarationDate", "incidentType", "county", "applicantName"
+    "declarationDate", "incidentType", "county"
 ]
 
 def fetch_pa_all():
@@ -446,12 +446,14 @@ if raw_pa:
         _rows = sorted(
             _e["rows"],
             key=lambda r: (-(float(r.get("federalShareObligated") or 0)),
-                           r.get("applicantName") or "",
+                           (r.get("county") or ""),
                            (r.get("damageCategoryCode") or ""))
         )[:PA_SNAP_TOP]
+        # Applicant names are not queryable in this OpenFEMA dataset, so label each
+        # project by its county / applicant area. The projects page reads applicantName.
         _projects = [{
             "damageCategoryCode":    (r.get("damageCategoryCode") or "").strip().upper(),
-            "applicantName":         r.get("applicantName") or "",
+            "applicantName":         (r.get("county") or "").strip(),
             "federalShareObligated": round(float(r.get("federalShareObligated") or 0), 2),
         } for r in _rows]
         _out = {"disasterNumber": _dn, "state": _st, "count": _e["count"], "projects": _projects}
@@ -1123,6 +1125,12 @@ try:
           f"{map_data['summary']['countyFipsWithData']:,} counties, "
           f"{_det:,} declaration events, "
           f"{map_data['summary']['uniqueDeclarations']:,} county-mapped declarations")
+
+    # Write lightweight county-names.js for jurisdiction page maps
+    cn_js = "window.COUNTY_NAMES=" + json.dumps(map_data["countyLabels"], separators=(",", ":")) + ";"
+    with open("county-names.js", "w", encoding="utf-8") as f:
+        f.write(cn_js)
+    print(f"  county-names.js written ({len(cn_js)//1024} KB, {len(map_data['countyLabels']):,} counties)")
 except Exception as e:
     print(f"  WARNING: map-data.js build failed: {e} (home-page data.js still updated)")
 
