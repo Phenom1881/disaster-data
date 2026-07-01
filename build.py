@@ -9,6 +9,7 @@ Run in CI:    same command — GitHub Actions uses this directly.
 
 import json
 import time
+import os
 import datetime
 import urllib.request
 import urllib.parse
@@ -219,7 +220,7 @@ PA_BASE    = "https://www.fema.gov/api/open/v2"
 PA_FIELDS  = [
     "disasterNumber", "stateAbbreviation", "federalShareObligated",
     "totalObligated", "damageCategoryCode", "damageCategoryDescrip",
-    "declarationDate", "incidentType", "county"
+    "declarationDate", "incidentType", "county", "applicantName"
 ]
 
 def fetch_pa_all():
@@ -351,7 +352,7 @@ if raw_pa:
             _e["obl"]  += obl
             _e["proj"] += 1
 
-        # per-state per-county rollup (powers jurisdiction page PA cards)
+        # per-state per-county rollup (powers jurisdiction PA cards + category breakdown)
         cty = (r.get("county") or "").strip()
         if cty and cty.lower() != "statewide":
             _sc = pa_by_county.setdefault(st, {})
@@ -360,7 +361,11 @@ if raw_pa:
                 _ce = _sc[cty] = {"obl": 0, "proj": 0, "cats": {}}
             _ce["obl"]  += obl
             _ce["proj"] += 1
-            _ce["cats"][code] = _ce["cats"].get(code, 0) + obl
+            _cc = _ce["cats"].get(code)          # per category: [obligated, projects]
+            if _cc is None:
+                _cc = _ce["cats"][code] = [0, 0]
+            _cc[0] += obl
+            _cc[1] += 1
 
     # Top 15 states by federal share
     top_states = sorted(
@@ -418,16 +423,62 @@ if raw_pa:
     }
     print(f"  PA summary: ${pa_total_obl/1e9:.1f}B total, {len(pa_disasters):,} disasters, {pa_total_proj:,} projects")
 
-    # Build compact per-county PA output: {ST: {county_name: [obl, proj, topCat]}}
+    # ---- Per (disaster, state) project snapshots -----------------------------
+    # Archived fallback the projects page loads when the live OpenFEMA browser
+    # fetch is blocked by CORS. One JSON per disaster-state pair, capped to the
+    # largest PA_SNAP_TOP projects by federal share. Deterministic ordering keeps
+    # unchanged files byte-identical week to week (no needless git churn).
+    PA_SNAP_TOP = 200
+    _snap = {}
+    for r in raw_pa:
+        _dn = r.get("disasterNumber"); _st = r.get("stateAbbreviation")
+        if _dn is None or not _st:
+            continue
+        _e = _snap.get((_dn, _st))
+        if _e is None:
+            _e = _snap[(_dn, _st)] = {"rows": [], "count": 0}
+        _e["count"] += 1
+        _e["rows"].append(r)
+
+    os.makedirs("pa-projects", exist_ok=True)
+    snap_keys = []
+    for (_dn, _st), _e in _snap.items():
+        _rows = sorted(
+            _e["rows"],
+            key=lambda r: (-(float(r.get("federalShareObligated") or 0)),
+                           r.get("applicantName") or "",
+                           (r.get("damageCategoryCode") or ""))
+        )[:PA_SNAP_TOP]
+        _projects = [{
+            "damageCategoryCode":    (r.get("damageCategoryCode") or "").strip().upper(),
+            "applicantName":         r.get("applicantName") or "",
+            "federalShareObligated": round(float(r.get("federalShareObligated") or 0), 2),
+        } for r in _rows]
+        _out = {"disasterNumber": _dn, "state": _st, "count": _e["count"], "projects": _projects}
+        with open(f"pa-projects/{_dn}-{_st}.json", "w", encoding="utf-8") as _f:
+            json.dump(_out, _f, separators=(",", ":"))
+        snap_keys.append(f"{_dn}-{_st}")
+
+    snap_keys.sort()
+    pa_national["projectSnapshots"] = snap_keys
+    print(f"  PA snapshots: {len(snap_keys):,} disaster-state files (top {PA_SNAP_TOP} each) in pa-projects/")
+
+    # Build per-county PA output: {ST: {county: [obl, proj, topCatCode, {code:[obl,proj]}]}}
+    # Element 4 (category breakdown) powers the per-jurisdiction PA category table.
+    # Per-category obligated is rounded to whole dollars to keep data.js compact;
+    # the element-1 total keeps cents so the card figure stays exact.
     pa_county_out = {}
     for _st, _counties in pa_by_county.items():
         _co = {}
         for _cn, _cv in _counties.items():
-            top_cat = max(_cv["cats"], key=_cv["cats"].get) if _cv["cats"] else ""
-            _co[_cn] = [round(_cv["obl"], 2), _cv["proj"], top_cat]
+            top_cat = max(_cv["cats"], key=lambda k: _cv["cats"][k][0]) if _cv["cats"] else ""
+            cat_bd  = {code: [round(v[0]), v[1]] for code, v in _cv["cats"].items()}
+            _co[_cn] = [round(_cv["obl"], 2), _cv["proj"], top_cat, cat_bd]
         pa_county_out[_st] = _co
     _cty_count = sum(len(v) for v in pa_county_out.values())
-    print(f"  PA by county: {_cty_count:,} counties across {len(pa_county_out)} states")
+    _cat_cells = sum(len(c[3]) for s in pa_county_out.values() for c in s.values())
+    print(f"  PA by county: {_cty_count:,} counties across {len(pa_county_out)} states "
+          f"({_cat_cells:,} category rows)")
 
 
 
