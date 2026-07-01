@@ -219,7 +219,7 @@ PA_BASE    = "https://www.fema.gov/api/open/v2"
 PA_FIELDS  = [
     "disasterNumber", "stateAbbreviation", "federalShareObligated",
     "totalObligated", "damageCategoryCode", "damageCategoryDescrip",
-    "declarationDate", "incidentType"
+    "declarationDate", "incidentType", "county"
 ]
 
 def fetch_pa_all():
@@ -281,12 +281,14 @@ except Exception as e:
 
 # Build PA national summary aggregates
 pa_national = {}
+pa_county_out = {}
 if raw_pa:
     pa_by_state   = {}
     pa_by_cat     = {}
     pa_by_disaster = {}
     pa_by_year    = {}
     pa_state_dis  = {}   # state -> {disasterNumber -> {obl, proj, inc, year}} (drill-down)
+    pa_by_county  = {}   # state -> {county_name -> {obl, proj, cats:{code:obl}}} (jurisdiction pages)
 
     # disasterNumber -> declaration title (from declarations fetched earlier)
     dn_title = {}
@@ -349,6 +351,17 @@ if raw_pa:
             _e["obl"]  += obl
             _e["proj"] += 1
 
+        # per-state per-county rollup (powers jurisdiction page PA cards)
+        cty = (r.get("county") or "").strip()
+        if cty and cty.lower() != "statewide":
+            _sc = pa_by_county.setdefault(st, {})
+            _ce = _sc.get(cty)
+            if _ce is None:
+                _ce = _sc[cty] = {"obl": 0, "proj": 0, "cats": {}}
+            _ce["obl"]  += obl
+            _ce["proj"] += 1
+            _ce["cats"][code] = _ce["cats"].get(code, 0) + obl
+
     # Top 15 states by federal share
     top_states = sorted(
         [{"state": k, "obl": round(v["obl"],2), "proj": v["proj"]} for k,v in pa_by_state.items()],
@@ -404,6 +417,17 @@ if raw_pa:
         "stateDisasters":  state_disasters,
     }
     print(f"  PA summary: ${pa_total_obl/1e9:.1f}B total, {len(pa_disasters):,} disasters, {pa_total_proj:,} projects")
+
+    # Build compact per-county PA output: {ST: {county_name: [obl, proj, topCat]}}
+    pa_county_out = {}
+    for _st, _counties in pa_by_county.items():
+        _co = {}
+        for _cn, _cv in _counties.items():
+            top_cat = max(_cv["cats"], key=_cv["cats"].get) if _cv["cats"] else ""
+            _co[_cn] = [round(_cv["obl"], 2), _cv["proj"], top_cat]
+        pa_county_out[_st] = _co
+    _cty_count = sum(len(v) for v in pa_county_out.values())
+    print(f"  PA by county: {_cty_count:,} counties across {len(pa_county_out)} states")
 
 
 
@@ -950,6 +974,7 @@ lines = [
     f'window.ERA_TOTAL_KEYS   ={json.dumps(ERA_TOTAL_KEYS,  separators=(",",":"))}',
     f'window.DATA_DATE        ="{TODAY}"',
     f'window.PA_NATIONAL      ={json.dumps(pa_national,  separators=(",",":"))}',
+    f'window.PA_BY_COUNTY     ={json.dumps(pa_county_out, separators=(",",":"))}',
     "document.dispatchEvent(new Event('dataReady'));",
 ]
 
