@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Landfall: Anytown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#004c53;
+    --brand-2:#03626b;
+    --cream:#f6f1e7;
+    --paper:#fffdf7;
+    --ink:#123137;
+    --ink-soft:#3f5a60;
+    --line:#e0d7c6;
+    --land:#e7e0cf;
+    --land-2:#dcd3bd;
+    --water:#cfe3e6;
+    --water-2:#bcd6da;
+    --wind:#e0912f;
+    --flood:#3f7fd6;
+    --people:#0f8a6b;
+    --danger:#d1483a;
+    --a:#1a8f5c; --b:#0f7a83; --c:#c98a1f; --d:#d1662f; --f:#c23b2f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--cream);color:var(--ink);
+    font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 24px);}
+  .wrap{max-width:540px;margin:0 auto;}
+  .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brand);}
+  .masthead{border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:14px;}
+  .masthead h1{font-family:'Fraunces',serif;font-weight:600;font-size:26px;line-height:1.05;margin:6px 0 4px;color:var(--ink);}
+  .masthead .sub{font-size:13px;color:var(--ink-soft);font-weight:500;}
+  .masthead .sub b{color:var(--danger);font-weight:700;}
+
+  .status{display:flex;gap:10px;align-items:stretch;margin-bottom:14px;}
+  .chip{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px 11px;}
+  .chip .k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .chip .v{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:19px;font-weight:600;margin-top:3px;color:var(--ink);}
+  .bar{height:6px;border-radius:99px;background:var(--line);margin-top:7px;overflow:hidden;}
+  .bar > i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .25s ease;}
+
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+  .mapwrap{position:relative;background:var(--water);}
+  svg.map{display:block;width:100%;height:auto;}
+  .caption{padding:11px 14px;border-top:1px solid var(--line);font-size:13px;line-height:1.45;color:var(--ink);background:var(--paper);}
+  .caption b{color:var(--brand);}
+
+  .sec-title{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 10px;}
+  .sec-title .t{font-family:'Fraunces',serif;font-weight:600;font-size:17px;color:var(--ink);}
+  .sec-title .n{font-size:11px;color:var(--ink-soft);font-weight:600;}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media (max-width:430px){ .cards{grid-template-columns:1fr;} }
+  .card{position:relative;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;
+    transition:border-color .15s ease,transform .04s ease,box-shadow .15s ease;color:inherit;font-family:inherit;}
+  .card:hover{border-color:var(--brand);box-shadow:0 4px 14px rgba(0,60,66,.08);}
+  .card:active{transform:scale(.995);}
+  .card:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;border-color:var(--line);}
+  .card .top{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+  .ic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+  .ic svg{width:17px;height:17px;display:block;}
+  .card .nm{font-weight:700;font-size:14px;line-height:1.1;}
+  .card .ef{font-size:12px;line-height:1.4;color:var(--ink-soft);min-height:33px;}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;}
+  .cost{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--brand);
+    background:rgba(0,76,83,.08);border-radius:99px;padding:3px 9px;}
+  .free{color:var(--people);background:rgba(15,138,107,.1);}
+  .pips{display:flex;gap:4px;}
+  .pips i{width:9px;height:9px;border-radius:50%;background:var(--line);}
+  .pips i.on{background:var(--brand);}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);}
+  .tag.done{color:var(--people);}
+  .tag.late{color:var(--danger);}
+  .lead{position:absolute;top:10px;right:11px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--wind);background:rgba(224,145,47,.12);padding:2px 7px;border-radius:99px;}
+
+  .go{width:100%;border:0;cursor:pointer;margin-top:16px;background:var(--brand);color:var(--cream);
+    font-family:inherit;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:14px;padding:16px;border-radius:13px;
+    transition:background .15s ease,transform .05s ease;}
+  .go:hover{background:var(--brand-2);}
+  .go:active{transform:scale(.99);}
+  .go.storm{background:var(--danger);}
+  .go.storm:hover{background:#b93e31;}
+
+  .overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    background:rgba(12,40,44,.55);backdrop-filter:blur(3px);padding:20px;}
+  .modal{width:min(460px,94vw);max-height:92vh;overflow:auto;background:var(--paper);border-radius:18px;
+    padding:24px 22px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);}
+  .modal .eyebrow{margin-bottom:6px;}
+  .modal h2{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:0 0 10px;color:var(--ink);}
+  .modal p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 14px;}
+  .rules{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:9px;}
+  .rules li{display:flex;gap:10px;font-size:13.5px;line-height:1.45;color:var(--ink);}
+  .rules .d{flex:0 0 auto;width:15px;height:15px;border-radius:5px;margin-top:2px;}
+
+  .grade{display:flex;align-items:center;gap:16px;margin:4px 0 14px;}
+  .gletter{font-family:'Fraunces',serif;font-weight:700;font-size:62px;line-height:.9;width:86px;height:86px;
+    display:flex;align-items:center;justify-content:center;border-radius:18px;color:#fff;}
+  .greveal{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .greveal .cat{font-weight:700;color:var(--ink);font-size:15px;}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px;}
+  .stbox{background:var(--cream);border-radius:12px;padding:11px 12px;}
+  .stbox .k{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .stbox .v{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;font-weight:600;margin-top:3px;color:var(--ink);}
+  .aar{background:var(--cream);border-left:3px solid var(--brand);border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 18px;}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="eyebrow">Anytown Emergency Management</div>
+    <h1 id="stormName">Hurricane</h1>
+    <div class="sub" id="stormSub">Landfall in <b>4 days</b></div>
+  </div>
+
+  <div class="status">
+    <div class="chip"><div class="k">Advisory</div><div class="v" id="dayVal">Day 1 / 4</div></div>
+    <div class="chip"><div class="k">Budget</div><div class="v" id="budVal">10</div><div class="bar"><i id="budBar" style="width:100%"></i></div></div>
+    <div class="chip"><div class="k">Actions today</div><div class="v" id="actVal">2</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="mapwrap">
+      <svg class="map" viewBox="0 0 400 360" id="map" aria-label="Forecast map">
+        <!-- water -->
+        <rect x="0" y="0" width="400" height="360" fill="var(--water)"/>
+        <!-- land -->
+        <path d="M0,200 C60,188 120,208 180,196 C250,182 320,206 400,194 L400,0 L0,0 Z" fill="var(--land)"/>
+        <path d="M0,200 C60,188 120,208 180,196 C250,182 320,206 400,194" fill="none" stroke="var(--land-2)" stroke-width="3"/>
+        <!-- river through the floodplain -->
+        <path d="M150,201 C150,190 158,182 156,172 C154,158 150,150 150,138" fill="none" stroke="var(--water-2)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+        <!-- zones -->
+        <g font-family="Public Sans, sans-serif" font-weight="700">
+          <circle cx="200" cy="150" r="6" fill="var(--brand)"/>
+          <text x="200" y="136" font-size="12" text-anchor="middle" fill="var(--ink)">Anytown</text>
+          <circle cx="156" cy="180" r="4.5" fill="var(--flood)"/>
+          <text x="156" y="196" font-size="9.5" text-anchor="middle" fill="var(--ink-soft)">Riverside</text>
+          <circle cx="252" cy="120" r="4.5" fill="var(--wind)"/>
+          <text x="252" y="110" font-size="9.5" text-anchor="middle" fill="var(--ink-soft)">Ridgecrest</text>
+          <text x="200" y="164" font-size="9" text-anchor="middle" fill="var(--ink-soft)">Downtown</text>
+        </g>
+        <!-- dynamic group: cone, storm, track -->
+        <g id="dyn"></g>
+      </svg>
+    </div>
+    <div class="caption" id="caption">Advisory pending.</div>
+  </div>
+
+  <div class="sec-title">
+    <div class="t">Preparedness actions</div>
+    <div class="n" id="actNote"></div>
+  </div>
+  <div class="cards" id="cards"></div>
+
+  <button class="go" id="goBtn">Advance to Day 2</button>
+</div>
+
+<!-- Intro -->
+<div class="overlay" id="intro">
+  <div class="modal">
+    <div class="eyebrow">Situation report</div>
+    <h2 id="introTitle">A storm is coming</h2>
+    <p id="introText"></p>
+    <ul class="rules">
+      <li><span class="d" style="background:var(--brand)"></span><span>You have <b>four days</b> and a <b>limited budget</b>. Each day you can take two actions, then a new advisory arrives.</span></li>
+      <li><span class="d" style="background:var(--wind)"></span><span>The forecast <b>cone</b> narrows over time. Its category and where it crosses the coast are both uncertain until landfall.</span></li>
+      <li><span class="d" style="background:var(--flood)"></span><span>A weak storm that hits dead-on can be worse than a strong one that grazes. Prepare for what the cone actually shows.</span></li>
+      <li><span class="d" style="background:var(--danger)"></span><span>Evacuation and mutual aid only work if you call them <b>early</b>. Waiting has a cost.</span></li>
+    </ul>
+    <button class="go" id="beginBtn">Take command</button>
+  </div>
+</div>
+
+<!-- After action -->
+<div class="overlay hidden" id="aarScreen">
+  <div class="modal">
+    <div class="eyebrow">After-action report</div>
+    <div class="grade">
+      <div class="gletter" id="gLetter">B</div>
+      <div class="greveal" id="gReveal"></div>
+    </div>
+    <div class="stats">
+      <div class="stbox"><div class="k">Lives lost</div><div class="v" id="sLives">0</div></div>
+      <div class="stbox"><div class="k">Households displaced</div><div class="v" id="sDisp">0</div></div>
+      <div class="stbox"><div class="k">Damage</div><div class="v" id="sDmg">$0</div></div>
+      <div class="stbox"><div class="k">Budget used</div><div class="v" id="sBud">0</div></div>
+    </div>
+    <div class="aar" id="aarText"></div>
+    <button class="go" id="againBtn">Run it again</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NAMES = ['Ana','Bonnie','Colin','Danielle','Elsa','Fiona','Gaston','Hermine','Idris','Julia','Karl','Nicole','Owen','Paula'];
+
+  // ----- Zones -----
+  var ZONES = [
+    { id:'downtown',   name:'Downtown',   pop:4000, windVuln:0.7, floodVuln:0.4 },
+    { id:'riverside',  name:'Riverside',  pop:2500, windVuln:0.5, floodVuln:1.0 },
+    { id:'ridgecrest', name:'Ridgecrest', pop:1500, windVuln:1.0, floodVuln:0.1 }
+  ];
+  var NH_POP = 300; // medical-needs residents in Riverside
+
+  // ----- Economy -----
+  var TOTAL_BUDGET = 10;
+  var SLOTS_PER_DAY = 2;
+  var DAYS = 4;
+  var LEAD = { 1:1.0, 2:0.85, 3:0.5, 4:0.15 }; // effectiveness of timing-sensitive actions by day taken
+
+  // ----- Actions -----
+  var ACTIONS = [
+    { id:'shelter',  name:'Open shelters',      cost:1, max:3, kind:'level', accent:'--people',
+      ef:'Houses people who lose their homes. Fewer displaced.' },
+    { id:'sandbag',  name:'Sandbag floodplain', cost:2, max:3, kind:'level', accent:'--flood',
+      ef:'Cuts flood and surge damage in low-lying Riverside.' },
+    { id:'harden',   name:'Harden facilities',  cost:2, max:3, kind:'level', accent:'--wind',
+      ef:'Reduces wind damage across town.' },
+    { id:'warn',     name:'Public warnings',    cost:0, max:2, kind:'level', accent:'--brand',
+      ef:'Raises evacuation compliance. Worth most early.' },
+    { id:'evac',     name:'Order evacuation',   cost:1, max:1, kind:'once', accent:'--danger', lead:true,
+      ef:'Moves people out of harm before impact. Needs lead time.' },
+    { id:'nursing',  name:'Relocate care home', cost:2, max:1, kind:'once', accent:'--danger', lead:true,
+      ef:'Prevents concentrated casualties among the vulnerable.' },
+    { id:'stock',    name:'Stockpile supplies', cost:1, max:3, kind:'level', accent:'--people',
+      ef:'Water, food, fuel. Speeds recovery after the storm.' },
+    { id:'aid',      name:'Request mutual aid',  cost:2, max:1, kind:'once', accent:'--brand', lead:true, byDay:2,
+      ef:'A force multiplier, but must be requested by Day 2 to arrive.' }
+  ];
+
+  // ----- Icons -----
+  function icon(id){
+    var s = {
+      shelter:'<path d="M8.5 2 15 7v7H2V7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.6 14V9.6h3.8V14" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+      sandbag:'<path d="M1.5 11c2-2 3.5 1 5.5-1s3.5 1 5.5-1 2.5 0 2.5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M1.5 14c2-2 3.5 1 5.5-1s3.5 1 5.5-1 2.5 0 2.5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      harden:'<path d="M8.5 1.5 14 4v4c0 4-3 6-5.5 7C6 14 3 12 3 8V4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      warn:'<path d="M8.5 2.2C6 2.2 4.7 4 4.7 6.3c0 3-1.2 3.8-1.7 4.6h11c-.5-.8-1.7-1.6-1.7-4.6C12.3 4 11 2.2 8.5 2.2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 12.6a1.6 1.6 0 0 0 3 0" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+      evac:'<circle cx="6" cy="4" r="1.7" fill="currentColor"/><path d="M4 14V9l-1.6 1.2M8 14V9l1.6 1.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M11 8h4M13 6l2 2-2 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+      nursing:'<rect x="3" y="3" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.5 5.6v6M5.5 8.6h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      stock:'<path d="M2.5 6 8.5 3l6 3v6l-6 3-6-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.5 6l6 3 6-3M8.5 9v6" fill="none" stroke="currentColor" stroke-width="1.3"/>',
+      aid:'<path d="M8.5 14s-5-3.2-5-6.6A2.9 2.9 0 0 1 8.5 5a2.9 2.9 0 0 1 5 2.4C13.5 10.8 8.5 14 8.5 14Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'
+    };
+    return '<svg viewBox="0 0 17 17">' + (s[id] || '') + '</svg>';
+  }
+
+  // ----- Helpers -----
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function rnd(a,b){ return a + Math.random()*(b-a); }
+  function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  // ----- State -----
+  var S;
+  function newGame(){
+    var strength = 1 + Math.floor(Math.random()*5);        // 1..5 true category
+    var landfallX = clamp(rnd(-1,1), -1, 1);               // -1 west .. 0 town .. 1 east
+    // per day forecast: center converges to truth, half-width shrinks
+    var wobble = rnd(-0.28,0.28);
+    var sWobble = rnd(-1.1,1.1);
+    var halfTrack = { 1:0.7, 2:0.45, 3:0.24, 4:0.10 };
+    var halfCat   = { 1:1.6, 2:1.0, 3:0.5, 4:0.2 };
+    var fc = {};
+    for (var d=1; d<=DAYS; d++){
+      var k = (DAYS - d) / (DAYS - 1);                     // 1 on day1 -> 0 on day4
+      fc[d] = {
+        cx: clamp(landfallX + wobble*k, -1, 1),
+        hw: halfTrack[d],
+        cs: clamp(strength + sWobble*k, 1, 5),
+        hs: halfCat[d]
+      };
+    }
+    S = {
+      strength:strength, landfallX:landfallX, fc:fc,
+      day:1, budget:TOTAL_BUDGET, slots:SLOTS_PER_DAY,
+      levels:{}, once:{}, doneDay:{},
+      name:(strength>=3?'Hurricane ':'Tropical Storm ') + NAMES[Math.floor(Math.random()*NAMES.length)]
+    };
+    ACTIONS.forEach(function(a){ if(a.kind==='level') S.levels[a.id]=0; else S.once[a.id]=false; });
+  }
+
+  // ----- Action availability -----
+  function level(id){ return S.levels[id] || 0; }
+  function reason(a){
+    if (a.kind==='level' && level(a.id) >= a.max) return 'maxed';
+    if (a.kind==='once' && S.once[a.id]) return 'done';
+    if (a.byDay && S.day > a.byDay) return 'late';
+    if (S.slots <= 0) return 'noslot';
+    if (a.cost > S.budget) return 'nobudget';
+    return null;
+  }
+  function doAction(a){
+    if (reason(a)) return;
+    S.budget -= a.cost;
+    S.slots -= 1;
+    if (a.kind==='level') S.levels[a.id] += 1;
+    else { S.once[a.id] = true; S.doneDay[a.id] = S.day; }
+    render();
+  }
+
+  // ----- Advance / resolve -----
+  function advance(){
+    if (S.day >= DAYS){ resolve(); return; }
+    S.day += 1;
+    S.slots = SLOTS_PER_DAY;
+    render();
+  }
+
+  function directness(){ return clamp(1 - Math.abs(S.landfallX), 0, 1); }
+
+  function hazards(){
+    var Sn = (S.strength - 1) / 4;      // 0..1
+    var D = directness();               // 0..1
+    var wind = clamp((0.15 + 0.85*D) * (0.30 + 0.70*Sn), 0, 1);
+    var flood = clamp(Math.pow(D, 1.4) * (0.35 + 0.65*Sn), 0, 1);
+    return { wind:wind, flood:flood, D:D, Sn:Sn };
+  }
+
+  function mitigations(){
+    var sandbag = Math.min(0.85, level('sandbag')*0.30);
+    var harden  = Math.min(0.85, level('harden')*0.30);
+    var shelter = Math.min(0.90, level('shelter')*0.30);
+    var warn    = Math.min(0.35, level('warn')*0.18);
+    var aidGood = S.once['aid'] && (S.doneDay['aid'] <= 2);
+    var evacOrd = S.once['evac'] ? 0.60 * (LEAD[S.doneDay['evac']] || 0) : 0;
+    var evac = clamp((warn + evacOrd) * (aidGood ? 1.12 : 1), 0, 0.95);
+    shelter = clamp(shelter * (aidGood ? 1.15 : 1), 0, 0.95);
+    var nh = 0; // remaining care-home casualty factor (1 = full exposure)
+    if (S.once['nursing']) nh = (S.doneDay['nursing'] <= 3) ? 0 : 0.4; else nh = 1;
+    return { sandbag:sandbag, harden:harden, shelter:shelter, evac:evac, nh:nh,
+             stock:level('stock'), aidGood:aidGood };
+  }
+
+  // core outcome given a set of mitigations (used for actual and for the do-nothing baseline)
+  function outcome(H, M){
+    var damage=0, displaced=0, casualties=0, riversideFlood=0;
+    ZONES.forEach(function(z){
+      var windEff = H.wind * z.windVuln * (1 - M.harden);
+      var floodEff = H.flood * z.floodVuln * (1 - M.sandbag);
+      if (z.id==='riverside') riversideFlood = floodEff;
+      var sev = clamp(windEff + floodEff, 0, 1);
+      damage += z.pop * 3500 * sev;
+      displaced += z.pop * sev * (1 - M.shelter);
+      casualties += z.pop * 0.010 * Math.pow(sev, 1.6) * (1 - M.evac);
+    });
+    // care home: concentrated vulnerable population in the floodplain
+    var nhSev = clamp(Math.max(riversideFlood, H.flood*0.6), 0, 1);
+    casualties += NH_POP * 0.05 * Math.pow(nhSev, 1.3) * (1 - M.evac) * M.nh;
+    return {
+      damage:damage,
+      displaced:Math.round(displaced/2.5), // households (rough 2.5 per household)
+      casualties:Math.round(casualties)
+    };
+  }
+
+  function resolve(){
+    var H = hazards();
+    var M = mitigations();
+    var actual = outcome(H, M);
+    // baseline: what happens with no preparation at all
+    var none = outcome(H, { sandbag:0, harden:0, shelter:0, evac:0, nh:1, stock:0 });
+
+    var harm = function(o){ return o.damage/1000 + o.displaced*4 + o.casualties*260; };
+    var base = harm(none), got = harm(actual);
+    var prevented = base > 0 ? clamp((base - got) / base, 0, 1) : 1;
+
+    // efficiency: penalize spending far beyond what the realized storm warranted
+    var used = TOTAL_BUDGET - S.budget;
+    var warranted = Math.round(TOTAL_BUDGET * clamp(0.5*H.wind + 0.5*H.flood, 0, 1));
+    var excess = Math.max(0, used - (warranted + 2));
+    var efficiency = clamp(1 - excess*0.06, 0, 1);
+
+    var score = 0.72*prevented + 0.28*efficiency;
+    // lives are the hard ceiling
+    if (actual.casualties >= 20) score = Math.min(score, 0.42);
+    else if (actual.casualties >= 8) score = Math.min(score, 0.6);
+
+    var letter = score>=0.85?'A':score>=0.7?'B':score>=0.55?'C':score>=0.4?'D':'F';
+    showAAR(letter, H, M, actual, used, warranted);
+  }
+
+  // ----- After-action narrative -----
+  function trackWord(){
+    var d = directness();
+    if (d >= 0.8) return 'a direct hit';
+    if (d >= 0.45) return 'a glancing blow';
+    if (d >= 0.2) return 'a near miss';
+    return 'a wide miss';
+  }
+  function aarNarrative(H, M, o, used, warranted){
+    var lines = [];
+    var side = S.landfallX < 0 ? 'west' : 'east';
+    var d = directness();
+    // headline about the storm
+    if (d < 0.25) lines.push('Category ' + S.strength + ' ' + S.name.replace(/^\w+\s/,'') + ' passed to the ' + side + ' and spared Anytown the worst.');
+    else if (d >= 0.8) lines.push('Category ' + S.strength + ' came ashore almost on top of Anytown.');
+    else lines.push('Category ' + S.strength + ' delivered ' + trackWord() + ', crossing the coast to the ' + side + '.');
+
+    // dominant failure or success
+    if (o.casualties >= 8 && M.evac < 0.4)
+      lines.push('Casualties ran high because evacuation was ordered too late to move people out. Lead time is the whole game with evacuation.');
+    else if (M.nh === 1 && H.flood > 0.4)
+      lines.push('The care home sat in the floodplain through a serious surge. Relocating its residents early would have prevented the worst of the losses.');
+    else if (H.flood > 0.45 && M.sandbag < 0.3)
+      lines.push('Riverside flooded hard with the floodplain undefended. Sandbags there would have paid for themselves.');
+    else if (H.wind > 0.5 && M.harden < 0.3)
+      lines.push('Wind did the damage and little was hardened against it.');
+    else if (d < 0.3 && used >= warranted + 3)
+      lines.push('You braced for a direct hit that veered away. That was a defensible read of a wide cone, but the spend outran the storm that actually came.');
+    else if (o.casualties === 0 && o.displaced < 200 && (M.harden + M.sandbag + M.shelter + M.evac) >= 0.4)
+      lines.push('A well-matched response: you spent where the storm actually threatened and kept people safe. Textbook.');
+    else if ((M.harden + M.sandbag + M.shelter + M.evac) < 0.3)
+      lines.push('You left Anytown largely unprepared. The track spared you this time, but a storm aimed at downtown would have overwhelmed a community that had not moved.');
+    else
+      lines.push('A balanced response that held the line on the biggest threats.');
+
+    if (M.aidGood) lines.push('State mutual aid arrived in time and stretched your capacity.');
+    if (M.stock >= 2) lines.push('Your supply caches will shorten the recovery ahead.');
+    return lines.join(' ');
+  }
+
+  // ----- Rendering -----
+  function toX(x){ return 200 + x*130; }
+  function stormGlyph(cx, cy, spin){
+    var rot = spin ? '' : '';
+    return '<g transform="translate('+cx+','+cy+')">'+
+      '<circle r="11" fill="none" stroke="var(--danger)" stroke-width="2"/>'+
+      '<path d="M0,-9 C6,-8 8,-3 2,-1 C6,0 5,6 0,9 C-6,8 -8,3 -2,1 C-6,0 -5,-6 0,-9 Z" fill="var(--danger)" opacity="0.85"'+
+        (spin ? ' style="transform-origin:center;animation:spin 6s linear infinite"' : '')+'/>'+
+      '<circle r="2" fill="var(--paper)"/>'+
+      '</g>';
+  }
+  function renderMap(landed){
+    var f = S.fc[S.day];
+    var dyn = '';
+    if (!landed){
+      var minx = toX(clamp(f.cx - f.hw, -1, 1));
+      var maxx = toX(clamp(f.cx + f.hw, -1, 1));
+      var sx = toX(f.cx);
+      // cone: fan from storm up to the projected landfall band at the coast, faded continuation inland
+      dyn += '<path d="M'+sx+',322 L'+maxx+',200 L'+maxx+',150 L'+minx+',150 L'+minx+',200 Z" '+
+             'fill="rgba(0,76,83,0.12)" stroke="rgba(0,76,83,0.45)" stroke-width="1.4" stroke-dasharray="5 5"/>';
+      dyn += stormGlyph(sx, 322, !reduceMotion);
+    } else {
+      var lx = toX(S.landfallX);
+      dyn += '<line x1="'+toX(S.landfallX)+'" y1="322" x2="'+lx+'" y2="150" stroke="var(--danger)" stroke-width="2.4"/>';
+      // impact burst at the coast
+      dyn += '<g transform="translate('+lx+',200)"><circle r="10" fill="none" stroke="var(--danger)" stroke-width="2"/>'+
+             '<circle r="17" fill="none" stroke="var(--danger)" stroke-width="1.2" opacity="0.5"/></g>';
+      dyn += stormGlyph(toX(S.landfallX), 322, false);
+      var d = directness();
+      var lbl = d>=0.8?'DIRECT HIT':d>=0.45?'GLANCING BLOW':d>=0.2?'NEAR MISS':'MISSED';
+      dyn += '<text x="200" y="245" font-size="15" font-weight="700" text-anchor="middle" '+
+             'font-family="Public Sans, sans-serif" fill="var(--danger)">'+lbl+'</text>';
+    }
+    document.getElementById('dyn').innerHTML = dyn;
+  }
+
+  function trackPhrase(f){
+    var minx = clamp(f.cx - f.hw, -1, 1);
+    var maxx = clamp(f.cx + f.hw, -1, 1);
+    if (minx <= 0 && maxx >= 0) return 'a direct hit on Anytown is on the table';
+    var side = maxx < 0 ? 'west' : 'east';
+    var near = Math.min(Math.abs(minx), Math.abs(maxx));
+    if (near < 0.28) return 'the track leans just ' + side + ', a graze is likely';
+    if (near < 0.65) return 'the center should pass ' + side + ' of town';
+    return 'the storm looks likely to stay well to the ' + side;
+  }
+  function catPhrase(f){
+    var lo = Math.max(1, Math.round(f.cs - f.hs));
+    var hi = Math.min(5, Math.round(f.cs + f.hs));
+    return lo===hi ? ('Category ' + lo) : ('Category ' + lo + ' to ' + hi);
+  }
+
+  function render(){
+    var f = S.fc[S.day];
+    document.getElementById('stormName').textContent = S.name;
+    var left = DAYS - S.day;
+    document.getElementById('stormSub').innerHTML = left>0
+      ? 'Landfall in <b>' + left + (left===1?' day':' days') + '</b>'
+      : 'Landfall <b>imminent</b>';
+    document.getElementById('dayVal').textContent = 'Day ' + S.day + ' / ' + DAYS;
+    document.getElementById('budVal').textContent = S.budget;
+    document.getElementById('budBar').style.width = (S.budget/TOTAL_BUDGET*100) + '%';
+    document.getElementById('actVal').textContent = S.slots;
+    document.getElementById('actNote').textContent = S.slots + (S.slots===1?' action left today':' actions left today');
+    document.getElementById('caption').innerHTML =
+      '<b>Advisory, Day ' + S.day + '.</b> ' + catPhrase(f) + '. Right now, ' + trackPhrase(f) + '.';
+
+    renderMap(false);
+    renderCards();
+
+    var go = document.getElementById('goBtn');
+    if (S.day >= DAYS){ go.textContent = 'Ride out the storm'; go.className = 'go storm'; }
+    else { go.textContent = 'Advance to Day ' + (S.day+1); go.className = 'go'; }
+  }
+
+  function renderCards(){
+    var host = document.getElementById('cards');
+    host.innerHTML = '';
+    ACTIONS.forEach(function(a){
+      var r = reason(a);
+      var btn = document.createElement('button');
+      btn.className = 'card';
+      if (r) btn.disabled = true;
+      var accent = cssv(a.accent);
+
+      var leadTag = a.lead ? '<span class="lead">Lead time</span>' : '';
+
+      var footRight;
+      if (a.kind==='level'){
+        var pips = '';
+        for (var i=0;i<a.max;i++) pips += '<i class="'+(i<level(a.id)?'on':'')+'"></i>';
+        footRight = '<span class="pips">'+pips+'</span>';
+      } else if (S.once[a.id]){
+        footRight = '<span class="tag done">Ordered, Day '+S.doneDay[a.id]+'</span>';
+      } else if (r==='late'){
+        footRight = '<span class="tag late">Too late</span>';
+      } else {
+        footRight = '<span class="tag">Not ordered</span>';
+      }
+
+      var costTag = a.cost===0
+        ? '<span class="cost free">Free</span>'
+        : '<span class="cost">'+a.cost+' budget</span>';
+
+      btn.innerHTML =
+        leadTag +
+        '<div class="top"><span class="ic" style="background:'+hexA(accent,0.12)+';color:'+accent+'">'+icon(a.id)+'</span>'+
+        '<span class="nm">'+a.name+'</span></div>'+
+        '<div class="ef">'+a.ef+'</div>'+
+        '<div class="foot">'+costTag+footRight+'</div>';
+
+      if (!r) btn.addEventListener('click', function(){ doAction(a); });
+      host.appendChild(btn);
+    });
+  }
+
+  function hexA(hex, a){
+    hex = hex.replace('#','');
+    if (hex.length===3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    var r=parseInt(hex.substr(0,2),16), g=parseInt(hex.substr(2,2),16), b=parseInt(hex.substr(4,2),16);
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+
+  // ----- After-action screen -----
+  function showAAR(letter, H, M, o, used, warranted){
+    renderMap(true);
+    var gl = document.getElementById('gLetter');
+    gl.textContent = letter;
+    var gc = { A:'--a', B:'--b', C:'--c', D:'--d', F:'--f' }[letter];
+    gl.style.background = cssv(gc);
+    document.getElementById('gReveal').innerHTML =
+      '<span class="cat">Category ' + S.strength + ', ' + trackWord() + '</span><br>' +
+      'crossing the coast ' + (S.landfallX<0?'west':'east') + ' of Anytown';
+    document.getElementById('sLives').textContent = o.casualties;
+    document.getElementById('sDisp').textContent = o.displaced.toLocaleString();
+    document.getElementById('sDmg').textContent = '$' + (o.damage/1e6).toFixed(1) + 'M';
+    document.getElementById('sBud').textContent = used + ' / ' + TOTAL_BUDGET;
+    document.getElementById('aarText').textContent = aarNarrative(H, M, o, used, warranted);
+    document.getElementById('aarScreen').classList.remove('hidden');
+  }
+
+  // ----- Intro copy -----
+  function setIntro(){
+    document.getElementById('introTitle').textContent = 'A storm is forming offshore';
+    document.getElementById('introText').innerHTML =
+      'You are the emergency manager for Anytown, a coastal community of eight thousand. ' +
+      S.name + ' is four days out and the track is still uncertain. Get the town ready.';
+  }
+
+  // ----- Wiring -----
+  document.getElementById('beginBtn').addEventListener('click', function(){
+    document.getElementById('intro').classList.add('hidden');
+  });
+  document.getElementById('goBtn').addEventListener('click', advance);
+  document.getElementById('againBtn').addEventListener('click', function(){
+    document.getElementById('aarScreen').classList.add('hidden');
+    newGame(); setIntro(); render();
+    document.getElementById('intro').classList.remove('hidden');
+  });
+
+  // spin keyframe (respect reduced motion by simply not applying it in glyph)
+  var st = document.createElement('style');
+  st.textContent = '@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}';
+  document.head.appendChild(st);
+
+  // ----- Boot -----
+  newGame(); setIntro(); render();
+})();
+</script>
+</body>
+</html>
