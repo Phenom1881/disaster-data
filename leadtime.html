@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Lead Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#004c53;
+    --brand-2:#03626b;
+    --cream:#f6f1e7;
+    --paper:#fffdf7;
+    --ink:#123137;
+    --ink-soft:#3f5a60;
+    --line:#e0d7c6;
+    --land:#e7e0cf;
+    --land-2:#dcd3bd;
+    --water:#cfe3e6;
+    --water-2:#bcd6da;
+    --wind:#e0912f;
+    --flood:#3f7fd6;
+    --people:#0f8a6b;
+    --danger:#d1483a;
+    --star:#d9a021;
+    --a:#1a8f5c; --b:#0f7a83; --c:#c98a1f; --d:#d1662f; --f:#c23b2f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--cream);color:var(--ink);
+    font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 24px);}
+  .wrap{max-width:540px;margin:0 auto;}
+  .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brand);}
+  .masthead{border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:14px;}
+  .masthead h1{font-family:'Fraunces',serif;font-weight:600;font-size:26px;line-height:1.05;margin:6px 0 4px;color:var(--ink);}
+  .masthead .sub{font-size:13px;color:var(--ink-soft);font-weight:500;}
+  .masthead .sub b{color:var(--danger);font-weight:700;}
+  .modechip{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--brand);background:rgba(0,76,83,.08);border-radius:99px;padding:3px 9px;}
+
+  .status{display:flex;gap:10px;align-items:stretch;margin-bottom:14px;}
+  .chip{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px 11px;}
+  .chip .k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .chip .v{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:19px;font-weight:600;margin-top:3px;color:var(--ink);}
+  .bar{height:6px;border-radius:99px;background:var(--line);margin-top:7px;overflow:hidden;}
+  .bar > i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .25s ease;}
+
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+  .mapwrap{position:relative;background:var(--water);}
+  @keyframes shk{0%,100%{transform:translate(0,0)}20%{transform:translate(-3px,2px)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,-2px)}80%{transform:translate(2px,1px)}}
+  .mapwrap.shaking{animation:shk .45s linear;}
+  .skip{position:absolute;top:10px;right:10px;z-index:3;border:0;cursor:pointer;font-family:inherit;font-weight:700;
+    font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:rgba(12,40,44,.72);
+    border-radius:99px;padding:7px 12px;}
+  svg.map{display:block;width:100%;height:auto;}
+  .caption{padding:11px 14px;border-top:1px solid var(--line);font-size:13px;line-height:1.45;color:var(--ink);background:var(--paper);}
+  .caption b{color:var(--brand);}
+  .caption.night{background:#10333a;color:var(--cream);border-top-color:#10333a;}
+  .caption.night b{color:#ffd9a0;}
+
+  /* Radio feed */
+  .feedhead{display:flex;align-items:center;gap:7px;padding:10px 14px 8px;font-size:10px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);}
+  .feedhead .dotpulse{width:7px;height:7px;border-radius:50%;background:var(--danger);}
+  .msg{display:flex;gap:9px;padding:9px 14px;border-top:1px solid var(--line);}
+  .msg .av{flex:0 0 auto;width:9px;height:9px;border-radius:50%;margin-top:4px;}
+  .msg .who{font-weight:700;font-size:11px;letter-spacing:.04em;color:var(--brand);}
+  .msg .txt{font-size:12.5px;line-height:1.45;color:var(--ink);}
+
+  .sec-title{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 10px;}
+  .sec-title .t{font-family:'Fraunces',serif;font-weight:600;font-size:17px;color:var(--ink);}
+  .sec-title .n{font-size:11px;color:var(--ink-soft);font-weight:600;}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media (max-width:430px){ .cards{grid-template-columns:1fr;} }
+  .card{position:relative;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;
+    transition:border-color .15s ease,transform .04s ease,box-shadow .15s ease;color:inherit;font-family:inherit;}
+  .card:hover{border-color:var(--brand);box-shadow:0 4px 14px rgba(0,60,66,.08);}
+  .card:active{transform:scale(.995);}
+  .card:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;border-color:var(--line);}
+  .card .top{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+  .ic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+  .ic svg{width:17px;height:17px;display:block;}
+  .card .nm{font-weight:700;font-size:14px;line-height:1.1;}
+  .card .ef{font-size:12px;line-height:1.4;color:var(--ink-soft);min-height:33px;}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;}
+  .cost{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--brand);
+    background:rgba(0,76,83,.08);border-radius:99px;padding:3px 9px;}
+  .free{color:var(--people);background:rgba(15,138,107,.1);}
+  .pips{display:flex;gap:4px;}
+  .pips i{width:9px;height:9px;border-radius:50%;background:var(--line);}
+  .pips i.on{background:var(--brand);}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);}
+  .tag.done{color:var(--people);}
+  .tag.late{color:var(--danger);}
+  .lead{position:absolute;top:10px;right:11px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--wind);background:rgba(224,145,47,.12);padding:2px 7px;border-radius:99px;}
+
+  .go{width:100%;border:0;cursor:pointer;margin-top:16px;background:var(--brand);color:var(--cream);
+    font-family:inherit;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:14px;padding:16px;border-radius:13px;
+    transition:background .15s ease,transform .05s ease;}
+  .go:hover{background:var(--brand-2);}
+  .go:active{transform:scale(.99);}
+  .go.storm{background:var(--danger);}
+  .go.storm:hover{background:#b93e31;}
+  .go.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand);margin-top:10px;padding:13px;}
+  .go.ghost:hover{background:rgba(0,76,83,.06);}
+  .go:disabled{opacity:.45;cursor:not-allowed;}
+
+  .overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    background:rgba(12,40,44,.55);backdrop-filter:blur(3px);padding:20px;}
+  .modal{width:min(480px,94vw);max-height:92vh;overflow:auto;background:var(--paper);border-radius:18px;
+    padding:24px 22px 22px;box-shadow:0 24px 70px rgba(0,0,0,.4);}
+  .modal .eyebrow{margin-bottom:6px;}
+  .modal h2{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:0 0 10px;color:var(--ink);}
+  .modal p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 14px;}
+  .rules{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:9px;}
+  .rules li{display:flex;gap:10px;font-size:13.5px;line-height:1.45;color:var(--ink);}
+  .rules .d{flex:0 0 auto;width:15px;height:15px;border-radius:5px;margin-top:2px;}
+
+  /* Setup screen */
+  .setup-label{font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--ink);margin:16px 0 8px;}
+  .setup-label:first-of-type{margin-top:4px;}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .choice{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:13px;padding:11px 12px;
+    cursor:pointer;font-family:inherit;color:inherit;transition:border-color .15s ease,background .15s ease;}
+  .choice:hover{border-color:var(--brand);}
+  .choice.sel{border-color:var(--brand);background:rgba(0,76,83,.06);box-shadow:0 0 0 1px var(--brand) inset;}
+  .choice:disabled{opacity:.4;cursor:not-allowed;border-color:var(--line);}
+
+  /* Classroom code */
+  .codewrap{margin-top:4px;}
+  .codewrap input{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--paper);color:var(--ink);}
+  .codewrap input:focus{outline:none;border-color:var(--brand);}
+  .hint{font-size:11px;color:var(--ink-soft);margin-top:6px;line-height:1.45;}
+
+  /* Event cards */
+  .evopts{display:grid;gap:9px;margin:0 0 10px;}
+  .evopt{text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:13px;padding:12px;
+    cursor:pointer;font-family:inherit;color:inherit;font-size:13px;line-height:1.45;transition:border-color .15s ease;}
+  .evopt b{display:block;font-size:13.5px;margin-bottom:3px;color:var(--ink);}
+  .evopt:hover{border-color:var(--brand);}
+  .evopt:disabled{cursor:default;opacity:.5;}
+  .evopt.picked{opacity:1;border-color:var(--brand);background:rgba(0,76,83,.06);box-shadow:0 0 0 1px var(--brand) inset;}
+  .choice .cn{font-weight:700;font-size:13.5px;line-height:1.15;margin-bottom:3px;}
+  .choice .ct{font-size:11.5px;line-height:1.4;color:var(--ink-soft);}
+  .choice .hz{display:inline-block;margin-top:7px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    border-radius:99px;padding:2px 7px;}
+  .hz.sea{color:var(--flood);background:rgba(63,127,214,.12);}
+  .hz.riv{color:var(--people);background:rgba(15,138,107,.12);}
+  .choice .check{position:absolute;top:9px;right:10px;width:16px;height:16px;border-radius:50%;
+    background:var(--brand);color:var(--cream);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;}
+  .choice.sel .check{display:flex;}
+
+  /* After-action */
+  .grade{display:flex;align-items:center;gap:16px;margin:4px 0 14px;}
+  .gletter{font-family:'Fraunces',serif;font-weight:700;font-size:62px;line-height:.9;width:86px;height:86px;
+    display:flex;align-items:center;justify-content:center;border-radius:18px;color:#fff;}
+  .gletter.stars{width:auto;min-width:86px;padding:0 16px;font-size:27px;letter-spacing:3px;background:var(--brand);color:var(--star);}
+  .greveal{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .greveal .cat{font-weight:700;color:var(--ink);font-size:15px;}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px;}
+  .stbox{background:var(--cream);border-radius:12px;padding:11px 12px;}
+  .stbox .k{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .stbox .v{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;font-weight:600;margin-top:3px;color:var(--ink);}
+  .aar{background:var(--cream);border-left:3px solid var(--brand);border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 8px;}
+  .tip{background:rgba(217,160,33,.1);border-left:3px solid var(--star);border-radius:8px;padding:12px 14px;
+    font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 8px;}
+  .tip b{color:#9c721a;}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="eyebrow" id="mastEyebrow">Emergency Management</div>
+    <h1 id="stormName">Lead Time</h1>
+    <div class="sub" id="stormSub">Choose your community to begin.</div>
+    <span class="modechip" id="modeChip"></span>
+  </div>
+
+  <div class="status">
+    <div class="chip"><div class="k">Advisory</div><div class="v" id="dayVal">Day 1 / 4</div></div>
+    <div class="chip"><div class="k">Budget</div><div class="v" id="budVal">10</div><div class="bar"><i id="budBar" style="width:100%"></i></div></div>
+    <div class="chip"><div class="k">Actions today</div><div class="v" id="actVal">2</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="mapwrap" id="mapwrap">
+      <button class="skip hidden" id="skipBtn">Skip to daybreak</button>
+      <svg class="map" viewBox="0 0 400 360" id="map" aria-label="Forecast map">
+        <g id="terrain"></g>
+        <g id="prep"></g>
+        <g id="dyn"></g>
+      </svg>
+    </div>
+    <div class="caption" id="caption">Advisory pending.</div>
+  </div>
+
+  <div class="panel">
+    <div class="feedhead"><span class="dotpulse"></span>Radio traffic</div>
+    <div id="feed"></div>
+  </div>
+
+  <div class="sec-title">
+    <div class="t">Preparedness actions</div>
+    <div class="n" id="actNote"></div>
+  </div>
+  <div class="cards" id="cards"></div>
+
+  <button class="go" id="goBtn">Advance to Day 2</button>
+</div>
+
+<!-- Setup -->
+<div class="overlay" id="setup">
+  <div class="modal">
+    <div class="eyebrow">Lead Time</div>
+    <h2>Set up your game</h2>
+
+    <div class="setup-label">Who is in command?</div>
+    <div class="choices" id="modeChoices">
+      <button class="choice" data-mode="junior">
+        <span class="check">✓</span>
+        <div class="cn">Junior Mode</div>
+        <div class="ct">Learn how towns get ready for storms. Nobody gets hurt, and every game ends with a real preparedness tip.</div>
+      </button>
+      <button class="choice" data-mode="command">
+        <span class="check">✓</span>
+        <div class="cn">Command Mode</div>
+        <div class="ct">The full job. Uncertain forecasts, a tight budget, hard tradeoffs, and lives on the line.</div>
+      </button>
+    </div>
+
+    <div class="setup-label">Choose your community</div>
+    <div class="choices" id="scnChoices"></div>
+
+    <div class="setup-label">Choose your disaster</div>
+    <div class="choices" id="hazChoices"></div>
+
+    <div class="setup-label">Classroom code (optional)</div>
+    <div class="codewrap">
+      <input id="codeInput" maxlength="12" placeholder="e.g. STORM1" autocomplete="off">
+      <div class="hint">Everyone who enters the same code faces the exact same storm and the same mid-game decision. Great for classrooms and trainings: play, then compare grades.</div>
+    </div>
+
+    <button class="go" id="startBtn" disabled>Start</button>
+  </div>
+</div>
+
+<!-- Intro -->
+<div class="overlay hidden" id="intro">
+  <div class="modal">
+    <div class="eyebrow">Situation report</div>
+    <h2 id="introTitle">A storm is coming</h2>
+    <p id="introText"></p>
+    <ul class="rules" id="introRules"></ul>
+    <button class="go" id="beginBtn">Take command</button>
+  </div>
+</div>
+
+<!-- Mid-game event -->
+<div class="overlay hidden" id="eventScreen">
+  <div class="modal">
+    <div class="eyebrow" id="evEyebrow">Developing situation</div>
+    <h2 id="evTitle"></h2>
+    <p id="evText"></p>
+    <div class="evopts" id="evOpts"></div>
+    <div class="tip hidden" id="evLesson"></div>
+    <button class="go hidden" id="evGo">Back to the operation</button>
+  </div>
+</div>
+
+<!-- After action -->
+<div class="overlay hidden" id="aarScreen">
+  <div class="modal">
+    <div class="eyebrow" id="aarEyebrow">After-action report</div>
+    <div class="grade">
+      <div class="gletter" id="gLetter">B</div>
+      <div class="greveal" id="gReveal"></div>
+    </div>
+    <div class="stats">
+      <div class="stbox"><div class="k" id="k1">Lives lost</div><div class="v" id="s1">0</div></div>
+      <div class="stbox"><div class="k" id="k2">Households displaced</div><div class="v" id="s2">0</div></div>
+      <div class="stbox"><div class="k" id="k3">Damage</div><div class="v" id="s3">$0</div></div>
+      <div class="stbox"><div class="k" id="k4">Budget used</div><div class="v" id="s4">0</div></div>
+    </div>
+    <div class="aar" id="aarText"></div>
+    <div class="tip hidden" id="fieldNote"></div>
+    <div class="tip hidden" id="tipBox"></div>
+    <button class="go" id="againBtn">Run it again</button>
+    <button class="go ghost" id="setupBtn">Change mode or community</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NAMES = ['Ana','Bonnie','Colin','Danielle','Elsa','Fiona','Gaston','Hermine','Idris','Julia','Karl','Nicole','Owen','Paula'];
+
+  // ----- Communities -----
+  var SCENARIOS = [
+    { id:'coast-city', label:'Coastal City', town:'Port Meridian', coastal:true, urban:true,
+      tag:'A port city of 40,000 facing the open ocean. Big resources, big exposure.',
+      budget:12,
+      zones:[
+        { id:'z0', name:'Downtown',  pop:18000, windVuln:0.7, floodVuln:0.5 },
+        { id:'z1', name:'Bayfront',  pop:12000, windVuln:0.5, floodVuln:1.0 },
+        { id:'z2', name:'Northside', pop:10000, windVuln:1.0, floodVuln:0.1 }],
+      nhPop:450, nhLabel:'Harborview Care Center', nhShort:'the care center',
+      nhActionName:'Relocate care home',
+      nhEf:'Prevents concentrated casualties among the most vulnerable.',
+      nhEfJr:'Help the care center residents move somewhere safe early.' },
+    { id:'coast-village', label:'Coastal Village', town:'Pelican Cove', coastal:true, urban:false,
+      tag:'A fishing village of 3,000 with a small budget and no room for waste.',
+      budget:7,
+      zones:[
+        { id:'z0', name:'Village Center', pop:1400, windVuln:0.7, floodVuln:0.6 },
+        { id:'z1', name:'Marsh Landing',  pop:900,  windVuln:0.5, floodVuln:1.0 },
+        { id:'z2', name:'Pine Ridge',     pop:700,  windVuln:1.0, floodVuln:0.1 }],
+      nhPop:180, nhLabel:'the mobile home park on Marsh Road', nhShort:'the mobile home park',
+      nhActionName:'Move park residents',
+      nhEf:'Mobile homes fail first. Moving residents early prevents the worst losses.',
+      nhEfJr:'Help families in the mobile home park move somewhere sturdy early.' },
+    { id:'river-city', label:'River City', town:'Confluence', coastal:false, urban:true,
+      tag:'An inland city of 30,000 built where two rivers meet.',
+      budget:12,
+      zones:[
+        { id:'z0', name:'Downtown',  pop:14000, windVuln:0.6, floodVuln:0.6 },
+        { id:'z1', name:'The Flats', pop:9000,  windVuln:0.4, floodVuln:1.0 },
+        { id:'z2', name:'Hillcrest', pop:7000,  windVuln:0.9, floodVuln:0.1 }],
+      nhPop:380, nhLabel:'Riverbend Care Center', nhShort:'the care center',
+      nhActionName:'Relocate care home',
+      nhEf:'Prevents concentrated casualties among the most vulnerable.',
+      nhEfJr:'Help the care center residents move somewhere safe early.' },
+    { id:'metro-100k', label:'Valley Metro', town:'Blue Ridge City', coastal:false, urban:true,
+      tag:'An inland metro of 100,000 in a river valley. Scale starts to fight back.',
+      budget:13, mitScale:0.8,
+      evacLead:{ 1:1.0, 2:0.7, 3:0.35, 4:0.05 },
+      zones:[
+        { id:'z0', name:'Downtown',        pop:45000, windVuln:0.6, floodVuln:0.6 },
+        { id:'z1', name:'Riverbend Flats', pop:30000, windVuln:0.4, floodVuln:1.0 },
+        { id:'z2', name:'The Heights',     pop:25000, windVuln:0.9, floodVuln:0.1 }],
+      nhPop:900, nhLabel:'Valley View Care Center', nhShort:'the care center',
+      nhActionName:'Relocate care home',
+      nhEf:'Prevents concentrated casualties among the most vulnerable.',
+      nhEfJr:'Help the care center residents move somewhere safe early.' },
+    { id:'metro-1m', label:'Coastal Metro', town:'Grand Bay', coastal:true, urban:true,
+      tag:'A coastal metro of one million. You cannot protect everyone. Choose.',
+      budget:14, mitScale:0.6,
+      evacLead:{ 1:1.0, 2:0.5, 3:0.15, 4:0 },
+      zones:[
+        { id:'z0', name:'Urban Core', pop:450000, windVuln:0.7, floodVuln:0.5 },
+        { id:'z1', name:'Bayside',    pop:320000, windVuln:0.5, floodVuln:1.0 },
+        { id:'z2', name:'Uplands',    pop:230000, windVuln:1.0, floodVuln:0.1 }],
+      nhPop:6000, nhLabel:"the city's care facilities", nhShort:'the care facilities',
+      nhActionName:'Evacuate care facilities',
+      nhEf:'Dozens of facilities, thousands of residents. Prevents concentrated casualties.',
+      nhEfJr:'Help thousands of care facility residents move somewhere safe early.' },
+    { id:'valley-town', label:'Valley Town', town:'Cedar Valley', coastal:false, urban:false,
+      tag:'A mountain town of 2,500 strung along a creek that rises fast.',
+      budget:7,
+      zones:[
+        { id:'z0', name:'Town Center', pop:1100, windVuln:0.6, floodVuln:0.6 },
+        { id:'z1', name:'Creekside',   pop:800,  windVuln:0.4, floodVuln:1.0 },
+        { id:'z2', name:'Ridgeline',   pop:600,  windVuln:1.0, floodVuln:0.1 }],
+      nhPop:160, nhLabel:'the manufactured home park on Creekside Road', nhShort:'the home park',
+      nhActionName:'Move park residents',
+      nhEf:'Manufactured homes fail first. Moving residents early prevents the worst losses.',
+      nhEfJr:'Help families in the home park move somewhere sturdy early.' }
+  ];
+
+  // ----- Disasters -----
+  // Every hazard uses the same two-channel engine:
+  // channel A is broad (touches most of town even on a miss),
+  // channel B is localized and deadly (peaks hard on a direct hit).
+  var DISASTERS = [
+    { id:'hurricane', label:'Hurricane', desc:'Days of warning, but the track and strength stay uncertain to the end.',
+      chip:'Coastal only',
+      avail:function(scn){ return scn.coastal; },
+      name:function(nm, st, scn){ return (st>=3 ? 'Hurricane ' : 'Tropical Storm ') + nm; },
+      eventWord:'Landfall',
+      sev:function(st){ return 'Category ' + st; },
+      cat:function(lo,hi){ return lo===hi ? 'Category '+lo : 'Category '+lo+' to '+hi; },
+      tOver:'a direct hit on TOWN is on the table',
+      tNear:'the track leans just SIDE, a graze is likely',
+      tMid:'the center should pass SIDE of town',
+      tFar:'the storm looks likely to stay well to the SIDE',
+      vulnA:function(z){ return z.windVuln; },
+      vulnB:function(z){ return z.floodVuln; },
+      bPhrase:'a serious surge',
+      actAName:'Harden facilities',
+      actAJr:'Board windows and tie things down before the wind arrives.',
+      actACmd:function(scn){ return 'Reduces wind damage across town.'; },
+      actBName:'Sandbag floodplain',
+      actBJr:function(scn){ return 'Stack sandbags so water stays out of homes in ' + scn.zones[1].name + '.'; },
+      actBCmd:function(scn){ return 'Cuts flood and surge damage in low-lying ' + scn.zones[1].name + '.'; },
+      shelterName:'Open shelters',
+      headMiss:function(side){ return 'Category ' + S.strength + ' passed to the ' + side + ' and spared ' + CFG.scn.town + ' the worst.'; },
+      headHit:function(side){ return 'Category ' + S.strength + ' came ashore almost on top of ' + CFG.scn.town + '.'; },
+      headMid:function(side){ return 'Category ' + S.strength + ' delivered ' + trackWord() + ', crossing the coast to the ' + side + '.'; },
+      jrMiss:function(side){ return S.name + ' slid past to the ' + side + '. ' + CFG.scn.town + ' caught a break this time!'; },
+      jrHit:function(side){ return S.name + ' came straight at ' + CFG.scn.town + '. This one was a real test.'; },
+      jrMid:function(side){ return S.name + ' gave ' + CFG.scn.town + ' a glancing blow from the ' + side + '.'; },
+      bFailCmd:function(scn){ return scn.zones[1].name + ' flooded hard with the low ground undefended. Sandbags there would have paid for themselves.'; },
+      aFailCmd:function(scn){ return 'Wind did the damage and little was hardened against it.'; },
+      bFailJr:function(scn){ return 'Water got into homes in ' + scn.zones[1].name + '. Next time, sandbags on the low ground keep families dry.'; },
+      aFailJr:function(scn){ return 'The wind rattled the town. Boarding up windows and tying things down helps a lot.'; },
+      whereWord:function(side, town){ return 'crossing the coast ' + side + ' of ' + town; },
+      introTitle:'A storm is forming offshore',
+      intro:function(scn){ return S.name + ' is four days from the coast and the track is still uncertain.'; },
+      tips:['Hurricane tip: learn your evacuation zone before storm season starts.',
+            'Hurricane tip: after a storm, stay away from standing water. It hides sharp things and downed lines.'],
+      glyph:'hurricane' },
+    { id:'riverflood', label:'River Flood', desc:'A stalled storm upstream. Where the heaviest rain sets up decides everything.',
+      chip:'Inland only',
+      avail:function(scn){ return !scn.coastal; },
+      name:function(nm, st, scn){ return 'Storm System ' + nm; },
+      eventWord:'River crest',
+      sev:function(st){ return 'Level ' + st + ' rain event'; },
+      cat:function(lo,hi){ return lo===hi ? ('Rain threat level '+lo+' of 5') : ('Rain threat level '+lo+' to '+hi+' of 5'); },
+      tOver:'the heaviest rain could set up right over TOWN',
+      tNear:'the heaviest band leans just SIDE, a soaking is likely',
+      tMid:'the heaviest rain should pass SIDE of town',
+      tFar:'the worst of the rain looks likely to stay well to the SIDE',
+      vulnA:function(z){ return z.windVuln; },
+      vulnB:function(z){ return z.floodVuln; },
+      bPhrase:'a serious crest',
+      actAName:'Harden facilities',
+      actAJr:'Tie things down and clear storm drains before the weather arrives.',
+      actACmd:function(scn){ return 'Reduces storm and wind damage across town.'; },
+      actBName:'Sandbag low ground',
+      actBJr:function(scn){ return 'Stack sandbags so water stays out of homes in ' + scn.zones[1].name + '.'; },
+      actBCmd:function(scn){ return 'Cuts flood damage in low-lying ' + scn.zones[1].name + ' as the water rises.'; },
+      shelterName:'Open shelters',
+      headMiss:function(side){ return 'The heaviest rain from ' + S.name + ' set up well to the ' + side + ' and spared ' + CFG.scn.town + ' the worst.'; },
+      headHit:function(side){ return 'A level ' + S.strength + ' rain event parked almost directly over ' + CFG.scn.town + ' and the water came up fast.'; },
+      headMid:function(side){ return 'A level ' + S.strength + ' rain event delivered ' + trackWord() + ', with the core passing to the ' + side + '.'; },
+      jrMiss:function(side){ return S.name + ' slid past to the ' + side + '. ' + CFG.scn.town + ' caught a break this time!'; },
+      jrHit:function(side){ return S.name + ' came straight at ' + CFG.scn.town + '. This one was a real test.'; },
+      jrMid:function(side){ return S.name + ' gave ' + CFG.scn.town + ' a glancing blow from the ' + side + '.'; },
+      bFailCmd:function(scn){ return scn.zones[1].name + ' flooded hard with the low ground undefended. Sandbags there would have paid for themselves.'; },
+      aFailCmd:function(scn){ return 'Straight-line winds did the damage and little was hardened against them.'; },
+      bFailJr:function(scn){ return 'Water got into homes in ' + scn.zones[1].name + '. Next time, sandbags on the low ground keep families dry.'; },
+      aFailJr:function(scn){ return 'The wind rattled the town. Tying things down before the storm helps a lot.'; },
+      whereWord:function(side, town){ return 'heaviest band setting up ' + side + ' of ' + town; },
+      introTitle:'The water is coming up',
+      intro:function(scn){ return S.name + ' is stalling upstream, and in four days the ' + (scn.urban?'river':'creek') + ' will crest. How high depends on where the heaviest rain sets up.'; },
+      tips:['Flood tip: never walk or drive through flood water. Turn around, don\'t drown.',
+            'Flood tip: learn whether your home is in a flood zone. Your local emergency manager can tell you.'],
+      glyph:'rain' },
+    { id:'winter', label:'Winter Storm', desc:'Ice takes down trees and power lines. The cold that follows is the real emergency.',
+      chip:'Any community',
+      avail:function(scn){ return true; },
+      name:function(nm, st, scn){ return 'Winter Storm ' + nm; },
+      eventWord:'Storm arrival',
+      sev:function(st){ return 'Level ' + st + ' ice event'; },
+      cat:function(lo,hi){ return lo===hi ? ('Ice threat level '+lo+' of 5') : ('Ice threat level '+lo+' to '+hi+' of 5'); },
+      tOver:'the heaviest ice could set up right over TOWN',
+      tNear:'the heaviest band leans just SIDE, significant icing is likely',
+      tMid:'the heaviest ice should pass SIDE of town',
+      tFar:'the worst of the ice looks likely to stay well to the SIDE',
+      vulnA:function(z){ return z.windVuln; },
+      vulnB:function(z){ return 0.45 + 0.45*z.floodVuln; },
+      bPhrase:'days of outages in bitter cold',
+      actAName:'Trim trees, brace lines',
+      actAJr:'Trim branches and check power lines before the ice arrives.',
+      actACmd:function(scn){ return 'Reduces ice damage to structures and power lines across town.'; },
+      actBName:'Stage generators, treat roads',
+      actBJr:function(scn){ return 'Get generators, salt trucks, and warm blankets ready before the cold.'; },
+      actBCmd:function(scn){ return 'Blunts the outages, worst in ' + scn.zones[1].name + ' where the housing is oldest.'; },
+      shelterName:'Open warming centers',
+      headMiss:function(side){ return S.name + ' tracked ' + side + ' and ' + CFG.scn.town + ' escaped the worst of the ice.'; },
+      headHit:function(side){ return 'Level ' + S.strength + ' icing brought down trees and lines across ' + CFG.scn.town + ', and then the cold moved in.'; },
+      headMid:function(side){ return 'Level ' + S.strength + ' icing delivered ' + trackWord() + ', with the heaviest band passing to the ' + side + '.'; },
+      jrMiss:function(side){ return S.name + ' slid by to the ' + side + '. ' + CFG.scn.town + ' just got a pretty dusting!'; },
+      jrHit:function(side){ return S.name + ' iced ' + CFG.scn.town + ' hard and the power blinked out. Brrr!'; },
+      jrMid:function(side){ return S.name + ' brushed ' + CFG.scn.town + ' from the ' + side + '.'; },
+      bFailCmd:function(scn){ return 'The lights went out and stayed out in ' + scn.zones[1].name + ', and the cold did the rest. Generators and warming plans have to be staged before the ice, not after.'; },
+      aFailCmd:function(scn){ return 'Ice loading snapped limbs and lines that were never trimmed or braced.'; },
+      bFailJr:function(scn){ return 'Homes in ' + scn.zones[1].name + ' got cold and dark. Having generators and warming centers ready keeps everyone cozy.'; },
+      aFailJr:function(scn){ return 'Icy branches knocked out some power lines. Trimming trees before winter helps a lot.'; },
+      whereWord:function(side, town){ return 'heaviest ice setting up ' + side + ' of ' + town; },
+      introTitle:'Ice is in the forecast',
+      intro:function(scn){ return S.name + ' arrives in four days. How much ice, and where the heaviest band sets up, is still uncertain. When the power goes out, the cold becomes the emergency.'; },
+      tips:['Winter tip: never run a generator or grill indoors. Carbon monoxide is invisible and deadly.',
+            'Winter tip: keep extra blankets and a flashlight where you can find them in the dark.'],
+      glyph:'snow' },
+    { id:'wildfire', label:'Wildfire', desc:'Fast and localized. A wind shift changes everything, and evacuation is the tool that always works.',
+      chip:'Any community',
+      avail:function(scn){ return true; },
+      name:function(nm, st, scn){ return 'The ' + scn.zones[2].name + ' Fire'; },
+      eventWord:'Fire front',
+      sev:function(st){ return 'Level ' + st + ' fire weather'; },
+      cat:function(lo,hi){ return lo===hi ? ('Fire weather level '+lo+' of 5') : ('Fire weather level '+lo+' to '+hi+' of 5'); },
+      tOver:'the fire could run straight at TOWN',
+      tNear:'the fire leans just SIDE, ember showers are likely',
+      tMid:'the fire should pass SIDE of town',
+      tFar:'the fire looks likely to stay well to the SIDE',
+      vulnA:function(z){ return 0.25 + 0.5*z.windVuln; },
+      vulnB:function(z){ return z.windVuln; },
+      bPhrase:'the fire front',
+      actAName:'Ember-proof structures',
+      actAJr:'Clear leaves from roofs and gutters so embers cannot start new fires.',
+      actACmd:function(scn){ return 'Reduces ember ignitions on structures across town.'; },
+      actBName:'Cut firebreaks',
+      actBJr:function(scn){ return 'Clear a wide strip of brush so the fire has nothing left to burn.'; },
+      actBCmd:function(scn){ return 'Slows the fire front at the wildland edge near ' + scn.zones[2].name + '.'; },
+      shelterName:'Open shelters',
+      headMiss:function(side){ return S.name + ' turned ' + side + ' and spared ' + CFG.scn.town + '.'; },
+      headHit:function(side){ return 'Driven by level ' + S.strength + ' fire weather, ' + S.name + ' ran into the edge of ' + CFG.scn.town + '.'; },
+      headMid:function(side){ return S.name + ' delivered ' + trackWord() + ', burning past to the ' + side + '.'; },
+      jrMiss:function(side){ return S.name + ' turned away to the ' + side + '. ' + CFG.scn.town + ' caught a break!'; },
+      jrHit:function(side){ return S.name + ' ran right at ' + CFG.scn.town + '. What a night for the fire crews.'; },
+      jrMid:function(side){ return S.name + ' burned past on the ' + side + ' side of town.'; },
+      bFailCmd:function(scn){ return 'The fire front hit ' + scn.zones[2].name + ' with no breaks cut to slow it. Fuel management is bought in days, not hours.'; },
+      aFailCmd:function(scn){ return 'Ember showers started fires far from the front, on roofs that were never cleared.'; },
+      bFailJr:function(scn){ return 'The fire got close to homes near ' + scn.zones[2].name + '. Firebreaks give firefighters a place to stop it.'; },
+      aFailJr:function(scn){ return 'Sneaky embers landed on leafy roofs. Keeping roofs and gutters clean helps keep homes safe.'; },
+      whereWord:function(side, town){ return 'fire front passing ' + side + ' of ' + town; },
+      introTitle:'Smoke on the ridge',
+      intro:function(scn){ return S.name + ' is burning toward town, four days out at its current rate of spread. Wind shifts will decide which way it runs.'; },
+      tips:['Wildfire tip: if officials say go, go early. Cars and smoke do not mix.',
+            'Wildfire tip: in fire season, help clear leaves and pine needles off roofs and out of gutters.'],
+      glyph:'fire' },
+    { id:'tornado', label:'Tornado Outbreak', desc:'The risk area never really narrows. With tornadoes, preparedness beats prediction.',
+      chip:'Any community',
+      avail:function(scn){ return true; },
+      name:function(nm, st, scn){ return 'Tornado Outbreak'; },
+      eventWord:'Outbreak window',
+      halfTrack:{ 1:0.7, 2:0.62, 3:0.56, 4:0.5 },
+      halfCat:{ 1:1.6, 2:1.1, 3:0.8, 4:0.6 },
+      sev:function(st){ var R={1:'Marginal',2:'Slight',3:'Enhanced',4:'Moderate',5:'High'}; return R[st] + ' risk outbreak'; },
+      cat:function(lo,hi){ var R={1:'Marginal',2:'Slight',3:'Enhanced',4:'Moderate',5:'High'}; return lo===hi ? ('Severe risk: ' + R[lo]) : ('Severe risk: ' + R[lo] + ' to ' + R[hi]); },
+      tOver:'tornado tracks could form right over TOWN',
+      tNear:'the highest risk leans just SIDE, but tornadoes do not read maps',
+      tMid:'the core risk should sit SIDE of town. Stay alert anyway',
+      tFar:'the main risk area sits well to the SIDE, but stay weather-aware',
+      vulnA:function(z){ return z.windVuln; },
+      vulnB:function(z){ return 0.55 + 0.25*z.windVuln; },
+      bPhrase:'a night of tornado warnings',
+      actAName:'Harden facilities',
+      actAJr:'Tie things down and bring loose stuff inside before the storms.',
+      actACmd:function(scn){ return 'Reduces hail and straight-line wind damage across town.'; },
+      actBName:'Open safe rooms',
+      actBJr:function(scn){ return 'Make sure every neighborhood knows its closest safe room.'; },
+      actBCmd:function(scn){ return 'Community safe rooms cut losses wherever a track touches down.'; },
+      shelterName:'Open shelters',
+      evacName:'Shelter campaign',
+      evacJr:'Practice tornado drills so everyone knows their safe spot. Start early!',
+      evacCmd:'You cannot outrun a tornado. Drill safe room access before the outbreak window, not during it.',
+      evacFailCmd:'Casualties ran high because the shelter campaign started too late. Tornado survival is seconds of shelter access, arranged days earlier.',
+      headMiss:function(side){ return 'The outbreak stayed to the ' + side + '. ' + CFG.scn.town + ' heard the sirens, but the tracks missed.'; },
+      headHit:function(side){ return 'The risk verified the hard way: a tornado tracked through ' + CFG.scn.town + '.'; },
+      headMid:function(side){ return 'Tornadoes touched down ' + side + ' of town. Close enough to count.'; },
+      jrMiss:function(side){ return 'The storms rumbled by to the ' + side + '. ' + CFG.scn.town + ' stayed safe!'; },
+      jrHit:function(side){ return 'A tornado came right through town. What a loud, scary night, but you were ready for it.'; },
+      jrMid:function(side){ return 'Funnels touched down ' + side + ' of town. Too close for comfort!'; },
+      bFailCmd:function(scn){ return 'A track crossed neighborhoods that had no safe room plan. Tornado survival is decided by seconds of shelter access, arranged days earlier.'; },
+      aFailCmd:function(scn){ return 'Hail and straight-line winds chewed up everything that was never hardened.'; },
+      bFailJr:function(scn){ return 'Some neighborhoods did not know where their safe rooms were. Knowing your safe spot is the whole game with tornadoes.'; },
+      aFailJr:function(scn){ return 'Hail dinged up cars and roofs. Bringing loose things inside helps more than you would think.'; },
+      whereWord:function(side, town){ return 'strongest tracks passing ' + side + ' of ' + town; },
+      introTitle:'The sky will turn',
+      intro:function(scn){ return 'Forecasters see a regional tornado outbreak setting up in four days. Unlike a hurricane, the exact tracks will not be known until they form.'; },
+      coneRuleCmd:'This cone will <b>not</b> narrow much. Tornado tracks are unknowable until they form, so you are managing readiness, not chasing a forecast.',
+      coneRuleJr:'This cone stays <b>wide</b>! Nobody can say exactly where a tornado will go, so the whole town gets ready together.',
+      tips:['Tornado tip: your safe spot is the lowest floor, in a small inside room, away from windows.',
+            'Tornado tip: mobile homes are not safe in tornadoes. Know the nearest sturdy building ahead of time.'],
+      glyph:'tornado' },
+    { id:'hazmat', label:'Train Derailment', desc:'No warning at all, only hours. The plume model sharpens as monitoring teams report in.',
+      chip:'Any community',
+      avail:function(scn){ return true; },
+      name:function(nm, st, scn){ return 'The ' + scn.town + ' Derailment'; },
+      eventWord:'Plume peak',
+      turnWord:'Hour',
+      spanPhrase:'four hours',
+      advisoryWord:'Plume update',
+      halfTrack:{ 1:0.7, 2:0.4, 3:0.2, 4:0.08 },
+      halfCat:{ 1:1.6, 2:0.9, 3:0.4, 4:0.15 },
+      sev:function(st){ return 'Level ' + st + ' release'; },
+      cat:function(lo,hi){ return lo===hi ? ('Release severity '+lo+' of 5') : ('Release severity '+lo+' to '+hi+' of 5'); },
+      tOver:'the plume could drift right over TOWN',
+      tNear:'the plume leans just SIDE and the wind keeps shifting',
+      tMid:'the plume should track SIDE of town',
+      tFar:'the plume looks likely to drift well to the SIDE',
+      vulnA:function(z){ return 0.35; },
+      vulnB:function(z){ return 0.4 + 0.55*z.floodVuln; },
+      bPhrase:'the toxic plume',
+      actAName:'Seal & shelter kits',
+      actAJr:'Show families how to seal windows and turn off the fans.',
+      actACmd:function(scn){ return 'Shelter-in-place guidance for every household: windows shut, HVAC off, tape and towels.'; },
+      actBName:'Isolation perimeter',
+      actBJr:function(scn){ return 'Set up cones and signs so nobody wanders close to the yucky air.'; },
+      actBCmd:function(scn){ return 'Close roads and deny entry along the plume path. Heavy vapors pool in low-lying ' + scn.zones[1].name + '.'; },
+      shelterName:'Open reception centers',
+      evacName:'Order evacuation',
+      evacJr:'Help people downwind move away early, before the cloud drifts.',
+      evacCmd:'Evacuate or shelter in place: the defining hazmat call. Downwind and low-lying areas first.',
+      evacFailCmd:'Casualties ran high because the evacuate-or-shelter call came too late. In a hazmat release, the first hour decides everything.',
+      headMiss:function(side){ return 'The wind held steady and carried the plume ' + side + ', away from ' + CFG.scn.town + '.'; },
+      headHit:function(side){ return 'The wind shifted and dragged the plume straight across ' + CFG.scn.town + '.'; },
+      headMid:function(side){ return 'The plume brushed the ' + side + ' edge of town before lifting.'; },
+      jrMiss:function(side){ return 'The wind blew the smelly cloud away to the ' + side + '. Phew!'; },
+      jrHit:function(side){ return 'The wind pushed the cloud over town, but everyone knew just what to do.'; },
+      jrMid:function(side){ return 'The cloud drifted past the ' + side + ' side of town. Close one!'; },
+      bFailCmd:function(scn){ return 'The plume crossed ' + scn.zones[1].name + ' with no perimeter set. Heavy vapors hold longest in low ground, and nobody was keeping people out of it.'; },
+      aFailCmd:function(scn){ return 'Households along the path never got shelter-in-place guidance. Tape, towels, and a closed damper are primitive, and they work.'; },
+      bFailJr:function(scn){ return 'Some curious people got too close near ' + scn.zones[1].name + '. Cones, signs, and staying far away keep everyone safe.'; },
+      aFailJr:function(scn){ return 'Some homes did not know to shut windows and turn off fans. Sealing up keeps the yucky air outside where it belongs.'; },
+      whereWord:function(side, town){ return 'plume tracking ' + side + ' of ' + town; },
+      introTitle:'The 3 AM derailment',
+      intro:function(scn){ return 'A freight train just derailed on the edge of town and a tank car is venting. There was no warning and there is no forecast, only a plume model that sharpens each hour as monitoring teams report in.'; },
+      coneRuleCmd:'There was <b>no warning</b>. The cone is a plume model that sharpens each hour as air monitoring arrives. Your lead time is measured in hours, and it is already running.',
+      coneRuleJr:'This one came with <b>no warning</b>! The cloud map gets better every hour as helpers measure the air.',
+      tips:['Hazmat tip: shelter in place means inside, windows shut, fans and AC off, listening for official updates.',
+            'Hazmat tip: if you ever smell something strange after a crash, move away and uphill. Never go closer to look.'],
+      glyph:'hazmat' }
+  ];
+
+  var SLOTS_PER_DAY = 2;
+  var DAYS = 4;
+  var LEAD = { 1:1.0, 2:0.85, 3:0.5, 4:0.15 };
+
+  // ----- Seeded randomness (classroom codes) -----
+  function seedFrom(str){
+    var h = 1779033703 ^ str.length;
+    for (var i=0;i<str.length;i++){
+      h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+      h = (h<<13) | (h>>>19);
+    }
+    h = Math.imul(h ^ (h>>>16), 2246822507);
+    h = Math.imul(h ^ (h>>>13), 3266489909);
+    return (h ^ (h>>>16)) >>> 0;
+  }
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a>>>15), 1 | a);
+      t = (t + Math.imul(t ^ (t>>>7), 61 | t)) ^ t;
+      return ((t ^ (t>>>14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ----- Mid-game events -----
+  // Every game gets exactly one developing situation on Day 2 or 3.
+  // Each card carries an explicit lesson, shown after the choice and again
+  // in the after-action report, so the teaching lands twice.
+  var EVENTS_CMD = [
+    { id:'reporter', title:'The live interview',
+      text:'A regional TV crew catches you outside the EOC, on the air: "Should people be leaving right now?"',
+      opts:[
+        { label:'Get ahead of it',
+          body:'"Prepare to act today. We will make the call the moment the forecast firms up, and you will hear it from us first."',
+          fx:{ evac:0.08 },
+          result:'The clip runs all evening. When your orders finally come, people are already half packed.' },
+        { label:'Calm the waters',
+          body:'"There is no need for alarm right now. We are monitoring the situation closely."',
+          fx:{ evac:-0.10 },
+          result:'It sounds reassuring tonight. It also sounds like permission to do nothing.' }],
+      lesson:'Decades of disaster research agree: the public rarely panics, but they do wait for consistent official cues. Early, honest, specific messaging is what raises compliance when the order finally comes.' },
+    { id:'neighbor', title:'The phone call',
+      text:'The county next door is getting hit first. Their coordinator asks to borrow your two rescue teams for 24 hours.',
+      opts:[
+        { label:'Send the teams',
+          body:'Your people, their emergency. They roll within the hour.',
+          fx:{ slot:-1, evac:0.06, shelter:0.06 },
+          result:'Word travels in this business. When your own requests go out later, three counties answer.' },
+        { label:'Hold everything back',
+          body:'Your storm is coming too. Every asset stays home.',
+          fx:{ shelter:-0.08, evac:-0.05 },
+          result:'Defensible on paper. But regional partners remember who shows up, and your later requests move slower.' }],
+      lesson:'Mutual aid is a bank account. Agencies that only make withdrawals tend to find the branch closed when they need it most.' },
+    { id:'inspection', title:'The inspection',
+      text:'A pre-impact walkthrough finds your main shelter site has a failed generator transfer switch.',
+      opts:[
+        { label:'Fix it now',
+          body:'Pull an electrician off other work tonight. Costs 1 budget.',
+          fx:{ budget:-1 },
+          result:'Fixed by dark. Boring, expensive, correct.' },
+        { label:'Roll the dice',
+          body:'The grid will probably hold. Probably.',
+          fx:{ shelter:-0.15 },
+          result:'Shelters have a way of finding the one thing you skipped.' }],
+      lesson:'Generator checks and facility agreements happen before disasters, not during. The unglamorous line items are the ones that fail loudest.' },
+    { id:'rumor', title:'The rumor',
+      text:'A post is spreading fast: "They always exaggerate these things. Last time was nothing."',
+      opts:[
+        { label:'Deploy trusted voices',
+          body:'Get the fire chief, a pastor, and the school principal on camera within the hour. Costs 1 action.',
+          fx:{ slot:-1, evac:0.07 },
+          result:'Faces people actually know, saying the same thing. The rumor dies by dinner.' },
+        { label:'Ignore the noise',
+          body:'You have an operation to run, not a comment section.',
+          fx:{ evac:-0.12 },
+          result:'Officialdom stays silent, so the loudest voice wins. It was not yours.' }],
+      lesson:'Rumors are fought fast and locally. People trust faces they know over agencies they do not.' }
+  ];
+  var EVENTS_JR = [
+    { id:'pets', title:'The pets question',
+      text:'Families keep asking: can we bring our dogs and cats to the shelter?',
+      opts:[
+        { label:'Yes! Set up a pet area',
+          body:'Crates, water bowls, and a volunteer vet. Costs 1 budget.',
+          fx:{ budget:-1, shelter:0.10 },
+          result:'A wall of wagging tails. Whole families come in together, nobody left behind.' },
+        { label:'Sorry, no pets',
+          body:'It would be simpler to run without animals.',
+          fx:{ shelter:-0.10 },
+          result:'Some families quietly decide to stay home instead. They will not leave anyone behind, even the furry ones.' }],
+      lesson:'People will not leave their pets, so pet-friendly shelters keep whole families safe. It matters so much that it became a real federal law!' },
+    { id:'doorknock', title:'The quiet street',
+      text:'Some older neighbors do not use cell phones. Phone alerts will never reach them.',
+      opts:[
+        { label:'Send volunteers door to door',
+          body:'A knock, a smile, and a flyer for every porch. Costs 1 action.',
+          fx:{ slot:-1, evac:0.10 },
+          result:'"Just checking on you!" Every house gets a visit, and every neighbor knows the plan.' },
+        { label:'The phone alerts should do it',
+          body:'Almost everyone has a phone these days.',
+          fx:{ evac:-0.08 },
+          result:'Phones buzz all over town. The houses without them stay quiet.' }],
+      lesson:'A warning only counts if it reaches everyone. Some neighbors need a knock on the door, not a text.' },
+    { id:'school', title:'The principal calls',
+      text:'The school principal asks: should we let students out early tomorrow so families can get ready together?',
+      opts:[
+        { label:'Close early',
+          body:'Send everyone home at noon with a preparedness checklist.',
+          fx:{ evac:0.08 },
+          result:'Kids head home in daylight. Families pack kits and make plans together around the kitchen table.' },
+        { label:'Keep a normal day',
+          body:'Routine is good for kids. School stays open.',
+          fx:{},
+          result:'A normal Tuesday. Families squeeze their getting-ready into the evening rush.' }],
+      lesson:'Getting ready works best when the whole family does it together, with daylight to spare.' },
+    { id:'flashlights', title:'The store owner',
+      text:'The hardware store owner offers the town a deal on flashlights and batteries, but only if you buy before the big rush.',
+      opts:[
+        { label:'Buy now',
+          body:'Stock up while the shelves are full. Costs 1 budget.',
+          fx:{ budget:-1, stockUp:true },
+          result:'Boxes of flashlights, stacked and ready. Tomorrow they would cost double, if any were left.' },
+        { label:'Wait and see',
+          body:'Maybe the town will not need them.',
+          fx:{},
+          result:'By tomorrow afternoon the shelves are picked clean.' }],
+      lesson:'Supplies are cheapest and easiest to find before everyone wants them at once. That is true for towns and for families!' }
+  ];
+
+  // ----- Mid-storm flash calls -----
+  // One decision arrives during the impact itself, when it is too late to
+  // prepare and the only thing left to manage is judgment.
+  var STORM_CALLS_CMD = [
+    { id:'treecrew', title:'The call at 2 AM',
+      text:'Dispatch: a tree is through a roof on Oak Street. The family upstairs is trapped but unhurt. Winds are running 70. The duty crew wants to roll right now.',
+      opts:[
+        { label:'Hold until the wind drops',
+          body:'Stage the crew at the station, engine running, and wait for a break.',
+          fx:{},
+          result:'The longest hour of your night. The moment gusts fall below threshold, the crew rolls and brings the family out cold, scared, and completely fine.' },
+        { label:'Send them now',
+          body:'People are trapped. Go.',
+          fx:{ dmgPer:60 },
+          result:'A flying limb takes out the windshield en route. The crew arrives shaken, one responder in a sling, and the rescue takes twice as long.' }],
+      lesson:'Real departments set wind and water thresholds and stage crews to launch the second conditions allow. A responder casualty in the middle of a storm helps no one, including the family who is waiting.' },
+    { id:'shelterdoor', title:'The knock at the door',
+      text:'The shelter manager radios: they are at listed capacity, and a family of six just showed up at the door with the rain going sideways.',
+      opts:[
+        { label:'Bring them in, make room',
+          body:'Hallways, offices, wherever. Nobody stands outside tonight.',
+          fx:{},
+          result:'Cots go up in the hallway and someone starts a pot of coffee. Capacity is a plan, not a wall.' },
+        { label:'Send them down the road',
+          body:'The church shelter two miles east has space.',
+          fx:{ disp:4 },
+          result:'They make it, barely. Their sedan stalls in a flooded dip on the way, and a passing truck pulls them out.' }],
+      lesson:'Life-safety shelters do not turn people away at the door in dangerous conditions. Surge space is planned before the disaster: hallways, gyms, pews.' }
+  ];
+  var STORM_CALLS_JR = [
+    { id:'creekwatch', title:'The text message',
+      text:'Ding! Your friend texts: "The water looks CRAZY right now. Want to sneak out and watch??"',
+      opts:[
+        { label:'No way. Stay inside',
+          body:'The best view tonight is from the couch.',
+          fx:{},
+          result:'You send back a blanket-fort selfie instead. Best decision of the whole night.' },
+        { label:'Just for one minute',
+          body:'One tiny peek could not hurt... right?',
+          fx:{},
+          result:'One minute outside is one minute too many. A branch crashes down right where you were standing. Everyone runs back inside, hearts pounding.' }],
+      lesson:'Storms and flood water are never a show to watch up close. The safest view is always from inside. Every time.' },
+    { id:'lightsout', title:'Lights out!',
+      text:'POP. The power at the shelter goes out. It is very, very dark, and somewhere in the gym a little kid starts to cry.',
+      opts:[
+        { label:'Flashlights out, calm voices',
+          body:'You know exactly where the flashlight box is.',
+          fx:{},
+          result:'Beams click on in seconds. Someone starts a shadow-puppet show on the wall. The little kid laughs.' },
+        { label:'Everyone just wait in the dark',
+          body:'The power will probably come back soon.',
+          fx:{},
+          result:'Ten long, spooky minutes pass before someone finds the flashlight box. Next time: flashlights first!' }],
+      lesson:'The power fails in almost every disaster. Flashlights you can find in the dark, plus calm voices, turn scary into cozy.' }
+  ];
+
+  // ----- Setup state -----
+  var CFG = { mode:null, scn:null, haz:null, code:null };
+  var S;
+
+  // ----- Career: the town remembers you -----
+  // Persists between sessions on this device. Public trust rises and falls
+  // with your calls and changes evacuation compliance next time, which is
+  // the truest lesson in the game: credibility is an operational asset.
+  function loadCareer(){
+    try { return JSON.parse(localStorage.getItem('leadtime-career') || '{}'); }
+    catch(e){ return {}; }
+  }
+  function saveCareer(c){
+    try { localStorage.setItem('leadtime-career', JSON.stringify(c)); } catch(e){}
+  }
+  function trustFor(scnId){
+    var c = loadCareer();
+    var t = (c.trust && typeof c.trust[scnId] === 'number') ? c.trust[scnId] : 50;
+    return clamp(t, 10, 95);
+  }
+  function updateTrust(o, M, capMed){
+    // Classroom-code games are identical for everyone, so trust stays out of them.
+    if (CFG.code || isJr()) return null;
+    var before = trustFor(CFG.scn.id);
+    var d = directness();
+    var delta = 0;
+    var why = '';
+    if (S.once['evac'] && d < 0.25){
+      delta -= 7;
+      why = 'You ordered people out and the threat missed. Unfair, but real: trust slips after a "wasted" evacuation. Rebuild it by explaining why the call was right anyway.';
+    } else if (S.once['evac'] && d >= 0.45){
+      delta += 8;
+      why = 'You called it and it came. The town will move faster for you next time.';
+    } else if (!S.once['evac'] && d >= 0.6 && o.casualties >= capMed){
+      delta -= 12;
+      why = 'People were hurt and no order ever came. That memory lingers longest of all.';
+    }
+    if (o.casualties === 0 && delta >= 0){ delta += 4; if (!why) why = 'A quiet success. Quiet successes compound.'; }
+    var after = clamp(before + delta, 10, 95);
+    var c = loadCareer();
+    c.trust = c.trust || {};
+    c.trust[CFG.scn.id] = after;
+    saveCareer(c);
+    return { before:before, after:after, delta:after-before, why:why };
+  }
+  function gradeRank(g){
+    if (!g) return -1;
+    if (g.charAt(0) === 'S') return parseInt(g.slice(1), 10);
+    return { F:0, D:1, C:2, B:3, A:4 }[g] !== undefined ? { F:0, D:1, C:2, B:3, A:4 }[g] : -1;
+  }
+  function saveBest(){
+    if (!S.lastGrade) return;
+    var key = CFG.scn.id + '|' + CFG.mode;
+    var c = loadCareer();
+    c.best = c.best || {};
+    if (gradeRank(S.lastGrade) > gradeRank(c.best[key])) c.best[key] = S.lastGrade;
+    c.games = (c.games || 0) + 1;
+    saveCareer(c);
+    refreshBestChips();
+  }
+  function bestLabel(scnId){
+    var c = loadCareer();
+    if (!c.best) return '';
+    var cmd = c.best[scnId + '|command'], jr = c.best[scnId + '|junior'];
+    var parts = [];
+    if (cmd) parts.push('Best: ' + cmd);
+    if (jr) parts.push('★' + jr.slice(1));
+    return parts.join(' | ');
+  }
+  function refreshBestChips(){
+    SCENARIOS.forEach(function(scn){
+      var span = document.getElementById('best-' + scn.id);
+      if (!span) return;
+      var lbl = bestLabel(scn.id);
+      span.textContent = lbl;
+      span.style.display = lbl ? 'inline-block' : 'none';
+    });
+  }
+
+  function tw(){ return (CFG.haz && CFG.haz.turnWord) || 'Day'; }
+
+  // ----- Actions (built per game so copy matches mode and community) -----
+  function buildActions(){
+    var jr = CFG.mode === 'junior';
+    var scn = CFG.scn;
+    var floodZone = scn.zones[1].name;
+    var hz = CFG.haz;
+    return [
+      { id:'shelter', name:hz.shelterName, cost:1, max:3, kind:'level', accent:'--people',
+        ef: jr ? 'Open safe, warm places for families whose homes get damaged.'
+               : 'Houses people who lose their homes. Fewer displaced.' },
+      { id:'sandbag', name:hz.actBName, cost:2, max:3, kind:'level', accent:'--flood',
+        ef: jr ? hz.actBJr(scn) : hz.actBCmd(scn) },
+      { id:'harden', name:hz.actAName, cost:2, max:3, kind:'level', accent:'--wind',
+        ef: jr ? hz.actAJr : hz.actACmd(scn) },
+      { id:'warn', name:'Public warnings', cost:0, max:2, kind:'level', accent:'--brand',
+        ef: jr ? 'Tell everyone what is coming and what to do. It is free!'
+               : 'Raises evacuation compliance. Worth most early.' },
+      { id:'evac', name:(hz.evacName || 'Order evacuation'), cost:1, max:1, kind:'once', accent:'--danger', lead:true,
+        ef: (function(){
+          if (hz.evacName) return jr ? hz.evacJr : hz.evacCmd;
+          var pop = 0; scn.zones.forEach(function(z){ pop += z.pop; });
+          if (pop >= 80000){
+            return jr ? 'Help people move somewhere safe. A big city needs lots of time, so start early!'
+                      : 'A population this size takes time to move. Order it on ' + tw() + ' 1 or 2, or plan to shelter in place.';
+          }
+          return jr ? 'Help people move somewhere safe before it arrives. Works best early.'
+                    : 'Moves people out of harm before impact. Needs lead time.';
+        })() },
+      { id:'nursing', name:scn.nhActionName, cost:2, max:1, kind:'once', accent:'--danger', lead:true,
+        ef: jr ? scn.nhEfJr : scn.nhEf },
+      { id:'stock', name:'Stockpile supplies', cost:1, max:3, kind:'level', accent:'--people',
+        ef: jr ? 'Gather water, food, flashlights, and batteries for the days after.'
+               : 'Water, food, fuel. Speeds recovery in the days after.' },
+      { id:'aid', name:'Request mutual aid', cost:2, max:1, kind:'once', accent:'--brand', lead:true, byDay:2,
+        ef: jr ? 'Ask crews from nearby towns to come help. Ask by ' + tw() + ' 2!'
+               : (scn.urban ? 'A force multiplier, but must be requested by ' + tw() + ' 2 to arrive.'
+                            : 'Small towns cannot do it alone. Must be requested by ' + tw() + ' 2 to arrive.') }
+    ];
+  }
+  var ACTIONS = [];
+
+  // ----- Icons -----
+  function icon(id){
+    var s = {
+      shelter:'<path d="M8.5 2 15 7v7H2V7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.6 14V9.6h3.8V14" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+      sandbag:'<path d="M1.5 11c2-2 3.5 1 5.5-1s3.5 1 5.5-1 2.5 0 2.5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M1.5 14c2-2 3.5 1 5.5-1s3.5 1 5.5-1 2.5 0 2.5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      harden:'<path d="M8.5 1.5 14 4v4c0 4-3 6-5.5 7C6 14 3 12 3 8V4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      warn:'<path d="M8.5 2.2C6 2.2 4.7 4 4.7 6.3c0 3-1.2 3.8-1.7 4.6h11c-.5-.8-1.7-1.6-1.7-4.6C12.3 4 11 2.2 8.5 2.2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 12.6a1.6 1.6 0 0 0 3 0" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+      evac:'<circle cx="6" cy="4" r="1.7" fill="currentColor"/><path d="M4 14V9l-1.6 1.2M8 14V9l1.6 1.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M11 8h4M13 6l2 2-2 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+      nursing:'<rect x="3" y="3" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.5 5.6v6M5.5 8.6h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      stock:'<path d="M2.5 6 8.5 3l6 3v6l-6 3-6-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.5 6l6 3 6-3M8.5 9v6" fill="none" stroke="currentColor" stroke-width="1.3"/>',
+      aid:'<path d="M8.5 14s-5-3.2-5-6.6A2.9 2.9 0 0 1 8.5 5a2.9 2.9 0 0 1 5 2.4C13.5 10.8 8.5 14 8.5 14Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'
+    };
+    return '<svg viewBox="0 0 17 17">' + (s[id] || '') + '</svg>';
+  }
+
+  // ----- Helpers -----
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function rnd(a,b){ return a + Math.random()*(b-a); }
+  function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  function totalPop(){ var t=0; CFG.scn.zones.forEach(function(z){ t+=z.pop; }); return t; }
+  function isJr(){ return CFG.mode === 'junior'; }
+
+  // ----- New game -----
+  function newGame(){
+    ACTIONS = buildActions();
+    var rng = CFG.code
+      ? mulberry32(seedFrom(CFG.code + '|' + CFG.scn.id + '|' + CFG.haz.id))
+      : mulberry32((Math.random()*4294967296) >>> 0);
+    function srnd(a,b){ return a + rng()*(b-a); }
+    var strength = 1 + Math.floor(rng()*5);
+    var landfallX = clamp(srnd(-1,1), -1, 1);
+    var wobble = srnd(-0.28,0.28);
+    var sWobble = srnd(-1.1,1.1);
+    var halfTrack = CFG.haz.halfTrack || { 1:0.7, 2:0.45, 3:0.24, 4:0.10 };
+    var halfCat   = CFG.haz.halfCat   || { 1:1.6, 2:1.0, 3:0.5, 4:0.2 };
+    var fc = {};
+    for (var d=1; d<=DAYS; d++){
+      var k = (DAYS - d) / (DAYS - 1);
+      fc[d] = {
+        cx: clamp(landfallX + wobble*k, -1, 1),
+        hw: halfTrack[d],
+        cs: clamp(strength + sWobble*k, 1, 5),
+        hs: halfCat[d]
+      };
+    }
+    var nm = NAMES[Math.floor(rng()*NAMES.length)];
+    var name = CFG.haz.name(nm, strength, CFG.scn);
+    var pool = (CFG.mode === 'junior') ? EVENTS_JR : EVENTS_CMD;
+    var callPool = (CFG.mode === 'junior') ? STORM_CALLS_JR : STORM_CALLS_CMD;
+    S = {
+      strength:strength, landfallX:landfallX, fc:fc,
+      day:1, totalBudget:CFG.scn.budget, budget:CFG.scn.budget, slots:SLOTS_PER_DAY,
+      levels:{}, once:{}, doneDay:{},
+      mods:{ evac:0, shelter:0 },
+      pendingEvent:{ day: 2 + (rng() < 0.5 ? 0 : 1), card: pool[Math.floor(rng()*pool.length)] },
+      stormCall: callPool[Math.floor(rng()*callPool.length)],
+      eventLesson:null, flashLesson:null, locked:false,
+      name:name
+    };
+    ACTIONS.forEach(function(a){ if(a.kind==='level') S.levels[a.id]=0; else S.once[a.id]=false; });
+  }
+
+  // ----- Action availability -----
+  function level(id){ return S.levels[id] || 0; }
+  function reason(a){
+    if (S.locked) return 'locked';
+    if (a.kind==='level' && level(a.id) >= a.max) return 'maxed';
+    if (a.kind==='once' && S.once[a.id]) return 'done';
+    if (a.byDay && S.day > a.byDay) return 'late';
+    if (S.slots <= 0) return 'noslot';
+    if (a.cost > S.budget) return 'nobudget';
+    return null;
+  }
+  function doAction(a){
+    if (reason(a)) return;
+    S.budget -= a.cost;
+    S.slots -= 1;
+    if (a.kind==='level') S.levels[a.id] += 1;
+    else { S.once[a.id] = true; S.doneDay[a.id] = S.day; }
+    render();
+  }
+
+  // ----- Advance / resolve -----
+  function advance(){
+    if (S.day >= DAYS){ startImpact(); return; }
+    S.day += 1;
+    S.slots = SLOTS_PER_DAY;
+    render();
+    if (S.pendingEvent && S.day === S.pendingEvent.day){
+      showEvent(S.pendingEvent.card);
+      S.pendingEvent = null;
+    }
+  }
+
+  // ----- Mid-game event flow -----
+  function applyFx(fx){
+    if (fx.budget) S.budget = Math.max(0, S.budget + fx.budget);
+    if (fx.slot) S.slots = Math.max(0, S.slots + fx.slot);
+    if (fx.evac) S.mods.evac += fx.evac;
+    if (fx.shelter) S.mods.shelter += fx.shelter;
+    if (fx.stockUp && S.levels.stock < 3) S.levels.stock += 1;
+  }
+  var evCallback = null;
+  function showEvent(card){
+    evCallback = null;
+    document.getElementById('evEyebrow').textContent = tw() + ' ' + S.day + ': developing situation';
+    document.getElementById('evTitle').textContent = card.title;
+    document.getElementById('evText').textContent = card.text;
+    var host = document.getElementById('evOpts');
+    host.innerHTML = '';
+    var lessonBox = document.getElementById('evLesson');
+    lessonBox.classList.add('hidden');
+    var goBtn = document.getElementById('evGo');
+    goBtn.classList.add('hidden');
+    card.opts.forEach(function(opt){
+      var btn = document.createElement('button');
+      btn.className = 'evopt';
+      btn.innerHTML = '<b>' + opt.label + '</b>' + opt.body;
+      btn.addEventListener('click', function(){
+        if (btn.disabled) return;
+        Array.prototype.forEach.call(host.children, function(c){ c.disabled = true; });
+        btn.classList.add('picked');
+        applyFx(opt.fx);
+        S.eventLesson = card.lesson;
+        lessonBox.innerHTML = '<b>What happened:</b> ' + opt.result + '<br><br><b>The lesson:</b> ' + card.lesson;
+        lessonBox.classList.remove('hidden');
+        goBtn.classList.remove('hidden');
+        render();
+      });
+      host.appendChild(btn);
+    });
+    document.getElementById('eventScreen').classList.remove('hidden');
+  }
+
+  function directness(){ return clamp(1 - Math.abs(S.landfallX), 0, 1); }
+
+  function hazards(){
+    var Sn = (S.strength - 1) / 4;
+    var D = directness();
+    var wind = clamp((0.15 + 0.85*D) * (0.30 + 0.70*Sn), 0, 1);
+    var flood = clamp(Math.pow(D, 1.4) * (0.35 + 0.65*Sn), 0, 1);
+    return { wind:wind, flood:flood, D:D, Sn:Sn };
+  }
+
+  function mitigations(){
+    var ms = CFG.scn.mitScale || 1;
+    var sandbag = Math.min(0.85, level('sandbag')*0.30*ms);
+    var harden  = Math.min(0.85, level('harden')*0.30*ms);
+    var shelter = Math.min(0.90, level('shelter')*0.30*ms);
+    var warn    = Math.min(0.35, level('warn')*0.18*ms);
+    var aidGood = S.once['aid'] && (S.doneDay['aid'] <= 2);
+    var lead = CFG.scn.evacLead || LEAD;
+    var evacOrd = S.once['evac'] ? 0.60 * (lead[S.doneDay['evac']] || 0) : 0;
+    var trustMult = (CFG.code || isJr()) ? 1 : (0.7 + 0.6 * trustFor(CFG.scn.id) / 100);
+    var evac = clamp((warn + evacOrd) * (aidGood ? 1.12 : 1) * trustMult + (S.mods ? S.mods.evac : 0), 0, 0.95);
+    shelter = clamp(shelter * (aidGood ? 1.15 : 1) + (S.mods ? S.mods.shelter : 0), 0, 0.95);
+    var nh = 0;
+    if (S.once['nursing']) nh = (S.doneDay['nursing'] <= 3) ? 0 : 0.4; else nh = 1;
+    return { sandbag:sandbag, harden:harden, shelter:shelter, evac:evac, nh:nh,
+             stock:level('stock'), aidGood:aidGood };
+  }
+
+  // Outcome model. Junior Mode has no casualties by design: warnings and
+  // evacuation instead keep families out of shelters and out of harm.
+  function outcome(H, M){
+    var jr = isJr();
+    var hz = CFG.haz;
+    var damage=0, displaced=0, casualties=0, riversideFlood=0;
+    var zoneSev = [];
+    CFG.scn.zones.forEach(function(z){
+      var windEff = H.wind * hz.vulnA(z) * (1 - M.harden);
+      var floodEff = H.flood * hz.vulnB(z) * (1 - M.sandbag);
+      if (z.id==='z1') riversideFlood = floodEff;
+      var sev = clamp(windEff + floodEff, 0, 1);
+      zoneSev.push({ id:z.id, name:z.name, sev:sev });
+      damage += z.pop * 3500 * sev;
+      displaced += z.pop * sev * (1 - M.shelter);
+      if (!jr) casualties += z.pop * 0.010 * Math.pow(sev, 1.6) * (1 - M.evac);
+    });
+    var nhSev = clamp(Math.max(riversideFlood, H.flood*0.6), 0, 1);
+    if (jr){
+      displaced *= (1 - 0.6*M.evac);
+      displaced += CFG.scn.nhPop * nhSev * M.nh;
+    } else {
+      casualties += CFG.scn.nhPop * 0.05 * Math.pow(nhSev, 1.3) * (1 - M.evac) * M.nh;
+    }
+    return {
+      damage:damage,
+      displaced:Math.round(displaced/2.5),
+      casualties:Math.round(casualties),
+      zoneSev:zoneSev
+    };
+  }
+
+  // Expected severity as the forecast presented it, not as the storm turned out.
+  // Grading spend against this instead of the realized hazard removes hindsight bias:
+  // bracing for a forecast direct hit is correct even when the storm misses.
+  function expectedSevAtTurn(d){
+    var f = S.fc[d];
+    var minx = clamp(f.cx - f.hw, -1, 1);
+    var maxx = clamp(f.cx + f.hw, -1, 1);
+    var over;
+    if (minx <= 0 && maxx >= 0) over = 1 - clamp(Math.abs(f.cx) / (f.hw + 0.0001), 0, 1) * 0.4;
+    else {
+      var near = Math.min(Math.abs(minx), Math.abs(maxx));
+      over = clamp(1 - near/0.8, 0, 1) * 0.5;
+    }
+    return clamp(over, 0, 1) * clamp(f.cs / 5, 0, 1);
+  }
+
+  function gradeAndShow(H, M, actual){
+    var none = outcome(H, { sandbag:0, harden:0, shelter:0, evac:0, nh:1, stock:0 });
+
+    var harm;
+    if (isJr()) harm = function(o){ return o.damage/1000 + o.displaced*6; };
+    else harm = function(o){ return o.damage/1000 + o.displaced*4 + o.casualties*260; };
+    var base = harm(none), got = harm(actual);
+    var prevented = base > 0 ? clamp((base - got) / base, 0, 1) : 1;
+
+    var used = S.totalBudget - S.budget;
+    // Warranted spend is the higher of what the forecast justified and what
+    // the realized storm required. You are never punished for believing the cone.
+    var expSev = (expectedSevAtTurn(2) + expectedSevAtTurn(3) + expectedSevAtTurn(4)) / 3;
+    var forecastWarranted = Math.round(S.totalBudget * clamp(0.2 + 1.15*expSev, 0, 1));
+    var realizedWarranted = Math.round(S.totalBudget * clamp(0.5*H.wind + 0.5*H.flood, 0, 1));
+    var warranted = Math.max(forecastWarranted, realizedWarranted);
+
+    if (isJr()){
+      var stars = clamp(1 + Math.round(prevented*4), 2, 5);
+      S.lastGrade = 'S' + stars;
+      showAAR({ jr:true, stars:stars, prevented:prevented }, H, M, actual, used, warranted);
+    } else {
+      var excess = Math.max(0, used - (warranted + 2));
+      var efficiency = clamp(1 - excess*0.06, 0, 1);
+      var score = 0.72*prevented + 0.28*efficiency;
+      var pop = totalPop();
+      var capHi = Math.max(20, Math.round(pop*0.004));
+      var capMed = Math.max(8, Math.round(pop*0.0015));
+      if (actual.casualties >= capHi) score = Math.min(score, 0.42);
+      else if (actual.casualties >= capMed) score = Math.min(score, 0.6);
+      // Outcome floor: if everyone came through safe and housed, that is a B
+      // no matter how the coverage math shakes out. Results count.
+      var quiet = actual.casualties === 0 && actual.displaced <= Math.max(3, Math.round(pop*0.02));
+      if (quiet && score < 0.72) score = 0.72;
+      var letter = score>=0.85?'A':score>=0.7?'B':score>=0.55?'C':score>=0.4?'D':'F';
+      var gradeWhy = Math.round(prevented*100) + '% of possible harm prevented; readiness '
+        + (excess > 0 ? 'overshot the forecast by ' + excess : 'matched the forecast')
+        + (quiet ? '; everyone came through safe and housed' : '')
+        + (actual.casualties >= capMed ? '; grade capped by loss of life' : '') + '.';
+      var trust = updateTrust(actual, M, capMed);
+      S.lastGrade = letter;
+      showAAR({ jr:false, letter:letter, capMed:capMed, gradeWhy:gradeWhy, trust:trust }, H, M, actual, used, warranted);
+    }
+    saveBest();
+  }
+
+  // ----- Narrative -----
+  function trackWord(){
+    var d = directness();
+    if (d >= 0.8) return 'a direct hit';
+    if (d >= 0.45) return 'a glancing blow';
+    if (d >= 0.2) return 'a near miss';
+    return 'a wide miss';
+  }
+  function sevLabel(){
+    return CFG.haz.sev(S.strength);
+  }
+
+  function commandNarrative(H, M, o, used, warranted, capMed){
+    var scn = CFG.scn;
+    var hz = CFG.haz;
+    var lines = [];
+    var side = S.landfallX < 0 ? 'west' : 'east';
+    var d = directness();
+    if (d < 0.25) lines.push(hz.headMiss(side));
+    else if (d >= 0.8) lines.push(hz.headHit(side));
+    else lines.push(hz.headMid(side));
+
+    var floodPhrase = hz.bPhrase;
+    var big = totalPop() >= 80000;
+    if (big && hz.id !== 'tornado' && S.once['evac'] && S.doneDay['evac'] >= 3 && o.casualties >= capMed)
+      lines.push('You ordered an evacuation on ' + tw() + ' ' + S.doneDay['evac'] + ' for a population that needs time to move. The order clogged the roads more than it cleared them. In a metro this size, evacuate early or commit to shelter in place.');
+    else if (o.casualties >= capMed && M.evac < 0.4)
+      lines.push(hz.evacFailCmd || 'Casualties ran high because evacuation was ordered too late to move people out. Lead time is the whole game with evacuation.');
+    else if (M.nh === 1 && H.flood > 0.4)
+      lines.push(scn.nhLabel.charAt(0).toUpperCase() + scn.nhLabel.slice(1) + ' sat in harm\'s way through ' + floodPhrase + '. Relocating those residents early would have prevented the worst of the losses.');
+    else if (H.flood > 0.45 && M.sandbag < 0.3)
+      lines.push(hz.bFailCmd(scn));
+    else if (H.wind > 0.5 && M.harden < 0.3)
+      lines.push(hz.aFailCmd(scn));
+    else if (d < 0.3 && used >= warranted + 3)
+      lines.push('You braced for a direct hit that veered away. That was a defensible read of a wide cone, but the spend outran the threat that actually came.');
+    else if (o.casualties === 0 && o.displaced < totalPop()*0.02 && (M.harden + M.sandbag + M.shelter + M.evac) >= 0.4)
+      lines.push('A well-matched response: you spent where the threat actually pointed and kept people safe. Textbook.');
+    else if ((M.harden + M.sandbag + M.shelter + M.evac) < 0.3)
+      lines.push('You left ' + scn.town + ' largely unprepared. The track spared you this time, but a ' + hz.label.toLowerCase() + ' aimed at the center of town would have overwhelmed a community that had not moved.');
+    else
+      lines.push('A balanced response that held the line on the biggest threats.');
+
+    if (M.aidGood) lines.push('Mutual aid arrived in time and stretched your capacity.');
+    if (M.stock >= 2) lines.push('Your supply caches will shorten the recovery ahead.');
+    return lines.join(' ');
+  }
+
+  var JR_TIPS = [
+    'Make a family plan so everyone knows where to meet if you have to leave home.',
+    'Build a kit with water, snacks, a flashlight, and batteries. One backpack per person!',
+    'Ask a grown-up to sign up for your local weather alerts.',
+    'Practice how your family would leave home in a hurry, just like a fire drill.',
+    'Learn whether your home is in a flood zone. Your local emergency manager can tell you.',
+    'Write down an out-of-town contact everyone in your family can call to check in.'
+  ];
+
+  function juniorNarrative(H, M, o){
+    var scn = CFG.scn;
+    var hz = CFG.haz;
+    var lines = [];
+    var side = S.landfallX < 0 ? 'west' : 'east';
+    var d = directness();
+    if (d < 0.25) lines.push(hz.jrMiss(side));
+    else if (d >= 0.8) lines.push(hz.jrHit(side));
+    else lines.push(hz.jrMid(side));
+
+    if (H.flood > 0.45 && M.sandbag < 0.3)
+      lines.push(hz.bFailJr(scn));
+    else if (H.wind > 0.5 && M.harden < 0.3)
+      lines.push(hz.aFailJr(scn));
+    else if (M.nh === 1 && H.flood > 0.4)
+      lines.push('The folks at ' + scn.nhShort + ' had a long, scary night. Helping them move early is one of the kindest calls a leader can make.');
+    else if (d >= 0.5 && M.evac < 0.3)
+      lines.push('Some families waited a long time to move to safety. Warning people early keeps everyone calmer and safer.');
+    else if ((M.harden + M.sandbag + M.shelter + M.evac) >= 0.4)
+      lines.push('You watched the forecast and put your budget right where the danger was. That is exactly what real emergency managers try to do!');
+    else
+      lines.push('Good effort! Watch the forecast cone each day and spend your budget where the danger looks biggest.');
+
+    if (M.aidGood) lines.push('Helpers from nearby towns arrived just in time.');
+    if (M.stock >= 2) lines.push('Your supplies will make the days after much easier for everyone.');
+    return lines.join(' ');
+  }
+
+  // ----- Map -----
+  function toX(x){ return 200 + x*130; }
+
+  function renderTerrain(){
+    var scn = CFG.scn;
+    var t = '';
+    if (scn.coastal){
+      t += '<rect x="0" y="0" width="400" height="360" fill="var(--water)"/>';
+      t += '<path d="M0,200 C60,188 120,208 180,196 C250,182 320,206 400,194 L400,0 L0,0 Z" fill="var(--land)"/>';
+      t += '<path d="M0,200 C60,188 120,208 180,196 C250,182 320,206 400,194" fill="none" stroke="var(--land-2)" stroke-width="3"/>';
+      t += '<path d="M150,201 C150,190 158,182 156,172 C154,158 150,150 150,138" fill="none" stroke="var(--water-2)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>';
+    } else {
+      t += '<rect x="0" y="0" width="400" height="360" fill="var(--land)"/>';
+      t += '<path d="M144,0 C150,30 142,60 152,92 C160,120 150,150 156,180 C160,205 150,240 156,280 C160,315 152,340 156,360" fill="none" stroke="var(--water-2)" stroke-width="7" stroke-linecap="round" opacity="0.95"/>';
+      t += '<path d="M250,60 q18,-16 36,0 M300,95 q16,-14 32,0 M60,80 q16,-14 32,0 M90,130 q14,-12 28,0" fill="none" stroke="var(--land-2)" stroke-width="3" stroke-linecap="round"/>';
+    }
+    t += '<g font-family="Public Sans, sans-serif" font-weight="700">';
+    t += '<circle cx="200" cy="150" r="6" fill="var(--brand)"/>';
+    t += '<text x="200" y="136" font-size="12" text-anchor="middle" fill="var(--ink)">' + scn.town + '</text>';
+    t += '<circle cx="156" cy="180" r="4.5" fill="var(--flood)"/>';
+    t += '<text x="156" y="196" font-size="9.5" text-anchor="middle" fill="var(--ink-soft)">' + scn.zones[1].name + '</text>';
+    t += '<circle cx="252" cy="120" r="4.5" fill="var(--wind)"/>';
+    t += '<text x="252" y="110" font-size="9.5" text-anchor="middle" fill="var(--ink-soft)">' + scn.zones[2].name + '</text>';
+    t += '<text x="200" y="164" font-size="9" text-anchor="middle" fill="var(--ink-soft)">' + scn.zones[0].name + '</text>';
+    t += '</g>';
+    document.getElementById('terrain').innerHTML = t;
+  }
+
+  // ----- Preparedness layer: your actions, visible on the map -----
+  function renderPrep(){
+    var p = '';
+    var i;
+    // Sandbag rows stack along the low ground
+    for (i=0; i<level('sandbag'); i++){
+      for (var j=0; j<5; j++){
+        p += '<rect x="'+(138+j*8)+'" y="'+(200+i*5)+'" width="6.5" height="3.6" rx="1.6" fill="#c8a86a" stroke="#a98a4e" stroke-width="0.5"/>';
+      }
+    }
+    // Hardened facilities: shields by downtown
+    for (i=0; i<level('harden'); i++){
+      var hx = 172 + i*13;
+      p += '<path d="M'+hx+',126 l4,1.8 v3.4 c0,3 -2.2,4.6 -4,5.4 c-1.8,-0.8 -4,-2.4 -4,-5.4 v-3.4 z" fill="var(--wind)" opacity="0.9"/>';
+    }
+    // Shelters: little green houses
+    for (i=0; i<level('shelter'); i++){
+      var sx2 = 220 + i*13;
+      p += '<g transform="translate('+sx2+',156)"><path d="M0,4 L5,0 L10,4 V10 H0 Z" fill="var(--people)"/><rect x="3.6" y="6" width="2.8" height="4" fill="var(--paper)"/></g>';
+    }
+    // Stockpiles: supply crates
+    for (i=0; i<level('stock'); i++){
+      var cx2 = 222 + i*11;
+      p += '<g transform="translate('+cx2+',176)"><rect width="8" height="7" rx="1" fill="#c8a86a" stroke="#a98a4e" stroke-width="0.6"/><line x1="0" y1="3.5" x2="8" y2="3.5" stroke="#a98a4e" stroke-width="0.6"/></g>';
+    }
+    // Warning broadcasts: rings from the town center
+    for (i=0; i<level('warn'); i++){
+      p += '<circle cx="200" cy="150" r="'+(14+i*8)+'" fill="none" stroke="var(--brand)" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.55"/>';
+    }
+    // Evacuation ordered: flow arrows out of every zone
+    if (S.once['evac']){
+      var flows = [[200,144,0,-22],[156,172,-14,-18],[252,114,12,-18]];
+      flows.forEach(function(f){
+        var x2 = f[0]+f[2], y2 = f[1]+f[3];
+        p += '<line x1="'+f[0]+'" y1="'+f[1]+'" x2="'+x2+'" y2="'+y2+'" stroke="var(--danger)" stroke-width="2" stroke-dasharray="4 3" opacity="0.8"/>';
+        p += '<circle cx="'+x2+'" cy="'+y2+'" r="2.2" fill="var(--danger)"/>';
+      });
+    }
+    // Vulnerable facility: marked once relocated
+    if (S.once['nursing']){
+      p += '<g transform="translate(134,162)"><rect width="12" height="9" rx="1.5" fill="var(--paper)" stroke="var(--brand)" stroke-width="1"/><path d="M2.5,4.5 l2.4,2.6 l4.6,-5" fill="none" stroke="var(--people)" stroke-width="1.8" stroke-linecap="round"/></g>';
+    }
+    // Mutual aid inbound from the east
+    if (S.once['aid'] && S.doneDay['aid'] <= 2){
+      p += '<g fill="var(--brand)" opacity="0.85"><path d="M384,146 l-9,5 v-10 z"/><path d="M372,146 l-9,5 v-10 z"/><path d="M360,146 l-9,5 v-10 z"/></g>';
+    }
+    document.getElementById('prep').innerHTML = p;
+  }
+
+  function stormPos(){
+    var y = { 1:322, 2:300, 3:276, 4:252 }[S.day] || 322;
+    var sc = { 1:0.85, 2:0.95, 3:1.1, 4:1.25 }[S.day] || 1;
+    return { y:y, sc:sc };
+  }
+
+  function stormGlyph(cx, cy, spin, scale){
+    var pre = '<g transform="translate('+cx+','+cy+') scale('+(scale||1)+')">';
+    var g = CFG.haz.glyph;
+    if (g === 'hurricane'){
+      return pre+
+        '<circle r="11" fill="none" stroke="var(--danger)" stroke-width="2"/>'+
+        '<path d="M0,-9 C6,-8 8,-3 2,-1 C6,0 5,6 0,9 C-6,8 -8,3 -2,1 C-6,0 -5,-6 0,-9 Z" fill="var(--danger)" opacity="0.85"'+
+          (spin ? ' style="transform-origin:center;animation:spin 6s linear infinite"' : '')+'/>'+
+        '<circle r="2" fill="var(--paper)"/>'+
+        '</g>';
+    }
+    if (g === 'fire'){
+      return pre+
+        '<path d="M0,-13 C5,-7 9,-3 9,3 a9,9 0 0 1 -18,0 C-9,-3 -5,-6 0,-13 Z" fill="var(--danger)" opacity="0.9"/>'+
+        '<path d="M0,-5 C2.5,-2 4.5,0 4.5,3.5 a4.5,4.5 0 0 1 -9,0 C-4.5,0 -2.5,-2 0,-5 Z" fill="var(--wind)"/>'+
+        '</g>';
+    }
+    if (g === 'tornado'){
+      return pre+
+        '<ellipse cx="0" cy="-10" rx="12" ry="3.5" fill="var(--danger)"/>'+
+        '<path d="M-11,-9 C-9,-4 8,-5 9,-9 L4,-1 L2,6 L0.5,12 L-1,6 L-4,-1 Z" fill="var(--danger)" opacity="0.9"/>'+
+        '<ellipse cx="-1" cy="-4" rx="6" ry="1.6" fill="var(--paper)" opacity="0.5"/>'+
+        '</g>';
+    }
+    if (g === 'hazmat'){
+      return pre+
+        '<rect x="-9.2" y="-9.2" width="18.4" height="18.4" rx="2.5" transform="rotate(45)" fill="var(--wind)" stroke="var(--danger)" stroke-width="1.6"/>'+
+        '<rect x="-1.6" y="-7" width="3.2" height="8.5" rx="1.6" fill="var(--ink)"/>'+
+        '<circle cx="0" cy="5.5" r="1.9" fill="var(--ink)"/>'+
+        '</g>';
+    }
+    if (g === 'snow'){
+      return pre+
+        '<path d="M-13,2 a7,7 0 0 1 3,-13 a9,9 0 0 1 17,-2 a7,7 0 0 1 4,14 Z" fill="var(--danger)" opacity="0.85"/>'+
+        '<g fill="var(--paper)" stroke="var(--flood)" stroke-width="1">'+
+          '<circle cx="-7" cy="9" r="2.2"/><circle cx="0" cy="12" r="2.2"/><circle cx="7" cy="9" r="2.2"/>'+
+        '</g></g>';
+    }
+    return pre+
+      '<path d="M-13,2 a7,7 0 0 1 3,-13 a9,9 0 0 1 17,-2 a7,7 0 0 1 4,14 Z" fill="var(--danger)" opacity="0.85"/>'+
+      '<g stroke="var(--flood)" stroke-width="2" stroke-linecap="round">'+
+        '<line x1="-8" y1="7" x2="-10" y2="14"/>'+
+        '<line x1="-1" y1="7" x2="-3" y2="14"/>'+
+        '<line x1="6" y1="7" x2="4" y2="14"/>'+
+      '</g></g>';
+  }
+
+  function renderMap(landed){
+    var f = S.fc[S.day];
+    var dyn = '';
+    var impactY = CFG.haz.id === 'hurricane' ? 200 : 165;
+    if (!landed){
+      var sp = stormPos();
+      var minx = toX(clamp(f.cx - f.hw, -1, 1));
+      var maxx = toX(clamp(f.cx + f.hw, -1, 1));
+      var sx = toX(f.cx);
+      dyn += '<path d="M'+sx+','+sp.y+' L'+maxx+',200 L'+maxx+',150 L'+minx+',150 L'+minx+',200 Z" '+
+             'fill="rgba(0,76,83,0.12)" stroke="rgba(0,76,83,0.45)" stroke-width="1.4" stroke-dasharray="5 5"/>';
+      dyn += stormGlyph(sx, sp.y, !reduceMotion, sp.sc);
+      // The sky darkens as it closes in
+      var tint = 0.055 * (S.day - 1);
+      if (tint > 0) dyn += '<rect x="0" y="0" width="400" height="360" fill="#0c282c" opacity="'+tint+'" pointer-events="none"/>';
+    } else {
+      var lx = toX(S.landfallX);
+      if (CFG.haz.id === 'hurricane'){
+        dyn += '<line x1="'+lx+'" y1="322" x2="'+lx+'" y2="150" stroke="var(--danger)" stroke-width="2.4"/>';
+      } else {
+        dyn += '<line x1="'+lx+'" y1="322" x2="'+lx+'" y2="115" stroke="var(--danger)" stroke-width="2.4" stroke-dasharray="7 5"/>';
+      }
+      dyn += '<g transform="translate('+lx+','+impactY+')"><circle r="10" fill="none" stroke="var(--danger)" stroke-width="2"/>'+
+             '<circle r="17" fill="none" stroke="var(--danger)" stroke-width="1.2" opacity="0.5"/></g>';
+      dyn += stormGlyph(lx, impactY, false, 1.3);
+      var d = directness();
+      var lbl = d>=0.8?'DIRECT HIT':d>=0.45?'GLANCING BLOW':d>=0.2?'NEAR MISS':'MISSED';
+      dyn += '<text x="200" y="245" font-size="15" font-weight="700" text-anchor="middle" '+
+             'font-family="Public Sans, sans-serif" fill="var(--danger)">'+lbl+'</text>';
+    }
+    renderPrep();
+    document.getElementById('dyn').innerHTML = dyn;
+  }
+
+  // ----- Impact night -----
+  var IMPACT = null;
+  var seqTimers = [];
+  function later(fn, ms){ seqTimers.push(setTimeout(fn, ms)); }
+  function clearSeq(){ seqTimers.forEach(clearTimeout); seqTimers = []; }
+  function seqCaption(html){
+    var c = document.getElementById('caption');
+    c.classList.add('night');
+    c.innerHTML = html;
+  }
+  function shakeMap(){
+    if (reduceMotion) return;
+    var w = document.getElementById('mapwrap');
+    w.classList.remove('shaking');
+    void w.offsetWidth;
+    w.classList.add('shaking');
+  }
+  function sevWord(sev){
+    if (isJr()){
+      return sev<0.15 ? 'stayed snug and safe' : sev<0.4 ? 'a few leaks and bumps' : sev<0.7 ? 'some homes need repairs' : 'a rough night for homes';
+    }
+    return sev<0.15 ? 'rattled but standing' : sev<0.4 ? 'scattered damage' : sev<0.7 ? 'serious damage' : 'devastated';
+  }
+  var ZONE_POS = { z0:[200,150], z1:[156,180], z2:[252,120] };
+
+  function startImpact(){
+    if (IMPACT) return;
+    var H = hazards(), M = mitigations();
+    IMPACT = { H:H, M:M, o:outcome(H, M), stage:'approach' };
+    S.locked = true;
+    document.getElementById('goBtn').disabled = true;
+    document.getElementById('skipBtn').classList.remove('hidden');
+    renderCards();
+    seqCaption('<b>Night falls.</b> ' + S.name + ' moves in. Nothing left to do now but see it through.');
+
+    // Storm crawls from its forecast position to impact
+    var sp = stormPos();
+    var fromX = toX(S.fc[DAYS].cx), fromY = sp.y;
+    var impactY = CFG.haz.id === 'hurricane' ? 200 : 165;
+    var toXv = toX(S.landfallX);
+    var frames = reduceMotion ? 1 : 16;
+    function frame(i){
+      if (!IMPACT || IMPACT.stage !== 'approach') return;
+      var t = i / frames;
+      var x = fromX + (toXv - fromX) * t;
+      var y = fromY + (impactY - fromY) * t;
+      var dyn = '<rect x="0" y="0" width="400" height="360" fill="#0c282c" opacity="'+(0.16 + 0.1*t)+'"/>';
+      dyn += stormGlyph(x, y, false, 1.25 + 0.15*t);
+      document.getElementById('dyn').innerHTML = dyn;
+      if (i < frames) later(function(){ frame(i+1); }, 70);
+      else later(zoneHits, 350);
+    }
+    frame(0);
+  }
+
+  function zoneHits(){
+    if (!IMPACT) return;
+    IMPACT.stage = 'hits';
+    renderMap(true);
+    shakeMap();
+    var hits = IMPACT.o.zoneSev.slice().sort(function(a,b){ return b.sev - a.sev; });
+    function hit(i){
+      if (!IMPACT || IMPACT.stage !== 'hits') return;
+      if (i >= hits.length){ later(flashCall, 500); return; }
+      var z = hits[i];
+      var pos = ZONE_POS[z.id] || [200,150];
+      var ring = '<circle cx="'+pos[0]+'" cy="'+pos[1]+'" r="'+(9 + z.sev*16)+'" fill="none" stroke="var(--danger)" stroke-width="'+(1.5 + z.sev*2)+'" opacity="0.85"/>';
+      document.getElementById('dyn').innerHTML += ring;
+      seqCaption('<b>' + z.name + ':</b> ' + sevWord(z.sev) + '.');
+      if (z.sev > 0.3) shakeMap();
+      later(function(){ hit(i+1); }, 850);
+    }
+    hit(0);
+  }
+
+  function flashCall(){
+    if (!IMPACT || IMPACT.stage === 'call' || IMPACT.stage === 'done') return;
+    IMPACT.stage = 'call';
+    document.getElementById('skipBtn').classList.add('hidden');
+    var card = S.stormCall;
+    document.getElementById('evEyebrow').textContent = 'Mid-storm decision';
+    document.getElementById('evTitle').textContent = card.title;
+    document.getElementById('evText').textContent = card.text;
+    var host = document.getElementById('evOpts');
+    host.innerHTML = '';
+    var lessonBox = document.getElementById('evLesson');
+    lessonBox.classList.add('hidden');
+    var goBtn = document.getElementById('evGo');
+    goBtn.classList.add('hidden');
+    card.opts.forEach(function(opt){
+      var btn = document.createElement('button');
+      btn.className = 'evopt';
+      btn.innerHTML = '<b>' + opt.label + '</b>' + opt.body;
+      btn.addEventListener('click', function(){
+        if (btn.disabled) return;
+        Array.prototype.forEach.call(host.children, function(c){ c.disabled = true; });
+        btn.classList.add('picked');
+        if (opt.fx.dmgPer) IMPACT.o.damage += totalPop() * opt.fx.dmgPer;
+        if (opt.fx.disp) IMPACT.o.displaced += opt.fx.disp;
+        S.flashLesson = card.lesson;
+        lessonBox.innerHTML = '<b>What happened:</b> ' + opt.result + '<br><br><b>The lesson:</b> ' + card.lesson;
+        lessonBox.classList.remove('hidden');
+        goBtn.classList.remove('hidden');
+      });
+      host.appendChild(btn);
+    });
+    evCallback = finishImpact;
+    document.getElementById('eventScreen').classList.remove('hidden');
+  }
+
+  function finishImpact(){
+    if (!IMPACT || IMPACT.stage === 'done') return;
+    IMPACT.stage = 'done';
+    seqCaption('<b>Daybreak.</b> The wind lays down. Crews move out at first light.');
+    later(function(){
+      var c = document.getElementById('caption');
+      c.classList.remove('night');
+      gradeAndShow(IMPACT.H, IMPACT.M, IMPACT.o);
+    }, reduceMotion ? 250 : 1100);
+  }
+
+  function skipImpact(){
+    if (!IMPACT || (IMPACT.stage !== 'approach' && IMPACT.stage !== 'hits')) return;
+    clearSeq();
+    renderMap(true);
+    flashCall();
+  }
+
+  // ----- Forecast copy -----
+  function trackPhrase(f){
+    var hz = CFG.haz;
+    var minx = clamp(f.cx - f.hw, -1, 1);
+    var maxx = clamp(f.cx + f.hw, -1, 1);
+    if (minx <= 0 && maxx >= 0) return hz.tOver.replace('TOWN', CFG.scn.town);
+    var side = maxx < 0 ? 'west' : 'east';
+    var near = Math.min(Math.abs(minx), Math.abs(maxx));
+    var t = near < 0.28 ? hz.tNear : near < 0.65 ? hz.tMid : hz.tFar;
+    return t.replace('SIDE', side).replace('TOWN', CFG.scn.town);
+  }
+  function catPhrase(f){
+    var lo = Math.max(1, Math.round(f.cs - f.hs));
+    var hi = Math.min(5, Math.round(f.cs + f.hs));
+    return CFG.haz.cat(lo, hi);
+  }
+
+  // ----- Radio traffic: the town talks back -----
+  // Three recurring voices react to what the player has actually done.
+  // Every nudge is a hint; every thank-you is reinforcement.
+  function buildFeed(){
+    var jr = isJr();
+    var hz = CFG.haz;
+    var scn = CFG.scn;
+    var z1 = scn.zones[1].name;
+    var z2 = scn.zones[2].name;
+    var f = S.fc[S.day];
+    var coneOver = (clamp(f.cx - f.hw, -1, 1) <= 0 && clamp(f.cx + f.hw, -1, 1) >= 0);
+    var msgs = [];
+    function say(who, color, txt){ msgs.push({ who:who, color:color, txt:txt }); }
+    var CHIEF = ['Chief Alvarez', '--danger'];
+    var SCHOOL = ['Principal Reyes', '--wind'];
+    var DOT = ['Dot on ' + z1, '--people'];
+
+    if (S.day === 1){
+      say(CHIEF[0], CHIEF[1], jr
+        ? 'Chief Alvarez here! The crews are ready to help. What comes first, boss?'
+        : 'Crews are fueled and staged. Where do you want us first, boss?');
+      var worry;
+      if (hz.id === 'tornado') worry = jr ? 'Do we have a safe spot out here on ' + z1 + '? Asking for the whole road!' : 'Is there a safe room plan for ' + z1 + '? Asking for the whole road.';
+      else if (hz.id === 'wildfire') worry = 'The brush up behind ' + z2 + ' has not been cut in years. Just so you know.';
+      else if (hz.id === 'winter') worry = 'Our power lines out here ice up every single year. Just so you know.';
+      else worry = z1 + ' floods when the sky so much as frowns. Should I be worried about mama\'s place?';
+      say(DOT[0], DOT[1], worry);
+    } else {
+      // Priority-ordered reactions to the player's actual state
+      if (level('warn') === 0)
+        say(SCHOOL[0], SCHOOL[1], jr
+          ? 'Parents keep calling the office. Is there anything official I can send home with the kids?'
+          : 'Parents keep calling the front office. Anything official I can send home?');
+      else if (level('warn') > 0 && S.day === 2)
+        say(SCHOOL[0], SCHOOL[1], jr
+          ? 'Your alert reached every family at school. Nice work!'
+          : 'Your alert hit every phone in the pickup line. Good copy on this end.');
+      if (!S.once['nursing'] && S.day >= 3)
+        say(CHIEF[0], CHIEF[1], 'Any decision on ' + scn.nhShort + '? That call gets harder every hour we wait.');
+      else if (S.once['nursing'])
+        say(DOT[0], DOT[1], jr
+          ? 'I heard you helped the folks at ' + scn.nhShort + ' move somewhere safe. That was kind.'
+          : 'Heard you moved the folks at ' + scn.nhShort + ' out early. Bless you for that.');
+      if (level('sandbag') > 0)
+        say(DOT[0], DOT[1], jr
+          ? 'I can see the crews working from my porch! Everybody feels braver already.'
+          : 'Watched the crews working ' + z1 + ' from my porch. You have no idea what that does for people\'s nerves.');
+      else if (S.day >= 2)
+        say(DOT[0], DOT[1], 'The church group chat is nothing but weather talk. Anything happening for ' + z1 + ' yet?');
+      if (S.once['evac'])
+        say(CHIEF[0], CHIEF[1], hz.id === 'tornado'
+          ? 'Safe room maps are on every fridge in town by now. Good call making it early.'
+          : 'The order is out and moving. Your early messaging is paying off in compliance.');
+      else if (S.day >= 3 && coneOver)
+        say(CHIEF[0], CHIEF[1], jr
+          ? 'The cone still has us in it, boss. Folks are asking about the big decision.'
+          : 'Cone still has us in it. My folks are asking about the big call.');
+      if (S.once['aid'] && S.doneDay['aid'] <= 2)
+        say(CHIEF[0], CHIEF[1], 'Mutual aid confirmed inbound. Feels good not to be alone in this one.');
+      if (S.budget <= 2)
+        say(CHIEF[0], CHIEF[1], jr
+          ? 'The piggy bank is nearly empty. Make the last bits count!'
+          : 'Finance says the cupboard is nearly bare. Make the rest count.');
+      if (level('stock') >= 2)
+        say(DOT[0], DOT[1], jr
+          ? 'Word is the town has supplies stacked to the ceiling. Everyone feels calmer for it.'
+          : 'Word is the town has supplies stacked deep. Folks are calmer for it.');
+      if (msgs.length === 0)
+        say(CHIEF[0], CHIEF[1], 'Quiet on the radio. The calm part, anyway.');
+    }
+
+    var host = document.getElementById('feed');
+    host.innerHTML = msgs.slice(0, 2).map(function(m){
+      return '<div class="msg"><span class="av" style="background:var(' + m.color + ')"></span>'+
+        '<div><div class="who">' + m.who + '</div><div class="txt">' + m.txt + '</div></div></div>';
+    }).join('');
+  }
+
+  // ----- Main render -----
+  function render(){
+    var scn = CFG.scn;
+    var f = S.fc[S.day];
+    document.getElementById('mastEyebrow').textContent = scn.town + ' Emergency Management';
+    var chipText = isJr() ? 'Junior Mode' : 'Command Mode';
+    if (!isJr() && !CFG.code) chipText += ' | Trust ' + trustFor(scn.id);
+    document.getElementById('modeChip').textContent = chipText;
+    document.getElementById('stormName').textContent = S.name;
+    var left = DAYS - S.day;
+    var eventWord = CFG.haz.eventWord;
+    document.getElementById('stormSub').innerHTML = left>0
+      ? eventWord + ' in <b>' + left + (tw()==='Hour' ? (left===1?' hour':' hours') : (left===1?' day':' days')) + '</b>'
+      : eventWord + ' <b>imminent</b>';
+    document.getElementById('dayVal').textContent = tw() + ' ' + S.day + ' / ' + DAYS;
+    document.getElementById('budVal').textContent = S.budget;
+    document.getElementById('budBar').style.width = (S.budget/S.totalBudget*100) + '%';
+    document.getElementById('actVal').textContent = S.slots;
+    document.getElementById('actNote').textContent = S.slots + (S.slots===1?' action left today':' actions left today');
+    document.getElementById('caption').innerHTML =
+      '<b>' + (CFG.haz.advisoryWord || 'Advisory') + ', ' + tw() + ' ' + S.day + '.</b> ' + catPhrase(f) + '. Right now, ' + trackPhrase(f) + '.';
+
+    renderTerrain();
+    if (!IMPACT) renderMap(false);
+    buildFeed();
+    renderCards();
+
+    var go = document.getElementById('goBtn');
+    if (S.day >= DAYS){
+      var lastLbl = CFG.haz.id==='wildfire' ? 'Face the fire' : CFG.haz.id==='tornado' ? 'Face the outbreak' : 'Ride out the storm';
+      go.textContent = lastLbl; go.className = 'go storm';
+    }
+    else { go.textContent = 'Advance to ' + tw() + ' ' + (S.day+1); go.className = 'go'; }
+  }
+
+  function renderCards(){
+    var host = document.getElementById('cards');
+    host.innerHTML = '';
+    ACTIONS.forEach(function(a){
+      var r = reason(a);
+      var btn = document.createElement('button');
+      btn.className = 'card';
+      if (r) btn.disabled = true;
+      var accent = cssv(a.accent);
+
+      var leadTag = a.lead ? '<span class="lead">Lead time</span>' : '';
+
+      var footRight;
+      if (a.kind==='level'){
+        var pips = '';
+        for (var i=0;i<a.max;i++) pips += '<i class="'+(i<level(a.id)?'on':'')+'"></i>';
+        footRight = '<span class="pips">'+pips+'</span>';
+      } else if (S.once[a.id]){
+        footRight = '<span class="tag done">Ordered, '+tw()+' '+S.doneDay[a.id]+'</span>';
+      } else if (r==='late'){
+        footRight = '<span class="tag late">Too late</span>';
+      } else {
+        footRight = '<span class="tag">Not ordered</span>';
+      }
+
+      var costTag = a.cost===0
+        ? '<span class="cost free">Free</span>'
+        : '<span class="cost">'+a.cost+' budget</span>';
+
+      btn.innerHTML =
+        leadTag +
+        '<div class="top"><span class="ic" style="background:'+hexA(accent,0.12)+';color:'+accent+'">'+icon(a.id)+'</span>'+
+        '<span class="nm">'+a.name+'</span></div>'+
+        '<div class="ef">'+a.ef+'</div>'+
+        '<div class="foot">'+costTag+footRight+'</div>';
+
+      if (!r) btn.addEventListener('click', function(){ doAction(a); });
+      host.appendChild(btn);
+    });
+  }
+
+  function hexA(hex, a){
+    hex = hex.replace('#','');
+    if (hex.length===3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    var r=parseInt(hex.substr(0,2),16), g=parseInt(hex.substr(2,2),16), b=parseInt(hex.substr(4,2),16);
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+
+  // ----- After-action screen -----
+  function showAAR(grade, H, M, o, used, warranted){
+    renderMap(true);
+    var scn = CFG.scn;
+    var gl = document.getElementById('gLetter');
+    var reveal = document.getElementById('gReveal');
+    var tipBox = document.getElementById('tipBox');
+    var whereWord = CFG.haz.whereWord(S.landfallX<0?'west':'east', scn.town);
+
+    var codeTag = CFG.code ? ' | Code ' + CFG.code : '';
+    if (grade.jr){
+      document.getElementById('aarEyebrow').textContent = 'How did ' + scn.town + ' do?' + codeTag;
+      gl.className = 'gletter stars';
+      var stars = '';
+      for (var i=1;i<=5;i++) stars += (i<=grade.stars ? '★' : '☆');
+      gl.textContent = stars;
+      var cheer = grade.stars>=5?'Outstanding!':grade.stars>=4?'Great job!':grade.stars>=3?'Good work!':'Good try!';
+      reveal.innerHTML = '<span class="cat">' + cheer + '</span><br>' +
+        sevLabel() + ', ' + trackWord() + ',<br>' + whereWord;
+      document.getElementById('k1').textContent = 'Damage prevented';
+      document.getElementById('s1').textContent = Math.round(grade.prevented*100) + '%';
+      document.getElementById('k2').textContent = 'Families sheltered';
+      document.getElementById('s2').textContent = o.displaced.toLocaleString();
+      document.getElementById('aarText').textContent = juniorNarrative(H, M, o);
+      var tipPool = JR_TIPS.concat(CFG.haz.tips, CFG.haz.tips);
+      tipBox.innerHTML = '<b>Real-world tip:</b> ' + tipPool[Math.floor(Math.random()*tipPool.length)];
+      tipBox.classList.remove('hidden');
+    } else {
+      document.getElementById('aarEyebrow').textContent = 'After-action report' + codeTag;
+      gl.className = 'gletter';
+      gl.textContent = grade.letter;
+      var gc = { A:'--a', B:'--b', C:'--c', D:'--d', F:'--f' }[grade.letter];
+      gl.style.background = cssv(gc);
+      reveal.innerHTML = '<span class="cat">' + sevLabel() + ', ' + trackWord() + '</span><br>' + whereWord
+        + (grade.gradeWhy ? '<br><span style="font-size:12px">' + grade.gradeWhy + '</span>' : '')
+        + (grade.trust && grade.trust.delta !== 0
+            ? '<br><span style="font-size:12px"><b>Public trust ' + grade.trust.after + '</b> ('
+              + (grade.trust.delta > 0 ? '+' : '') + grade.trust.delta + ')</span>'
+            : '');
+      if (grade.trust && grade.trust.why){
+        var aarEl = document.getElementById('aarText');
+        // trust note is appended to the narrative below
+        S.trustWhy = grade.trust.why;
+      } else S.trustWhy = null;
+      document.getElementById('k1').textContent = 'Lives lost';
+      document.getElementById('s1').textContent = o.casualties;
+      document.getElementById('k2').textContent = 'Households displaced';
+      document.getElementById('s2').textContent = o.displaced.toLocaleString();
+      document.getElementById('aarText').textContent = commandNarrative(H, M, o, used, warranted, grade.capMed)
+        + (S.trustWhy ? ' ' + S.trustWhy : '');
+      tipBox.classList.add('hidden');
+    }
+    var fieldNote = document.getElementById('fieldNote');
+    var notes = [];
+    if (S.eventLesson) notes.push('<b>Field note:</b> ' + S.eventLesson);
+    if (S.flashLesson) notes.push('<b>Mid-storm note:</b> ' + S.flashLesson);
+    if (notes.length){
+      fieldNote.innerHTML = notes.join('<br><br>');
+      fieldNote.classList.remove('hidden');
+    } else {
+      fieldNote.classList.add('hidden');
+    }
+    document.getElementById('s3').textContent = o.damage >= 1e9
+      ? '$' + (o.damage/1e9).toFixed(2) + 'B'
+      : '$' + (o.damage/1e6).toFixed(1) + 'M';
+    document.getElementById('s4').textContent = used + ' / ' + S.totalBudget;
+    document.getElementById('aarScreen').classList.remove('hidden');
+  }
+
+  // ----- Intro copy -----
+  function setIntro(){
+    var scn = CFG.scn;
+    var hz = CFG.haz;
+    var jr = isJr();
+    var popWord = totalPop().toLocaleString();
+    var hazardIntro = hz.intro(scn);
+
+    document.getElementById('introTitle').textContent = hz.introTitle;
+    document.getElementById('introText').innerHTML = jr
+      ? 'You are in charge of getting ' + scn.town + ', a ' + (scn.urban?'city':'town') + ' of ' + popWord + ', ready. ' + hazardIntro + ' In Junior Mode nobody gets hurt. Your job is to protect homes, keep families comfortable, and get the whole town ready.'
+      : 'You are the emergency manager for ' + scn.town + ', a ' + (scn.urban?'city':'community') + ' of ' + popWord + '. ' + hazardIntro + ' The budget is short, the forecast will change, and every call is yours.';
+
+    var rules;
+    if (jr){
+      rules = [
+        ['--brand','You have <b>' + (hz.spanPhrase || 'four days') + '</b> and a <b>budget</b>. Each ' + tw().toLowerCase() + ' you can take two actions, then a new forecast arrives.'],
+        ['--wind', hz.coneRuleJr || 'The forecast <b>cone</b> shows where the threat might go. It gets narrower and more certain every day.'],
+        ['--flood','Spend your budget where the danger looks biggest. Match your actions to the threat!'],
+        ['--people','Helping people move early is the most powerful thing a leader can do. Do not wait until the last day!']
+      ];
+    } else {
+      rules = [
+        ['--brand','You have <b>' + (hz.spanPhrase || 'four days') + '</b> and a <b>limited budget</b>. Each ' + tw().toLowerCase() + ' you can take two actions, then a new update arrives.'],
+        ['--wind', hz.coneRuleCmd || 'The forecast <b>cone</b> narrows over time. Both intensity and location are uncertain until the end.'],
+        ['--flood','A weak event that hits dead-on can be worse than a strong one that misses. Prepare for what the cone actually shows.'],
+        ['--danger','Evacuation and mutual aid only work if you call them <b>early</b>. Waiting has a cost, and so does overreacting.']
+      ];
+    }
+    if (CFG.code){
+      document.getElementById('introText').innerHTML +=
+        ' <br><br><b>Storm code ' + CFG.code + ':</b> everyone using this code faces the exact same situation. Compare notes afterward.';
+    } else if (!jr && trustFor(scn.id) < 38){
+      document.getElementById('introText').innerHTML +=
+        ' <br><br><b>Public trust is low in ' + scn.town + '</b> after last time. Expect weaker compliance with your orders until you rebuild it.';
+    }
+    var host = document.getElementById('introRules');
+    host.innerHTML = '';
+    rules.forEach(function(r){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="d" style="background:var('+r[0]+')"></span><span>'+r[1]+'</span>';
+      host.appendChild(li);
+    });
+    document.getElementById('beginBtn').textContent = jr ? 'Take charge' : 'Take command';
+  }
+
+  // ----- Setup screen -----
+  function refreshHazChoices(){
+    var host = document.getElementById('hazChoices');
+    Array.prototype.forEach.call(host.children, function(btn){
+      var hz = DISASTERS[parseInt(btn.getAttribute('data-hz'), 10)];
+      var ok = !CFG.scn || hz.avail(CFG.scn);
+      btn.disabled = !ok;
+      if (!ok && CFG.haz === hz){
+        CFG.haz = null;
+        btn.classList.remove('sel');
+      }
+    });
+    updateStart();
+  }
+
+  function buildSetup(){
+    var host = document.getElementById('scnChoices');
+    host.innerHTML = '';
+    SCENARIOS.forEach(function(scn){
+      var btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.setAttribute('data-scn', scn.id);
+      btn.innerHTML = '<span class="check">✓</span>'+
+        '<div class="cn">' + scn.label + '</div>'+
+        '<div class="ct">' + scn.tag + '</div>'+
+        '<span class="hz ' + (scn.coastal?'sea':'riv') + '">' + (scn.coastal?'Hurricane country':'River country') + '</span> '+
+        '<span class="hz riv" id="best-' + scn.id + '" style="display:none"></span>';
+      btn.addEventListener('click', function(){
+        CFG.scn = scn;
+        Array.prototype.forEach.call(host.children, function(c){ c.classList.remove('sel'); });
+        btn.classList.add('sel');
+        refreshHazChoices();
+      });
+      host.appendChild(btn);
+    });
+
+    var hazHost = document.getElementById('hazChoices');
+    hazHost.innerHTML = '';
+    DISASTERS.forEach(function(hz, i){
+      var btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.setAttribute('data-hz', String(i));
+      btn.innerHTML = '<span class="check">✓</span>'+
+        '<div class="cn">' + hz.label + '</div>'+
+        '<div class="ct">' + hz.desc + '</div>'+
+        '<span class="hz ' + (hz.id==='wildfire'||hz.id==='winter'?'riv':'sea') + '">' + hz.chip + '</span>';
+      btn.addEventListener('click', function(){
+        if (btn.disabled) return;
+        CFG.haz = hz;
+        Array.prototype.forEach.call(hazHost.children, function(c){ c.classList.remove('sel'); });
+        btn.classList.add('sel');
+        updateStart();
+      });
+      hazHost.appendChild(btn);
+    });
+
+    var modeHost = document.getElementById('modeChoices');
+    Array.prototype.forEach.call(modeHost.children, function(btn){
+      btn.addEventListener('click', function(){
+        CFG.mode = btn.getAttribute('data-mode');
+        Array.prototype.forEach.call(modeHost.children, function(c){ c.classList.remove('sel'); });
+        btn.classList.add('sel');
+        updateStart();
+      });
+    });
+  }
+  function updateStart(){
+    document.getElementById('startBtn').disabled = !(CFG.mode && CFG.scn && CFG.haz);
+  }
+
+  function startGame(){
+    var raw = document.getElementById('codeInput').value || '';
+    var code = raw.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+    CFG.code = code || null;
+    resetRun();
+    document.getElementById('setup').classList.add('hidden');
+    newGame(); setIntro(); render();
+    document.getElementById('intro').classList.remove('hidden');
+  }
+
+  // ----- Wiring -----
+  document.getElementById('startBtn').addEventListener('click', startGame);
+  document.getElementById('evGo').addEventListener('click', function(){
+    document.getElementById('eventScreen').classList.add('hidden');
+    var cb = evCallback; evCallback = null;
+    if (cb) cb();
+  });
+  document.getElementById('skipBtn').addEventListener('click', skipImpact);
+  function resetRun(){
+    clearSeq();
+    IMPACT = null;
+    evCallback = null;
+    document.getElementById('goBtn').disabled = false;
+    document.getElementById('skipBtn').classList.add('hidden');
+    document.getElementById('caption').classList.remove('night');
+    document.getElementById('eventScreen').classList.add('hidden');
+  }
+  document.getElementById('beginBtn').addEventListener('click', function(){
+    document.getElementById('intro').classList.add('hidden');
+  });
+  document.getElementById('goBtn').addEventListener('click', advance);
+  document.getElementById('againBtn').addEventListener('click', function(){
+    document.getElementById('aarScreen').classList.add('hidden');
+    resetRun();
+    newGame(); setIntro(); render();
+    document.getElementById('intro').classList.remove('hidden');
+  });
+  document.getElementById('setupBtn').addEventListener('click', function(){
+    document.getElementById('aarScreen').classList.add('hidden');
+    resetRun();
+    document.getElementById('setup').classList.remove('hidden');
+  });
+
+  var st = document.createElement('style');
+  st.textContent = '@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}';
+  document.head.appendChild(st);
+
+  // ----- Boot -----
+  buildSetup();
+  refreshBestChips();
+})();
+</script>
+</body>
+</html>
