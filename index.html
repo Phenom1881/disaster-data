@@ -206,6 +206,33 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
   @keyframes rise{to{opacity:1;transform:none;}}
 }
+/* ===== Latest declarations (homepage teaser) ===== */
+#latest{padding-top:clamp(30px,4vw,48px);}
+.ll-all{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap;align-self:flex-end;}
+.ll-all:hover{text-decoration:underline;}
+.ll-updated{font-size:12px;color:var(--ink-3);letter-spacing:.3px;margin:0 0 14px;font-variant-numeric:tabular-nums;}
+.ll-placeholder{color:var(--ink-3);font-size:14px;}
+.ll-grid{display:flex;flex-direction:column;gap:10px;}
+.ll-card{display:flex;align-items:center;gap:14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:11px;padding:13px 16px;transition:border-color .13s;}
+.ll-card:hover{border-color:var(--rule-2);}
+.ll-badge{flex:none;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.6px;color:#fff;padding:3px 8px;border-radius:5px;line-height:1.4;}
+.ll-badge.DR{background:var(--accent);}
+.ll-badge.EM{background:#9c6a00;}
+.ll-badge.FM{background:var(--ember);}
+.ll-body{flex:1;min-width:0;}
+.ll-title{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--ink);line-height:1.25;}
+.ll-title a{color:var(--accent);text-decoration:none;}
+.ll-title a:hover{text-decoration:underline;}
+.ll-meta{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;}
+.ll-meta a{color:var(--accent);text-decoration:none;font-weight:600;}
+.ll-meta a:hover{text-decoration:underline;}
+.ll-num{font-variant-numeric:tabular-nums;}
+.ll-date{flex:none;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;}
+@media(max-width:560px){
+  .ll-card{flex-wrap:wrap;gap:6px 12px;}
+  .ll-date{order:3;width:100%;text-align:left;}
+  .ll-body{flex-basis:100%;order:2;}
+}
 </style>
 </head>
 <body>
@@ -244,6 +271,22 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 </div>
 </div>
 </section>
+
+<!-- ===== Latest declarations ===== -->
+<div class="container">
+  <section id="latest">
+    <div class="shead">
+      <div>
+        <h2>Latest declarations</h2>
+        <p>The most recent federal disaster and emergency declarations, straight from OpenFEMA and refreshed each week.</p>
+      </div>
+      <a class="ll-all" href="/latest/">See all recent declarations <span aria-hidden="true">&rarr;</span></a>
+    </div>
+    <!-- LATEST:START -->
+    <p class="ll-placeholder">Recent declarations appear here on the next deploy.</p>
+    <!-- LATEST:END -->
+  </section>
+</div>
 
 <div class="deck-shell">
   <div class="container">

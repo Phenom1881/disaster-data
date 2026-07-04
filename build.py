@@ -1134,6 +1134,132 @@ try:
 except Exception as e:
     print(f"  WARNING: map-data.js build failed: {e} (home-page data.js still updated)")
 
+# ═════════════════════════════════════════════════════════════════════════
+# LATEST DECLARATIONS  (homepage teaser cards + /latest page snapshot)
+# Reuses the already-fetched, integrity-checked dec_processed rows — no extra
+# API calls. dec_processed is one row per designated area, so we aggregate by
+# femaDeclarationString to dedupe to distinct declarations and count areas.
+# ═════════════════════════════════════════════════════════════════════════
+
+LATEST_HOME_COUNT = 5      # cards baked into the homepage
+LATEST_PAGE_COUNT = 25     # declarations written to latest-data.js for /latest
+
+# Internal links from each card to your state pages. OFF until the slug in
+# state_page_url() matches your real structure, so no 404s ship.
+ENABLE_STATE_LINKS = False
+
+def state_page_url(abbr):
+    # EDIT to match your real state-page URLs, then set ENABLE_STATE_LINKS = True.
+    name = STATE_NAMES.get(abbr, abbr)
+    slug = name.lower().replace(" ", "-").replace(".", "")
+    return "/state/" + slug + "/"
+
+def _esc(s):
+    s = "" if s is None else str(s)
+    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+             .replace('"', "&quot;").replace("'", "&#39;"))
+
+def _disaster_num(fema_string):
+    # "DR-4830-VA" -> "4830"
+    parts = str(fema_string or "").split("-")
+    return parts[1] if len(parts) >= 2 else str(fema_string or "")
+
+def _fmt_latest_date(iso):
+    if not iso:
+        return ""
+    try:
+        d = datetime.datetime.strptime(str(iso)[:10], "%Y-%m-%d")
+        return d.strftime("%b ") + str(d.day) + d.strftime(", %Y")
+    except Exception:
+        return str(iso)[:10]
+
+def latest_declarations(dec_rows, n):
+    """Aggregate per-area rows into distinct declarations, newest first."""
+    agg = {}
+    for r in dec_rows:
+        key = r.get("femaDeclarationString")
+        if not key:
+            continue
+        d = agg.get(key)
+        if d is None:
+            agg[key] = {
+                "disasterNumber":   _disaster_num(key),
+                "declarationType":  r.get("declarationType", ""),
+                "declarationDate":  r.get("declarationDate", "") or "",
+                "state":            r.get("state", ""),
+                "declarationTitle": r.get("declarationTitle", ""),
+                "incidentType":     r.get("incidentType", ""),
+                "areaCount":        1,
+            }
+        else:
+            d["areaCount"] += 1
+            dd = r.get("declarationDate", "") or ""
+            if dd > d["declarationDate"]:
+                d["declarationDate"] = dd
+
+    def _numkey(x):
+        try:
+            return int(x["disasterNumber"])
+        except (TypeError, ValueError):
+            return -1
+
+    ordered = sorted(agg.values(),
+                     key=lambda x: (x["declarationDate"], _numkey(x)),
+                     reverse=True)
+    return ordered[:n]
+
+def render_latest_cards_html(items):
+    """Static HTML for the homepage teaser. Cards bake in at build time so
+    crawlers and first paint both get fresh content; the live client refresh
+    lives only on /latest."""
+    parts = []
+    newest = items[0]["declarationDate"] if items else ""
+    if newest:
+        parts.append('<p class="ll-updated">Data current through ' + _fmt_latest_date(newest) + '</p>')
+    parts.append('<div class="ll-grid">')
+    for d in items:
+        t     = _esc(d.get("declarationType", ""))
+        num   = _esc(d.get("disasterNumber", ""))
+        abbr  = d.get("state", "") or ""
+        sname = _esc(STATE_NAMES.get(abbr, abbr))
+        head  = ('<a href="' + state_page_url(abbr) + '">' + sname + '</a>') \
+                if (ENABLE_STATE_LINKS and abbr) else sname
+        cnt   = d.get("areaCount", 1) or 1
+        areas = (str(cnt) + " areas") if cnt > 1 else "1 area"
+        inc   = d.get("incidentType")
+        inc_c = ('<span>' + _esc(inc) + '</span>') if inc else ''
+        full  = _esc(d.get("declarationTitle", ""))
+        parts.append(
+            '<div class="ll-card" title="' + full + '">'
+            '<span class="ll-badge ' + t + '">' + t + '</span>'
+            '<div class="ll-body">'
+            '<div class="ll-title">' + head + '</div>'
+            '<div class="ll-meta">'
+            '<span class="ll-num">' + t + '-' + num + '</span>'
+            + inc_c +
+            '<span>' + areas + '</span>'
+            '<a href="https://www.fema.gov/disaster/' + num + '" target="_blank" rel="noopener">FEMA &#8599;</a>'
+            '</div></div>'
+            '<div class="ll-date">' + _fmt_latest_date(d.get("declarationDate")) + '</div>'
+            '</div>'
+        )
+    parts.append('</div>')
+    return "\n".join(parts)
+
+# Build both views from the in-memory declarations
+_latest_page = latest_declarations(dec_processed, LATEST_PAGE_COUNT)
+_latest_home = _latest_page[:LATEST_HOME_COUNT]
+_latest_cards_html = render_latest_cards_html(_latest_home)
+
+# Write the /latest snapshot (fallback data for the /latest page)
+_latest_built = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+with open("latest-data.js", "w", encoding="utf-8") as f:
+    f.write("window.LATEST_DECLARATIONS = " +
+            json.dumps(_latest_page, ensure_ascii=False, separators=(",", ":")) + ";\n")
+    f.write('window.LATEST_BUILT = "' + _latest_built + '";\n')
+print(f"  latest-data.js written ({len(_latest_page)} declarations)")
+
+
 # Update index.html: inject PA_NATIONAL and refresh last-updated stamp
 if os.path.exists("index.html"):
     with open("index.html", encoding="utf-8") as f:
@@ -1150,6 +1276,17 @@ if os.path.exists("index.html"):
             line = f'let PA_NATIONAL = {pa_json};\n'
         lines_out.append(line)
     html = ''.join(lines_out)
+
+    # Inject the latest-declarations cards between the homepage markers
+    _ls, _le = "<!-- LATEST:START -->", "<!-- LATEST:END -->"
+    if _ls in html and _le in html:
+        _pre, _rest = html.split(_ls, 1)
+        _drop, _post = _rest.split(_le, 1)
+        html = _pre + _ls + "\n" + _latest_cards_html + "\n    " + _le + _post
+        print(f"  index.html latest block updated ({len(_latest_home)} cards)")
+    else:
+        print("  NOTE: LATEST markers not found in index.html - cards injection skipped")
+
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
     print("  index.html updated with PA_NATIONAL and last-updated stamp")
