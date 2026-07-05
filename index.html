@@ -34,7 +34,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 
 nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
 .brand{display:flex;align-items:baseline;gap:10px;}
-.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);}
 .brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
 .navlinks{display:flex;align-items:center;gap:4px;}
 .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
@@ -241,7 +241,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <nav>
   <div class="brand"><span class="mark">Disaster Data</span></div>
   <div class="navlinks"><a href="#" class="on">Overview</a><a href="#board">Explore</a><a href="map.html">Map</a><a href="states/index.html">States</a><a href="public-assistance-projects.html">Funding</a><a href="about.html">About</a></div>
-  <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
+
 </nav>
 
 <div class="container">
@@ -283,14 +283,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <a class="ll-all" href="/latest/">See all recent declarations <span aria-hidden="true">&rarr;</span></a>
     </div>
     <!-- LATEST:START -->
-<p class="ll-updated">Data current through Jul 3, 2026</p>
-<div class="ll-grid">
-<div class="ll-card" title="TYPHOON BAVI"><span class="ll-badge EM">EM</span><div class="ll-body"><div class="ll-title">Guam</div><div class="ll-meta"><span class="ll-num">EM-3648</span><span>Typhoon</span><span>1 area</span><a href="https://www.fema.gov/disaster/3648" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 3, 2026</div></div>
-<div class="ll-card" title="TYPHOON BAVI"><span class="ll-badge EM">EM</span><div class="ll-body"><div class="ll-title">N. Mariana Islands</div><div class="ll-meta"><span class="ll-num">EM-3647</span><span>Tropical Storm</span><span>5 areas</span><a href="https://www.fema.gov/disaster/3647" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 3, 2026</div></div>
-<div class="ll-card" title="GOLD MOUNTAIN FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">Colorado</div><div class="ll-meta"><span class="ll-num">FM-5643</span><span>Fire</span><span>1 area</span><a href="https://www.fema.gov/disaster/5643" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jun 30, 2026</div></div>
-<div class="ll-card" title="TROPICAL STORM ARTHUR"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Louisiana</div><div class="ll-meta"><span class="ll-num">DR-4927</span><span>Tropical Storm</span><span>4 areas</span><a href="https://www.fema.gov/disaster/4927" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jun 30, 2026</div></div>
-<div class="ll-card" title="SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Kansas</div><div class="ll-meta"><span class="ll-num">DR-4926</span><span>Severe Storm</span><span>5 areas</span><a href="https://www.fema.gov/disaster/4926" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jun 30, 2026</div></div>
-</div>
+    <p class="ll-placeholder">Recent declarations appear here on the next deploy.</p>
     <!-- LATEST:END -->
   </section>
 </div>
@@ -397,21 +390,11 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
 </div>
 
-<section id="methodology" aria-label="Methodology and sources" style="max-width:680px;margin:3.5rem auto;padding:1.75rem 2rem;background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;font-family:'Public Sans',system-ui,sans-serif;color:#2b2b2b;line-height:1.6">
-  <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.35rem;margin:0 0 1rem">How these numbers are built</h2>
-  <p style="margin:0 0 .9rem"><strong>Source.</strong> Every figure is drawn from FEMA's OpenFEMA datasets: <em>Disaster Declarations Summaries</em> (v2) for declarations and <em>Declaration Denials</em> (v1) for turndowns. It is rebuilt automatically each week. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p>
-  <p style="margin:0 0 .9rem"><strong>What counts as a &ldquo;declaration.&rdquo;</strong> FEMA's file lists one row per county per declaration. We collapse those to one row per <em>declaration</em>: a unique combination of declaration type (DR / EM / FM), disaster number, and state. A single disaster affecting five states therefore counts as five declarations. Counts reflect declaration records, not dollars, damage, or loss.</p>
-  <p style="margin:0 0 .9rem"><strong>Years are federal fiscal years</strong> (Oct 1 to Sep 30), matching FEMA's own <code>fyDeclared</code> field. FY2000 begins October 1, 1999. The headline view shows complete fiscal years only; the current, in-progress year stays one slider-drag away.</p>
-  <p style="margin:0 0 .9rem"><strong>Denial rate.</strong> The share of requests turned down = turndowns &divide; (declarations + turndowns). Denials are tracked in a separate FEMA dataset from approved declarations, so this figure cannot be reproduced from the summaries file alone.</p>
-  <p style="margin:0 0 1.25rem"><strong>Fire-management (FM)</strong> declarations fund wildfire suppression under a faster, lower-threshold program. They're counted as their own type. Toggle FM off anywhere on the site to see the disaster picture underneath.</p>
-  <button id="dd-cite-btn" type="button" style="font:600 .82rem 'Public Sans',system-ui,sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Cite this view</button>
-</section>
-
 <footer id="about">
   <div class="container">
     <div class="foot">
       <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries (<span id="foot-range">FY2000 to FY2026</span>) — uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Counts reflect declaration records, not official financial or loss reporting.<span id="foot-asof"></span></div>
-      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="states/index.html">Disaster declarations by state</a></div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="states/index.html">Disaster declarations by state</a></div>
     </div>
   </div>
 </footer>

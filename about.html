@@ -31,7 +31,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 /* ---- nav (matches dashboard) ---- */
 nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
 a.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:inherit;}
-.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);}
 .navlinks{display:flex;align-items:center;gap:4px;}
 .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
 .navlinks a:hover{color:var(--ink);background:var(--paper-3);}
@@ -113,7 +113,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <nav>
   <a class="brand" href="index.html"><span class="mark">Disaster Data</span></a>
   <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="map.html">Map</a><a href="states/index.html">States</a><a href="public-assistance-projects.html">Funding</a><a href="about.html" class="on">About</a></div>
-  <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
+
 </nav>
 
 <div class="container">
@@ -145,6 +145,18 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <div class="prose">
         <p>Every figure here is drawn from FEMA's <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">Disaster Declarations Summaries (v2)</a>, published through the OpenFEMA program and refreshed on a schedule so the dashboard stays current.</p>
         <p>Disaster Data uses OpenFEMA data but is <strong>not endorsed by or affiliated with FEMA</strong>. It's an independent project. Any errors or interpretations are ours, not the agency's. Where a number here disagrees with an official FEMA source, treat the official source as authoritative.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">How these numbers are built</div>
+      <h2>Source, definitions, and how counts are made.</h2>
+      <div class="prose">
+        <p><strong>Source.</strong> Every figure is drawn from FEMA's OpenFEMA datasets: <em>Disaster Declarations Summaries</em> (v2) for declarations and <em>Declaration Denials</em> (v1) for turndowns. It is rebuilt automatically each week. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p>
+        <p><strong>What counts as a &ldquo;declaration.&rdquo;</strong> FEMA's file lists one row per county per declaration. We collapse those to one row per <em>declaration</em>: a unique combination of declaration type (DR / EM / FM), disaster number, and state. A single disaster affecting five states therefore counts as five declarations. Counts reflect declaration records, not dollars, damage, or loss.</p>
+        <p><strong>Years are federal fiscal years</strong> (Oct 1 to Sep 30), matching FEMA's own <code>fyDeclared</code> field. FY2000 begins October 1, 1999. The headline view shows complete fiscal years only; the current, in-progress year stays one slider-drag away.</p>
+        <p><strong>Denial rate.</strong> The share of requests turned down = turndowns &divide; (declarations + turndowns). Denials are tracked in a separate FEMA dataset from approved declarations, so this figure cannot be reproduced from the summaries file alone.</p>
+        <p><strong>Fire-management (FM)</strong> declarations fund wildfire suppression under a faster, lower-threshold program. They're counted as their own type. Toggle FM off anywhere on the site to see the disaster picture underneath.</p>
       </div>
     </section>
 
@@ -250,7 +262,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <div class="container">
     <div class="foot">
       <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries (FY2000 to FY2026), uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Counts reflect declaration records, not official financial or loss reporting.</div>
-      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a></div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a></div>
     </div>
   </div>
 </footer>
