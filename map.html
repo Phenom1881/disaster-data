@@ -19,15 +19,15 @@
       --navy:    #f6f1e7;
       --navy2:   #fcfaf3;
       --navy3:   #f1ead9;
-      --blue:    #1c5c79;
-      --blue2:   #27778f;
-      --sky:     #dceaef;
+      --blue:    #004c53;
+      --blue2:   #1e6b72;
+      --sky:     #d7e9ea;
       --red:     #b35024;
       --red2:    #97391b;
       --orange:  #c96a2e;
       --gold:    #e3a652;
       --green:   #6f7f3a;
-      --teal:    #27778f;
+      --teal:    #004c53;
       --white:   #1d1813;
       --muted:   #5b5346;
       --border:  #e0d8c5;
@@ -41,8 +41,8 @@
       --paper-3: #f1ead9;
       --ink:     #1d1813;
       --ink-2:   #5b5346;
-      --accent:  #1c5c79;
-      --accent-soft:#dceaef;
+      --accent:  #004c53;
+      --accent-soft:#d7e9ea;
       --serif:'Fraunces',Georgia,serif;
       --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
       /* Choropleth 8-stop ramp (low -> high), warm sequential */
@@ -136,11 +136,6 @@
       letter-spacing: 0.01em;
       color: var(--white);
       margin: 0 0 6px 0;
-    }
-
-    .page-title em {
-      color: var(--sky);
-      font-style: normal;
     }
 
     .rule-line {
@@ -406,173 +401,11 @@
       }
     }
 
-    /* ═══════════════════════════════════════════
-       SHARED HEADER
-    ═══════════════════════════════════════════ */
     :root {
       --font-display: 'Fraunces', sans-serif;
       --font-body:    'Public Sans', sans-serif;
       --font-mono:    'Public Sans', sans-serif;
       --radius: 6px;
-    }
-
-    header {
-      background: var(--navy2);
-      border-bottom: 2px solid var(--blue);
-      padding: 0 28px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-      flex-shrink: 0;
-    }
-    .logo {
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--white);
-      letter-spacing: -.5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .logo-badge {
-      background: var(--blue);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 3px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-family: var(--font-mono);
-    }
-    nav { display: flex; gap: 2px; align-items: center; }
-    nav a.nav-tab {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 6px 13px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all .15s;
-      letter-spacing: .5px;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-    }
-    nav a.nav-tab:hover { color: var(--white); background: var(--navy3); }
-    nav a.nav-tab.active {
-      color: var(--sky);
-      background: rgba(74,179,247,.12);
-      border-bottom: 2px solid var(--sky);
-      border-radius: 4px 4px 0 0;
-    }
-    .nav-back-link {
-      background: rgba(79,179,247,.12);
-      border: 1px solid rgba(79,179,247,.35);
-      color: var(--sky);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 6px 13px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      letter-spacing: .5px;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all .15s;
-      white-space: nowrap;
-    }
-    .nav-back-link:hover { background: rgba(79,179,247,.22); color: var(--white); }
-
-    /* Hamburger */
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 36px;
-      height: 36px;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      cursor: pointer;
-      padding: 6px;
-      flex-shrink: 0;
-    }
-    .nav-hamburger span {
-      display: block;
-      height: 2px;
-      background: var(--muted);
-      border-radius: 2px;
-      transition: all .2s;
-    }
-    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* Mobile drawer */
-    .mobile-nav-drawer {
-      display: none;
-      position: fixed;
-      top: 56px;
-      left: 0; right: 0;
-      background: var(--navy2);
-      border-bottom: 2px solid var(--blue);
-      z-index: 999;
-      padding: 8px 0 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.5);
-    }
-    .mobile-nav-drawer.open { display: block; }
-    .mobile-nav-drawer a {
-      display: block;
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      padding: 12px 24px;
-      text-align: left;
-      cursor: pointer;
-      letter-spacing: .5px;
-      border-left: 3px solid transparent;
-      transition: all .15s;
-      text-decoration: none;
-    }
-    .mobile-nav-drawer a:hover { color: var(--white); background: var(--navy3); }
-    .mobile-nav-drawer a.active {
-      color: var(--sky);
-      background: rgba(74,179,247,.1);
-      border-left-color: var(--sky);
-    }
-    .mobile-nav-back {
-      background: rgba(79,179,247,.08) !important;
-      border-left: 3px solid var(--sky) !important;
-      color: var(--sky) !important;
-      margin-top: 4px;
-    }
-    .mobile-nav-back:hover { background: rgba(79,179,247,.15) !important; color: var(--white) !important; }
-
-    /* Header responsive */
-    @media (max-width: 640px) {
-      header { padding: 0 14px; height: 52px; }
-      .logo { font-size: 13px; gap: 7px; }
-      .logo-badge { display: none; }
-      nav { display: none; }
-      .nav-hamburger { display: flex; }
-      .mobile-nav-drawer { top: 52px; }
-    }
-    @media (max-width: 375px) {
-      .logo { font-size: 12px; }
     }
 
     /* Push layout below header */
@@ -582,18 +415,17 @@
 
 
     /* ===== Match FEMA Disaster Explorer design language ===== */
-    nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.9);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule,#e0d8c5);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3.5vw,40px);height:60px;flex:0 0 60px;}
-    nav .brand{display:flex;align-items:baseline;gap:10px;}
-    nav .brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--ink);}
-    nav .brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
-    nav .navlinks{display:flex;align-items:center;gap:4px;}
-    nav .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
-    nav .navlinks a:hover{color:var(--ink);background:var(--paper-3);}
-    nav .navlinks a.on{color:var(--accent);background:var(--accent-soft);}
-    nav .navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
-    @media(max-width:720px){nav .navlinks a:not(.on){display:none;}nav .navmeta{display:none;}}
+    nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.9);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule,#e0d8c5);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3.5vw,40px);height:60px;flex:0 0 60px;}
+    nav.ddnav .brand{display:flex;align-items:baseline;gap:10px;}
+    nav.ddnav .brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--ink);}
+    nav.ddnav .brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
+    nav.ddnav .navlinks{display:flex;align-items:center;gap:4px;}
+    nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+    nav.ddnav .navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+    nav.ddnav .navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+    nav.ddnav .navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+    @media(max-width:720px){nav .navlinks a:not(.on){display:none;}nav.ddnav .navmeta{display:none;}}
     .page-title{font-family:var(--serif)!important;font-weight:400!important;letter-spacing:-.8px;}
-    .page-title em{font-style:italic;font-weight:300;}
     .big{font-family:var(--serif)!important;font-weight:500!important;letter-spacing:-1px;}
     select:focus{outline:2px solid var(--accent);outline-offset:1px;}
     /* Light Leaflet surfaces */
@@ -613,7 +445,7 @@
 </head>
 <body>
 
-<nav>
+<nav class="ddnav">
   <div class="brand"><span class="mark">Disaster Data</span></div>
   <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="#" class="on">Map</a><a href="states/index.html">States</a><a href="public-assistance-projects.html">Funding</a><a href="about.html">About</a></div>
   <div class="navmeta">FY 2000 to 2026 · OpenFEMA</div>
@@ -624,10 +456,10 @@
 
       <!-- Masthead -->
       <div class="masthead">
-                <h1 class="page-title">FEMA <em>Declaration</em> Map</h1>
+                <h1 class="page-title">FEMA Declaration Map</h1>
         <div class="rule-line"></div>
         <p>
-          A county-by-county map of FEMA disaster declarations across the U.S. Filter by year or declaration type — DR (Major Disaster), EM (Emergency), FM (Fire Management Assistance Grant) — then click any county to see its declarations.
+          A county-by-county map of FEMA disaster declarations across the U.S. Filter by year or declaration type, DR (Major Disaster), EM (Emergency), FM (Fire Management Assistance Grant), then click any county to see its declarations.
         </p>
       </div>
 
@@ -927,7 +759,7 @@
     legend.update = function () {
       const div = this._div;
       const grades = currentBreaks;
-      div.innerHTML = `<div style="font-family:'Public Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1c5c79;margin-bottom:8px;">${currentMetricLabel()}</div>`;
+      div.innerHTML = `<div style="font-family:'Public Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">${currentMetricLabel()}</div>`;
       for (let i = 0; i < grades.length; i++) {
         const from = grades[i];
         const to = grades[i + 1];
@@ -1084,10 +916,10 @@
         b.style.cssText = 'position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(252,250,243,.96);color:#1d1813;font:500 13px/1.4 "Public Sans",system-ui,sans-serif;padding:9px 15px;border-radius:10px;box-shadow:0 8px 24px rgba(60,50,30,.18);border:1px solid #cfc6b0;display:flex;align-items:center;gap:13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);';
         host.appendChild(b);
       }
-      const btn = '<button id="stateFocusReset" style="background:#1c5c79;border:none;color:#fff;font:600 11px system-ui,sans-serif;letter-spacing:.4px;padding:5px 11px;border-radius:7px;cursor:pointer">' + (found ? 'View entire U.S.' : 'Dismiss') + '</button>';
+      const btn = '<button id="stateFocusReset" style="background:#004c53;border:none;color:#fff;font:600 11px system-ui,sans-serif;letter-spacing:.4px;padding:5px 11px;border-radius:7px;cursor:pointer">' + (found ? 'View entire U.S.' : 'Dismiss') + '</button>';
       b.innerHTML = (found
-        ? '<span>Focused on <strong style="color:#1c5c79;font-weight:700">' + name + '</strong></span>'
-        : '<span><strong style="color:#1c5c79;font-weight:700">' + name + '</strong> has no county detail on this map</span>') + btn;
+        ? '<span>Focused on <strong style="color:#004c53;font-weight:700">' + name + '</strong></span>'
+        : '<span><strong style="color:#004c53;font-weight:700">' + name + '</strong> has no county detail on this map</span>') + btn;
       document.getElementById('stateFocusReset').onclick = function () { b.remove(); map.setView([37.8, -96], 4); };
     }
 

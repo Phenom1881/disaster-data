@@ -171,6 +171,49 @@
   .tip{background:rgba(217,160,33,.1);border-left:3px solid var(--star);border-radius:8px;padding:12px 14px;
     font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 8px;}
   .tip b{color:#9c721a;}
+  /* Commendations */
+  .rack{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 14px;}
+  @media (max-width:430px){ .rack{grid-template-columns:1fr;} }
+  .rib{position:relative;display:grid;grid-template-columns:5px 26px 1fr;align-items:start;gap:10px;
+    background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:10px 30px 10px 0;overflow:hidden;}
+  .rib .rbar{width:5px;align-self:stretch;background:var(--line);border-radius:0 3px 3px 0;}
+  .rib .rem{font-size:19px;line-height:1.15;text-align:center;filter:grayscale(1);opacity:.45;}
+  .rib .rnm{display:block;font-weight:700;font-size:12.5px;line-height:1.15;color:var(--ink-soft);}
+  .rib .rls{display:block;font-size:11px;line-height:1.4;color:var(--ink);opacity:.85;margin-top:3px;}
+  .rib .rck{position:absolute;top:9px;right:9px;width:16px;height:16px;border-radius:50%;
+    background:var(--line);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .rib.got{border-color:var(--brand);background:rgba(0,76,83,.045);}
+  .rib.got .rbar{background:var(--brand);}
+  .rib.got .rem{filter:none;opacity:1;}
+  .rib.got .rnm{color:var(--ink);}
+  .rib.got .rck{background:var(--brand);}
+  .rnm .rnum{display:inline-block;margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.06em;
+    color:var(--brand);background:rgba(0,76,83,.08);border-radius:99px;padding:1px 6px;vertical-align:1px;}
+  .rnm .rnum.new{color:#9c721a;background:rgba(217,160,33,.16);}
+  .svcline{text-align:center;margin-top:10px;font-size:15px;line-height:1.7;}
+
+  /* Share card */
+  .sharecard{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin:0 0 10px;}
+  .sharecard .sc-h{display:flex;align-items:center;gap:8px;}
+  .sharecard .sc-brand{font-family:'Fraunces',serif;font-weight:700;font-size:16px;color:var(--ink);}
+  .sharecard .sc-mode{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);
+    background:rgba(0,76,83,.08);border-radius:99px;padding:2px 8px;}
+  .sharecard .sc-ribs{margin-left:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:600;
+    color:var(--brand);background:rgba(0,76,83,.08);border-radius:99px;padding:2px 9px;}
+  .sharecard .sc-hz{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
+  .sharecard .sc-line{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink);
+    margin-top:9px;padding-top:9px;border-top:1px solid var(--line);}
+  .sharecard .sc-strip{font-size:20px;letter-spacing:2px;margin-top:8px;min-height:24px;word-break:break-word;}
+  .sharecard .sc-seed{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--ink-soft);margin-top:8px;}
+  .sharecard .sc-tag{font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:7px;}
+  .copybtn{width:100%;border:0;cursor:pointer;background:var(--brand);color:var(--cream);font-family:inherit;
+    font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px;padding:13px;border-radius:12px;
+    transition:background .15s ease,transform .05s ease;}
+  .copybtn:hover{background:var(--brand-2);}
+  .copybtn:active{transform:scale(.99);}
+  .copyfall{width:100%;min-height:104px;margin-top:9px;border:1px solid var(--line);border-radius:10px;padding:10px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.5;background:var(--paper);color:var(--ink);}
+
   .hidden{display:none !important;}
 </style>
 </head>
@@ -248,6 +291,8 @@
     </div>
 
     <button class="go" id="startBtn" disabled>Start</button>
+    <button class="go ghost hidden" id="svcBtn">View service record</button>
+    <div class="hint svcline hidden" id="svcSetupLine"></div>
   </div>
 </div>
 
@@ -291,8 +336,35 @@
     <div class="aar" id="aarText"></div>
     <div class="tip hidden" id="fieldNote"></div>
     <div class="tip hidden" id="tipBox"></div>
+
+    <div class="sec-title"><div class="t">Commendations</div><div class="n" id="ribCount"></div></div>
+    <div class="rack" id="ribRack"></div>
+
+    <div class="sec-title"><div class="t">Share your result</div></div>
+    <div class="sharecard">
+      <div class="sc-h"><span class="sc-brand">Lead Time</span><span class="sc-mode" id="scMode"></span><span class="sc-ribs" id="scRibs"></span></div>
+      <div class="sc-hz" id="scHz"></div>
+      <div class="sc-line" id="scLine"></div>
+      <div class="sc-strip" id="scStrip"></div>
+      <div class="sc-seed" id="scSeed"></div>
+      <div class="sc-tag">Some disasters give you days. Some give you minutes.</div>
+    </div>
+    <button class="copybtn" id="scCopy">Copy result</button>
+    <textarea class="copyfall hidden" id="scFall" readonly aria-label="Result text to copy"></textarea>
+
     <button class="go" id="againBtn">Run it again</button>
     <button class="go ghost" id="setupBtn">Change mode or community</button>
+  </div>
+</div>
+
+<!-- Service record -->
+<div class="overlay hidden" id="svcScreen">
+  <div class="modal">
+    <div class="eyebrow">Career</div>
+    <h2>Service record</h2>
+    <p id="svcSummary"></p>
+    <div class="rack" id="svcRack"></div>
+    <button class="go" id="svcClose">Back</button>
   </div>
 </div>
 
@@ -698,7 +770,67 @@
           body:'You have an operation to run, not a comment section.',
           fx:{ evac:-0.12 },
           result:'Officialdom stays silent, so the loudest voice wins. It was not yours.' }],
-      lesson:'Rumors are fought fast and locally. People trust faces they know over agencies they do not.' }
+      lesson:'Rumors are fought fast and locally. People trust faces they know over agencies they do not.' },
+    { id:'volunteers', title:'The church van',
+      text:'A church van pulls up at the EOC. Fourteen people in work gloves want to help. Right now. None of them are on any roster.',
+      opts:[
+        { label:'Stand up a check-in table',
+          body:'Sign them in, pair them with staff, hand out real tasks. Costs 1 action.',
+          fx:{ slot:-1, stockUp:true },
+          result:'By dark they have loaded two trucks of water and cots. One of them turns out to be a retired nurse. You take her number.' },
+        { label:'Send them home',
+          body:'No time to manage untrained help today.',
+          fx:{},
+          result:'They leave. Half of them drive into the impact area on their own tomorrow to help anyway, with nobody tracking where they are.' }],
+      lesson:'Spontaneous volunteers show up at every disaster whether you plan for them or not. A check-in table and a task list turn a liability into a workforce.' },
+    { id:'bigevent', title:'The fall festival',
+      text:'The fall festival is set for tomorrow on the riverfront. Vendors are already setting up. The organizer is on line two, asking if the show goes on.',
+      opts:[
+        { label:'Cancel it now',
+          body:'One clear decision, made early, while people can still change plans.',
+          fx:{},
+          result:'Groans, refunds, one angry voicemail. By evening the vendors have packed, and two of them offer their tents to the shelter.' },
+        { label:'Wait and see',
+          body:'Maybe the forecast improves. Decide tomorrow.',
+          fx:{ evac:-0.06 },
+          result:'The festival half-happens under a gray sky. Your warning competes with a funnel cake stand, and plenty of people decide things must not be that serious.' }],
+      lesson:'A town that is throwing a festival is telling people everything is fine, no matter what the siren says. Cancel big gatherings early. Mixed messages cost lives.' },
+    { id:'leveewalk', haz:'riverflood', title:'The seepage report',
+      text:'An old farmer calls it in: water is seeping through the base of the levee north of town, and he swears it did not look like that yesterday.',
+      opts:[
+        { label:'Send a crew to walk the levee',
+          body:'Pull a team off other work and inspect the whole reach, toe to crown. Costs 1 action.',
+          fx:{ slot:-1, defBoost:true },
+          result:'They find a sand boil the size of a dinner plate and ring it with sandbags before dark. The old farmer was right.' },
+        { label:'The levee held in 98',
+          body:'It has always held. Keep the crews on their current tasks.',
+          fx:{},
+          result:'Maybe it holds. All night you keep thinking about the word seepage.' }],
+      lesson:'Levees fail from the inside out, and the first sign is often a neighbor who knows what the ground usually looks like. When somebody local reports seepage, you go look. Every time.' },
+    { id:'reentry', haz:'wildfire', title:'The roadblock',
+      text:'The evacuation is moving, but a knot of cars has formed at the roadblock. People want back in. One man is shouting about his dog. A woman needs the insulin in her fridge.',
+      opts:[
+        { label:'Run escorted trips',
+          body:'Pair deputies with residents for five minute supervised runs while the corridor is still clear. Costs 1 action.',
+          fx:{ slot:-1, evac:0.06 },
+          result:'Dogs, medications, a wedding album. Word gets around that if you leave, you will be taken care of, and the outbound line moves faster.' },
+        { label:'Hard closure, no exceptions',
+          body:'Nobody crosses the line. It is not safe.',
+          fx:{ evac:-0.08 },
+          result:'Some turn around. Some find the fire roads. Now there are untracked civilians inside the perimeter, and next time these people will not leave at all.' }],
+      lesson:'Pets and medications are the two biggest reasons people refuse to evacuate or sneak back in. Plan for them and your evacuation works. Ignore them and people take their own risks.' },
+    { id:'warmbus', haz:'winter', title:'The warming buses',
+      text:'The transit director calls: she can idle three buses as rolling warming centers tonight, parked where the outage map is worst. She needs fuel money and a yes before her drivers go home.',
+      opts:[
+        { label:'Fund the buses',
+          body:'Fuel, drivers on overtime, one bus per hard hit neighborhood. Costs 1 budget.',
+          fx:{ budget:-1, shelter:0.08 },
+          result:'By nine, each bus glows at a curb like a lit porch. An oxygen patient spends the night in seat 4A instead of a freezing living room.' },
+        { label:'The shelter is enough',
+          body:'People can come to the shelter if they are cold.',
+          fx:{},
+          result:'Most cannot. The people who need warmth most are exactly the people who cannot get across town for it.' }],
+      lesson:'In cold emergencies the shelter that saves lives is the one people can actually reach. Buses, churches, and libraries beat one big building on the far side of town.' }
   ];
   var EVENTS_JR = [
     { id:'pets', title:'The pets question',
@@ -748,7 +880,43 @@
           body:'Maybe the town will not need them.',
           fx:{},
           result:'By tomorrow afternoon the shelves are picked clean.' }],
-      lesson:'Supplies are cheapest and easiest to find before everyone wants them at once. That is true for towns and for families!' }
+      lesson:'Supplies are cheapest and easiest to find before everyone wants them at once. That is true for towns and for families!' },
+    { id:'gobag', title:'The go-bag',
+      text:'Everyone gets ten minutes to pack a go-bag. Your little brother is stuffing his with exactly one item: a stuffed dinosaur.',
+      opts:[
+        { label:'Help him pack it right',
+          body:'Water, snacks, flashlight, warm layer. And yes, the dinosaur fits too.',
+          fx:{ stockUp:true },
+          result:'Two bags by the door, zipped and ready. The dinosaur rides on top like a captain.' },
+        { label:'His bag, his problem',
+          body:'You have your own packing to do.',
+          fx:{},
+          result:'That night he is cold and hungry and borrowing your stuff. The dinosaur, at least, is doing great.' }],
+      lesson:'A go-bag is packed before you need it, and helping someone else pack theirs is part of being ready. Water, food, light, warmth. Then the dinosaur.' },
+    { id:'neighborcheck', title:'The porch light',
+      text:'Mrs. Alvarez lives alone next door. Her porch light is on, but nobody has seen her since the warnings started.',
+      opts:[
+        { label:'Knock and check on her',
+          body:'Take a grown-up along and make sure she knows what is coming.',
+          fx:{ evac:0.05 },
+          result:'She did not know! You help her charge her phone and find her flashlight. She sends you home with cookies.' },
+        { label:'She is probably fine',
+          body:'Grown-ups handle grown-up stuff.',
+          fx:{ evac:-0.04 },
+          result:'She was asleep with the TV off and never heard a single warning. She finds out from a very loud gust of wind.' }],
+      lesson:'Checking on neighbors, especially older ones, is one of the most powerful things anyone can do before a disaster. Warnings only work for people who hear them.' },
+    { id:'chargeup', title:'The flicker',
+      text:'The lights just flickered. Your tablet is at 19 percent, the family phone is at 40, and there is one charger for everybody.',
+      opts:[
+        { label:'Charging station, right now',
+          body:'Line up every phone, tablet, and battery pack. Biggest need goes first.',
+          fx:{},
+          result:'By the time the power blinks out for real, every screen in the house is green and the backup battery is full.' },
+        { label:'Finish your game first',
+          body:'You are SO close to beating this level.',
+          fx:{},
+          result:'You beat the level! The power dies at 4 percent. It is a long, boring, screenless night.' }],
+      lesson:'When a storm is coming, a charged phone is a flashlight, a radio, and a lifeline all in one. Charge everything early, and charge the backup battery too.' }
   ];
 
   // ----- Mid-storm flash calls -----
@@ -778,7 +946,31 @@
           body:'The church shelter two miles east has space.',
           fx:{ disp:4 },
           result:'They make it, barely. Their sedan stalls in a flooded dip on the way, and a passing truck pulls them out.' }],
-      lesson:'Life-safety shelters do not turn people away at the door in dangerous conditions. Surge space is planned before the disaster: hallways, gyms, pews.' }
+      lesson:'Life-safety shelters do not turn people away at the door in dangerous conditions. Surge space is planned before the disaster: hallways, gyms, pews.' },
+    { id:'dispatch', title:'The 911 queue',
+      text:'Dispatch is drowning: forty calls holding. Downed lines, a chest pain, a tree on a car, a porch light out. The supervisor asks how to run the queue.',
+      opts:[
+        { label:'Life safety first, log the rest',
+          body:'Answer every call, but roll units only on life threats until the wind drops.',
+          fx:{},
+          result:'The chest pain gets a medic. The porch light gets a polite callback list. Nobody likes waiting, and everybody lives.' },
+        { label:'Roll on everything',
+          body:'People called for help. Send help.',
+          fx:{ dmgPer:40 },
+          result:'Every unit is committed to minor calls when a structure collapse comes in. The nearest available crew is twenty minutes out.' }],
+      lesson:'At the peak of a storm there are always more calls than crews. Triage is not cold. It is how the person having the heart attack gets the ambulance.' },
+    { id:'secondcell', haz:'tornado', title:'The second cell',
+      text:'The all clear was ten minutes ago. People are climbing out of shelters to look at the damage. Now a spotter is on the radio: rotation, second cell, six miles out.',
+      opts:[
+        { label:'Sound everything again',
+          body:'Sirens, phones, radio. Full warning, right now.',
+          fx:{},
+          result:'People grumble their way back underground. Four minutes later the second tornado crosses the same ridge.' },
+        { label:'Hold off, people are exhausted',
+          body:'Two warnings in one hour will make them stop listening.',
+          fx:{ dmgPer:70 },
+          result:'The second funnel finds a neighborhood standing in its driveways, phones out, filming.' }],
+      lesson:'Outbreaks come in waves, and the second tornado hurts the people the first one missed. Warning fatigue is real, and you warn every single time anyway.' }
   ];
   var STORM_CALLS_JR = [
     { id:'creekwatch', title:'The text message',
@@ -804,7 +996,31 @@
           body:'The power will probably come back soon.',
           fx:{},
           result:'Ten long, spooky minutes pass before someone finds the flashlight box. Next time: flashlights first!' }],
-      lesson:'The power fails in almost every disaster. Flashlights you can find in the dark, plus calm voices, turn scary into cozy.' }
+      lesson:'The power fails in almost every disaster. Flashlights you can find in the dark, plus calm voices, turn scary into cozy.' },
+    { id:'candles', title:'The candle idea',
+      text:'The power is out and the shelter is dark. Someone finds a box of birthday candles and a lighter. "Cozy, right?"',
+      opts:[
+        { label:'Flashlights only',
+          body:'Open flames and emergencies do not mix.',
+          fx:{},
+          result:'Flashlight beams and a battery lantern light up the gym. Zero fires, one epic shadow puppet show.' },
+        { label:'Candles ARE cozy',
+          body:'Just a few, on the table.',
+          fx:{},
+          result:'A sleeve brushes a flame and for one horrible second a napkin catches. A grown-up smothers it fast. Every heart in the room is pounding.' }],
+      lesson:'After disasters, candles start house fires every single year. Flashlights and battery lanterns only. Save the candles for birthdays.' },
+    { id:'window', title:'The big window',
+      text:'The wind is ROARING. From your safe spot in the hallway, you can see the big living room window. You kind of really want to watch.',
+      opts:[
+        { label:'Stay in the safe spot',
+          body:'The hallway is boring. The hallway is also safe.',
+          fx:{},
+          result:'Something heavy slams into the yard outside. You hear it instead of seeing it, which is exactly the point.' },
+        { label:'Just one look',
+          body:'One tiny peek at the storm.',
+          fx:{},
+          result:'A branch cracks against the glass right as you lean in. You are back in the hallway before it even stops rattling.' }],
+      lesson:'During high wind, windows are the most dangerous spot in the house. Whatever is happening outside, you can hear about it later. Stay in your safe spot until the all clear.' }
   ];
 
   // ----- Setup state -----
@@ -866,6 +1082,7 @@
     c.games = (c.games || 0) + 1;
     saveCareer(c);
     refreshBestChips();
+    refreshSvc();
   }
   function bestLabel(scnId){
     var c = loadCareer();
@@ -954,9 +1171,10 @@
   // ----- New game -----
   function newGame(){
     ACTIONS = buildActions();
-    var rng = CFG.code
-      ? mulberry32(seedFrom(CFG.code + '|' + CFG.scn.id + '|' + CFG.haz.id))
-      : mulberry32((Math.random()*4294967296) >>> 0);
+    var seedInt = CFG.code
+      ? seedFrom(CFG.code + '|' + CFG.scn.id + '|' + CFG.haz.id)
+      : ((Math.random()*4294967296) >>> 0);
+    var rng = mulberry32(seedInt);
     function srnd(a,b){ return a + rng()*(b-a); }
     var strength = 1 + Math.floor(rng()*5);
     var landfallX = clamp(srnd(-1,1), -1, 1);
@@ -976,10 +1194,11 @@
     }
     var nm = NAMES[Math.floor(rng()*NAMES.length)];
     var name = CFG.haz.name(nm, strength, CFG.scn);
-    var pool = (CFG.mode === 'junior') ? EVENTS_JR : EVENTS_CMD;
-    var callPool = (CFG.mode === 'junior') ? STORM_CALLS_JR : STORM_CALLS_CMD;
+    var forHaz = function(cards){ return cards.filter(function(c){ return !c.haz || c.haz === CFG.haz.id; }); };
+    var pool = forHaz((CFG.mode === 'junior') ? EVENTS_JR : EVENTS_CMD);
+    var callPool = forHaz((CFG.mode === 'junior') ? STORM_CALLS_JR : STORM_CALLS_CMD);
     S = {
-      strength:strength, landfallX:landfallX, fc:fc,
+      strength:strength, landfallX:landfallX, fc:fc, seedInt:seedInt, flashGood:false,
       day:1, totalBudget:CFG.scn.budget, budget:CFG.scn.budget, slots:SLOTS_PER_DAY,
       levels:{}, once:{}, doneDay:{},
       mods:{ evac:0, shelter:0 },
@@ -989,6 +1208,10 @@
       name:name
     };
     ACTIONS.forEach(function(a){ if(a.kind==='level') S.levels[a.id]=0; else S.once[a.id]=false; });
+    // Seeded flips: the right answer should not always be the top button.
+    // Drawn after all other rolls so classroom codes stay stable.
+    S.flipEv = rng() < 0.5;
+    S.flipCall = rng() < 0.5;
   }
 
   // ----- Action availability -----
@@ -1030,6 +1253,7 @@
     if (fx.evac) S.mods.evac += fx.evac;
     if (fx.shelter) S.mods.shelter += fx.shelter;
     if (fx.stockUp && S.levels.stock < 3) S.levels.stock += 1;
+    if (fx.defBoost && S.levels.sandbag < 3) S.levels.sandbag += 1;
   }
   var evCallback = null;
   function showEvent(card){
@@ -1043,7 +1267,8 @@
     lessonBox.classList.add('hidden');
     var goBtn = document.getElementById('evGo');
     goBtn.classList.add('hidden');
-    card.opts.forEach(function(opt){
+    var evOrder = S.flipEv ? card.opts.slice().reverse() : card.opts;
+    evOrder.forEach(function(opt){
       var btn = document.createElement('button');
       btn.className = 'evopt';
       btn.innerHTML = '<b>' + opt.label + '</b>' + opt.body;
@@ -1523,7 +1748,8 @@
     lessonBox.classList.add('hidden');
     var goBtn = document.getElementById('evGo');
     goBtn.classList.add('hidden');
-    card.opts.forEach(function(opt){
+    var callOrder = S.flipCall ? card.opts.slice().reverse() : card.opts;
+    callOrder.forEach(function(opt){
       var btn = document.createElement('button');
       btn.className = 'evopt';
       btn.innerHTML = '<b>' + opt.label + '</b>' + opt.body;
@@ -1534,6 +1760,7 @@
         if (opt.fx.dmgPer) IMPACT.o.damage += totalPop() * opt.fx.dmgPer;
         if (opt.fx.disp) IMPACT.o.displaced += opt.fx.disp;
         S.flashLesson = card.lesson;
+        S.flashGood = !(opt.fx.dmgPer || opt.fx.disp);
         lessonBox.innerHTML = '<b>What happened:</b> ' + opt.result + '<br><br><b>The lesson:</b> ' + card.lesson;
         lessonBox.classList.remove('hidden');
         goBtn.classList.remove('hidden');
@@ -1741,6 +1968,203 @@
   }
 
   // ----- After-action screen -----
+  // ----- Commendations + shareable result card -----
+  // Set this to your live game link. It is the last line of the copied result.
+  var LT_SHARE_URL = 'https://your-lead-time-link';
+
+  // Every ribbon binds to a decision the engine already records, so nothing
+  // new has to be tracked. Each name restates a lesson.
+  // scope: all | command (Command only) | trust (Command, non-code) | tornado | hazmat
+  var RIBBONS = [
+    { emoji:'\u23F1\uFE0F', id:'early', name:'Early Bird', scope:'all',
+      lesson:'Ordered the evacuation on the first turn. Lead time is spent early or it is lost.',
+      got:function(c){ return c.S.doneDay['evac'] === 1; } },
+    { emoji:'\uD83E\uDD1D', id:'aid', name:'Good Neighbor', scope:'all',
+      lesson:'Called in mutual aid before the window closed. No community does it alone, and the favor runs both ways.',
+      got:function(c){ return !!c.S.once['aid']; } },
+    { emoji:'\uD83D\uDCE3', id:'warnmax', name:'Reached Everyone', scope:'all',
+      lesson:'Pushed public warnings to the max. A warning nobody hears is not a warning.',
+      got:function(c){ return (c.S.levels['warn']||0) >= 2; } },
+    { emoji:'\uD83C\uDF19', id:'steady', name:'Steady Hand', scope:'all',
+      lesson:'Made the safe call in the middle of the storm. Under pressure, judgment is the last tool you have.',
+      got:function(c){ return c.S.flashGood === true; } },
+    { emoji:'\uD83C\uDFAF', id:'sized', name:'Right-Sized', scope:'all',
+      lesson:'Spending matched the forecast, and no one paid for it. Efficiency is warranted spend, not the least spend.',
+      got:function(c){ return c.used <= c.warranted + 2 && c.cas === 0; } },
+    { emoji:'\uD83C\uDFE5', id:'nursing', name:'Cleared the Care Home', scope:'all',
+      lesson:'Moved the care facility early. Functional and access needs take the longest, so they come first.',
+      got:function(c){ return !!c.S.once['nursing']; } },
+    { emoji:'\uD83C\uDFE0', id:'roof', name:'Roof Over Every Head', scope:'all',
+      lesson:'Opened shelter for everyone who might need it. Displacement is the disaster after the disaster.',
+      got:function(c){ return (c.S.levels['shelter']||0) >= 3; } },
+    { emoji:'\uD83D\uDCE6', id:'stock', name:'Ready to Recover', scope:'all',
+      lesson:'Stockpiled for the days after. Response is days, recovery is years, and the supplies you stage now speed the weeks ahead.',
+      got:function(c){ return (c.S.levels['stock']||0) >= 3; } },
+    { emoji:'\uD83D\uDEDF', id:'clean', name:'Clean Sheet', scope:'command',
+      lesson:'No lives lost. The only number that has to be zero.',
+      got:function(c){ return c.cas === 0; } },
+    { emoji:'\uD83D\uDEE1\uFE0F', id:'trust', name:'Kept Their Trust', scope:'trust',
+      lesson:'Finished with public trust intact. Credibility is what you spend on the next warning.',
+      got:function(c){ return !!(c.grade.trust && c.grade.trust.delta >= 0); } },
+    { emoji:'\uD83C\uDF2A\uFE0F', id:'tstorm', name:'Shelter Ready', scope:'tornado',
+      lesson:'Ran the safe room campaign before the tornado. Minutes of lead time are bought with months of prep.',
+      got:function(c){ return (c.S.levels['sandbag']||0) >= 2; } },
+    { emoji:'\u2623\uFE0F', id:'sip', name:'Shelter in Place', scope:'hazmat',
+      lesson:'Staged seal and shelter kits for the release. Sometimes the safest move is not to move.',
+      got:function(c){ return (c.S.levels['harden']||0) >= 2; } }
+  ];
+
+  function ribbonsForRun(grade){
+    var hazId = CFG.haz.id;
+    return RIBBONS.filter(function(r){
+      if (r.scope === 'command') return !grade.jr;
+      if (r.scope === 'trust')   return !grade.jr && !CFG.code;
+      if (r.scope === 'tornado') return hazId === 'tornado';
+      if (r.scope === 'hazmat')  return hazId === 'hazmat';
+      return true;
+    });
+  }
+
+  // ----- Service record: the lifetime ribbon rack -----
+  // Persists on this device like trust and best grades. Unearned ribbons show
+  // where to find them, which quietly points players at modes and hazards
+  // they have not tried yet.
+  function scopeHint(r){
+    if (r.scope === 'command') return 'Command Mode';
+    if (r.scope === 'trust')   return 'Command Mode, outside classroom codes';
+    if (r.scope === 'tornado') return 'Tornado Outbreak games';
+    if (r.scope === 'hazmat')  return 'Train Derailment games';
+    return 'any game';
+  }
+  function refreshSvc(){
+    var btn = document.getElementById('svcBtn');
+    var line = document.getElementById('svcSetupLine');
+    if (!btn || !line) return;
+    var c = loadCareer();
+    var ribs = c.ribbons || {};
+    var games = c.games || 0;
+    if (!games){ btn.classList.add('hidden'); line.classList.add('hidden'); return; }
+    var have = RIBBONS.filter(function(r){ return ribs[r.id]; });
+    btn.classList.remove('hidden');
+    line.classList.remove('hidden');
+    line.innerHTML = (have.length ? have.map(function(r){ return r.emoji; }).join('') + '<br>' : '')
+      + have.length + ' of ' + RIBBONS.length + ' ribbons \u00B7 '
+      + games + (games === 1 ? ' game commanded' : ' games commanded');
+  }
+  function openSvc(){
+    var c = loadCareer();
+    var ribs = c.ribbons || {};
+    var games = c.games || 0;
+    var have = RIBBONS.filter(function(r){ return ribs[r.id]; }).length;
+    document.getElementById('svcSummary').textContent =
+      games + (games === 1 ? ' game' : ' games') + ' commanded. '
+      + have + ' of ' + RIBBONS.length + ' ribbons earned. Every ribbon is a lesson. The rack is the curriculum.';
+    var html = '';
+    RIBBONS.forEach(function(r){
+      var n = ribs[r.id] || 0;
+      html += '<div class="rib' + (n ? ' got' : '') + '">'
+        + '<span class="rbar"></span>'
+        + '<span class="rem">' + r.emoji + '</span>'
+        + '<span><span class="rnm">' + r.name + (n > 1 ? '<span class="rnum">\u00D7' + n + '</span>' : '') + '</span>'
+        + '<span class="rls">' + (n ? r.lesson : 'Not yet earned. Find it in ' + scopeHint(r) + '.') + '</span>'
+        + '</span>'
+        + '<span class="rck">\u2713</span>'
+        + '</div>';
+    });
+    document.getElementById('svcRack').innerHTML = html;
+    document.getElementById('svcScreen').classList.remove('hidden');
+  }
+
+  function renderCommendations(grade, o, used, warranted){
+    var scn = CFG.scn, hz = CFG.haz;
+    // Junior mode never hurts anyone, so treat casualties as zero for ribbons.
+    var cas = grade.jr ? 0 : o.casualties;
+    var ctx = { S:S, CFG:CFG, grade:grade, o:o, used:used, warranted:warranted, cas:cas };
+
+    var list = ribbonsForRun(grade);
+    var earned = list.filter(function(r){ return !!r.got(ctx); });
+
+    // Persist to the service record: same store as trust and best grades.
+    var isNew = {}, counts = {};
+    try {
+      var c = loadCareer();
+      c.ribbons = c.ribbons || {};
+      earned.forEach(function(r){
+        if (!c.ribbons[r.id]) isNew[r.id] = true;
+        c.ribbons[r.id] = (c.ribbons[r.id] || 0) + 1;
+      });
+      saveCareer(c);
+      RIBBONS.forEach(function(r){ counts[r.id] = c.ribbons[r.id] || 0; });
+    } catch(e){}
+
+    var html = '';
+    list.forEach(function(r){
+      var got = earned.indexOf(r) !== -1;
+      var pill = '';
+      if (got && isNew[r.id]) pill = '<span class="rnum new">NEW</span>';
+      else if (got && counts[r.id] > 1) pill = '<span class="rnum">\u00D7' + counts[r.id] + '</span>';
+      html += '<div class="rib' + (got ? ' got' : '') + '">'
+        + '<span class="rbar"></span>'
+        + '<span class="rem">' + r.emoji + '</span>'
+        + '<span><span class="rnm">' + r.name + pill + '</span>'
+        + (got ? '<span class="rls">' + r.lesson + '</span>' : '')
+        + '</span>'
+        + '<span class="rck">\u2713</span>'
+        + '</div>';
+    });
+    document.getElementById('ribRack').innerHTML = html;
+    var careerEarned = RIBBONS.filter(function(r){ return counts[r.id] > 0; }).length;
+    document.getElementById('ribCount').textContent =
+      earned.length + ' of ' + list.length + ' this run \u00B7 career ' + careerEarned + ' of ' + RIBBONS.length;
+    refreshSvc();
+
+    var modeName = grade.jr ? 'Junior' : 'Command';
+    var strip = earned.map(function(r){ return r.emoji; }).join('') || '(none yet)';
+    var gradeLine;
+    if (grade.jr){
+      var st = '';
+      for (var i=1;i<=5;i++) st += (i<=grade.stars ? '\u2605' : '\u2606');
+      gradeLine = st + '  ' + Math.round(grade.prevented*100) + '% harm prevented';
+    } else {
+      var t = grade.trust;
+      var trustBit = t ? '  \u00B7  trust ' + (t.delta>0 ? '+'+t.delta : t.delta===0 ? 'steady' : ''+t.delta) : '';
+      gradeLine = 'Grade ' + grade.letter + '  \u00B7  ' + cas + ' lost' + trustBit;
+    }
+    var idTag = CFG.code ? 'Code ' + CFG.code : 'Seed LT-' + ((S.seedInt>>>0).toString(36).toUpperCase());
+    var ribTag = 'Ribbons ' + earned.length + '/' + list.length;
+
+    document.getElementById('scMode').textContent = modeName;
+    document.getElementById('scRibs').textContent = ribTag;
+    document.getElementById('scHz').textContent = hz.label + ' at ' + scn.town;
+    document.getElementById('scLine').textContent = gradeLine;
+    document.getElementById('scStrip').textContent = strip;
+    document.getElementById('scSeed').textContent = idTag;
+
+    var copyText = [
+      'LEAD TIME \u00B7 ' + modeName,
+      hz.label + ' at ' + scn.town,
+      gradeLine.replace(/\s{2,}/g, ' '),
+      ribTag,
+      strip,
+      idTag,
+      'Some disasters give you days. Some give you minutes.',
+      LT_SHARE_URL
+    ].join('\n');
+
+    var fall = document.getElementById('scFall');
+    fall.value = copyText;
+    fall.classList.add('hidden');
+    var btn = document.getElementById('scCopy');
+    btn.textContent = 'Copy result';
+    btn.onclick = function(){
+      var ok = function(){ btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = 'Copy result'; }, 1600); };
+      var no = function(){ fall.classList.remove('hidden'); fall.focus(); fall.select(); btn.textContent = 'Select and copy below'; };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(copyText).then(ok).catch(no);
+      } else { no(); }
+    };
+  }
+
   function showAAR(grade, H, M, o, used, warranted){
     renderMap(true);
     var scn = CFG.scn;
@@ -1806,6 +2230,7 @@
       ? '$' + (o.damage/1e9).toFixed(2) + 'B'
       : '$' + (o.damage/1e6).toFixed(1) + 'M';
     document.getElementById('s4').textContent = used + ' / ' + S.totalBudget;
+    renderCommendations(grade, o, used, warranted);
     document.getElementById('aarScreen').classList.remove('hidden');
   }
 
@@ -1943,6 +2368,10 @@
     if (cb) cb();
   });
   document.getElementById('skipBtn').addEventListener('click', skipImpact);
+  document.getElementById('svcBtn').addEventListener('click', openSvc);
+  document.getElementById('svcClose').addEventListener('click', function(){
+    document.getElementById('svcScreen').classList.add('hidden');
+  });
   function resetRun(){
     clearSeq();
     IMPACT = null;
@@ -1975,6 +2404,7 @@
   // ----- Boot -----
   buildSetup();
   refreshBestChips();
+  refreshSvc();
 })();
 </script>
 </body>
