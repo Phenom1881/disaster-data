@@ -63,6 +63,78 @@ def slugify(s):
 
 TYPE_LONG = {"DR": "Major disaster", "EM": "Emergency", "FM": "Fire management"}
 
+# Client-side filter + column sort (scoped to #declbox so other tables are untouched).
+FILTER_JS = """<script>
+(function(){
+  var box=document.getElementById('declbox'); if(!box) return;
+  var cap=box.querySelector('.decl-count');
+  var chips=box.querySelectorAll('.decl-chip');
+  var table=box.querySelector('table');
+  var tbody=table.querySelector('tbody');
+  var heads=table.querySelectorAll('thead th');
+  var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+  var label={ALL:'declarations',DR:'major disaster declarations',EM:'emergency declarations',FM:'fire-management declarations'};
+
+  function filter(t){
+    var shown=0,i;
+    for(i=0;i<rows.length;i++){
+      var m=(t==='ALL'||rows[i].getAttribute('data-t')===t);
+      rows[i].classList.toggle('hide',!m);
+      if(m) shown++;
+    }
+    for(i=0;i<chips.length;i++) chips[i].setAttribute('aria-pressed', chips[i].getAttribute('data-t')===t?'true':'false');
+    if(cap) cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+  }
+  box.addEventListener('click',function(ev){
+    var c=ev.target.closest('.decl-chip'); if(!c||c.classList.contains('off')) return;
+    filter(c.getAttribute('data-t'));
+  });
+
+  function val(row,i,k){
+    var td=row.children[i];
+    if(k==='num'){ var v=td.getAttribute('data-s'); return v==null?0:(parseFloat(v)||0); }
+    if(k==='date'){ return td.getAttribute('data-s')||''; }
+    return (td.textContent||'').trim().toLowerCase();
+  }
+  function sortCol(i,k,dir){
+    var mul=dir==='descending'?-1:1;
+    rows.sort(function(a,b){
+      var x=val(a,i,k), y=val(b,i,k);
+      if(k==='num') return (x-y)*mul;
+      return (x<y?-1:x>y?1:0)*mul;
+    });
+    for(var n=0;n<rows.length;n++) tbody.appendChild(rows[n]);
+  }
+  for(var h=0;h<heads.length;h++){ (function(th,i){
+    if(!th.classList.contains('sortable')) return;
+    th.addEventListener('click',function(){
+      var dir=th.getAttribute('aria-sort')==='ascending'?'descending':'ascending';
+      for(var k=0;k<heads.length;k++) heads[k].removeAttribute('aria-sort');
+      th.setAttribute('aria-sort',dir);
+      sortCol(i, th.getAttribute('data-k')||'text', dir);
+    });
+  })(heads[h],h); }
+
+  filter('ALL');
+})();
+</script>"""
+
+def type_chips(total, dr, em, fm):
+    """Filter chips with baked-in counts. Zero-count types render disabled."""
+    def chip(t, n, pressed=False):
+        off = "" if n else " off"
+        pr = "true" if pressed else "false"
+        return ('<button type="button" class="decl-chip%s" data-t="%s" aria-pressed="%s">%s '
+                '<span class="n">%d</span></button>' % (off, t, pr, t if t != "ALL" else "All", n))
+    return ('<div class="decl-filters" role="group" aria-label="Filter declarations by type">'
+            + chip("ALL", total, True) + chip("DR", dr) + chip("EM", em) + chip("FM", fm)
+            + '</div>')
+
+def decl_num(s):
+    """Sortable integer inside a FEMA declaration string, e.g. DR-4644-VA -> 4644."""
+    m = re.search(r"\d+", s or "")
+    return m.group(0) if m else "0"
+
 # FEMA Public Assistance damage-category codes (sentence case, dash-free).
 # Shared by the per-jurisdiction PA card and the PA category breakdown table.
 PA_CAT_LABELS = {
@@ -205,6 +277,21 @@ tr:last-child td{border-bottom:none}.tag{font-weight:700;color:var(--teal)}
 .hmp{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 0}
 .hmp p{margin:.2rem 0 .9rem;font-size:.92rem}
 .copybtn{font:600 .8rem 'Public Sans',sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .85rem;cursor:pointer;margin-top:.8rem}
+.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
+.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
+.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
+.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
+.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
+.decl-chip.off{opacity:.42;cursor:default}
+.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
+.tablewrap.scroll{max-height:430px;overflow-y:auto}
+.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
+tr.hide{display:none}
+th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
+th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
+th.sortable:hover{color:var(--teal)}
+th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
+th[aria-sort="descending"]::after{content:"↓";opacity:.95}
 .method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}.method h2{margin-top:0;font-size:1.1rem}
 .pa-note{font-size:.9rem;color:var(--ink3);max-width:64ch;margin:.4rem 0 .8rem}
 table.pa-cat tfoot td{font-weight:700;color:var(--teal);border-top:2px solid var(--rule);background:#faf6ec}
@@ -322,7 +409,6 @@ def render_page(j, others):
           "creator": {"@type": "Organization", "name": "Disaster Data", "url": SITE},
           "spatialCoverage": {"@type": "Place", "name": "%s, %s" % (j["name"], STATE_NAME)},
           "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema",
-          "license": "https://www.usa.gov/government-works",
           "keywords": [j["name"], STATE_NAME, "FEMA", "disaster declarations",
                        "hazard mitigation plan", "previous occurrences"]}
 
@@ -362,20 +448,35 @@ def render_page(j, others):
 
     haz = "".join('<li>%s <b>%d</b></li>' % (e(h), n) for h, n in j["hazards"][:8]) or '<li>None recorded</li>'
 
-    rows = "".join("<tr><td>%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td><td>%s</td><td>%s</td></tr>"
-                   % (fmt_date(r.get("declarationDate", "")), e(r.get("femaDeclarationString", "")),
+    # Full declaration record (complete fiscal years), most recent first. Row carries its
+    # type in data-t so the filter can show or hide it client-side.
+    rows = "".join("<tr data-t=\"%s\"><td data-s=\"%s\">%s</td><td data-s=\"%s\">%s</td><td><span class='tag' title='%s'>%s</span></td><td>%s</td><td>%s</td></tr>"
+                   % (e(r.get("declarationType", "")),
+                      e(r.get("declarationDate", "")[:10]), fmt_date(r.get("declarationDate", "")),
+                      decl_num(r.get("femaDeclarationString", "")), e(r.get("femaDeclarationString", "")),
                       TYPE_LONG.get(r.get("declarationType", ""), ""), e(r.get("declarationType", "")),
                       e(r.get("incidentType", "")), e(pretty_title(r.get("declarationTitle", ""))))
-                   for r in j["recent"])
-    history = ('<p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem">'
+                   for r in j["hmp"])
+    # Scroll once the list gets long; short records stay a plain table.
+    wrap_cls = "tablewrap scroll" if len(j["hmp"]) > 12 else "tablewrap"
+    history = ('<div id="declbox">'
+               '<p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem">'
                '<b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; '
                '<b style="color:#004c53">EM</b> = Emergency declaration &middot; '
                '<b style="color:#004c53">FM</b> = Fire management assistance</p>'
-               '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Number</th><th>Type</th>'
-               '<th>Hazard</th><th>Title</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+               + type_chips(j["decl"], j["dr"], j["em"], j["fm"]) +
+               '<p class="decl-count" aria-live="polite">Showing %d declarations</p>' % j["decl"] +
+               '<div class="' + wrap_cls + '"><table><thead><tr>'
+               '<th class="sortable" data-k="date">Date</th>'
+               '<th class="sortable" data-k="num">Number</th>'
+               '<th class="sortable" data-k="text">Type</th>'
+               '<th class="sortable" data-k="text">Hazard</th>'
+               '<th class="sortable" data-k="text">Title</th>'
+               '</tr></thead><tbody>' + rows + '</tbody></table></div>'
                '<div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0">'
                '<button class="copybtn csvbtn" type="button">Download CSV</button>'
-               '<button class="copybtn citebtn" type="button">Cite this page</button></div>')
+               '<button class="copybtn citebtn" type="button">Cite this page</button></div>'
+               '</div>' + FILTER_JS)
 
     hmp_rows = "".join("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
                        % (e(r.get("incidentType", "")), fmt_date(r.get("declarationDate", "")),

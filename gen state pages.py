@@ -123,6 +123,78 @@ def pretty_title(t):
 
 TYPE_LONG = {"DR": "Major disaster", "EM": "Emergency", "FM": "Fire management"}
 
+# Client-side filter + column sort (scoped to #declbox so other tables are untouched).
+FILTER_JS = """<script>
+(function(){
+  var box=document.getElementById('declbox'); if(!box) return;
+  var cap=box.querySelector('.decl-count');
+  var chips=box.querySelectorAll('.decl-chip');
+  var table=box.querySelector('table');
+  var tbody=table.querySelector('tbody');
+  var heads=table.querySelectorAll('thead th');
+  var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+  var label={ALL:'declarations',DR:'major disaster declarations',EM:'emergency declarations',FM:'fire-management declarations'};
+
+  function filter(t){
+    var shown=0,i;
+    for(i=0;i<rows.length;i++){
+      var m=(t==='ALL'||rows[i].getAttribute('data-t')===t);
+      rows[i].classList.toggle('hide',!m);
+      if(m) shown++;
+    }
+    for(i=0;i<chips.length;i++) chips[i].setAttribute('aria-pressed', chips[i].getAttribute('data-t')===t?'true':'false');
+    if(cap) cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+  }
+  box.addEventListener('click',function(ev){
+    var c=ev.target.closest('.decl-chip'); if(!c||c.classList.contains('off')) return;
+    filter(c.getAttribute('data-t'));
+  });
+
+  function val(row,i,k){
+    var td=row.children[i];
+    if(k==='num'){ var v=td.getAttribute('data-s'); return v==null?0:(parseFloat(v)||0); }
+    if(k==='date'){ return td.getAttribute('data-s')||''; }
+    return (td.textContent||'').trim().toLowerCase();
+  }
+  function sortCol(i,k,dir){
+    var mul=dir==='descending'?-1:1;
+    rows.sort(function(a,b){
+      var x=val(a,i,k), y=val(b,i,k);
+      if(k==='num') return (x-y)*mul;
+      return (x<y?-1:x>y?1:0)*mul;
+    });
+    for(var n=0;n<rows.length;n++) tbody.appendChild(rows[n]);
+  }
+  for(var h=0;h<heads.length;h++){ (function(th,i){
+    if(!th.classList.contains('sortable')) return;
+    th.addEventListener('click',function(){
+      var dir=th.getAttribute('aria-sort')==='ascending'?'descending':'ascending';
+      for(var k=0;k<heads.length;k++) heads[k].removeAttribute('aria-sort');
+      th.setAttribute('aria-sort',dir);
+      sortCol(i, th.getAttribute('data-k')||'text', dir);
+    });
+  })(heads[h],h); }
+
+  filter('ALL');
+})();
+</script>"""
+
+def type_chips(total, dr, em, fm):
+    """Filter chips with baked-in counts. Zero-count types render disabled."""
+    def chip(t, n, pressed=False):
+        off = "" if n else " off"
+        pr = "true" if pressed else "false"
+        return ('<button type="button" class="decl-chip%s" data-t="%s" aria-pressed="%s">%s '
+                '<span class="n">%d</span></button>' % (off, t, pr, t if t != "ALL" else "All", n))
+    return ('<div class="decl-filters" role="group" aria-label="Filter declarations by type">'
+            + chip("ALL", total, True) + chip("DR", dr) + chip("EM", em) + chip("FM", fm)
+            + '</div>')
+
+def decl_num(s):
+    """Sortable integer inside a FEMA declaration string, e.g. DR-4644-VA -> 4644."""
+    m = re.search(r"\d+", s or "")
+    return m.group(0) if m else "0"
+
 # ---------------------------------------------------------------- last complete FY
 def last_complete_fy(YOY):
     now = datetime.date.today()
@@ -152,6 +224,7 @@ def state_stats(ab, name, days, decls, dens, lcfy, keep):
         "decl": decl, "dr": by_type["DR"], "em": by_type["EM"], "fm": by_type["FM"],
         "den": den, "rate": rate, "days": days,
         "hazards": hazards, "recent": recent,
+        "history": sorted(complete, key=lambda r: r[3], reverse=True),
         "recent_dens": sorted(den_c, key=lambda d: d[3], reverse=True)[:10],
         "orphans": orphans, "jur_n": keep.get("n", 0),
     }
@@ -190,6 +263,21 @@ th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--rule);v
 th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);background:#faf6ec}
 tr:last-child td{border-bottom:none}
 .tag{font-weight:700;color:var(--teal)}
+.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
+.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
+.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
+.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
+.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
+.decl-chip.off{opacity:.42;cursor:default}
+.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
+.tablewrap.scroll{max-height:460px;overflow-y:auto}
+.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
+tr.hide{display:none}
+th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
+th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
+th.sortable:hover{color:var(--teal)}
+th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
+th[aria-sort="descending"]::after{content:"↓";opacity:.95}
 .audience{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1rem 1.2rem;margin:2rem 0}
 .method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}
 .method h2{margin-top:0;font-size:1.1rem}
@@ -265,7 +353,6 @@ def render_state_page(s, states, lcfy):
         "spatialCoverage": {"@type": "Place", "name": "%s, United States" % name},
         "temporalCoverage": "2000/%d" % lcfy,
         "isBasedOn": "https://www.fema.gov/about/openfema",
-        "license": "https://www.usa.gov/government-works",
         "keywords": [name, "FEMA", "disaster declarations", "emergency management",
                      "federal disaster history", "%s disasters" % name],
     }
@@ -288,15 +375,30 @@ def render_state_page(s, states, lcfy):
           or '<li>None recorded</li>'
 
     # recent declarations
+    # Full declaration record (complete fiscal years), most recent first. data-t drives the filter.
     rows = "".join(
-        "<tr><td>%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td>"
+        "<tr data-t=\"%s\"><td data-s=\"%s\">%s</td><td data-s=\"%s\">%s</td><td><span class='tag' title='%s'>%s</span></td>"
         "<td>%s</td><td>%s</td></tr>"
-        % (fmt_date(r[3]), e(r[0]), TYPE_LONG.get(r[1], r[1]), e(r[1]),
+        % (e(r[1]), e(r[3][:10]), fmt_date(r[3]), decl_num(r[0]), e(r[0]),
+           TYPE_LONG.get(r[1], r[1]), e(r[1]),
            e(r[2]), e(pretty_title(r[4])))
-        for r in s["recent"])
-    recent_tbl = ('<div class="tablewrap"><table><thead><tr><th>Date</th><th>Number</th>'
-                  '<th>Type</th><th>Hazard</th><th>Title</th></tr></thead><tbody>'
-                  + rows + '</tbody></table></div>')
+        for r in s["history"])
+    wrap_cls = "tablewrap scroll" if len(s["history"]) > 12 else "tablewrap"
+    recent_tbl = ('<div id="declbox">'
+                  '<p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem">'
+                  '<b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; '
+                  '<b style="color:#004c53">EM</b> = Emergency declaration &middot; '
+                  '<b style="color:#004c53">FM</b> = Fire management assistance</p>'
+                  + type_chips(s["decl"], s["dr"], s["em"], s["fm"]) +
+                  '<p class="decl-count" aria-live="polite">Showing %d declarations</p>' % s["decl"] +
+                  '<div class="' + wrap_cls + '"><table><thead><tr>'
+                  '<th class="sortable" data-k="date">Date</th>'
+                  '<th class="sortable" data-k="num">Number</th>'
+                  '<th class="sortable" data-k="text">Type</th>'
+                  '<th class="sortable" data-k="text">Hazard</th>'
+                  '<th class="sortable" data-k="text">Title</th>'
+                  '</tr></thead><tbody>'
+                  + rows + '</tbody></table></div></div>' + FILTER_JS)
 
     # denials
     if s["den"]:
@@ -374,7 +476,7 @@ def render_state_page(s, states, lcfy):
             '<div class="stats">%s</div>'
             '%s'
             '<h2>Most common hazards</h2><ul class="haz">%s</ul>'
-            '<h2>Most recent declarations</h2>%s'
+            '<h2>All declarations on record</h2>%s'
             '<h2>Denied requests</h2>%s'
             '%s'
             '<div class="audience"><strong>Built for emergency managers, grant writers, and '
