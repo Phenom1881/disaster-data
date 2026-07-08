@@ -28,10 +28,12 @@ jobs:
         run: python -u build.py
 
       - name: Generate state SEO pages
-        run: python -u gen_state_pages.py
+        run: |
+          if [ -f gen_state_pages.py ]; then python -u gen_state_pages.py; else python -u "gen state pages.py"; fi
 
       - name: Generate jurisdiction pages
-        run: python -u gen_jurisdiction_pages.py
+        run: |
+          if [ -f gen_jurisdiction_pages.py ]; then python -u gen_jurisdiction_pages.py; else python -u "gen jurisdiction pages.py"; fi
 
       - name: Commit and push if changed
         run: |
