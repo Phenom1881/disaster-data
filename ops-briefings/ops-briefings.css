@@ -1,0 +1,136 @@
+
+:root {
+  --teal: #004c53;
+  --cream: #faf6ee;
+  --ink: #1a1a1a;
+  --line: #e2ddd0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Public Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+a { color: var(--teal); }
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: rgba(250, 246, 238, 0.85);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+}
+
+.top-nav a {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #6b6b6b;
+  margin-bottom: 0.25rem;
+}
+
+.subscribe-callout {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.subscribe-callout .btn {
+  background: var(--teal);
+  color: white;
+  text-decoration: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.briefing-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.briefing-list li {
+  border-bottom: 1px solid var(--line);
+}
+
+.briefing-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0.25rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.briefing-list a:hover { color: var(--teal); }
+
+.briefing-list .arrow { color: var(--teal); font-weight: 600; }
+
+.archive-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-weight: 600;
+}
+
+.day-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.day-nav a { text-decoration: none; font-weight: 600; }
+
+.pdf-button {
+  display: inline-block;
+  background: var(--teal);
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.4rem;
+  border-radius: 6px;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+}
+
+.meta {
+  color: #6b6b6b;
+  font-size: 0.9rem;
+}
