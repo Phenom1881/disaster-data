@@ -33,11 +33,16 @@ jobs:
           DD_OUT: archive
         run: python scripts/fetch_ops_briefing.py
 
-      - name: Commit new briefing(s)
+      - name: Build ops briefing pages
+        env:
+          DD_OUT: archive
+        run: python scripts/build_ops_pages.py
+
+      - name: Commit new briefing(s) and pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add archive/ops-briefings
+          git add archive/ops-briefings ops-briefings
           if git diff --cached --quiet; then
             echo "No new briefings to commit."
           else
