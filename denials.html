@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Denials: Federal disaster declaration requests that were turned down</title>
+<meta name="description" content="Every state and tribal request for a federal disaster or emergency declaration that FEMA denied since FY2000, ranked by state and mapped by denial rate. Built from FEMA OpenFEMA data.">
+<meta property="og:title" content="Denials: Federal disaster declaration requests that were turned down">
+<meta property="og:description" content="State and tribal requests for a federal disaster or emergency declaration that FEMA denied, ranked and mapped. Built from FEMA OpenFEMA data.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io/denials.html">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --ramp-1:#f2d9a0;--ramp-2:#ecc278;--ramp-3:#e3a652;--ramp-4:#d8853a;
+  --ramp-5:#c96a2e;--ramp-6:#b35024;--ramp-7:#97391b;--ramp-8:#7a2c14;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
+.brand{display:flex;align-items:baseline;gap:10px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);}
+.navlinks{display:flex;align-items:center;gap:4px;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+@media(max-width:720px){nav{height:auto;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:9px;padding-top:11px;padding-bottom:11px;}.navlinks{flex-wrap:wrap;gap:4px;}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,44px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,60px);line-height:1.02;letter-spacing:-1.5px;max-width:19ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:62ch;margin-top:24px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(24px,3vw,38px);}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
+.shead p{font-size:14px;color:var(--ink-2);max-width:56ch;margin-top:8px;}
+
+/* Latest denials list, matching the "latest declarations" teaser style */
+.ll-grid{display:flex;flex-direction:column;gap:10px;}
+.ll-card{display:flex;align-items:center;gap:14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:11px;padding:13px 16px;transition:border-color .13s;}
+.ll-card:hover{border-color:var(--rule-2);}
+.ll-badge{flex:none;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.6px;color:#fff;padding:3px 8px;border-radius:5px;line-height:1.4;}
+.ll-badge.DR{background:var(--accent);}
+.ll-badge.EM{background:#9c6a00;}
+.ll-badge.FM{background:var(--ember);}
+.ll-body{flex:1;min-width:0;}
+.ll-title{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--ink);line-height:1.25;}
+.ll-meta{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;}
+.ll-deny{display:inline-block;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#9e3a1e;border:1px solid #d98c4e;border-radius:3px;padding:1px 5px;}
+.ll-date{flex:none;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;}
+.ll-placeholder{color:var(--ink-3);font-size:14px;}
+@media(max-width:560px){
+  .ll-card{flex-wrap:wrap;gap:6px 12px;}
+  .ll-date{order:3;width:100%;text-align:left;}
+  .ll-body{flex-basis:100%;order:2;}
+}
+
+/* Map */
+.mapcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:clamp(14px,2.5vw,20px);}
+#denmap{width:100%;height:520px;border-radius:8px;background:var(--paper-3);}
+.leaflet-container{background:var(--paper-3) !important;font-family:var(--sans);}
+.legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:11.5px;color:var(--ink-2);}
+.legend .sw{display:inline-flex;align-items:center;gap:5px;}
+.legend .sw i{width:13px;height:13px;border-radius:3px;display:inline-block;}
+.mapfoot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:12px;color:var(--ink-3);}
+.den-tip{font-size:12.5px;line-height:1.5;}
+.den-tip b{font-family:var(--serif);font-size:14px;font-weight:600;}
+
+/* Ranked list, matching the state board rows */
+.tier{margin-top:30px;}
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
+.row{display:grid;grid-template-columns:34px 1.6fr 2.4fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);border-radius:6px;transition:background .12s;}
+.row:hover{background:var(--paper-2);}
+.rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;}
+.sname{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sname .meta{font-size:11.5px;color:var(--ink-3);}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;background:var(--ember);transition:width .5s cubic-bezier(.22,1,.36,1);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:44px;text-align:right;}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:8px 10px;}.bar-wrap{grid-column:1/-1;}}
+
+.terr-note{margin-top:16px;font-size:12.5px;color:var(--ink-3);line-height:1.6;}
+
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="brand"><span class="mark">Disaster Data</span></div>
+  <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="map.html">Map</a><a href="states/index.html">States</a><a href="public-assistance-projects.html">Funding</a><a href="denials.html" class="on">Denials</a><a href="about.html">About</a><a href="ops-briefings/index.html">FEMA Daily Operations Brief</a></div>
+</nav>
+
+<div class="container">
+  <header class="masthead">
+    <div class="kicker reveal">Requests the federal government turned down</div>
+    <h1 class="headline reveal" style="animation-delay:.06s">Where FEMA said <em>no.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">Not every request for a major disaster or emergency declaration is approved. This tracks the ones that were not, since FY2000: who asked, for what hazard, and how often a state's requests get turned down relative to how many it files.</p>
+    <div class="stats reveal" style="animation-delay:.18s">
+      <div class="stat"><div class="num" id="st-total-den">0</div><div class="lab">requests denied</div></div>
+      <div class="stat"><div class="num" id="st-rate">0<small>%</small></div><div class="lab">overall denial rate</div></div>
+      <div class="stat"><div class="num" id="st-states-den">0</div><div class="lab">states with a denial on record</div></div>
+      <div class="stat"><div class="num" id="st-latest">&mdash;</div><div class="lab">most recent denial</div></div>
+    </div>
+  </header>
+</div>
+
+<!-- ===== Latest denials ===== -->
+<div class="container">
+  <section id="latest-denials" style="padding-top:clamp(30px,4vw,48px)">
+    <div class="shead">
+      <div>
+        <h2>Latest denials</h2>
+        <p>The five most recently dated denied requests on record, newest first.</p>
+      </div>
+    </div>
+    <div class="ll-grid" id="ll-denials">
+      <p class="ll-placeholder">Loading recent denials&hellip;</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===== Map ===== -->
+<div class="container">
+  <section id="map">
+    <div class="shead">
+      <div>
+        <h2>Denial rate by state</h2>
+        <p>Denied requests as a share of all requests filed (approved and denied). Darker means a state's requests are turned down more often, not that it files more requests.</p>
+      </div>
+    </div>
+    <div class="mapcard">
+      <div id="denmap"></div>
+      <div class="legend" id="legend"></div>
+      <div class="mapfoot">
+        <span>Hover a state for its record. Territories and D.C. are covered below the map since they don't render on this base map.</span>
+        <span>Source: OpenFEMA</span>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-h"><span class="t">Ranked by denial rate</span><span class="c" id="rank-count">0 states shown</span></div>
+      <div id="rank-rows"></div>
+    </div>
+    <p class="terr-note" id="terr-note"></p>
+  </section>
+</div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries and Declaration Denials &mdash; uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Denial rate is denied requests divided by total requests (approved and denied) for that state.</div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="index.html">Back to overview</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Live data from build.py (OpenFEMA pipeline). Loads if present; falls back to the baked-in snapshot below when absent. -->
+<script src="data.js"></script>
+<script>
+/* ---- Baked-in fallback snapshot (kept identical to index.html's) ---- */
+let STATES = [{"ab":"CA","name":"California","decl":317,"dr":53,"em":12,"fm":252,"den":13,"rate":3.94,"days":8.6,"inc":[["Fire",273],["Severe Storm",19],["Flood",8]]},{"ab":"TX","name":"Texas","decl":214,"dr":39,"em":14,"fm":161,"den":24,"rate":10.08,"days":8.0,"inc":[["Fire",165],["Hurricane",16],["Flood",11]]},{"ab":"OK","name":"Oklahoma","decl":202,"dr":61,"em":25,"fm":116,"den":13,"rate":6.05,"days":17.8,"inc":[["Fire",121],["Severe Storm",43],["Biological",17]]},{"ab":"WA","name":"Washington","decl":156,"dr":32,"em":7,"fm":117,"den":8,"rate":4.88,"days":17.1,"inc":[["Fire",126],["Severe Storm",15],["Flood",8]]},{"ab":"OR","name":"Oregon","decl":119,"dr":24,"em":3,"fm":92,"den":6,"rate":4.8,"days":17.0,"inc":[["Fire",95],["Severe Storm",16],["Flood",3]]},{"ab":"FL","name":"Florida","decl":106,"dr":43,"em":27,"fm":36,"den":19,"rate":15.2,"days":10.8,"inc":[["Hurricane",40],["Fire",36],["Severe Storm",16]]},{"ab":"NM","name":"New Mexico","decl":103,"dr":22,"em":15,"fm":66,"den":6,"rate":5.5,"days":17.0,"inc":[["Fire",70],["Biological",13],["Severe Storm",10]]},{"ab":"AZ","name":"Arizona","decl":88,"dr":22,"em":3,"fm":63,"den":7,"rate":7.37,"days":21.9,"inc":[["Fire",66],["Severe Storm",12],["Flood",5]]},{"ab":"CO","name":"Colorado","decl":86,"dr":12,"em":6,"fm":68,"den":1,"rate":1.15,"days":8.3,"inc":[["Fire",74],["Flood",4],["Snowstorm",3]]},{"ab":"MT","name":"Montana","decl":83,"dr":27,"em":4,"fm":52,"den":6,"rate":6.74,"days":23.6,"inc":[["Fire",55],["Severe Storm",11],["Flood",10]]},{"ab":"NV","name":"Nevada","decl":82,"dr":9,"em":4,"fm":69,"den":0,"rate":0.0,"days":7.5,"inc":[["Fire",70],["Severe Storm",5],["Flood",2]]},{"ab":"KS","name":"Kansas","decl":70,"dr":48,"em":8,"fm":14,"den":3,"rate":4.11,"days":46.2,"inc":[["Severe Storm",42],["Fire",14],["Biological",5]]},{"ab":"NY","name":"New York","decl":68,"dr":45,"em":22,"fm":1,"den":8,"rate":10.53,"days":37.9,"inc":[["Severe Storm",26],["Snowstorm",11],["Hurricane",10]]},{"ab":"SD","name":"South Dakota","decl":66,"dr":42,"em":5,"fm":19,"den":9,"rate":12.0,"days":41.7,"inc":[["Severe Storm",27],["Fire",19],["Flood",9]]},{"ab":"LA","name":"Louisiana","decl":66,"dr":36,"em":25,"fm":5,"den":17,"rate":20.48,"days":18.5,"inc":[["Hurricane",28],["Flood",9],["Severe Storm",7]]},{"ab":"TN","name":"Tennessee","decl":66,"dr":49,"em":8,"fm":9,"den":3,"rate":4.35,"days":25.4,"inc":[["Severe Storm",36],["Fire",10],["Tornado",4]]},{"ab":"AK","name":"Alaska","decl":64,"dr":44,"em":2,"fm":18,"den":13,"rate":16.88,"days":53.8,"inc":[["Severe Storm",22],["Fire",19],["Flood",11]]},{"ab":"KY","name":"Kentucky","decl":62,"dr":48,"em":7,"fm":7,"den":6,"rate":8.82,"days":27.9,"inc":[["Severe Storm",35],["Flood",7],["Fire",7]]},{"ab":"NE","name":"Nebraska","decl":59,"dr":44,"em":7,"fm":8,"den":5,"rate":7.81,"days":44.0,"inc":[["Severe Storm",34],["Fire",8],["Biological",6]]},{"ab":"MS","name":"Mississippi","decl":58,"dr":45,"em":13,"fm":0,"den":11,"rate":15.94,"days":24.6,"inc":[["Severe Storm",29],["Hurricane",18],["Flood",3]]},{"ab":"MO","name":"Missouri","decl":55,"dr":46,"em":8,"fm":1,"den":6,"rate":9.84,"days":35.4,"inc":[["Severe Storm",37],["Flood",8],["Severe Ice Storm",6]]},{"ab":"AL","name":"Alabama","decl":54,"dr":41,"em":11,"fm":2,"den":5,"rate":8.47,"days":30.5,"inc":[["Severe Storm",28],["Hurricane",19],["Biological",4]]},{"ab":"WV","name":"West Virginia","decl":52,"dr":44,"em":6,"fm":2,"den":6,"rate":10.34,"days":33.7,"inc":[["Severe Storm",25],["Flood",12],["Hurricane",4]]},{"ab":"NC","name":"North Carolina","decl":51,"dr":29,"em":13,"fm":9,"den":6,"rate":10.53,"days":22.9,"inc":[["Hurricane",20],["Fire",9],["Severe Storm",8]]},{"ab":"AR","name":"Arkansas","decl":49,"dr":41,"em":8,"fm":0,"den":7,"rate":12.5,"days":31.9,"inc":[["Severe Storm",28],["Severe Ice Storm",6],["Flood",4]]},{"ab":"ND","name":"North Dakota","decl":48,"dr":38,"em":7,"fm":3,"den":7,"rate":12.73,"days":53.6,"inc":[["Severe Storm",21],["Flood",14],["Fire",4]]},{"ab":"UT","name":"Utah","decl":48,"dr":11,"em":2,"fm":35,"den":2,"rate":4.0,"days":23.6,"inc":[["Fire",35],["Flood",6],["Severe Storm",3]]},{"ab":"GA","name":"Georgia","decl":47,"dr":25,"em":10,"fm":12,"den":8,"rate":14.55,"days":13.3,"inc":[["Hurricane",13],["Severe Storm",12],["Fire",12]]},{"ab":"HI","name":"Hawaii","decl":47,"dr":20,"em":4,"fm":23,"den":3,"rate":6.0,"days":21.1,"inc":[["Fire",24],["Severe Storm",8],["Flood",4]]},{"ab":"VA","name":"Virginia","decl":46,"dr":32,"em":7,"fm":7,"den":6,"rate":11.54,"days":28.0,"inc":[["Severe Storm",17],["Hurricane",9],["Fire",8]]},{"ab":"NH","name":"New Hampshire","decl":46,"dr":33,"em":12,"fm":1,"den":6,"rate":11.54,"days":43.5,"inc":[["Severe Storm",25],["Snowstorm",7],["Hurricane",5]]},{"ab":"IA","name":"Iowa","decl":45,"dr":41,"em":4,"fm":0,"den":8,"rate":15.09,"days":38.0,"inc":[["Severe Storm",28],["Flood",9],["Biological",3]]},{"ab":"VT","name":"Vermont","decl":44,"dr":38,"em":6,"fm":0,"den":3,"rate":6.38,"days":44.9,"inc":[["Severe Storm",25],["Flood",10],["Hurricane",3]]},{"ab":"ME","name":"Maine","decl":43,"dr":30,"em":13,"fm":0,"den":4,"rate":8.51,"days":51.6,"inc":[["Severe Storm",19],["Snowstorm",10],["Flood",5]]},{"ab":"SC","name":"South Carolina","decl":40,"dr":20,"em":13,"fm":7,"den":6,"rate":13.04,"days":17.2,"inc":[["Hurricane",15],["Fire",7],["Severe Storm",5]]},{"ab":"MN","name":"Minnesota","decl":40,"dr":30,"em":7,"fm":3,"den":3,"rate":6.98,"days":41.6,"inc":[["Severe Storm",16],["Flood",13],["Biological",4]]},{"ab":"WY","name":"Wyoming","decl":38,"dr":10,"em":1,"fm":27,"den":2,"rate":5.0,"days":16.5,"inc":[["Fire",28],["Flood",4],["Severe Storm",3]]},{"ab":"ID","name":"Idaho","decl":38,"dr":16,"em":2,"fm":20,"den":4,"rate":9.52,"days":31.9,"inc":[["Fire",21],["Flood",9],["Severe Storm",5]]},{"ab":"NJ","name":"New Jersey","decl":37,"dr":25,"em":9,"fm":3,"den":7,"rate":15.91,"days":31.7,"inc":[["Severe Storm",16],["Hurricane",8],["Snowstorm",5]]},{"ab":"MA","name":"Massachusetts","decl":37,"dr":19,"em":18,"fm":0,"den":2,"rate":5.13,"days":39.7,"inc":[["Severe Storm",12],["Hurricane",8],["Snowstorm",7]]},{"ab":"PR","name":"Puerto Rico","decl":32,"dr":21,"em":11,"fm":0,"den":0,"rate":0.0,"days":23.3,"inc":[["Hurricane",12],["Severe Storm",11],["Flood",3]]},{"ab":"IL","name":"Illinois","decl":31,"dr":24,"em":7,"fm":0,"den":15,"rate":32.61,"days":42.1,"inc":[["Severe Storm",13],["Flood",6],["Snowstorm",5]]},{"ab":"CT","name":"Connecticut","decl":30,"dr":15,"em":14,"fm":1,"den":5,"rate":14.29,"days":35.6,"inc":[["Severe Storm",12],["Hurricane",9],["Snowstorm",5]]},{"ab":"OH","name":"Ohio","decl":30,"dr":24,"em":6,"fm":0,"den":5,"rate":14.29,"days":32.9,"inc":[["Severe Storm",18],["Tornado",3],["Biological",2]]},{"ab":"IN","name":"Indiana","decl":28,"dr":22,"em":6,"fm":0,"den":6,"rate":17.65,"days":37.1,"inc":[["Severe Storm",18],["Snowstorm",3],["Flood",2]]},{"ab":"PA","name":"Pennsylvania","decl":28,"dr":21,"em":7,"fm":0,"den":8,"rate":22.22,"days":34.4,"inc":[["Severe Storm",12],["Hurricane",7],["Flood",3]]},{"ab":"WI","name":"Wisconsin","decl":25,"dr":21,"em":4,"fm":0,"den":5,"rate":16.67,"days":39.3,"inc":[["Severe Storm",11],["Flood",7],["Snowstorm",3]]},{"ab":"MD","name":"Maryland","decl":23,"dr":17,"em":6,"fm":0,"den":8,"rate":25.81,"days":40.4,"inc":[["Hurricane",7],["Severe Storm",6],["Flood",3]]},{"ab":"RI","name":"Rhode Island","decl":21,"dr":11,"em":9,"fm":1,"den":4,"rate":16.0,"days":40.6,"inc":[["Severe Storm",8],["Hurricane",6],["Snowstorm",3]]},{"ab":"DC","name":"Washington D.C.","decl":19,"dr":12,"em":7,"fm":0,"den":0,"rate":0.0,"days":33.2,"inc":[["Hurricane",6],["Severe Storm",6],["Other",2]]},{"ab":"MI","name":"Michigan","decl":19,"dr":13,"em":6,"fm":0,"den":9,"rate":32.14,"days":80.6,"inc":[["Flood",5],["Severe Storm",5],["Dam/Levee Break",2]]},{"ab":"VI","name":"U.S. Virgin Islands","decl":18,"dr":10,"em":8,"fm":0,"den":0,"rate":0.0,"days":22.1,"inc":[["Hurricane",9],["Severe Storm",3],["Tropical Storm",2]]},{"ab":"DE","name":"Delaware","decl":16,"dr":11,"em":5,"fm":0,"den":1,"rate":5.88,"days":34.1,"inc":[["Hurricane",9],["Snowstorm",3],["Biological",2]]},{"ab":"MP","name":"N. Mariana Islands","decl":15,"dr":10,"em":5,"fm":0,"den":0,"rate":0.0,"days":20.3,"inc":[["Typhoon",11],["Tropical Storm",2],["Biological",2]]},{"ab":"GU","name":"Guam","decl":13,"dr":10,"em":3,"fm":0,"den":0,"rate":0.0,"days":28.5,"inc":[["Typhoon",5],["Tropical Storm",2],["Biological",2]]},{"ab":"AS","name":"American Samoa","decl":10,"dr":8,"em":2,"fm":0,"den":0,"rate":0.0,"days":30.8,"inc":[["Severe Storm",3],["Biological",2],["Hurricane",2]]},{"ab":"FM","name":"Fed. States of Micronesia","decl":6,"dr":5,"em":1,"fm":0,"den":2,"rate":25.0,"days":51.7,"inc":[["Typhoon",5],["Drought",1]]}];
+
+let DENS={"ID":[["24176","Major Disaster","Fire","2024-10-07"],["17018","Major Disaster","Severe Ice Storm","2017-02-28"],["23","Major Disaster","Mud/Landslide","2000-03-03"],["3002","Emergency","Mud/Landslide","2000-02-18"]],"OK":[["25091","Major Disaster","Flood","2025-07-02"],["23001","Major Disaster","Severe Storm","2023-01-03"],["16055","Major Disaster","Flood","2016-06-29"],["15008","Major Disaster","Tornado","2015-04-01"],["12097","Major Disaster","Fire","2012-09-27"],["12018","Major Disaster","Severe Storm","2012-04-18"],["11264","Major Disaster","Earthquake","2011-11-21"],["10077","Major Disaster","Severe Storm","2010-07-19"],["9076","Major Disaster","Severe Storm","2009-05-21"],["8164","Major Disaster","Severe Storm","2008-09-18"],["1029","Major Disaster","Severe Ice Storm","2001-03-15"],["154","Emergency","Fire","2000-09-22"],["40","Major Disaster","Flood","2000-05-10"]],"LA":[["25001","Emergency","Terrorist","2025-01-02"],["20209","Major Disaster","Tornado","2020-07-10"],["20173","Major Disaster","Tornado","2020-04-25"],["18109","Major Disaster","Flood","2018-06-29"],["18031","Major Disaster","Severe Storm","2018-05-12"],["16032","Major Disaster","Severe Storm","2016-03-18"],["16027","Major Disaster","Flood","2016-03-02"],["12021","Major Disaster","Severe Storm","2012-05-01"],["12019","Major Disaster","Severe Storm","2012-04-26"],["11030","Major Disaster","Tornado","2011-03-18"],["10056","Major Disaster","Severe Storm","2010-05-07"],["8081","Major Disaster","Severe Storm","2008-06-03"],["4136","Major Disaster","Severe Storm","2004-12-09"],["4030","Major Disaster","Flood","2004-05-11"],["3064","Major Disaster","Severe Storm","2003-07-09"],["2107","Emergency","Other","2002-08-05"],["46","Major Disaster","Tornado","2000-06-05"]],"NC":[["18074","Major Disaster","Severe Storm","2018-07-30"],["15086","Major Disaster","Severe Storm","2015-10-29"],["14031","Major Disaster","Severe Storm","2014-05-02"],["8174","Major Disaster","Coastal Storm","2008-10-24"],["4091","Major Disaster","Hurricane","2004-08-20"],["51","Major Disaster","Severe Storm","2000-06-06"]],"IL":[["25125","Major Disaster","Severe Storm","2025-09-15"],["23040","Emergency","Severe Storm","2023-04-05"],["18014","Major Disaster","Flood","2018-04-11"],["17088","Major Disaster","Flood","2017-08-31"],["16025","Major Disaster","Flood","2016-02-26"],["12010","Major Disaster","Tornado","2012-03-07"],["11205","Major Disaster","Severe Storm","2011-08-26"],["10065","Major Disaster","Tornado","2010-06-18"],["8052","Major Disaster","Flood","2008-04-08"],["6153","Major Disaster","Severe Storm","2006-09-11"],["6128","Major Disaster","Severe Storm","2006-07-26"],["2084","Major Disaster","Flood","2002-07-01"],["2029","Major Disaster","Tornado","2002-04-25"],["1081","Major Disaster","Flood","2001-08-14"],["56","Major Disaster","Severe Storm","2000-06-15"]],"TX":[["23010","Major Disaster","Severe Storm","2023-02-07"],["21109","Emergency","Other","2021-09-20"],["20304","Major Disaster","Hurricane","2020-09-30"],["20004","Major Disaster","Tornado","2020-01-14"],["14007","Major Disaster","Severe Storm","2014-01-17"],["13016","Major Disaster","Other","2013-04-22"],["10110","Major Disaster","Other","2010-09-20"],["9095","Emergency","Fire","2009-08-18"],["9056","Major Disaster","Fire","2009-04-16"],["9022","Emergency","Fire","2009-02-25"],["8152","Emergency","Severe Storm","2008-09-18"],["8130","Major Disaster","Severe Storm","2008-08-22"],["7911","Major Disaster","Hurricane","2007-09-20"],["7819","Major Disaster","Severe Storm","2007-04-19"],["6168","Major Disaster","Severe Storm","2006-10-31"],["6150","Major Disaster","Drought","2006-08-24"],["4137","Major Disaster","Severe Storm","2004-12-09"],["3139","Major Disaster","Severe Storm","2003-11-21"],["3119","Major Disaster","Severe Storm","2003-10-21"],["1114","Major Disaster","Severe Storm","2001-11-30"],["1102","Major Disaster","Severe Storm","2001-10-25"],["1097","Major Disaster","Other","2001-10-03"],["1035","Major Disaster","Severe Storm","2001-05-30"],["79","Emergency","Fire","2000-07-27"]],"CT":[["14012","Emergency","Severe Storm","2014-02-14"],["10100","Major Disaster","Tornado","2010-08-20"],["6127","Major Disaster","Severe Storm","2006-07-27"],["2154","Major Disaster","Severe Ice Storm","2002-12-11"],["93","Major Disaster","Severe Storm","2000-08-17"]],"AR":[["20005","Major Disaster","Tornado","2019-12-03"],["19079","Major Disaster","Coastal Storm","2019-09-12"],["10057","Major Disaster","Severe Storm","2010-05-10"],["8022","Emergency","Fire","2008-02-26"],["7803","Emergency","Severe Storm","2007-02-27"],["1027","Major Disaster","Tornado","2001-03-02"],["138","Emergency","Fire","2000-09-08"]],"WI":[["25006","Major Disaster","Other","2025-01-13"],["16088","Major Disaster","Severe Storm","2016-09-02"],["14056","Major Disaster","Freezing","2014-07-23"],["5077","Major Disaster","Tornado","2005-08-25"],["155","Major Disaster","Severe Storm","2000-09-22"]],"NY":[["24119","Emergency","Tornado","2024-07-20"],["17077","Major Disaster","Severe Storm","2017-08-31"],["11164","Major Disaster","Severe Storm","2011-07-13"],["10009","Major Disaster","Snowstorm","2010-02-02"],["5160","Major Disaster","Severe Storm","2005-11-23"],["5063","Major Disaster","Severe Storm","2005-07-22"],["1006","Major Disaster","Severe Storm","2001-01-16"],["162","Major Disaster","Severe Storm","2000-10-10"]],"RI":[["10098","Emergency","Hurricane","2010-09-02"],["5161","Major Disaster","Flood","2005-11-22"],["3013","Major Disaster","Fire","2003-02-24"],["1038","Major Disaster","Flood","2001-04-20"]],"FL":[["24007","Major Disaster","Severe Storm","2024-02-05"],["22006","Major Disaster","Tornado","2022-01-24"],["16056","Emergency","Biological","2016-07-06"],["16048","Emergency","Terrorist","2016-06-13"],["16029","Major Disaster","Severe Storm","2016-03-16"],["16026","Emergency","Severe Storm","2016-02-29"],["15069","Major Disaster","Flood","2015-08-26"],["12118","Major Disaster","Hurricane","2012-11-01"],["12044","Major Disaster","Severe Storm","2012-06-30"],["10034","Major Disaster","Freezing","2010-03-18"],["8167","Major Disaster","Hurricane","2008-10-07"],["8136","Emergency","Hurricane","2008-08-31"],["7841","Emergency","Fire","2007-05-25"],["3089","Major Disaster","Tornado","2003-08-13"],["3028","Major Disaster","Freezing","2003-03-20"],["2140","Emergency","Hurricane","2002-10-08"],["1115","Major Disaster","Other","2001-12-04"],["1101","Emergency","Fire","2001-10-17"],["1078","Major Disaster","Hurricane","2001-08-06"]],"FM":[["8165","Major Disaster","Other","2008-07-31"],["1099","Major Disaster","Toxic Substances","2001-09-10"]],"MA":[["5044","Major Disaster","Fishing Losses","2005-06-10"],["1095","Emergency","Fire","2001-10-02"]],"MD":[["25076","Major Disaster","Severe Storm","2025-06-11"],["21108","Major Disaster","Hurricane","2021-09-27"],["21004","Emergency","Other","2021-01-15"],["15020","Major Disaster","Civil Unrest","2015-05-22"],["11232","Emergency","Severe Storm","2011-09-08"],["9006","Emergency","Other","2009-01-09"],["4128","Major Disaster","Fire","2004-09-29"],["1096","Major Disaster","Tornado","2001-10-02"]],"TN":[["25031","Major Disaster","Severe Storm","2025-03-18"],["22044","Major Disaster","Fire","2022-05-27"],["2017","Major Disaster","Severe Storm","2002-02-06"]],"GA":[["23055","Major Disaster","Severe Storm","2023-05-26"],["22092","Major Disaster","Flood","2022-10-04"],["20169","Major Disaster","Severe Storm","2020-04-22"],["8088","Major Disaster","Tornado","2008-05-28"],["7913","Major Disaster","Drought","2007-10-20"],["7844","Emergency","Fire","2007-06-01"],["4123","Major Disaster","Other","2004-09-26"],["2020","Emergency","Other","2002-02-21"]],"ME":[["14017","Major Disaster","Severe Ice Storm","2014-02-21"],["8049","Emergency","Snowstorm","2008-03-28"],["5052","Major Disaster","Fishing Losses","2005-06-30"],["2027","Major Disaster","Drought","2002-04-09"]],"NM":[["25135","Major Disaster","Severe Storm","2025-10-22"],["21114","Major Disaster","Flood","2021-10-06"],["16092","Major Disaster","Flood","2016-09-21"],["16019","Major Disaster","Severe Storm","2016-02-16"],["6120","Major Disaster","Flood","2006-07-14"],["2052","Emergency","Fire","2002-06-03"]],"NE":[["25103","Major Disaster","Severe Storm","2025-07-24"],["19089","Major Disaster","Flood","2019-10-21"],["12079","Major Disaster","Fire","2012-08-28"],["11245","Major Disaster","Severe Storm","2011-09-15"],["2094","Major Disaster","Severe Storm","2002-07-15"]],"ND":[["23026","Major Disaster","Freezing","2023-03-21"],["17084","Major Disaster","Severe Storm","2017-08-24"],["17136","Major Disaster","Drought","2017-08-07"],["17045","Major Disaster","Other","2017-04-29"],["14090","Major Disaster","Flood","2014-10-08"],["9027","Emergency","Snowstorm","2009-02-19"],["2106","Emergency","Fire","2002-08-01"]],"AZ":[["25139","Major Disaster","Severe Storm","2025-11-12"],["15084","Emergency","Chemical","2015-10-02"],["13093","Major Disaster","Flood","2013-10-10"],["13057","Major Disaster","Fire","2013-07-12"],["13061","Major Disaster","Other","2013-05-03"],["9117","Major Disaster","Flood","2008-10-06"],["2122","Major Disaster","Other","2002-08-06"]],"NJ":[["18095","Major Disaster","Severe Storm","2018-08-30"],["15087","Major Disaster","Coastal Storm","2015-10-29"],["11050","Major Disaster","Severe Storm","2011-03-31"],["5148","Major Disaster","Severe Storm","2005-10-18"],["5064","Major Disaster","Severe Storm","2005-07-21"],["3118","Major Disaster","Hurricane","2003-10-03"],["2121","Emergency","Severe Storm","2002-08-14"]],"MS":[["22037","Major Disaster","Severe Storm","2022-04-29"],["22035","Major Disaster","Severe Storm","2022-04-28"],["20224","Major Disaster","Coastal Storm","2020-07-07"],["16041","Major Disaster","Flood","2016-05-13"],["11041","Major Disaster","Severe Storm","2011-03-31"],["8155","Emergency","Hurricane","2008-09-08"],["5145","Major Disaster","Hurricane","2005-10-12"],["4015","Major Disaster","Dam/Levee Break","2004-03-19"],["3062","Major Disaster","Severe Storm","2003-06-12"],["2156","Major Disaster","Tornado","2002-12-23"],["2119","Emergency","Other","2002-08-16"]],"VA":[["21003","Emergency","Other","2021-01-15"],["16035","Major Disaster","Tornado","2016-03-25"],["11253","Major Disaster","Severe Storm","2011-10-08"],["11075","Major Disaster","Severe Storm","2011-04-18"],["9008","Emergency","Other","2009-01-13"],["2132","Major Disaster","Drought","2002-08-23"]],"WY":[["21057","Major Disaster","Snowstorm","2021-05-07"],["2124","Major Disaster","Flood","2002-08-30"]],"NH":[["23079","Major Disaster","Flood","2023-07-28"],["23051","Major Disaster","Snowstorm","2023-05-12"],["14037","Major Disaster","Flood","2014-05-21"],["5072","Major Disaster","Flood","2005-08-04"],["5037","Major Disaster","Severe Storm","2005-04-28"],["3031","Major Disaster","Other","2003-04-09"]],"CA":[["25098","Emergency","Other","2025-06-24"],["24175","Major Disaster","Fire","2024-09-24"],["24038","Major Disaster","Flood","2024-03-21"],["22100","Major Disaster","Fire","2022-10-26"],["16061","Major Disaster","Fire","2016-07-14"],["16043","Major Disaster","Severe Storm","2016-04-26"],["11111","Major Disaster","Severe Storm","2011-04-22"],["10111","Major Disaster","Fire","2010-09-15"],["9085","Major Disaster","Drought","2009-06-19"],["8128","Major Disaster","Fire","2008-08-19"],["8055","Emergency","Other","2008-02-19"],["6073","Emergency","Other","2006-02-26"],["3034","Emergency","Drought","2003-04-16"]],"MI":[["25048","Emergency","Severe Ice Storm","2025-04-11"],["24056","Major Disaster","Tornado","2024-06-06"],["23060","Major Disaster","Flood","2023-06-15"],["22046","Major Disaster","Tornado","2022-06-08"],["19040","Major Disaster","Flood","2019-06-10"],["16006","Major Disaster","Toxic Substances","2016-01-14"],["12025","Major Disaster","Flood","2012-06-01"],["4028","Major Disaster","Other","2004-04-30"],["3051","Major Disaster","Dam/Levee Break","2003-06-04"]],"KY":[["25007","Major Disaster","Winter Storm","2025-01-31"],["24025","Major Disaster","Severe Storm","2024-03-27"],["23099","Major Disaster","Severe Storm","2023-08-18"],["21079","Major Disaster","Flood","2021-08-19"],["6078","Major Disaster","Severe Storm","2006-04-07"],["3102","Major Disaster","Severe Storm","2003-08-29"]],"PA":[["24202","Emergency","Snowstorm","2024-12-06"],["23136","Major Disaster","Flood","2023-11-09"],["23082","Major Disaster","Flood","2023-07-31"],["20312","Major Disaster","Hurricane","2020-10-05"],["18042","Major Disaster","Severe Storm","2018-06-22"],["17040","Major Disaster","Snowstorm","2017-05-02"],["9082","Major Disaster","Flood","2009-06-29"],["3141","Major Disaster","Flood","2003-12-05"]],"WV":[["25082","Emergency","Flood","2025-06-20"],["22094","Major Disaster","Flood","2022-10-14"],["22095","Major Disaster","Flood","2022-10-14"],["22045","Major Disaster","Flood","2022-06-03"],["14018","Major Disaster","Chemical","2014-03-21"],["4010","Major Disaster","Flood","2004-02-04"]],"WA":[["25057","Major Disaster","Severe Storm","2025-01-14"],["16108","Major Disaster","Fire","2016-10-18"],["15088","Major Disaster","Fire","2015-11-03"],["11073","Major Disaster","Fire","2011-03-25"],["11009","Major Disaster","Severe Storm","2011-02-14"],["7807","Emergency","Mud/Landslide","2007-03-06"],["7798","Major Disaster","Severe Storm","2007-02-05"],["4013","Major Disaster","Severe Ice Storm","2004-02-06"]],"OH":[["24051","Major Disaster","Severe Storm","2024-06-03"],["23067","Major Disaster","Explosion","2023-07-03"],["12011","Major Disaster","Severe Storm","2012-03-07"],["10063","Major Disaster","Tornado","2010-06-09"],["4101","Major Disaster","Flood","2004-09-07"]],"IA":[["24009","Major Disaster","Winter Storm","2024-02-13"],["23094","Major Disaster","Other","2023-06-20"],["23057","Emergency","Other","2023-06-06"],["15028","Major Disaster","Other","2015-06-17"],["7849","Major Disaster","Severe Storm","2007-06-05"],["6082","Major Disaster","Severe Storm","2006-04-19"],["5159","Major Disaster","Tornado","2005-11-21"],["4132","Major Disaster","Severe Storm","2004-10-04"]],"SC":[["24054","Major Disaster","Dam/Levee Break","2024-06-05"],["24041","Major Disaster","Severe Storm","2024-05-07"],["24006","Major Disaster","Severe Storm","2024-02-02"],["8046","Major Disaster","Tornado","2008-03-24"],["6099","Emergency","Fire","2006-06-13"],["5003","Emergency","Chemical","2005-01-11"]],"MT":[["25143","Emergency","Straight-Line Winds","2025-12-24"],["25132","Emergency","Other","2025-10-22"],["21076","Major Disaster","Severe Storm","2021-08-02"],["17140","Major Disaster","Other","2017-11-15"],["16074","Major Disaster","Severe Storm","2016-08-02"],["5036","Major Disaster","Severe Storm","2005-05-02"]],"IN":[["15071","Major Disaster","Flood","2015-08-31"],["13099","Major Disaster","Severe Storm","2013-12-04"],["11024","Major Disaster","Severe Storm","2011-03-14"],["9109","Major Disaster","Severe Storm","2009-09-09"],["7926","Major Disaster","Severe Storm","2007-11-02"],["5162","Major Disaster","Tornado","2005-12-03"]],"OR":[["25070","Major Disaster","Flood","2025-05-19"],["23020","Major Disaster","Severe Storm","2023-02-28"],["22081","Emergency","Fire","2022-09-09"],["21118","Major Disaster","Fire","2021-10-06"],["8113","Major Disaster","Fishing Losses","2008-05-30"],["6123","Major Disaster","Drought","2006-06-02"]],"MO":[["25067","Emergency","Severe Storm","2025-05-19"],["12008","Major Disaster","Severe Storm","2012-03-07"],["11001","Major Disaster","Severe Storm","2011-01-14"],["8070","Major Disaster","Severe Storm","2008-05-15"],["7860","Major Disaster","Severe Storm","2007-07-03"],["6158","Major Disaster","Severe Storm","2006-09-28"]],"CO":[["7785","Emergency","Severe Storm","2007-01-05"]],"AK":[["25124","Major Disaster","Fire","2025-08-28"],["24052","Major Disaster","Fire","2024-06-04"],["24053","Major Disaster","Fire","2024-06-04"],["24004","Major Disaster","Other","2024-01-24"],["23117","Major Disaster","Dam/Levee Break","2023-09-05"],["23066","Emergency","Other","2023-06-29"],["20146","Major Disaster","Fire","2020-04-06"],["20006","Major Disaster","Severe Storm","2020-02-06"],["19104","Major Disaster","Fire","2019-11-25"],["17004","Major Disaster","Severe Storm","2017-01-15"],["17001","Major Disaster","Severe Storm","2016-12-23"],["15060","Major Disaster","Fire","2015-07-24"],["7848","Major Disaster","Flood","2007-06-11"]],"AL":[["21008","Major Disaster","Tornado","2021-02-12"],["11068","Major Disaster","Severe Storm","2011-04-19"],["10007","Major Disaster","Freezing","2010-02-01"],["8150","Emergency","Hurricane","2008-09-12"],["8009","Major Disaster","Severe Storm","2008-02-08"]],"SD":[["25090","Major Disaster","Severe Storm","2025-06-26"],["19082","Major Disaster","Severe Storm","2019-09-10"],["24016","Major Disaster","Severe Storm","2018-08-27"],["24015","Major Disaster","Severe Storm","2018-08-17"],["18039","Major Disaster","Severe Storm","2018-06-14"],["17008","Major Disaster","Severe Ice Storm","2017-01-25"],["15023","Major Disaster","Tornado","2015-05-27"],["14047","Major Disaster","Flood","2014-07-02"],["13089","Major Disaster","Severe Storm","2013-09-10"]],"HI":[["25042","Major Disaster","Flood","2025-03-14"],["23019","Major Disaster","Volcanic Eruption","2023-01-20"],["14075","Major Disaster","Hurricane","2014-08-21"]],"VT":[["25118","Major Disaster","Severe Storm","2025-08-22"],["19004","Major Disaster","Snowstorm","2019-01-04"],["14085","Major Disaster","Flood","2014-09-04"]],"UT":[["22098","Major Disaster","Flood","2022-10-19"],["14094","Major Disaster","Flood","2014-10-22"]],"KS":[["25136","Major Disaster","Severe Storm","2025-11-21"],["16124","Emergency","Other","2016-11-24"],["16063","Major Disaster","Severe Storm","2016-07-21"]],"DE":[["16112","Major Disaster","Severe Storm","2016-10-27"]],"MN":[["26023","Major Disaster","Fire","2025-11-30"],["21112","Major Disaster","Tornado","2021-09-30"],["20206","Major Disaster","Civil Unrest","2020-07-02"]]};
+
+/* ---- Live override: same pattern as index.html, only what this page needs ---- */
+(function(){
+  if(!window.BROWSE || !window.STATE_SUMMARY) return; /* standalone file: keep baked-in data */
+  try{
+    var B=window.BROWSE, NM=window.STATE_NAMES||{}, DN=window.DENIALS||[];
+    var byState={};
+    B.forEach(function(r){ (byState[r.state]=byState[r.state]||[]).push(r); });
+    var denByState={}; DN.forEach(function(r){ var st=r.stateAbbreviation; if(!st) return; (denByState[st]=denByState[st]||[]).push(r); });
+    var states=[];
+    Object.keys(byState).forEach(function(st){
+      var decl=byState[st].length, denRows=denByState[st]||[], den=denRows.length;
+      states.push({ab:st,name:NM[st]||st,decl:decl,den:den,rate:(decl+den)?+(den/(decl+den)*100).toFixed(2):0});
+    });
+    /* include states/tribes that only appear in the denial file */
+    Object.keys(denByState).forEach(function(st){
+      if(!byState[st]) states.push({ab:st,name:NM[st]||st,decl:0,den:denByState[st].length,rate:100});
+    });
+    STATES=states;
+    var dens={};
+    DN.forEach(function(r){ var st=r.stateAbbreviation; if(!st) return;
+      (dens[st]=dens[st]||[]).push([String(r.declarationRequestNumber),r.declarationRequestType,r.requestedIncidentTypes,(r.declarationRequestDate||'').slice(0,10)]); });
+    Object.keys(dens).forEach(function(st){ dens[st].sort(function(a,b){ return (b[3]||'').localeCompare(a[3]||''); }); });
+    DENS=dens;
+    console.log('Disaster Data (Denials): live data.js loaded, as of '+(window.DATA_DATE||'unknown')+'.');
+  }catch(e){ console.warn('Disaster Data (Denials): data.js present but could not be parsed; using baked-in data.', e); }
+})();
+
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fdateFull(iso){ var p=(iso||'').split('-'); if(p.length<3) return iso||''; return MON[+p[1]-1]+' '+(+p[2])+', '+p[0]; }
+const TCODE={'Major Disaster':'DR','Emergency':'EM','Fire Management Assistance':'FM'};
+
+/* ---- Flatten DENS into one list, newest first ---- */
+function flatDenials(){
+  var out=[];
+  Object.keys(DENS).forEach(function(ab){
+    DENS[ab].forEach(function(r){ out.push({ab:ab,id:r[0],type:r[1],hazard:r[2],date:r[3]}); });
+  });
+  out.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+  return out;
+}
+
+function stateName(ab){
+  var s=STATES.find(function(x){ return x.ab===ab; });
+  return s ? s.name : ab;
+}
+
+/* ---- Render latest 5 ---- */
+function renderLatest(){
+  var all=flatDenials();
+  var top5=all.slice(0,5);
+  var box=document.getElementById('ll-denials');
+  if(!top5.length){ box.innerHTML='<p class="ll-placeholder">No denial records loaded yet.</p>'; return; }
+  box.innerHTML=top5.map(function(d){
+    var code=TCODE[d.type]||'DR';
+    return '<div class="ll-card"><span class="ll-badge '+code+'">'+code+'</span>'
+      +'<div class="ll-body"><div class="ll-title">Request #'+d.id+' &middot; '+stateName(d.ab)+'</div>'
+      +'<div class="ll-meta"><span>'+(d.type||'')+'</span><span>&middot;</span><span>'+(d.hazard||'')+'</span><span class="ll-deny">Denied</span></div></div>'
+      +'<div class="ll-date">'+fdateFull(d.date)+'</div></div>';
+  }).join('');
+  var latestDate=all[0]?all[0].date:null;
+  var el=document.getElementById('st-latest'); if(el) el.textContent=latestDate?fdateFull(latestDate):'—';
+}
+
+/* ---- Render top stats ---- */
+function renderStats(){
+  var totD=0,totN=0,statesWithDen=0;
+  STATES.forEach(function(s){ totD+=s.decl; totN+=s.den; if(s.den>0) statesWithDen++; });
+  document.getElementById('st-total-den').textContent=totN.toLocaleString();
+  document.getElementById('st-rate').innerHTML=(totN/((totD+totN)||1)*100).toFixed(1)+'<small>%</small>';
+  document.getElementById('st-states-den').textContent=statesWithDen;
+}
+
+/* ---- Ranked list (states with at least one request, sorted by rate) ---- */
+function renderRanked(){
+  var CONT_ABBR=['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'];
+  var rows=STATES.filter(function(s){ return (s.decl+s.den)>0; }).slice().sort(function(a,b){ return b.rate-a.rate; });
+  var top=rows.slice(0,12);
+  var maxRate=top.length?top[0].rate:1;
+  document.getElementById('rank-rows').innerHTML=top.map(function(s,i){
+    var w=maxRate?Math.max(4,(s.rate/maxRate*100)):4;
+    return '<div class="row"><div class="rank">'+(i+1)+'</div>'
+      +'<div class="sname"><div class="n">'+s.name+'</div><div class="meta">'+s.decl+' filed &middot; '+s.den+' denied</div></div>'
+      +'<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+w+'%"></div></div></div>'
+      +'<div class="barnum">'+s.rate.toFixed(1)+'%</div></div>';
+  }).join('');
+  document.getElementById('rank-count').textContent=rows.length+' states & territories with at least one request';
+  var terr=rows.filter(function(s){ return CONT_ABBR.indexOf(s.ab)===-1; });
+  var terrEl=document.getElementById('terr-note');
+  if(terr.length){
+    terrEl.innerHTML='<strong>Territories and tribal-only entries not shown on the map:</strong> '+terr.map(function(s){ return s.name+' ('+s.den+' of '+(s.decl+s.den)+' requests denied)'; }).join(', ')+'.';
+  }
+}
+
+renderLatest();
+renderStats();
+renderRanked();
+</script>
+
+<!-- ---- Choropleth map ---- -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script>
+(function(){
+  var FIPS_TO_AB={'01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT','10':'DE','11':'DC','12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN','19':'IA','20':'KS','21':'KY','22':'LA','23':'ME','24':'MD','25':'MA','26':'MI','27':'MN','28':'MS','29':'MO','30':'MT','31':'NE','32':'NV','33':'NH','34':'NJ','35':'NM','36':'NY','37':'NC','38':'ND','39':'OH','40':'OK','41':'OR','42':'PA','44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT','50':'VT','51':'VA','53':'WA','54':'WV','55':'WI','56':'WY'};
+  var RAMP=['#f2d9a0','#ecc278','#e3a652','#d8853a','#c96a2e','#b35024','#97391b','#7a2c14'];
+
+  function colorFor(rate, breaks){
+    if(rate==null) return '#e9e5da';
+    for(var i=breaks.length-1;i>=0;i--){ if(rate>breaks[i]) return RAMP[i]; }
+    return '#e9e5da';
+  }
+  function getBreaks(values){
+    var v=values.filter(function(x){ return x>0; }).sort(function(a,b){ return a-b; });
+    var max=v.length?v[v.length-1]:20;
+    var pcts=[0.06,0.14,0.25,0.38,0.52,0.68,0.82,1.0];
+    return pcts.map(function(p){ return +(max*p).toFixed(1); });
+  }
+
+  var map=L.map('denmap',{scrollWheelZoom:false,preferCanvas:true,zoomSnap:0.25}).setView([37.8,-96],3.6);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors &copy; CARTO'}).addTo(map);
+
+  fetch('https://unpkg.com/us-atlas@3/states-10m.json').then(function(r){ return r.json(); }).then(function(topology){
+    var geo=topojson.feature(topology, topology.objects.states);
+    var lookup={};
+    STATES.forEach(function(s){ lookup[s.ab]=s; });
+
+    var rateValues=Object.keys(FIPS_TO_AB).map(function(fips){
+      var ab=FIPS_TO_AB[fips], s=lookup[ab];
+      return s ? s.rate : 0;
+    });
+    var breaks=getBreaks(rateValues);
+
+    var layer=L.geoJSON(geo,{
+      style:function(feature){
+        var fips=String(feature.id).padStart(2,'0');
+        var ab=FIPS_TO_AB[fips], s=ab?lookup[ab]:null;
+        var rate=s?s.rate:null;
+        return {fillColor:colorFor(rate,breaks), fillOpacity:0.88, color:'#fcfaf3', weight:1};
+      },
+      onEachFeature:function(feature, lyr){
+        var fips=String(feature.id).padStart(2,'0');
+        var ab=FIPS_TO_AB[fips], s=ab?lookup[ab]:null;
+        if(!s){ lyr.bindTooltip('No requests on record', {sticky:true, className:'den-tip'}); return; }
+        var html='<b>'+s.name+'</b><br>'+s.den+' of '+(s.decl+s.den)+' requests denied ('+s.rate.toFixed(1)+'%)';
+        lyr.bindTooltip(html,{sticky:true, className:'den-tip'});
+        lyr.on('mouseover',function(){ lyr.setStyle({weight:2,color:'#004c53'}); });
+        lyr.on('mouseout',function(){ lyr.setStyle({weight:1,color:'#fcfaf3'}); });
+      }
+    }).addTo(map);
+
+    var legend=document.getElementById('legend');
+    var stops=['0'].concat(breaks.map(function(b){ return b.toFixed(0); }));
+    legend.innerHTML='<span class="sw"><i style="background:#e9e5da"></i>0%</span>'+RAMP.map(function(c,i){
+      return '<span class="sw"><i style="background:'+c+'"></i>'+(breaks[i-1]!=null?breaks[i-1].toFixed(0):'0')+'&ndash;'+breaks[i].toFixed(0)+'%</span>';
+    }).join('');
+  }).catch(function(e){
+    document.getElementById('denmap').innerHTML='<div style="padding:40px;text-align:center;color:#938a78;font-size:13px">Map data could not be loaded.</div>';
+    console.warn('Denials map: could not load state boundaries.', e);
+  });
+})();
+</script>
+</body>
+</html>

@@ -313,8 +313,12 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">')
 HEAD = (FONTS + '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">'
         "<style>" + CSS +
-        "#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 1.5rem;background:#f6f1e7}"
+        "#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}"
         "@media(max-width:600px){#locmap{height:240px}}"
+        ".locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}"
+        ".locmap-cap b{font-weight:700}"
+        ".loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}"
+        ".loc-lbl:before,.loc-lbl:after{display:none !important}"
         "</style>")
 
 # paths are two levels deep: states/virginia/<slug>.html -> site root is ../../
@@ -441,8 +445,10 @@ def render_page(j, others):
     # embedded state map (county-level, only for county/city kinds with a FIPS match)
     st_fips = STATE_FIPS.get(STATE_AB, "")
     if j["kind"] in ("county", "city") and st_fips:
-        map_html = '<div id="locmap" data-fips="%s" data-name="%s" data-st="%s"></div>' % (
-            st_fips, html.escape(j["name"].replace(" (city)", ""), quote=True), STATE_AB)
+        map_html = ('<div id="locmap" data-fips="%s" data-name="%s" data-st="%s" data-kind="%s"></div>'
+                    '<p class="locmap-cap">Highlighted: <b>%s, %s</b></p>') % (
+            st_fips, html.escape(j["name"].replace(" (city)", ""), quote=True), STATE_AB, j["kind"],
+            html.escape(j["name"], quote=True), STATE_AB)
     else:
         map_html = ""
 
@@ -548,35 +554,39 @@ def render_page(j, others):
                  '<script>'
                  '(function(){'
                  'var el=document.getElementById("locmap");if(!el)return;'
-                 'var sf=el.dataset.fips,cn=el.dataset.name.toLowerCase(),sa=el.dataset.st;'
+                 'var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");'
+                 'var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];'
+                 'function norm(s){return String(s||"").replace(/\\s*\\([^)]*\\)/g,"").trim().toLowerCase();}'
+                 'function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}'
+                 'var cnBase=base(el.dataset.name);'
                  'function go(){'
                  'if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}'
-                 'var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];'
                  'var ul={};window.LOCALITY_INDEX.forEach(function(r){'
                  'if(r[1]!==sa)return;'
-                 'var b=r[0].replace(/ \\(city\\)$/i,"").toLowerCase();'
-                 'for(var i=0;i<SX.length;i++){if(b.endsWith(" "+SX[i])){b=b.slice(0,-(SX[i].length+1)).trim();break;}}'
-                 'ul[b]=r[3];ul[r[0].replace(/ \\(city\\)$/i,"").toLowerCase()]=r[3];'
+                 'var full=r[0].replace(/ \\(city\\)$/i,"").toLowerCase();'
+                 'ul[base(r[0])]=r[3];ul[full]=r[3];'
                  '});'
                  'fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json()}).then(function(topo){'
                  'var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf})};'
+                 'var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});'
+                 'var collide=matches.length>1;'
+                 'function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}'
                  'var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:false});'
                  'L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:13}).addTo(map);'
+                 'var targetLayer=null;'
                  'var ly=L.geoJson(fc,{'
                  'style:function(f){'
-                 'var fp=String(f.id).padStart(5,"0"),lb=(window.COUNTY_NAMES[fp]||"").split(",")[0].replace(/\\s*\\([^)]*\\)/g,"").trim().toLowerCase();'
-                 'if(lb===cn||lb===cn.replace(/\\s*\\([^)]*\\)/g,"").trim())return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};'
+                 'if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};'
                  'return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};'
                  '},'
                  'onEachFeature:function(f,layer){'
                  'var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();'
-                 'var bs=nm.replace(/\\s*\\([^)]*\\)/g,"").trim().toLowerCase();'
-                 'var u=ul[bs]||ul[nm.toLowerCase()];'
-                 'layer.bindTooltip(nm,{sticky:true});'
+                 'var u=ul[base(nm)]||ul[nm.toLowerCase()];'
+                 'if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}'
+                 'else{layer.bindTooltip(nm,{sticky:true});}'
                  'if(u){layer.on("click",function(){window.location.href="../../"+u});'
                  'layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6})});'
-                 'layer.on("mouseout",function(){var x=bs===cn||bs===cn.replace(/\\s*\\([^)]*\\)/g,"").trim();'
-                 'this.setStyle({fillOpacity:x?.55:.35})});}'
+                 'layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35})});}'
                  '}'
                  '}).addTo(map);'
                  'map.fitBounds(ly.getBounds(),{padding:[15,15]});'

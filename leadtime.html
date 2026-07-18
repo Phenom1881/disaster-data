@@ -451,7 +451,7 @@
   // channel A is broad (touches most of town even on a miss),
   // channel B is localized and deadly (peaks hard on a direct hit).
   var DISASTERS = [
-    { id:'hurricane', label:'Hurricane', desc:'Days of warning, but the track and strength stay uncertain to the end.',
+    { id:'hurricane', fringe:0.15, focusA:1,   focusB:1.4, label:'Hurricane', desc:'Days of warning, but the track and strength stay uncertain to the end.',
       chip:'Coastal only',
       avail:function(scn){ return scn.coastal; },
       name:function(nm, st, scn){ return (st>=3 ? 'Hurricane ' : 'Tropical Storm ') + nm; },
@@ -488,7 +488,7 @@
       tips:['Hurricane tip: learn your evacuation zone before storm season starts.',
             'Hurricane tip: after a storm, stay away from standing water. It hides sharp things and downed lines.'],
       glyph:'hurricane' },
-    { id:'riverflood', label:'River Flood', desc:'A stalled storm upstream. Where the heaviest rain sets up decides everything.',
+    { id:'riverflood', fringe:0.05, focusA:1.2, focusB:1.5, label:'River Flood', desc:'A stalled storm upstream. Where the heaviest rain sets up decides everything.',
       chip:'Inland only',
       avail:function(scn){ return !scn.coastal; },
       name:function(nm, st, scn){ return 'Storm System ' + nm; },
@@ -525,7 +525,7 @@
       tips:['Flood tip: never walk or drive through flood water. Turn around, don\'t drown.',
             'Flood tip: learn whether your home is in a flood zone. Your local emergency manager can tell you.'],
       glyph:'rain' },
-    { id:'winter', label:'Winter Storm', desc:'Ice takes down trees and power lines. The cold that follows is the real emergency.',
+    { id:'winter', fringe:0.18, focusA:0.8, focusB:1.2, label:'Winter Storm', desc:'Ice takes down trees and power lines. The cold that follows is the real emergency.',
       chip:'Any community',
       avail:function(scn){ return true; },
       name:function(nm, st, scn){ return 'Winter Storm ' + nm; },
@@ -562,7 +562,7 @@
       tips:['Winter tip: never run a generator or grill indoors. Carbon monoxide is invisible and deadly.',
             'Winter tip: keep extra blankets and a flashlight where you can find them in the dark.'],
       glyph:'snow' },
-    { id:'wildfire', label:'Wildfire', desc:'Fast and localized. A wind shift changes everything, and evacuation is the tool that always works.',
+    { id:'wildfire', fringe:0.04, focusA:1.6, focusB:1.9, label:'Wildfire', desc:'Fast and localized. A wind shift changes everything, and evacuation is the tool that always works.',
       chip:'Any community',
       avail:function(scn){ return true; },
       name:function(nm, st, scn){ return 'The ' + scn.zones[2].name + ' Fire'; },
@@ -599,7 +599,7 @@
       tips:['Wildfire tip: if officials say go, go early. Cars and smoke do not mix.',
             'Wildfire tip: in fire season, help clear leaves and pine needles off roofs and out of gutters.'],
       glyph:'fire' },
-    { id:'tornado', label:'Tornado Outbreak', desc:'The risk area never really narrows. With tornadoes, preparedness beats prediction.',
+    { id:'tornado', fringe:0.03, focusA:1.7, focusB:1.9, label:'Tornado Outbreak', desc:'The risk area never really narrows. With tornadoes, preparedness beats prediction.',
       chip:'Any community',
       avail:function(scn){ return true; },
       name:function(nm, st, scn){ return 'Tornado Outbreak'; },
@@ -644,7 +644,7 @@
       tips:['Tornado tip: your safe spot is the lowest floor, in a small inside room, away from windows.',
             'Tornado tip: mobile homes are not safe in tornadoes. Know the nearest sturdy building ahead of time.'],
       glyph:'tornado' },
-    { id:'hazmat', label:'Train Derailment', desc:'No warning at all, only hours. The plume model sharpens as monitoring teams report in.',
+    { id:'hazmat', fringe:0.00, focusA:2.2, focusB:2.4, label:'Train Derailment', desc:'No warning at all, only hours. The plume model sharpens as monitoring teams report in.',
       chip:'Any community',
       avail:function(scn){ return true; },
       name:function(nm, st, scn){ return 'The ' + scn.town + ' Derailment'; },
@@ -1290,11 +1290,18 @@
 
   function directness(){ return clamp(1 - Math.abs(S.landfallX), 0, 1); }
 
+  // Per-hazard footprint. fringe is the intensity a wide miss still delivers
+  // (hurricanes brush you with fringe winds; a plume that misses is nothing).
+  // focusA/focusB sharpen how fast each axis falls off with distance.
   function hazards(){
     var Sn = (S.strength - 1) / 4;
     var D = directness();
-    var wind = clamp((0.15 + 0.85*D) * (0.30 + 0.70*Sn), 0, 1);
-    var flood = clamp(Math.pow(D, 1.4) * (0.35 + 0.65*Sn), 0, 1);
+    var hz = CFG.haz;
+    var fringe = (hz.fringe !== undefined) ? hz.fringe : 0.15;
+    var focusA = hz.focusA || 1;
+    var focusB = hz.focusB || 1.4;
+    var wind = clamp((fringe + (1 - fringe) * Math.pow(D, focusA)) * (0.30 + 0.70*Sn), 0, 1);
+    var flood = clamp(Math.pow(D, focusB) * (0.35 + 0.65*Sn), 0, 1);
     return { wind:wind, flood:flood, D:D, Sn:Sn };
   }
 
@@ -1321,6 +1328,10 @@
   function outcome(H, M){
     var jr = isJr();
     var hz = CFG.haz;
+    // Fringe severity damages property; it does not displace or kill.
+    // ramp() is zero below the threshold and reaches 1 at severity 1, so a
+    // full-force direct hit produces the same numbers it always has.
+    function ramp(v, t){ return Math.max(0, v - t) / (1 - t); }
     var damage=0, displaced=0, casualties=0, riversideFlood=0;
     var zoneSev = [];
     CFG.scn.zones.forEach(function(z){
@@ -1330,15 +1341,15 @@
       var sev = clamp(windEff + floodEff, 0, 1);
       zoneSev.push({ id:z.id, name:z.name, sev:sev });
       damage += z.pop * 3500 * sev;
-      displaced += z.pop * sev * (1 - M.shelter);
-      if (!jr) casualties += z.pop * 0.010 * Math.pow(sev, 1.6) * (1 - M.evac);
+      displaced += z.pop * Math.pow(ramp(sev, 0.08), 1.15) * (1 - M.shelter);
+      if (!jr) casualties += z.pop * 0.010 * Math.pow(ramp(sev, 0.15), 1.6) * (1 - M.evac);
     });
     var nhSev = clamp(Math.max(riversideFlood, H.flood*0.6), 0, 1);
     if (jr){
       displaced *= (1 - 0.6*M.evac);
-      displaced += CFG.scn.nhPop * nhSev * M.nh;
+      displaced += CFG.scn.nhPop * ramp(nhSev, 0.08) * M.nh;
     } else {
-      casualties += CFG.scn.nhPop * 0.05 * Math.pow(nhSev, 1.3) * (1 - M.evac) * M.nh;
+      casualties += CFG.scn.nhPop * 0.05 * Math.pow(ramp(nhSev, 0.15), 1.3) * (1 - M.evac) * M.nh;
     }
     return {
       damage:damage,
@@ -1364,14 +1375,36 @@
     return clamp(over, 0, 1) * clamp(f.cs / 5, 0, 1);
   }
 
+  // The best response the same budget could buy: shelters maxed, evacuation
+  // ordered on turn one with full warnings and early aid, the care facility
+  // moved, and the physical mitigation that matches this hazard's heavier
+  // axis. Grading against this instead of against a stormless world means
+  // the grade measures the player, not the storm.
+  function bestMitigations(){
+    var ms = CFG.scn.mitScale || 1;
+    var sumA = 0, sumB = 0;
+    CFG.scn.zones.forEach(function(z){ sumA += z.pop*CFG.haz.vulnA(z); sumB += z.pop*CFG.haz.vulnB(z); });
+    var sb = (sumB >= sumA) ? Math.min(0.85, 2*0.30*ms) : 0;
+    var hd = (sumB >= sumA) ? 0 : Math.min(0.85, 2*0.30*ms);
+    var warn = Math.min(0.35, 2*0.18*ms);
+    var lead = CFG.scn.evacLead || LEAD;
+    var evac = clamp((warn + 0.60*(lead[1] || 0)) * 1.12, 0, 0.95);
+    var shel = clamp(Math.min(0.90, 3*0.30*ms) * 1.15, 0, 0.95);
+    return { sandbag:sb, harden:hd, shelter:shel, evac:evac, nh:0, stock:2, aidGood:true };
+  }
+
   function gradeAndShow(H, M, actual){
     var none = outcome(H, { sandbag:0, harden:0, shelter:0, evac:0, nh:1, stock:0 });
+    var best = outcome(H, bestMitigations());
 
     var harm;
     if (isJr()) harm = function(o){ return o.damage/1000 + o.displaced*6; };
     else harm = function(o){ return o.damage/1000 + o.displaced*4 + o.casualties*260; };
-    var base = harm(none), got = harm(actual);
-    var prevented = base > 0 ? clamp((base - got) / base, 0, 1) : 1;
+    var base = harm(none), got = harm(actual), floorGot = harm(best);
+    // Preventable harm is the gap between doing nothing and the best
+    // affordable response. The grade is the share of that gap you closed,
+    // so an excellent response reaches an A on any storm, weak or monster.
+    var prevented = (base - floorGot) > 1 ? clamp((base - got) / (base - floorGot), 0, 1) : 1;
 
     var used = S.totalBudget - S.budget;
     // Warranted spend is the higher of what the forecast justified and what
@@ -1388,21 +1421,39 @@
     } else {
       var excess = Math.max(0, used - (warranted + 2));
       var efficiency = clamp(1 - excess*0.06, 0, 1);
-      var score = 0.72*prevented + 0.28*efficiency;
+      var underF = Math.max(0, forecastWarranted - used);
+      // Readiness: how well spend tracked the forecast, in both directions.
+      // Undershooting the threat costs more than overshooting it.
+      var readiness = clamp(1 - underF*0.09 - excess*0.04, 0, 1);
+      // Signal: how hard the realized event actually tested the town. When it
+      // largely missed, the outcome is luck, so the grade leans on decisions
+      // measured against the forecast instead. This is the anti hindsight
+      // rule working in both directions.
+      var signal = clamp((0.5*H.wind + 0.5*H.flood) / 0.45, 0, 1);
+      var score = signal * (0.72*prevented + 0.28*efficiency) + (1 - signal) * readiness;
       var pop = totalPop();
       var capHi = Math.max(20, Math.round(pop*0.004));
       var capMed = Math.max(8, Math.round(pop*0.0015));
       if (actual.casualties >= capHi) score = Math.min(score, 0.42);
       else if (actual.casualties >= capMed) score = Math.min(score, 0.6);
-      // Outcome floor: if everyone came through safe and housed, that is a B
-      // no matter how the coverage math shakes out. Results count.
+      // Outcome floor: a safe, housed town is a B, provided the readiness was
+      // real. Luck that follows a gamble does not launder the gamble.
       var quiet = actual.casualties === 0 && actual.displaced <= Math.max(3, Math.round(pop*0.02));
-      if (quiet && score < 0.72) score = 0.72;
+      if (quiet && underF <= 3 && score < 0.72) score = 0.72;
       var letter = score>=0.85?'A':score>=0.7?'B':score>=0.55?'C':score>=0.4?'D':'F';
-      var gradeWhy = Math.round(prevented*100) + '% of possible harm prevented; readiness '
-        + (excess > 0 ? 'overshot the forecast by ' + excess : 'matched the forecast')
-        + (quiet ? '; everyone came through safe and housed' : '')
-        + (actual.casualties >= capMed ? '; grade capped by loss of life' : '') + '.';
+      var readyWord = (excess > 0 ? 'overshot the forecast by ' + excess
+        : underF > 0 ? 'undershot the forecast by ' + underF
+        : 'matched the forecast');
+      var gradeWhy;
+      if (signal < 0.4){
+        gradeWhy = 'The event largely missed, so luck decided the numbers. Your grade rests on your calls against the forecast: readiness ' + readyWord
+          + (quiet ? '; everyone came through safe and housed' : '')
+          + (actual.casualties >= capMed ? '; grade capped by loss of life' : '') + '.';
+      } else {
+        gradeWhy = Math.round(prevented*100) + '% of preventable harm prevented; readiness ' + readyWord
+          + (quiet ? '; everyone came through safe and housed' : '')
+          + (actual.casualties >= capMed ? '; grade capped by loss of life' : '') + '.';
+      }
       var trust = updateTrust(actual, M, capMed);
       S.lastGrade = letter;
       showAAR({ jr:false, letter:letter, capMed:capMed, gradeWhy:gradeWhy, trust:trust }, H, M, actual, used, warranted);
