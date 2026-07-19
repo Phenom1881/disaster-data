@@ -11,7 +11,7 @@ table for each one.
 Pilot is scoped to one state (STATE_AB below) but written to generalize.
 """
 
-import os, re, json, html, datetime
+import os, re, json, html, datetime, hashlib
 from dd_classify import classify
 
 SITE = "https://www.disasterdata.io"
@@ -218,6 +218,50 @@ def last_complete_fy(browse):
     avail = max((r.get("fyDeclared", 0) for r in browse), default=cur)
     return min(cur - 1, avail)
 
+# ---------------------------------------------------------------- gating and freshness
+# A jurisdiction is treated as "thin" (noindex, and left out of the sitemap) when its
+# only federal disaster history is the nationwide declarations that reached nearly every
+# county, and it never received federal Public Assistance money. Raw declaration count is
+# a poor gate because the COVID-19 pandemic was declared for essentially every
+# jurisdiction, so a place with one COVID line and nothing else is not substantive on its
+# own. Pages that clear the gate are indexed normally; thin pages stay reachable by users
+# and by crawlers (robots noindex,follow) but are not advertised in the sitemap, which
+# concentrates crawl budget on the pages that carry real, distinguishing data.
+MIN_DISTINCT_DECLS = 2   # non-nationwide declarations needed to index on count alone
+
+def _is_nationwide(rec):
+    """True for declarations that reached nearly every jurisdiction and so do not
+    distinguish this place (currently the COVID-19 pandemic declarations)."""
+    title = (rec.get("declarationTitle") or "").upper()
+    return "COVID" in title or "PANDEMIC" in title
+
+def is_thin(j):
+    """Thin only if the jurisdiction has no federal PA money AND fewer than
+    MIN_DISTINCT_DECLS declarations that are not nationwide. Lower the threshold to 1
+    to index every place that has any distinguishing declaration at all."""
+    if (j.get("pa_obl") or 0) > 0:
+        return False
+    distinct = sum(1 for r in j.get("hmp", []) if not _is_nationwide(r))
+    return distinct < MIN_DISTINCT_DECLS
+
+def _content_hash(j):
+    """Stable fingerprint of everything that renders on a jurisdiction page, so the
+    sitemap lastmod only advances when this jurisdiction's data actually changes and
+    not on every weekly rebuild."""
+    payload = {
+        "decl": j.get("decl", 0), "dr": j.get("dr", 0),
+        "em": j.get("em", 0), "fm": j.get("fm", 0), "latest": j.get("latest", ""),
+        "pa_obl": j.get("pa_obl", 0), "pa_proj": j.get("pa_proj", 0),
+        "pa_cats": j.get("pa_cats", {}),
+        "recs": sorted(
+            [r.get("femaDeclarationString", ""), r.get("declarationDate", "")[:10],
+             r.get("declarationType", ""), r.get("incidentType", ""),
+             pretty_title(r.get("declarationTitle", ""))]
+            for r in j.get("hmp", [])),
+    }
+    blob = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":"))
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
+
 # ---------------------------------------------------------------- per-jurisdiction stats
 def juris_stats(entry, state_ab, c, by_id, lcfy):
     disp, slug, kind = c["display"], make_slug(c, state_ab), c["kind"]
@@ -263,6 +307,7 @@ main{padding:2rem 0 1rem}
 h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
 h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
 .lede{font-size:1.08rem;max-width:62ch}
+.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
 .stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
 .stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
@@ -398,11 +443,62 @@ def pa_breakdown_html(j):
             '<tbody>%s</tbody><tfoot>%s</tfoot></table></div></section>'
             % (body, foot))
 
+# ---------------------------------------------------------------- data-driven prose
+def _money_words(n):
+    """Public Assistance dollars in words, dash-free, for the summary paragraph."""
+    n = float(n or 0)
+    if n >= 1e9:
+        return "about $%.1f billion" % (n / 1e9)
+    if n >= 1e6:
+        return "about $%.1f million" % (n / 1e6)
+    return "$" + format(int(round(n)), ",")
+
+def summary_html(j):
+    """A short, plain-language paragraph built entirely from this jurisdiction's own
+    records. It gives the page substantive, unique text beyond the tables so search
+    engines have a reason to index it, and gives readers the record in prose."""
+    hmp = j.get("hmp", [])
+    if not hmp:
+        return ""
+    e = html.escape
+    name = e(j["name"])
+    dates = sorted(r.get("declarationDate", "")[:10] for r in hmp if r.get("declarationDate"))
+    if dates and dates[0][:4] != dates[-1][:4]:
+        span = "between %s and %s" % (dates[0][:4], dates[-1][:4])
+    elif dates:
+        span = "in %s" % dates[0][:4]
+    else:
+        span = "since FY2000"
+    sents = ["The federal disaster record for %s runs %s, covering %d declaration%s in all."
+             % (name, span, j["decl"], "" if j["decl"] == 1 else "s")]
+
+    drs = [r for r in hmp if r.get("declarationType") == "DR"]
+    if drs:
+        title = pretty_title(drs[0].get("declarationTitle", "")).strip()
+        yr = drs[0].get("declarationDate", "")[:4]
+        if title and yr:
+            sents.append("Its most recent major disaster declaration was %s in %s." % (e(title), yr))
+
+    hz = j.get("hazards") or []
+    if len(hz) >= 2:
+        sents.append("The hazards behind these declarations were most often %s."
+                     % _oxford([e(h.lower()) for h, _ in hz[:3]]))
+    elif len(hz) == 1:
+        sents.append("Every one was tied to %s." % e(hz[0][0].lower()))
+
+    if (j.get("pa_obl") or 0) > 0:
+        tail = (", most of it for %s" % e(j["pa_top_cat"].lower())) if j.get("pa_top_cat") else ""
+        sents.append("Since 2000, FEMA has obligated %s in Public Assistance funding to the jurisdiction%s."
+                     % (_money_words(j["pa_obl"]), tail))
+
+    return '<section class="jsummary"><p>%s</p></section>' % " ".join(sents)
+
 # ---------------------------------------------------------------- jurisdiction page
 def render_page(j, others):
     e = html.escape
     canonical = "%s/states/%s/%s.html" % (SITE, STATE_SLUG, j["slug"])
     label = j["label"]
+    robots = '<meta name="robots" content="noindex,follow">' if j.get("thin") else ''
     desc = ("%s, %s has had %d federal disaster and emergency declarations since FY2000 "
             "(%d major disasters, %d emergencies, %d fire-management). Full FEMA declaration "
             "history and a ready-to-use previous-occurrences table for hazard mitigation planning."
@@ -598,7 +694,7 @@ def render_page(j, others):
         mapjs = ""
 
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
-            '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">%s'
             f'<title>%s, {STATE_NAME} FEMA Disaster Declarations and Mitigation History</title>'
             '<meta name="description" content="%s"><link rel="canonical" href="%s">'
             f'<meta property="og:title" content="%s, {STATE_NAME}: Federal Disaster Declarations">'
@@ -614,6 +710,7 @@ def render_page(j, others):
             '<div class="stats">%s</div>'
             '%s'
             '%s'
+            '%s'
             '<h2>Most common hazards</h2><ul class="haz">%s</ul>'
             '%s'
             '<h2>Every declaration on record</h2>%s'
@@ -622,9 +719,9 @@ def render_page(j, others):
             '%s'
             f'<h2>Other {STATE_NAME} jurisdictions</h2><nav class="jgrid">%s</nav>'
             '</div></main>%s%s%s</body></html>'
-            % (e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
+            % (robots, e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
-               e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, map_html,
+               e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, summary_html(j), map_html,
                pa_breakdown_html(j),
                haz, hmp, history,
                method_html(j["kind"], bool(j.get("spans"))), grid, footer_html(), copyjs, mapjs))
@@ -796,6 +893,10 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, tribal_plan):
             j["pa_top_cat"] = ""
             j["pa_cats"] = {}
 
+    for j in js:
+        j["thin"] = is_thin(j)
+        j["content_hash"] = _content_hash(j)
+
     seen = {}
     for j in js:
         if j["slug"] in seen:
@@ -840,7 +941,8 @@ def main():
                 all_jurisdictions.append([
                     j["name"], st, state_name,
                     "states/%s/%s.html" % (state_slug, j["slug"]),
-                    j["decl"], j["kind"], j["noun"]
+                    j["decl"], j["kind"], j["noun"],
+                    j.get("thin", False), j.get("content_hash", ""),
                 ])
             if one:
                 print("generated %d %s jurisdiction pages + hub (+%d canonical pointers), through FY%d"
@@ -850,27 +952,64 @@ def main():
     if not one:
         idx_path = os.path.join(OUT_ROOT, "locality-index.js")
         # compact JSON array: [name, stateAB, stateName, url, declCount, kind, noun]
-        idx_js = "window.LOCALITY_INDEX=" + json.dumps(all_jurisdictions, separators=(",", ":")) + ";"
+        # (internal rows also carry [thin, content_hash] for the sitemap; drop them here)
+        idx_rows = [row[:7] for row in all_jurisdictions]
+        idx_js = "window.LOCALITY_INDEX=" + json.dumps(idx_rows, separators=(",", ":")) + ";"
         open(idx_path, "w", encoding="utf-8").write(idx_js)
 
-        # extend sitemap.xml with jurisdiction URLs
+        # extend sitemap.xml with jurisdiction + hub URLs.
+        # Thin pages (see is_thin) are left out so crawl budget goes to substantive
+        # pages. Each URL carries a lastmod that only advances when that page's data
+        # actually changed, tracked in sitemap-state.json across runs, so a weekly
+        # rebuild that changes nothing does not reset every lastmod.
         sitemap_path = os.path.join(OUT_ROOT, "sitemap.xml")
+        state_path = os.path.join(OUT_ROOT, "sitemap-state.json")
         if os.path.exists(sitemap_path):
+            try:
+                prev_state = json.load(open(state_path, encoding="utf-8"))
+            except Exception:
+                prev_state = {}
+            today = datetime.date.today().isoformat()
+            new_state = {}
+            entries = []          # (url, lastmod) for indexed jurisdiction pages
+            hub_lastmods = {}     # hub_url -> most recent member lastmod
+            skipped_thin = 0
+
+            for j in all_jurisdictions:
+                url = "%s/%s" % (SITE, j[3])
+                thin = bool(j[7]) if len(j) > 7 else False
+                chash = j[8] if len(j) > 8 else ""
+                prev = prev_state.get(url)
+                lastmod = prev.get("lastmod", today) if (prev and prev.get("hash") == chash) else today
+                new_state[url] = {"hash": chash, "lastmod": lastmod}
+                # a hub is refreshed whenever any of its members changed
+                hub_url = "%s/%s/" % (SITE, "/".join(j[3].split("/")[:2]))
+                if lastmod > hub_lastmods.get(hub_url, ""):
+                    hub_lastmods[hub_url] = lastmod
+                if thin:
+                    skipped_thin += 1
+                    continue
+                entries.append((url, lastmod))
+
+            for hub_url, lastmod in hub_lastmods.items():
+                entries.append((hub_url, lastmod))
+
+            new_urls = "".join(
+                "<url><loc>%s</loc><lastmod>%s</lastmod></url>" % (u, lm)
+                for u, lm in entries)
+
             sm = open(sitemap_path, encoding="utf-8").read()
-            new_urls = []
-            for j in all_jurisdictions:
-                new_urls.append("<url><loc>%s/%s</loc></url>" % (SITE, j[3]))
-            # also add each jurisdiction hub
-            seen_hubs = set()
-            for j in all_jurisdictions:
-                parts = j[3].split("/")  # e.g. states/virginia/tazewell-county-va.html
-                hub_url = "/".join(parts[:2]) + "/"  # states/virginia/
-                if hub_url not in seen_hubs:
-                    seen_hubs.add(hub_url)
-                    new_urls.append("<url><loc>%s/%s</loc></url>" % (SITE, hub_url))
-            sm = sm.replace("</urlset>", "".join(new_urls) + "</urlset>")
+            # drop any jurisdiction/hub entries from a previous run so reruns stay
+            # idempotent; this matches only /states/<slug>/... so state overview pages
+            # like /states/virginia.html and /states/index.html are left untouched.
+            sm = re.sub(r"<url>\s*<loc>" + re.escape(SITE) + r"/states/[^/<]+/[^<]*</loc>.*?</url>",
+                        "", sm, flags=re.S)
+            sm = sm.replace("</urlset>", new_urls + "</urlset>")
             open(sitemap_path, "w", encoding="utf-8").write(sm)
-            print("extended sitemap.xml with %d jurisdiction URLs" % len(new_urls))
+            json.dump(new_state, open(state_path, "w", encoding="utf-8"),
+                      separators=(",", ":"), sort_keys=True)
+            print("extended sitemap.xml with %d indexed URLs (%d thin pages skipped)"
+                  % (len(entries), skipped_thin))
 
         print("generated %d jurisdiction pages + %d canonical pointers + %d hubs across %d states/territories, "
               "through FY%d (skipped %d non-locality entries)"
