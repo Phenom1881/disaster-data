@@ -47,7 +47,7 @@ IMAP_HOST = "imap.gmail.com"
 IMAP_PORT = 993
 
 GMAIL_ADDRESS = os.environ.get("GMAIL_ADDRESS", "disasterdata.io@gmail.com")
-GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
+GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "tpzm jcgv tppj jnxm")
 
 OUT_ROOT = Path(os.environ.get("DD_OUT", "archive"))
 ARCHIVE_DIR = OUT_ROOT / "ops-briefings"
