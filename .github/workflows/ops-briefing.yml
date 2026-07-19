@@ -32,12 +32,18 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           DD_OUT: archive
-        run: python scripts/fetch_ops_briefing.py
+        run: |
+          FETCH=$(find scripts -iname 'fetch*ops*brief*.py' | head -n1)
+          echo "Using fetch script: $FETCH"
+          python "$FETCH"
 
       - name: Build ops briefing pages
         env:
           DD_OUT: archive
-        run: python scripts/build_ops_pages.py
+        run: |
+          BUILD=$(find scripts -iname 'build*ops*pages*.py' | head -n1)
+          echo "Using build script: $BUILD"
+          python "$BUILD"
 
       - name: Commit new briefing(s) and pages
         run: |
