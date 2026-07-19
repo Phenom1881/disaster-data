@@ -131,7 +131,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;margin-top:40px;}
 
 NAV = """<nav>
   <div class="brand"><a class="mark" href="/">Disaster Data</a></div>
-  <div class="navlinks"><a href="/#">Overview</a><a href="/#board">Explore</a><a href="/map.html">Map</a><a href="/states/index.html">States</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/leadtime.html">Lead Time</a><a href="/about.html">About</a><a href="/ops-briefings/index.html" class="on">Daily Ops Brief</a></div>
+  <div class="navlinks"><a href="/#">Overview</a><a href="/#board">Explore</a><a href="/map.html">Map</a><a href="/states/index.html">States</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/about.html">About</a><a href="/ops-briefings/index.html" class="on">Daily Ops Brief</a></div>
 </nav>"""
 
 FOOTER = """<footer>
