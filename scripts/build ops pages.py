@@ -131,7 +131,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;margin-top:40px;}
 
 NAV = """<nav>
   <div class="brand"><a class="mark" href="/">Disaster Data</a></div>
-  <div class="navlinks"><a href="/#board">Explore</a><a href="/map.html">Map</a><a href="/states/index.html">States</a><a href="/public-assistance-projects.html">Funding</a><a href="/about.html">About</a><a href="/ops-briefings/index.html" class="on">FEMA Daily Operations Brief</a></div>
+  <div class="navlinks"><a href="/#">Overview</a><a href="/#board">Explore</a><a href="/map.html">Map</a><a href="/states/index.html">States</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/leadtime.html">Lead Time</a><a href="/about.html">About</a><a href="/ops-briefings/index.html" class="on">Daily Ops Brief</a></div>
 </nav>"""
 
 FOOTER = """<footer>
@@ -197,7 +197,7 @@ def build_index(rows: list[dict]) -> None:
     last_30 = newest_first[:LAST_N_DAYS_SHOWN]
 
     items = "\n".join(
-        f'''<li><a href="/ops-briefings/{r["date"]}.html">
+        f'''<li><a href="{PDF_BASE_PATH}/{r["filename"]}">
               <span>{fmt_date_long(r["date"])}</span>
               <span class="arrow">View briefing &rarr;</span>
             </a></li>'''
@@ -212,14 +212,14 @@ day's PDF so anyone can look back and see what FEMA's National Watch
 Center was reporting on any given day, including declaration requests
 as they move through the process.</p>
 
-{subscribe_callout()}
-
 <h2 class="section-h">Last {LAST_N_DAYS_SHOWN} days</h2>
 <ul class="briefing-list">
 {items}
 </ul>
 
 <a class="archive-link" href="/ops-briefings/archive/">Browse the full archive by month &rarr;</a>
+
+{subscribe_callout()}
 """
     (SITE_DIR / "index.html").write_text(
         page_shell(
@@ -306,7 +306,7 @@ def build_archive_hub(rows: list[dict]) -> None:
     for mk in month_keys_desc:
         month_rows = sorted(by_month[mk], key=lambda r: r["date"], reverse=True)
         items = "\n".join(
-            f'''<li><a href="/ops-briefings/{r["date"]}.html">
+            f'''<li><a href="{PDF_BASE_PATH}/{r["filename"]}">
                   <span>{fmt_date_long(r["date"])}</span>
                   <span class="arrow">View briefing &rarr;</span>
                 </a></li>'''
