@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare Declarations | FEMA Disaster Explorer (BETA)</title>
+<meta name="description" content="Compare federal disaster declarations by locality, or start from a declaration and list every county it designated. Works across states. Export as CSV.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#004c53;
+  --teal-deep:#00363b;
+  --teal-soft:#e2edec;
+  --paper:#faf6ee;
+  --card:#fffdf8;
+  --ink:#1c1b19;
+  --muted:#6d6a63;
+  --rule:#ded7c9;
+  --rule-soft:#ece6da;
+  --warn:#8a5a1c;
+  --warn-soft:#fbf1de;
+  --radius:8px;
+  --shadow:0 1px 2px rgba(28,27,25,.06), 0 4px 14px rgba(28,27,25,.05);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--teal);}
+
+/* Header */
+.site-head{background:var(--teal);color:#fff;padding:14px 16px 0;}
+.site-head .brand{
+  font-family:"Fraunces",Georgia,serif;
+  font-size:19px;font-weight:600;letter-spacing:.01em;margin:0 0 12px;
+}
+.site-head .brand a{color:#fff;text-decoration:none;}
+.site-nav{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.site-nav a{
+  color:rgba(255,255,255,.82);text-decoration:none;font-size:14px;font-weight:500;
+  white-space:nowrap;padding:9px 12px;border-bottom:3px solid transparent;
+}
+.site-nav a:hover{color:#fff;}
+.site-nav a[aria-current="page"]{color:#fff;border-bottom-color:#fff;}
+
+/* Layout */
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 64px;}
+.page-title{
+  font-family:"Fraunces",Georgia,serif;
+  font-size:30px;font-weight:600;line-height:1.15;margin:0 0 6px;color:var(--teal-deep);
+}
+.page-sub{margin:0 0 20px;color:var(--muted);font-size:15px;max-width:66ch;}
+
+.notice{
+  background:var(--warn-soft);border:1px solid #e8d6b4;color:var(--warn);
+  border-radius:var(--radius);padding:10px 12px;font-size:13.5px;margin:0 0 18px;
+}
+.notice[hidden]{display:none;}
+
+.panel{
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:16px;margin:0 0 18px;
+}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px;}
+.panel-title{
+  font-family:"Fraunces",Georgia,serif;font-size:17px;font-weight:600;margin:0;color:var(--teal-deep);
+}
+.count-badge{
+  font-size:13px;font-weight:600;color:var(--teal);background:var(--teal-soft);
+  border-radius:999px;padding:3px 10px;white-space:nowrap;
+}
+
+/* State bar */
+.state-bar{margin:0 0 16px;padding:0 0 16px;border-bottom:1px solid var(--rule-soft);}
+.state-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 10px;}
+.state-chip{
+  display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:13.5px;font-weight:600;
+  padding:6px 8px 6px 12px;border-radius:999px;border:1px solid var(--teal);background:var(--teal);color:#fff;
+}
+.state-chip .sc-count{font-weight:400;opacity:.72;font-size:12.5px;}
+.state-chip .sc-x{
+  display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border:none;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;
+  font-size:15px;line-height:1;cursor:pointer;padding:0;
+}
+.state-chip .sc-x:hover{background:rgba(255,255,255,.32);}
+.state-chip .sc-x:focus-visible{outline:2px solid #fff;outline-offset:1px;}
+.state-add{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.state-loading{font-size:13px;color:var(--muted);font-style:italic;}
+.state-loading[hidden]{display:none;}
+.state-empty{font-size:14px;color:var(--muted);margin:0 0 10px;}
+
+/* Mode switch */
+.mode-switch{display:flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin:0 0 8px;}
+.mode-switch button{
+  flex:1;font:inherit;font-size:14px;font-weight:600;padding:10px 12px;
+  border:none;background:#fff;color:var(--muted);cursor:pointer;
+}
+.mode-switch button[aria-pressed="true"]{background:var(--teal);color:#fff;}
+.mode-switch button:focus-visible{outline:2px solid var(--teal);outline-offset:-2px;}
+.mode-hint{font-size:13px;color:var(--muted);margin:0 0 14px;}
+
+/* Controls */
+.search-row{display:flex;gap:8px;margin:0 0 10px;}
+.search-row input{
+  flex:1;min-width:0;font:inherit;font-size:15px;padding:9px 11px;
+  border:1px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);
+}
+.search-row input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal);}
+
+.btn{
+  font:inherit;font-size:14px;font-weight:600;padding:9px 13px;border-radius:6px;
+  border:1px solid var(--teal);background:#fff;color:var(--teal);cursor:pointer;white-space:nowrap;
+}
+.btn:hover{background:var(--teal-soft);}
+.btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal-deep);}
+.btn-quiet{border-color:var(--rule);color:var(--muted);}
+.btn-quiet:hover{background:var(--rule-soft);color:var(--ink);}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+.picker{
+  max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--rule-soft);border-radius:6px;background:#fff;margin:0 0 10px;
+}
+.pick-group-head{
+  position:sticky;top:0;z-index:1;background:var(--teal-soft);color:var(--teal-deep);
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  padding:7px 12px;border-bottom:1px solid var(--rule-soft);
+}
+.pick{
+  display:flex;align-items:center;gap:11px;padding:11px 12px;
+  border-bottom:1px solid var(--rule-soft);cursor:pointer;font-size:15px;
+}
+.pick:last-child{border-bottom:none;}
+.pick:hover{background:var(--paper);}
+.pick input{width:19px;height:19px;accent-color:var(--teal);flex:none;margin:0;}
+.pick .pick-name{flex:1;min-width:0;}
+.pick .pick-name .pick-sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+.pick .pick-decl-id{font-weight:700;color:var(--teal);}
+.pick .pick-type{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;flex:none;}
+.pick.is-empty{padding:16px 12px;color:var(--muted);justify-content:center;cursor:default;}
+
+.field-label{
+  display:block;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin:16px 0 8px;
+}
+.field-label.tight{margin-top:0;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{
+  font:inherit;font-size:13.5px;font-weight:500;padding:7px 12px;border-radius:999px;
+  border:1px solid var(--rule);background:#fff;color:var(--muted);cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600;}
+.chip:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+.chip .chip-note{font-weight:400;opacity:.72;font-size:12.5px;}
+
+.toggle-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px;}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}
+.toggle input{width:18px;height:18px;accent-color:var(--teal);margin:0;}
+.toggle.is-disabled{opacity:.45;cursor:default;}
+.select-inline{
+  font:inherit;font-size:14.5px;padding:8px 9px;border:1px solid var(--rule);
+  border-radius:6px;background:#fff;color:var(--ink);max-width:100%;
+}
+
+/* Result */
+.result-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 12px;}
+.result-note{font-size:14px;color:var(--muted);margin:0;}
+.view-switch{display:flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;}
+.view-switch button{
+  font:inherit;font-size:13.5px;font-weight:600;padding:7px 14px;
+  border:none;background:#fff;color:var(--muted);cursor:pointer;
+}
+.view-switch button[aria-pressed="true"]{background:var(--teal);color:#fff;}
+.view-switch button:focus-visible{outline:2px solid var(--teal);outline-offset:-2px;}
+
+.scroller{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);border-radius:var(--radius);background:#fff;}
+table.matrix{border-collapse:separate;border-spacing:0;font-size:13.5px;width:auto;}
+table.matrix th, table.matrix td{
+  border-bottom:1px solid var(--rule-soft);border-right:1px solid var(--rule-soft);
+  padding:0;text-align:center;vertical-align:middle;background:#fff;
+}
+table.matrix thead th{
+  position:sticky;top:0;z-index:3;background:var(--teal);color:#fff;font-weight:600;
+  padding:9px 6px;border-bottom:1px solid var(--teal-deep);border-right:1px solid rgba(255,255,255,.16);
+  min-width:74px;max-width:74px;line-height:1.25;
+}
+table.matrix thead th .dr{display:block;font-size:12.5px;font-weight:700;letter-spacing:.01em;}
+table.matrix thead th .yr{display:block;font-size:11px;opacity:.72;font-weight:500;}
+table.matrix thead th .sw{
+  display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.06em;
+  background:rgba(255,255,255,.22);border-radius:3px;padding:1px 4px;margin-top:2px;
+}
+table.matrix th.col-name{position:sticky;left:0;z-index:4;text-align:left;min-width:132px;max-width:132px;padding:9px 10px;}
+table.matrix th.col-total{position:sticky;left:132px;z-index:4;min-width:52px;max-width:52px;padding:9px 4px;font-size:11.5px;line-height:1.2;}
+table.matrix tbody th.row-name{
+  position:sticky;left:0;z-index:2;text-align:left;font-weight:600;padding:10px;
+  min-width:132px;max-width:132px;border-right:1px solid var(--rule);line-height:1.25;
+}
+table.matrix tbody th.row-name .row-type{
+  display:block;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;
+}
+table.matrix tbody td.cell-total{
+  position:sticky;left:132px;z-index:2;font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--teal-deep);border-right:1px solid var(--rule);padding:10px 4px;
+}
+table.matrix td.cell{padding:10px 4px;min-width:74px;max-width:74px;}
+table.matrix td.cell.hit{color:var(--teal);font-weight:700;font-size:15px;}
+table.matrix td.cell.miss{color:#cfc9bb;}
+table.matrix tbody tr:hover th.row-name, table.matrix tbody tr:hover td{background:#fbf9f3;}
+table.matrix tfoot th, table.matrix tfoot td{
+  background:var(--paper);font-weight:700;font-variant-numeric:tabular-nums;
+  padding:10px 4px;border-top:2px solid var(--rule);border-bottom:none;
+}
+table.matrix tfoot th.row-name{
+  position:sticky;left:0;z-index:2;text-align:left;padding:10px;font-size:12px;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+}
+table.matrix tfoot td.cell-total{position:sticky;left:132px;z-index:2;color:var(--teal-deep);border-right:1px solid var(--rule);}
+table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;}
+
+/* List view */
+.list-view{display:grid;gap:10px;}
+.loc-card{background:#fff;border:1px solid var(--rule);border-radius:var(--radius);padding:13px 14px;}
+.loc-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 9px;}
+.loc-card-name{font-weight:700;font-size:16px;margin:0;}
+.loc-card-name span{
+  font-size:11.5px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-left:7px;
+}
+.loc-card-count{
+  font-size:13px;font-weight:700;color:var(--teal);background:var(--teal-soft);
+  border-radius:999px;padding:3px 10px;white-space:nowrap;
+}
+.dr-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.dr-tag{font-size:12.5px;font-weight:600;color:var(--teal-deep);background:var(--teal-soft);border-radius:5px;padding:4px 8px;}
+.dr-tag em{font-style:normal;font-weight:500;opacity:.75;}
+.dr-none{font-size:13.5px;color:var(--muted);}
+
+.empty-state{
+  background:var(--card);border:1px dashed var(--rule);border-radius:var(--radius);
+  padding:34px 20px;text-align:center;color:var(--muted);font-size:15px;
+}
+
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;}
+.source-line{font-size:12.5px;color:var(--muted);margin:16px 0 0;line-height:1.6;}
+.toast{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(12px);
+  background:var(--teal-deep);color:#fff;font-size:14px;font-weight:600;
+  padding:10px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.22);
+  opacity:0;pointer-events:none;transition:opacity .18s ease, transform .18s ease;z-index:50;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media (max-width:560px){
+  .page-title{font-size:25px;}
+  .wrap{padding:18px 12px 56px;}
+  .panel{padding:13px;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <p class="brand"><a href="/">FEMA Disaster Explorer (BETA)</a></p>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="/">Overview</a>
+    <a href="/explore/">Explore</a>
+    <a href="/map/">Map</a>
+    <a href="/compare/" aria-current="page">Compare</a>
+    <a href="/states/">States</a>
+    <a href="/funding/">Funding</a>
+    <a href="/denials/">Denials</a>
+    <a href="/lead-time/">Lead Time</a>
+    <a href="/about/">About</a>
+    <a href="/daily-ops-brief/">Daily Ops Brief</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <h1 class="page-title">Compare declarations</h1>
+  <p class="page-sub">Two ways in. Start from localities to see which declarations touched each one, or start from a declaration to list every county it designated. Both work across state lines. Sort, filter, and export.</p>
+
+  <div class="notice" id="previewNotice" hidden>
+    Showing preview data. The live index has not loaded yet, so this page is running on a built in sample of 21 Southwest Virginia localities. Adding other states will work once the site is deployed.
+  </div>
+
+  <section class="panel" aria-labelledby="pickerTitle">
+    <div class="panel-head">
+      <h2 class="panel-title" id="pickerTitle">Localities</h2>
+      <span class="count-badge" id="selCount">0 selected</span>
+    </div>
+
+    <div class="state-bar">
+      <span class="field-label tight">States loaded</span>
+      <p class="state-empty" id="stateEmpty" hidden>No states loaded. Add one below to start.</p>
+      <div class="state-chips" id="stateChips"></div>
+      <div class="state-add">
+        <label for="addState" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Add a state</label>
+        <select id="addState" class="select-inline">
+          <option value="">Add a state...</option>
+        </select>
+        <span class="state-loading" id="stateLoading" hidden>Loading...</span>
+      </div>
+    </div>
+
+    <div class="mode-switch" role="group" aria-label="Selection mode">
+      <button type="button" id="modeLoc" aria-pressed="true">By locality</button>
+      <button type="button" id="modeDecl" aria-pressed="false">By declaration</button>
+    </div>
+    <p class="mode-hint" id="modeHint">Pick localities to see the declarations that designated them.</p>
+
+    <div class="search-row">
+      <input type="search" id="locSearch" placeholder="Search localities" aria-label="Search" autocomplete="off">
+    </div>
+
+    <div class="picker" id="picker" role="group" aria-label="Selection checkboxes"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-quiet" type="button" id="selAll">Select all shown</button>
+      <button class="btn btn-quiet" type="button" id="selNone">Clear selection</button>
+    </div>
+
+    <span class="field-label">Declaration type</span>
+    <div class="chips" id="declTypeChips"></div>
+
+    <span class="field-label">Incident type</span>
+    <div class="chips" id="typeChips"></div>
+
+    <div class="toggle-row">
+      <label class="toggle" id="hideEmptyWrap">
+        <input type="checkbox" id="hideEmpty" checked>
+        Hide declarations with no selected localities
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="noStatewide">
+        Exclude statewide declarations
+      </label>
+      <label class="toggle">
+        Sort by
+        <select class="select-inline" id="sortBy">
+          <option value="name">Name</option>
+          <option value="state">State, then name</option>
+          <option value="total">Most declarations</option>
+          <option value="totalAsc">Fewest declarations</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section aria-labelledby="resultTitle">
+    <div class="result-head">
+      <h2 class="panel-title" id="resultTitle" style="margin:0;">Declaration matrix</h2>
+      <div class="view-switch" role="group" aria-label="View format">
+        <button type="button" id="viewGrid" aria-pressed="true">Grid</button>
+        <button type="button" id="viewList" aria-pressed="false">List</button>
+      </div>
+    </div>
+    <p class="result-note" id="resultNote"></p>
+
+    <div id="output"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" type="button" id="dlCsv">Download CSV</button>
+      <button class="btn" type="button" id="copyTsv">Copy for Sheets</button>
+      <button class="btn btn-quiet" type="button" id="copyLink">Copy share link</button>
+    </div>
+
+    <p class="source-line" id="sourceLine"></p>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ------------------------------------------------------------------
+   Per state index files written by gen_decl_index.py live at
+   INDEX_DIR/{ST}.json, with a manifest.json listing which states have
+   data. The page loads the manifest, lets the user add states, fetches
+   each on demand, and merges the loaded set. Two selection modes share
+   the same matrix renderer:
+     - By locality: pick localities, columns are the declarations that
+       touched them.
+     - By declaration: pick declarations, rows are every county each one
+       designated. One declaration selected lists all its counties; two
+       or more show where they overlap.
+   If the manifest fetch fails (site not deployed), SAMPLE_INDEX keeps
+   the layout previewable. Delete the sample block and preview notice
+   once the pipeline is live.
+------------------------------------------------------------------- */
+var INDEX_DIR = "/data/decl-index";
+var MANIFEST_URL = INDEX_DIR + "/manifest.json";
+var DEFAULT_STATES = ["VA"];
+var DEFAULT_DECL_TYPES = ["DR"];
+
+var ALL21 = ["51021","51520","51027","51035","51051","51063","51640","51071","51077","51105","51121","51720","51155","51750","51167","51169","51173","51185","51191","51195","51197"];
+
+var SAMPLE_INDEX = {
+  state:"VA", generated:"sample",
+  jurisdictions:[
+    {fips:"51021",name:"Bland",type:"County"},{fips:"51520",name:"Bristol",type:"City"},
+    {fips:"51027",name:"Buchanan",type:"County"},{fips:"51035",name:"Carroll",type:"County"},
+    {fips:"51051",name:"Dickenson",type:"County"},{fips:"51063",name:"Floyd",type:"County"},
+    {fips:"51640",name:"Galax",type:"City"},{fips:"51071",name:"Giles",type:"County"},
+    {fips:"51077",name:"Grayson",type:"County"},{fips:"51105",name:"Lee",type:"County"},
+    {fips:"51121",name:"Montgomery",type:"County"},{fips:"51720",name:"Norton",type:"City"},
+    {fips:"51155",name:"Pulaski",type:"County"},{fips:"51750",name:"Radford",type:"City"},
+    {fips:"51167",name:"Russell",type:"County"},{fips:"51169",name:"Scott",type:"County"},
+    {fips:"51173",name:"Smyth",type:"County"},{fips:"51185",name:"Tazewell",type:"County"},
+    {fips:"51191",name:"Washington",type:"County"},{fips:"51195",name:"Wise",type:"County"},
+    {fips:"51197",name:"Wythe",type:"County"}
+  ],
+  declarations:[
+    {id:"DR-4863",number:4863,type:"DR",title:"Winter Storm Jett",incidentType:"Severe Winter Storm",year:2025,statewide:false,
+     fips:["51021","51520","51027","51035","51051","51063","51071","51077","51105","51121","51155","51167","51169","51173","51185","51191","51195","51197"]},
+    {id:"DR-4831",number:4831,type:"DR",title:"Tropical Storm Helene",incidentType:"Tropical Storm",year:2024,statewide:false,fips:ALL21.slice()},
+    {id:"DR-4674",number:4674,type:"DR",title:"Virginia Flooding and Mudslides",incidentType:"Flood",year:2022,statewide:false,fips:["51027","51185"]},
+    {id:"DR-4628",number:4628,type:"DR",title:"Virginia Flooding, Landslides, And Mudslides",incidentType:"Flood",year:2021,statewide:false,fips:["51027"]},
+    {id:"DR-4602",number:4602,type:"DR",title:"Severe Winter Storms",incidentType:"Severe Winter Storm",year:2021,statewide:false,fips:["51063"]},
+    {id:"DR-4512",number:4512,type:"DR",title:"COVID-19 Pandemic",incidentType:"Biological",year:2020,statewide:true,fips:ALL21.slice()},
+    {id:"DR-4411",number:4411,type:"DR",title:"Hurricane Michael",incidentType:"Hurricane",year:2018,statewide:false,fips:["51063","51640","51077","51121"]},
+    {id:"DR-4401",number:4401,type:"DR",title:"Hurricane Florence",incidentType:"Hurricane",year:2018,statewide:false,fips:["51520","51063","51077","51155","51167"]}
+  ]
+};
+
+var DECL_TYPE_LABEL = {DR:"Major disaster", EM:"Emergency", FM:"Fire management"};
+
+var FIPS_ST = {
+  "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE",
+  "11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA",
+  "20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN",
+  "28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM",
+  "36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI",
+  "45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA",
+  "54":"WV","55":"WI","56":"WY","60":"AS","66":"GU","69":"MP","72":"PR","78":"VI"
+};
+var ST_NAME = {
+  AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",
+  CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",
+  HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",
+  LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",
+  MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",
+  NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",
+  OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",
+  SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",
+  WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",AS:"American Samoa",
+  GU:"Guam",MP:"Northern Mariana Islands",PR:"Puerto Rico",VI:"U.S. Virgin Islands"
+};
+function stName(st){ return ST_NAME[st] || st; }
+
+/* ---------------------------- STATE ---------------------------- */
+var loadedStates = {};
+var availableStates = [];
+var DATA = {jurisdictions:[], declarations:[]};
+var isSample = false;
+
+var mode = "loc";          // "loc" or "decl"
+var selected = [];         // locality fips (loc mode)
+var selectedDecls = [];    // declaration ids (decl mode)
+var activeDeclTypes = [];
+var activeTypes = [];
+var prevPresentTypes = [];
+var prevPresentDecl = [];
+var view = "grid";
+var searchTerm = "";
+var booted = false;
+
+/* ---------------------------- HELPERS -------------------------- */
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+  });
+}
+function toast(msg){
+  var t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove("show"); },2000);
+}
+function jurByFips(fips){
+  for(var i=0;i<DATA.jurisdictions.length;i++){ if(DATA.jurisdictions[i].fips===fips) return DATA.jurisdictions[i]; }
+  return null;
+}
+function todayISO(){
+  var d=new Date(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return d.getFullYear()+"-"+m+"-"+day;
+}
+function declType(d){
+  if(d.type) return d.type;
+  var m=String(d.id||"").match(/^([A-Z]{2})-/); return m?m[1]:"DR";
+}
+function loadedList(){
+  return Object.keys(loadedStates).sort(function(a,b){ return stName(a).localeCompare(stName(b)); });
+}
+function countStates(rows){
+  var s={}; rows.forEach(function(r){ s[r.state]=1; }); return Object.keys(s).length;
+}
+
+/* ---------------------------- MERGE ---------------------------- */
+function rebuildData(){
+  var jset={}, declMap={};
+  loadedList().forEach(function(st){
+    var idx=loadedStates[st];
+    (idx.jurisdictions||[]).forEach(function(j){
+      if(!jset[j.fips]) jset[j.fips]={fips:j.fips,name:j.name,type:j.type,state:st};
+    });
+    (idx.declarations||[]).forEach(function(d){
+      var ex=declMap[d.id];
+      if(!ex){
+        declMap[d.id]={
+          id:d.id, number:d.number||parseInt(String(d.id).replace(/\D/g,""),10)||0,
+          type:declType(d), title:d.title||"", incidentType:d.incidentType||"Other",
+          year:d.year||0, statewide:!!d.statewide, programs:(d.programs||[]).slice(),
+          states:[st], fips:(d.fips||[]).slice()
+        };
+      } else {
+        var seen={}; ex.fips.forEach(function(f){ seen[f]=1; });
+        (d.fips||[]).forEach(function(f){ if(!seen[f]){ ex.fips.push(f); seen[f]=1; } });
+        if(d.statewide) ex.statewide=true;
+        (d.programs||[]).forEach(function(p){ if(ex.programs.indexOf(p)===-1) ex.programs.push(p); });
+        if(ex.states.indexOf(st)===-1) ex.states.push(st);
+      }
+    });
+  });
+  DATA.jurisdictions=Object.keys(jset).map(function(k){ return jset[k]; });
+  DATA.declarations=Object.keys(declMap).map(function(k){ return declMap[k]; });
+  reconcileFilters();
+}
+
+function reconcileFilters(){
+  var presentTypes=[], presentDecl=[];
+  DATA.declarations.forEach(function(d){
+    if(presentTypes.indexOf(d.incidentType)===-1) presentTypes.push(d.incidentType);
+    var t=declType(d); if(presentDecl.indexOf(t)===-1) presentDecl.push(t);
+  });
+  activeTypes=presentTypes.filter(function(t){
+    return activeTypes.indexOf(t)!==-1 || prevPresentTypes.indexOf(t)===-1;
+  });
+  activeDeclTypes=presentDecl.filter(function(t){
+    if(activeDeclTypes.indexOf(t)!==-1) return true;
+    return prevPresentDecl.indexOf(t)===-1 && DEFAULT_DECL_TYPES.indexOf(t)!==-1;
+  });
+  prevPresentTypes=presentTypes.slice();
+  prevPresentDecl=presentDecl.slice();
+}
+
+/* ---------------------------- LOADING -------------------------- */
+function fetchState(st){
+  if(loadedStates[st]) return Promise.resolve(loadedStates[st]);
+  if(isSample) return Promise.reject(new Error("sample mode"));
+  $("stateLoading").hidden=false;
+  return fetch(INDEX_DIR+"/"+st+".json",{cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("no file for "+st); return r.json(); })
+    .then(function(idx){ loadedStates[st]=idx; return idx; })
+    .finally(function(){ $("stateLoading").hidden=true; });
+}
+function loadStates(list){
+  return Promise.all(list.map(function(st){
+    return fetchState(st).catch(function(){ if(booted) toast("Could not load "+st); return null; });
+  }));
+}
+function addState(st){
+  if(loadedStates[st]) return;
+  loadStates([st]).then(function(){ rebuildData(); renderAll(); });
+}
+function removeState(st){
+  delete loadedStates[st];
+  rebuildData();
+  selected=selected.filter(function(f){ return jurByFips(f); });
+  var present={}; DATA.declarations.forEach(function(d){ present[d.id]=1; });
+  selectedDecls=selectedDecls.filter(function(id){ return present[id]; });
+  renderAll();
+}
+
+/* ---------------------------- SELECTIONS ----------------------- */
+/* Declarations that pass the type and statewide filters, newest first. */
+function declCandidates(){
+  return DATA.declarations.filter(function(d){
+    if(activeDeclTypes.indexOf(declType(d))===-1) return false;
+    if(activeTypes.indexOf(d.incidentType)===-1) return false;
+    if($("noStatewide").checked && d.statewide) return false;
+    return true;
+  }).sort(function(a,b){ return (b.number||0)-(a.number||0); });
+}
+
+/* Loc mode: declarations touching the selected localities. */
+function filteredDecls(){
+  var list=declCandidates();
+  if($("hideEmpty").checked){
+    list=list.filter(function(d){ return selected.some(function(f){ return d.fips.indexOf(f)!==-1; }); });
+  }
+  return list;
+}
+function selectedRows(decls){
+  var rows=selected.map(function(f){
+    var j=jurByFips(f); if(!j) return null;
+    var hits=decls.filter(function(d){ return d.fips.indexOf(f)!==-1; });
+    return {fips:f,name:j.name,type:j.type,state:j.state,hits:hits,total:hits.length};
+  }).filter(Boolean);
+  return sortRows(rows);
+}
+
+/* Decl mode: the selected declarations, and every county they designate. */
+function selectedDeclObjs(){
+  var byId={}; DATA.declarations.forEach(function(d){ byId[d.id]=d; });
+  var list=selectedDecls.map(function(id){ return byId[id]; }).filter(Boolean);
+  if($("noStatewide").checked) list=list.filter(function(d){ return !d.statewide; });
+  return list.slice().sort(function(a,b){ return (b.number||0)-(a.number||0); });
+}
+function countyRows(decls){
+  var fset={};
+  decls.forEach(function(d){ d.fips.forEach(function(f){ fset[f]=1; }); });
+  var rows=Object.keys(fset).map(function(f){
+    var j=jurByFips(f);
+    var hits=decls.filter(function(d){ return d.fips.indexOf(f)!==-1; });
+    return {
+      fips:f,
+      name:j?j.name:f,
+      type:j?j.type:"",
+      state:j?j.state:(FIPS_ST[f.slice(0,2)]||""),
+      hits:hits, total:hits.length
+    };
+  });
+  return sortRows(rows);
+}
+
+function sortRows(rows){
+  var m=$("sortBy").value;
+  rows.sort(function(a,b){
+    if(m==="total" && b.total!==a.total) return b.total-a.total;
+    if(m==="totalAsc" && a.total!==b.total) return a.total-b.total;
+    if(m==="state" && a.state!==b.state) return a.state.localeCompare(b.state);
+    return a.name.localeCompare(b.name);
+  });
+  return rows;
+}
+
+/* ---------------------------- RENDER: STATES ------------------- */
+function renderStateChips(){
+  var loaded=loadedList();
+  $("stateEmpty").hidden=loaded.length>0;
+  $("stateChips").innerHTML=loaded.map(function(st){
+    var n=(loadedStates[st].jurisdictions||[]).length;
+    return '<span class="state-chip">'+esc(stName(st))+' <span class="sc-count">'+n+'</span>'+
+           '<button class="sc-x" type="button" data-remove="'+esc(st)+'" aria-label="Remove '+esc(stName(st))+'">\u00d7</button></span>';
+  }).join("");
+  $("stateChips").querySelectorAll(".sc-x").forEach(function(btn){
+    btn.addEventListener("click", function(){ removeState(btn.getAttribute("data-remove")); });
+  });
+  var opts=['<option value="">Add a state...</option>'];
+  availableStates.filter(function(a){ return !loadedStates[a.state]; })
+    .sort(function(a,b){ return stName(a.state).localeCompare(stName(b.state)); })
+    .forEach(function(a){ opts.push('<option value="'+esc(a.state)+'">'+esc(stName(a.state))+'</option>'); });
+  $("addState").innerHTML=opts.join("");
+  $("addState").disabled=availableStates.length===0||isSample;
+}
+
+/* ---------------------------- RENDER: PICKER ------------------- */
+function renderPicker(){
+  return mode==="loc" ? renderLocalityPicker() : renderDeclarationPicker();
+}
+
+function renderLocalityPicker(){
+  var term=searchTerm.trim().toLowerCase();
+  var loaded=loadedList();
+  var host=$("picker");
+  if(!loaded.length){ host.innerHTML='<div class="pick is-empty">Add a state above to list its localities.</div>'; return; }
+  var matches=DATA.jurisdictions.filter(function(j){ return !term || j.name.toLowerCase().indexOf(term)!==-1; });
+  if(!matches.length){ host.innerHTML='<div class="pick is-empty">No localities match that search.</div>'; return; }
+  var multi=loaded.length>1, html="";
+  loaded.forEach(function(st){
+    var inState=matches.filter(function(j){ return j.state===st; }).sort(function(a,b){ return a.name.localeCompare(b.name); });
+    if(!inState.length) return;
+    if(multi) html+='<div class="pick-group-head">'+esc(stName(st))+'</div>';
+    html+=inState.map(function(j){
+      var on=selected.indexOf(j.fips)!==-1;
+      return '<label class="pick"><input type="checkbox" value="'+esc(j.fips)+'"'+(on?" checked":"")+'>'+
+             '<span class="pick-name">'+esc(j.name)+'</span>'+
+             '<span class="pick-type">'+esc(j.type)+'</span></label>';
+    }).join("");
+  });
+  host.innerHTML=html;
+  host.querySelectorAll("input[type=checkbox]").forEach(function(cb){
+    cb.addEventListener("change", function(){
+      var f=cb.value, i=selected.indexOf(f);
+      if(cb.checked && i===-1) selected.push(f);
+      if(!cb.checked && i!==-1) selected.splice(i,1);
+      renderAll();
+    });
+  });
+}
+
+function renderDeclarationPicker(){
+  var term=searchTerm.trim().toLowerCase();
+  var loaded=loadedList();
+  var host=$("picker");
+  if(!loaded.length){ host.innerHTML='<div class="pick is-empty">Add a state above to list its declarations.</div>'; return; }
+  var cand=declCandidates().filter(function(d){
+    return !term || d.title.toLowerCase().indexOf(term)!==-1 || d.id.toLowerCase().indexOf(term)!==-1;
+  });
+  if(!cand.length){ host.innerHTML='<div class="pick is-empty">No declarations match the current filters.</div>'; return; }
+  host.innerHTML=cand.map(function(d){
+    var on=selectedDecls.indexOf(d.id)!==-1;
+    var nC=d.fips.length;
+    var sub=d.states.join("+")+" \u00b7 "+(d.year||"")+" \u00b7 "+nC+" "+(nC===1?"county":"counties")+(d.statewide?" \u00b7 statewide":"");
+    return '<label class="pick"><input type="checkbox" value="'+esc(d.id)+'"'+(on?" checked":"")+'>'+
+           '<span class="pick-name"><span class="pick-decl-id">'+esc(d.id)+'</span> '+esc(d.title)+
+           '<span class="pick-sub">'+esc(sub)+'</span></span></label>';
+  }).join("");
+  host.querySelectorAll("input[type=checkbox]").forEach(function(cb){
+    cb.addEventListener("change", function(){
+      var id=cb.value, i=selectedDecls.indexOf(id);
+      if(cb.checked && i===-1) selectedDecls.push(id);
+      if(!cb.checked && i!==-1) selectedDecls.splice(i,1);
+      renderAll();
+    });
+  });
+}
+
+/* ---------------------------- RENDER: CHIPS -------------------- */
+function renderDeclTypeChips(){
+  var types=[];
+  DATA.declarations.forEach(function(d){ var t=declType(d); if(types.indexOf(t)===-1) types.push(t); });
+  types.sort();
+  $("declTypeChips").innerHTML=types.length?types.map(function(t){
+    var on=activeDeclTypes.indexOf(t)!==-1;
+    var note=DECL_TYPE_LABEL[t]?' <span class="chip-note">'+esc(DECL_TYPE_LABEL[t])+'</span>':"";
+    return '<button class="chip" type="button" data-decl="'+esc(t)+'" aria-pressed="'+on+'">'+esc(t)+note+'</button>';
+  }).join(""):'<span class="dr-none">Load a state to see types.</span>';
+  $("declTypeChips").querySelectorAll(".chip").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var t=btn.getAttribute("data-decl"), i=activeDeclTypes.indexOf(t);
+      if(i===-1) activeDeclTypes.push(t); else activeDeclTypes.splice(i,1);
+      renderAll();
+    });
+  });
+}
+function renderTypeChips(){
+  var types=[];
+  DATA.declarations.forEach(function(d){ if(types.indexOf(d.incidentType)===-1) types.push(d.incidentType); });
+  types.sort();
+  $("typeChips").innerHTML=types.length?types.map(function(t){
+    var on=activeTypes.indexOf(t)!==-1;
+    return '<button class="chip" type="button" data-type="'+esc(t)+'" aria-pressed="'+on+'">'+esc(t)+'</button>';
+  }).join(""):'<span class="dr-none">Load a state to see types.</span>';
+  $("typeChips").querySelectorAll(".chip").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var t=btn.getAttribute("data-type"), i=activeTypes.indexOf(t);
+      if(i===-1) activeTypes.push(t); else activeTypes.splice(i,1);
+      renderAll();
+    });
+  });
+}
+
+/* ---------------------------- RENDER: MATRIX ------------------- */
+/* Shared by both modes. rows have {name,type,state,fips,total}; decls
+   have {id,title,year,statewide,fips}. A cell is marked when the
+   declaration's fips list contains the row's fips. */
+function renderGrid(rows, decls){
+  var max=rows.reduce(function(m,r){ return Math.max(m,r.total); },0)||1;
+  var head='<thead><tr><th class="col-name">'+(mode==="loc"?"Locality":"County")+'</th><th class="col-total">Total</th>'+
+    decls.map(function(d){
+      return '<th title="'+esc(d.id+" "+d.title)+'"><span class="dr">'+esc(d.id)+'</span>'+
+             '<span class="yr">'+esc(d.year||"")+'</span>'+(d.statewide?'<span class="sw">SW</span>':"")+'</th>';
+    }).join("")+'</tr></thead>';
+  var body='<tbody>'+rows.map(function(r){
+    var tint=(r.total/max)*0.22;
+    return '<tr><th class="row-name" scope="row">'+esc(r.name)+
+      '<span class="row-type">'+esc(r.state)+' \u00b7 '+esc(r.type)+'</span></th>'+
+      '<td class="cell-total" style="background:rgba(0,76,83,'+tint.toFixed(3)+')">'+r.total+'</td>'+
+      decls.map(function(d){
+        var hit=d.fips.indexOf(r.fips)!==-1;
+        return '<td class="cell '+(hit?"hit":"miss")+'" aria-label="'+
+               esc(r.name+" "+r.state+" "+d.id+" "+(hit?"designated":"not designated"))+'">'+(hit?"X":"\u00b7")+'</td>';
+      }).join("")+'</tr>';
+  }).join("")+'</tbody>';
+  var grand=rows.reduce(function(s,r){ return s+r.total; },0);
+  var foot='<tfoot><tr><th class="row-name">'+(mode==="loc"?"Localities affected":"Counties designated")+'</th>'+
+    '<td class="cell-total">'+grand+'</td>'+
+    decls.map(function(d){
+      var n=rows.filter(function(r){ return d.fips.indexOf(r.fips)!==-1; }).length;
+      return '<td>'+n+'</td>';
+    }).join("")+'</tr></tfoot>';
+  $("output").innerHTML='<div class="scroller"><table class="matrix">'+head+body+foot+'</table></div>';
+}
+
+function renderList(rows){
+  $("output").innerHTML='<div class="list-view">'+rows.map(function(r){
+    var tags=r.hits.length
+      ? '<div class="dr-tags">'+r.hits.map(function(d){ return '<span class="dr-tag">'+esc(d.id)+' <em>'+esc(d.title)+'</em></span>'; }).join("")+'</div>'
+      : '<p class="dr-none">No matches under the current filters.</p>';
+    return '<article class="loc-card"><div class="loc-card-head">'+
+      '<h3 class="loc-card-name">'+esc(r.name)+'<span>'+esc(r.state)+' \u00b7 '+esc(r.type)+'</span></h3>'+
+      '<span class="loc-card-count">'+r.total+'</span></div>'+tags+'</article>';
+  }).join("")+'</div>';
+}
+
+/* ---------------------------- RENDER: ALL ---------------------- */
+function renderAll(){
+  var primaryCount = mode==="loc" ? selected.length : selectedDecls.length;
+  $("selCount").textContent=primaryCount+" selected";
+  renderStateChips();
+  renderDeclTypeChips();
+  renderTypeChips();
+  renderPicker();
+
+  var decls, rows;
+  if(mode==="loc"){
+    if(!selected.length){
+      $("output").innerHTML='<div class="empty-state">Select one or more localities to build the matrix.</div>';
+      $("resultNote").textContent=""; $("sourceLine").textContent=""; return;
+    }
+    decls=filteredDecls();
+    rows=selectedRows(decls);
+    var ns=countStates(rows);
+    $("resultNote").textContent=rows.length+" localities"+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations";
+  } else {
+    if(!selectedDecls.length){
+      $("output").innerHTML='<div class="empty-state">Select one or more declarations to list every county each one designated.</div>';
+      $("resultNote").textContent=""; $("sourceLine").textContent=""; return;
+    }
+    decls=selectedDeclObjs();
+    rows=countyRows(decls);
+    var ns2=countStates(rows);
+    $("resultNote").textContent=rows.length+" counties"+(ns2>1?" across "+ns2+" states":"")+", "+decls.length+" declarations selected";
+  }
+
+  $("sourceLine").innerHTML="Source: DisasterData.IO utilizes OpenFEMA.org, FEMA.gov<br>Generated "+esc(todayISO());
+
+  if(!decls.length || !rows.length){
+    $("output").innerHTML='<div class="empty-state">Nothing matches the current filters. Switch a type back on, or adjust the toggles above.</div>';
+    return;
+  }
+  if(view==="grid") renderGrid(rows, decls); else renderList(rows);
+}
+
+/* ---------------------------- EXPORT --------------------------- */
+function buildTable(sep){
+  var decls, rows, rowLabel, title, footLabel;
+  if(mode==="loc"){
+    decls=filteredDecls(); rows=selectedRows(decls);
+    rowLabel="Locality"; title="Federal Disaster Declarations by Locality"; footLabel="Localities affected";
+  } else {
+    decls=selectedDeclObjs(); rows=countyRows(decls);
+    rowLabel="County"; title="Counties Designated by Declaration"; footLabel="Counties designated";
+  }
+  var q=function(v){ v=String(v); if(sep==="," && /[",\n]/.test(v)) return '"'+v.replace(/"/g,'""')+'"'; return v; };
+  var ns=countStates(rows);
+  var out=[];
+  out.push(q(title));
+  out.push(q(rows.length+" "+(mode==="loc"?"localities":"counties")+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations"));
+  out.push(q("Source: DisasterData.IO utilizes OpenFEMA.org, FEMA.gov"));
+  out.push(q("Generated: "+todayISO()));
+  out.push("");
+  out.push([q(rowLabel),q("State"),q("Type")]
+    .concat(decls.map(function(d){ return q(d.id+"  "+d.title); }))
+    .concat([q("Total Declarations")]).join(sep));
+  rows.forEach(function(r){
+    out.push([q(r.name),q(r.state),q(r.type)]
+      .concat(decls.map(function(d){ return d.fips.indexOf(r.fips)!==-1?"X":""; }))
+      .concat([String(r.total)]).join(sep));
+  });
+  var grand=rows.reduce(function(s,r){ return s+r.total; },0);
+  out.push([q(footLabel),"",""]
+    .concat(decls.map(function(d){ return String(rows.filter(function(r){ return d.fips.indexOf(r.fips)!==-1; }).length); }))
+    .concat([String(grand)]).join(sep));
+  return out.join("\n");
+}
+
+function download(){
+  var has = mode==="loc" ? selected.length : selectedDecls.length;
+  if(!has){ toast("Nothing selected yet"); return; }
+  var name=(mode==="loc"?"disaster-declarations-by-locality-":"counties-designated-by-declaration-")+todayISO()+".csv";
+  var blob=new Blob(["\ufeff"+buildTable(",")],{type:"text/csv;charset=utf-8;"});
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+  toast("CSV downloaded");
+}
+
+function copyText(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ toast(msg); }, function(){ fallbackCopy(text,msg); });
+  } else { fallbackCopy(text,msg); }
+}
+function fallbackCopy(text,msg){
+  var ta=document.createElement("textarea"); ta.value=text; ta.setAttribute("readonly","");
+  ta.style.position="fixed"; ta.style.top="-1000px"; document.body.appendChild(ta);
+  ta.select(); ta.setSelectionRange(0,ta.value.length);
+  try{ document.execCommand("copy"); toast(msg); }catch(e){ toast("Copy failed. Select the text manually."); }
+  document.body.removeChild(ta);
+}
+
+function shareLink(){
+  var base=window.location.origin+window.location.pathname;
+  var states=loadedList().join(",");
+  var url;
+  if(mode==="loc"){
+    if(!selected.length){ toast("Nothing selected yet"); return; }
+    url=base+"?fips="+selected.join(",");
+  } else {
+    if(!selectedDecls.length){ toast("Nothing selected yet"); return; }
+    url=base+"?mode=decl&states="+states+"&decl="+selectedDecls.join(",");
+  }
+  copyText(url,"Share link copied");
+}
+
+/* ---------------------------- MODE ----------------------------- */
+function setMode(m){
+  mode=m;
+  $("modeLoc").setAttribute("aria-pressed", m==="loc");
+  $("modeDecl").setAttribute("aria-pressed", m==="decl");
+  $("pickerTitle").textContent = m==="loc" ? "Localities" : "Declarations";
+  $("resultTitle").textContent = m==="loc" ? "Declaration matrix" : "Designated counties";
+  $("modeHint").textContent = m==="loc"
+    ? "Pick localities to see the declarations that designated them."
+    : "Pick a declaration to list every county it designated. Pick more than one to see where they overlap.";
+  $("locSearch").placeholder = m==="loc" ? "Search localities" : "Search declarations";
+  // hideEmpty only means something in locality mode
+  var he=$("hideEmpty"), heWrap=$("hideEmptyWrap");
+  he.disabled = (m==="decl");
+  if(heWrap) heWrap.classList.toggle("is-disabled", m==="decl");
+}
+
+/* ---------------------------- INIT ----------------------------- */
+function parseUrl(){
+  var p=new URLSearchParams(window.location.search);
+  var fips=(p.get("fips")||"").split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+  var decl=(p.get("decl")||"").split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+  var states=(p.get("states")||"").split(",").map(function(s){ return s.trim().toUpperCase(); }).filter(Boolean);
+  var m=p.get("mode")==="decl"?"decl":"loc";
+  return {mode:m, fips:fips, decl:decl, states:states};
+}
+function statesFromFips(list){
+  var set={}; list.forEach(function(f){ var st=FIPS_ST[f.slice(0,2)]; if(st) set[st]=1; }); return Object.keys(set);
+}
+
+function wireStatic(){
+  $("modeLoc").addEventListener("click", function(){ if(mode!=="loc"){ setMode("loc"); searchTerm=""; $("locSearch").value=""; renderAll(); } });
+  $("modeDecl").addEventListener("click", function(){ if(mode!=="decl"){ setMode("decl"); searchTerm=""; $("locSearch").value=""; renderAll(); } });
+
+  $("addState").addEventListener("change", function(e){ var st=e.target.value; if(st) addState(st); e.target.value=""; });
+
+  $("locSearch").addEventListener("input", function(e){ searchTerm=e.target.value; renderPicker(); });
+
+  $("selAll").addEventListener("click", function(){
+    var term=searchTerm.trim().toLowerCase();
+    if(mode==="loc"){
+      DATA.jurisdictions.forEach(function(j){
+        if(term && j.name.toLowerCase().indexOf(term)===-1) return;
+        if(selected.indexOf(j.fips)===-1) selected.push(j.fips);
+      });
+    } else {
+      declCandidates().forEach(function(d){
+        if(term && d.title.toLowerCase().indexOf(term)===-1 && d.id.toLowerCase().indexOf(term)===-1) return;
+        if(selectedDecls.indexOf(d.id)===-1) selectedDecls.push(d.id);
+      });
+    }
+    renderAll();
+  });
+  $("selNone").addEventListener("click", function(){
+    if(mode==="loc") selected=[]; else selectedDecls=[];
+    renderAll();
+  });
+
+  $("hideEmpty").addEventListener("change", renderAll);
+  $("noStatewide").addEventListener("change", renderAll);
+  $("sortBy").addEventListener("change", renderAll);
+
+  $("viewGrid").addEventListener("click", function(){
+    view="grid"; $("viewGrid").setAttribute("aria-pressed","true"); $("viewList").setAttribute("aria-pressed","false"); renderAll();
+  });
+  $("viewList").addEventListener("click", function(){
+    view="list"; $("viewList").setAttribute("aria-pressed","true"); $("viewGrid").setAttribute("aria-pressed","false"); renderAll();
+  });
+
+  $("dlCsv").addEventListener("click", download);
+  $("copyTsv").addEventListener("click", function(){
+    var has=mode==="loc"?selected.length:selectedDecls.length;
+    if(!has){ toast("Nothing selected yet"); return; }
+    copyText(buildTable("\t"),"Copied. Paste into a sheet.");
+  });
+  $("copyLink").addEventListener("click", shareLink);
+}
+
+function finishBoot(u){
+  rebuildData();
+  if(u.mode==="decl"){
+    setMode("decl");
+    var present={}; DATA.declarations.forEach(function(d){ present[d.id]=1; });
+    u.decl.forEach(function(id){ if(present[id] && selectedDecls.indexOf(id)===-1) selectedDecls.push(id); });
+  } else {
+    setMode("loc");
+    u.fips.forEach(function(f){ if(jurByFips(f) && selected.indexOf(f)===-1) selected.push(f); });
+  }
+  booted=true;
+  renderAll();
+}
+
+function bootSample(u){
+  isSample=true;
+  $("previewNotice").hidden=false;
+  loadedStates={VA:SAMPLE_INDEX};
+  availableStates=[{state:"VA",jurisdictions:SAMPLE_INDEX.jurisdictions.length,declarations:SAMPLE_INDEX.declarations.length}];
+  finishBoot(u);
+}
+
+function init(){
+  wireStatic();
+  var u=parseUrl();
+  fetch(MANIFEST_URL,{cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("no manifest"); return r.json(); })
+    .then(function(m){
+      availableStates=(m.states||[]).filter(function(a){ return a && a.state; });
+      if(!availableStates.length) throw new Error("empty manifest");
+      var want={};
+      u.states.forEach(function(s){ want[s]=1; });
+      statesFromFips(u.fips).forEach(function(s){ want[s]=1; });
+      var initial=Object.keys(want).filter(function(st){ return availableStates.some(function(a){ return a.state===st; }); });
+      if(!initial.length){
+        initial=DEFAULT_STATES.filter(function(st){ return availableStates.some(function(a){ return a.state===st; }); });
+      }
+      if(!initial.length){
+        initial=availableStates.some(function(a){ return a.state==="VA"; }) ? ["VA"] : [availableStates[0].state];
+      }
+      loadStates(initial).then(function(){ finishBoot(u); });
+    })
+    .catch(function(){ bootSample(u); });
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
