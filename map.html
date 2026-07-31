@@ -489,6 +489,13 @@
             <option value="FM">FM: Fire Management Assistance Grant (FMAG)</option>
           </select>
         </div>
+
+        <div class="control-group">
+          <label for="stateSelect">State</label>
+          <select id="stateSelect">
+            <option value="" selected>All states</option>
+          </select>
+        </div>
       </div>
 
       <!-- Filtered total -->
@@ -505,6 +512,7 @@
         <div class="section-label">Selected county</div>
         <div class="muted" id="selectedCountyTitle">Click a county to list matching declaration numbers.</div>
         <div class="muted" id="selectedCountySummary" style="margin-top:4px;"></div>
+        <div id="selectedCountyViz"></div>
         <a id="selectedCountyLink" style="display:none;font-size:.85rem;font-weight:600;color:#004c53;text-decoration:none;margin-top:6px;display:none;" href="#">View full declaration history &rarr;</a>
         <div id="selectedCountyList" style="margin-top:10px;"></div>
       </div>
@@ -550,6 +558,9 @@
     const selectedCountySummaryEl = document.getElementById('selectedCountySummary');
     const selectedCountyListEl = document.getElementById('selectedCountyList');
     const selectedCountyLinkEl = document.getElementById('selectedCountyLink');
+    const selectedCountyVizEl = document.getElementById('selectedCountyViz');
+    const stateSelect = document.getElementById('stateSelect');
+    let focusStateFips = '';   /* 2-digit state FIPS to focus/dim, or '' for the whole U.S. */
 
     // Build county-label -> jurisdiction-page lookup from locality-index.js
     const localityLookup = {};
@@ -663,11 +674,41 @@
       });
     }
 
+    /* compact linked panel: declarations-by-year mini chart + top incident types for the selection */
+    function countyVizHtml(events) {
+      if (!events.length) return '';
+      var ys = years.slice(), yc = {};
+      ys.forEach(function (y) { yc[y] = 0; });
+      events.forEach(function (e) { if (yc[e.year] == null) yc[e.year] = 0; yc[e.year]++; });
+      var max = Math.max.apply(null, ys.map(function (y) { return yc[y] || 0; }).concat([1]));
+      var W = 250, H = 54, n = ys.length, bw = W / n;
+      var bars = ys.map(function (y, i) {
+        var v = yc[y] || 0, h = v ? Math.max(2, (v / max) * (H - 16)) : 0;
+        return '<rect x="' + (i * bw).toFixed(1) + '" y="' + (H - 12 - h).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + (v ? '#c85c2e' : '#e9e5da') + '"><title>' + y + ': ' + v + '</title></rect>';
+      }).join('');
+      var labs = '<text x="0" y="' + H + '" font-size="9" fill="#938a78">' + ys[0] + '</text><text x="' + W + '" y="' + H + '" font-size="9" fill="#938a78" text-anchor="end">' + ys[ys.length - 1] + '</text>';
+      var chart = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Declarations by year">' + bars + labs + '</svg>';
+      var tc = {};
+      events.forEach(function (e) { var t = e.title || 'Unknown'; tc[t] = (tc[t] || 0) + 1; });
+      var top = Object.keys(tc).map(function (t) { return [t, tc[t]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 4);
+      var tmax = top.length ? top[0][1] : 1;
+      var haz = top.map(function (p) {
+        var pct = Math.max(6, (p[1] / tmax) * 100);
+        return '<div style="margin-top:6px;font-size:12px">'
+          + '<div style="display:flex;justify-content:space-between;gap:8px"><span>' + p[0] + '</span><span style="color:#938a78;font-variant-numeric:tabular-nums">' + p[1] + '</span></div>'
+          + '<div style="height:5px;background:#e9e5da;border-radius:3px;margin-top:2px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:#004c53;border-radius:3px"></div></div></div>';
+      }).join('');
+      var hd = 'font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#938a78';
+      return '<div style="margin-top:10px"><div style="' + hd + ';margin-bottom:4px">By year</div>' + chart
+        + '<div style="' + hd + ';margin:10px 0 2px">Top incident types</div>' + haz + '</div>';
+    }
+
     function renderSelectedCounty() {
       if (!selectedCountyFips) {
         selectedCountyTitleEl.textContent = 'Click a county to list matching declaration numbers.';
         selectedCountySummaryEl.textContent = '';
         selectedCountyListEl.innerHTML = '';
+        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = '';
         selectedCountyLinkEl.style.display = 'none';
         return;
       }
@@ -703,10 +744,12 @@
       }
 
       if (!events.length) {
+        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = '';
         selectedCountyListEl.innerHTML = '<div class="muted">No declaration events match the current year/type filters for this county.</div>';
         return;
       }
 
+      if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = countyVizHtml(events);
       selectedCountyListEl.innerHTML = events.map(evt => `
         <div class="event-item">
           <div class="num">#${evt.declarationNumber}</div>
@@ -777,12 +820,13 @@
       const values = getActiveCountyValues();
       const fips = String(feature.id || feature.properties.GEOID || '').padStart(5, '0');
       const value = values[fips] || 0;
+      const dim = focusStateFips && fips.slice(0, 2) !== focusStateFips;   /* gray out other states when one is focused */
       return {
-        fillColor: getColor(value, currentBreaks),
+        fillColor: dim ? '#eee9df' : getColor(value, currentBreaks),
         weight: 0.4,
-        opacity: 1,
-        color: '#d3c9b2',
-        fillOpacity: 0.9
+        opacity: dim ? 0.5 : 1,
+        color: dim ? '#e3ddce' : '#d3c9b2',
+        fillOpacity: dim ? 0.22 : 0.9
       };
     }
 
@@ -892,18 +936,55 @@
 
     const STMAP={AL:['01','Alabama'],AK:['02','Alaska'],AZ:['04','Arizona'],AR:['05','Arkansas'],CA:['06','California'],CO:['08','Colorado'],CT:['09','Connecticut'],DE:['10','Delaware'],DC:['11','Washington D.C.'],FL:['12','Florida'],GA:['13','Georgia'],HI:['15','Hawaii'],ID:['16','Idaho'],IL:['17','Illinois'],IN:['18','Indiana'],IA:['19','Iowa'],KS:['20','Kansas'],KY:['21','Kentucky'],LA:['22','Louisiana'],ME:['23','Maine'],MD:['24','Maryland'],MA:['25','Massachusetts'],MI:['26','Michigan'],MN:['27','Minnesota'],MS:['28','Mississippi'],MO:['29','Missouri'],MT:['30','Montana'],NE:['31','Nebraska'],NV:['32','Nevada'],NH:['33','New Hampshire'],NJ:['34','New Jersey'],NM:['35','New Mexico'],NY:['36','New York'],NC:['37','North Carolina'],ND:['38','North Dakota'],OH:['39','Ohio'],OK:['40','Oklahoma'],OR:['41','Oregon'],PA:['42','Pennsylvania'],RI:['44','Rhode Island'],SC:['45','South Carolina'],SD:['46','South Dakota'],TN:['47','Tennessee'],TX:['48','Texas'],UT:['49','Utah'],VT:['50','Vermont'],VA:['51','Virginia'],WA:['53','Washington'],WV:['54','West Virginia'],WI:['55','Wisconsin'],WY:['56','Wyoming'],PR:['72','Puerto Rico'],VI:['78','U.S. Virgin Islands'],GU:['66','Guam'],AS:['60','American Samoa'],MP:['69','N. Mariana Islands']};
 
-    function focusStateFromUrl() {
-      const ab = (new URLSearchParams(location.search).get('state') || '').toUpperCase();
-      if (!ab || !STMAP[ab] || !countyLayer) return;
-      const fips = STMAP[ab][0], name = STMAP[ab][1];
+    /* populate the State filter from STMAP (alphabetical by name) */
+    (function () {
+      if (!stateSelect) return;
+      Object.keys(STMAP).map(function (ab) { return [ab, STMAP[ab][1]]; })
+        .sort(function (a, b) { return a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0); })
+        .forEach(function (p) {
+          var o = document.createElement('option');
+          o.value = p[0]; o.textContent = p[1];
+          stateSelect.appendChild(o);
+        });
+    })();
+
+    function zoomToStateFips(fips) {
+      if (!countyLayer) return;
       const bounds = L.latLngBounds([]);
       countyLayer.eachLayer(function (l) {
         const id = String(l.feature.id || (l.feature.properties && l.feature.properties.GEOID) || '').padStart(5, '0');
         if (id.slice(0, 2) === fips) bounds.extend(l.getBounds());
       });
-      const found = bounds.isValid();
+      return bounds.isValid() ? bounds : null;
+    }
+
+    /* State filter: dim other states (via styleCounty) and zoom to the chosen one */
+    if (stateSelect) stateSelect.addEventListener('change', function () {
+      const ab = stateSelect.value;
+      focusStateFips = (ab && STMAP[ab]) ? STMAP[ab][0] : '';
+      if (countyLayer) countyLayer.setStyle(styleCounty);
+      if (focusStateFips) {
+        const b = zoomToStateFips(focusStateFips);
+        showStateBanner(STMAP[ab][1], !!b);
+        if (b) map.fitBounds(b, { padding: [24, 24], maxZoom: 7 });
+      } else {
+        const banner = document.getElementById('stateFocusBanner');
+        if (banner) banner.remove();
+        map.setView([37.8, -96], 4);
+      }
+    });
+
+    function focusStateFromUrl() {
+      const ab = (new URLSearchParams(location.search).get('state') || '').toUpperCase();
+      if (!ab || !STMAP[ab] || !countyLayer) return;
+      const fips = STMAP[ab][0], name = STMAP[ab][1];
+      focusStateFips = fips;
+      if (stateSelect) stateSelect.value = ab;
+      countyLayer.setStyle(styleCounty);   /* apply dimming */
+      const b = zoomToStateFips(fips);
+      const found = !!b;
       showStateBanner(name, found);
-      if (found) map.fitBounds(bounds, { padding: [24, 24], maxZoom: 7 });
+      if (found) map.fitBounds(b, { padding: [24, 24], maxZoom: 7 });
     }
 
     function showStateBanner(name, found) {
@@ -920,7 +1001,13 @@
       b.innerHTML = (found
         ? '<span>Focused on <strong style="color:#004c53;font-weight:700">' + name + '</strong></span>'
         : '<span><strong style="color:#004c53;font-weight:700">' + name + '</strong> has no county detail on this map</span>') + btn;
-      document.getElementById('stateFocusReset').onclick = function () { b.remove(); map.setView([37.8, -96], 4); };
+      document.getElementById('stateFocusReset').onclick = function () {
+        b.remove();
+        focusStateFips = '';
+        if (stateSelect) stateSelect.value = '';
+        if (countyLayer) countyLayer.setStyle(styleCounty);
+        map.setView([37.8, -96], 4);
+      };
     }
 
     metricSelect.addEventListener('change', refreshMap);
