@@ -251,6 +251,23 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 /* linked state focus */
 .row.rowfocused{background:#fbeee2;box-shadow:inset 3px 0 0 var(--ember);}
 #focus-chip:hover{background:#9e3a1e !important;border-color:#9e3a1e !important;}
+/* state compare */
+.cmpbtn{font-family:var(--sans);font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:9px 15px;cursor:pointer;transition:.12s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+.cmpbtn:hover{background:var(--accent-2);border-color:var(--accent-2);}
+.boardctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.cmp-pick{display:flex;align-items:center;gap:12px;margin:22px 0 6px;flex-wrap:wrap;}
+.cmp-pick select{font:600 14px 'Public Sans',sans-serif;color:var(--ink);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:8px;padding:9px 12px;cursor:pointer;flex:1;min-width:150px;}
+.cmp-pick .vs{font-family:var(--serif);font-style:italic;color:var(--ink-3);font-size:15px;}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.cmp-col{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:18px;}
+.cmp-col h4{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.3px;margin-bottom:2px;}
+.cmp-col .ab{font-size:11.5px;color:var(--ink-3);margin-bottom:12px;}
+.cmp-m{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--rule);font-size:12.5px;color:var(--ink-2);}
+.cmp-m b{font-family:var(--serif);font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums;}
+.cmp-m.win b{color:var(--ember);}
+.cmp-spark{margin-top:14px;}
+.cmp-h{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-3);margin:14px 0 8px;}
+@media(max-width:560px){.cmp-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -385,7 +402,10 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <section id="board">
     <div class="shead">
       <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
-      <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
+      <div class="boardctl">
+        <button class="cmpbtn" id="cmp-open" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v18M16 21V3"/><path d="M3 8h5M16 16h5"/></svg>Compare states</button>
+        <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
+      </div>
     </div>
     <div id="scoreboard"></div>
   </section>
@@ -455,6 +475,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <a class="m-map" id="m-fund" href="public-assistance-projects.html">View funding <span aria-hidden="true">&rarr;</span></a>
       <a class="m-map" id="m-page" href="states/index.html">Full state page <span aria-hidden="true">&rarr;</span></a>
       <button class="m-map" id="m-focus" type="button">Focus charts on this state <span aria-hidden="true">&uarr;</span></button>
+      <button class="m-map" id="m-compare" type="button">Compare with another state <span aria-hidden="true">&rarr;</span></button>
     </div>
     <div class="m-stats">
       <div class="m-stat"><div class="mn" id="m-decl"></div><div class="ml">declarations</div></div>
@@ -466,6 +487,17 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <div class="m-sec"><div class="m-h">Most common hazards</div><div id="m-haz" class="mbars"></div></div>
     <div class="m-sec"><div class="m-recs-head"><div class="m-h" style="margin:0">Records</div><div class="recseg" id="recseg"><button class="on" data-r="decl">Declarations <b id="rc-d">0</b></button><button data-r="den">Denials <b id="rc-n">0</b></button></div></div><div class="m-reclist" id="m-reclist"></div></div>
     <p class="m-note" id="m-note"></p>
+  </div>
+</div>
+
+<div class="modal-back" id="cmpback" hidden>
+  <div class="modal" style="max-width:780px" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
+    <button class="m-close" id="cmpclose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="m-rank">Compare</div>
+    <h3 class="m-name" id="cmp-title" style="font-size:30px">State vs. state</h3>
+    <div class="m-sub" id="cmp-sub"></div>
+    <div class="cmp-pick"><select id="cmp-a" aria-label="First state to compare"></select><span class="vs">vs</span><select id="cmp-b" aria-label="Second state to compare"></select></div>
+    <div class="cmp-grid" id="cmp-grid"></div>
   </div>
 </div>
 
@@ -1190,6 +1222,73 @@ initBounds(); updateRange(); render(); renderHaz();
   var locp=null; try{ locp=new URLSearchParams(location.search).get('loc'); }catch(e){}
   var rec = locp ? bySlug(locp) : (function(){ var u=load(); return u?byUrl(u):null; })();
   if(rec){ card._rec=rec; if(locp) save(rec[3]); show(rec, !!locp); }
+})();
+</script>
+<script>
+/* State-vs-state compare: two-column side-by-side over the current year window.
+   Reuses STATES (windowed), focusSeries() for sparklines, and mbars()/heatFor() for bars. */
+(function(){
+  var back=document.getElementById('cmpback'), grid=document.getElementById('cmp-grid'),
+      selA=document.getElementById('cmp-a'), selB=document.getElementById('cmp-b'),
+      sub=document.getElementById('cmp-sub');
+  if(!back||typeof STATES==='undefined'||typeof focusSeries!=='function') return;
+
+  function winSeries(ab){ return focusSeries(ab).filter(function(d){ return d[0]>=yrMin&&d[0]<=yrMax; }); }
+  function options(sel,current){
+    var list=STATES.slice().sort(function(a,b){ return a.name<b.name?-1:(a.name>b.name?1:0); });
+    sel.innerHTML=list.map(function(s){ return '<option value="'+s.ab+'">'+s.name+'</option>'; }).join('');
+    if(current && list.some(function(s){ return s.ab===current; })) sel.value=current;
+  }
+  function spark(ab,gmax){
+    var S=winSeries(ab); if(S.length<2){ return '<div style="height:46px"></div>'; }
+    var W=240,H=46,pad=2, span=(H-2*pad-6);
+    var xs=function(i){ return pad+i*((W-2*pad)/(S.length-1)); };
+    var ys=function(v){ return H-pad-(v/(gmax||1))*span; };
+    var line=S.map(function(d,i){ return (i?'L':'M')+xs(i).toFixed(1)+' '+ys(d[1]).toFixed(1); }).join(' ');
+    var area=line+' L '+xs(S.length-1).toFixed(1)+' '+(H-pad)+' L '+pad+' '+(H-pad)+' Z';
+    return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="46" preserveAspectRatio="none" role="img" aria-label="Declarations by fiscal year">'
+      +'<path d="'+area+'" fill="#d98c4e" fill-opacity="0.16"/><path d="'+line+'" fill="none" stroke="#c85c2e" stroke-width="1.6"/></svg>';
+  }
+  function col(s,other,gmax){
+    function win(a,b){ return a>=b?' win':''; }
+    var types=mbars([{l:'DR',s:'Major',v:s.dr,c:'#1d1813'},{l:'EM',s:'Emergency',v:s.em,c:'#004c53'},{l:'FM',s:'Fire Mgmt',v:s.fm,c:'#c85c2e'}],Math.max(s.dr,s.em,s.fm,1));
+    var hmax=s.inc.length?s.inc[0][1]:1;
+    var haz=mbars(s.inc.slice(0,5).map(function(h){ return {l:h[0],v:h[1],c:heatFor(h[1])}; }),hmax);
+    return '<div class="cmp-col"><h4>'+s.name+'</h4><div class="ab">'+s.ab+'</div>'
+      +'<div class="cmp-m'+win(s.decl,other.decl)+'"><span>Declarations</span><b>'+s.decl+'</b></div>'
+      +'<div class="cmp-m'+win(s.den,other.den)+'"><span>Denials</span><b>'+s.den+'</b></div>'
+      +'<div class="cmp-m'+win(s.rate,other.rate)+'"><span>Denial rate</span><b>'+s.rate.toFixed(1)+'%</b></div>'
+      +'<div class="cmp-m'+(s.days<=other.days?' win':'')+'"><span>Avg days to decision</span><b>'+s.days.toFixed(1)+'</b></div>'
+      +'<div class="cmp-spark">'+spark(s.ab,gmax)+'</div>'
+      +'<div class="cmp-h">By declaration type</div><div class="mbars">'+types+'</div>'
+      +'<div class="cmp-h">Top hazards</div><div class="mbars">'+haz+'</div></div>';
+  }
+  function draw(){
+    var a=STATES.find(function(s){ return s.ab===selA.value; }), b=STATES.find(function(s){ return s.ab===selB.value; });
+    if(!a||!b){ grid.innerHTML=''; return; }
+    function smax(ab){ return winSeries(ab).reduce(function(m,d){ return Math.max(m,d[1]); },0); }
+    var gmax=Math.max(smax(a.ab),smax(b.ab),1);   /* shared sparkline scale for a fair comparison */
+    sub.innerHTML='Within FY'+yrMin+' to FY'+yrMax+'. Leading value in each row is <span style="color:var(--ember);font-weight:600">amber</span>; spark lines share one scale.';
+    grid.innerHTML=col(a,b,gmax)+col(b,a,gmax);
+  }
+  function open(preA){
+    var top=STATES.slice().sort(function(a,b){ return b.decl-a.decl; });
+    var curA=preA||selA.value||(top[0]&&top[0].ab);
+    options(selA,curA);
+    var curB=selB.value||(top[1]&&top[1].ab);
+    if(curB===selA.value){ var alt=top.find(function(s){ return s.ab!==selA.value; }); curB=alt&&alt.ab; }
+    options(selB,curB);
+    draw();
+    back.hidden=false; document.getElementById('cmpclose').focus();
+  }
+  function close(){ back.hidden=true; }
+  selA.addEventListener('change',draw); selB.addEventListener('change',draw);
+  document.getElementById('cmpclose').addEventListener('click',close);
+  back.addEventListener('click',function(e){ if(e.target===back) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!back.hidden) close(); });
+  var ob=document.getElementById('cmp-open'); if(ob) ob.addEventListener('click',function(){ open(); });
+  var mc=document.getElementById('m-compare');
+  if(mc) mc.addEventListener('click',function(){ var ab=(typeof recState!=='undefined'&&recState)?recState.ab:null; if(typeof closeModal==='function') closeModal(); open(ab); });
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
