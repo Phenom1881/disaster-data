@@ -279,6 +279,27 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
 <!-- Locality search -->
 <section id="loc-search" style="max-width:980px;margin:2rem auto 2.5rem;padding:0 clamp(18px,4vw,40px)">
+<!-- Your locality (personalized, populated from localStorage or ?loc= by the script below) -->
+<div id="your-locality" hidden style="background:#004c53;color:#fff;border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem;box-shadow:0 4px 14px rgba(0,76,83,.18)">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.82" id="yl-kicker">Your saved locality</div>
+    <button id="yl-clear" type="button" aria-label="Clear your saved locality" style="background:rgba(255,255,255,.14);border:none;color:#fff;font:600 .72rem 'Public Sans',sans-serif;border-radius:6px;padding:.3rem .6rem;cursor:pointer">Clear</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
+    <div style="min-width:0">
+      <a id="yl-name" href="#" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.3rem,2.6vw,1.6rem);font-weight:600;color:#fff;text-decoration:none;line-height:1.1;display:inline-block"></a>
+      <div id="yl-sub" style="font-size:.9rem;opacity:.85;margin-top:.2rem"></div>
+    </div>
+    <div style="text-align:right;flex:none">
+      <div id="yl-count" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums"></div>
+      <div style="font-size:.66rem;letter-spacing:.5px;opacity:.8;text-transform:uppercase;margin-top:.15rem">FEMA declarations</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-top:.9rem">
+    <a id="yl-link" href="#" style="display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#004c53;font:600 .82rem 'Public Sans',sans-serif;text-decoration:none;border-radius:8px;padding:.45rem .85rem">View full history <span aria-hidden="true">&rarr;</span></a>
+    <button id="yl-share" type="button" style="display:inline-flex;align-items:center;gap:.35rem;background:none;border:1px solid rgba(255,255,255,.5);color:#fff;font:600 .82rem 'Public Sans',sans-serif;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Copy share link</button>
+  </div>
+</div>
 <div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;padding:1.6rem 1.8rem;box-shadow:0 2px 8px rgba(40,30,10,.04)">
 <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .25rem">Find your locality</h2>
 <p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations, each with its full FEMA declaration history.</p>
@@ -1119,6 +1140,56 @@ initBounds(); updateRange(); render(); renderHaz();
   });
   document.addEventListener('click',function(e){if(!wrap.contains(e.target))box.style.display='none';});
   input.addEventListener('focus',function(){if(this.value.trim().length>=2){var h=find(this.value.trim());if(h.length)render(h);}});
+})();
+</script>
+<script>
+/* "Your locality": remember the locality a visitor picks (localStorage) and surface it up top
+   on return visits; also honor a shareable ?loc=<slug> link. Pure add-on over LOCALITY_INDEX. */
+(function(){
+  if(!window.LOCALITY_INDEX) return;
+  var IDX=window.LOCALITY_INDEX, KEY='dd.locality';
+  var card=document.getElementById('your-locality');
+  if(!card) return;
+  function slug(url){ return (url||'').split('/').pop().replace(/\.html$/,''); }
+  function byUrl(u){ for(var i=0;i<IDX.length;i++){ if(IDX[i][3]===u) return IDX[i]; } return null; }
+  function bySlug(s){ for(var i=0;i<IDX.length;i++){ if(slug(IDX[i][3])===s) return IDX[i]; } return null; }
+  function save(u){ try{ localStorage.setItem(KEY,u); }catch(e){} }
+  function load(){ try{ return localStorage.getItem(KEY); }catch(e){ return null; } }
+
+  function show(r, fromShare){
+    var name=document.getElementById('yl-name'), sub=document.getElementById('yl-sub'),
+        cnt=document.getElementById('yl-count'), link=document.getElementById('yl-link'),
+        kick=document.getElementById('yl-kicker');
+    name.textContent=r[0]; name.href=r[3];
+    var type=(r[6]||'').toString();
+    sub.textContent=[type, r[2]].filter(Boolean).join(' · ');
+    cnt.textContent=(typeof r[4]==='number'?r[4]:0).toLocaleString();
+    link.href=r[3];
+    kick.textContent=fromShare?'Shared locality':'Your saved locality';
+    card.hidden=false;
+  }
+  function hide(){ card.hidden=true; try{ localStorage.removeItem(KEY); }catch(e){} }
+
+  /* remember a pick: the search results are anchors to the jurisdiction pages */
+  var results=document.getElementById('lsR');
+  if(results) results.addEventListener('click',function(e){
+    var a=e.target.closest('a'); if(!a) return;
+    var r=byUrl(a.getAttribute('href')); if(r) save(r[3]);
+  }, true);
+
+  document.getElementById('yl-clear').addEventListener('click',hide);
+  document.getElementById('yl-share').addEventListener('click',function(){
+    var r=card._rec; if(!r) return;
+    var url=location.origin+location.pathname+'?loc='+encodeURIComponent(slug(r[3]));
+    var btn=this, done=function(){ var t=btn.textContent; btn.textContent='Link copied'; setTimeout(function(){ btn.textContent=t; },1500); };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,function(){ window.prompt('Copy link:',url); });
+    else window.prompt('Copy link:',url);
+  });
+
+  /* on load: ?loc= (shareable) wins, else the saved locality */
+  var locp=null; try{ locp=new URLSearchParams(location.search).get('loc'); }catch(e){}
+  var rec = locp ? bySlug(locp) : (function(){ var u=load(); return u?byUrl(u):null; })();
+  if(rec){ card._rec=rec; if(locp) save(rec[3]); show(rec, !!locp); }
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
