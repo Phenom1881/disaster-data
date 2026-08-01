@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>Disaster Data: Federal disaster declarations, mapped and ranked</title>
+<title>Disaster Data: FEMA disaster data made navigable, from the national picture to your jurisdiction</title>
 <meta name="description" content="Explore every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.">
 <meta property="og:title" content="Disaster Data: FEMA disaster data made navigable, from the national picture to your jurisdiction">
 <meta property="og:description" content="Every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.">
@@ -339,14 +339,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <a class="ll-all" href="/latest/">See all recent declarations <span aria-hidden="true">&rarr;</span></a>
     </div>
     <!-- LATEST:START -->
-<p class="ll-updated">Data current through Jul 26, 2026</p>
-<div class="ll-grid">
-<div class="ll-card" title="DOVE FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">California</div><div class="ll-meta"><span class="ll-num">FM-5652</span><span>Fire</span><span>1 area</span><a href="https://www.fema.gov/disaster/5652" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 26, 2026</div></div>
-<div class="ll-card" title="RANSIER FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">Washington</div><div class="ll-meta"><span class="ll-num">FM-5651</span><span>Fire</span><span>2 areas</span><a href="https://www.fema.gov/disaster/5651" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 26, 2026</div></div>
-<div class="ll-card" title="KAWAIHAE ROAD FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">Hawaii</div><div class="ll-meta"><span class="ll-num">FM-5650</span><span>Fire</span><span>1 area</span><a href="https://www.fema.gov/disaster/5650" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 26, 2026</div></div>
-<div class="ll-card" title="SIGNAL PEAK FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">Washington</div><div class="ll-meta"><span class="ll-num">FM-5649</span><span>Fire</span><span>2 areas</span><a href="https://www.fema.gov/disaster/5649" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 26, 2026</div></div>
-<div class="ll-card" title="GRASSHOPPER FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">Oregon</div><div class="ll-meta"><span class="ll-num">FM-5648</span><span>Fire</span><span>1 area</span><a href="https://www.fema.gov/disaster/5648" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Jul 25, 2026</div></div>
-</div>
+    <p class="ll-placeholder">Recent declarations appear here on the next deploy.</p>
     <!-- LATEST:END -->
   </section>
 </div>
@@ -1296,6 +1289,36 @@ initBounds(); updateRange(); render(); renderHaz();
   var ob=document.getElementById('cmp-open'); if(ob) ob.addEventListener('click',function(){ open(); });
   var mc=document.getElementById('m-compare');
   if(mc) mc.addEventListener('click',function(){ var ab=(typeof recState!=='undefined'&&recState)?recState.ab:null; if(typeof closeModal==='function') closeModal(); open(ab); });
+})();
+</script>
+<script src="latest-data.js"></script>
+<script>
+/* Homepage "Latest declarations": build.py bakes these cards into the LATEST markers at build
+   time. When the page ships un-built (the placeholder is still present), render the same cards
+   client-side from latest-data.js so the teaser is never empty. Markup mirrors build.py's
+   render_latest_cards_html(); a real build replaces the placeholder, so this then no-ops. */
+(function(){
+  var ph=document.querySelector('#latest .ll-placeholder');
+  if(!ph || !window.LATEST_DECLARATIONS || !window.LATEST_DECLARATIONS.length) return;
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var NAMES=window.STATE_NAMES||{};
+  function esc(s){ s=(s==null)?'':String(s); return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function fdate(iso){ if(!iso) return ''; var p=String(iso).slice(0,10).split('-'); if(p.length<3) return String(iso).slice(0,10); var m=+p[1]; if(!m) return String(iso).slice(0,10); return MON[m-1]+' '+(+p[2])+', '+p[0]; }
+  var items=window.LATEST_DECLARATIONS.slice(0,5);
+  var html='';
+  var newest=items[0]&&items[0].declarationDate;
+  if(newest) html+='<p class="ll-updated">Data current through '+fdate(newest)+'</p>';
+  html+='<div class="ll-grid">';
+  items.forEach(function(d){
+    var t=esc(d.declarationType||''), num=esc(d.disasterNumber||''), abbr=d.state||'';
+    var sname=esc(NAMES[abbr]||abbr);
+    var cnt=d.areaCount||1, areas=(cnt>1?(cnt+' areas'):'1 area');
+    var incC=d.incidentType?('<span>'+esc(d.incidentType)+'</span>'):'';
+    var full=esc(d.declarationTitle||'');
+    html+='<div class="ll-card" title="'+full+'"><span class="ll-badge '+t+'">'+t+'</span><div class="ll-body"><div class="ll-title">'+sname+'</div><div class="ll-meta"><span class="ll-num">'+t+'-'+num+'</span>'+incC+'<span>'+areas+'</span><a href="https://www.fema.gov/disaster/'+num+'" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">'+fdate(d.declarationDate)+'</div></div>';
+  });
+  html+='</div>';
+  ph.outerHTML=html;
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
