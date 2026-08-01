@@ -349,7 +349,20 @@ ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--i
 ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
 ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
 footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-@media(max-width:720px){nav.ddnav{height:auto;flex-direction:column;align-items:stretch;gap:9px;padding-top:11px;padding-bottom:11px}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{flex-wrap:wrap}}
+nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
+nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobilemenu{display:none}
+@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
+.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
+.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
+.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
+.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
+.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
+.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
+.mm-section a.on{color:#004c53;background:#d7e9ea}}
 """.strip()
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
@@ -370,14 +383,31 @@ HEAD = (FONTS + '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/di
 def header_html():
     return ('<nav class="ddnav">'
             '<div class="brand"><a class="mark" href="../../index.html">Disaster Data</a></div>'
+            '<button class="navburger" aria-label="Menu" aria-expanded="false">'
+            '<span></span><span></span><span></span></button>'
             '<div class="navlinks">'
             '<a href="../../index.html">Overview</a>'
             '<a href="../../index.html#board">Explore</a>'
+            '<a href="../../compare.html">Compare</a>'
             '<a href="../../map.html">Map</a>'
-            '<a href="../../states/index.html" class="on">States</a>'
+            '<a href="../../states/index.html">States</a>'
+            '<a href="../../jurisdiction.html" class="on">Local</a>'
             '<a href="../../public-assistance-projects.html">Funding</a>'
+            '<a href="../../denials.html">Denials</a>'
             '<a href="../../about.html">About</a></div>'
-            '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>')
+            '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>'
+            '<div class="mobilemenu" hidden>'
+            '<a href="../../index.html">Overview</a>'
+            '<div class="mm-section"><div class="mm-label">Explore</div>'
+            '<a href="../../index.html#board">Explore</a>'
+            '<a href="../../map.html">Map</a>'
+            '<a href="../../compare.html">Compare</a></div>'
+            '<div class="mm-section"><div class="mm-label">Data</div>'
+            '<a href="../../states/index.html">States</a>'
+            '<a href="../../jurisdiction.html" class="on">Local</a>'
+            '<a href="../../public-assistance-projects.html">Funding</a>'
+            '<a href="../../denials.html">Denials</a></div>'
+            '<a href="../../about.html">About</a></div>')
 
 def footer_html():
     return ('<footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, '
@@ -385,7 +415,10 @@ def footer_html():
             ' &middot; <a href="../../about.html">About and contact</a></div></footer>'
             '<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
             'data-cf-beacon=\'{"token": "ceea2416f66a424981ba37fcb9440d68"}\'></script>'
-            '<!-- End Cloudflare Web Analytics -->')
+            '<!-- End Cloudflare Web Analytics -->'
+            '<script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");'
+            'if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";'
+            'b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script>')
 
 def _oxford(items):
     items = [i for i in items]
