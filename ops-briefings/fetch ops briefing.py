@@ -75,14 +75,21 @@ def load_history() -> dict:
     if not HISTORY_CSV.exists():
         return {}
     with HISTORY_CSV.open(newline="", encoding="utf-8") as f:
-        return {row["date"]: row for row in csv.DictReader(f)}
+        rows = {}
+        for row in csv.DictReader(f):
+            # Keep only the fields the current schema knows about, so
+            # rows written by earlier versions (which had extra columns
+            # such as message_id or feed_entry_id) don't break the
+            # writer. Any missing current field defaults to "".
+            rows[row["date"]] = {k: row.get(k, "") for k in HISTORY_FIELDS}
+        return rows
 
 
 def save_history(rows: dict) -> None:
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
     ordered = sorted(rows.values(), key=lambda r: r["date"])
     with HISTORY_CSV.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=HISTORY_FIELDS)
+        writer = csv.DictWriter(f, fieldnames=HISTORY_FIELDS, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(ordered)
 
