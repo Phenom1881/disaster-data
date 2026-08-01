@@ -248,26 +248,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 .statelinks a{color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap;}
 .statelinks a:hover{text-decoration:underline;}
 .statelinks .sep{color:var(--rule-2);margin:0 .5em;}
-/* linked state focus */
-.row.rowfocused{background:#fbeee2;box-shadow:inset 3px 0 0 var(--ember);}
-#focus-chip:hover{background:#9e3a1e !important;border-color:#9e3a1e !important;}
-/* state compare */
-.cmpbtn{font-family:var(--sans);font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:9px 15px;cursor:pointer;transition:.12s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
-.cmpbtn:hover{background:var(--accent-2);border-color:var(--accent-2);}
-.boardctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.cmp-pick{display:flex;align-items:center;gap:12px;margin:22px 0 6px;flex-wrap:wrap;}
-.cmp-pick select{font:600 14px 'Public Sans',sans-serif;color:var(--ink);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:8px;padding:9px 12px;cursor:pointer;flex:1;min-width:150px;}
-.cmp-pick .vs{font-family:var(--serif);font-style:italic;color:var(--ink-3);font-size:15px;}
-.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
-.cmp-col{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:18px;}
-.cmp-col h4{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.3px;margin-bottom:2px;}
-.cmp-col .ab{font-size:11.5px;color:var(--ink-3);margin-bottom:12px;}
-.cmp-m{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--rule);font-size:12.5px;color:var(--ink-2);}
-.cmp-m b{font-family:var(--serif);font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums;}
-.cmp-m.win b{color:var(--ember);}
-.cmp-spark{margin-top:14px;}
-.cmp-h{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-3);margin:14px 0 8px;}
-@media(max-width:560px){.cmp-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -296,27 +276,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
 <!-- Locality search -->
 <section id="loc-search" style="max-width:980px;margin:2rem auto 2.5rem;padding:0 clamp(18px,4vw,40px)">
-<!-- Your locality (personalized, populated from localStorage or ?loc= by the script below) -->
-<div id="your-locality" hidden style="background:#004c53;color:#fff;border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem;box-shadow:0 4px 14px rgba(0,76,83,.18)">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">
-    <div style="font-size:.68rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.82" id="yl-kicker">Your saved locality</div>
-    <button id="yl-clear" type="button" aria-label="Clear your saved locality" style="background:rgba(255,255,255,.14);border:none;color:#fff;font:600 .72rem 'Public Sans',sans-serif;border-radius:6px;padding:.3rem .6rem;cursor:pointer">Clear</button>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
-    <div style="min-width:0">
-      <a id="yl-name" href="#" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.3rem,2.6vw,1.6rem);font-weight:600;color:#fff;text-decoration:none;line-height:1.1;display:inline-block"></a>
-      <div id="yl-sub" style="font-size:.9rem;opacity:.85;margin-top:.2rem"></div>
-    </div>
-    <div style="text-align:right;flex:none">
-      <div id="yl-count" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums"></div>
-      <div style="font-size:.66rem;letter-spacing:.5px;opacity:.8;text-transform:uppercase;margin-top:.15rem">FEMA declarations</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-top:.9rem">
-    <a id="yl-link" href="#" style="display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#004c53;font:600 .82rem 'Public Sans',sans-serif;text-decoration:none;border-radius:8px;padding:.45rem .85rem">View full history <span aria-hidden="true">&rarr;</span></a>
-    <button id="yl-share" type="button" style="display:inline-flex;align-items:center;gap:.35rem;background:none;border:1px solid rgba(255,255,255,.5);color:#fff;font:600 .82rem 'Public Sans',sans-serif;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Copy share link</button>
-  </div>
-</div>
 <div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;padding:1.6rem 1.8rem;box-shadow:0 2px 8px rgba(40,30,10,.04)">
 <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .25rem">Find your locality</h2>
 <p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations, each with its full FEMA declaration history.</p>
@@ -402,10 +361,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <section id="board">
     <div class="shead">
       <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
-      <div class="boardctl">
-        <button class="cmpbtn" id="cmp-open" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v18M16 21V3"/><path d="M3 8h5M16 16h5"/></svg>Compare states</button>
-        <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
-      </div>
+      <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
     </div>
     <div id="scoreboard"></div>
   </section>
@@ -474,8 +430,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <a class="m-map" id="m-map" href="#">View on map <span aria-hidden="true">&rarr;</span></a>
       <a class="m-map" id="m-fund" href="public-assistance-projects.html">View funding <span aria-hidden="true">&rarr;</span></a>
       <a class="m-map" id="m-page" href="states/index.html">Full state page <span aria-hidden="true">&rarr;</span></a>
-      <button class="m-map" id="m-focus" type="button">Focus charts on this state <span aria-hidden="true">&uarr;</span></button>
-      <button class="m-map" id="m-compare" type="button">Compare with another state <span aria-hidden="true">&rarr;</span></button>
     </div>
     <div class="m-stats">
       <div class="m-stat"><div class="mn" id="m-decl"></div><div class="ml">declarations</div></div>
@@ -487,17 +441,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <div class="m-sec"><div class="m-h">Most common hazards</div><div id="m-haz" class="mbars"></div></div>
     <div class="m-sec"><div class="m-recs-head"><div class="m-h" style="margin:0">Records</div><div class="recseg" id="recseg"><button class="on" data-r="decl">Declarations <b id="rc-d">0</b></button><button data-r="den">Denials <b id="rc-n">0</b></button></div></div><div class="m-reclist" id="m-reclist"></div></div>
     <p class="m-note" id="m-note"></p>
-  </div>
-</div>
-
-<div class="modal-back" id="cmpback" hidden>
-  <div class="modal" style="max-width:780px" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
-    <button class="m-close" id="cmpclose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-    <div class="m-rank">Compare</div>
-    <h3 class="m-name" id="cmp-title" style="font-size:30px">State vs. state</h3>
-    <div class="m-sub" id="cmp-sub"></div>
-    <div class="cmp-pick"><select id="cmp-a" aria-label="First state to compare"></select><span class="vs">vs</span><select id="cmp-b" aria-label="Second state to compare"></select></div>
-    <div class="cmp-grid" id="cmp-grid"></div>
   </div>
 </div>
 
@@ -620,8 +563,7 @@ function rowHTML(s,rank,metric,curMax,fmOff){
   const barCol=isRate?rateColor(s.rate):heatFor(s.cnt);
   const haz=hazardsFor(s,fmOff).join(' · ')||'None';
   const bignum=isRate?s.rate.toFixed(1)+'%':s.cnt;
-  const _foc=(typeof FOCUS!=='undefined'&&FOCUS&&FOCUS.ab===s.ab)?' rowfocused':'';
-  return `<div class="row${_foc}" data-ab="${s.ab}">
+  return `<div class="row" data-ab="${s.ab}">
     <div class="rank">${rank}</div>
     <div class="sname"><div class="n">${s.name}</div><div class="meta">${s.ab} · ${haz}</div></div>
     <div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:${pct}%;background:${barCol}"></div></div><div class="barnum">${bignum}</div></div>
@@ -665,8 +607,7 @@ function renderHaz(){
   if(!HAZ_TYPES){ const set={}; for(const st in DECLS){ const A=DECLS[st]; for(let i=0;i<A.length;i++) set[A[i][2]||'Unknown']=1; } HAZ_TYPES=Object.keys(set); }
   /* hazard counts within the selected year range, honoring the tribal filter (fiscal year from each record's date) */
   const allC={}, nofmC={};
-  const _scope=(typeof FOCUS!=='undefined'&&FOCUS)?[FOCUS.ab]:Object.keys(DECLS);
-  for(const st of _scope){ const A=DECLS[st]||[]; for(let i=0;i<A.length;i++){ const r=A[i]; if(excludeTribal&&r[5]) continue; const p=(r[3]||'').split('-'), fy=(+p[0])+((+p[1])>=10?1:0); if(fy<yrMin||fy>yrMax) continue; const it=r[2]||'Unknown'; allC[it]=(allC[it]||0)+1; if(r[1]!=='FM') nofmC[it]=(nofmC[it]||0)+1; } }
+  for(const st in DECLS){ const A=DECLS[st]; for(let i=0;i<A.length;i++){ const r=A[i]; if(excludeTribal&&r[5]) continue; const p=(r[3]||'').split('-'), fy=(+p[0])+((+p[1])>=10?1:0); if(fy<yrMin||fy>yrMax) continue; const it=r[2]||'Unknown'; allC[it]=(allC[it]||0)+1; if(r[1]!=='FM') nofmC[it]=(nofmC[it]||0)+1; } }
   if(!box.dataset.built){
     box.innerHTML=HAZ_TYPES.map(n=>`<div class="hrow${n==='Fire'?' fire':''}" data-n="${n}"><div class="hn">${n}</div><div class="ht"><div class="hb"></div></div><div class="hv"></div></div>`).join('');
     box.dataset.built='1';
@@ -703,42 +644,34 @@ function renderHaz(){
 }
 
 /* ── timeline ── */
-function niceMax(v){ v=Math.max(6,v); var mag=Math.pow(10,Math.floor(Math.log10(v))); var n=Math.ceil(v/mag)*mag; if(n<v*1.08)n+=mag; return n; }
 function drawTimeline(){
   const svg=document.getElementById('timeline');
-  const FOC=(typeof FOCUS!=='undefined')?FOCUS:null;
-  const SERIES = FOC ? focusSeries(FOC.ab) : YOY;   /* focus: one state's per-year curve; else national */
-  const W=1000,H=330,padL=46,padR=24,padT=58,padB=44;
-  const smax = SERIES.reduce((m,d)=>Math.max(m,d[1]),0);
-  const yMax = FOC ? niceMax(smax) : 360;
-  const grid = FOC ? [0,Math.round(yMax/3),Math.round(2*yMax/3),yMax] : [0,100,200,300];
-  const xs=i=> padL + i*((W-padL-padR)/(SERIES.length-1));
+  const W=1000,H=330,padL=46,padR=24,padT=58,padB=44,yMax=360;
+  const xs=i=> padL + i*((W-padL-padR)/(YOY.length-1));
   const ys=v=> H-padB - (v/yMax)*(H-padT-padB);
   let g='';
-  grid.forEach(v=>{const y=ys(v);g+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e0d8c5" stroke-width="1"/><text x="${padL-10}" y="${y+4}" text-anchor="end" font-family="Public Sans" font-size="11" fill="#938a78">${v}</text>`;});
-  const pts=SERIES.map((d,i)=>[xs(i),ys(d[1]),d[0],d[1]]);
-  const area=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+` L ${xs(SERIES.length-1).toFixed(1)} ${H-padB} L ${padL} ${H-padB} Z`;
+  [0,100,200,300].forEach(v=>{const y=ys(v);g+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e0d8c5" stroke-width="1"/><text x="${padL-10}" y="${y+4}" text-anchor="end" font-family="Public Sans" font-size="11" fill="#938a78">${v}</text>`;});
+  const pts=YOY.map((d,i)=>[xs(i),ys(d[1]),d[0],d[1]]);
+  const area=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+` L ${xs(YOY.length-1).toFixed(1)} ${H-padB} L ${padL} ${H-padB} Z`;
   g+=`<path d="${area}" fill="#d98c4e" fill-opacity="0.16"/>`;
   g+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="#c85c2e" stroke-width="2.4" stroke-linejoin="round"/>`;
-  let lo=0; SERIES.forEach((d,i)=>{ if(d[0]<yrMin) lo=i+1; });
-  let hi=SERIES.length-1; for(let i=SERIES.length-1;i>=0;i--){ if(SERIES[i][0]>yrMax) hi=i-1; }
-  const x0=xs(Math.min(lo,SERIES.length-1)), x1=xs(Math.max(hi,0));
+  let lo=0; YOY.forEach((d,i)=>{ if(d[0]<yrMin) lo=i+1; });
+  let hi=YOY.length-1; for(let i=YOY.length-1;i>=0;i--){ if(YOY[i][0]>yrMax) hi=i-1; }
+  const x0=xs(Math.min(lo,YOY.length-1)), x1=xs(Math.max(hi,0));
   if(yrMin>Y_MIN) g+=`<rect x="${padL}" y="${padT}" width="${Math.max(0,x0-padL)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.64"/>`;
   if(yrMax<Y_MAX) g+=`<rect x="${x1}" y="${padT}" width="${Math.max(0,W-padR-x1)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.64"/>`;
   pts.forEach(p=>{
     const inr=p[2]>=yrMin&&p[2]<=yrMax;
-    if(!FOC && ANNOT[p[2]]){                          /* national-event annotations only in the national view */
+    if(ANNOT[p[2]]){
       g+=`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#9e3a1e"/>`;
       g+=`<text x="${p[0]}" y="${p[1]-30}" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="15" fill="#1d1813">${p[2]}</text>`;
       ANNOT[p[2]].forEach((ln,li)=> g+=`<text x="${p[0]}" y="${p[1]-16+li*12}" text-anchor="middle" font-family="Public Sans" font-size="10.5" fill="#5b5346">${ln}</text>`);
     } else if(inr){ g+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="#c85c2e"/>`; }
   });
-  SERIES.forEach((d,i)=>{ if((d[0]%5===0&&(SERIES.length-1-i)>1)||i===SERIES.length-1) g+=`<text x="${xs(i)}" y="${H-padB+22}" text-anchor="middle" font-family="Public Sans" font-size="11" fill="#938a78">${d[0]}</text>`; });
+  YOY.forEach((d,i)=>{ if((d[0]%5===0&&(YOY.length-1-i)>1)||i===YOY.length-1) g+=`<text x="${xs(i)}" y="${H-padB+22}" text-anchor="middle" font-family="Public Sans" font-size="11" fill="#938a78">${d[0]}</text>`; });
   g+=`<circle id="tl-dot" r="5.5" fill="none" stroke="#1d1813" stroke-width="2" opacity="0"/>`;
   pts.forEach(p=> g+=`<circle class="hit" cx="${p[0]}" cy="${p[1]}" r="16" fill="transparent" data-y="${p[2]}" data-c="${p[3]}"/>`);
   svg.innerHTML=g;
-  var capEl=document.querySelector('.tl-cap span:first-child');
-  if(capEl) capEl.textContent = FOC ? (FOC.name+' — declarations by fiscal year') : 'Federal disaster & emergency declarations, by fiscal year';
 }
 
 const tip=document.getElementById('tip');
@@ -765,8 +698,7 @@ function updateRange(){
   document.getElementById('rfill').style.left=lo+'%';
   document.getElementById('rfill').style.width=(hi-lo)+'%';
   document.getElementById('yr-read').textContent=a+' to '+b;
-  const _series=(typeof FOCUS!=='undefined'&&FOCUS)?focusSeries(FOCUS.ab):YOY;
-  const w=_series.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
+  const w=YOY.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
   document.getElementById('st-total').textContent=w.toLocaleString();
   document.getElementById('tl-sum').textContent=w.toLocaleString();
   /* re-aggregate the per-state board + headline stats for the selected window, then redraw it */
@@ -785,7 +717,6 @@ document.getElementById('tribalseg').addEventListener('click',e=>{const b=e.targ
 document.getElementById('haztog').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#haztog button').forEach(x=>x.classList.remove('on'));b.classList.add('on');hazMode=b.dataset.h;renderHaz();});
 document.getElementById('hazmore').addEventListener('click',()=>{hazExpanded=!hazExpanded;renderHaz();});
 document.getElementById('reset').addEventListener('click',()=>{
-  if(typeof clearFocus==='function') clearFocus(true);   /* drop any state focus, no re-render (reset re-renders below) */
   sortMode='decl'; incFilter='All';
   document.getElementById('rmin').value=Y_MIN; document.getElementById('rmax').value=Y_DEF_MAX;
   document.querySelectorAll('#sortseg button').forEach((x,i)=>x.classList.toggle('on',i===0));
@@ -866,45 +797,6 @@ function initBounds(){
   if(fa){ var d=window.DATA_DATE, mm=d?/^(\d{4})-(\d{2})-(\d{2})/.exec(d):null;
     fa.textContent = mm ? ' Data current through '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mm[2]-1]+' '+(+mm[3])+', '+mm[1]+'.' : ''; }
 }
-/* ── Linked state focus: tie the timeline + hazard chart to one state, dismissible via a chip.
-   The scoreboard stays national (it's the picker) and highlights the focused row. ── */
-var FOCUS=null;
-function _reduceMotion(){ return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
-function focusSeries(ab){
-  var counts={}, y; for(y=Y_MIN;y<=Y_MAX;y++) counts[y]=0;
-  var A=DECLS[ab]||[];
-  for(var i=0;i<A.length;i++){ var r=A[i]; if(excludeTribal&&r[5]) continue; var p=(r[3]||'').split('-'); var fy=(+p[0])+((+p[1])>=10?1:0); if(fy>=Y_MIN&&fy<=Y_MAX) counts[fy]++; }
-  var out=[]; for(y=Y_MIN;y<=Y_MAX;y++) out.push([y,counts[y]]); return out;
-}
-function _focusChip(){
-  var chip=document.getElementById('focus-chip');
-  if(!chip){
-    var deck=document.querySelector('.deck'); if(!deck) return null;
-    chip=document.createElement('button');
-    chip.id='focus-chip'; chip.type='button'; chip.hidden=true;
-    chip.setAttribute('style',"align-self:center;align-items:center;gap:8px;font:600 12px 'Public Sans',system-ui,sans-serif;color:#fff;background:var(--ember);border:1px solid var(--ember);border-radius:20px;padding:6px 12px;cursor:pointer;white-space:nowrap;transition:background .12s;display:none");
-    chip.addEventListener('click',function(){ clearFocus(); });
-    deck.appendChild(chip);
-  }
-  return chip;
-}
-function setFocus(ab){
-  var s=STATES.find(function(x){return x.ab===ab;});
-  FOCUS={ab:ab, name:(s?s.name:ab)};
-  var chip=_focusChip();
-  if(chip){ chip.innerHTML='Focused on '+FOCUS.name+' <span aria-hidden="true" style="font-size:15px;line-height:1">×</span>'; chip.hidden=false; chip.style.display='inline-flex'; }
-  updateRange();   /* fans out to buildStatesForWindow → render → drawTimeline → renderHaz */
-  var tl=document.getElementById('timeline');
-  if(tl&&tl.scrollIntoView) tl.scrollIntoView({behavior:_reduceMotion()?'auto':'smooth',block:'center'});
-}
-function clearFocus(skipRender){
-  FOCUS=null;
-  var chip=document.getElementById('focus-chip'); if(chip){ chip.hidden=true; chip.style.display='none'; }
-  if(!skipRender){ updateRange(); }
-}
-var _mfocus=document.getElementById('m-focus');
-if(_mfocus) _mfocus.addEventListener('click',function(){ if(recState){ setFocus(recState.ab); closeModal(); } });
-
 initBounds(); updateRange(); render(); renderHaz();
 </script>
 <script>
@@ -1083,53 +975,6 @@ initBounds(); updateRange(); render(); renderHaz();
   if (applyURLState() && typeof updateRange === 'function') { updateRange(); }
 })();
 </script>
-<script>
-/* Timeline "Play": step the year window forward one fiscal year at a time so declarations
-   visibly accumulate. Pure add-on — reuses the rmin/rmax sliders + updateRange(); the chart's
-   existing "future" shading recedes as the window grows, so no drawing changes are needed. */
-(function(){
-  var tl=document.getElementById('timeline');
-  var card=tl&&tl.closest?tl.closest('.chartcard'):null;
-  if(!card||typeof updateRange!=='function'||typeof Y_MIN==='undefined'||typeof Y_MAX==='undefined')return;
-  var rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
-  if(!rmin||!rmax)return;
-  var reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-
-  function icon(on){
-    return on
-      ? '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>Pause'
-      : '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 7 5.5z"/></svg>'+(reduce?'Show all years':'Play');
-  }
-  var btn=document.createElement('button');
-  btn.type='button';
-  btn.setAttribute('aria-label','Play the timeline: watch declarations accumulate year by year');
-  btn.setAttribute('style',"position:absolute;top:14px;right:14px;z-index:6;display:inline-flex;align-items:center;gap:6px;font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#fff;background:#004c53;border:1px solid #004c53;border-radius:8px;padding:.42rem .8rem;cursor:pointer;transition:background .12s");
-  btn.innerHTML=icon(false);
-  btn.addEventListener('mouseenter',function(){btn.style.background='#0a6b73';});
-  btn.addEventListener('mouseleave',function(){btn.style.background='#004c53';});
-  card.appendChild(btn);
-
-  var playing=false, timer=null, holdMin=Y_MIN, curY=Y_MIN, STEP_MS=380;
-
-  function setWindow(a,b){ rmin.value=a; rmax.value=b; updateRange(); }
-  function stop(){ playing=false; if(timer){clearInterval(timer);timer=null;} btn.innerHTML=icon(false); }
-  function step(){
-    curY++;
-    if(curY>=Y_MAX){ setWindow(holdMin,Y_MAX); stop(); return; }
-    setWindow(holdMin,curY);
-  }
-  function play(){
-    holdMin=Math.min(+rmin.value,+rmax.value);
-    if(holdMin>=Y_MAX) holdMin=Y_MIN;          /* already at the end: replay from the start */
-    curY=holdMin;
-    playing=true; btn.innerHTML=icon(true);
-    if(reduce){ setWindow(holdMin,Y_MAX); stop(); return; }   /* honor reduced-motion: jump, don't animate */
-    setWindow(holdMin,curY);
-    timer=setInterval(step,STEP_MS);
-  }
-  btn.addEventListener('click',function(){ playing?stop():play(); });
-})();
-</script>
 <script src="locality-index.js"></script>
 <script>
 (function(){
@@ -1172,123 +1017,6 @@ initBounds(); updateRange(); render(); renderHaz();
   });
   document.addEventListener('click',function(e){if(!wrap.contains(e.target))box.style.display='none';});
   input.addEventListener('focus',function(){if(this.value.trim().length>=2){var h=find(this.value.trim());if(h.length)render(h);}});
-})();
-</script>
-<script>
-/* "Your locality": remember the locality a visitor picks (localStorage) and surface it up top
-   on return visits; also honor a shareable ?loc=<slug> link. Pure add-on over LOCALITY_INDEX. */
-(function(){
-  if(!window.LOCALITY_INDEX) return;
-  var IDX=window.LOCALITY_INDEX, KEY='dd.locality';
-  var card=document.getElementById('your-locality');
-  if(!card) return;
-  function slug(url){ return (url||'').split('/').pop().replace(/\.html$/,''); }
-  function byUrl(u){ for(var i=0;i<IDX.length;i++){ if(IDX[i][3]===u) return IDX[i]; } return null; }
-  function bySlug(s){ for(var i=0;i<IDX.length;i++){ if(slug(IDX[i][3])===s) return IDX[i]; } return null; }
-  function save(u){ try{ localStorage.setItem(KEY,u); }catch(e){} }
-  function load(){ try{ return localStorage.getItem(KEY); }catch(e){ return null; } }
-
-  function show(r, fromShare){
-    var name=document.getElementById('yl-name'), sub=document.getElementById('yl-sub'),
-        cnt=document.getElementById('yl-count'), link=document.getElementById('yl-link'),
-        kick=document.getElementById('yl-kicker');
-    name.textContent=r[0]; name.href=r[3];
-    var type=(r[6]||'').toString();
-    sub.textContent=[type, r[2]].filter(Boolean).join(' · ');
-    cnt.textContent=(typeof r[4]==='number'?r[4]:0).toLocaleString();
-    link.href=r[3];
-    kick.textContent=fromShare?'Shared locality':'Your saved locality';
-    card.hidden=false;
-  }
-  function hide(){ card.hidden=true; try{ localStorage.removeItem(KEY); }catch(e){} }
-
-  /* remember a pick: the search results are anchors to the jurisdiction pages */
-  var results=document.getElementById('lsR');
-  if(results) results.addEventListener('click',function(e){
-    var a=e.target.closest('a'); if(!a) return;
-    var r=byUrl(a.getAttribute('href')); if(r) save(r[3]);
-  }, true);
-
-  document.getElementById('yl-clear').addEventListener('click',hide);
-  document.getElementById('yl-share').addEventListener('click',function(){
-    var r=card._rec; if(!r) return;
-    var url=location.origin+location.pathname+'?loc='+encodeURIComponent(slug(r[3]));
-    var btn=this, done=function(){ var t=btn.textContent; btn.textContent='Link copied'; setTimeout(function(){ btn.textContent=t; },1500); };
-    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,function(){ window.prompt('Copy link:',url); });
-    else window.prompt('Copy link:',url);
-  });
-
-  /* on load: ?loc= (shareable) wins, else the saved locality */
-  var locp=null; try{ locp=new URLSearchParams(location.search).get('loc'); }catch(e){}
-  var rec = locp ? bySlug(locp) : (function(){ var u=load(); return u?byUrl(u):null; })();
-  if(rec){ card._rec=rec; if(locp) save(rec[3]); show(rec, !!locp); }
-})();
-</script>
-<script>
-/* State-vs-state compare: two-column side-by-side over the current year window.
-   Reuses STATES (windowed), focusSeries() for sparklines, and mbars()/heatFor() for bars. */
-(function(){
-  var back=document.getElementById('cmpback'), grid=document.getElementById('cmp-grid'),
-      selA=document.getElementById('cmp-a'), selB=document.getElementById('cmp-b'),
-      sub=document.getElementById('cmp-sub');
-  if(!back||typeof STATES==='undefined'||typeof focusSeries!=='function') return;
-
-  function winSeries(ab){ return focusSeries(ab).filter(function(d){ return d[0]>=yrMin&&d[0]<=yrMax; }); }
-  function options(sel,current){
-    var list=STATES.slice().sort(function(a,b){ return a.name<b.name?-1:(a.name>b.name?1:0); });
-    sel.innerHTML=list.map(function(s){ return '<option value="'+s.ab+'">'+s.name+'</option>'; }).join('');
-    if(current && list.some(function(s){ return s.ab===current; })) sel.value=current;
-  }
-  function spark(ab,gmax){
-    var S=winSeries(ab); if(S.length<2){ return '<div style="height:46px"></div>'; }
-    var W=240,H=46,pad=2, span=(H-2*pad-6);
-    var xs=function(i){ return pad+i*((W-2*pad)/(S.length-1)); };
-    var ys=function(v){ return H-pad-(v/(gmax||1))*span; };
-    var line=S.map(function(d,i){ return (i?'L':'M')+xs(i).toFixed(1)+' '+ys(d[1]).toFixed(1); }).join(' ');
-    var area=line+' L '+xs(S.length-1).toFixed(1)+' '+(H-pad)+' L '+pad+' '+(H-pad)+' Z';
-    return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="46" preserveAspectRatio="none" role="img" aria-label="Declarations by fiscal year">'
-      +'<path d="'+area+'" fill="#d98c4e" fill-opacity="0.16"/><path d="'+line+'" fill="none" stroke="#c85c2e" stroke-width="1.6"/></svg>';
-  }
-  function col(s,other,gmax){
-    function win(a,b){ return a>=b?' win':''; }
-    var types=mbars([{l:'DR',s:'Major',v:s.dr,c:'#1d1813'},{l:'EM',s:'Emergency',v:s.em,c:'#004c53'},{l:'FM',s:'Fire Mgmt',v:s.fm,c:'#c85c2e'}],Math.max(s.dr,s.em,s.fm,1));
-    var hmax=s.inc.length?s.inc[0][1]:1;
-    var haz=mbars(s.inc.slice(0,5).map(function(h){ return {l:h[0],v:h[1],c:heatFor(h[1])}; }),hmax);
-    return '<div class="cmp-col"><h4>'+s.name+'</h4><div class="ab">'+s.ab+'</div>'
-      +'<div class="cmp-m'+win(s.decl,other.decl)+'"><span>Declarations</span><b>'+s.decl+'</b></div>'
-      +'<div class="cmp-m'+win(s.den,other.den)+'"><span>Denials</span><b>'+s.den+'</b></div>'
-      +'<div class="cmp-m'+win(s.rate,other.rate)+'"><span>Denial rate</span><b>'+s.rate.toFixed(1)+'%</b></div>'
-      +'<div class="cmp-m'+(s.days<=other.days?' win':'')+'"><span>Avg days to decision</span><b>'+s.days.toFixed(1)+'</b></div>'
-      +'<div class="cmp-spark">'+spark(s.ab,gmax)+'</div>'
-      +'<div class="cmp-h">By declaration type</div><div class="mbars">'+types+'</div>'
-      +'<div class="cmp-h">Top hazards</div><div class="mbars">'+haz+'</div></div>';
-  }
-  function draw(){
-    var a=STATES.find(function(s){ return s.ab===selA.value; }), b=STATES.find(function(s){ return s.ab===selB.value; });
-    if(!a||!b){ grid.innerHTML=''; return; }
-    function smax(ab){ return winSeries(ab).reduce(function(m,d){ return Math.max(m,d[1]); },0); }
-    var gmax=Math.max(smax(a.ab),smax(b.ab),1);   /* shared sparkline scale for a fair comparison */
-    sub.innerHTML='Within FY'+yrMin+' to FY'+yrMax+'. Leading value in each row is <span style="color:var(--ember);font-weight:600">amber</span>; spark lines share one scale.';
-    grid.innerHTML=col(a,b,gmax)+col(b,a,gmax);
-  }
-  function open(preA){
-    var top=STATES.slice().sort(function(a,b){ return b.decl-a.decl; });
-    var curA=preA||selA.value||(top[0]&&top[0].ab);
-    options(selA,curA);
-    var curB=selB.value||(top[1]&&top[1].ab);
-    if(curB===selA.value){ var alt=top.find(function(s){ return s.ab!==selA.value; }); curB=alt&&alt.ab; }
-    options(selB,curB);
-    draw();
-    back.hidden=false; document.getElementById('cmpclose').focus();
-  }
-  function close(){ back.hidden=true; }
-  selA.addEventListener('change',draw); selB.addEventListener('change',draw);
-  document.getElementById('cmpclose').addEventListener('click',close);
-  back.addEventListener('click',function(e){ if(e.target===back) close(); });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!back.hidden) close(); });
-  var ob=document.getElementById('cmp-open'); if(ob) ob.addEventListener('click',function(){ open(); });
-  var mc=document.getElementById('m-compare');
-  if(mc) mc.addEventListener('click',function(){ var ab=(typeof recState!=='undefined'&&recState)?recState.ab:null; if(typeof closeModal==='function') closeModal(); open(ab); });
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
