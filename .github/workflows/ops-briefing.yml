@@ -3,9 +3,8 @@ name: Capture FEMA Daily Ops Briefing
 on:
   schedule:
     # 13:45 UTC = 9:45am ET (EDT) / 8:45am ET (EST).
-    # FEMA publishes the briefing around 8:30am ET, so this gives a
-    # comfortable buffer for the email to arrive in the inbox before
-    # the job runs.
+    # FEMA publishes the briefing around 8:30am ET; this gives the
+    # Disaster Center mirror time to update before the job runs.
     - cron: "45 13 * * *"
   workflow_dispatch: {}
 
@@ -25,12 +24,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests pypdf
 
       - name: Fetch briefing
         env:
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           DD_OUT: archive
         run: |
           FETCH=$(find scripts -iname 'fetch*ops*brief*.py' | head -n1)
