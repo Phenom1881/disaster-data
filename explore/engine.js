@@ -158,26 +158,45 @@
     this._snapTotals = null;
   }
 
-  /* Build the accept-mask for the current filters. null = accept everything. */
-  Query.prototype.setFilter = function (typeSet, hazSet) {
-    var all = (!typeSet || typeSet.size === this.types.length) &&
-              (!hazSet || hazSet.size === this.hazards.length);
-    if (all) { this._mask = null; }
+  /* Build the accept-mask for the current filters. null = accept everything.
+     `geo` is an optional Uint8Array over counties (1 = in scope) — the geographic
+     cross-filter, applied uniformly so every aggregation below is scope-aware. */
+  Query.prototype.setFilter = function (typeSet, hazSet, geo) {
+    var allTH = (!typeSet || typeSet.size === this.types.length) &&
+                (!hazSet || hazSet.size === this.hazards.length);
+    if (allTH) { this._mask = null; }
     else {
       var tm = new Uint8Array(this.types.length), hm = new Uint8Array(this.hazards.length), i;
       for (i = 0; i < tm.length; i++) tm[i] = (!typeSet || typeSet.has(this.types[i])) ? 1 : 0;
       for (i = 0; i < hm.length; i++) hm[i] = (!hazSet || hazSet.has(this.hazards[i])) ? 1 : 0;
       this._mask = { t: tm, h: hm };
     }
+    this._geo = geo || null;
     this._snaps = null;                     /* filters changed → snapshots invalid */
     this._snapTotals = null;
     this._cursorDay = -1;
     return this;
   };
 
+  /* Build a county scope mask: a 2-digit state FIPS prefix, or a single county index. */
+  Query.prototype.geoMask = function (spec) {
+    if (!spec) return null;
+    var m = new Uint8Array(this.nCounty), i, hit = 0;
+    if (spec.fipsIdx != null && spec.fipsIdx >= 0) {
+      m[spec.fipsIdx] = 1; hit = 1;
+    } else if (spec.state) {
+      for (i = 0; i < this.fipsList.length; i++) {
+        if (this.fipsList[i].slice(0, 2) === spec.state) { m[i] = 1; hit++; }
+      }
+    }
+    return hit ? m : null;
+  };
+
   Query.prototype.accepts = function (i) {
     var m = this._mask;
-    return !m || (m.t[this.type[i]] === 1 && m.h[this.haz[i]] === 1);
+    if (m && (m.t[this.type[i]] !== 1 || m.h[this.haz[i]] !== 1)) return false;
+    if (this._geo && this._geo[this.fips[i]] !== 1) return false;
+    return true;
   };
 
   /* Snapshots of the cumulative county counts every SNAP_DAYS, under current filters. */
@@ -224,6 +243,35 @@
     return this._counts;
   };
   Query.prototype.total = function () { return this._total; };
+
+  /* Per-county counts for an arbitrary window [d0,d1].
+     d0 === 0 is the playback case, which delegates to the incremental accumulator;
+     a brushed window walks the slice directly (48.6K events worst case, well under 1ms). */
+  Query.prototype.countsInRange = function (d0, d1) {
+    d0 = clamp(d0 | 0, 0, this.maxDay);
+    d1 = clamp(d1 | 0, -1, this.maxDay);
+    if (d0 === 0) return this.cumulativeTo(d1);
+    if (!this._range || this._range.length !== this.nCounty) this._range = new Uint16Array(this.nCounty);
+    var out = this._range;
+    out.fill(0);
+    var start = this.dayStart[clamp(d0, 0, this.maxDay + 1)];
+    var end = this.dayStart[clamp(d1 + 1, 0, this.maxDay + 1)];
+    var n = 0;
+    for (var i = start; i < end; i++) {
+      if (this.accepts(i)) { out[this.fips[i]]++; n++; }
+    }
+    this._rangeTotal = n;
+    this._cursorDay = -1;          /* the incremental cursor no longer reflects _counts */
+    return out;
+  };
+  Query.prototype.rangeTotal = function (d0) { return d0 === 0 ? this._total : this._rangeTotal; };
+
+  /* Counties with at least one event in the window. */
+  Query.prototype.countyHits = function (counts) {
+    var n = 0;
+    for (var i = 0; i < counts.length; i++) if (counts[i]) n++;
+    return n;
+  };
 
   /* Events occurring exactly on `day` and passing the filter (for bloom spawning). */
   Query.prototype.eventsOn = function (day, out) {
