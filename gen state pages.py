@@ -308,6 +308,7 @@ def header_html():
             '<div class="navlinks">'
             '<a href="../index.html">Overview</a>'
             '<a href="../index.html#board">Explore</a>'
+            '<a href="../explore.html">Explore</a>'
             '<a href="../map.html">Map</a>'
             '<a href="index.html" class="on">States</a>'
             '<a href="../public-assistance-projects.html">Funding</a>'

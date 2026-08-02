@@ -40,7 +40,7 @@
    'feed','maptip','lg-sw','lg-title','lg-lo','lg-hi','lg-note','loading','chips',
    'ctr-events-l','ctr-county-l',
    'measureseg','moneyseg','money-mode','money-note','money-panel','money-list',
-   'storycol','modebtn'].forEach(function (id) {
+   'storycol','modebtn','a11y-summary'].forEach(function (id) {
     el[id.replace(/-(\w)/g, function (m, c) { return c.toUpperCase(); })] = document.getElementById(id);
   });
 
@@ -116,6 +116,7 @@
     if (s.measure === 'dollars') { refreshMoney(forceRepaint); return; }
 
     var counts = query.countsInRange(s.winA, s.cursor);
+    xmap.repeatedByState = false;
     lastCounts = counts;
     xmap.applyCounts(counts, forceRepaint || s.winA !== 0);
     el.ctrEvents.textContent = fmt(query.rangeTotal(s.winA));
@@ -131,6 +132,19 @@
     renderFeed();
     renderSelection();
     renderChips();
+    syncCountLegend();
+    updateA11y();
+  }
+
+  /* The coarse view scales its ramp to state totals, so the legend has to follow. */
+  function syncCountLegend() {
+    if (store.state.measure !== 'events') return;
+    var coarse = xmap.granularity === 'state', b = xmap.activeBreaks;
+    el.lgTitle.textContent = coarse ? 'Declarations per state' : 'Declarations per county';
+    el.lgLo.textContent = coarse && b ? fmt(b[0]) : '1';
+    el.lgHi.textContent = coarse && b ? fmt(b[b.length - 1]) + '+' : '35+';
+    el.lgNote.textContent = coarse
+      ? 'Counties are too small to read at this width, so the map shows states.' : '';
   }
 
   /* ── dollars ──────────────────────────────────────────────────────────────
@@ -158,6 +172,7 @@
       note = 'State-level: FEMA dates obligations by disaster, not by county';
     }
 
+    xmap.repeatedByState = (s.moneyGeo === 'state');
     var breaks = DD.setMoneyBreaks(vals);
     lastCounts = vals;
     xmap.applyCounts(vals, true);
@@ -184,9 +199,58 @@
     renderHazCounts();
     renderSelection();
     renderChips();
+    updateA11y();
   }
 
   function countNonZero(a) { var n = 0; for (var i = 0; i < a.length; i++) if (a[i] > 0) n++; return n; }
+
+  /* ── accessibility ────────────────────────────────────────────────────────
+     The map is a canvas, so it carries no text. Everything it shows is restated here:
+     a label on the canvas itself, plus a polite live region with the headline figures
+     and the leading places — the same numbers refresh() just computed. */
+  function scopeWords() {
+    var s = store.state, bits = [];
+    bits.push(s.brushed ? dates.monthLabel(s.winA) + ' to ' + dates.monthLabel(s.winB)
+                        : Y0 + ' to ' + Y1);
+    if (s.geo) bits.push(geoLabel(s.geo));
+    if (s.hazards.size < query.hazards.length) bits.push(s.hazards.size + ' of ' + query.hazards.length + ' hazards');
+    if (s.types.size < query.types.length) bits.push(query.types.filter(function (t) { return s.types.has(t); }).join(' and ') + ' only');
+    return bits.join(', ');
+  }
+
+  function topPlaces(n) {
+    var vals = lastCounts, out = [];
+    if (!vals) return out;
+    var idx = [];
+    for (var i = 0; i < vals.length; i++) if (vals[i] > 0) idx.push(i);
+    idx.sort(function (a, b) { return vals[b] - vals[a]; });
+    var seen = {};
+    for (var k = 0; k < idx.length && out.length < n; k++) {
+      var i2 = idx[k], label = query.labels[i2];
+      if (store.state.measure === 'dollars' && store.state.moneyGeo === 'state') {
+        var st = query.stateOf[i2];                 /* state values repeat across counties */
+        if (seen[st]) continue;
+        seen[st] = 1;
+        label = STNAME[query.fipsList[i2].slice(0, 2)] || st;
+      }
+      out.push(label + ' ' + (store.state.measure === 'dollars' ? money$(vals[i2]) : fmt(vals[i2])));
+    }
+    return out;
+  }
+
+  function updateA11y() {
+    var s = store.state;
+    var what = s.measure === 'dollars'
+      ? ('Federal obligations by ' + (s.moneyGeo === 'county' ? 'county, all time' : 'state'))
+      : 'Disaster declarations by county';
+    var figures = s.measure === 'dollars'
+      ? (el.ctrEvents.textContent + ' obligated across ' + el.ctrCounty.textContent + ' ' + el.ctrCountyL.textContent)
+      : (el.ctrDecl.textContent + ' declarations, ' + el.ctrEvents.textContent +
+         ' county records, ' + el.ctrCounty.textContent + ' counties');
+    var head = what + '. ' + scopeWords() + '. ' + figures + '.';
+    if (xmap.view) xmap.view.setAttribute('aria-label', head + ' Leading: ' + topPlaces(3).join('; ') + '.');
+    if (el.a11ySummary) el.a11ySummary.textContent = head + ' Leading places: ' + topPlaces(10).join('; ') + '.';
+  }
 
   function renderMoneyPanel() {
     var s = store.state, html = '';
@@ -230,6 +294,7 @@
       el.lgSw.innerHTML = ['#f2d9a0','#ecc278','#e3a652','#d8853a','#c96a2e','#b35024','#97391b','#7a2c14']
         .map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('');
       el.lgLo.textContent = '1'; el.lgHi.textContent = '35+'; el.lgNote.textContent = '';
+      syncCountLegend();
     }
     refresh(true);
     drawTimeline();
@@ -673,10 +738,64 @@
   }
   el.modebtn.addEventListener('click', function () { setStoryMode(el.storycol.hidden); });
 
+  /* ── keyboard access to the map ───────────────────────────────────────────
+     A canvas has no focusable children, so arrow keys walk the leading places in the
+     current view and Enter scopes to one — the same cross-filter a click performs. */
+  var kbIdx = -1;
+  function kbList() {
+    var vals = lastCounts, idx = [];
+    if (!vals) return idx;
+    for (var i = 0; i < vals.length; i++) if (vals[i] > 0) idx.push(i);
+    idx.sort(function (a, b) { return vals[b] - vals[a]; });
+    return idx.slice(0, 40);
+  }
+  function kbMove(delta) {
+    var list = kbList();
+    if (!list.length) return;
+    kbIdx = DD.clamp(kbIdx + delta, 0, list.length - 1);
+    var i = list[kbIdx];
+    store.set({ selected: i });
+    xmap.hoverFips = -1;
+    renderSelection();
+    var v = lastCounts[i];
+    if (el.a11ySummary) {
+      el.a11ySummary.textContent = (kbIdx + 1) + ' of ' + list.length + ': ' + query.labels[i] +
+        ', ' + (store.state.measure === 'dollars' ? money$(v) : fmt(v) + ' declarations') +
+        '. Press Enter to scope to it.';
+    }
+  }
+  if (xmap.view) {
+    xmap.view.setAttribute('tabindex', '0');
+    xmap.view.setAttribute('role', 'img');
+    xmap.view.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); e.stopPropagation(); kbMove(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); e.stopPropagation(); kbMove(-1); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        var s2 = store.state;
+        if (s2.selected >= 0) setGeo({ fipsIdx: s2.selected });
+      }
+    });
+    xmap.view.addEventListener('focus', function () { if (kbIdx < 0) kbIdx = -1; });
+  }
+
+  /* ── responsive granularity ───────────────────────────────────────────────
+     Below the breakpoint the map draws states, not counties: at phone width the
+     median county is a few pixels across, which is noise rather than information. */
+  var mqCoarse = root.matchMedia ? root.matchMedia('(max-width: 700px)') : null;
+  function syncGranularity() {
+    var g = (mqCoarse && mqCoarse.matches) ? 'state' : 'county';
+    if (xmap.setGranularity(g)) { refresh(true); drawTimeline(); }
+  }
+  if (mqCoarse) {
+    if (mqCoarse.addEventListener) mqCoarse.addEventListener('change', syncGranularity);
+    else if (mqCoarse.addListener) mqCoarse.addListener(syncGranularity);
+  }
+
   var rt = 0;
   root.addEventListener('resize', function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { xmap.resize(); drawTimeline(); }, 120);
+    rt = setTimeout(function () { syncGranularity(); xmap.resize(); refresh(true); drawTimeline(); }, 120);
   });
 
   /* ── boot ─────────────────────────────────────────────────────────────── */
@@ -700,6 +819,7 @@
     applyQueryFilter();
     syncHazUI();
     buildAxis();
+    xmap.setGranularity((mqCoarse && mqCoarse.matches) ? 'state' : 'county');
     refresh(true);
     drawTimeline();
     el.loading.style.display = 'none';
@@ -717,6 +837,7 @@
   root.__DD = { store: store, query: query, map: xmap, dates: dates, refresh: refresh,
                 setMeasure: setMeasure, money$: money$, setStoryMode: setStoryMode,
                 applyKeyframe: applyKeyframe, getStory: function () { return story; },
+                syncGranularity: syncGranularity, kbMove: kbMove, updateA11y: updateA11y,
                 setPlaying: setPlaying, setGeo: setGeo, drawTimeline: drawTimeline,
                 applyQueryFilter: applyQueryFilter, pushURL: pushURL };
 })(window);

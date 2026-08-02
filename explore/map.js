@@ -32,6 +32,28 @@
     for (var i = moneyBreaks.length - 1; i >= 0; i--) if (v >= moneyBreaks[i]) return MRAMP[i];
     return EMPTY;
   }
+  /* Count ramp with optional dynamic breaks — used for the coarse (state) view, where
+     totals run far above the county thresholds and the fixed ramp would saturate. */
+  var countBreaks = null;
+  function countColor(v) {
+    if (!v) return EMPTY;
+    var b = countBreaks || BREAKS;
+    for (var i = b.length - 1; i >= 0; i--) if (v >= b[i]) return RAMP[i];
+    return RAMP[0];
+  }
+  function setCountBreaks(values) {
+    if (!values) { countBreaks = null; return null; }
+    var v = [], i;
+    for (i = 0; i < values.length; i++) if (values[i] > 0) v.push(values[i]);
+    if (!v.length) { countBreaks = null; return null; }
+    v.sort(function (a, b) { return a - b; });
+    var qs = [0.06, 0.20, 0.36, 0.52, 0.66, 0.78, 0.89, 0.96], b = [];
+    for (i = 0; i < qs.length; i++) b.push(Math.max(1, v[Math.min(v.length - 1, Math.floor(v.length * qs[i]))]));
+    for (i = 1; i < b.length; i++) if (b[i] <= b[i - 1]) b[i] = b[i - 1] + 1;
+    countBreaks = b;
+    return b;
+  }
+
   /* quantile-ish breaks over the non-zero values currently in play */
   function setMoneyBreaks(values) {
     var v = [], i;
@@ -134,10 +156,36 @@
       off += l * 2;
     }
     this.meshLines = lines;
+    this._buildGroups();
 
     this.ready = true;
     this.resize();
     return this;
+  };
+
+  /* ── granularity ──────────────────────────────────────────────────────────
+     On a phone the median county is ~14px² — noise, not information. Below the
+     breakpoint we draw STATES instead: the same counts array summed by state prefix,
+     56 polygons instead of 3,231. Everything downstream (seek, filters, measures) is
+     unchanged; only what gets painted differs. */
+
+  ExploreMap.prototype.setGranularity = function (g) {
+    if (this.granularity === g) return false;
+    this.granularity = g;
+    if (this.ready) { this._buildGroups(); this.resize(); }
+    return true;
+  };
+
+  /* Group counties by state FIPS prefix once; each group draws as one unioned path. */
+  ExploreMap.prototype._buildGroups = function () {
+    var by = {}, order = [];
+    for (var i = 0; i < this.counties.length; i++) {
+      var c = this.counties[i], st = c.id.slice(0, 2);
+      if (!by[st]) { by[st] = { st: st, members: [], path: null, cx: 0, cy: 0 }; order.push(by[st]); }
+      by[st].members.push(i);
+    }
+    this.states = order;
+    this.stateOfCounty = this.counties.map(function (c) { return c.id.slice(0, 2); });
   };
 
   /* Build Path2D objects in device pixels for the current size. Geometry arrives in a
@@ -174,6 +222,40 @@
       }
     }
     this.meshPath = ls.length ? mp : null;
+
+    /* state-level paths: the union of each state's county rings */
+    if (this.states) {
+      for (var g = 0; g < this.states.length; g++) {
+        var grp = this.states[g], gp = new Path2D(), gx = 0, gy = 0, gn = 0;
+        for (var mi = 0; mi < grp.members.length; mi++) {
+          var cc = this.counties[grp.members[mi]];
+          gp.addPath(cc.path);
+          gx += cc.cx; gy += cc.cy; gn++;
+        }
+        grp.path = gp;
+        grp.cx = gn ? gx / gn : 0;
+        grp.cy = gn ? gy / gn : 0;
+      }
+    }
+  };
+
+  /* Collapse county values to per-state values, aligned to this.states.
+     `repeatedByState` means every county in a state already carries that state's value
+     (how state-level dollars are delivered), so we take it rather than summing it. */
+  ExploreMap.prototype._stateTotals = function (counts) {
+    var out = new Float64Array(this.states.length), i, m;
+    var repeated = !!this.repeatedByState;
+    for (i = 0; i < this.states.length; i++) {
+      var grp = this.states[i], t = 0;
+      for (m = 0; m < grp.members.length; m++) {
+        var fi = this.counties[grp.members[m]].fipsIdx;
+        if (fi < 0) continue;
+        if (repeated) { t = counts[fi]; break; }      /* all members share one value */
+        t += counts[fi];
+      }
+      out[i] = t;
+    }
+    return out;
   };
 
   /* ── sizing ───────────────────────────────────────────────────────────── */
@@ -182,7 +264,8 @@
     if (!this.ready) return;
     var rect = this.host.getBoundingClientRect();
     var cssW = Math.max(320, rect.width | 0), cssH = Math.max(240, rect.height | 0);
-    var dpr = Math.min(root.devicePixelRatio || 1, 2);   /* cap DPR — 3x on phones is wasteful */
+    var dpr = this.granularity === 'state' ? 1
+            : Math.min(root.devicePixelRatio || 1, 2);   /* cap DPR — 3x on phones is wasteful */
     this.cssW = cssW; this.cssH = cssH; this.dpr = dpr;
     this.w = Math.round(cssW * dpr); this.h = Math.round(cssH * dpr);
 
@@ -216,6 +299,14 @@
 
   ExploreMap.prototype.countyAt = function (cssX, cssY) {
     if (!this.ready) return -1;
+    if (this.granularity === 'state' && this.states) {
+      /* 56 polygons — a direct hit test is cheaper than maintaining a pick buffer */
+      var px = cssX * this.dpr, py = cssY * this.dpr;
+      for (var i = 0; i < this.states.length; i++) {
+        if (this.ctx.isPointInPath(this.states[i].path, px, py)) return this.states[i].members[0];
+      }
+      return -1;
+    }
     if (!this._pickBits) this._paintPick();
     var x = Math.round(cssX * this.dpr), y = Math.round(cssY * this.dpr);
     if (x < 0 || y < 0 || x >= this.w || y >= this.h) return -1;
@@ -232,11 +323,37 @@
     var c = this.accumCtx;
     var color = this.measure === 'dollars' ? moneyColor : rampColor;
     c.clearRect(0, 0, this.w, this.h);
-    var counts = this.counts;
-    for (var i = 0; i < this.counties.length; i++) {
+    var counts = this.counts, i;
+
+    if (this.granularity === 'state' && this.states) {
+      var st = counts ? this._stateTotals(counts) : null;
+      var cb = null;
+      if (st && this.measure === 'dollars') setMoneyBreaks(st);
+      else if (st) cb = setCountBreaks(st);
+      var scolor = this.measure === 'dollars' ? moneyColor : countColor;
+      for (i = 0; i < this.states.length; i++) {
+        c.fillStyle = scolor(st ? st[i] : 0);
+        c.fill(this.states[i].path);
+      }
+      this.activeBreaks = this.measure === 'dollars' ? moneyBreaks : cb;
+      /* stroke the state mesh, NOT the composite state paths: a state path is the union
+         of its county rings, so stroking it would redraw every county border. */
+      if (this.meshPath) {
+        c.strokeStyle = 'rgba(120,106,80,.85)';
+        c.lineWidth = Math.max(0.7, 0.9 * this.dpr);
+        c.stroke(this.meshPath);
+      }
+      if (this.prevCounts && counts) this.prevCounts.set(counts);
+      this.needsRender = true;
+      return;
+    }
+
+    setCountBreaks(null);                       /* county view uses the fixed ramp */
+    this.activeBreaks = null;
+    for (i = 0; i < this.counties.length; i++) {
       var cc = this.counties[i];
-      var v = (counts && cc.fipsIdx >= 0) ? counts[cc.fipsIdx] : 0;
-      c.fillStyle = color(v);
+      var vv = (counts && cc.fipsIdx >= 0) ? counts[cc.fipsIdx] : 0;
+      c.fillStyle = color(vv);
       c.fill(cc.path);
     }
     if (this.meshPath) {
@@ -259,7 +376,7 @@
       return;
     }
     this.counts = counts;
-    if (forceAll || this.measure === 'dollars') { this.repaintAll(); return; }
+    if (forceAll || this.measure === 'dollars' || this.granularity === 'state') { this.repaintAll(); return; }
 
     var c = this.accumCtx, prev = this.prevCounts, painted = 0;
     for (var i = 0; i < this.counties.length; i++) {
@@ -289,7 +406,8 @@
   ExploreMap.prototype.spawn = function (eventIdxs) {
     if (DD.reduceMotion) return;
     var q = this.query, n = eventIdxs.length;
-    var stride = n > MAX_BLOOMS ? Math.ceil(n / MAX_BLOOMS) : 1;
+    var cap = this.granularity === 'state' ? 60 : MAX_BLOOMS;
+    var stride = n > cap ? Math.ceil(n / cap) : 1;
     var byFips = this._fipsToCounty || (this._fipsToCounty = this._buildFipsMap());
     for (var i = 0; i < n; i += stride) {
       var ei = eventIdxs[i];
@@ -405,6 +523,8 @@
   root.DD.hazColor = hazColor;
   root.DD.rampColor = rampColor;
   root.DD.moneyColor = moneyColor;
+  root.DD.countColor = countColor;
+  root.DD.setCountBreaks = setCountBreaks;
   root.DD.setMoneyBreaks = setMoneyBreaks;
   root.DD.MRAMP = MRAMP;
 })(window);

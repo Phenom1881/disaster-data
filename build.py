@@ -1541,6 +1541,19 @@ if os.path.exists("index.html"):
         f.write(html)
     print("  index.html updated with PA_NATIONAL and last-updated stamp")
 
+# Version-stamp the Explorer payload. GitHub Pages serves assets with max-age=600, so
+# without this a returning visitor can get fresh page code against a cached data file
+# (or the reverse) for ten minutes after each weekly rebuild — a silent mismatch.
+# Geometry is pinned at v1: county borders do not move on a weekly cycle.
+if os.path.exists("explore.html"):
+    with open("explore.html", encoding="utf-8") as f:
+        _x = f.read()
+    _x = re.sub(r'src="explore-data\.js(?:\?v=[^"]*)?"', f'src="explore-data.js?v={TODAY}"', _x)
+    _x = re.sub(r'src="explore-geo\.js(?:\?v=[^"]*)?"',  'src="explore-geo.js?v=1"', _x)
+    with open("explore.html", "w", encoding="utf-8") as f:
+        f.write(_x)
+    print(f"  explore.html payload stamped (explore-data.js?v={TODAY})")
+
 print(f"\nDone. Data as of {TODAY}.")
 print(f"  Declarations: {len(dec_processed):,}")
 print(f"  Denials:      {len(den_processed):,}")

@@ -120,7 +120,27 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
 .beat p b{color:var(--ink);font-weight:600;}
 .story-end{padding:20px 0 40px;}
 @media(prefers-reduced-motion:reduce){.beat{opacity:1;transition:none;}.storycol{scroll-behavior:auto;}}
+@media(max-width:700px){
+  .hud{position:static;padding:12px 14px 0;}
+  .hud .date{font-size:24px;}
+  .chips{max-width:none;}
+  .counters{position:static;display:grid;grid-template-columns:repeat(3,1fr);border-radius:0;border-left:none;border-right:none;}
+  .mapwrap{height:46vh;}
+  .legend{left:8px;bottom:8px;padding:7px 9px;}
+  .legend .sw i{width:15px;}
+  .side{padding:14px 14px 30px;}
+  .storycol{width:auto;}
+  .trow{gap:10px;}
+  .speed{display:none;}
+  nav{height:auto;flex-wrap:wrap;gap:6px;padding-top:9px;padding-bottom:9px;}
+  .navlinks{flex-wrap:wrap;}
+}
 @media(max-width:900px){.storycol{width:auto;border-left:none;border-top:1px solid var(--rule);padding-bottom:20vh;}}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.xmap-canvas:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.skip{position:absolute;left:-999px;top:0;z-index:200;background:var(--accent);color:#fff;padding:8px 14px;border-radius:0 0 8px 0;font:600 13px var(--sans);text-decoration:none;}
+.skip:focus{left:0;}
 .transport.locked #timeline{opacity:.35;pointer-events:none;}
 .transport.locked .playbtn{opacity:.35;pointer-events:none;}
 .muted{font-size:12px;color:var(--ink-3);}
@@ -145,6 +165,21 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
 .loading .bar i{display:block;height:100%;width:35%;background:var(--accent);border-radius:3px;animation:sweep 1.05s var(--ease) infinite;}
 @keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(385%)}}
 
+@media(max-width:700px){
+  .hud{position:static;padding:12px 14px 0;}
+  .hud .date{font-size:24px;}
+  .chips{max-width:none;}
+  .counters{position:static;display:grid;grid-template-columns:repeat(3,1fr);border-radius:0;border-left:none;border-right:none;}
+  .mapwrap{height:46vh;}
+  .legend{left:8px;bottom:8px;padding:7px 9px;}
+  .legend .sw i{width:15px;}
+  .side{padding:14px 14px 30px;}
+  .storycol{width:auto;}
+  .trow{gap:10px;}
+  .speed{display:none;}
+  nav{height:auto;flex-wrap:wrap;gap:6px;padding-top:9px;padding-bottom:9px;}
+  .navlinks{flex-wrap:wrap;}
+}
 @media(max-width:900px){
   body{overflow:auto;}
   .app{height:auto;}
@@ -162,6 +197,7 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
 </style>
 </head>
 <body>
+<a class="skip" href="#side-controls">Skip to controls</a>
 <div class="app">
 
 <nav>
@@ -195,22 +231,23 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
       <div class="sc"><span id="lg-lo">1</span><span id="lg-hi">35+</span></div>
       <div class="muted" id="lg-note" style="font-size:9.5px;margin-top:5px;max-width:210px;line-height:1.4"></div>
     </div>
+    <p class="vh" id="a11y-summary" role="status" aria-live="polite" aria-atomic="true"></p>
     <div class="loading" id="loading">
       <div class="msg">Loading 25 years of disaster data…</div>
       <div class="bar"><i></i></div>
     </div>
   </div>
 
-  <div class="storycol" id="storycol" hidden></div>
+  <div class="storycol" id="storycol" role="region" aria-label="Guided story" hidden></div>
 
-  <aside class="side">
+  <aside class="side" id="side-controls">
     <section>
       <h3>Measure</h3>
-      <div class="seg" id="measureseg">
+      <div class="seg" id="measureseg" role="group" aria-label="Measure">
         <button class="on" data-m="events">Declarations</button><button data-m="dollars">Dollars</button>
       </div>
       <div id="money-mode" hidden style="margin-top:8px">
-        <div class="seg" id="moneyseg">
+        <div class="seg" id="moneyseg" role="group" aria-label="Dollar view">
           <button class="on" data-g="state">Over time · by state</button><button data-g="county">All-time · by county</button>
         </div>
         <div class="muted" id="money-note" style="margin-top:6px;font-size:11px;line-height:1.45"></div>
@@ -218,7 +255,7 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
     </section>
     <section>
       <h3>Declaration type</h3>
-      <div class="seg" id="typeseg">
+      <div class="seg" id="typeseg" role="group" aria-label="Declaration type">
         <button class="on" data-t="DR">DR</button><button class="on" data-t="EM">EM</button><button class="on" data-t="FM">FM</button>
       </div>
     </section>
@@ -229,11 +266,19 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
     <section>
       <h3>Hazards <button class="linkbtn" id="hazall" style="float:right;margin-top:-2px">reset</button></h3>
       <div class="muted" id="hazscope" style="margin:-4px 0 8px;font-size:11px"></div>
-      <div class="hazlist" id="hazlist"></div>
+      <div class="hazlist" id="hazlist" role="group" aria-label="Hazard filters"></div>
     </section>
     <section id="money-panel" hidden>
       <h3>Where the money went</h3>
       <div id="money-list"></div>
+    </section>
+    <section>
+      <h3>Keyboard</h3>
+      <div class="muted" style="font-size:11px;line-height:1.7">
+        <b>Space</b> play/pause · <b>←/→</b> step a day (<b>Shift</b> a month)<br>
+        <b>Home/End</b> jump · <b>Esc</b> clear scope<br>
+        Focus the map, then <b>←/→</b> to move through counties, <b>Enter</b> to scope
+      </div>
     </section>
     <section>
       <h3>Latest on screen</h3>
@@ -264,8 +309,8 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
 
 <div class="maptip" id="maptip"></div>
 
-<script src="explore-geo.js"></script>
-<script src="explore-data.js"></script>
+<script src="explore-geo.js?v=1"></script>
+<script src="explore-data.js?v=2026-07-12"></script>
 <script src="explore/engine.js"></script>
 <script src="explore/map.js"></script>
 <script src="explore/story.js"></script>
