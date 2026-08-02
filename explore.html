@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>The Explorer: 25 years of US disaster declarations, day by day</title>
+<meta name="description" content="Watch every federal disaster declaration since 1999 land on the map, day by day. Filter by hazard and declaration type, scrub through 25 years, and explore county by county.">
+<meta property="og:title" content="The Explorer: 25 years of US disaster declarations, day by day">
+<meta property="og:description" content="Watch every federal disaster declaration since 1999 land on the map, day by day. Built from FEMA OpenFEMA data.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io/explore.html">
+<link rel="canonical" href="https://www.disasterdata.io/explore.html">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#f6f1e7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- non-blocking: the Explorer should paint even if the font CDN is slow or unreachable -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Public+Sans:wght@400;600&display=swap"></noscript>
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden;}
+::selection{background:var(--accent);color:#fff;}
+
+nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(14px,3vw,28px);height:54px;flex:none;}
+.brand{display:flex;align-items:baseline;gap:9px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:-.4px;color:var(--accent);text-decoration:none;}
+.brand .sub{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-3);font-weight:700;}
+.navlinks{display:flex;align-items:center;gap:2px;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:6px;transition:.15s;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+.stage{flex:1;display:flex;min-height:0;position:relative;}
+
+/* ── map ── */
+.mapwrap{flex:1;position:relative;min-width:0;background:var(--paper);}
+.xmap-canvas{display:block;cursor:crosshair;}
+.hud{position:absolute;top:16px;left:18px;pointer-events:none;z-index:5;}
+.hud .date{font-family:var(--serif);font-weight:600;font-size:clamp(26px,3.4vw,40px);letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;}
+.hud .sub{font-size:12px;color:var(--ink-2);letter-spacing:.4px;margin-top:4px;}
+.counters{position:absolute;top:16px;right:18px;display:flex;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;z-index:5;pointer-events:none;}
+.ctr{background:rgba(252,250,243,.94);padding:9px 14px;min-width:96px;}
+.ctr .n{font-family:var(--serif);font-weight:600;font-size:21px;line-height:1;font-variant-numeric:tabular-nums;}
+.ctr .l{font-size:9.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-3);margin-top:4px;}
+
+.legend{position:absolute;left:18px;bottom:16px;background:rgba(252,250,243,.94);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;z-index:5;pointer-events:none;}
+.legend .lt{font-size:9.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;}
+.legend .sw{display:flex;align-items:center;gap:0;}
+.legend .sw i{width:22px;height:9px;display:block;}
+.legend .sw i:first-child{border-radius:2px 0 0 2px;}
+.legend .sw i:last-child{border-radius:0 2px 2px 0;}
+.legend .sc{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink-3);margin-top:3px;font-variant-numeric:tabular-nums;}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-width:min(520px,52vw);margin-top:10px;pointer-events:auto;}
+.chip{display:inline-flex;align-items:center;gap:7px;font:600 11.5px var(--sans);color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:5px 11px;cursor:pointer;transition:background .12s;white-space:nowrap;}
+.chip:hover{background:#9e3a1e;border-color:#9e3a1e;}
+.chip.win{background:var(--ember);border-color:var(--ember);}
+.chip .x{font-size:14px;line-height:1;opacity:.85;}
+.chip.static{background:var(--paper-2);color:var(--ink-2);border-color:var(--rule-2);cursor:default;}
+.chip.static:hover{background:var(--paper-2);border-color:var(--rule-2);}
+#timeline{cursor:crosshair;}
+.side h3 .scoped{float:right;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink-3);font-size:10px;}
+.maptip{position:fixed;pointer-events:none;opacity:0;transform:translate(-50%,-135%);background:var(--ink);color:var(--paper);font-size:12px;font-weight:500;padding:7px 11px;border-radius:7px;white-space:nowrap;transition:opacity .12s;z-index:80;line-height:1.35;}
+.maptip b{font-family:var(--serif);font-weight:600;font-size:13.5px;}
+
+/* ── side panel ── */
+.side{width:270px;flex:none;border-left:1px solid var(--rule);background:var(--paper-2);overflow-y:auto;padding:16px 16px 24px;}
+.side h3{font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px;}
+.side section{margin-bottom:20px;}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden;background:var(--paper-2);}
+.seg button{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);background:none;border:none;border-right:1px solid var(--rule-2);padding:6px 12px;cursor:pointer;transition:.12s;}
+.seg button:last-child{border-right:none;}
+.seg button.on{background:var(--accent);color:#fff;}
+.seg button:hover:not(.on){background:var(--paper-3);}
+.hazlist{display:flex;flex-direction:column;gap:3px;}
+.hz{display:grid;grid-template-columns:10px 1fr auto;align-items:center;gap:8px;padding:4px 6px;border-radius:6px;cursor:pointer;transition:background .12s;border:none;background:none;font-family:var(--sans);text-align:left;width:100%;}
+.hz:hover{background:var(--paper-3);}
+.hz.off{opacity:.32;}
+.hz i{width:10px;height:10px;border-radius:3px;display:block;}
+.hz .nm{font-size:12.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hz .ct{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;}
+.linkbtn{background:none;border:none;color:var(--accent);font:600 12px var(--sans);cursor:pointer;padding:4px 0;border-bottom:1px solid transparent;}
+.linkbtn:hover{border-bottom-color:var(--accent);}
+.selbox{border:1px solid var(--rule);border-radius:9px;background:var(--paper);padding:11px 12px;}
+.selbox .nm{font-family:var(--serif);font-weight:600;font-size:15px;line-height:1.2;}
+.selbox .mt{font-size:11.5px;color:var(--ink-3);margin-top:2px;}
+.selbox .big{font-family:var(--serif);font-weight:600;font-size:24px;font-variant-numeric:tabular-nums;margin-top:7px;line-height:1;}
+.selbox .bl{font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-3);}
+.feed{display:flex;flex-direction:column;gap:6px;max-height:230px;overflow-y:auto;}
+.fitem{border-left:2px solid var(--rule-2);padding:2px 0 2px 8px;}
+.fitem .ft{font-size:12px;font-weight:600;line-height:1.25;}
+.fitem .fm{font-size:10.5px;color:var(--ink-3);}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--rule);}
+.mrow:last-child{border-bottom:none;}
+.mrow .mn{font-size:12px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mrow .mv{font-family:var(--serif);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;color:var(--accent);}
+.mrow .ms{font-size:10.5px;color:var(--ink-3);}
+.storycol{width:340px;flex:none;border-left:1px solid var(--rule);background:var(--paper);overflow-y:auto;padding:0 22px 60vh;scroll-behavior:smooth;}
+.storycol[hidden]{display:none;}
+.story-note{position:sticky;top:0;background:var(--paper-3);border-left:3px solid var(--ember);padding:10px 12px;margin:16px 0 0;font-size:11.5px;line-height:1.5;color:var(--ink-2);border-radius:0 6px 6px 0;z-index:2;}
+.beat{min-height:62vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .45s var(--ease);}
+.beat.on{opacity:1;}
+.beat h2{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:-.4px;line-height:1.15;margin-bottom:9px;}
+.beat p{font-size:14px;line-height:1.62;color:var(--ink-2);}
+.beat p b{color:var(--ink);font-weight:600;}
+.story-end{padding:20px 0 40px;}
+@media(prefers-reduced-motion:reduce){.beat{opacity:1;transition:none;}.storycol{scroll-behavior:auto;}}
+@media(max-width:700px){
+  .hud{position:static;padding:12px 14px 0;}
+  .hud .date{font-size:24px;}
+  .chips{max-width:none;}
+  .counters{position:static;display:grid;grid-template-columns:repeat(3,1fr);border-radius:0;border-left:none;border-right:none;}
+  .mapwrap{height:46vh;}
+  .legend{left:8px;bottom:8px;padding:7px 9px;}
+  .legend .sw i{width:15px;}
+  .side{padding:14px 14px 30px;}
+  .storycol{width:auto;}
+  .trow{gap:10px;}
+  .speed{display:none;}
+  nav{height:auto;flex-wrap:wrap;gap:6px;padding-top:9px;padding-bottom:9px;}
+  .navlinks{flex-wrap:wrap;}
+}
+@media(max-width:900px){.storycol{width:auto;border-left:none;border-top:1px solid var(--rule);padding-bottom:20vh;}}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.xmap-canvas:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.skip{position:absolute;left:-999px;top:0;z-index:200;background:var(--accent);color:#fff;padding:8px 14px;border-radius:0 0 8px 0;font:600 13px var(--sans);text-decoration:none;}
+.skip:focus{left:0;}
+.transport.locked #timeline{opacity:.35;pointer-events:none;}
+.transport.locked .playbtn{opacity:.35;pointer-events:none;}
+.muted{font-size:12px;color:var(--ink-3);}
+
+/* ── transport ── */
+.transport{flex:none;border-top:1px solid var(--rule);background:var(--paper-2);padding:10px clamp(14px,3vw,24px) 12px;}
+.trow{display:flex;align-items:center;gap:14px;}
+.playbtn{flex:none;width:42px;height:42px;border-radius:50%;background:var(--accent);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .12s;}
+.playbtn:hover{background:var(--accent-2);}
+.playbtn:active{transform:scale(.95);}
+.tlwrap{flex:1;position:relative;min-width:0;}
+#timeline{display:block;width:100%;height:56px;cursor:ew-resize;}
+.tlaxis{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);font-variant-numeric:tabular-nums;margin-top:-2px;}
+.speed{flex:none;display:flex;align-items:center;gap:7px;}
+.speed label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-3);}
+.ghost{font:600 12px var(--sans);color:var(--accent);background:none;border:1px solid var(--rule-2);border-radius:7px;padding:6px 11px;cursor:pointer;transition:.12s;white-space:nowrap;}
+.ghost:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:var(--paper);z-index:60;}
+.loading .msg{font-family:var(--serif);font-size:17px;color:var(--ink-2);}
+.loading .bar{width:190px;height:3px;background:var(--paper-3);border-radius:3px;overflow:hidden;}
+.loading .bar i{display:block;height:100%;width:35%;background:var(--accent);border-radius:3px;animation:sweep 1.05s var(--ease) infinite;}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(385%)}}
+
+@media(max-width:700px){
+  .hud{position:static;padding:12px 14px 0;}
+  .hud .date{font-size:24px;}
+  .chips{max-width:none;}
+  .counters{position:static;display:grid;grid-template-columns:repeat(3,1fr);border-radius:0;border-left:none;border-right:none;}
+  .mapwrap{height:46vh;}
+  .legend{left:8px;bottom:8px;padding:7px 9px;}
+  .legend .sw i{width:15px;}
+  .side{padding:14px 14px 30px;}
+  .storycol{width:auto;}
+  .trow{gap:10px;}
+  .speed{display:none;}
+  nav{height:auto;flex-wrap:wrap;gap:6px;padding-top:9px;padding-bottom:9px;}
+  .navlinks{flex-wrap:wrap;}
+}
+@media(max-width:900px){
+  body{overflow:auto;}
+  .app{height:auto;}
+  .stage{flex-direction:column;}
+  .mapwrap{height:56vh;}
+  .side{width:auto;border-left:none;border-top:1px solid var(--rule);}
+  .counters{position:static;margin:0;border-radius:0;border-left:none;border-right:none;}
+  .counters{display:grid;grid-template-columns:repeat(3,1fr);}
+  .hud{top:10px;left:12px;}
+  .legend{left:12px;bottom:10px;}
+  .trow{flex-wrap:wrap;}
+  .tlwrap{order:3;flex-basis:100%;}
+}
+@media(prefers-reduced-motion:reduce){.loading .bar i{animation:none;width:100%}}
+</style>
+</head>
+<body>
+<a class="skip" href="#side-controls">Skip to controls</a>
+<div class="app">
+
+<nav>
+  <div class="brand"><a class="mark" href="/">Disaster Data</a><span class="sub">The Explorer</span></div>
+  <div class="navlinks">
+    <a href="/">Overview</a>
+    <a href="explore.html" class="on">Explore</a>
+    <button class="ghost" id="modebtn" style="margin-left:6px;padding:5px 11px">Story</button>
+    <a href="map.html">Map</a>
+    <a href="states/index.html">States</a>
+    <a href="public-assistance-projects.html">Funding</a>
+    <a href="about.html">About</a>
+  </div>
+</nav>
+
+<div class="stage">
+  <div class="mapwrap" id="mapwrap">
+    <div class="hud">
+      <div class="date" id="hud-date">—</div>
+      <div class="sub" id="hud-sub">Press play to replay 25 years</div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="counters">
+      <div class="ctr"><div class="n" id="ctr-decl">0</div><div class="l">declarations</div></div>
+      <div class="ctr"><div class="n" id="ctr-county">0</div><div class="l" id="ctr-county-l">counties hit</div></div>
+      <div class="ctr"><div class="n" id="ctr-events">0</div><div class="l" id="ctr-events-l">county events</div></div>
+    </div>
+    <div class="legend">
+      <div class="lt" id="lg-title">Declarations per county</div>
+      <div class="sw" id="lg-sw"></div>
+      <div class="sc"><span id="lg-lo">1</span><span id="lg-hi">35+</span></div>
+      <div class="muted" id="lg-note" style="font-size:9.5px;margin-top:5px;max-width:210px;line-height:1.4"></div>
+    </div>
+    <p class="vh" id="a11y-summary" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div class="loading" id="loading">
+      <div class="msg">Loading 25 years of disaster data…</div>
+      <div class="bar"><i></i></div>
+    </div>
+  </div>
+
+  <div class="storycol" id="storycol" role="region" aria-label="Guided story" hidden></div>
+
+  <aside class="side" id="side-controls">
+    <section>
+      <h3>Measure</h3>
+      <div class="seg" id="measureseg" role="group" aria-label="Measure">
+        <button class="on" data-m="events">Declarations</button><button data-m="dollars">Dollars</button>
+      </div>
+      <div id="money-mode" hidden style="margin-top:8px">
+        <div class="seg" id="moneyseg" role="group" aria-label="Dollar view">
+          <button class="on" data-g="state">Over time · by state</button><button data-g="county">All-time · by county</button>
+        </div>
+        <div class="muted" id="money-note" style="margin-top:6px;font-size:11px;line-height:1.45"></div>
+      </div>
+    </section>
+    <section>
+      <h3>Declaration type</h3>
+      <div class="seg" id="typeseg" role="group" aria-label="Declaration type">
+        <button class="on" data-t="DR">DR</button><button class="on" data-t="EM">EM</button><button class="on" data-t="FM">FM</button>
+      </div>
+    </section>
+    <section>
+      <h3>Selected county</h3>
+      <div class="selbox" id="selbox"><div class="muted">Click any county on the map.</div></div>
+    </section>
+    <section>
+      <h3>Hazards <button class="linkbtn" id="hazall" style="float:right;margin-top:-2px">reset</button></h3>
+      <div class="muted" id="hazscope" style="margin:-4px 0 8px;font-size:11px"></div>
+      <div class="hazlist" id="hazlist" role="group" aria-label="Hazard filters"></div>
+    </section>
+    <section id="money-panel" hidden>
+      <h3>Where the money went</h3>
+      <div id="money-list"></div>
+    </section>
+    <section>
+      <h3>Keyboard</h3>
+      <div class="muted" style="font-size:11px;line-height:1.7">
+        <b>Space</b> play/pause · <b>←/→</b> step a day (<b>Shift</b> a month)<br>
+        <b>Home/End</b> jump · <b>Esc</b> clear scope<br>
+        Focus the map, then <b>←/→</b> to move through counties, <b>Enter</b> to scope
+      </div>
+    </section>
+    <section>
+      <h3>Latest on screen</h3>
+      <div class="feed" id="feed"><div class="muted">Declarations appear here as they land.</div></div>
+    </section>
+  </aside>
+</div>
+
+<div class="transport">
+  <div class="trow">
+    <button class="playbtn" id="play" aria-label="Play the 25-year replay">
+      <svg id="play-icon" viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 7 5.5z"/></svg>
+    </button>
+    <div class="tlwrap">
+      <canvas id="timeline" aria-label="Timeline scrubber"></canvas>
+      <div class="tlaxis" id="tlaxis"></div>
+    </div>
+    <div class="speed">
+      <label for="spd">Speed</label>
+      <input type="range" id="spd" min="1" max="6" step="1" value="3" style="width:84px" aria-label="Playback speed">
+    </div>
+    <button class="ghost" id="restart">Restart</button>
+    <button class="ghost" id="copylink" title="Copy a link to this exact view">Copy link</button>
+  </div>
+</div>
+
+</div>
+
+<div class="maptip" id="maptip"></div>
+
+<script src="explore-geo.js?v=1"></script>
+<script src="explore-data.js?v=2026-07-12"></script>
+<script src="explore-engine.js"></script>
+<script src="explore-map.js"></script>
+<script src="explore-story.js"></script>
+<script src="explore-app.js"></script>
+</body>
+</html>

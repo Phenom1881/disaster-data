@@ -11,7 +11,7 @@ table for each one.
 Pilot is scoped to one state (STATE_AB below) but written to generalize.
 """
 
-import os, re, json, html, datetime, hashlib
+import os, re, json, html, datetime
 from dd_classify import classify
 
 SITE = "https://www.disasterdata.io"
@@ -218,50 +218,6 @@ def last_complete_fy(browse):
     avail = max((r.get("fyDeclared", 0) for r in browse), default=cur)
     return min(cur - 1, avail)
 
-# ---------------------------------------------------------------- gating and freshness
-# A jurisdiction is treated as "thin" (noindex, and left out of the sitemap) when its
-# only federal disaster history is the nationwide declarations that reached nearly every
-# county, and it never received federal Public Assistance money. Raw declaration count is
-# a poor gate because the COVID-19 pandemic was declared for essentially every
-# jurisdiction, so a place with one COVID line and nothing else is not substantive on its
-# own. Pages that clear the gate are indexed normally; thin pages stay reachable by users
-# and by crawlers (robots noindex,follow) but are not advertised in the sitemap, which
-# concentrates crawl budget on the pages that carry real, distinguishing data.
-MIN_DISTINCT_DECLS = 2   # non-nationwide declarations needed to index on count alone
-
-def _is_nationwide(rec):
-    """True for declarations that reached nearly every jurisdiction and so do not
-    distinguish this place (currently the COVID-19 pandemic declarations)."""
-    title = (rec.get("declarationTitle") or "").upper()
-    return "COVID" in title or "PANDEMIC" in title
-
-def is_thin(j):
-    """Thin only if the jurisdiction has no federal PA money AND fewer than
-    MIN_DISTINCT_DECLS declarations that are not nationwide. Lower the threshold to 1
-    to index every place that has any distinguishing declaration at all."""
-    if (j.get("pa_obl") or 0) > 0:
-        return False
-    distinct = sum(1 for r in j.get("hmp", []) if not _is_nationwide(r))
-    return distinct < MIN_DISTINCT_DECLS
-
-def _content_hash(j):
-    """Stable fingerprint of everything that renders on a jurisdiction page, so the
-    sitemap lastmod only advances when this jurisdiction's data actually changes and
-    not on every weekly rebuild."""
-    payload = {
-        "decl": j.get("decl", 0), "dr": j.get("dr", 0),
-        "em": j.get("em", 0), "fm": j.get("fm", 0), "latest": j.get("latest", ""),
-        "pa_obl": j.get("pa_obl", 0), "pa_proj": j.get("pa_proj", 0),
-        "pa_cats": j.get("pa_cats", {}),
-        "recs": sorted(
-            [r.get("femaDeclarationString", ""), r.get("declarationDate", "")[:10],
-             r.get("declarationType", ""), r.get("incidentType", ""),
-             pretty_title(r.get("declarationTitle", ""))]
-            for r in j.get("hmp", [])),
-    }
-    blob = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":"))
-    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
-
 # ---------------------------------------------------------------- per-jurisdiction stats
 def juris_stats(entry, state_ab, c, by_id, lcfy):
     disp, slug, kind = c["display"], make_slug(c, state_ab), c["kind"]
@@ -307,7 +263,6 @@ main{padding:2rem 0 1rem}
 h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
 h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
 .lede{font-size:1.08rem;max-width:62ch}
-.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
 .stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
 .stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
@@ -349,20 +304,7 @@ ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--i
 ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
 ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
 footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
-nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.mobilemenu{display:none}
-@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
-.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
-.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
-.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
-.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
-.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
-.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
-.mm-section a.on{color:#004c53;background:#d7e9ea}}
+@media(max-width:720px){nav.ddnav{height:auto;flex-direction:column;align-items:stretch;gap:9px;padding-top:11px;padding-bottom:11px}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{flex-wrap:wrap}}
 """.strip()
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
@@ -371,43 +313,23 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">')
 HEAD = (FONTS + '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">'
         "<style>" + CSS +
-        "#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}"
+        "#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 1.5rem;background:#f6f1e7}"
         "@media(max-width:600px){#locmap{height:240px}}"
-        ".locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}"
-        ".locmap-cap b{font-weight:700}"
-        ".loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}"
-        ".loc-lbl:before,.loc-lbl:after{display:none !important}"
         "</style>")
 
 # paths are two levels deep: states/virginia/<slug>.html -> site root is ../../
 def header_html():
     return ('<nav class="ddnav">'
             '<div class="brand"><a class="mark" href="../../index.html">Disaster Data</a></div>'
-            '<button class="navburger" aria-label="Menu" aria-expanded="false">'
-            '<span></span><span></span><span></span></button>'
             '<div class="navlinks">'
             '<a href="../../index.html">Overview</a>'
             '<a href="../../index.html#board">Explore</a>'
-            '<a href="../../compare.html">Compare</a>'
+            '<a href="../../explore.html">Explore</a>'
             '<a href="../../map.html">Map</a>'
-            '<a href="../../states/index.html">States</a>'
-            '<a href="../../jurisdiction.html" class="on">Local</a>'
+            '<a href="../../states/index.html" class="on">States</a>'
             '<a href="../../public-assistance-projects.html">Funding</a>'
-            '<a href="../../denials.html">Denials</a>'
             '<a href="../../about.html">About</a></div>'
-            '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>'
-            '<div class="mobilemenu" hidden>'
-            '<a href="../../index.html">Overview</a>'
-            '<div class="mm-section"><div class="mm-label">Explore</div>'
-            '<a href="../../index.html#board">Explore</a>'
-            '<a href="../../map.html">Map</a>'
-            '<a href="../../compare.html">Compare</a></div>'
-            '<div class="mm-section"><div class="mm-label">Data</div>'
-            '<a href="../../states/index.html">States</a>'
-            '<a href="../../jurisdiction.html" class="on">Local</a>'
-            '<a href="../../public-assistance-projects.html">Funding</a>'
-            '<a href="../../denials.html">Denials</a></div>'
-            '<a href="../../about.html">About</a></div>')
+            '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>')
 
 def footer_html():
     return ('<footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, '
@@ -415,10 +337,7 @@ def footer_html():
             ' &middot; <a href="../../about.html">About and contact</a></div></footer>'
             '<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
             'data-cf-beacon=\'{"token": "ceea2416f66a424981ba37fcb9440d68"}\'></script>'
-            '<!-- End Cloudflare Web Analytics -->'
-            '<script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");'
-            'if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";'
-            'b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script>')
+            '<!-- End Cloudflare Web Analytics -->')
 
 def _oxford(items):
     items = [i for i in items]
@@ -476,62 +395,11 @@ def pa_breakdown_html(j):
             '<tbody>%s</tbody><tfoot>%s</tfoot></table></div></section>'
             % (body, foot))
 
-# ---------------------------------------------------------------- data-driven prose
-def _money_words(n):
-    """Public Assistance dollars in words, dash-free, for the summary paragraph."""
-    n = float(n or 0)
-    if n >= 1e9:
-        return "about $%.1f billion" % (n / 1e9)
-    if n >= 1e6:
-        return "about $%.1f million" % (n / 1e6)
-    return "$" + format(int(round(n)), ",")
-
-def summary_html(j):
-    """A short, plain-language paragraph built entirely from this jurisdiction's own
-    records. It gives the page substantive, unique text beyond the tables so search
-    engines have a reason to index it, and gives readers the record in prose."""
-    hmp = j.get("hmp", [])
-    if not hmp:
-        return ""
-    e = html.escape
-    name = e(j["name"])
-    dates = sorted(r.get("declarationDate", "")[:10] for r in hmp if r.get("declarationDate"))
-    if dates and dates[0][:4] != dates[-1][:4]:
-        span = "between %s and %s" % (dates[0][:4], dates[-1][:4])
-    elif dates:
-        span = "in %s" % dates[0][:4]
-    else:
-        span = "since FY2000"
-    sents = ["The federal disaster record for %s runs %s, covering %d declaration%s in all."
-             % (name, span, j["decl"], "" if j["decl"] == 1 else "s")]
-
-    drs = [r for r in hmp if r.get("declarationType") == "DR"]
-    if drs:
-        title = pretty_title(drs[0].get("declarationTitle", "")).strip()
-        yr = drs[0].get("declarationDate", "")[:4]
-        if title and yr:
-            sents.append("Its most recent major disaster declaration was %s in %s." % (e(title), yr))
-
-    hz = j.get("hazards") or []
-    if len(hz) >= 2:
-        sents.append("The hazards behind these declarations were most often %s."
-                     % _oxford([e(h.lower()) for h, _ in hz[:3]]))
-    elif len(hz) == 1:
-        sents.append("Every one was tied to %s." % e(hz[0][0].lower()))
-
-    if (j.get("pa_obl") or 0) > 0:
-        tail = (", most of it for %s" % e(j["pa_top_cat"].lower())) if j.get("pa_top_cat") else ""
-        sents.append("Since 2000, FEMA has obligated %s in Public Assistance funding to the jurisdiction%s."
-                     % (_money_words(j["pa_obl"]), tail))
-
-    return '<section class="jsummary"><p>%s</p></section>' % " ".join(sents)
-
 # ---------------------------------------------------------------- jurisdiction page
 def render_page(j, others):
     e = html.escape
     canonical = "%s/states/%s/%s.html" % (SITE, STATE_SLUG, j["slug"])
     label = j["label"]
-    robots = '<meta name="robots" content="noindex,follow">' if j.get("thin") else ''
     desc = ("%s, %s has had %d federal disaster and emergency declarations since FY2000 "
             "(%d major disasters, %d emergencies, %d fire-management). Full FEMA declaration "
             "history and a ready-to-use previous-occurrences table for hazard mitigation planning."
@@ -574,10 +442,8 @@ def render_page(j, others):
     # embedded state map (county-level, only for county/city kinds with a FIPS match)
     st_fips = STATE_FIPS.get(STATE_AB, "")
     if j["kind"] in ("county", "city") and st_fips:
-        map_html = ('<div id="locmap" data-fips="%s" data-name="%s" data-st="%s" data-kind="%s"></div>'
-                    '<p class="locmap-cap">Highlighted: <b>%s, %s</b></p>') % (
-            st_fips, html.escape(j["name"].replace(" (city)", ""), quote=True), STATE_AB, j["kind"],
-            html.escape(j["name"], quote=True), STATE_AB)
+        map_html = '<div id="locmap" data-fips="%s" data-name="%s" data-st="%s"></div>' % (
+            st_fips, html.escape(j["name"].replace(" (city)", ""), quote=True), STATE_AB)
     else:
         map_html = ""
 
@@ -683,39 +549,35 @@ def render_page(j, others):
                  '<script>'
                  '(function(){'
                  'var el=document.getElementById("locmap");if(!el)return;'
-                 'var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");'
-                 'var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];'
-                 'function norm(s){return String(s||"").replace(/\\s*\\([^)]*\\)/g,"").trim().toLowerCase();}'
-                 'function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}'
-                 'var cnBase=base(el.dataset.name);'
+                 'var sf=el.dataset.fips,cn=el.dataset.name.toLowerCase(),sa=el.dataset.st;'
                  'function go(){'
                  'if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}'
+                 'var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];'
                  'var ul={};window.LOCALITY_INDEX.forEach(function(r){'
                  'if(r[1]!==sa)return;'
-                 'var full=r[0].replace(/ \\(city\\)$/i,"").toLowerCase();'
-                 'ul[base(r[0])]=r[3];ul[full]=r[3];'
+                 'var b=r[0].replace(/ \\(city\\)$/i,"").toLowerCase();'
+                 'for(var i=0;i<SX.length;i++){if(b.endsWith(" "+SX[i])){b=b.slice(0,-(SX[i].length+1)).trim();break;}}'
+                 'ul[b]=r[3];ul[r[0].replace(/ \\(city\\)$/i,"").toLowerCase()]=r[3];'
                  '});'
                  'fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json()}).then(function(topo){'
                  'var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf})};'
-                 'var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});'
-                 'var collide=matches.length>1;'
-                 'function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}'
                  'var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:false});'
                  'L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:13}).addTo(map);'
-                 'var targetLayer=null;'
                  'var ly=L.geoJson(fc,{'
                  'style:function(f){'
-                 'if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};'
+                 'var fp=String(f.id).padStart(5,"0"),lb=(window.COUNTY_NAMES[fp]||"").split(",")[0].replace(/\\s*\\([^)]*\\)/g,"").trim().toLowerCase();'
+                 'if(lb===cn||lb===cn.replace(/\\s*\\([^)]*\\)/g,"").trim())return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};'
                  'return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};'
                  '},'
                  'onEachFeature:function(f,layer){'
                  'var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();'
-                 'var u=ul[base(nm)]||ul[nm.toLowerCase()];'
-                 'if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}'
-                 'else{layer.bindTooltip(nm,{sticky:true});}'
+                 'var bs=nm.replace(/\\s*\\([^)]*\\)/g,"").trim().toLowerCase();'
+                 'var u=ul[bs]||ul[nm.toLowerCase()];'
+                 'layer.bindTooltip(nm,{sticky:true});'
                  'if(u){layer.on("click",function(){window.location.href="../../"+u});'
                  'layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6})});'
-                 'layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35})});}'
+                 'layer.on("mouseout",function(){var x=bs===cn||bs===cn.replace(/\\s*\\([^)]*\\)/g,"").trim();'
+                 'this.setStyle({fillOpacity:x?.55:.35})});}'
                  '}'
                  '}).addTo(map);'
                  'map.fitBounds(ly.getBounds(),{padding:[15,15]});'
@@ -727,7 +589,7 @@ def render_page(j, others):
         mapjs = ""
 
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
-            '<meta name="viewport" content="width=device-width, initial-scale=1">%s'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<title>%s, {STATE_NAME} FEMA Disaster Declarations and Mitigation History</title>'
             '<meta name="description" content="%s"><link rel="canonical" href="%s">'
             f'<meta property="og:title" content="%s, {STATE_NAME}: Federal Disaster Declarations">'
@@ -743,7 +605,6 @@ def render_page(j, others):
             '<div class="stats">%s</div>'
             '%s'
             '%s'
-            '%s'
             '<h2>Most common hazards</h2><ul class="haz">%s</ul>'
             '%s'
             '<h2>Every declaration on record</h2>%s'
@@ -752,9 +613,9 @@ def render_page(j, others):
             '%s'
             f'<h2>Other {STATE_NAME} jurisdictions</h2><nav class="jgrid">%s</nav>'
             '</div></main>%s%s%s</body></html>'
-            % (robots, e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
+            % (e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
-               e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, summary_html(j), map_html,
+               e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, map_html,
                pa_breakdown_html(j),
                haz, hmp, history,
                method_html(j["kind"], bool(j.get("spans"))), grid, footer_html(), copyjs, mapjs))
@@ -926,10 +787,6 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, tribal_plan):
             j["pa_top_cat"] = ""
             j["pa_cats"] = {}
 
-    for j in js:
-        j["thin"] = is_thin(j)
-        j["content_hash"] = _content_hash(j)
-
     seen = {}
     for j in js:
         if j["slug"] in seen:
@@ -974,8 +831,7 @@ def main():
                 all_jurisdictions.append([
                     j["name"], st, state_name,
                     "states/%s/%s.html" % (state_slug, j["slug"]),
-                    j["decl"], j["kind"], j["noun"],
-                    j.get("thin", False), j.get("content_hash", ""),
+                    j["decl"], j["kind"], j["noun"]
                 ])
             if one:
                 print("generated %d %s jurisdiction pages + hub (+%d canonical pointers), through FY%d"
@@ -985,64 +841,27 @@ def main():
     if not one:
         idx_path = os.path.join(OUT_ROOT, "locality-index.js")
         # compact JSON array: [name, stateAB, stateName, url, declCount, kind, noun]
-        # (internal rows also carry [thin, content_hash] for the sitemap; drop them here)
-        idx_rows = [row[:7] for row in all_jurisdictions]
-        idx_js = "window.LOCALITY_INDEX=" + json.dumps(idx_rows, separators=(",", ":")) + ";"
+        idx_js = "window.LOCALITY_INDEX=" + json.dumps(all_jurisdictions, separators=(",", ":")) + ";"
         open(idx_path, "w", encoding="utf-8").write(idx_js)
 
-        # extend sitemap.xml with jurisdiction + hub URLs.
-        # Thin pages (see is_thin) are left out so crawl budget goes to substantive
-        # pages. Each URL carries a lastmod that only advances when that page's data
-        # actually changed, tracked in sitemap-state.json across runs, so a weekly
-        # rebuild that changes nothing does not reset every lastmod.
+        # extend sitemap.xml with jurisdiction URLs
         sitemap_path = os.path.join(OUT_ROOT, "sitemap.xml")
-        state_path = os.path.join(OUT_ROOT, "sitemap-state.json")
         if os.path.exists(sitemap_path):
-            try:
-                prev_state = json.load(open(state_path, encoding="utf-8"))
-            except Exception:
-                prev_state = {}
-            today = datetime.date.today().isoformat()
-            new_state = {}
-            entries = []          # (url, lastmod) for indexed jurisdiction pages
-            hub_lastmods = {}     # hub_url -> most recent member lastmod
-            skipped_thin = 0
-
-            for j in all_jurisdictions:
-                url = "%s/%s" % (SITE, j[3])
-                thin = bool(j[7]) if len(j) > 7 else False
-                chash = j[8] if len(j) > 8 else ""
-                prev = prev_state.get(url)
-                lastmod = prev.get("lastmod", today) if (prev and prev.get("hash") == chash) else today
-                new_state[url] = {"hash": chash, "lastmod": lastmod}
-                # a hub is refreshed whenever any of its members changed
-                hub_url = "%s/%s/" % (SITE, "/".join(j[3].split("/")[:2]))
-                if lastmod > hub_lastmods.get(hub_url, ""):
-                    hub_lastmods[hub_url] = lastmod
-                if thin:
-                    skipped_thin += 1
-                    continue
-                entries.append((url, lastmod))
-
-            for hub_url, lastmod in hub_lastmods.items():
-                entries.append((hub_url, lastmod))
-
-            new_urls = "".join(
-                "<url><loc>%s</loc><lastmod>%s</lastmod></url>" % (u, lm)
-                for u, lm in entries)
-
             sm = open(sitemap_path, encoding="utf-8").read()
-            # drop any jurisdiction/hub entries from a previous run so reruns stay
-            # idempotent; this matches only /states/<slug>/... so state overview pages
-            # like /states/virginia.html and /states/index.html are left untouched.
-            sm = re.sub(r"<url>\s*<loc>" + re.escape(SITE) + r"/states/[^/<]+/[^<]*</loc>.*?</url>",
-                        "", sm, flags=re.S)
-            sm = sm.replace("</urlset>", new_urls + "</urlset>")
+            new_urls = []
+            for j in all_jurisdictions:
+                new_urls.append("<url><loc>%s/%s</loc></url>" % (SITE, j[3]))
+            # also add each jurisdiction hub
+            seen_hubs = set()
+            for j in all_jurisdictions:
+                parts = j[3].split("/")  # e.g. states/virginia/tazewell-county-va.html
+                hub_url = "/".join(parts[:2]) + "/"  # states/virginia/
+                if hub_url not in seen_hubs:
+                    seen_hubs.add(hub_url)
+                    new_urls.append("<url><loc>%s/%s</loc></url>" % (SITE, hub_url))
+            sm = sm.replace("</urlset>", "".join(new_urls) + "</urlset>")
             open(sitemap_path, "w", encoding="utf-8").write(sm)
-            json.dump(new_state, open(state_path, "w", encoding="utf-8"),
-                      separators=(",", ":"), sort_keys=True)
-            print("extended sitemap.xml with %d indexed URLs (%d thin pages skipped)"
-                  % (len(entries), skipped_thin))
+            print("extended sitemap.xml with %d jurisdiction URLs" % len(new_urls))
 
         print("generated %d jurisdiction pages + %d canonical pointers + %d hubs across %d states/territories, "
               "through FY%d (skipped %d non-locality entries)"

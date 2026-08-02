@@ -1134,6 +1134,256 @@ try:
 except Exception as e:
     print(f"  WARNING: map-data.js build failed: {e} (home-page data.js still updated)")
 
+# ── Build explore-data.js (compact payload for the Explorer page) ─────────────
+# explore.html replays every county-level declaration day by day, so it needs the
+# finest grain we have (county x declaration, ~48.6K rows) but cannot afford the
+# 8 MB map-data.js. Same source rows, re-encoded column-wise with dictionary +
+# delta compression: ~880 KB raw / ~105 KB gzipped, a 9x smaller wire payload.
+# Isolated in its own try block — a failure here leaves data.js and map-data.js intact.
+EXPLORE_EPOCH = datetime.date(1999, 10, 1)   # day 0; FY2000 starts here
+
+# Counties renamed/split since 1999 still appear in older FEMA records under their retired
+# FIPS, which no longer exist in any modern boundary file. Map them onto their successors
+# so those declarations still land on the map instead of silently vanishing.
+EXPLORE_FIPS_ALIAS = {
+    "46113": "46102",   # Shannon County SD -> Oglala Lakota County
+    "51515": "51019",   # Bedford City VA -> absorbed into Bedford County
+    "02201": "02198",   # Prince of Wales-Outer Ketchikan -> Prince of Wales-Hyder
+    "02270": "02158",   # Wade Hampton Census Area -> Kusilvak Census Area
+    "02280": "02275",   # Wrangell-Petersburg -> Wrangell City and Borough
+}
+
+# ── money for the Explorer ───────────────────────────────────────────────────
+# FEMA publishes Public Assistance obligations two ways, and neither is county x date:
+#   * state x disaster, which IS dated (join the disaster number to its declaration date)
+#   * county totals, which carry NO date at all
+# So the Explorer animates dollars at STATE level and shows county dollars as all-time
+# only. Apportioning a state's dollars across its counties would be inventing FEMA data.
+_PA_SUFFIX = re.compile(
+    r"\b(county|parish|borough|census area|municipality|municipio|city and borough|city)\b")
+_PA_INVERTED = re.compile(
+    r",\s*(city and county|city and borough|city|county|municipality|town|borough|village) of\s*$")
+
+def _pa_norm(name):
+    """Normalize a county-ish name for joining. FEMA strips diacritics that the boundary
+    files keep (Anasco vs Añasco), inverts some names ('San Francisco, City and County
+    of'), and is inconsistent about the County/Parish suffix."""
+    s = unicodedata.normalize("NFD", str(name or ""))
+    s = "".join(c for c in s if not unicodedata.combining(c)).lower()
+    s = _PA_INVERTED.sub("", s)
+    s = re.sub(r"\s*\([^)]*\)", "", s)
+    s = _PA_SUFFIX.sub("", s)
+    s = re.sub(r"[^a-z0-9 ]", "", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+def build_explore_money(pa_national, pa_by_county, decl_dates):
+    """Returns money columns for explore-data.js, plus a join report."""
+    xwalk_path = "county-fips.json"
+    if not os.path.exists(xwalk_path):
+        print("  NOTE: county-fips.json missing (run tools/bake-geo.mjs) - money skipped")
+        return None, None
+    with open(xwalk_path, encoding="utf-8") as f:
+        xwalk = json.load(f)
+    lookup = {}
+    for fips, rec in xwalk.items():
+        lookup[(rec.get("s", ""), _pa_norm(rec.get("n", "")))] = fips
+
+    # county totals -> FIPS
+    county = {}          # fips -> [obligated, projects, topCategoryCode]
+    matched = unmatched = 0
+    m_dollars = u_dollars = 0.0
+    misses = []
+    for st, rows in (pa_by_county or {}).items():
+        if st == "TOT":                       # phantom key in the source data
+            continue
+        for cname, rec in rows.items():
+            obl = float(rec[0] or 0)
+            fips = lookup.get((st, _pa_norm(cname)))
+            if fips:
+                prev = county.get(fips)
+                if prev:
+                    prev[0] += obl; prev[1] += int(rec[1] or 0)
+                else:
+                    county[fips] = [obl, int(rec[1] or 0), rec[2] or ""]
+                matched += 1; m_dollars += obl
+            else:
+                unmatched += 1; u_dollars += obl
+                misses.append((obl, st, cname))
+
+    # state x disaster, dated by joining the disaster number to its declaration date
+    dated, undated = [], 0
+    for st, rows in (pa_national.get("stateDisasters") or {}).items():
+        for r in rows:
+            num = str(r.get("num", ""))
+            day = decl_dates.get((num, st)) or decl_dates.get(num)
+            if day is None:
+                undated += 1
+                continue
+            dated.append([day, st, int(r.get("num") or 0),
+                          round(float(r.get("obl") or 0) / 1000.0),      # $ thousands
+                          int(r.get("proj") or 0), r.get("name", "") or ""])
+    dated.sort()
+
+    total_nat = float(pa_national.get("totalObligated") or 0)
+    report = {
+        "matchedRows": matched, "unmatchedRows": unmatched,
+        "matchedDollars": m_dollars, "unmatchedDollars": u_dollars,
+        "nationalTotal": total_nat, "datedRows": len(dated), "undatedRows": undated,
+        "misses": sorted(misses, reverse=True)[:15],
+    }
+    money = {
+        "national": total_nat,
+        "countyCovered": m_dollars,                       # what a county map can honestly show
+        "cats": [[c.get("code", ""), c.get("cat", "")] for c in (pa_national.get("topCategories") or [])],
+        "counties": {f: [round(v[0] / 1000.0), v[1], v[2]] for f, v in county.items()},
+        "dated": dated,
+        "byYear": [[int(r.get("year") or 0), round(float(r.get("obl") or 0) / 1000.0)]
+                   for r in (pa_national.get("byYear") or [])],
+    }
+    return money, report
+
+def build_explore_data(map_data, browse_rows):
+    cde = map_data["countyDeclarationEvents"]
+    labels = map_data["countyLabels"]
+
+    # Declaration lookup: real titles live in BROWSE (countyDeclarationEvents["title"]
+    # actually holds the incident type), so join by femaDeclarationString.
+    by_id = {}
+    for r in browse_rows:
+        did = r.get("femaDeclarationString")
+        if did:
+            by_id[did] = r
+
+    # collapse retired FIPS onto their successors before indexing
+    merged = {}
+    for f, evs in cde.items():
+        key = EXPLORE_FIPS_ALIAS.get(f, f)
+        merged.setdefault(key, []).extend(evs)
+    cde = merged
+
+    fips_list = sorted(cde.keys())
+    fips_idx = {f: i for i, f in enumerate(fips_list)}
+
+    # Flatten to (day, fips_i, type, hazard, declaration) rows.
+    haz_idx, haz_list = {}, []
+    typ_idx, typ_list = {}, []
+    dec_idx, dec_list = {}, []
+    rows = []
+    for f in fips_list:
+        fi = fips_idx[f]
+        for e in cde[f]:
+            date = (e.get("date") or "")[:10]
+            if not date:
+                continue
+            try:
+                y, m, d = (int(x) for x in date.split("-"))
+                day = (datetime.date(y, m, d) - EXPLORE_EPOCH).days
+            except ValueError:
+                continue
+            if day < 0:
+                continue
+            h = e.get("title") or "Unknown"          # this field carries the incident type
+            if h not in haz_idx:
+                haz_idx[h] = len(haz_list); haz_list.append(h)
+            t = e.get("type") or ""
+            if t not in typ_idx:
+                typ_idx[t] = len(typ_list); typ_list.append(t)
+            did = e.get("declarationNumber") or ""
+            if did not in dec_idx:
+                dec_idx[did] = len(dec_list)
+                src = by_id.get(did, {})
+                dec_list.append([
+                    did,
+                    src.get("declarationTitle", "") or "",
+                    src.get("state", "") or "",
+                    int(src.get("days_to_approve") or 0),
+                    1 if src.get("tribal") else 0,
+                ])
+            rows.append((day, fi, typ_idx[t], haz_idx[h], dec_idx[did]))
+
+    rows.sort()                                   # by day, then fips — enables delta + binary search
+
+    col_fips, col_delta, col_type, col_haz, col_decl = [], [], [], [], []
+    prev = 0
+    for day, fi, ti, hi, di in rows:
+        col_delta.append(day - prev); prev = day
+        col_fips.append(fi); col_type.append(ti); col_haz.append(hi); col_decl.append(di)
+
+    # declaration-number -> day, so state money rows can be placed in time. Built from
+    # every declaration (not just county-mapped ones) so statewide-only disasters still date.
+    decl_days = {}
+    for r in browse_rows:
+        did = r.get("femaDeclarationString") or ""
+        parts = did.split("-")
+        if len(parts) < 3:
+            continue
+        date = (r.get("declarationDate") or "")[:10]
+        if not date:
+            continue
+        try:
+            y, m, d = (int(x) for x in date.split("-"))
+            day = (datetime.date(y, m, d) - EXPLORE_EPOCH).days
+        except ValueError:
+            continue
+        if day < 0:
+            continue
+        key = (parts[1], parts[2])
+        if key not in decl_days or day < decl_days[key]:
+            decl_days[key] = day
+        if parts[1] not in decl_days or day < decl_days[parts[1]]:
+            decl_days[parts[1]] = day
+
+    money, money_report = build_explore_money(
+        globals().get("pa_national") or {}, globals().get("pa_by_county") or {}, decl_days)
+    if money_report:
+        r = money_report
+        pct_rows = r["matchedRows"] / max(1, r["matchedRows"] + r["unmatchedRows"]) * 100
+        pct_dol = r["matchedDollars"] / max(1.0, r["matchedDollars"] + r["unmatchedDollars"]) * 100
+        print(f"  money: county join {r['matchedRows']:,}/{r['matchedRows']+r['unmatchedRows']:,} rows "
+              f"({pct_rows:.1f}%), ${r['matchedDollars']/1e9:.2f}B of "
+              f"${(r['matchedDollars']+r['unmatchedDollars'])/1e9:.2f}B ({pct_dol:.2f}% of dollars)")
+        print(f"  money: county map covers ${r['matchedDollars']/1e9:.1f}B = "
+              f"{r['matchedDollars']/max(1.0,r['nationalTotal'])*100:.1f}% of the "
+              f"${r['nationalTotal']/1e9:.1f}B national total "
+              f"(the rest is statewide/blank-county rows FEMA does not attribute)")
+        print(f"  money: {r['datedRows']:,} state-disaster rows dated, {r['undatedRows']} undatable")
+        if r["misses"]:
+            print(f"  money: {r['unmatchedRows']} unmatched county rows "
+                  f"(${r['unmatchedDollars']/1e6:.1f}M) - largest:")
+            for obl, st, nm in r["misses"][:8]:
+                print(f"      ${obl/1e6:9.2f}M  {st}  {nm!r}")
+
+    return {
+        "epoch": EXPLORE_EPOCH.isoformat(),
+        "built": TODAY,
+        "money": money,
+        "days": (rows[-1][0] if rows else 0),
+        "fips": fips_list,
+        "labels": [labels.get(f, "") for f in fips_list],
+        "hazards": haz_list,
+        "types": typ_list,
+        "decls": dec_list,
+        "cols": {"fips": col_fips, "dayDelta": col_delta,
+                 "type": col_type, "haz": col_haz, "decl": col_decl},
+    }
+
+try:
+    print("Building explore-data.js...")
+    explore = build_explore_data(map_data, browse)
+    # JSON.parse() of a string literal parses ~2.4x faster than an equivalent object
+    # literal, which the JS engine must compile.
+    _inner = json.dumps(explore, separators=(",", ":"))
+    exp_js = "window.EXPLORE_DATA=JSON.parse(" + json.dumps(_inner) + ");\n"
+    with open("explore-data.js", "w", encoding="utf-8") as f:
+        f.write(exp_js)
+    print(f"  explore-data.js written ({len(exp_js)//1024} KB) — "
+          f"{len(explore['cols']['fips']):,} county-events, "
+          f"{len(explore['fips']):,} counties, "
+          f"{len(explore['decls']):,} declarations, "
+          f"{len(explore['hazards'])} hazards, {explore['days']:,} days")
+except Exception as e:
+    print(f"  WARNING: explore-data.js build failed: {e} (other data files still updated)")
+
 # ═════════════════════════════════════════════════════════════════════════
 # LATEST DECLARATIONS  (homepage teaser cards + /latest page snapshot)
 # Reuses the already-fetched, integrity-checked dec_processed rows — no extra
@@ -1290,6 +1540,19 @@ if os.path.exists("index.html"):
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
     print("  index.html updated with PA_NATIONAL and last-updated stamp")
+
+# Version-stamp the Explorer payload. GitHub Pages serves assets with max-age=600, so
+# without this a returning visitor can get fresh page code against a cached data file
+# (or the reverse) for ten minutes after each weekly rebuild — a silent mismatch.
+# Geometry is pinned at v1: county borders do not move on a weekly cycle.
+if os.path.exists("explore.html"):
+    with open("explore.html", encoding="utf-8") as f:
+        _x = f.read()
+    _x = re.sub(r'src="explore-data\.js(?:\?v=[^"]*)?"', f'src="explore-data.js?v={TODAY}"', _x)
+    _x = re.sub(r'src="explore-geo\.js(?:\?v=[^"]*)?"',  'src="explore-geo.js?v=1"', _x)
+    with open("explore.html", "w", encoding="utf-8") as f:
+        f.write(_x)
+    print(f"  explore.html payload stamped (explore-data.js?v={TODAY})")
 
 print(f"\nDone. Data as of {TODAY}.")
 print(f"  Declarations: {len(dec_processed):,}")
