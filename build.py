@@ -1134,6 +1134,122 @@ try:
 except Exception as e:
     print(f"  WARNING: map-data.js build failed: {e} (home-page data.js still updated)")
 
+# ── Build explore-data.js (compact payload for the Explorer page) ─────────────
+# explore.html replays every county-level declaration day by day, so it needs the
+# finest grain we have (county x declaration, ~48.6K rows) but cannot afford the
+# 8 MB map-data.js. Same source rows, re-encoded column-wise with dictionary +
+# delta compression: ~880 KB raw / ~105 KB gzipped, a 9x smaller wire payload.
+# Isolated in its own try block — a failure here leaves data.js and map-data.js intact.
+EXPLORE_EPOCH = datetime.date(1999, 10, 1)   # day 0; FY2000 starts here
+
+# Counties renamed/split since 1999 still appear in older FEMA records under their retired
+# FIPS, which no longer exist in any modern boundary file. Map them onto their successors
+# so those declarations still land on the map instead of silently vanishing.
+EXPLORE_FIPS_ALIAS = {
+    "46113": "46102",   # Shannon County SD -> Oglala Lakota County
+    "51515": "51019",   # Bedford City VA -> absorbed into Bedford County
+    "02201": "02198",   # Prince of Wales-Outer Ketchikan -> Prince of Wales-Hyder
+    "02270": "02158",   # Wade Hampton Census Area -> Kusilvak Census Area
+    "02280": "02275",   # Wrangell-Petersburg -> Wrangell City and Borough
+}
+
+def build_explore_data(map_data, browse_rows):
+    cde = map_data["countyDeclarationEvents"]
+    labels = map_data["countyLabels"]
+
+    # Declaration lookup: real titles live in BROWSE (countyDeclarationEvents["title"]
+    # actually holds the incident type), so join by femaDeclarationString.
+    by_id = {}
+    for r in browse_rows:
+        did = r.get("femaDeclarationString")
+        if did:
+            by_id[did] = r
+
+    # collapse retired FIPS onto their successors before indexing
+    merged = {}
+    for f, evs in cde.items():
+        key = EXPLORE_FIPS_ALIAS.get(f, f)
+        merged.setdefault(key, []).extend(evs)
+    cde = merged
+
+    fips_list = sorted(cde.keys())
+    fips_idx = {f: i for i, f in enumerate(fips_list)}
+
+    # Flatten to (day, fips_i, type, hazard, declaration) rows.
+    haz_idx, haz_list = {}, []
+    typ_idx, typ_list = {}, []
+    dec_idx, dec_list = {}, []
+    rows = []
+    for f in fips_list:
+        fi = fips_idx[f]
+        for e in cde[f]:
+            date = (e.get("date") or "")[:10]
+            if not date:
+                continue
+            try:
+                y, m, d = (int(x) for x in date.split("-"))
+                day = (datetime.date(y, m, d) - EXPLORE_EPOCH).days
+            except ValueError:
+                continue
+            if day < 0:
+                continue
+            h = e.get("title") or "Unknown"          # this field carries the incident type
+            if h not in haz_idx:
+                haz_idx[h] = len(haz_list); haz_list.append(h)
+            t = e.get("type") or ""
+            if t not in typ_idx:
+                typ_idx[t] = len(typ_list); typ_list.append(t)
+            did = e.get("declarationNumber") or ""
+            if did not in dec_idx:
+                dec_idx[did] = len(dec_list)
+                src = by_id.get(did, {})
+                dec_list.append([
+                    did,
+                    src.get("declarationTitle", "") or "",
+                    src.get("state", "") or "",
+                    int(src.get("days_to_approve") or 0),
+                    1 if src.get("tribal") else 0,
+                ])
+            rows.append((day, fi, typ_idx[t], haz_idx[h], dec_idx[did]))
+
+    rows.sort()                                   # by day, then fips — enables delta + binary search
+
+    col_fips, col_delta, col_type, col_haz, col_decl = [], [], [], [], []
+    prev = 0
+    for day, fi, ti, hi, di in rows:
+        col_delta.append(day - prev); prev = day
+        col_fips.append(fi); col_type.append(ti); col_haz.append(hi); col_decl.append(di)
+
+    return {
+        "epoch": EXPLORE_EPOCH.isoformat(),
+        "built": TODAY,
+        "days": (rows[-1][0] if rows else 0),
+        "fips": fips_list,
+        "labels": [labels.get(f, "") for f in fips_list],
+        "hazards": haz_list,
+        "types": typ_list,
+        "decls": dec_list,
+        "cols": {"fips": col_fips, "dayDelta": col_delta,
+                 "type": col_type, "haz": col_haz, "decl": col_decl},
+    }
+
+try:
+    print("Building explore-data.js...")
+    explore = build_explore_data(map_data, browse)
+    # JSON.parse() of a string literal parses ~2.4x faster than an equivalent object
+    # literal, which the JS engine must compile.
+    _inner = json.dumps(explore, separators=(",", ":"))
+    exp_js = "window.EXPLORE_DATA=JSON.parse(" + json.dumps(_inner) + ");\n"
+    with open("explore-data.js", "w", encoding="utf-8") as f:
+        f.write(exp_js)
+    print(f"  explore-data.js written ({len(exp_js)//1024} KB) — "
+          f"{len(explore['cols']['fips']):,} county-events, "
+          f"{len(explore['fips']):,} counties, "
+          f"{len(explore['decls']):,} declarations, "
+          f"{len(explore['hazards'])} hazards, {explore['days']:,} days")
+except Exception as e:
+    print(f"  WARNING: explore-data.js build failed: {e} (other data files still updated)")
+
 # ═════════════════════════════════════════════════════════════════════════
 # LATEST DECLARATIONS  (homepage teaser cards + /latest page snapshot)
 # Reuses the already-fetched, integrity-checked dec_processed rows — no extra

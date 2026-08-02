@@ -536,7 +536,7 @@ def render_sitemap(states):
                   default=datetime.date.today().isoformat())
     def u(loc, lm):
         return "<url><loc>%s</loc><lastmod>%s</lastmod></url>" % (loc, lm)
-    parts = [u("%s/" % SITE, overall), u("%s/map.html" % SITE, overall),
+    parts = [u("%s/" % SITE, overall), u("%s/explore.html" % SITE, overall), u("%s/map.html" % SITE, overall),
              u("%s/about.html" % SITE, overall),
              u("%s/public-assistance-projects.html" % SITE, overall),
              u("%s/states/" % SITE, overall)]
