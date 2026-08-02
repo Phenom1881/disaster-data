@@ -25,6 +25,14 @@ const REQ = path.resolve(process.env.GEO_MODULES || path.join(ROOT, 'node_module
 
 const W = 975, H = 610, K = 1070, Q = 4;      /* frame, base scale, 1/4-px quantization */
 
+/* state FIPS prefix -> USPS abbreviation, for the county-name crosswalk emitted below */
+const STAB = {'01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT','10':'DE','11':'DC',
+  '12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN','19':'IA','20':'KS','21':'KY','22':'LA',
+  '23':'ME','24':'MD','25':'MA','26':'MI','27':'MN','28':'MS','29':'MO','30':'MT','31':'NE','32':'NV',
+  '33':'NH','34':'NJ','35':'NM','36':'NY','37':'NC','38':'ND','39':'OH','40':'OK','41':'OR','42':'PA',
+  '44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT','50':'VT','51':'VA','53':'WA','54':'WV',
+  '55':'WI','56':'WY','60':'AS','66':'GU','69':'MP','72':'PR','78':'VI'};
+
 /* region → conic equal-area projection, positioned inside the frame */
 function conic(lon0, latc, p1, p2, k, tx, ty) {
   return geoConicEqualArea().parallels([p1, p2]).rotate([-lon0, 0])
@@ -57,7 +65,7 @@ function ringsOf(geom) {
   return [];
 }
 
-const ids = [], ringCounts = [], ringLens = [], coords = [];
+const ids = [], names = [], ringCounts = [], ringLens = [], coords = [];
 let dropped = 0, kept = 0;
 
 for (const f of counties.slice().sort((a, b) => String(a.id).localeCompare(String(b.id)))) {
@@ -85,6 +93,7 @@ for (const f of counties.slice().sort((a, b) => String(a.id).localeCompare(Strin
   if (!out.length && tiny.length) { out.push(tiny[0]); dropped--; }
   if (!out.length) { console.warn(`  no geometry: ${fips}`); continue; }
   ids.push(fips);
+  names.push((f.properties && f.properties.name) || fips);
   ringCounts.push(out.length);
   for (const r of out) { ringLens.push(r.length / 2); for (const v of r) coords.push(v); }
   kept++;
@@ -112,7 +121,7 @@ const mD = []; let pm = 0;
 for (const line of meshOut) for (const v of line) { mD.push(v - pm); pm = v; }
 
 const payload = {
-  q: Q, w: W, h: H,
+  q: Q, w: W, h: H, nm: names,
   idD, rc: ringCounts, rl: ringLens, d: cD,
   ml: meshOut.map(l => l.length / 2), md: mD
 };
@@ -120,6 +129,14 @@ const inner = JSON.stringify(payload);
 const js = 'window.EXPLORE_GEO=JSON.parse(' + JSON.stringify(inner) + ');\n';
 fs.writeFileSync(path.join(ROOT, 'explore-geo.js'), js);
 console.log(`explore-geo.js written: ${(js.length / 1024).toFixed(0)} KB raw`);
+
+/* Crosswalk reference for build.py's money join: every county's FIPS, name and state.
+   PA money is keyed by county NAME per state, so the build needs a complete name list —
+   including counties that received money but never had a declaration of their own. */
+const xwalk = {};
+ids.forEach((f, i) => { xwalk[f] = { n: names[i], s: STAB[f.slice(0, 2)] || '' }; });
+fs.writeFileSync(path.join(ROOT, 'county-fips.json'), JSON.stringify(xwalk));
+console.log(`county-fips.json written: ${ids.length} counties`);
 
 /* sanity: known locations should land where we expect */
 const probes = { '53033': 'King, WA', '23019': 'Penobscot, ME', '06037': 'Los Angeles, CA',

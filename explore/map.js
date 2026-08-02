@@ -23,6 +23,28 @@
     return RAMP[0];
   }
 
+  /* Dollars get their own teal ramp with caller-supplied breaks — money and counts must
+     never be mistaken for one another. */
+  var MRAMP = ['#d7e9ea', '#aed4d6', '#82bcc0', '#57a4a9', '#2e8b92', '#12727a', '#005c63', '#00434a'];
+  var moneyBreaks = null;
+  function moneyColor(v) {
+    if (!v || !moneyBreaks) return EMPTY;
+    for (var i = moneyBreaks.length - 1; i >= 0; i--) if (v >= moneyBreaks[i]) return MRAMP[i];
+    return EMPTY;
+  }
+  /* quantile-ish breaks over the non-zero values currently in play */
+  function setMoneyBreaks(values) {
+    var v = [], i;
+    for (i = 0; i < values.length; i++) if (values[i] > 0) v.push(values[i]);
+    if (!v.length) { moneyBreaks = null; return null; }
+    v.sort(function (a, b) { return a - b; });
+    var qs = [0.10, 0.25, 0.42, 0.58, 0.72, 0.84, 0.93, 0.98], b = [];
+    for (i = 0; i < qs.length; i++) b.push(v[Math.min(v.length - 1, Math.floor(v.length * qs[i]))]);
+    for (i = 1; i < b.length; i++) if (b[i] <= b[i - 1]) b[i] = b[i - 1] + 1;
+    moneyBreaks = b;
+    return b;
+  }
+
   /* hazard → hue, reusing the site's palette vocabulary */
   var HAZ_COLOR = {
     'Hurricane': '#0a6b73', 'Tropical Storm': '#0a6b73', 'Typhoon': '#0a6b73', 'Coastal Storm': '#0a6b73',
@@ -208,12 +230,13 @@
   ExploreMap.prototype.repaintAll = function () {
     if (!this.ready) return;
     var c = this.accumCtx;
+    var color = this.measure === 'dollars' ? moneyColor : rampColor;
     c.clearRect(0, 0, this.w, this.h);
     var counts = this.counts;
     for (var i = 0; i < this.counties.length; i++) {
       var cc = this.counties[i];
       var v = (counts && cc.fipsIdx >= 0) ? counts[cc.fipsIdx] : 0;
-      c.fillStyle = rampColor(v);
+      c.fillStyle = color(v);
       c.fill(cc.path);
     }
     if (this.meshPath) {
@@ -228,14 +251,15 @@
   /* Incremental repaint — only counties whose value changed since last frame. */
   ExploreMap.prototype.applyCounts = function (counts, forceAll) {
     if (!this.ready) return;
-    if (!this.prevCounts || this.prevCounts.length !== counts.length) {
-      this.prevCounts = new Uint16Array(counts.length);
+    if (!this.prevCounts || this.prevCounts.length !== counts.length ||
+        this.prevCounts.constructor !== counts.constructor) {
+      this.prevCounts = new counts.constructor(counts.length);
       this.counts = counts;
       this.repaintAll();
       return;
     }
     this.counts = counts;
-    if (forceAll) { this.repaintAll(); return; }
+    if (forceAll || this.measure === 'dollars') { this.repaintAll(); return; }
 
     var c = this.accumCtx, prev = this.prevCounts, painted = 0;
     for (var i = 0; i < this.counties.length; i++) {
@@ -371,7 +395,16 @@
     });
   };
 
+  ExploreMap.prototype.setMeasure = function (m) {
+    this.measure = m;
+    this.prevCounts = null;
+    this.needsRender = true;
+  };
+
   root.DD.ExploreMap = ExploreMap;
   root.DD.hazColor = hazColor;
   root.DD.rampColor = rampColor;
+  root.DD.moneyColor = moneyColor;
+  root.DD.setMoneyBreaks = setMoneyBreaks;
+  root.DD.MRAMP = MRAMP;
 })(window);

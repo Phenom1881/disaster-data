@@ -1153,6 +1153,95 @@ EXPLORE_FIPS_ALIAS = {
     "02280": "02275",   # Wrangell-Petersburg -> Wrangell City and Borough
 }
 
+# ── money for the Explorer ───────────────────────────────────────────────────
+# FEMA publishes Public Assistance obligations two ways, and neither is county x date:
+#   * state x disaster, which IS dated (join the disaster number to its declaration date)
+#   * county totals, which carry NO date at all
+# So the Explorer animates dollars at STATE level and shows county dollars as all-time
+# only. Apportioning a state's dollars across its counties would be inventing FEMA data.
+_PA_SUFFIX = re.compile(
+    r"\b(county|parish|borough|census area|municipality|municipio|city and borough|city)\b")
+_PA_INVERTED = re.compile(
+    r",\s*(city and county|city and borough|city|county|municipality|town|borough|village) of\s*$")
+
+def _pa_norm(name):
+    """Normalize a county-ish name for joining. FEMA strips diacritics that the boundary
+    files keep (Anasco vs Añasco), inverts some names ('San Francisco, City and County
+    of'), and is inconsistent about the County/Parish suffix."""
+    s = unicodedata.normalize("NFD", str(name or ""))
+    s = "".join(c for c in s if not unicodedata.combining(c)).lower()
+    s = _PA_INVERTED.sub("", s)
+    s = re.sub(r"\s*\([^)]*\)", "", s)
+    s = _PA_SUFFIX.sub("", s)
+    s = re.sub(r"[^a-z0-9 ]", "", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+def build_explore_money(pa_national, pa_by_county, decl_dates):
+    """Returns money columns for explore-data.js, plus a join report."""
+    xwalk_path = "county-fips.json"
+    if not os.path.exists(xwalk_path):
+        print("  NOTE: county-fips.json missing (run tools/bake-geo.mjs) - money skipped")
+        return None, None
+    with open(xwalk_path, encoding="utf-8") as f:
+        xwalk = json.load(f)
+    lookup = {}
+    for fips, rec in xwalk.items():
+        lookup[(rec.get("s", ""), _pa_norm(rec.get("n", "")))] = fips
+
+    # county totals -> FIPS
+    county = {}          # fips -> [obligated, projects, topCategoryCode]
+    matched = unmatched = 0
+    m_dollars = u_dollars = 0.0
+    misses = []
+    for st, rows in (pa_by_county or {}).items():
+        if st == "TOT":                       # phantom key in the source data
+            continue
+        for cname, rec in rows.items():
+            obl = float(rec[0] or 0)
+            fips = lookup.get((st, _pa_norm(cname)))
+            if fips:
+                prev = county.get(fips)
+                if prev:
+                    prev[0] += obl; prev[1] += int(rec[1] or 0)
+                else:
+                    county[fips] = [obl, int(rec[1] or 0), rec[2] or ""]
+                matched += 1; m_dollars += obl
+            else:
+                unmatched += 1; u_dollars += obl
+                misses.append((obl, st, cname))
+
+    # state x disaster, dated by joining the disaster number to its declaration date
+    dated, undated = [], 0
+    for st, rows in (pa_national.get("stateDisasters") or {}).items():
+        for r in rows:
+            num = str(r.get("num", ""))
+            day = decl_dates.get((num, st)) or decl_dates.get(num)
+            if day is None:
+                undated += 1
+                continue
+            dated.append([day, st, int(r.get("num") or 0),
+                          round(float(r.get("obl") or 0) / 1000.0),      # $ thousands
+                          int(r.get("proj") or 0), r.get("name", "") or ""])
+    dated.sort()
+
+    total_nat = float(pa_national.get("totalObligated") or 0)
+    report = {
+        "matchedRows": matched, "unmatchedRows": unmatched,
+        "matchedDollars": m_dollars, "unmatchedDollars": u_dollars,
+        "nationalTotal": total_nat, "datedRows": len(dated), "undatedRows": undated,
+        "misses": sorted(misses, reverse=True)[:15],
+    }
+    money = {
+        "national": total_nat,
+        "countyCovered": m_dollars,                       # what a county map can honestly show
+        "cats": [[c.get("code", ""), c.get("cat", "")] for c in (pa_national.get("topCategories") or [])],
+        "counties": {f: [round(v[0] / 1000.0), v[1], v[2]] for f, v in county.items()},
+        "dated": dated,
+        "byYear": [[int(r.get("year") or 0), round(float(r.get("obl") or 0) / 1000.0)]
+                   for r in (pa_national.get("byYear") or [])],
+    }
+    return money, report
+
 def build_explore_data(map_data, browse_rows):
     cde = map_data["countyDeclarationEvents"]
     labels = map_data["countyLabels"]
@@ -1220,9 +1309,54 @@ def build_explore_data(map_data, browse_rows):
         col_delta.append(day - prev); prev = day
         col_fips.append(fi); col_type.append(ti); col_haz.append(hi); col_decl.append(di)
 
+    # declaration-number -> day, so state money rows can be placed in time. Built from
+    # every declaration (not just county-mapped ones) so statewide-only disasters still date.
+    decl_days = {}
+    for r in browse_rows:
+        did = r.get("femaDeclarationString") or ""
+        parts = did.split("-")
+        if len(parts) < 3:
+            continue
+        date = (r.get("declarationDate") or "")[:10]
+        if not date:
+            continue
+        try:
+            y, m, d = (int(x) for x in date.split("-"))
+            day = (datetime.date(y, m, d) - EXPLORE_EPOCH).days
+        except ValueError:
+            continue
+        if day < 0:
+            continue
+        key = (parts[1], parts[2])
+        if key not in decl_days or day < decl_days[key]:
+            decl_days[key] = day
+        if parts[1] not in decl_days or day < decl_days[parts[1]]:
+            decl_days[parts[1]] = day
+
+    money, money_report = build_explore_money(
+        globals().get("pa_national") or {}, globals().get("pa_by_county") or {}, decl_days)
+    if money_report:
+        r = money_report
+        pct_rows = r["matchedRows"] / max(1, r["matchedRows"] + r["unmatchedRows"]) * 100
+        pct_dol = r["matchedDollars"] / max(1.0, r["matchedDollars"] + r["unmatchedDollars"]) * 100
+        print(f"  money: county join {r['matchedRows']:,}/{r['matchedRows']+r['unmatchedRows']:,} rows "
+              f"({pct_rows:.1f}%), ${r['matchedDollars']/1e9:.2f}B of "
+              f"${(r['matchedDollars']+r['unmatchedDollars'])/1e9:.2f}B ({pct_dol:.2f}% of dollars)")
+        print(f"  money: county map covers ${r['matchedDollars']/1e9:.1f}B = "
+              f"{r['matchedDollars']/max(1.0,r['nationalTotal'])*100:.1f}% of the "
+              f"${r['nationalTotal']/1e9:.1f}B national total "
+              f"(the rest is statewide/blank-county rows FEMA does not attribute)")
+        print(f"  money: {r['datedRows']:,} state-disaster rows dated, {r['undatedRows']} undatable")
+        if r["misses"]:
+            print(f"  money: {r['unmatchedRows']} unmatched county rows "
+                  f"(${r['unmatchedDollars']/1e6:.1f}M) - largest:")
+            for obl, st, nm in r["misses"][:8]:
+                print(f"      ${obl/1e6:9.2f}M  {st}  {nm!r}")
+
     return {
         "epoch": EXPLORE_EPOCH.isoformat(),
         "built": TODAY,
+        "money": money,
         "days": (rows[-1][0] if rows else 0),
         "fips": fips_list,
         "labels": [labels.get(f, "") for f in fips_list],

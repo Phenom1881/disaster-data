@@ -27,7 +27,9 @@
     types: new Set(query.types),
     hazards: new Set(query.hazards),
     geo: null,            /* {state:'12'} | {fipsIdx:n} | null */
-    selected: -1
+    selected: -1,
+    measure: 'events',    /* 'events' | 'dollars' */
+    moneyGeo: 'state'     /* dollars only: 'state' (dated, animatable) | 'county' (all-time) */
   });
 
   var SPEEDS = [0, 120, 300, 700, 1400, 2600, 5200];   /* days per second */
@@ -35,11 +37,22 @@
   var el = {};
   ['mapwrap','hud-date','hud-sub','ctr-decl','ctr-county','ctr-events','play','play-icon','spd',
    'restart','copylink','timeline','tlaxis','hazlist','hazall','hazscope','typeseg','selbox',
-   'feed','maptip','lg-sw','loading','chips'].forEach(function (id) {
+   'feed','maptip','lg-sw','lg-title','lg-lo','lg-hi','lg-note','loading','chips',
+   'ctr-events-l','ctr-county-l',
+   'measureseg','moneyseg','money-mode','money-note','money-panel','money-list',
+   'storycol','modebtn'].forEach(function (id) {
     el[id.replace(/-(\w)/g, function (m, c) { return c.toUpperCase(); })] = document.getElementById(id);
   });
 
   function fmt(n) { return (n || 0).toLocaleString('en-US'); }
+  /* amounts arrive in $ thousands */
+  function money$(k) {
+    var n = (k || 0) * 1000;
+    if (n >= 1e9) return '$' + (n / 1e9).toFixed(n >= 1e10 ? 0 : 1) + 'B';
+    if (n >= 1e6) return '$' + Math.round(n / 1e6) + 'M';
+    if (n >= 1e3) return '$' + Math.round(n / 1e3) + 'K';
+    return '$' + Math.round(n);
+  }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
     return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&quot;'; }); }
 
@@ -62,9 +75,14 @@
     query: query,
     onHover: function (fipsIdx, x, y) {
       if (fipsIdx < 0) { el.maptip.style.opacity = '0'; return; }
-      var c = lastCounts ? lastCounts[fipsIdx] : 0;
-      el.maptip.innerHTML = '<b>' + esc(query.labels[fipsIdx]) + '</b><br>' +
-        fmt(c) + ' declaration' + (c === 1 ? '' : 's') + ' in view';
+      var c = lastCounts ? lastCounts[fipsIdx] : 0, s = store.state;
+      var line;
+      if (s.measure === 'dollars') {
+        line = money$(c) + (s.moneyGeo === 'county' ? ' obligated, all time' : ' obligated statewide');
+      } else {
+        line = fmt(c) + ' declaration' + (c === 1 ? '' : 's') + ' in view';
+      }
+      el.maptip.innerHTML = '<b>' + esc(query.labels[fipsIdx]) + '</b><br>' + line;
       el.maptip.style.left = x + 'px';
       el.maptip.style.top = y + 'px';
       el.maptip.style.opacity = '1';
@@ -95,11 +113,15 @@
   /* Recompute everything that depends on [winA, cursor] + filters. */
   function refresh(forceRepaint) {
     var s = store.state;
+    if (s.measure === 'dollars') { refreshMoney(forceRepaint); return; }
+
     var counts = query.countsInRange(s.winA, s.cursor);
     lastCounts = counts;
     xmap.applyCounts(counts, forceRepaint || s.winA !== 0);
     el.ctrEvents.textContent = fmt(query.rangeTotal(s.winA));
+    el.ctrEventsL.textContent = 'county events';
     el.ctrCounty.textContent = fmt(query.countyHits(counts));
+    el.ctrCountyL.textContent = 'counties hit';
     el.ctrDecl.textContent = fmt(query.declsIn(s.winA, s.cursor).length);
     el.hudDate.textContent = dates.label(s.cursor);
     el.hudSub.textContent = s.playing ? 'Replaying…'
@@ -109,6 +131,109 @@
     renderFeed();
     renderSelection();
     renderChips();
+  }
+
+  /* ── dollars ──────────────────────────────────────────────────────────────
+     FEMA publishes obligations as state x disaster (dated) or county totals (undated).
+     There is no county x date, so "over time" is state-grained and "by county" is
+     all-time with the scrubber switched off — rather than apportioning state dollars
+     across counties, which would be inventing data. */
+  function refreshMoney(forceRepaint) {
+    var s = store.state, vals, total, label, lo, hi, note;
+
+    if (s.moneyGeo === 'county') {
+      vals = query.countyMoney;
+      total = 0;
+      for (var i = 0; i < vals.length; i++) total += vals[i];
+      label = 'Federal obligations per county, all time';
+      note = money$(query.money.countyCovered / 1000) + ' of ' +
+             money$(query.money.national / 1000) + ' — the rest is statewide or ' +
+             'unattributed in FEMA\u2019s data';
+    } else {
+      var byState = query.moneyStateInRange(s.winA, s.cursor);
+      vals = query.stateMoneyToCounties(byState);
+      total = 0;
+      for (var k in byState) total += byState[k];
+      label = 'Federal obligations by state';
+      note = 'State-level: FEMA dates obligations by disaster, not by county';
+    }
+
+    var breaks = DD.setMoneyBreaks(vals);
+    lastCounts = vals;
+    xmap.applyCounts(vals, true);
+
+    el.ctrEvents.textContent = money$(total);
+    el.ctrEventsL.textContent = 'obligated';
+    el.ctrCounty.textContent = s.moneyGeo === 'county'
+      ? fmt(countNonZero(vals)) : fmt(Object.keys(query.moneyStateInRange(s.winA, s.cursor)).length);
+    el.ctrCountyL.textContent = s.moneyGeo === 'county' ? 'counties funded' : 'states funded';
+    el.ctrDecl.textContent = fmt(query.declsIn(s.winA, s.cursor).length);
+    el.hudDate.textContent = s.moneyGeo === 'county' ? 'All time' : dates.label(s.cursor);
+    el.hudSub.textContent = s.moneyGeo === 'county'
+      ? 'FEMA does not publish county obligations by date'
+      : (s.playing ? 'Replaying…' : (s.brushed
+          ? dates.monthLabel(s.winA) + ' – ' + dates.monthLabel(s.winB) : 'Obligations to date'));
+
+    el.lgTitle.textContent = label;
+    el.lgSw.innerHTML = DD.MRAMP.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('');
+    el.lgLo.textContent = breaks ? money$(breaks[0]) : '—';
+    el.lgHi.textContent = breaks ? money$(breaks[breaks.length - 1]) + '+' : '—';
+    el.lgNote.textContent = note;
+
+    renderMoneyPanel();
+    renderHazCounts();
+    renderSelection();
+    renderChips();
+  }
+
+  function countNonZero(a) { var n = 0; for (var i = 0; i < a.length; i++) if (a[i] > 0) n++; return n; }
+
+  function renderMoneyPanel() {
+    var s = store.state, html = '';
+    if (s.moneyGeo === 'county') {
+      var rows = [];
+      for (var i = 0; i < query.countyMoney.length; i++) {
+        if (query.countyMoney[i] > 0) rows.push([query.countyMoney[i], i]);
+      }
+      rows.sort(function (a, b) { return b[0] - a[0]; });
+      html = rows.slice(0, 10).map(function (r) {
+        var meta = query.countyMoneyMeta[query.fipsList[r[1]]] || [];
+        var cat = (query.money.cats.find(function (c) { return c[0] === meta[2]; }) || [])[1] || '';
+        return '<div class="mrow"><div><div class="mn">' + esc(query.labels[r[1]]) + '</div>' +
+          '<div class="ms">' + esc(cat) + '</div></div><div class="mv">' + money$(r[0]) + '</div></div>';
+      }).join('');
+    } else {
+      html = query.topMoneyDisasters(s.winA, s.cursor, 10).map(function (r) {
+        return '<div class="mrow"><div><div class="mn">' + esc(r[5] || ('DR-' + r[2])) + '</div>' +
+          '<div class="ms">' + esc(r[1]) + ' · ' + dates.year(r[0]) + ' · ' + fmt(r[4]) + ' projects</div></div>' +
+          '<div class="mv">' + money$(r[3]) + '</div></div>';
+      }).join('');
+    }
+    el.moneyList.innerHTML = html || '<div class="muted">No obligations in this view.</div>';
+  }
+
+  /* Switch measure: rebind the legend, lock the transport when time is meaningless. */
+  function setMeasure(m, moneyGeo) {
+    var s = store.state;
+    store.set({ measure: m, moneyGeo: moneyGeo || s.moneyGeo });
+    xmap.setMeasure(m);
+    el.moneyMode.hidden = m !== 'dollars';
+    el.moneyPanel.hidden = m !== 'dollars';
+    var locked = (m === 'dollars' && store.state.moneyGeo === 'county');
+    document.querySelector('.transport').classList.toggle('locked', locked);
+    if (locked) setPlaying(false);
+    el.moneyNote.textContent = store.state.moneyGeo === 'county'
+      ? 'County obligations carry no date in FEMA\u2019s data, so the timeline is off here.'
+      : 'Every dollar dated by its disaster\u2019s declaration — exact, but state-grained.';
+    if (m === 'events') {
+      el.lgTitle.textContent = 'Declarations per county';
+      el.lgSw.innerHTML = ['#f2d9a0','#ecc278','#e3a652','#d8853a','#c96a2e','#b35024','#97391b','#7a2c14']
+        .map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('');
+      el.lgLo.textContent = '1'; el.lgHi.textContent = '35+'; el.lgNote.textContent = '';
+    }
+    refresh(true);
+    drawTimeline();
+    pushURL();
   }
 
   /* ── hazards (live, scoped to window + geo) ───────────────────────────── */
@@ -330,12 +455,16 @@
   function renderSelection() {
     var i = store.state.selected;
     if (i < 0) { el.selbox.innerHTML = '<div class="muted">Click a county to scope everything to it. Click again for its whole state.</div>'; return; }
-    var c = lastCounts ? lastCounts[i] : 0;
+    var c = lastCounts ? lastCounts[i] : 0, s = store.state;
+    var big = s.measure === 'dollars' ? money$(c) : fmt(c);
+    var lab = s.measure === 'dollars'
+      ? (s.moneyGeo === 'county' ? 'obligated, all time' : 'obligated statewide')
+      : 'declarations in view';
     el.selbox.innerHTML =
       '<div class="nm">' + esc(query.labels[i]) + '</div>' +
       '<div class="mt">FIPS ' + esc(query.fipsList[i]) + '</div>' +
-      '<div class="big">' + fmt(c) + '</div>' +
-      '<div class="bl">declarations in view</div>';
+      '<div class="big">' + big + '</div>' +
+      '<div class="bl">' + lab + '</div>';
   }
 
   /* ── geo scope ────────────────────────────────────────────────────────── */
@@ -392,6 +521,17 @@
   });
   el.spd.addEventListener('input', function () { store.set({ speed: +this.value }); });
 
+  el.measureseg.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    [].forEach.call(el.measureseg.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); });
+    setMeasure(b.dataset.m);
+  });
+  el.moneyseg.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    [].forEach.call(el.moneyseg.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); });
+    setMeasure('dollars', b.dataset.g);
+  });
+
   el.typeseg.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     var t = b.dataset.t, set = store.state.types;
@@ -427,6 +567,7 @@
   function pushURL() {
     var s = store.state, p = new URLSearchParams();
     if (s.brushed) p.set('w', s.winA + '-' + s.winB);
+    if (s.measure === 'dollars') p.set('m', s.moneyGeo === 'county' ? '$c' : '$s');
     if (s.geo) p.set('g', s.geo.fipsIdx != null ? query.fipsList[s.geo.fipsIdx] : s.geo.state);
     if (s.types.size < query.types.length) p.set('t', query.types.filter(function (t) { return s.types.has(t); }).join('.'));
     if (s.hazards.size < query.hazards.length) {
@@ -445,6 +586,8 @@
       var ab = w.split('-'), a = DD.clamp(+ab[0], 0, query.maxDay), b = DD.clamp(+ab[1], 0, query.maxDay);
       if (a < b) { s.winA = a; s.winB = b; s.cursor = b; s.brushed = true; }
     }
+    var m = p.get('m');
+    if (m === '$c' || m === '$s') { s.measure = 'dollars'; s.moneyGeo = (m === '$c' ? 'county' : 'state'); }
     var g = p.get('g');
     if (g) {
       if (g.length === 5) { var i = query.fipsList.indexOf(g); if (i >= 0) { s.geo = { fipsIdx: i }; s.selected = i; } }
@@ -475,6 +618,61 @@
     else root.prompt('Copy link:', url);
   });
 
+  /* ── story mode ───────────────────────────────────────────────────────── */
+
+  var story = null;
+  function applyKeyframe(kf, animate) {
+    var s = store.state;
+    /* measure first — it rebinds the legend and may lock the transport */
+    if (kf.measure && kf.measure !== s.measure) {
+      [].forEach.call(el.measureseg.querySelectorAll('button'), function (x) {
+        x.classList.toggle('on', x.dataset.m === kf.measure); });
+      if (kf.moneyGeo) {
+        [].forEach.call(el.moneyseg.querySelectorAll('button'), function (x) {
+          x.classList.toggle('on', x.dataset.g === kf.moneyGeo); });
+      }
+      setMeasure(kf.measure, kf.moneyGeo);
+    }
+    var from = s.cursor;
+    store.set({ winA: kf.winA, winB: kf.winB, brushed: !!kf.brushed, geo: kf.geo || null,
+                selected: kf.geo && kf.geo.fipsIdx != null ? kf.geo.fipsIdx : -1 });
+    applyQueryFilter();
+    xmap.clearBlooms();
+    if (animate && !DD.reduceMotion && from !== kf.cursor) {
+      /* sweep the cursor into the new window so the map animates between beats */
+      store.set({ cursor: kf.winA });
+      refresh(true);
+      DD.tween(ticker, kf.winA, kf.cursor, 900, DD.easeOut, function (v) {
+        store.set({ cursor: Math.round(v) });
+        refresh(false);
+        drawTimeline();
+      });
+    } else {
+      store.set({ cursor: kf.cursor });
+      refresh(true);
+      drawTimeline();
+    }
+  }
+
+  function setStoryMode(on) {
+    el.storycol.hidden = !on;
+    el.modebtn.textContent = on ? 'Free explore' : 'Story';
+    if (on) {
+      setPlaying(false);
+      if (!story) {
+        story = new DD.Story({
+          host: el.storycol, dates: dates, maxDay: query.maxDay,
+          apply: applyKeyframe,
+          onExit: function () { setStoryMode(false); }
+        });
+      }
+      story.first();
+      el.storycol.scrollTop = 0;
+    }
+    setTimeout(function () { xmap.resize(); drawTimeline(); }, 30);
+  }
+  el.modebtn.addEventListener('click', function () { setStoryMode(el.storycol.hidden); });
+
   var rt = 0;
   root.addEventListener('resize', function () {
     clearTimeout(rt);
@@ -488,7 +686,16 @@
 
   function boot(geo) {
     xmap.load(geo);
+    if (payload.money) query.loadMoney(payload.money);
+    xmap.setMeasure('events');
     applyURL();
+    if (store.state.measure === 'dollars') {
+      [].forEach.call(el.measureseg.querySelectorAll('button'), function (x) {
+        x.classList.toggle('on', x.dataset.m === 'dollars'); });
+      [].forEach.call(el.moneyseg.querySelectorAll('button'), function (x) {
+        x.classList.toggle('on', x.dataset.g === store.state.moneyGeo); });
+      setMeasure('dollars', store.state.moneyGeo);
+    }
     buildHazList();
     applyQueryFilter();
     syncHazUI();
@@ -508,6 +715,8 @@
   }
 
   root.__DD = { store: store, query: query, map: xmap, dates: dates, refresh: refresh,
+                setMeasure: setMeasure, money$: money$, setStoryMode: setStoryMode,
+                applyKeyframe: applyKeyframe, getStory: function () { return story; },
                 setPlaying: setPlaying, setGeo: setGeo, drawTimeline: drawTimeline,
                 applyQueryFilter: applyQueryFilter, pushURL: pushURL };
 })(window);

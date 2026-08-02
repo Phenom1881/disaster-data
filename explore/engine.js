@@ -312,6 +312,65 @@
     return out;
   };
 
+  /* ══ money ═════════════════════════════════════════════════════════════
+     FEMA publishes obligations as state x disaster (dated) or county totals (undated).
+     There is no county x date, so dollars animate at STATE level and county dollars are
+     all-time only. Amounts are stored in $ thousands. */
+
+  Query.prototype.loadMoney = function (m) {
+    this.money = m || null;
+    if (!m) return this;
+    /* county index -> state abbreviation, parsed from the "Name, ST" labels */
+    var st = new Array(this.nCounty);
+    for (var i = 0; i < this.nCounty; i++) {
+      var lab = this.labels[i] || '', c = lab.lastIndexOf(',');
+      st[i] = c >= 0 ? lab.slice(c + 1).trim() : '';
+    }
+    this.stateOf = st;
+    /* county all-time dollars ($k), aligned to the county index */
+    var cm = new Float64Array(this.nCounty);
+    for (var f in m.counties) {
+      var idx = this.fipsList.indexOf(f);
+      if (idx >= 0) cm[idx] = m.counties[f][0];
+    }
+    this.countyMoney = cm;
+    this.countyMoneyMeta = m.counties;
+    return this;
+  };
+
+  /* Dollars ($k) by state for declarations in [d0,d1]. Honors the geo scope only in the
+     sense that the caller decides what to show — money rows are state-grained. */
+  Query.prototype.moneyStateInRange = function (d0, d1) {
+    var out = {}, rows = this.money && this.money.dated;
+    if (!rows) return out;
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (r[0] < d0 || r[0] > d1) continue;
+      out[r[1]] = (out[r[1]] || 0) + r[3];
+    }
+    return out;
+  };
+
+  /* Spread state dollars across that state's counties for rendering (each county in a
+     state carries the state's value — an explicit state-level choropleth, not an estimate). */
+  Query.prototype.stateMoneyToCounties = function (byState, out) {
+    out = out || new Float64Array(this.nCounty);
+    for (var i = 0; i < this.nCounty; i++) out[i] = byState[this.stateOf[i]] || 0;
+    return out;
+  };
+
+  Query.prototype.topMoneyDisasters = function (d0, d1, n) {
+    var rows = this.money && this.money.dated;
+    if (!rows) return [];
+    var hits = [];
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (r[0] >= d0 && r[0] <= d1) hits.push(r);
+    }
+    hits.sort(function (a, b) { return b[3] - a[3]; });
+    return hits.slice(0, n || 10);
+  };
+
   /* ══ date helpers ══════════════════════════════════════════════════════ */
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function makeDates(epochIso) {
@@ -330,6 +389,9 @@
       year: function (day) { return new Date(base + day * 86400000).getUTCFullYear(); },
       dayOfYear: function (year) {                        /* first day-index of a calendar year */
         return Math.round((Date.UTC(year, 0, 1) - base) / 86400000);
+      },
+      dayOf: function (y, m, d) {                         /* calendar date -> day index */
+        return Math.round((Date.UTC(y, m - 1, d) - base) / 86400000);
       }
     };
   }

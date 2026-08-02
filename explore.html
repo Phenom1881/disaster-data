@@ -105,6 +105,24 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
 .fitem{border-left:2px solid var(--rule-2);padding:2px 0 2px 8px;}
 .fitem .ft{font-size:12px;font-weight:600;line-height:1.25;}
 .fitem .fm{font-size:10.5px;color:var(--ink-3);}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--rule);}
+.mrow:last-child{border-bottom:none;}
+.mrow .mn{font-size:12px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mrow .mv{font-family:var(--serif);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;color:var(--accent);}
+.mrow .ms{font-size:10.5px;color:var(--ink-3);}
+.storycol{width:340px;flex:none;border-left:1px solid var(--rule);background:var(--paper);overflow-y:auto;padding:0 22px 60vh;scroll-behavior:smooth;}
+.storycol[hidden]{display:none;}
+.story-note{position:sticky;top:0;background:var(--paper-3);border-left:3px solid var(--ember);padding:10px 12px;margin:16px 0 0;font-size:11.5px;line-height:1.5;color:var(--ink-2);border-radius:0 6px 6px 0;z-index:2;}
+.beat{min-height:62vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .45s var(--ease);}
+.beat.on{opacity:1;}
+.beat h2{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:-.4px;line-height:1.15;margin-bottom:9px;}
+.beat p{font-size:14px;line-height:1.62;color:var(--ink-2);}
+.beat p b{color:var(--ink);font-weight:600;}
+.story-end{padding:20px 0 40px;}
+@media(prefers-reduced-motion:reduce){.beat{opacity:1;transition:none;}.storycol{scroll-behavior:auto;}}
+@media(max-width:900px){.storycol{width:auto;border-left:none;border-top:1px solid var(--rule);padding-bottom:20vh;}}
+.transport.locked #timeline{opacity:.35;pointer-events:none;}
+.transport.locked .playbtn{opacity:.35;pointer-events:none;}
 .muted{font-size:12px;color:var(--ink-3);}
 
 /* ── transport ── */
@@ -151,6 +169,7 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
   <div class="navlinks">
     <a href="/">Overview</a>
     <a href="explore.html" class="on">Explore</a>
+    <button class="ghost" id="modebtn" style="margin-left:6px;padding:5px 11px">Story</button>
     <a href="map.html">Map</a>
     <a href="states/index.html">States</a>
     <a href="public-assistance-projects.html">Funding</a>
@@ -167,13 +186,14 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
     </div>
     <div class="counters">
       <div class="ctr"><div class="n" id="ctr-decl">0</div><div class="l">declarations</div></div>
-      <div class="ctr"><div class="n" id="ctr-county">0</div><div class="l">counties hit</div></div>
-      <div class="ctr"><div class="n" id="ctr-events">0</div><div class="l">county events</div></div>
+      <div class="ctr"><div class="n" id="ctr-county">0</div><div class="l" id="ctr-county-l">counties hit</div></div>
+      <div class="ctr"><div class="n" id="ctr-events">0</div><div class="l" id="ctr-events-l">county events</div></div>
     </div>
     <div class="legend">
-      <div class="lt">Declarations per county</div>
+      <div class="lt" id="lg-title">Declarations per county</div>
       <div class="sw" id="lg-sw"></div>
-      <div class="sc"><span>1</span><span>35+</span></div>
+      <div class="sc"><span id="lg-lo">1</span><span id="lg-hi">35+</span></div>
+      <div class="muted" id="lg-note" style="font-size:9.5px;margin-top:5px;max-width:210px;line-height:1.4"></div>
     </div>
     <div class="loading" id="loading">
       <div class="msg">Loading 25 years of disaster data…</div>
@@ -181,7 +201,21 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
     </div>
   </div>
 
+  <div class="storycol" id="storycol" hidden></div>
+
   <aside class="side">
+    <section>
+      <h3>Measure</h3>
+      <div class="seg" id="measureseg">
+        <button class="on" data-m="events">Declarations</button><button data-m="dollars">Dollars</button>
+      </div>
+      <div id="money-mode" hidden style="margin-top:8px">
+        <div class="seg" id="moneyseg">
+          <button class="on" data-g="state">Over time · by state</button><button data-g="county">All-time · by county</button>
+        </div>
+        <div class="muted" id="money-note" style="margin-top:6px;font-size:11px;line-height:1.45"></div>
+      </div>
+    </section>
     <section>
       <h3>Declaration type</h3>
       <div class="seg" id="typeseg">
@@ -196,6 +230,10 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
       <h3>Hazards <button class="linkbtn" id="hazall" style="float:right;margin-top:-2px">reset</button></h3>
       <div class="muted" id="hazscope" style="margin:-4px 0 8px;font-size:11px"></div>
       <div class="hazlist" id="hazlist"></div>
+    </section>
+    <section id="money-panel" hidden>
+      <h3>Where the money went</h3>
+      <div id="money-list"></div>
     </section>
     <section>
       <h3>Latest on screen</h3>
@@ -230,6 +268,7 @@ nav{position:relative;z-index:50;background:rgba(246,241,231,.92);backdrop-filte
 <script src="explore-data.js"></script>
 <script src="explore/engine.js"></script>
 <script src="explore/map.js"></script>
+<script src="explore/story.js"></script>
 <script src="explore/app.js"></script>
 </body>
 </html>
