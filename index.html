@@ -59,7 +59,30 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 .masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,44px);}
 .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:14px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:12px 22px;text-decoration:none;transition:.15s;}
 .btn:hover{background:var(--accent-2);border-color:var(--accent-2);}
-.hero-cta{margin-top:clamp(20px,3vw,28px);}
+.hero-cta{margin-top:clamp(20px,3vw,28px);display:flex;flex-wrap:wrap;gap:10px;}
+/* Explorer banner — the flagship page is a separate document, so the homepage has to
+   actually announce it rather than hiding it behind one word in the nav. */
+.xpromo{margin-top:clamp(26px,3.5vw,38px);background:var(--accent);color:#fff;border-radius:14px;padding:clamp(18px,2.6vw,26px) clamp(20px,3vw,30px);display:flex;align-items:center;justify-content:space-between;gap:clamp(16px,3vw,32px);flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,76,83,.18);}
+.xpromo .xp-kicker{font-size:10.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;opacity:.82;}
+.xpromo h2{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.8vw,30px);letter-spacing:-.5px;line-height:1.12;margin-top:5px;}
+.xpromo p{font-size:14px;line-height:1.55;opacity:.9;margin-top:7px;max-width:56ch;}
+.xpromo .xp-go{flex:none;display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--accent);font:700 15px var(--sans);text-decoration:none;border-radius:10px;padding:14px 24px;transition:transform .13s var(--ease),box-shadow .13s;}
+.xpromo .xp-go:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.18);}
+.xpromo .xp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;}
+.xpromo .xp-tags span{font-size:11px;font-weight:600;letter-spacing:.3px;background:rgba(255,255,255,.16);border-radius:20px;padding:4px 10px;}
+/* what's new */
+.whatsnew{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--ember);border-radius:0 10px 10px 0;padding:14px 16px;margin-top:22px;position:relative;}
+.whatsnew[hidden]{display:none;}
+.whatsnew h3{font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ember);margin-bottom:8px;}
+.whatsnew ul{list-style:none;display:flex;flex-wrap:wrap;gap:5px 20px;}
+.whatsnew li{font-size:13px;color:var(--ink-2);}
+.whatsnew a{color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px solid transparent;}
+.whatsnew a:hover{border-bottom-color:var(--accent);}
+.whatsnew .wn-x{position:absolute;top:9px;right:10px;background:none;border:none;color:var(--ink-3);font-size:17px;line-height:1;cursor:pointer;padding:3px 6px;border-radius:5px;}
+.whatsnew .wn-x:hover{background:var(--paper-3);color:var(--ink);}
+.hint{font-size:13px;color:var(--ink-3);margin-top:7px;}
+.hint b{color:var(--ink-2);font-weight:600;}
+.playhint{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:20px;padding:4px 11px;margin-left:10px;vertical-align:middle;}
 .kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
 .headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:17ch;}
 .headline em{font-style:italic;font-weight:300;}
@@ -285,7 +308,26 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes, <em>and how often.</em></h1>
     <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since FY2000: major disasters, emergencies, and fire-management programs. Mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
     <div class="hero-cta reveal" style="animation-delay:.16s"><a class="btn" href="explore.html">Replay 25 years <span aria-hidden="true">&rarr;</span></a><a class="btn" href="#board" style="background:none;color:var(--accent);margin-left:10px">See the rankings</a></div>
-    <div class="stats reveal" style="animation-delay:.18s">
+    <div class="xpromo reveal" style="animation-delay:.2s">
+      <div>
+        <div class="xp-kicker">New &middot; The Explorer</div>
+        <h2>Watch 25 years of disasters land on the map, day by day</h2>
+        <p>Every one of 48,607 county-level declarations, in the order they happened. Press play, scrub the timeline, filter by hazard, follow the $284.5B.</p>
+        <div class="xp-tags"><span>Animated replay</span><span>Cross-filter</span><span>Guided story</span><span>Funding map</span></div>
+      </div>
+      <a class="xp-go" href="explore.html">Open the Explorer <span aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="whatsnew" id="whatsnew" hidden>
+      <button class="wn-x" id="wn-close" aria-label="Dismiss what's new">&times;</button>
+      <h3>Also new on this page</h3>
+      <ul>
+        <li><a href="#timeline-sec">Play the timeline</a> &mdash; watch the years accumulate</li>
+        <li><a href="#board">Compare two states</a> side by side</li>
+        <li><a href="#board">Focus the charts</a> on one state</li>
+        <li><a href="#loc-search">Save your locality</a> for return visits</li>
+      </ul>
+    </div>
+    <div class="stats reveal" style="animation-delay:.24s">
       <div class="stat"><div class="num" id="st-total">3,370</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num" id="st-states">57</div><div class="lab">states &amp; territories</div></div>
       <div class="stat"><div class="num" id="st-denied">11.8<small>%</small></div><div class="lab">of requests denied</div></div>
@@ -319,7 +361,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 </div>
 <div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;padding:1.6rem 1.8rem;box-shadow:0 2px 8px rgba(40,30,10,.04)">
 <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .25rem">Find your locality</h2>
-<p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations, each with its full FEMA declaration history.</p>
+<p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations, each with its full FEMA declaration history. <b style="color:#004c53">Pick one and we'll remember it</b> &mdash; it appears here next time you visit.</p>
 <div id="lsBox" style="position:relative;max-width:520px">
 <svg style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#938a78;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 <input type="text" id="lsQ" placeholder="Search counties, parishes, boroughs, tribes..." autocomplete="off" aria-label="Search localities" style="width:100%;font:400 1rem 'Public Sans',sans-serif;padding:.7rem 1rem .7rem 2.6rem;border:1px solid #e4dccb;border-radius:10px;background:#f6f1e7;color:#2b2b2b;outline:none;box-sizing:border-box">
@@ -390,8 +432,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
 <div class="container">
 
-  <section style="border-top:none;padding-top:clamp(40px,5vw,64px)">
-    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years: record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
+  <section id="timeline-sec" style="border-top:none;padding-top:clamp(40px,5vw,64px)">
+    <div class="shead"><div><h2>The shape of a quarter-century<span class="playhint">&#9654; Play it &rarr;</span></h2><p>Declarations spike with the country's worst years: record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count &mdash; or press <b>Play</b> on the chart to watch them accumulate.</p></div></div>
     <div class="chartcard">
       <svg id="timeline" viewBox="0 0 1000 330" role="img" aria-label="Area chart of FEMA disaster declarations by fiscal year, 2000 to 2025"></svg>
       <div class="tip" id="tip"></div>
@@ -401,7 +443,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
   <section id="board">
     <div class="shead">
-      <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
+      <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p><p class="hint"><b>Click any state</b> for its full record &mdash; then focus the charts on it, or compare it with another.</p></div>
       <div class="boardctl">
         <button class="cmpbtn" id="cmp-open" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v18M16 21V3"/><path d="M3 8h5M16 16h5"/></svg>Compare states</button>
         <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
@@ -1319,6 +1361,21 @@ initBounds(); updateRange(); render(); renderHaz();
   });
   html+='</div>';
   ph.outerHTML=html;
+})();
+</script>
+<script>
+/* "Also new" strip: shown until dismissed, then remembered. Same localStorage idiom as the
+   saved-locality card so returning visitors get an inventory of what changed rather than
+   having to hunt for it. */
+(function(){
+  var box=document.getElementById('whatsnew'), x=document.getElementById('wn-close'), KEY='dd.whatsnew.v1';
+  if(!box||!x) return;
+  var seen=false; try{ seen=localStorage.getItem(KEY)==='1'; }catch(e){}
+  if(!seen) box.hidden=false;
+  x.addEventListener('click',function(){
+    box.hidden=true;
+    try{ localStorage.setItem(KEY,'1'); }catch(e){}
+  });
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
