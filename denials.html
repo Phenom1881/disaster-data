@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Denials: the disaster declarations that were turned down</title>
+<meta name="description" content="Every federal disaster declaration request turned down since 2000: which states get denied most, which hazards, and how much longer a no takes than a yes. Built from FEMA OpenFEMA data.">
+<meta property="og:title" content="Denials: the disaster declarations that were turned down">
+<meta property="og:description" content="Every federal disaster declaration request turned down since 2000 — who gets denied, for what, and how long the answer takes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io/denials.html">
+<link rel="canonical" href="https://www.disasterdata.io/denials.html">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#f6f1e7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Public+Sans:wght@400;600&display=swap"></noscript>
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);text-decoration:none;}
+.navlinks{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+@media(max-width:720px){nav{height:auto;flex-direction:column;align-items:stretch;gap:9px;padding-top:11px;padding-bottom:11px;}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+.masthead{padding:clamp(38px,6vw,72px) 0 clamp(24px,3.5vw,38px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--ember);margin-bottom:20px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5.6vw,60px);line-height:1.04;letter-spacing:-1.4px;max-width:18ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:58ch;margin-top:22px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(28px,4vw,42px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.2vw,36px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);margin-left:2px;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+section{padding:clamp(40px,5.5vw,72px) 0;border-top:1px solid var(--rule);}
+.shead{margin-bottom:clamp(20px,3vw,32px);}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(25px,3.4vw,38px);letter-spacing:-.8px;line-height:1.06;}
+.shead p{font-size:14px;color:var(--ink-2);max-width:60ch;margin-top:9px;}
+
+.row{display:grid;grid-template-columns:34px 1.5fr 2.4fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);border-radius:6px;}
+.rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums;}
+.sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;}
+.sname .meta{font-size:11.5px;color:var(--ink-3);}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;transition:width .5s var(--ease);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:56px;text-align:right;}
+.right{font-size:12px;color:var(--ink-3);min-width:96px;text-align:right;}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:8px 10px;}.bar-wrap,.right{grid-column:1/-1;}.right{text-align:left;}}
+
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;}
+
+.note{margin-top:22px;font-size:13.5px;color:var(--ink-2);max-width:66ch;line-height:1.62;border-left:3px solid var(--ember);padding-left:14px;}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2.4vw,24px);}
+@media(max-width:720px){.cards{grid-template-columns:1fr;}}
+.card{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:22px 24px;}
+.card h3{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.card .big{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums;}
+.card p{font-size:13.5px;color:var(--ink-2);margin-top:10px;line-height:1.6;}
+
+.recs{border:1px solid var(--rule);border-radius:10px;background:var(--paper-2);max-height:520px;overflow-y:auto;}
+.rec{padding:11px 15px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:12px;align-items:baseline;}
+.rec:last-child{border-bottom:none;}
+.rec .id{font-family:var(--serif);font-weight:600;font-size:14px;}
+.rec .sub{font-size:11.5px;color:var(--ink-2);margin-top:2px;}
+.rec .when{font-size:11px;color:var(--ink-3);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;}
+.pill{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:20px;padding:5px 12px;cursor:pointer;transition:.13s;}
+.pill:hover{border-color:var(--accent);color:var(--ink);}
+.pill.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="brand"><a class="mark" href="index.html">Disaster Data</a></div>
+  <div class="navlinks">
+    <a href="index.html">Overview</a>
+    <a href="explore.html">Explore</a>
+    <a href="index.html#board">Rankings</a>
+    <a href="map.html">Map</a>
+    <a href="states/index.html">States</a>
+    <a href="public-assistance-projects.html">Funding</a>
+    <a href="denials.html" class="on">Denials</a>
+    <a href="about.html">About</a>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="masthead">
+    <div class="kicker">The requests that were turned down</div>
+    <h1 class="headline">Not every disaster <em>gets a yes.</em></h1>
+    <p class="standfirst">Most of this site counts what was approved. This page counts what wasn't: every
+      federal disaster declaration request turned down since 2000 — who asked, for what, and how long
+      they waited to be told no.</p>
+    <div class="stats">
+      <div class="stat"><div class="num" id="k-total">—</div><div class="lab">requests turned down</div></div>
+      <div class="stat"><div class="num" id="k-rate">—</div><div class="lab">of all requests denied</div></div>
+      <div class="stat"><div class="num" id="k-days">—</div><div class="lab">median days to a no</div></div>
+      <div class="stat"><div class="num" id="k-states">—</div><div class="lab">states &amp; territories</div></div>
+    </div>
+  </header>
+</div>
+
+<div class="container">
+
+  <section style="border-top:none">
+    <div class="shead">
+      <h2>A no takes longer than a yes</h2>
+      <p>Comparing like with like — major-disaster requests only, since fire-management decisions are
+         made within a day and would flatter the approved side.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <h3>Approved</h3>
+        <div class="big" id="c-appr">—</div>
+        <p id="c-appr-n">—</p>
+      </div>
+      <div class="card">
+        <h3>Turned down</h3>
+        <div class="big" style="color:var(--ember)" id="c-deny">—</div>
+        <p id="c-deny-n">—</p>
+      </div>
+    </div>
+    <p class="note" id="timing-note">—</p>
+  </section>
+
+  <section>
+    <div class="shead">
+      <h2>Who gets turned down</h2>
+      <p>By denial rate — denials as a share of every request a state made. Only states with enough
+         requests to mean anything are ranked; the rest are listed below.</p>
+    </div>
+    <div class="tier-h"><span class="t">Highest denial rate</span><span class="c" id="rate-note">—</span></div>
+    <div id="byrate"></div>
+    <p class="note" id="rate-foot">—</p>
+  </section>
+
+  <section>
+    <div class="shead">
+      <h2>What gets turned down</h2>
+      <p>The hazard named in the request. Severe storms dominate simply because they are the most
+         commonly requested — the share denied matters more than the raw count.</p>
+    </div>
+    <div id="byhaz"></div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <h2>Every turndown on record</h2>
+      <p>Newest first. FEMA publishes denials at state level only, so there are no county details here.</p>
+    </div>
+    <div class="pills" id="filters"></div>
+    <div class="recs" id="reclist"></div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div style="max-width:62ch">Built from OpenFEMA's Disaster Declarations Summaries and the
+        Declaration Denials dataset. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.
+        A turndown is a request that reached a decision and was declined; requests still pending are
+        not counted here.</div>
+      <div style="text-align:right">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br>
+        <a href="explore.html">Explore the full record</a><br>
+        <a href="index.html">Back to the overview</a></div>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+/* Denials page — reads the same data.js the rest of the site uses, so it refreshes on the
+   weekly rebuild with no page-specific data file. */
+(function(){
+  var D = window.DENIALS || [], SS = window.STATE_SUMMARY || [], B = window.BROWSE || [];
+  if (!D.length) { document.getElementById('reclist').innerHTML =
+    '<div style="padding:18px;color:#938a78">Denial data unavailable.</div>'; return; }
+
+  var fmt = function(n){ return (n||0).toLocaleString('en-US'); };
+  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return c==='&'?'&amp;':c==='<'?'&lt;':c==='>'?'&gt;':'&quot;'; }); };
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fdate(iso){ var p=(iso||'').split('-'); return p.length>=3 ? MON[+p[1]-1]+' '+(+p[2])+', '+p[0] : (iso||''); }
+
+  /* ── headline figures ── */
+  var days = D.map(function(r){ return r.days_to_deny; })
+              .filter(function(v){ return typeof v==='number' && v>=0; })
+              .sort(function(a,b){ return a-b; });
+  var median = days.length ? days[Math.floor(days.length/2)] : 0;
+  var totalDecl = SS.reduce(function(s,x){ return s+(x.declarations||0); },0);
+  var totalDeny = SS.reduce(function(s,x){ return s+(x.denials||0); },0);
+  var states = {}; D.forEach(function(r){ if(r.stateAbbreviation) states[r.stateAbbreviation]=1; });
+
+  document.getElementById('k-total').textContent = fmt(D.length);
+  document.getElementById('k-rate').innerHTML = (totalDeny/((totalDecl+totalDeny)||1)*100).toFixed(1)+'<small>%</small>';
+  document.getElementById('k-days').textContent = median;
+  document.getElementById('k-states').textContent = Object.keys(states).length;
+
+  /* ── approved vs denied, major disasters only ──
+     FM (fire) decisions land the same day, so including them would make approvals look
+     far faster than they are for the requests that actually compare. */
+  function mean(a){ return a.length ? a.reduce(function(s,x){return s+x;},0)/a.length : 0; }
+  var apprDR = B.filter(function(r){ return r.declarationType==='DR' && typeof r.days_to_approve==='number' && r.days_to_approve>=0; })
+                .map(function(r){ return r.days_to_approve; });
+  var denyDR = D.filter(function(r){ return r.declarationRequestType==='Major Disaster' && typeof r.days_to_deny==='number' && r.days_to_deny>=0; })
+                .map(function(r){ return r.days_to_deny; });
+  var mA = mean(apprDR), mD = mean(denyDR);
+  document.getElementById('c-appr').textContent = mA.toFixed(1) + ' days';
+  document.getElementById('c-deny').textContent = mD.toFixed(1) + ' days';
+  document.getElementById('c-appr-n').textContent = fmt(apprDR.length) + ' major-disaster declarations approved.';
+  document.getElementById('c-deny-n').textContent = fmt(denyDR.length) + ' major-disaster requests turned down.';
+  document.getElementById('timing-note').innerHTML =
+    'A turned-down major-disaster request waited <strong>' + ((mD-mA)).toFixed(0) + ' days longer</strong> on average than an approved one — ' +
+    mD.toFixed(0) + ' days versus ' + mA.toFixed(0) + '. Across all request types the gap looks wider still, but that is an artefact: ' +
+    'fire-management requests are decided within a day and pull the approved average down. The longest wait on record was ' +
+    fmt(days[days.length-1]) + ' days.';
+
+  /* ── denial rate by state ── */
+  var MIN_REQ = 15;
+  var ranked = SS.filter(function(x){ return (x.total_requests||0) >= MIN_REQ && x.denials > 0; })
+                 .sort(function(a,b){ return b.denial_rate - a.denial_rate; });
+  var maxRate = ranked.length ? ranked[0].denial_rate : 1;
+  var NAMES = window.STATE_NAMES || {};
+  document.getElementById('byrate').innerHTML = ranked.slice(0,15).map(function(x,i){
+    var pct = Math.max(3, x.denial_rate/maxRate*100);
+    return '<div class="row"><div class="rank">'+(i+1)+'</div>' +
+      '<div class="sname"><div class="n">'+esc(NAMES[x.state]||x.state)+'</div>' +
+      '<div class="meta">'+esc(x.state)+' &middot; '+fmt(x.denials)+' of '+fmt(x.total_requests)+' requests</div></div>' +
+      '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+pct+'%;background:var(--ember)"></div></div>' +
+      '<div class="barnum">'+x.denial_rate.toFixed(1)+'%</div></div>' +
+      '<div class="right">'+(x.avg_deny_days?x.avg_deny_days.toFixed(0)+' days to decide':'')+'</div></div>';
+  }).join('');
+  document.getElementById('rate-note').textContent = ranked.length + ' states with ' + MIN_REQ + '+ requests';
+  var small = SS.filter(function(x){ return x.denials>0 && (x.total_requests||0) < MIN_REQ; })
+                .sort(function(a,b){ return b.denial_rate-a.denial_rate; });
+  document.getElementById('rate-foot').innerHTML = 'States with fewer than ' + MIN_REQ +
+    ' total requests are left out of the ranking, because one denial out of three swings a percentage wildly. ' +
+    (small.length ? 'They are: ' + small.map(function(x){ return esc(NAMES[x.state]||x.state)+' ('+x.denials+'/'+x.total_requests+')'; }).join(', ') + '.' : '');
+
+  /* ── by hazard ── */
+  var haz = {};
+  D.forEach(function(r){ var h=r.requestedIncidentTypes||'Unknown'; haz[h]=(haz[h]||0)+1; });
+  var hazArr = Object.keys(haz).map(function(k){ return [k,haz[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+  var hazMax = hazArr.length ? hazArr[0][1] : 1;
+  document.getElementById('byhaz').innerHTML = hazArr.slice(0,12).map(function(p,i){
+    return '<div class="row"><div class="rank">'+(i+1)+'</div>' +
+      '<div class="sname"><div class="n">'+esc(p[0])+'</div></div>' +
+      '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+Math.max(3,p[1]/hazMax*100)+'%;background:var(--h3)"></div></div>' +
+      '<div class="barnum">'+fmt(p[1])+'</div></div>' +
+      '<div class="right">'+(p[1]/D.length*100).toFixed(1)+'% of denials</div></div>';
+  }).join('');
+
+  /* ── full record, filterable by request type ── */
+  var sorted = D.slice().sort(function(a,b){ return (b.declarationRequestDate||'').localeCompare(a.declarationRequestDate||''); });
+  var filter = 'All';
+  var types = ['All'].concat(Object.keys(D.reduce(function(m,r){ m[r.declarationRequestType||'Other']=1; return m; },{})));
+  document.getElementById('filters').innerHTML = types.map(function(t){
+    return '<button class="pill'+(t===filter?' on':'')+'" data-t="'+esc(t)+'">'+esc(t)+'</button>'; }).join('');
+  function renderRecs(){
+    var list = sorted.filter(function(r){ return filter==='All' || (r.declarationRequestType||'Other')===filter; });
+    document.getElementById('reclist').innerHTML = list.map(function(r){
+      return '<div class="rec"><div><div class="id">Request #'+esc(r.declarationRequestNumber)+' &middot; '+esc(r.stateAbbreviation)+'</div>' +
+        '<div class="sub">'+esc(r.declarationRequestType||'')+' &middot; '+esc(r.requestedIncidentTypes||'Unknown')+'</div></div>' +
+        '<div class="when">'+fdate(r.declarationRequestDate)+
+        (typeof r.days_to_deny==='number'&&r.days_to_deny>=0 ? '<br>declined after '+r.days_to_deny+' days' : '')+'</div></div>';
+    }).join('') || '<div style="padding:18px;color:#938a78">No requests match.</div>';
+  }
+  document.getElementById('filters').addEventListener('click', function(e){
+    var b = e.target.closest('.pill'); if(!b) return;
+    filter = b.dataset.t;
+    [].forEach.call(this.querySelectorAll('.pill'), function(x){ x.classList.toggle('on', x===b); });
+    renderRecs();
+  });
+  renderRecs();
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
+<script src="/nav.js" defer></script>
+</body>
+</html>

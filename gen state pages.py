@@ -307,11 +307,12 @@ def header_html():
             '<div class="brand"><a class="mark" href="../index.html">Disaster Data</a></div>'
             '<div class="navlinks">'
             '<a href="../index.html">Overview</a>'
-            '<a href="../index.html#board">Explore</a>'
             '<a href="../explore.html">Explore</a>'
+            '<a href="../index.html#board">Rankings</a>'
             '<a href="../map.html">Map</a>'
             '<a href="index.html" class="on">States</a>'
             '<a href="../public-assistance-projects.html">Funding</a>'
+            '<a href="../denials.html">Denials</a>'
             '<a href="../about.html">About</a></div>'
             '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>')
 
@@ -540,6 +541,7 @@ def render_sitemap(states):
     parts = [u("%s/" % SITE, overall), u("%s/explore.html" % SITE, overall), u("%s/map.html" % SITE, overall),
              u("%s/about.html" % SITE, overall),
              u("%s/public-assistance-projects.html" % SITE, overall),
+             u("%s/denials.html" % SITE, overall),
              u("%s/states/" % SITE, overall)]
     for s in states:
         parts.append(u("%s/states/%s.html" % (SITE, s["slug"]), latest(s) or overall))
