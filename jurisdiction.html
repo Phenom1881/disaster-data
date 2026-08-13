@@ -192,31 +192,78 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 </style>
 </head>
 <body>
+<!-- ============ DD NAV START :: identical on every page, do not edit per page ============ -->
+<style>
+#ddnav{position:sticky;top:0;z-index:1100;box-sizing:border-box;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:14px;width:100%;height:60px;margin:0;padding:0 clamp(16px,4vw,48px);padding-top:0;padding-bottom:0;background:rgba(246,241,231,.93);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border:0;border-bottom:1px solid #e0d8c5;font-family:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+#ddnav *,#ddmenu *{box-sizing:border-box;}
+#ddnav .ddbrand{flex:0 0 auto;display:inline-block;font-family:'Fraunces',Georgia,serif;font-size:19px;font-weight:600;line-height:1.2;letter-spacing:-.4px;color:#004c53;text-decoration:none;white-space:nowrap;}
+#ddnav .ddbrand:hover,#ddnav .ddbrand:focus{color:#0a6b73;text-decoration:none;}
+#ddnav .ddlinks{display:flex;align-items:center;gap:2px;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}
+#ddnav .ddlinks::-webkit-scrollbar{display:none;}
+#ddnav .ddlinks a{display:block;font-family:inherit;font-size:13px;font-weight:500;line-height:1.2;letter-spacing:.2px;color:#5b5346;text-decoration:none;white-space:nowrap;padding:7px 10px;border-radius:6px;transition:background .15s,color .15s;}
+#ddnav .ddlinks a:hover{color:#1d1813;background:#f1ead9;text-decoration:none;}
+#ddnav .ddlinks a[aria-current="page"]{color:#004c53;background:#d7e9ea;font-weight:600;}
+#ddnav .ddburger{flex:0 0 auto;display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;padding:8px;margin:0;background:none;border:0;border-radius:8px;cursor:pointer;}
+#ddnav .ddburger span{display:block;width:100%;height:2px;background:#1d1813;border-radius:2px;transition:transform .2s,opacity .2s;}
+#ddnav .ddburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+#ddnav .ddburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+#ddnav .ddburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#ddnav a:focus-visible,#ddnav button:focus-visible,#ddmenu a:focus-visible{outline:2px solid #004c53;outline-offset:2px;}
+#ddmenu{display:none;}
+@media(max-width:900px){
+  #ddnav .ddlinks{display:none;}
+  #ddnav .ddburger{display:flex;}
+  #ddmenu:not([hidden]){position:sticky;top:60px;z-index:1099;display:flex;flex-direction:column;gap:2px;width:100%;margin:0;padding:10px clamp(16px,4vw,48px) 16px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;font-family:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+  #ddmenu a{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px;}
+  #ddmenu a:hover{background:#f1ead9;text-decoration:none;}
+  #ddmenu a[aria-current="page"]{color:#004c53;background:#d7e9ea;font-weight:600;}
+}
+</style>
+<nav id="ddnav" aria-label="Primary">
+  <a class="ddbrand" href="/">Disaster Data</a>
+  <div class="ddlinks">
+    <a href="/">Overview</a><a href="/explore.html">Explore</a><a href="/map.html">Map</a><a href="/compare.html">Compare</a><a href="/states/">States</a><a href="/jurisdiction.html">Local</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/about.html">About</a><a href="/ops-briefings/">Daily Ops Brief</a>
+  </div>
+  <button class="ddburger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="ddmenu"><span></span><span></span><span></span></button>
+</nav>
+<div id="ddmenu" hidden>
+  <a href="/">Overview</a><a href="/explore.html">Explore</a><a href="/map.html">Map</a><a href="/compare.html">Compare</a><a href="/states/">States</a><a href="/jurisdiction.html">Local</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/about.html">About</a><a href="/ops-briefings/">Daily Ops Brief</a>
+</div>
+<script>
+(function(){
+  var nav=document.getElementById('ddnav'),menu=document.getElementById('ddmenu');
+  if(!nav){return;}
+  var btn=nav.querySelector('.ddburger');
+  if(btn&&menu){
+    btn.addEventListener('click',function(){
+      var open=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',open?'false':'true');
+      if(open){menu.setAttribute('hidden','');}else{menu.removeAttribute('hidden');}
+    });
+  }
+  function norm(p){
+    p=(p||'').split('#')[0].split('?')[0].toLowerCase();
+    p=p.replace(/index\.html$/,'');
+    if(p.charAt(0)!=='/'){p='/'+p;}
+    return p===''?'/':p;
+  }
+  var here=norm(location.pathname),links=[],i,a,t,hit,list=nav.querySelectorAll('.ddlinks a');
+  for(i=0;i<list.length;i++){links.push(list[i]);}
+  if(menu){list=menu.querySelectorAll('a');for(i=0;i<list.length;i++){links.push(list[i]);}}
+  for(i=0;i<links.length;i++){
+    a=links[i];t=norm(a.getAttribute('href'));
+    hit=(t===here)||(t!=='/'&&t.charAt(t.length-1)==='/'&&here.indexOf(t)===0);
+    if(hit){a.setAttribute('aria-current','page');}
+  }
+})();
+</script>
+<!-- ============ DD NAV END ============ -->
+
 
 <div class="banner">Preview · full jurisdiction page (the map-search destination) · all figures are <b>illustrative</b> placeholders pending data wiring.</div>
 
-<nav>
-  <a class="brand" href="#"><span class="mark">Disaster Data</span><span class="beta">Beta</span></a>
-  <button class="navburger" aria-label="Menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="navlinks"><a href="index.html">Overview</a><a href="index.html#board">Explore</a><a href="map.html">Map</a><a href="compare.html">Compare</a><a href="states/index.html">States</a><a href="jurisdiction.html" class="on">Local</a><a href="public-assistance-projects.html">Funding</a><a href="denials.html">Denials</a><a href="about.html">About</a></div>
-</nav>
-<div class="mobilemenu" hidden>
-  <a href="index.html">Overview</a>
-  <div class="mm-section"><div class="mm-label">Explore</div>
-    <a href="index.html#board">Explore</a>
-    <a href="map.html">Map</a>
-    <a href="compare.html">Compare</a>
-  </div>
-  <div class="mm-section"><div class="mm-label">Data</div>
-    <a href="states/index.html">States</a>
-    <a href="jurisdiction.html" class="on">Local</a>
-    <a href="public-assistance-projects.html">Funding</a>
-    <a href="denials.html">Denials</a>
-  </div>
-  <a href="about.html">About</a>
-</div>
+
+
 
 
 <div class="wrap">
@@ -401,16 +448,5 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 
 </div>
 
-<script src="/nav.js" defer></script>
-<script>
-(function(){
-  var b=document.querySelector('.navburger'), m=document.querySelector('.mobilemenu');
-  if(b&&m){b.addEventListener('click',function(){
-    var open=b.getAttribute('aria-expanded')==='true';
-    b.setAttribute('aria-expanded',String(!open));
-    if(open){m.setAttribute('hidden','');}else{m.removeAttribute('hidden');}
-  });}
-})();
-</script>
 </body>
 </html>

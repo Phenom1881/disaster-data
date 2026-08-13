@@ -271,13 +271,76 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 </style>
 </head>
 <body>
+<!-- ============ DD NAV START :: identical on every page, do not edit per page ============ -->
+<style>
+#ddnav{position:sticky;top:0;z-index:1100;box-sizing:border-box;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:14px;width:100%;height:60px;margin:0;padding:0 clamp(16px,4vw,48px);padding-top:0;padding-bottom:0;background:rgba(246,241,231,.93);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border:0;border-bottom:1px solid #e0d8c5;font-family:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+#ddnav *,#ddmenu *{box-sizing:border-box;}
+#ddnav .ddbrand{flex:0 0 auto;display:inline-block;font-family:'Fraunces',Georgia,serif;font-size:19px;font-weight:600;line-height:1.2;letter-spacing:-.4px;color:#004c53;text-decoration:none;white-space:nowrap;}
+#ddnav .ddbrand:hover,#ddnav .ddbrand:focus{color:#0a6b73;text-decoration:none;}
+#ddnav .ddlinks{display:flex;align-items:center;gap:2px;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}
+#ddnav .ddlinks::-webkit-scrollbar{display:none;}
+#ddnav .ddlinks a{display:block;font-family:inherit;font-size:13px;font-weight:500;line-height:1.2;letter-spacing:.2px;color:#5b5346;text-decoration:none;white-space:nowrap;padding:7px 10px;border-radius:6px;transition:background .15s,color .15s;}
+#ddnav .ddlinks a:hover{color:#1d1813;background:#f1ead9;text-decoration:none;}
+#ddnav .ddlinks a[aria-current="page"]{color:#004c53;background:#d7e9ea;font-weight:600;}
+#ddnav .ddburger{flex:0 0 auto;display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;padding:8px;margin:0;background:none;border:0;border-radius:8px;cursor:pointer;}
+#ddnav .ddburger span{display:block;width:100%;height:2px;background:#1d1813;border-radius:2px;transition:transform .2s,opacity .2s;}
+#ddnav .ddburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+#ddnav .ddburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+#ddnav .ddburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#ddnav a:focus-visible,#ddnav button:focus-visible,#ddmenu a:focus-visible{outline:2px solid #004c53;outline-offset:2px;}
+#ddmenu{display:none;}
+@media(max-width:900px){
+  #ddnav .ddlinks{display:none;}
+  #ddnav .ddburger{display:flex;}
+  #ddmenu:not([hidden]){position:sticky;top:60px;z-index:1099;display:flex;flex-direction:column;gap:2px;width:100%;margin:0;padding:10px clamp(16px,4vw,48px) 16px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;font-family:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+  #ddmenu a{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px;}
+  #ddmenu a:hover{background:#f1ead9;text-decoration:none;}
+  #ddmenu a[aria-current="page"]{color:#004c53;background:#d7e9ea;font-weight:600;}
+}
+</style>
+<nav id="ddnav" aria-label="Primary">
+  <a class="ddbrand" href="/">Disaster Data</a>
+  <div class="ddlinks">
+    <a href="/">Overview</a><a href="/explore.html">Explore</a><a href="/map.html">Map</a><a href="/compare.html">Compare</a><a href="/states/">States</a><a href="/jurisdiction.html">Local</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/about.html">About</a><a href="/ops-briefings/">Daily Ops Brief</a>
+  </div>
+  <button class="ddburger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="ddmenu"><span></span><span></span><span></span></button>
+</nav>
+<div id="ddmenu" hidden>
+  <a href="/">Overview</a><a href="/explore.html">Explore</a><a href="/map.html">Map</a><a href="/compare.html">Compare</a><a href="/states/">States</a><a href="/jurisdiction.html">Local</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/about.html">About</a><a href="/ops-briefings/">Daily Ops Brief</a>
+</div>
+<script>
+(function(){
+  var nav=document.getElementById('ddnav'),menu=document.getElementById('ddmenu');
+  if(!nav){return;}
+  var btn=nav.querySelector('.ddburger');
+  if(btn&&menu){
+    btn.addEventListener('click',function(){
+      var open=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',open?'false':'true');
+      if(open){menu.setAttribute('hidden','');}else{menu.removeAttribute('hidden');}
+    });
+  }
+  function norm(p){
+    p=(p||'').split('#')[0].split('?')[0].toLowerCase();
+    p=p.replace(/index\.html$/,'');
+    if(p.charAt(0)!=='/'){p='/'+p;}
+    return p===''?'/':p;
+  }
+  var here=norm(location.pathname),links=[],i,a,t,hit,list=nav.querySelectorAll('.ddlinks a');
+  for(i=0;i<list.length;i++){links.push(list[i]);}
+  if(menu){list=menu.querySelectorAll('a');for(i=0;i<list.length;i++){links.push(list[i]);}}
+  for(i=0;i<links.length;i++){
+    a=links[i];t=norm(a.getAttribute('href'));
+    hit=(t===here)||(t!=='/'&&t.charAt(t.length-1)==='/'&&here.indexOf(t)===0);
+    if(hit){a.setAttribute('aria-current','page');}
+  }
+})();
+</script>
+<!-- ============ DD NAV END ============ -->
+
 <div class="wrap">
 
-<nav>
-  <div class="brand"><span class="mark">Disaster Data</span></div>
-  <div class="navlinks"><a href="#" class="on">Overview</a><a href="explore.html">Explore</a><a href="#board">Rankings</a><a href="map.html">Map</a><a href="states/index.html">States</a><a href="public-assistance-projects.html">Funding</a><a href="denials.html">Denials</a><a href="about.html">About</a><a href="ops-briefings/index.html">Daily Ops Brief</a></div>
 
-</nav>
 
 <div class="container">
   <header class="masthead">
@@ -339,14 +402,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <a class="ll-all" href="/latest/">See all recent declarations <span aria-hidden="true">&rarr;</span></a>
     </div>
     <!-- LATEST:START -->
-<p class="ll-updated">Data current through Aug 4, 2026</p>
-<div class="ll-grid">
-<div class="ll-card" title="GANN FIRE"><span class="ll-badge FM">FM</span><div class="ll-body"><div class="ll-title">California</div><div class="ll-meta"><span class="ll-num">FM-5662</span><span>Fire</span><span>1 area</span><a href="https://www.fema.gov/disaster/5662" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Aug 4, 2026</div></div>
-<div class="ll-card" title="SEVERE STORM, STRAIGHT-LINE WINDS, TORNADOES, FLOODING, LANDSLIDES, AND MUDSLIDES"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">West Virginia</div><div class="ll-meta"><span class="ll-num">DR-4932</span><span>Flood</span><span>4 areas</span><a href="https://www.fema.gov/disaster/4932" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Aug 3, 2026</div></div>
-<div class="ll-card" title="SUPER TYPHOON BAVI"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">N. Mariana Islands</div><div class="ll-meta"><span class="ll-num">DR-4931</span><span>Typhoon</span><span>3 areas</span><a href="https://www.fema.gov/disaster/4931" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Aug 3, 2026</div></div>
-<div class="ll-card" title="TROPICAL STORM ARTHUR"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Mississippi</div><div class="ll-meta"><span class="ll-num">DR-4930</span><span>Tropical Storm</span><span>8 areas</span><a href="https://www.fema.gov/disaster/4930" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Aug 3, 2026</div></div>
-<div class="ll-card" title="SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Missouri</div><div class="ll-meta"><span class="ll-num">DR-4929</span><span>Severe Storm</span><span>34 areas</span><a href="https://www.fema.gov/disaster/4929" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Aug 3, 2026</div></div>
-</div>
+    <p class="ll-placeholder">Recent declarations appear here on the next deploy.</p>
     <!-- LATEST:END -->
   </section>
 </div>
@@ -457,7 +513,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
   <section id="statepages">
     <div class="shead"><div><h2>Browse by state</h2><p>Every state and territory has its own page: the full declaration record since FY2000, denial history, and a page for each county or equivalent with a ready-to-use table for local mitigation plans.</p></div></div>
-    <p class="statelinks"><a href="states/alabama.html">Alabama</a><span class="sep">&middot;</span><a href="states/alaska.html">Alaska</a><span class="sep">&middot;</span><a href="states/american-samoa.html">American Samoa</a><span class="sep">&middot;</span><a href="states/arizona.html">Arizona</a><span class="sep">&middot;</span><a href="states/arkansas.html">Arkansas</a><span class="sep">&middot;</span><a href="states/california.html">California</a><span class="sep">&middot;</span><a href="states/colorado.html">Colorado</a><span class="sep">&middot;</span><a href="states/connecticut.html">Connecticut</a><span class="sep">&middot;</span><a href="states/delaware.html">Delaware</a><span class="sep">&middot;</span><a href="states/fed-states-of-micronesia.html">Fed. States of Micronesia</a><span class="sep">&middot;</span><a href="states/florida.html">Florida</a><span class="sep">&middot;</span><a href="states/georgia.html">Georgia</a><span class="sep">&middot;</span><a href="states/guam.html">Guam</a><span class="sep">&middot;</span><a href="states/hawaii.html">Hawaii</a><span class="sep">&middot;</span><a href="states/idaho.html">Idaho</a><span class="sep">&middot;</span><a href="states/illinois.html">Illinois</a><span class="sep">&middot;</span><a href="states/indiana.html">Indiana</a><span class="sep">&middot;</span><a href="states/iowa.html">Iowa</a><span class="sep">&middot;</span><a href="states/kansas.html">Kansas</a><span class="sep">&middot;</span><a href="states/kentucky.html">Kentucky</a><span class="sep">&middot;</span><a href="states/louisiana.html">Louisiana</a><span class="sep">&middot;</span><a href="states/maine.html">Maine</a><span class="sep">&middot;</span><a href="states/maryland.html">Maryland</a><span class="sep">&middot;</span><a href="states/massachusetts.html">Massachusetts</a><span class="sep">&middot;</span><a href="states/michigan.html">Michigan</a><span class="sep">&middot;</span><a href="states/minnesota.html">Minnesota</a><span class="sep">&middot;</span><a href="states/mississippi.html">Mississippi</a><span class="sep">&middot;</span><a href="states/missouri.html">Missouri</a><span class="sep">&middot;</span><a href="states/montana.html">Montana</a><span class="sep">&middot;</span><a href="states/n-mariana-islands.html">N. Mariana Islands</a><span class="sep">&middot;</span><a href="states/nebraska.html">Nebraska</a><span class="sep">&middot;</span><a href="states/nevada.html">Nevada</a><span class="sep">&middot;</span><a href="states/new-hampshire.html">New Hampshire</a><span class="sep">&middot;</span><a href="states/new-jersey.html">New Jersey</a><span class="sep">&middot;</span><a href="states/new-mexico.html">New Mexico</a><span class="sep">&middot;</span><a href="states/new-york.html">New York</a><span class="sep">&middot;</span><a href="states/north-carolina.html">North Carolina</a><span class="sep">&middot;</span><a href="states/north-dakota.html">North Dakota</a><span class="sep">&middot;</span><a href="states/ohio.html">Ohio</a><span class="sep">&middot;</span><a href="states/oklahoma.html">Oklahoma</a><span class="sep">&middot;</span><a href="states/oregon.html">Oregon</a><span class="sep">&middot;</span><a href="states/pennsylvania.html">Pennsylvania</a><span class="sep">&middot;</span><a href="states/puerto-rico.html">Puerto Rico</a><span class="sep">&middot;</span><a href="states/rhode-island.html">Rhode Island</a><span class="sep">&middot;</span><a href="states/south-carolina.html">South Carolina</a><span class="sep">&middot;</span><a href="states/south-dakota.html">South Dakota</a><span class="sep">&middot;</span><a href="states/tennessee.html">Tennessee</a><span class="sep">&middot;</span><a href="states/texas.html">Texas</a><span class="sep">&middot;</span><a href="states/us-virgin-islands.html">U.S. Virgin Islands</a><span class="sep">&middot;</span><a href="states/utah.html">Utah</a><span class="sep">&middot;</span><a href="states/vermont.html">Vermont</a><span class="sep">&middot;</span><a href="states/virginia.html">Virginia</a><span class="sep">&middot;</span><a href="states/washington.html">Washington</a><span class="sep">&middot;</span><a href="states/washington-dc.html">Washington D.C.</a><span class="sep">&middot;</span><a href="states/west-virginia.html">West Virginia</a><span class="sep">&middot;</span><a href="states/wisconsin.html">Wisconsin</a><span class="sep">&middot;</span><a href="states/wyoming.html">Wyoming</a></p>
+    <p class="statelinks"><a href="states/alabama.html">Alabama</a><span class="sep">&middot;</span> <a href="states/alaska.html">Alaska</a><span class="sep">&middot;</span> <a href="states/american-samoa.html">American Samoa</a><span class="sep">&middot;</span> <a href="states/arizona.html">Arizona</a><span class="sep">&middot;</span> <a href="states/arkansas.html">Arkansas</a><span class="sep">&middot;</span> <a href="states/california.html">California</a><span class="sep">&middot;</span> <a href="states/colorado.html">Colorado</a><span class="sep">&middot;</span> <a href="states/connecticut.html">Connecticut</a><span class="sep">&middot;</span> <a href="states/delaware.html">Delaware</a><span class="sep">&middot;</span> <a href="states/fed-states-of-micronesia.html">Fed. States of Micronesia</a><span class="sep">&middot;</span> <a href="states/florida.html">Florida</a><span class="sep">&middot;</span> <a href="states/georgia.html">Georgia</a><span class="sep">&middot;</span> <a href="states/guam.html">Guam</a><span class="sep">&middot;</span> <a href="states/hawaii.html">Hawaii</a><span class="sep">&middot;</span> <a href="states/idaho.html">Idaho</a><span class="sep">&middot;</span> <a href="states/illinois.html">Illinois</a><span class="sep">&middot;</span> <a href="states/indiana.html">Indiana</a><span class="sep">&middot;</span> <a href="states/iowa.html">Iowa</a><span class="sep">&middot;</span> <a href="states/kansas.html">Kansas</a><span class="sep">&middot;</span> <a href="states/kentucky.html">Kentucky</a><span class="sep">&middot;</span> <a href="states/louisiana.html">Louisiana</a><span class="sep">&middot;</span> <a href="states/maine.html">Maine</a><span class="sep">&middot;</span> <a href="states/maryland.html">Maryland</a><span class="sep">&middot;</span> <a href="states/massachusetts.html">Massachusetts</a><span class="sep">&middot;</span> <a href="states/michigan.html">Michigan</a><span class="sep">&middot;</span> <a href="states/minnesota.html">Minnesota</a><span class="sep">&middot;</span> <a href="states/mississippi.html">Mississippi</a><span class="sep">&middot;</span> <a href="states/missouri.html">Missouri</a><span class="sep">&middot;</span> <a href="states/montana.html">Montana</a><span class="sep">&middot;</span> <a href="states/n-mariana-islands.html">N. Mariana Islands</a><span class="sep">&middot;</span> <a href="states/nebraska.html">Nebraska</a><span class="sep">&middot;</span> <a href="states/nevada.html">Nevada</a><span class="sep">&middot;</span> <a href="states/new-hampshire.html">New Hampshire</a><span class="sep">&middot;</span> <a href="states/new-jersey.html">New Jersey</a><span class="sep">&middot;</span> <a href="states/new-mexico.html">New Mexico</a><span class="sep">&middot;</span> <a href="states/new-york.html">New York</a><span class="sep">&middot;</span> <a href="states/north-carolina.html">North Carolina</a><span class="sep">&middot;</span> <a href="states/north-dakota.html">North Dakota</a><span class="sep">&middot;</span> <a href="states/ohio.html">Ohio</a><span class="sep">&middot;</span> <a href="states/oklahoma.html">Oklahoma</a><span class="sep">&middot;</span> <a href="states/oregon.html">Oregon</a><span class="sep">&middot;</span> <a href="states/pennsylvania.html">Pennsylvania</a><span class="sep">&middot;</span> <a href="states/puerto-rico.html">Puerto Rico</a><span class="sep">&middot;</span> <a href="states/rhode-island.html">Rhode Island</a><span class="sep">&middot;</span> <a href="states/south-carolina.html">South Carolina</a><span class="sep">&middot;</span> <a href="states/south-dakota.html">South Dakota</a><span class="sep">&middot;</span> <a href="states/tennessee.html">Tennessee</a><span class="sep">&middot;</span> <a href="states/texas.html">Texas</a><span class="sep">&middot;</span> <a href="states/us-virgin-islands.html">U.S. Virgin Islands</a><span class="sep">&middot;</span> <a href="states/utah.html">Utah</a><span class="sep">&middot;</span> <a href="states/vermont.html">Vermont</a><span class="sep">&middot;</span> <a href="states/virginia.html">Virginia</a><span class="sep">&middot;</span> <a href="states/washington.html">Washington</a><span class="sep">&middot;</span> <a href="states/washington-dc.html">Washington D.C.</a><span class="sep">&middot;</span> <a href="states/west-virginia.html">West Virginia</a><span class="sep">&middot;</span> <a href="states/wisconsin.html">Wisconsin</a><span class="sep">&middot;</span> <a href="states/wyoming.html">Wyoming</a></p>
   </section>
 
 </div>
@@ -1329,6 +1385,5 @@ initBounds(); updateRange(); render(); renderHaz();
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
-<script src="/nav.js" defer></script>
 </body>
 </html>
