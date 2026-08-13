@@ -23,21 +23,14 @@ body{
 }
 a{color:var(--teal);}
 
-.site-head{background:var(--paper);border-bottom:1px solid var(--rule);}
-.head-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:15px 16px;}
-.brand{font-family:"Fraunces",Georgia,serif;font-size:21px;font-weight:700;color:var(--teal);text-decoration:none;letter-spacing:-.005em;white-space:nowrap;}
-.site-nav{display:flex;gap:1px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.site-nav::-webkit-scrollbar{display:none;}
-.site-nav a{color:#3b3934;text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;padding:7px 11px;border-radius:6px;}
-.site-nav a:hover{color:var(--teal-deep);background:rgba(0,76,83,.07);}
-.site-nav a[aria-current="page"]{background:#d9e7e9;color:var(--teal-deep);font-weight:600;}
-
 .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 64px;}
 .page-title{font-family:"Fraunces",Georgia,serif;font-size:30px;font-weight:600;line-height:1.15;margin:0 0 6px;color:var(--teal-deep);}
 .page-sub{margin:0 0 20px;color:var(--muted);font-size:15px;max-width:66ch;}
 
 .notice{background:var(--warn-soft);border:1px solid #e8d6b4;color:var(--warn);border-radius:var(--radius);padding:10px 12px;font-size:13.5px;margin:0 0 18px;}
 .notice[hidden]{display:none;}
+.notice-diag{margin-top:8px;white-space:pre-wrap;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5;word-break:break-all;opacity:.85;}
+.notice-diag:empty{display:none;}
 
 .panel{background:var(--card);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:0 0 18px;}
 .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px;}
@@ -160,7 +153,8 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
   <p class="page-sub">Two ways in. Start from localities to see which declarations touched each one, or start from a disaster to list every county it designated. FEMA numbers a storm separately in each state, so declaration mode can group those pieces into one event. Both work across state lines.</p>
 
   <div class="notice" id="previewNotice" hidden>
-    Showing preview data. The live index has not loaded yet, so this page is running on a built in sample of 21 Southwest Virginia localities. Adding other states works once the site is deployed.
+    Showing preview data. The live index did not load, so this page is running on a built in sample of 21 Southwest Virginia localities. Adding other states works once the index is reachable.
+    <div id="previewDiag" class="notice-diag"></div>
   </div>
 
   <section class="panel" aria-labelledby="pickerTitle">
@@ -264,8 +258,13 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
    SAMPLE_INDEX keeps the layout previewable before deployment. Delete
    the sample block and preview notice once the pipeline is live.
 ------------------------------------------------------------------- */
-var INDEX_DIR = "/data/decl-index";
-var MANIFEST_URL = INDEX_DIR + "/manifest.json";
+/* Index location. The manifest is tried at each candidate in order, so the
+   page works from a custom domain root, from a project subpath, and from a
+   directory style URL without editing this file. The first candidate that
+   answers wins and is reused for the state files. */
+var INDEX_CANDIDATES = ["data/decl-index", "../data/decl-index", "/data/decl-index"];
+var INDEX_DIR = INDEX_CANDIDATES[0];
+var loadDiag = [];
 var DEFAULT_STATES = ["VA"];
 var DEFAULT_DECL_TYPES = ["DR"];
 
@@ -375,11 +374,34 @@ function reconcileFilters(){
 }
 
 /* ---------------------------- LOADING -------------------------- */
+function resolveIndex(file){
+  try{ return new URL(INDEX_DIR+"/"+file, document.baseURI).href; }
+  catch(e){ return INDEX_DIR+"/"+file; }
+}
+
+function tryManifest(i){
+  if(i>=INDEX_CANDIDATES.length) return Promise.reject(new Error("no manifest"));
+  var base=INDEX_CANDIDATES[i], url;
+  try{ url=new URL(base+"/manifest.json", document.baseURI).href; }
+  catch(e){ loadDiag.push(base+"/manifest.json  bad URL"); return tryManifest(i+1); }
+  return fetch(url,{cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+    .then(function(m){
+      if(!m || !(m.states||[]).length) throw new Error("manifest lists no states");
+      INDEX_DIR=base;
+      return m;
+    })
+    .catch(function(err){
+      loadDiag.push(url+"  "+((err && err.message) || "request failed"));
+      return tryManifest(i+1);
+    });
+}
+
 function fetchState(st){
   if(loadedStates[st]) return Promise.resolve(loadedStates[st]);
   if(isSample) return Promise.reject(new Error("sample mode"));
   $("stateLoading").hidden=false;
-  return fetch(INDEX_DIR+"/"+st+".json",{cache:"no-cache"})
+  return fetch(resolveIndex(st+".json"),{cache:"no-cache"})
     .then(function(r){ if(!r.ok) throw new Error("no file for "+st); return r.json(); })
     .then(function(idx){ loadedStates[st]=idx; return idx; })
     .finally(function(){ $("stateLoading").hidden=true; });
@@ -795,6 +817,15 @@ function finishBoot(u){
 function bootSample(u){
   isSample=true;
   $("previewNotice").hidden=false;
+  var diag=$("previewDiag");
+  if(diag){
+    var lines=loadDiag.slice();
+    if(location.protocol==="file:"){
+      lines.unshift("Page opened as a local file. Browsers block fetch on file URLs, so the index cannot load until the page is served over http.");
+    }
+    lines.unshift("Tried:");
+    diag.textContent=lines.join("\n");
+  }
   loadedStates={VA:SAMPLE_INDEX};
   availableStates=[{state:"VA",jurisdictions:SAMPLE_INDEX.jurisdictions.length,declarations:SAMPLE_INDEX.declarations.length}];
   finishBoot(u);
@@ -803,8 +834,7 @@ function bootSample(u){
 function init(){
   wireStatic();
   var u=parseUrl();
-  fetch(MANIFEST_URL,{cache:"no-cache"})
-    .then(function(r){ if(!r.ok) throw new Error("no manifest"); return r.json(); })
+  tryManifest(0)
     .then(function(m){
       availableStates=(m.states||[]).filter(function(a){ return a && a.state; });
       if(!availableStates.length) throw new Error("empty manifest");
