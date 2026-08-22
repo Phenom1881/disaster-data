@@ -1,0 +1,76 @@
+name: Build compare index
+
+# Builds the per state declaration index that powers the Compare page.
+# Runs weekly on its own schedule, and can be run by hand from the
+# Actions tab (the "Run workflow" button) so the folder fills right away.
+
+on:
+  schedule:
+    # Sunday 09:00 UTC. Set this a couple of hours away from your main
+    # build so the two jobs do not try to push at the same moment.
+    - cron: "0 9 * * 0"
+  workflow_dispatch: {}
+
+# Only one copy of this job runs at a time. A second trigger waits rather
+# than racing the first.
+concurrency:
+  group: build-compare-index
+  cancel-in-progress: false
+
+# The job needs to push the generated JSON back to the repo.
+permissions:
+  contents: write
+
+env:
+  # Where the JSON should land. This must match where your other built
+  # pages are committed, the same root compare.html sits in, so the site
+  # serves it at /data/decl-index/. If your pages live under docs/, set
+  # this to docs/data/decl-index instead.
+  OUT_DIR: data/decl-index
+  # Path to the generator in the repo. Adjust if it does not sit at the
+  # repo root next to build.py.
+  GEN_SCRIPT: gen_decl_index.py
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build the declaration index
+        # The generator uses only the Python standard library, so there
+        # is nothing to pip install. The first run pulls the full
+        # declarations dataset from OpenFEMA (roughly 68,000 rows) and
+        # takes a couple of minutes longer than later runs.
+        run: python "${GEN_SCRIPT}" --out "${OUT_DIR}"
+
+      - name: Commit and push the index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${OUT_DIR}"
+          if git diff --cached --quiet; then
+            echo "No changes to the index, nothing to commit."
+            exit 0
+          fi
+          git commit -m "Rebuild compare declaration index"
+          # If the main build pushed while this job ran, rebase this one
+          # commit on top and try again. The two jobs touch different
+          # files, so the rebase is clean. Retries a few times, then fails
+          # loudly rather than silently dropping the update.
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "Pushed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "Push attempt ${attempt} failed, retrying in 5s."
+            sleep 5
+          done
+          echo "Could not push after several attempts." >&2
+          exit 1

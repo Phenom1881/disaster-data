@@ -1,0 +1,40 @@
+name: Refresh FEMA Data
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'   # Every Sunday at 6am UTC
+  workflow_dispatch:        # Allow manual trigger
+
+# Grant the GITHUB_TOKEN write access to repo contents
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run build
+        run: python build.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html data.js
+          git diff --staged --quiet || git commit -m "Auto-refresh FEMA data $(date -u +%Y-%m-%d)"
+          git push
