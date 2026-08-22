@@ -35,6 +35,14 @@ jobs:
         run: |
           if [ -f gen_jurisdiction_pages.py ]; then python -u gen_jurisdiction_pages.py; else python -u "gen jurisdiction pages.py"; fi
 
+      - name: Build compare index
+        # Writes one JSON per state plus manifest.json into data/decl-index.
+        # Uses only the Python standard library, so no extra pip install.
+        # The first run pulls the full declarations dataset from OpenFEMA
+        # (roughly 68,000 rows) and takes a couple of minutes longer.
+        run: |
+          if [ -f gen_decl_index.py ]; then python -u gen_decl_index.py --out data/decl-index; else python -u "gen decl index.py" --out data/decl-index; fi
+
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
