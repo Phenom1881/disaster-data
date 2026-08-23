@@ -341,6 +341,7 @@ function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"
 function jurByFips(fips){ for(var i=0;i<DATA.jurisdictions.length;i++){ if(DATA.jurisdictions[i].fips===fips) return DATA.jurisdictions[i]; } return null; }
 function todayISO(){ var d=new Date(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0"); return d.getFullYear()+"-"+m+"-"+day; }
 function declType(d){ if(d.type) return d.type; var m=String(d.id||"").match(/^([A-Z]{2})-/); return m?m[1]:"DR"; }
+function cityCounty(fips){ var c=parseInt(String(fips).slice(2),10); return c>=510?"City":"County"; }
 function eventKey(d){ return d.eventId || d.id; }
 function loadedList(){ return Object.keys(loadedStates).sort(function(a,b){ return stName(a).localeCompare(stName(b)); }); }
 function grouping(){ return $("groupEvents").checked; }
@@ -351,7 +352,7 @@ function rebuildData(){
   var jset={}, declMap={};
   loadedList().forEach(function(st){
     var idx=loadedStates[st];
-    (idx.jurisdictions||[]).forEach(function(j){ if(!jset[j.fips]) jset[j.fips]={fips:j.fips,name:j.name,type:j.type,state:st}; });
+    (idx.jurisdictions||[]).forEach(function(j){ if(!jset[j.fips]) jset[j.fips]={fips:j.fips,name:j.name,type:(j.type||cityCounty(j.fips)),state:st}; });
     (idx.declarations||[]).forEach(function(d){
       var ex=declMap[d.id];
       if(!ex){
