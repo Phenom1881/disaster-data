@@ -145,6 +145,20 @@ def parse_area(designated_area):
     return (raw, "")
 
 
+def city_or_county(fips):
+    """
+    Fallback jurisdiction type from the FIPS when designatedArea did not
+    carry a '(City)' / '(County)' tag. Independent cities use county codes
+    510 and up (Virginia's cities, plus Baltimore, St. Louis, Carson City);
+    real counties top out at 507 (Texas), so the split is clean.
+    """
+    try:
+        code = int(str(fips)[2:])
+    except (ValueError, TypeError):
+        return "County"
+    return "City" if code >= 510 else "County"
+
+
 def pad(value, width):
     """FIPS codes arrive as strings from JSON and as ints from CSV."""
     if value is None:
@@ -339,6 +353,11 @@ def build_indexes(records, decl_types=None, jurisdiction_override=None):
 
         juris = sorted(jurisdictions.get(state, {}).values(),
                        key=lambda j: (j["name"], j["fips"]))
+        # FEMA sometimes omits the "(City)" / "(County)" tag, leaving type
+        # blank. Fill it from the FIPS so every jurisdiction is labeled.
+        for j in juris:
+            if not j.get("type"):
+                j["type"] = city_or_county(j["fips"])
         out[state] = OrderedDict([
             ("state", state),
             ("generated", today),
