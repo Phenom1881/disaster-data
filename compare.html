@@ -94,6 +94,9 @@ a{color:var(--teal);}
 .toggle.is-disabled{opacity:.45;cursor:default;}
 .toggle[hidden]{display:none;}
 .select-inline{font:inherit;font-size:14.5px;padding:8px 9px;border:1px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);max-width:100%;}
+.range-custom{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:10px 0 0;font-size:14.5px;color:var(--muted);}
+.range-custom[hidden]{display:none;}
+.range-custom label{display:flex;align-items:center;gap:8px;}
 
 .result-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 12px;}
 .result-note{font-size:14px;color:var(--muted);margin:0;}
@@ -153,7 +156,7 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
   <p class="page-sub">Two ways in. Start from localities to see which declarations touched each one, or start from a disaster to list every county it designated. FEMA numbers a storm separately in each state, so declaration mode can group those pieces into one event. Both work across state lines.</p>
 
   <div class="notice" id="previewNotice" hidden>
-    Showing preview data. The live index did not load, so this page is running on a built in sample of 21 Southwest Virginia localities. Adding other states works once the index is reachable.
+    Showing preview data. The live index did not load, so this page is running on a built in sample of 21 localities. Adding other states works once the index is reachable.
     <div id="previewDiag" class="notice-diag"></div>
   </div>
 
@@ -197,6 +200,13 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
     <span class="field-label">Incident type</span>
     <div class="chips" id="typeChips"></div>
 
+    <span class="field-label">Time range</span>
+    <div class="chips" id="rangeChips"></div>
+    <div class="range-custom" id="rangeCustom" hidden>
+      <label>From <select class="select-inline" id="rangeFrom"></select></label>
+      <label>to <select class="select-inline" id="rangeTo"></select></label>
+    </div>
+
     <div class="toggle-row">
       <label class="toggle" id="groupEventsWrap" hidden>
         <input type="checkbox" id="groupEvents" checked>
@@ -235,7 +245,9 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
     <div id="output"></div>
 
     <div class="actions">
-      <button class="btn btn-primary" type="button" id="dlCsv">Download CSV</button>
+      <button class="btn btn-primary" type="button" id="genReport">Generate report</button>
+      <button class="btn" type="button" id="dlXlsx">Report (Excel)</button>
+      <button class="btn" type="button" id="dlCsv">Download CSV</button>
       <button class="btn" type="button" id="copyTsv">Copy for Sheets</button>
       <button class="btn btn-quiet" type="button" id="copyLink">Copy share link</button>
     </div>
@@ -317,6 +329,9 @@ var prevPresentTypes = [];
 var prevPresentDecl = [];
 var view = "grid";
 var searchTerm = "";
+var rangeSel = "all";      // all | 5 | 10 | 15 | 20 | custom
+var customFrom = null;     // year int or null
+var customTo = null;       // year int or null
 var booted = false;
 
 /* ---------------------------- HELPERS -------------------------- */
@@ -419,10 +434,13 @@ function removeState(st){
 
 /* ---------------------------- SELECTIONS ----------------------- */
 function declCandidates(){
+  var rb=rangeBounds();
   return DATA.declarations.filter(function(d){
     if(activeDeclTypes.indexOf(declType(d))===-1) return false;
     if(activeTypes.indexOf(d.incidentType)===-1) return false;
     if($("noStatewide").checked && d.statewide) return false;
+    if(rb.from!=null && (d.year||0) < rb.from) return false;
+    if(rb.to!=null && (d.year||0) > rb.to) return false;
     return true;
   }).sort(function(a,b){ return (b.number||0)-(a.number||0); });
 }
@@ -634,6 +652,64 @@ function renderTypeChips(){
   });
 }
 
+/* ---------------------------- TIME RANGE ---------------------- */
+function rangeBounds(){
+  if(rangeSel==="custom") return {from:customFrom, to:customTo};
+  if(rangeSel==="all") return {from:null, to:null};
+  var n=parseInt(rangeSel,10);
+  if(!n) return {from:null, to:null};
+  return {from:new Date().getFullYear()-n+1, to:null};
+}
+function rangeLabel(){
+  var rb=rangeBounds();
+  if(rb.from==null && rb.to==null) return "";
+  if(rb.from!=null && rb.to!=null) return rb.from===rb.to ? String(rb.from) : rb.from+"\u2013"+rb.to;
+  if(rb.from!=null) return "since "+rb.from;
+  return "through "+rb.to;
+}
+function rangeQuery(){
+  if(rangeSel==="all") return "";
+  if(rangeSel==="custom"){
+    var q="";
+    if(customFrom) q+="&from="+customFrom;
+    if(customTo) q+="&to="+customTo;
+    return q;
+  }
+  return "&range="+rangeSel;
+}
+function dataYearRange(){
+  var min=Infinity, max=-Infinity;
+  DATA.declarations.forEach(function(d){ var y=d.year||0; if(y){ if(y<min)min=y; if(y>max)max=y; } });
+  if(!isFinite(min)){ var cy=new Date().getFullYear(); return {min:cy-30, max:cy}; }
+  return {min:min, max:max};
+}
+function fillYearSelect(id, val, blankLabel, years){
+  $(id).innerHTML='<option value="">'+blankLabel+'</option>'+years.map(function(y){
+    return '<option value="'+y+'"'+(String(val)===String(y)?' selected':'')+'>'+y+'</option>';
+  }).join("");
+}
+function ensureCustomYears(){
+  var r=dataYearRange(), years=[];
+  for(var y=r.max; y>=r.min; y--) years.push(y);
+  fillYearSelect("rangeFrom", customFrom, "Earliest", years);
+  fillYearSelect("rangeTo", customTo, "Latest", years);
+}
+function renderRangeChips(){
+  var opts=[{v:"all",label:"All time"},{v:"5",label:"Last 5 yrs"},{v:"10",label:"Last 10 yrs"},{v:"15",label:"Last 15 yrs"},{v:"20",label:"Last 20 yrs"},{v:"custom",label:"Custom"}];
+  $("rangeChips").innerHTML=opts.map(function(o){
+    return '<button class="chip" type="button" data-range="'+o.v+'" aria-pressed="'+(rangeSel===o.v)+'">'+esc(o.label)+'</button>';
+  }).join("");
+  $("rangeChips").querySelectorAll(".chip").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      rangeSel=btn.getAttribute("data-range");
+      renderAll();
+    });
+  });
+  var custom = rangeSel==="custom";
+  $("rangeCustom").hidden = !custom;
+  if(custom) ensureCustomYears();
+}
+
 /* ---------------------------- RENDER: MATRIX ------------------- */
 function renderGrid(rows, decls){
   var max=rows.reduce(function(m,r){ return Math.max(m,r.total); },0)||1;
@@ -664,6 +740,7 @@ function renderAll(){
   renderStateChips();
   renderDeclTypeChips();
   renderTypeChips();
+  renderRangeChips();
   renderPicker();
 
   var decls, rows;
@@ -671,12 +748,12 @@ function renderAll(){
     if(!selected.length){ $("output").innerHTML='<div class="empty-state">Select one or more localities to build the matrix.</div>'; $("resultNote").textContent=""; $("sourceLine").textContent=""; return; }
     decls=filteredDecls(); rows=selectedRows(decls);
     var ns=countStates(rows);
-    $("resultNote").textContent=rows.length+" localities"+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations";
+    $("resultNote").textContent=rows.length+" localities"+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations"+(rangeLabel()?"  \u00b7  "+rangeLabel():"");
   } else {
     if(!selectedDecls.length){ $("output").innerHTML='<div class="empty-state">Select a disaster to list every county it designated. Pick more than one to see where they overlap.</div>'; $("resultNote").textContent=""; $("sourceLine").textContent=""; return; }
     decls=selectedDeclObjs(); rows=countyRows(decls);
     var ns2=countStates(rows);
-    $("resultNote").textContent=rows.length+" counties"+(ns2>1?" across "+ns2+" states":"")+", "+decls.length+" declarations selected";
+    $("resultNote").textContent=rows.length+" counties"+(ns2>1?" across "+ns2+" states":"")+", "+decls.length+" declarations selected"+(rangeLabel()?"  \u00b7  "+rangeLabel():"");
   }
 
   $("sourceLine").innerHTML="Source: DisasterData.IO utilizes OpenFEMA.org, FEMA.gov<br>Generated "+esc(todayISO());
@@ -693,7 +770,7 @@ function buildTable(sep){
   var ns=countStates(rows);
   var out=[];
   out.push(q(title));
-  out.push(q(rows.length+" "+(mode==="loc"?"localities":"counties")+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations"));
+  out.push(q(rows.length+" "+(mode==="loc"?"localities":"counties")+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations"+(rangeLabel()?", "+rangeLabel():"")));
   out.push(q("Source: DisasterData.IO utilizes OpenFEMA.org, FEMA.gov"));
   out.push(q("Generated: "+todayISO()));
   out.push("");
@@ -732,12 +809,146 @@ function shareLink(){
   var url;
   if(mode==="loc"){
     if(!selected.length){ toast("Nothing selected yet"); return; }
-    url=base+"?fips="+selected.join(",");
+    url=base+"?fips="+selected.join(",")+rangeQuery();
   } else {
     if(!selectedDecls.length){ toast("Nothing selected yet"); return; }
-    url=base+"?mode=decl&states="+states+"&decl="+selectedDecls.join(",")+(grouping()?"":"&group=0");
+    url=base+"?mode=decl&states="+states+"&decl="+selectedDecls.join(",")+(grouping()?"":"&group=0")+rangeQuery();
   }
   copyText(url,"Share link copied");
+}
+
+/* ---------------------------- REPORT --------------------------- */
+function shortName(t){
+  var s=String(t).replace(/^Virginia\s+/i,"");
+  if(s.length>26){ s=s.slice(0,24).replace(/[\s,]+$/,"")+"\u2026"; }
+  return s;
+}
+function reportPayload(){
+  var decls, rows, title, rowKind, rowLabel, footLabel, filebase;
+  if(mode==="loc"){ decls=filteredDecls(); rows=selectedRows(decls); title="Federal Disaster Declarations by Locality"; rowKind="localities"; rowLabel="Locality"; footLabel="Localities affected"; filebase="disaster-declarations-by-locality"; }
+  else { decls=selectedDeclObjs(); rows=countyRows(decls); title="Counties Designated by Declaration"; rowKind="counties"; rowLabel="County"; footLabel="Counties designated"; filebase="counties-designated-by-declaration"; }
+  if(!rows.length || !decls.length) return null;
+  var ns=countStates(rows);
+  return {
+    title:title,
+    subtitle:rows.length+" "+rowKind+(ns>1?" across "+ns+" states":"")+", "+decls.length+" declarations"+(rangeLabel()?", "+rangeLabel():""),
+    rowLabel:rowLabel, footLabel:footLabel, rowKind:rowKind, multiState:ns>1,
+    source:"Source: DisasterData.IO utilizes OpenFEMA.org, FEMA.gov", generated:todayISO(), filebase:filebase,
+    declarations:decls.map(function(d){ return {id:d.id, title:d.title, short:shortName(d.title)}; }),
+    localities:rows.map(function(r){ return {name:r.name, type:r.type||"", state:r.state||"", m:decls.map(function(d){ return d.fips.indexOf(r.fips)!==-1?1:0; })}; })
+  };
+}
+function reportTotals(P){
+  var rowTot=P.localities.map(function(l){ return l.m.reduce(function(a,b){return a+b;},0); });
+  var colTot=P.declarations.map(function(_,j){ return P.localities.reduce(function(a,l){ return a+l.m[j]; },0); });
+  var grand=rowTot.reduce(function(a,b){return a+b;},0);
+  return {rowTot:rowTot, colTot:colTot, grand:grand};
+}
+function renderReportSheet(P){
+  var t=reportTotals(P), rowTot=t.rowTot, colTot=t.colTot, grand=t.grand;
+  var head='<tr><th class="loc-h">'+esc(P.rowLabel)+'</th>'+(P.multiState?'<th class="st-h">State</th>':'')+'<th class="type-h">Type</th>';
+  P.declarations.forEach(function(d){ head+='<th class="decl-h"><div class="v"><span class="id">'+esc(d.id)+'</span> \u00b7 '+esc(d.short)+'</div></th>'; });
+  head+='<th class="tot-h">Total decl.</th>';
+  var body='';
+  P.localities.forEach(function(l,i){
+    body+='<tr><td class="loc">'+esc(l.name)+'</td>'+(P.multiState?'<td class="st">'+esc(l.state)+'</td>':'')+'<td class="type">'+esc(l.type)+'</td>';
+    l.m.forEach(function(v){ body+='<td>'+(v?'<span class="hit">\u2715</span>':'')+'</td>'; });
+    body+='<td class="rowtot">'+rowTot[i]+'</td></tr>';
+  });
+  var foot='<tr><td class="flabel">'+esc(P.footLabel)+'</td>'+(P.multiState?'<td></td>':'')+'<td></td>';
+  colTot.forEach(function(c){ foot+='<td>'+c+'</td>'; });
+  foot+='<td class="grand">'+grand+'</td></tr>';
+  var key='';
+  P.declarations.forEach(function(d){ key+='<li><span class="kid">'+esc(d.id)+'</span> \u2014 <span class="kn">'+esc(d.title)+'</span></li>'; });
+  var meta='<span><b>'+P.localities.length+'</b> '+esc(P.rowKind)+'</span>'+
+           '<span><b>'+P.declarations.length+'</b> declarations</span>'+
+           '<span><b>'+grand+'</b> total designations</span>'+
+           '<span>Generated <b>'+esc(P.generated)+'</b></span>';
+  return '<div class="sheet"><div class="masthead">'+
+    '<div class="eyebrow">DisasterData<span class="dot">.</span>IO &nbsp;\u00b7&nbsp; Declaration Report</div>'+
+    '<h1>'+esc(P.title)+'</h1><p class="subtitle">'+esc(P.subtitle)+'</p>'+
+    '<div class="meta">'+meta+'</div></div>'+
+    '<div class="legend"><span class="mark">\u2715</span> designated under this declaration</div>'+
+    '<div class="grid-wrap"><table><thead>'+head+'</thead><tbody>'+body+'</tbody><tfoot>'+foot+'</tfoot></table></div>'+
+    '<div class="key"><h2>Declarations included</h2><ol>'+key+'</ol></div>'+
+    '<div class="foot">'+esc(P.source)+'. This product uses the FEMA OpenFEMA API but is not endorsed by FEMA. A mark means the jurisdiction was named in that declaration; a blank cell means it was not, including declarations that reached the state but not that jurisdiction.</div>'+
+    '</div>';
+}
+function reportCSS(){
+  return ":root{--app:#cdd7d4;--sheet:#fbf9f2;--ink:#17211f;--muted:#5d6a66;--teal:#004c53;--teal-deep:#00363b;--line:#e7e1d3;--line-strong:#cec7b6;--tint:#eef1ec;--even:#f6f3ea;}"+
+  "*{box-sizing:border-box}html,body{margin:0}body{background:var(--app);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:28px 18px 64px;}"+
+  ".toolbar{max-width:1040px;margin:0 auto 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}.toolbar .tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin-right:auto;}"+
+  ".rbtn{appearance:none;border:1px solid var(--teal);background:var(--teal);color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:2px;cursor:pointer;}.rbtn:hover{background:var(--teal-deep);border-color:var(--teal-deep)}"+
+  ".sheet{max-width:1040px;margin:0 auto;background:var(--sheet);border:1px solid var(--line-strong);box-shadow:0 1px 0 rgba(0,0,0,.04),0 18px 40px -24px rgba(0,54,59,.4);padding:44px 46px 40px;}"+
+  ".masthead{border-bottom:2px solid var(--teal);padding-bottom:18px;margin-bottom:8px}.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);font-weight:700;}.eyebrow .dot{color:var(--teal-deep)}"+
+  "h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:34px;line-height:1.08;margin:12px 0 6px;letter-spacing:-.005em;}.subtitle{font-size:15px;color:var(--muted);font-weight:500;margin:0}"+
+  ".meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:16px;font-size:12px;color:var(--muted);}.meta b{color:var(--ink);font-weight:600}"+
+  ".legend{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:20px 0 10px;}.legend .mark{color:var(--teal);font-weight:700}"+
+  ".grid-wrap{overflow-x:auto;border:1px solid var(--line-strong)}table{border-collapse:collapse;width:100%;font-size:12.5px}thead th{background:var(--teal);color:#fff;font-weight:600;vertical-align:bottom}th,td{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}th:last-child,td:last-child{border-right:0}"+
+  ".loc-h{text-align:left;padding:0 12px 10px;position:sticky;left:0;z-index:3;background:var(--teal);min-width:120px;}.st-h,.type-h{text-align:left;padding:0 10px 10px;white-space:nowrap}"+
+  ".decl-h{padding:8px 0 8px;height:186px;width:34px}.decl-h .v{writing-mode:vertical-rl;transform:rotate(180deg);margin:0 auto;line-height:1.15;font-size:11px;white-space:nowrap;}.decl-h .v .id{font-weight:700;color:#cfe0e2}.tot-h{padding:0 8px 10px;width:52px;line-height:1.1}"+
+  "tbody td{padding:7px 10px;text-align:center}.loc{text-align:left;font-weight:600;position:sticky;left:0;background:var(--sheet);z-index:2;}.st,.type{text-align:left;color:var(--muted);white-space:nowrap;font-size:11.5px}"+
+  "tbody tr:nth-child(even) .loc{background:var(--even)}tbody tr:nth-child(even) td:not(.loc){background:var(--even)}.hit{color:var(--teal);font-weight:700;font-size:14px}.rowtot{font-weight:700;background:var(--tint) !important;color:var(--teal-deep)}"+
+  "tfoot td{padding:9px 10px;text-align:center;font-weight:700;background:var(--teal);color:#fff;border-bottom:0}tfoot .flabel{text-align:left;position:sticky;left:0;background:var(--teal);z-index:2}tfoot .grand{background:var(--teal-deep);color:#fff}"+
+  ".key{margin-top:26px}.key h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line-strong);}"+
+  ".key ol{margin:0;padding:0;list-style:none;columns:2;column-gap:40px;font-size:12.5px}.key li{break-inside:avoid;margin:0 0 7px;color:var(--ink)}.key li .kid{font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums}.key li .kn{color:var(--muted)}"+
+  ".foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.5;}"+
+  "@media (max-width:640px){.sheet{padding:28px 20px}h1{font-size:27px}.key ol{columns:1}}"+
+  "@media print{@page{size:landscape;margin:.45in}body{background:#fff;padding:0}.toolbar{display:none}.sheet{box-shadow:none;border:0;max-width:none;padding:0}.grid-wrap{overflow:visible;border:1px solid #000}thead{display:table-header-group}thead th,tfoot td{background:var(--teal) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}tfoot .grand{background:var(--teal-deep) !important}.hit{color:var(--teal) !important}.loc,.rowtot,tbody tr:nth-child(even) td{background:#fff !important}.rowtot{color:var(--teal-deep) !important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}";
+}
+function buildReportDoc(P){
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'+
+    '<meta name="viewport" content="width=device-width, initial-scale=1">'+
+    '<title>'+esc(P.title)+' \u2014 Report<\/title>'+
+    '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">'+
+    '<style>'+reportCSS()+'<\/style></head><body>'+
+    '<div class="toolbar"><span class="tag">'+esc(P.title)+'</span>'+
+    '<button class="rbtn" onclick="window.print()">Print / Save as PDF</button></div>'+
+    renderReportSheet(P)+
+    '<\/body></html>';
+}
+function openReport(){
+  var has=mode==="loc"?selected.length:selectedDecls.length;
+  if(!has){ toast("Nothing selected yet"); return; }
+  var P=reportPayload();
+  if(!P){ toast("Nothing matches the current filters"); return; }
+  var w=window.open("","_blank");
+  if(!w){ toast("Allow pop-ups to open the report"); return; }
+  w.document.open(); w.document.write(buildReportDoc(P)); w.document.close();
+}
+function loadSheetJS(cb){
+  if(window.XLSX){ cb(); return; }
+  var s=document.createElement("script");
+  s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+  s.onload=function(){ cb(); };
+  s.onerror=function(){ toast("Could not load the Excel library"); };
+  document.head.appendChild(s);
+}
+function downloadXlsx(){
+  var has=mode==="loc"?selected.length:selectedDecls.length;
+  if(!has){ toast("Nothing selected yet"); return; }
+  var P=reportPayload();
+  if(!P){ toast("Nothing matches the current filters"); return; }
+  loadSheetJS(function(){
+    var t=reportTotals(P), rowTot=t.rowTot, colTot=t.colTot, grand=t.grand;
+    var aoa=[];
+    aoa.push([P.title]); aoa.push([P.subtitle]); aoa.push([P.source]); aoa.push(["Generated: "+P.generated]); aoa.push([]);
+    var header=[P.rowLabel]; if(P.multiState) header.push("State"); header.push("Type");
+    P.declarations.forEach(function(d){ header.push(d.id+"  "+d.title); }); header.push("Total Declarations");
+    aoa.push(header);
+    P.localities.forEach(function(l,i){
+      var row=[l.name]; if(P.multiState) row.push(l.state); row.push(l.type);
+      l.m.forEach(function(v){ row.push(v?"X":""); }); row.push(rowTot[i]); aoa.push(row);
+    });
+    var foot=[P.footLabel]; if(P.multiState) foot.push(""); foot.push("");
+    colTot.forEach(function(c){ foot.push(c); }); foot.push(grand); aoa.push(foot);
+    var ws=XLSX.utils.aoa_to_sheet(aoa);
+    var widths=[{wch:16}]; if(P.multiState) widths.push({wch:8}); widths.push({wch:8});
+    P.declarations.forEach(function(){ widths.push({wch:12}); }); widths.push({wch:16}); ws["!cols"]=widths;
+    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Declaration Matrix");
+    XLSX.writeFile(wb, P.filebase+"-"+P.generated+".xlsx"); toast("Excel downloaded");
+  });
 }
 
 /* ---------------------------- MODE ----------------------------- */
@@ -765,7 +976,10 @@ function parseUrl(){
   var states=(p.get("states")||"").split(",").map(function(s){ return s.trim().toUpperCase(); }).filter(Boolean);
   var m=p.get("mode")==="decl"?"decl":"loc";
   var group=p.get("group")!=="0";
-  return {mode:m, fips:fips, decl:decl, states:states, group:group};
+  var range=(p.get("range")||"").trim();
+  var from=(p.get("from")||"").trim();
+  var to=(p.get("to")||"").trim();
+  return {mode:m, fips:fips, decl:decl, states:states, group:group, range:range, from:from, to:to};
 }
 function statesFromFips(list){ var set={}; list.forEach(function(f){ var st=FIPS_ST[f.slice(0,2)]; if(st) set[st]=1; }); return Object.keys(set); }
 
@@ -797,11 +1011,18 @@ function wireStatic(){
   $("dlCsv").addEventListener("click", download);
   $("copyTsv").addEventListener("click", function(){ var has=mode==="loc"?selected.length:selectedDecls.length; if(!has){ toast("Nothing selected yet"); return; } copyText(buildTable("\t"),"Copied. Paste into a sheet."); });
   $("copyLink").addEventListener("click", shareLink);
+  $("genReport").addEventListener("click", openReport);
+  $("dlXlsx").addEventListener("click", downloadXlsx);
+  $("rangeFrom").addEventListener("change", function(){ customFrom=this.value?parseInt(this.value,10):null; renderAll(); });
+  $("rangeTo").addEventListener("change", function(){ customTo=this.value?parseInt(this.value,10):null; renderAll(); });
 }
 
 function finishBoot(u){
   rebuildData();
   if(!u.group) $("groupEvents").checked=false;
+  var validRange={all:1,"5":1,"10":1,"15":1,"20":1};
+  if(u.range && validRange[u.range]) rangeSel=u.range;
+  if(u.from || u.to){ rangeSel="custom"; customFrom=u.from?parseInt(u.from,10):null; customTo=u.to?parseInt(u.to,10):null; }
   if(u.mode==="decl"){
     setMode("decl");
     var present={}; DATA.declarations.forEach(function(d){ present[d.id]=1; });
