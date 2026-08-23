@@ -14,7 +14,7 @@ Pilot is scoped to one state (STATE_AB below) but written to generalize.
 import os, re, json, html, datetime, hashlib
 from dd_classify import classify
 
-SITE = "https://www.disasterdata.io"
+SITE = "https://disasterdata.io"
 OUT_ROOT = os.environ.get("DD_OUT", ".")
 SRC_ROOT = os.environ.get("DD_SRC", OUT_ROOT)
 STATE_AB = os.environ.get("DD_STATE", "VA").upper()
@@ -39,6 +39,20 @@ def load_data():
     except (Exception, SystemExit):
         pa_county = {}
     return _grab_js(t, "LOCALITY_DATA"), _grab_js(t, "BROWSE"), _grab_js(t, "STATE_NAMES"), pa_county
+
+def load_pa_timing():
+    """Per (county, disaster) obligation timing written by build.py to pa-timing.json.
+    {ST: {county: {disasterNumber: [declDate, firstObl, lastObl, obl, topCat]}}}.
+    Kept out of data.js so the client bundle stays small; baked into each static page
+    at build time here. Returns {} when the file is absent (feature simply skips)."""
+    p = os.path.join(SRC_ROOT, "pa-timing.json")
+    if not os.path.exists(p):
+        return {}
+    try:
+        with open(p, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
 
 # ---------------------------------------------------------------- helpers
 def fy_of(iso):
@@ -526,6 +540,107 @@ def summary_html(j):
 
     return '<section class="jsummary"><p>%s</p></section>' % " ".join(sents)
 
+def pa_timing_html(j):
+    """How fast the money came: per-disaster federal obligation timing for this
+    jurisdiction, from Grant Award Activities (obligation dates). Additive to the
+    category table above. Returns "" when there is no timing for this jurisdiction."""
+    timing = j.get("pa_timing") or {}
+    if not timing:
+        return ""
+    e = html.escape
+    # disaster number -> readable name, from this jurisdiction's own declaration record
+    meta = {}
+    for r in j.get("hmp", []):
+        m = re.search(r"(\d+)", r.get("femaDeclarationString", ""))
+        if m:
+            meta[m.group(1)] = pretty_title(r.get("declarationTitle", "")) or r.get("incidentType", "")
+
+    def _days(d1, d2):
+        try:
+            a = datetime.datetime.strptime(d1, "%Y-%m-%d")
+            b = datetime.datetime.strptime(d2, "%Y-%m-%d")
+            return (b - a).days
+        except Exception:
+            return None
+
+    rows = []
+    for dn, v in timing.items():
+        decl, first, last, obl, _tc = (list(v) + ["", "", "", 0, ""])[:5]
+        if not decl or not first:
+            continue
+        fd = _days(decl, first)
+        ld = _days(decl, last)
+        if fd is None or fd < 0:
+            continue
+        if ld is None or ld < fd:
+            ld = fd
+        rows.append({"decl": decl, "first": fd, "last": ld,
+                     "obl": float(obl or 0), "name": meta.get(str(dn), "DR-" + str(dn))})
+    if not rows:
+        return ""
+    rows.sort(key=lambda r: r["decl"], reverse=True)
+    rows = rows[:6]
+
+    maxdays = max((r["last"] for r in rows), default=365)
+    years = max(1, (maxdays + 364) // 365)
+    scale = years * 365
+    fs = sorted(r["first"] for r in rows)
+    n = len(fs)
+    med = fs[n // 2] if n % 2 else (fs[n // 2 - 1] + fs[n // 2]) // 2
+
+    def _money(x):
+        x = float(x or 0)
+        if x >= 1e6:
+            return "$%.1fM" % (x / 1e6)
+        if x >= 1e3:
+            return "$%.0fK" % (x / 1e3)
+        return "$%d" % int(x)
+
+    bars = []
+    for r in rows:
+        gapw  = r["first"] / scale * 100.0
+        floww = (r["last"] - r["first"]) / scale * 100.0
+        bars.append(
+            '<div class="ft-row"><div class="ft-top">'
+            '<span class="ft-name">%s <span class="ft-date">%s</span></span>'
+            '<span class="ft-val">%s</span></div>'
+            '<div class="ft-track"><span class="ft-gap" style="width:%.1f%%"></span>'
+            '<span class="ft-flow" style="left:%.1f%%;width:%.1f%%"></span></div>'
+            '<div class="ft-meta"><b>%d days</b> to first federal obligation</div></div>'
+            % (e(r["name"]), e(r["decl"][:4]), _money(r["obl"]),
+               gapw, gapw, floww, r["first"]))
+    ticks = "".join('<span style="left:%.1f%%">%d yr</span>'
+                    % (yy * 365.0 / scale * 100.0, yy) for yy in range(1, years + 1))
+
+    css = ("<style>"
+           ".ft-list{display:grid;gap:1px;background:#e2dccb;border:1px solid #cec7b6;"
+           "border-radius:8px;overflow:hidden;margin:.6rem 0 .3rem}"
+           ".ft-row{background:#f6f1e7;padding:.7rem .9rem}"
+           ".ft-top{display:flex;justify-content:space-between;gap:.8rem;align-items:baseline}"
+           ".ft-name{font-size:.92rem;color:#17211f;font-weight:600}"
+           ".ft-date{color:#6b6357;font-weight:400}"
+           ".ft-val{font-family:Fraunces,Georgia,serif;font-size:1rem;color:#004c53}"
+           ".ft-track{position:relative;height:11px;margin:.5rem 0 .35rem;background:#ece7d8;"
+           "border:1px solid #e2dccb;border-radius:6px;overflow:hidden}"
+           ".ft-gap{position:absolute;top:0;left:0;height:100%;background:#c85c2e}"
+           ".ft-flow{position:absolute;top:0;height:100%;background:#004c53}"
+           ".ft-meta{font-size:.72rem;color:#6b6357}"
+           ".ft-meta b{color:#c85c2e}"
+           ".ft-axis{position:relative;height:1.1rem;margin:.15rem .9rem 0;font-size:.66rem;color:#6b6357}"
+           ".ft-axis span{position:absolute;transform:translateX(-50%)}"
+           ".ft-axis span:first-child{transform:none}"
+           "</style>")
+
+    return ('<section><h2>Recovery funding, how fast it came</h2>'
+            '<p class="pa-note">For each disaster, the wait from the declaration to the first federal '
+            'obligation (amber), then the federal share obligating after that (teal), on a shared '
+            '%d-year scale. Typical wait to the first obligation here: about %d days. An obligation is '
+            'the federal share committed to the recipient state, not funds disbursed to the locality, '
+            'which comes later and is not shown.</p>'
+            '%s<div class="ft-list">%s</div>'
+            '<div class="ft-axis"><span style="left:0">Declared</span>%s</div></section>'
+            % (years, med, css, "".join(bars), ticks))
+
 # ---------------------------------------------------------------- jurisdiction page
 def render_page(j, others):
     e = html.escape
@@ -755,7 +870,7 @@ def render_page(j, others):
             % (robots, e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
                e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, summary_html(j), map_html,
-               pa_breakdown_html(j),
+               pa_breakdown_html(j) + pa_timing_html(j),
                haz, hmp, history,
                method_html(j["kind"], bool(j.get("spans"))), grid, footer_html(), copyjs, mapjs))
 
@@ -859,7 +974,7 @@ def render_stub(name, canonical_url, primary_name, spans):
                footer_html()))
 
 # ---------------------------------------------------------------- build
-def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, tribal_plan):
+def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, tribal_plan):
     """Generate all keep-localities + hub for one state.
     Returns (kept, dropped, stubs_written, js)."""
     global STATE_AB, STATE_NAME, STATE_SLUG, OUT_DIR
@@ -926,6 +1041,22 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, tribal_plan):
             j["pa_top_cat"] = ""
             j["pa_cats"] = {}
 
+    # match PA obligation-timing to jurisdictions, same keying as the PA amounts above
+    pt_lookup, pt_exact = {}, {}
+    for pt_name, pt_val in pa_timing.items():
+        pt_exact[pt_name.strip().lower()] = pt_val
+        pt_lookup[pa_base_kind(pt_name)] = pt_val
+    for j in js:
+        if j["kind"] == "city":
+            _k = (j["name"].replace(" (city)", "").strip().lower(), "city")
+        elif j["kind"] == "county":
+            _k = (pa_base_kind(j["name"])[0], "county")
+        else:
+            _k = (j["name"].strip().lower(), "other")
+        j["pa_timing"] = (pt_lookup.get(_k)
+                          or pt_exact.get(j["name"].replace(" (city)", "").strip().lower())
+                          or {})
+
     for j in js:
         j["thin"] = is_thin(j)
         j["content_hash"] = _content_hash(j)
@@ -948,6 +1079,7 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, tribal_plan):
 
 def main():
     LOCALITY, BROWSE, NAMES, PA_COUNTY = load_data()
+    PA_TIMING = load_pa_timing()
     by_id = {r["femaDeclarationString"]: r for r in BROWSE}
     lcfy = last_complete_fy(BROWSE)
     tribal_plan = build_tribal_plan(LOCALITY, NAMES)
@@ -962,7 +1094,7 @@ def main():
     grand_pages = grand_states = grand_drop = grand_stubs = 0
     all_jurisdictions = []
     for st in targets:
-        kept, dropped, stubs_n, js = build_state(st, LOCALITY, by_id, lcfy, NAMES, PA_COUNTY.get(st, {}), tribal_plan)
+        kept, dropped, stubs_n, js = build_state(st, LOCALITY, by_id, lcfy, NAMES, PA_COUNTY.get(st, {}), PA_TIMING.get(st, {}), tribal_plan)
         grand_drop += dropped
         grand_stubs += stubs_n
         if kept or stubs_n:
