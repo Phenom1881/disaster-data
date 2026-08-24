@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>Example County, Virginia — Disaster Data</title>
+<title>Disaster Data | Example County, Virginia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -108,6 +108,35 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
 .parow.tot{background:var(--paper-3);}
 .parow.tot .pl{font-weight:700;color:var(--ink);text-transform:uppercase;font-size:12px;letter-spacing:.8px;}
 .parow.tot .pv{font-size:20px;color:var(--accent);}
+
+/* funding: how much + how fast (recovery timing) */
+.fhead{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:22px;}
+.fhead .fbig{font-family:var(--serif);font-weight:500;font-size:clamp(22px,3vw,30px);letter-spacing:-.8px;color:var(--accent);font-variant-numeric:tabular-nums;}
+.fhead .fbig small{font-size:.5em;color:var(--ink-3);font-weight:600;letter-spacing:0;margin-left:3px;}
+.fhead .fbl{font-size:13px;color:var(--ink-2);max-width:48ch;line-height:1.5;}
+.fund{margin-top:18px;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
+.frow{background:var(--paper-2);padding:14px 18px;}
+.frow .ftop{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:baseline;}
+.frow .fname{font-size:14px;color:var(--ink-2);}
+.frow .fname b{color:var(--ink);font-weight:600;}
+.frow .fval{font-family:var(--serif);font-weight:500;font-size:17px;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
+.ftrack{position:relative;height:12px;margin-top:11px;background:var(--paper-3);border:1px solid var(--rule);border-radius:7px;overflow:hidden;}
+.ftrack .gap{position:absolute;top:0;height:100%;background:var(--ember);}
+.ftrack .flow{position:absolute;top:0;height:100%;background:var(--accent);}
+.fmeta{display:flex;justify-content:space-between;gap:12px;margin-top:6px;font-size:11.5px;color:var(--ink-3);}
+.fmeta b{color:var(--ember);font-weight:600;}
+.faxisrow{background:var(--paper-2);padding:2px 18px 10px;}
+.faxis{position:relative;height:14px;}
+.faxis span{position:absolute;font-size:10px;color:var(--ink-3);transform:translateX(-50%);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.faxis span:first-child{transform:none;}
+.frow.tot{background:var(--paper-3);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;}
+.frow.tot .fname{font-weight:700;color:var(--ink);text-transform:uppercase;font-size:12px;letter-spacing:.8px;}
+.frow.tot .fval{font-size:20px;color:var(--accent);}
+.flegend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12px;color:var(--ink-3);}
+.flegend span{display:inline-flex;align-items:center;gap:7px;}
+.fsw{width:11px;height:11px;border-radius:3px;display:inline-block;}
+.fnote{margin-top:16px;font-size:12px;color:var(--ink-3);line-height:1.55;border-top:1px solid var(--rule);padding-top:14px;}
+.fnote b{color:var(--ink-2);font-weight:600;}
 
 /* denials (carried over) */
 .compare{margin-top:22px;display:grid;gap:14px;}
@@ -299,21 +328,68 @@ nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-f
     <p class="tlnote"><b>Nine of the 15 declarations fall in the last decade.</b> Whatever the cause, the record shows the frequency is rising — exactly the trend a mitigation case is built on.</p>
   </section>
 
-  <!-- PA DOLLARS -->
+  <!-- PA DOLLARS + RECOVERY TIMING -->
+  <!--
+    DATA WIRING (build script):
+      Amounts  -> Public Assistance Funded Projects Details, summed by disaster for this county.
+      Timing   -> Public Assistance Grant Award Activities v2, filtered to this county, grouped by
+                  disasterNumber. Per disaster compute, in days since declarationDate:
+                    firstDays = min(dateObligated) - declarationDate
+                    lastDays  = max(dateObligated) - declarationDate
+      Shared scale MAXDAYS = 912 (about 2.5 years). Ticks: 1yr = 365/912 = 40%, 2yr = 730/912 = 80%.
+      Per bar:  gap  width% = firstDays / MAXDAYS * 100
+                flow left%  = firstDays / MAXDAYS * 100
+                flow width% = (lastDays - firstDays) / MAXDAYS * 100
+      Headline = median(firstDays) across the county's declarations.
+      All values below are ILLUSTRATIVE placeholders (see page banner) pending wiring.
+      NOTE: obligation is the federal share committed to the recipient state, not cash to the
+      county. Keep the axis labeled as obligation and keep the .fnote intact.
+  -->
   <section class="sec" id="funding">
     <div class="shead">
-      <div class="eye">The dollars</div>
+      <div class="eye">The dollars, and the wait</div>
       <h2>Recovery funding, by disaster</h2>
-      <p class="sub">Public Assistance obligated to this county — the bridge from how often to how much. This is the language grants and benefit-cost analysis are written in.</p>
+      <p class="sub">Public Assistance obligated to this county, and how long each award took to start. Every bar begins at the declaration date. The amber stretch is the wait to the first federal obligation. The teal is the federal share obligating after that, which usually plays out over years.</p>
     </div>
-    <div class="pa">
-      <div class="parow"><div class="pl"><b>Tropical storm — flooding</b> · Oct 2024</div><div class="pv">$12.4M</div></div>
-      <div class="parow"><div class="pl"><b>Storms, flooding &amp; landslides</b> · Jun 2016</div><div class="pv">$7.0M</div></div>
-      <div class="parow"><div class="pl"><b>Severe storms &amp; flooding</b> · Jul 2023</div><div class="pv">$6.1M</div></div>
-      <div class="parow"><div class="pl"><b>Severe storms &amp; flooding</b> · Apr 2020</div><div class="pv">$5.7M</div></div>
-      <div class="parow"><div class="pl">The remaining 11 declarations</div><div class="pv">$16.0M</div></div>
-      <div class="parow tot"><div class="pl">Total PA obligated</div><div class="pv">$47.2M</div></div>
+
+    <div class="fhead">
+      <div class="fbig">~75<small>days</small></div>
+      <div class="fbl">typical wait from declaration to the first federal obligation for this county, with the full award landing over the one to two years that follow.</div>
     </div>
+
+    <div class="fund">
+      <div class="frow">
+        <div class="ftop"><div class="fname"><b>Tropical storm, flooding</b> · Oct 2024</div><div class="fval">$12.4M</div></div>
+        <div class="ftrack"><span class="gap" style="left:0;width:4.6%"></span><span class="flow" style="left:4.6%;width:50.8%"></span></div>
+        <div class="fmeta"><span><b>42 days</b> to first obligation</span><span>still obligating</span></div>
+      </div>
+      <div class="frow">
+        <div class="ftop"><div class="fname"><b>Storms, flooding &amp; landslides</b> · Jun 2016</div><div class="fval">$7.0M</div></div>
+        <div class="ftrack"><span class="gap" style="left:0;width:9.6%"></span><span class="flow" style="left:9.6%;width:73.7%"></span></div>
+        <div class="fmeta"><span><b>88 days</b> to first obligation</span><span>fully obligated in about 2.1 years</span></div>
+      </div>
+      <div class="frow">
+        <div class="ftop"><div class="fname"><b>Severe storms &amp; flooding</b> · Jul 2023</div><div class="fval">$6.1M</div></div>
+        <div class="ftrack"><span class="gap" style="left:0;width:6.7%"></span><span class="flow" style="left:6.7%;width:69.0%"></span></div>
+        <div class="fmeta"><span><b>61 days</b> to first obligation</span><span>fully obligated in about 1.9 years</span></div>
+      </div>
+      <div class="frow">
+        <div class="ftop"><div class="fname"><b>Severe storms &amp; flooding</b> · Apr 2020</div><div class="fval">$5.7M</div></div>
+        <div class="ftrack"><span class="gap" style="left:0;width:13.2%"></span><span class="flow" style="left:13.2%;width:83.3%"></span></div>
+        <div class="fmeta"><span><b>120 days</b> to first obligation</span><span>fully obligated in about 2.4 years</span></div>
+      </div>
+      <div class="faxisrow">
+        <div class="faxis"><span style="left:0">Declared</span><span style="left:40%">1 year</span><span style="left:80%">2 years</span></div>
+      </div>
+      <div class="frow tot"><div class="fname">Total PA obligated · 15 declarations</div><div class="fval">$47.2M</div></div>
+    </div>
+
+    <div class="flegend">
+      <span><i class="fsw" style="background:var(--ember)"></i> Wait to first federal obligation</span>
+      <span><i class="fsw" style="background:var(--accent)"></i> Federal share obligating</span>
+    </div>
+
+    <div class="fnote"><b>What an obligation is.</b> FEMA obligates the federal share to the Commonwealth, the recipient, not to the county directly. The state then disburses to the county on its own schedule, and Public Assistance is reimbursement-based, so this is the earliest the money could move, not the day the county was made whole. This shows the federal leg and puts the dates on the record. It does not assign blame: a short wait here alongside a long local delay points to the state disbursement step, a long wait here points to federal formulation. Obligation figures are FEMA's reported data, not audited financials.</div>
   </section>
 
   <!-- DENIALS -->
