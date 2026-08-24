@@ -23,7 +23,7 @@ No arguments needed. Re-running overwrites cleanly and is idempotent.
 import os, re, json, html, datetime
 from dd_classify import classify
 
-SITE = "https://www.disasterdata.io"
+SITE = "https://disasterdata.io"
 OUT_ROOT = os.environ.get("DD_OUT", ".")           # repo root (output)
 SRC_ROOT = os.environ.get("DD_SRC", OUT_ROOT)      # where data.js / index.html live
 STATES_DIR = os.path.join(OUT_ROOT, "states")
@@ -315,34 +315,8 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
 HEAD = FONTS + "<style>" + CSS + "</style>"
 
 def header_html():
-    # identical to the main site masthead; paths adjusted for /states/, States marked active
-    return ('<nav class="ddnav">'
-            '<div class="brand"><a class="mark" href="../index.html">Disaster Data</a></div>'
-            '<button class="navburger" aria-label="Menu" aria-expanded="false">'
-            '<span></span><span></span><span></span></button>'
-            '<div class="navlinks">'
-            '<a href="../index.html">Overview</a>'
-            '<a href="../index.html#board">Explore</a>'
-            '<a href="../compare.html">Compare</a>'
-            '<a href="../map.html">Map</a>'
-            '<a href="index.html" class="on">States</a>'
-            '<a href="../jurisdiction.html">Local</a>'
-            '<a href="../public-assistance-projects.html">Funding</a>'
-            '<a href="../denials.html">Denials</a>'
-            '<a href="../about.html">About</a></div>'
-            '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>'
-            '<div class="mobilemenu" hidden>'
-            '<a href="../index.html">Overview</a>'
-            '<div class="mm-section"><div class="mm-label">Explore</div>'
-            '<a href="../index.html#board">Explore</a>'
-            '<a href="../map.html">Map</a>'
-            '<a href="../compare.html">Compare</a></div>'
-            '<div class="mm-section"><div class="mm-label">Data</div>'
-            '<a href="index.html" class="on">States</a>'
-            '<a href="../jurisdiction.html">Local</a>'
-            '<a href="../public-assistance-projects.html">Funding</a>'
-            '<a href="../denials.html">Denials</a></div>'
-            '<a href="../about.html">About</a></div>')
+    # use the site-wide canonical header; nav.js injects it and marks the active page
+    return '<script src="/nav.js"></script>'
 
 def method_html():
     return ('<section class="method"><h2>How these numbers are built</h2>'
@@ -492,7 +466,7 @@ def render_state_page(s, states, lcfy):
 
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
-            '<title>%s FEMA Disaster Declarations: Federal Disaster History Since FY2000</title>'
+            '<title>Disaster Data | %s FEMA Disaster Declarations: Federal Disaster History Since FY2000</title>'
             '<meta name="description" content="%s">'
             '<link rel="canonical" href="%s">'
             '<meta property="og:title" content="%s: Federal Disaster Declarations">'
@@ -537,7 +511,7 @@ def render_hub(states, lcfy):
             "Built from FEMA OpenFEMA data." % total)
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
-            '<title>FEMA Disaster Declarations by State (FY2000 to present) | Disaster Data</title>'
+            '<title>Disaster Data | FEMA Disaster Declarations by State (FY2000 to present)</title>'
             '<meta name="description" content="%s">'
             '<link rel="canonical" href="%s/states/">'
             '<meta property="og:title" content="FEMA Disaster Declarations by State">'

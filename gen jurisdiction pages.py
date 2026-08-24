@@ -395,33 +395,7 @@ HEAD = (FONTS + '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/di
 
 # paths are two levels deep: states/virginia/<slug>.html -> site root is ../../
 def header_html():
-    return ('<nav class="ddnav">'
-            '<div class="brand"><a class="mark" href="../../index.html">Disaster Data</a></div>'
-            '<button class="navburger" aria-label="Menu" aria-expanded="false">'
-            '<span></span><span></span><span></span></button>'
-            '<div class="navlinks">'
-            '<a href="../../index.html">Overview</a>'
-            '<a href="../../index.html#board">Explore</a>'
-            '<a href="../../compare.html">Compare</a>'
-            '<a href="../../map.html">Map</a>'
-            '<a href="../../states/index.html">States</a>'
-            '<a href="../../jurisdiction.html" class="on">Local</a>'
-            '<a href="../../public-assistance-projects.html">Funding</a>'
-            '<a href="../../denials.html">Denials</a>'
-            '<a href="../../about.html">About</a></div>'
-            '<div class="navmeta">FY 2000 to 2026 &middot; OpenFEMA</div></nav>'
-            '<div class="mobilemenu" hidden>'
-            '<a href="../../index.html">Overview</a>'
-            '<div class="mm-section"><div class="mm-label">Explore</div>'
-            '<a href="../../index.html#board">Explore</a>'
-            '<a href="../../map.html">Map</a>'
-            '<a href="../../compare.html">Compare</a></div>'
-            '<div class="mm-section"><div class="mm-label">Data</div>'
-            '<a href="../../states/index.html">States</a>'
-            '<a href="../../jurisdiction.html" class="on">Local</a>'
-            '<a href="../../public-assistance-projects.html">Funding</a>'
-            '<a href="../../denials.html">Denials</a></div>'
-            '<a href="../../about.html">About</a></div>')
+    return '<script src="/nav.js"></script>'
 
 def footer_html():
     return ('<footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, '
@@ -843,7 +817,7 @@ def render_page(j, others):
 
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">%s'
-            f'<title>%s, {STATE_NAME} FEMA Disaster Declarations and Mitigation History</title>'
+            f'<title>Disaster Data | %s, {STATE_NAME} FEMA Disaster Declarations and Mitigation History</title>'
             '<meta name="description" content="%s"><link rel="canonical" href="%s">'
             f'<meta property="og:title" content="%s, {STATE_NAME}: Federal Disaster Declarations">'
             '<meta property="og:description" content="%s"><meta property="og:type" content="website">'
@@ -893,7 +867,7 @@ def render_hub(js, stubs=()):
             % (STATE_NAME, phrase))
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
-            f'<title>{STATE_NAME} Disaster Declarations by Jurisdiction | Disaster Data</title>'
+            f'<title>Disaster Data | {STATE_NAME} Disaster Declarations by Jurisdiction</title>'
             f'<meta name="description" content="%s"><link rel="canonical" href="%s/states/{STATE_SLUG}/">'
             f'<meta property="og:title" content="{STATE_NAME} Disaster Declarations by Jurisdiction">'
             '<meta property="og:description" content="%s"><meta property="og:type" content="website">'
@@ -954,7 +928,7 @@ def render_stub(name, canonical_url, primary_name, spans):
             "mitigation table are maintained on the %s page." % (name, span_txt, primary_name))
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
-            '<title>%s | Disaster Data</title>'
+            '<title>Disaster Data | %s</title>'
             '<meta name="description" content="%s"><link rel="canonical" href="%s">'
             '<meta property="og:title" content="%s"><meta property="og:type" content="website">'
             '%s</head><body>%s<main><div class="wrap">'
