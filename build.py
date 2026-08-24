@@ -485,6 +485,149 @@ if raw_pa:
 
 
 # ═════════════════════════════════════════════════════════════════════════
+# 2c. FETCH PA OBLIGATION TIMING (Grant Award Activities) -> pa-timing.json
+# ═════════════════════════════════════════════════════════════════════════
+# PublicAssistanceFundedProjectsDetails (fetched above) carries obligated
+# dollars but NO obligation dates. The per-disaster "how fast the money came"
+# timing baked into each jurisdiction page needs dateObligated, which lives
+# only in PublicAssistanceGrantAwardActivities. This pull rolls obligations up
+# per (state, county, disaster) and writes pa-timing.json, keyed by the same
+# raw county string as PA_BY_COUNTY so the generator matches them. The
+# generator reads pa-timing.json at build time and skips the section entirely
+# if it is absent, so any failure here degrades quietly and never breaks the
+# build. (Field names verified against the working build_ttm.py fetch.)
+
+GA_BASE   = "https://www.fema.gov/api/open/v2"
+GA_FIELDS = [
+    "disasterNumber", "stateAbbreviation", "county", "damageCategoryCode",
+    "federalShareObligated", "dateObligated", "declarationDate", "fundingStatus",
+]
+
+def fetch_ga_all():
+    """Page through PublicAssistanceGrantAwardActivities (START_YEAR+).
+    Mirrors fetch_pa_all(): same paging, retry, and pacing."""
+    records = []
+    skip    = 0
+    total   = None
+    filt    = urllib.parse.quote("declarationDate ge '%d-01-01T00:00:00.000Z'" % START_YEAR)
+    select  = ",".join(GA_FIELDS)
+    print("  Fetching PublicAssistanceGrantAwardActivities (national)...")
+
+    while True:
+        url = (f"{GA_BASE}/PublicAssistanceGrantAwardActivities"
+               f"?$top={PAGE_SIZE}&$skip={skip}"
+               f"&$filter={filt}"
+               f"&$select={select}"
+               f"&$inlinecount=allpages")
+
+        for attempt in range(5):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "DisasterData-Explorer/1.0"})
+                with urllib.request.urlopen(req, timeout=90) as resp:
+                    data = json.loads(resp.read())
+                break
+            except Exception as e:
+                if attempt == 4:
+                    raise
+                wait = 10 * (attempt + 1)
+                print(f"    Retry {attempt+1}/4: {e} (waiting {wait}s)")
+                time.sleep(wait)
+
+        batch = data.get("PublicAssistanceGrantAwardActivities", [])
+        records.extend(batch)
+
+        if total is None:
+            total = int(data.get("metadata", {}).get("count", 0))
+            print(f"    Total GA records: {total:,}")
+
+        skip += len(batch)
+        if skip % 50000 == 0 or (total and skip >= total):
+            print(f"    Fetched {skip:,}/{total:,}")
+
+        if not batch or (total and skip >= total):
+            break
+        time.sleep(SLEEP_SEC)
+
+    return records
+
+
+def _iso_day(v):
+    """OpenFEMA datetime -> 'YYYY-MM-DD', or '' if unusable."""
+    if not v:
+        return ""
+    s = str(v)
+    return s[:10] if len(s) >= 10 and s[4] == "-" and s[7] == "-" else ""
+
+
+print("Fetching PA obligation timing (Grant Award Activities; may take several minutes)...")
+try:
+    raw_ga = fetch_ga_all()
+    print(f"  -> {len(raw_ga):,} Grant Award Activity records\n")
+    GA_AVAILABLE = True
+except Exception as e:
+    print(f"  WARNING: Grant Award Activities fetch failed: {e}")
+    print("  pa-timing.json will not be written; the funding-timing section simply will not render.\n")
+    raw_ga = []
+    GA_AVAILABLE = False
+
+if raw_ga:
+    # accumulate per (state, county, disaster)
+    _ga_acc = {}   # (st, cty, dn) -> {decl, first, last, obl, cats:{code:obl}}
+    for r in raw_ga:
+        if not str(r.get("fundingStatus") or "").upper().startswith("O"):
+            continue                                  # obligated rows only
+        do = _iso_day(r.get("dateObligated"))
+        if not do:
+            continue                                  # must carry an obligation date
+        st  = (r.get("stateAbbreviation") or "").strip()
+        cty = (r.get("county") or "").strip()
+        dn  = str(r.get("disasterNumber") or "").strip()
+        if not st or not cty or not dn:
+            continue
+        try:
+            fs = float(r.get("federalShareObligated") or 0)
+        except (TypeError, ValueError):
+            fs = 0.0
+        decl = _iso_day(r.get("declarationDate"))
+        cat  = (r.get("damageCategoryCode") or "").strip() or "-"
+
+        rec = _ga_acc.get((st, cty, dn))
+        if rec is None:
+            rec = {"decl": decl, "first": do, "last": do, "obl": 0.0, "cats": {}}
+            _ga_acc[(st, cty, dn)] = rec
+        if decl and not rec["decl"]:
+            rec["decl"] = decl
+        if do < rec["first"]:
+            rec["first"] = do
+        if do > rec["last"]:
+            rec["last"] = do
+        rec["obl"] += fs
+        rec["cats"][cat] = rec["cats"].get(cat, 0.0) + fs
+
+    # shape into {ST: {county: {disasterNumber: [decl, first, last, obl, topCat]}}}
+    pa_timing_out = {}
+    for (st, cty, dn), rec in _ga_acc.items():
+        if not rec["decl"] or not rec["first"]:
+            continue                                  # need a declaration + first obligation to draw a bar
+        top_cat = max(rec["cats"].items(), key=lambda kv: kv[1])[0] if rec["cats"] else "-"
+        pa_timing_out.setdefault(st, {}).setdefault(cty, {})[dn] = [
+            rec["decl"], rec["first"], rec["last"], round(rec["obl"]), top_cat,
+        ]
+
+    with open("pa-timing.json", "w", encoding="utf-8") as _f:
+        json.dump(pa_timing_out, _f, separators=(",", ":"))
+
+    _pt_states   = len(pa_timing_out)
+    _pt_counties = sum(len(v) for v in pa_timing_out.values())
+    _pt_pairs    = sum(len(d) for v in pa_timing_out.values() for d in v.values())
+    print(f"  pa-timing.json: {_pt_pairs:,} county-disaster pairs across "
+          f"{_pt_counties:,} counties in {_pt_states} states\n")
+else:
+    print("  Skipping pa-timing.json (no Grant Award Activities data).\n")
+
+
+
+# ═════════════════════════════════════════════════════════════════════════
 # 3. AGGREGATE SUMMARY DATA
 # ═════════════════════════════════════════════════════════════════════════
 
