@@ -815,6 +815,153 @@ else:
     print("  Skipping hma.json (no HMA data).\n")
 
 # ═════════════════════════════════════════════════════════════════════════
+# 2e. FETCH INDIVIDUAL ASSISTANCE (Housing Assistance) -> ia.json
+# ═════════════════════════════════════════════════════════════════════════
+# The 'help to households' half of the arc: declaration -> PA (public rebuild)
+# -> IA (aid to people) -> HM (reduce the next one). Housing Assistance Owners +
+# Renters (v2) are aggregated by state/county/zip back to DR1439 (2002) and carry
+# valid registrations, households approved, total IHP approved, and the
+# repair/replace + rental + other-needs split. Their county field is
+#   "Name (Type)" (e.g. "Broward (County)", "Fairfax (City)"), so kind comes
+# straight from the parenthetical and we build the SAME pa_base_kind-friendly key
+# used for PA and HMA. IA exists only where Individual Assistance was designated,
+# so most jurisdictions have no row here and simply render no IA panel.
+# Degrades quietly: if both fetches fail, ia.json is not written.
+
+IA_BASE = "https://www.fema.gov/api/open/v2"
+# Owners carry repairReplaceAmount; Renters do not (renters do not own the structure).
+IA_OWN_FIELDS  = ["state", "county", "validRegistrations", "approvedForFemaAssistance",
+                  "totalApprovedIhpAmount", "repairReplaceAmount", "rentalAmount", "otherNeedsAmount"]
+IA_RENT_FIELDS = ["state", "county", "validRegistrations", "approvedForFemaAssistance",
+                  "totalApprovedIhpAmount", "rentalAmount", "otherNeedsAmount"]
+
+def _ia_match_name(county):
+    """IA county fields are 'Name (Type)', e.g. 'Broward (County)' or 'Fairfax (City)'.
+    Parse the parenthetical for kind, then build a key the generator's pa_base_kind()
+    resolves to the same (base, kind) as the jurisdiction: an independent city (kind
+    exactly 'city') becomes '<base>, City of'; every other county-equivalent, including
+    consolidated 'city and county'/'city and borough' units, becomes '<base> County'."""
+    raw = (county or "").strip()
+    if not raw:
+        return None
+    base, kind = raw, ""
+    if raw.endswith(")") and "(" in raw:
+        i = raw.rfind("(")
+        base = raw[:i].strip()
+        kind = raw[i + 1:-1].strip().lower()
+    if not base:
+        return None
+    if kind == "city":
+        if base.lower().endswith(" city"):
+            base = base[:-5].strip()
+        return base + ", City of"
+    return base + " County"
+
+def fetch_ia_all(entity, fields):
+    """Page through a Housing Assistance dataset (Owners or Renters).
+    Mirrors fetch_hma_all(): same paging, retry, and pacing."""
+    records = []
+    skip    = 0
+    total   = None
+    select  = ",".join(fields)
+    print(f"  Fetching {entity} (national)...")
+    while True:
+        url = (f"{IA_BASE}/{entity}"
+               f"?$top={PAGE_SIZE}&$skip={skip}"
+               f"&$select={select}"
+               f"&$inlinecount=allpages")
+        for attempt in range(5):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "DisasterData-Explorer/1.0"})
+                with urllib.request.urlopen(req, timeout=90) as resp:
+                    data = json.loads(resp.read())
+                break
+            except Exception as e:
+                if attempt == 4:
+                    raise
+                wait = 10 * (attempt + 1)
+                print(f"    Retry {attempt+1}/4: {e} (waiting {wait}s)")
+                time.sleep(wait)
+        batch = data.get(entity, [])
+        records.extend(batch)
+        if total is None:
+            total = int(data.get("metadata", {}).get("count", 0))
+            print(f"    Total {entity} records: {total:,}")
+        skip += len(batch)
+        if skip % 50000 == 0 or (total and skip >= total):
+            print(f"    Fetched {skip:,}/{total:,}")
+        if not batch or (total and skip >= total):
+            break
+        time.sleep(SLEEP_SEC)
+    return records
+
+
+def _num(v):
+    try:
+        return float(v or 0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+print("Fetching Individual Assistance (Housing Assistance owners + renters)...")
+_ia_rows = []
+for _entity, _flds in (("HousingAssistanceOwners", IA_OWN_FIELDS),
+                       ("HousingAssistanceRenters", IA_RENT_FIELDS)):
+    try:
+        _batch = fetch_ia_all(_entity, _flds)
+        print(f"  -> {len(_batch):,} {_entity} records")
+        _ia_rows.extend(_batch)
+    except Exception as e:
+        print(f"  WARNING: {_entity} fetch failed: {e} (continuing without it)")
+print()
+
+if _ia_rows:
+    _ia_acc = {}   # st -> {name -> {"reg","app","ihp","rr","rent","ona"}}
+    _ia_skipped = 0
+    for r in _ia_rows:
+        st  = (r.get("state") or "").strip().upper()
+        key = _ia_match_name(r.get("county"))
+        if not st or not key:
+            _ia_skipped += 1
+            continue
+        sc  = _ia_acc.setdefault(st, {})
+        rec = sc.get(key)
+        if rec is None:
+            rec = {"reg": 0, "app": 0, "ihp": 0.0, "rr": 0.0, "rent": 0.0, "ona": 0.0}
+            sc[key] = rec
+        rec["reg"]  += int(_num(r.get("validRegistrations")))
+        rec["app"]  += int(_num(r.get("approvedForFemaAssistance")))
+        rec["ihp"]  += _num(r.get("totalApprovedIhpAmount"))
+        rec["rr"]   += _num(r.get("repairReplaceAmount"))
+        rec["rent"] += _num(r.get("rentalAmount"))
+        rec["ona"]  += _num(r.get("otherNeedsAmount"))
+
+    ia_out = {}
+    for st, names in _ia_acc.items():
+        _co = {}
+        for name, rec in names.items():
+            if rec["reg"] <= 0 and rec["ihp"] <= 0:
+                continue
+            _co[name] = {"reg": rec["reg"], "app": rec["app"],
+                         "ihp": round(rec["ihp"]), "rr": round(rec["rr"]),
+                         "rent": round(rec["rent"]), "ona": round(rec["ona"])}
+        if _co:
+            ia_out[st] = _co
+
+    with open("ia.json", "w", encoding="utf-8") as _f:
+        json.dump(ia_out, _f, separators=(",", ":"))
+
+    _ia_states = len(ia_out)
+    _ia_names  = sum(len(v) for v in ia_out.values())
+    _ia_app    = sum(c["app"] for v in ia_out.values() for c in v.values())
+    _ia_ihp    = sum(c["ihp"] for v in ia_out.values() for c in v.values())
+    print(f"  ia.json: {_ia_names:,} jurisdictions across {_ia_states} states, "
+          f"{_ia_app:,} households approved, ${_ia_ihp:,.0f} IHP approved "
+          f"(skipped {_ia_skipped:,} rows with no usable county)\n")
+else:
+    print("  Skipping ia.json (no Individual Assistance data).\n")
+
+# ═════════════════════════════════════════════════════════════════════════
 # 3. AGGREGATE SUMMARY DATA
 # ═════════════════════════════════════════════════════════════════════════
 
