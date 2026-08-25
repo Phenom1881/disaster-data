@@ -87,6 +87,11 @@ main{display:block;}
 .def{background:var(--paper-2);padding:16px 20px;}
 .def-t{font-family:var(--serif);font-weight:600;font-size:15px;margin-bottom:4px;}
 .def-d{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+.def-t code.path{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:500;color:var(--accent);}
+.def-tag{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-3);margin-left:8px;vertical-align:middle;}
+.data-code{margin-top:24px;max-width:820px;background:var(--paper-3);color:var(--ink);border:1px solid var(--rule-2);border-radius:10px;padding:16px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre;}
+.data-code .c{color:var(--ink-3);}
+.data-code .s{color:var(--accent-2);}
 
 /* ---- cta ---- */
 .cta-band{padding:clamp(44px,6vw,76px) 0;border-top:1px solid var(--rule);text-align:center;}
@@ -259,6 +264,46 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         <div class="def"><div class="def-t">Fiscal year</div><div class="def-d">Declarations are grouped by federal fiscal year, which runs October through September. A declaration issued in October 2025 counts toward FY2026, so recent-year totals can look different from calendar-year ones.</div></div>
         <div class="def"><div class="def-t">Denial rate</div><div class="def-d">The share of a state's assistance requests that were denied, out of all requests (approved plus denied). It reflects process and eligibility, not how severe an event was.</div></div>
         <div class="def"><div class="def-t">Days to approve</div><div class="def-d">The average time between a request and its decision, a rough read on how quickly assistance moved.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">For builders and analysts</div>
+      <h2>The data behind the dashboard, yours to use.</h2>
+      <div class="prose">
+        <p>The dashboard is one way in. If you would rather work with the data directly, the same federal record that powers this site is published as a small set of static JSON files you can fetch straight from a browser or a script. No key, no login, no rate limit, refreshed on the same weekly schedule as the rest of the site.</p>
+        <p>These are not a copy of FEMA's raw files. They are the cleaned, joined version this site runs on: declarations collapsed to one row each, independent cities and counties correctly distinguished, the same storm grouped into a single event across state lines, and Public Assistance obligations rolled up by county and disaster. It is the work you would otherwise redo from the raw OpenFEMA endpoints.</p>
+      </div>
+      <div class="defs">
+        <div class="def">
+          <div class="def-t"><code class="path">data/decl-index/{ST}.json</code></div>
+          <div class="def-d">One file per state or territory. Every DR, EM, and FM declaration for that state, with its disaster number, type, dates, and incident type, plus each affected county, its FIPS code, and whether it is a county or an independent city. Declarations are stitched into events, so the same storm across several states shares one event identifier.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">data/decl-index/manifest.json</code></div>
+          <div class="def-d">The index of the set: which state files exist and when the data was last built. Fetch this first to discover what is available.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">pa-timing.json</code></div>
+          <div class="def-d">Public Assistance obligation timing, per county per disaster: the declaration date, the first and last dates federal share was obligated, the total federal share obligated, and the leading damage category. This is the join behind the how-fast-the-money-came view, and nothing equivalent is pre-built in OpenFEMA.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">map-events.js</code><span class="def-tag">also available</span></div>
+          <div class="def-d">Event footprints for the map overlay: each event with the full list of county FIPS codes it touched. Delivered as a JavaScript global (window.MAP_EVENTS) rather than plain JSON.</div>
+        </div>
+      </div>
+      <pre class="data-code"><span class="c">// Your live origin. Edit this one line if your domain differs.</span>
+const BASE = <span class="s">'https://disasterdata.io'</span>;
+
+<span class="c">// List Virginia's declarations, no key required</span>
+const declarations = await fetch(BASE + <span class="s">'/data/decl-index/VA.json'</span>).then(r =&gt; r.json());
+
+<span class="c">// Discover which state files exist</span>
+const manifest = await fetch(BASE + <span class="s">'/data/decl-index/manifest.json'</span>).then(r =&gt; r.json());</pre>
+      <div class="prose" style="margin-top:22px;">
+        <p><strong>Free to use.</strong> If you publish something built on this, please credit it: <em>Source: DisasterData.IO utilizes OpenFEMA.org, FEMA.gov</em>.</p>
+        <p><strong>The shape is stable.</strong> New fields may be added over time, but existing fields will not be renamed or removed without a versioned path, so anything you build today keeps working.</p>
+        <p><strong>Same caveat as the rest of the site.</strong> This is derived from public FEMA data but is not endorsed by or affiliated with FEMA. Where a figure here disagrees with an official FEMA source, treat the official source as authoritative.</p>
       </div>
     </section>
 
