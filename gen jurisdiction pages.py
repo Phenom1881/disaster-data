@@ -54,6 +54,21 @@ def load_pa_timing():
     except Exception:
         return {}
 
+def load_hma():
+    """Per-jurisdiction Hazard Mitigation Assistance rollup written by build.py to
+    hma.json. {ST: {matchName: {"fed": int, "n": int, "prog": {code:[fed,n]}, "props": int}}}.
+    matchName is shaped so pa_base_kind() resolves it to the same (base, kind) as the
+    PA data. Kept out of data.js to keep the client bundle small; baked into each
+    static page here. Returns {} when the file is absent (feature simply skips)."""
+    p = os.path.join(SRC_ROOT, "hma.json")
+    if not os.path.exists(p):
+        return {}
+    try:
+        with open(p, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
 # ---------------------------------------------------------------- helpers
 def fy_of(iso):
     y, m = int(iso[:4]), int(iso[5:7])
@@ -156,6 +171,19 @@ PA_CAT_LABELS = {
     "C": "Roads and bridges", "D": "Water control facilities",
     "E": "Buildings and equipment", "F": "Utilities",
     "G": "Parks and recreation", "Z": "Management costs",
+}
+
+# FEMA Hazard Mitigation Assistance program codes -> readable names.
+HMA_PROG_LABELS = {
+    "HMGP": "Hazard Mitigation Grant Program",
+    "HMGP POST FIRE": "Hazard Mitigation Grant Program (Post Fire)",
+    "FMA": "Flood Mitigation Assistance",
+    "BRIC": "Building Resilient Infrastructure and Communities",
+    "PDM": "Pre-Disaster Mitigation",
+    "LPDM": "Legislative Pre-Disaster Mitigation",
+    "RFC": "Repetitive Flood Claims",
+    "SRL": "Severe Repetitive Loss",
+    "FMA SWIFT CURRENT": "Flood Mitigation Assistance Swift Current",
 }
 
 # County-equivalent suffixes, longest-first so "City and Borough" is not read as "Borough".
@@ -267,6 +295,8 @@ def _content_hash(j):
         "em": j.get("em", 0), "fm": j.get("fm", 0), "latest": j.get("latest", ""),
         "pa_obl": j.get("pa_obl", 0), "pa_proj": j.get("pa_proj", 0),
         "pa_cats": j.get("pa_cats", {}),
+        "hma_fed": (j.get("hma") or {}).get("fed", 0),
+        "hma_prog": (j.get("hma") or {}).get("prog", {}),
         "recs": sorted(
             [r.get("femaDeclarationString", ""), r.get("declarationDate", "")[:10],
              r.get("declarationType", ""), r.get("incidentType", ""),
@@ -615,6 +645,59 @@ def pa_timing_html(j):
             '<div class="ft-axis"><span style="left:0">Declared</span>%s</div></section>'
             % (years, med, css, "".join(bars), ticks))
 
+def hma_html(j):
+    """Per-jurisdiction Hazard Mitigation Assistance summary: how much federal
+    mitigation money has been invested here, by program, plus properties mitigated.
+    This is the record of past mitigation investment a local hazard mitigation plan
+    documents. Additive to the PA sections above. Returns "" when there is no HMA
+    record for this jurisdiction."""
+    hma = j.get("hma") or {}
+    if not hma or not (hma.get("fed") or 0):
+        return ""
+    e = html.escape
+    money = lambda n: "$" + format(int(round(n or 0)), ",")
+    total_fed = hma.get("fed", 0)
+    n_proj    = hma.get("n", 0)
+    props     = hma.get("props", 0)
+    prog      = hma.get("prog", {}) or {}
+
+    rows_data = sorted(([HMA_PROG_LABELS.get(code, code), code, vals[0], vals[1]]
+                        for code, vals in prog.items()),
+                       key=lambda x: -x[2])
+    body = "".join(
+        "<tr><td>%s<span class='catcode'>(%s)</span></td><td>%s</td><td>%s</td></tr>"
+        % (e(lbl), e(code), format(cnt, ","), money(obl))
+        for lbl, code, obl, cnt in rows_data)
+
+    stat = ('<div class="hm-stats">'
+            '<div class="hm-stat"><div class="hm-n">%s</div><div class="hm-l">federal mitigation share</div></div>'
+            '<div class="hm-stat"><div class="hm-n">%s</div><div class="hm-l">funded project%s</div></div>'
+            % (money(total_fed), format(n_proj, ","), "" if n_proj == 1 else "s"))
+    if props > 0:
+        stat += ('<div class="hm-stat"><div class="hm-n">%s</div><div class="hm-l">propert%s mitigated</div></div>'
+                 % (format(props, ","), "y" if props == 1 else "ies"))
+    stat += "</div>"
+
+    css = ("<style>"
+           ".hm-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;"
+           "border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}"
+           ".hm-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}"
+           ".hm-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}"
+           ".hm-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}"
+           "</style>")
+
+    return ('<section><h2>Hazard mitigation, what has been funded here</h2>'
+            '<p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to '
+            'reduce future disaster losses, across the FEMA mitigation programs. This is the record of '
+            'past mitigation investment a local hazard mitigation plan documents. Figures are federal '
+            'share obligated, reported through OpenFEMA and not audited, and are separate from the '
+            'Public Assistance funding above.</p>'
+            '%s%s'
+            '<div class="tablewrap"><table class="pa-cat"><thead><tr>'
+            '<th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead>'
+            '<tbody>%s</tbody></table></div></section>'
+            % (css, stat, body))
+
 # ---------------------------------------------------------------- jurisdiction page
 def render_page(j, others):
     e = html.escape
@@ -844,7 +927,7 @@ def render_page(j, others):
             % (robots, e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
                e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, summary_html(j), map_html,
-               pa_breakdown_html(j) + pa_timing_html(j),
+               pa_breakdown_html(j) + pa_timing_html(j) + hma_html(j),
                haz, hmp, history,
                method_html(j["kind"], bool(j.get("spans"))), grid, footer_html(), copyjs, mapjs))
 
@@ -948,7 +1031,7 @@ def render_stub(name, canonical_url, primary_name, spans):
                footer_html()))
 
 # ---------------------------------------------------------------- build
-def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, tribal_plan):
+def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, hma, tribal_plan):
     """Generate all keep-localities + hub for one state.
     Returns (kept, dropped, stubs_written, js)."""
     global STATE_AB, STATE_NAME, STATE_SLUG, OUT_DIR
@@ -1031,6 +1114,22 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, tr
                           or pt_exact.get(j["name"].replace(" (city)", "").strip().lower())
                           or {})
 
+    # match HMA mitigation data to jurisdictions, same (base, kind) keying as PA above
+    hm_lookup, hm_exact = {}, {}
+    for hm_name, hm_val in hma.items():
+        hm_exact[hm_name.strip().lower()] = hm_val
+        hm_lookup[pa_base_kind(hm_name)] = hm_val
+    for j in js:
+        if j["kind"] == "city":
+            _k = (j["name"].replace(" (city)", "").strip().lower(), "city")
+        elif j["kind"] == "county":
+            _k = (pa_base_kind(j["name"])[0], "county")
+        else:
+            _k = (j["name"].strip().lower(), "other")
+        j["hma"] = (hm_lookup.get(_k)
+                    or hm_exact.get(j["name"].replace(" (city)", "").strip().lower())
+                    or {})
+
     for j in js:
         j["thin"] = is_thin(j)
         j["content_hash"] = _content_hash(j)
@@ -1054,6 +1153,7 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, tr
 def main():
     LOCALITY, BROWSE, NAMES, PA_COUNTY = load_data()
     PA_TIMING = load_pa_timing()
+    HMA = load_hma()
     by_id = {r["femaDeclarationString"]: r for r in BROWSE}
     lcfy = last_complete_fy(BROWSE)
     tribal_plan = build_tribal_plan(LOCALITY, NAMES)
@@ -1068,7 +1168,7 @@ def main():
     grand_pages = grand_states = grand_drop = grand_stubs = 0
     all_jurisdictions = []
     for st in targets:
-        kept, dropped, stubs_n, js = build_state(st, LOCALITY, by_id, lcfy, NAMES, PA_COUNTY.get(st, {}), PA_TIMING.get(st, {}), tribal_plan)
+        kept, dropped, stubs_n, js = build_state(st, LOCALITY, by_id, lcfy, NAMES, PA_COUNTY.get(st, {}), PA_TIMING.get(st, {}), HMA.get(st, {}), tribal_plan)
         grand_drop += dropped
         grand_stubs += stubs_n
         if kept or stubs_n:

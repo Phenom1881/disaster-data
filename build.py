@@ -628,6 +628,193 @@ else:
 
 
 # ═════════════════════════════════════════════════════════════════════════
+# 2d. FETCH HAZARD MITIGATION (HMA Projects) -> hma.json
+# ═════════════════════════════════════════════════════════════════════════
+# Completes the county lifecycle arc: declaration -> PA (rebuild) -> HM (reduce
+# the next one). HazardMitigationAssistanceProjects (v4) is county-level, so it
+# rolls up per jurisdiction like PA does. Keeps only FUNDED rows
+# (federalShareObligated > 0) and writes hma.json, keyed so the generator can
+# match it with the SAME pa_base_kind (base, kind) logic used for PA and
+# pa-timing: independent cities (county FIPS >= 510) are written as
+#   "<name>, City of", all other county-equivalents as "<name> County".
+# The generator skips the section entirely if hma.json is absent, so any
+# failure here degrades quietly and never breaks the build.
+#
+# VERIFY ON FIRST RUN (mirrors how the GA fetch was confirmed):
+#   - endpoint version is v4 (current dataset version)
+#   - server-side filter 'federalShareObligated gt 0'; if the API rejects it,
+#     drop the &$filter and rely on the client-side fed>0 guard below.
+
+HMA_BASE   = "https://www.fema.gov/api/open/v4"
+HMA_FIELDS = [
+    "programArea", "federalShareObligated", "county", "countyCode",
+    "stateNumberCode", "numberOfFinalProperties",
+]
+
+# 2-digit state/territory FIPS -> USPS abbreviation (reverse of the generator's map).
+FIPS2ABBR = {
+    "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE",
+    "11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA",
+    "20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN",
+    "28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM",
+    "36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI",
+    "45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA",
+    "54":"WV","55":"WI","56":"WY","60":"AS","66":"GU","69":"MP","72":"PR","78":"VI",
+}
+
+# County-equivalent suffixes some names already carry, so we do not double them.
+_HMA_SUFFIXES = (" county", " parish", " borough", " municipio", " municipality",
+                 " island", " district", " census area", " city and borough")
+
+def _hma_match_name(name, county_code):
+    """Build a key that the generator's pa_base_kind() resolves to the SAME
+    (base, kind) as the jurisdiction. Independent cities (county FIPS >= 510)
+    become '<base>, City of'; every other county-equivalent becomes
+    '<name> County' unless it already carries a county-type suffix."""
+    nm = (name or "").strip()
+    low = nm.lower()
+    if county_code >= 510:
+        if low.endswith(" city"):
+            nm = nm[:-5].strip()
+        return nm + ", City of"
+    if low.endswith(_HMA_SUFFIXES):
+        return nm
+    return nm + " County"
+
+def fetch_hma_all():
+    """Page through HazardMitigationAssistanceProjects (funded rows only).
+    Mirrors fetch_ga_all(): same paging, retry, and pacing."""
+    records = []
+    skip    = 0
+    total   = None
+    filt    = urllib.parse.quote("federalShareObligated gt 0")
+    select  = ",".join(HMA_FIELDS)
+    print("  Fetching HazardMitigationAssistanceProjects (national)...")
+
+    while True:
+        url = (f"{HMA_BASE}/HazardMitigationAssistanceProjects"
+               f"?$top={PAGE_SIZE}&$skip={skip}"
+               f"&$filter={filt}"
+               f"&$select={select}"
+               f"&$inlinecount=allpages")
+
+        for attempt in range(5):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "DisasterData-Explorer/1.0"})
+                with urllib.request.urlopen(req, timeout=90) as resp:
+                    data = json.loads(resp.read())
+                break
+            except Exception as e:
+                if attempt == 4:
+                    raise
+                wait = 10 * (attempt + 1)
+                print(f"    Retry {attempt+1}/4: {e} (waiting {wait}s)")
+                time.sleep(wait)
+
+        batch = data.get("HazardMitigationAssistanceProjects", [])
+        records.extend(batch)
+
+        if total is None:
+            total = int(data.get("metadata", {}).get("count", 0))
+            print(f"    Total HMA funded records: {total:,}")
+
+        skip += len(batch)
+        if skip % 50000 == 0 or (total and skip >= total):
+            print(f"    Fetched {skip:,}/{total:,}")
+
+        if not batch or (total and skip >= total):
+            break
+        time.sleep(SLEEP_SEC)
+
+    return records
+
+
+def _digits(v):
+    return "".join(ch for ch in str(v or "") if ch.isdigit())
+
+
+print("Fetching Hazard Mitigation projects (HMA; may take a few minutes)...")
+try:
+    raw_hma = fetch_hma_all()
+    print(f"  -> {len(raw_hma):,} HMA funded project records\n")
+    HMA_AVAILABLE = True
+except Exception as e:
+    print(f"  WARNING: HMA fetch failed: {e}")
+    print("  hma.json will not be written; the hazard-mitigation section simply will not render.\n")
+    raw_hma = []
+    HMA_AVAILABLE = False
+
+if raw_hma:
+    _hma_acc = {}   # st -> {name -> {"fed":float,"n":int,"prog":{p:[fed,n]},"props":int}}
+    _hma_skipped = 0
+    for r in raw_hma:
+        try:
+            fed = float(r.get("federalShareObligated") or 0)
+        except (TypeError, ValueError):
+            fed = 0.0
+        if fed <= 0:
+            continue
+        st_fips = _digits(r.get("stateNumberCode")).zfill(2)[:2]
+        abbr = FIPS2ABBR.get(st_fips)
+        cc   = _digits(r.get("countyCode"))
+        name = (r.get("county") or "").strip()
+        if not abbr or not cc or not name:
+            _hma_skipped += 1
+            continue
+        cc3 = cc[-3:] if len(cc) >= 3 else cc.zfill(3)
+        try:
+            code = int(cc3)
+        except ValueError:
+            _hma_skipped += 1
+            continue
+        key  = _hma_match_name(name, code)
+        prog = (r.get("programArea") or "").strip().upper() or "OTHER"
+        try:
+            props = int(float(r.get("numberOfFinalProperties") or 0))
+        except (TypeError, ValueError):
+            props = 0
+
+        _sc = _hma_acc.setdefault(abbr, {})
+        rec = _sc.get(key)
+        if rec is None:
+            rec = {"fed": 0.0, "n": 0, "prog": {}, "props": 0}
+            _sc[key] = rec
+        rec["fed"]   += fed
+        rec["n"]     += 1
+        rec["props"] += props
+        pr = rec["prog"].get(prog)
+        if pr is None:
+            rec["prog"][prog] = [fed, 1]
+        else:
+            pr[0] += fed
+            pr[1] += 1
+
+    hma_out = {}
+    for st, names in _hma_acc.items():
+        _co = {}
+        for name, rec in names.items():
+            _co[name] = {
+                "fed":   round(rec["fed"]),
+                "n":     rec["n"],
+                "prog":  {p: [round(v[0]), v[1]] for p, v in rec["prog"].items()},
+                "props": rec["props"],
+            }
+        hma_out[st] = _co
+
+    with open("hma.json", "w", encoding="utf-8") as _f:
+        json.dump(hma_out, _f, separators=(",", ":"))
+
+    _hm_states = len(hma_out)
+    _hm_names  = sum(len(v) for v in hma_out.values())
+    _hm_fed    = sum(c["fed"] for v in hma_out.values() for c in v.values())
+    _hm_proj   = sum(c["n"]   for v in hma_out.values() for c in v.values())
+    print(f"  hma.json: {_hm_names:,} jurisdictions across {_hm_states} states, "
+          f"{_hm_proj:,} funded projects, ${_hm_fed:,.0f} federal share "
+          f"(skipped {_hma_skipped:,} rows with no usable county)\n")
+else:
+    print("  Skipping hma.json (no HMA data).\n")
+
+# ═════════════════════════════════════════════════════════════════════════
 # 3. AGGREGATE SUMMARY DATA
 # ═════════════════════════════════════════════════════════════════════════
 
