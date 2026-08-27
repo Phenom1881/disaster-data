@@ -542,6 +542,7 @@
         <div id="overlayChips" class="overlay-chips"></div>
         <div id="overlayHint" class="overlay-hint">Pick two or more disasters to shade each county by how many of them hit it.</div>
         <button type="button" id="overlayClear" class="overlay-clear" hidden>Clear overlay</button>
+        <a id="overlayProfile" class="overlay-clear" href="#" style="display:none;text-align:center;text-decoration:none;">See full profile of this disaster →</a>
       </div>
 
       <!-- Filtered total -->
@@ -1105,6 +1106,7 @@
     const overlayChips = document.getElementById('overlayChips');
     const overlayClear = document.getElementById('overlayClear');
     const overlayHint = document.getElementById('overlayHint');
+    const overlayProfile = document.getElementById('overlayProfile');
 
     function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function eventById(id){ for (var i=0;i<MAP_EVENTS.length;i++){ if(MAP_EVENTS[i].id===id) return MAP_EVENTS[i]; } return null; }
@@ -1136,6 +1138,12 @@
           + '<button type="button" data-id="'+String(ev.id).replace(/"/g,'&quot;')+'" aria-label="Remove">\u00d7</button></span>';
       }).join('');
       if(overlayClear) overlayClear.hidden = overlayEvents.length===0;
+      if(overlayProfile){
+        if(overlayEvents.length===1){
+          overlayProfile.href = 'disaster.html?event=' + encodeURIComponent(overlayEvents[0].id);
+          overlayProfile.style.display = 'block';
+        } else { overlayProfile.style.display = 'none'; }
+      }
       if(overlayHint) overlayHint.textContent = overlayEvents.length
         ? overlayEvents.length + ' disaster' + (overlayEvents.length>1?'s':'') + ' overlaid. Darker counties were hit by more of them.'
         : 'Pick two or more disasters to shade each county by how many of them hit it.';

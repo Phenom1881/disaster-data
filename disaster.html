@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disaster Data | Disaster Profile</title>
+<meta name="description" content="Profile a single FEMA disaster: the states and counties it was declared in, its declaration numbers, and its Public Assistance funding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,40px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:15ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:60ch;margin-top:24px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+.sec{padding:clamp(46px,6vw,76px) 0;border-top:1px solid var(--rule);}
+.shead{margin-bottom:clamp(26px,3.5vw,40px);}
+.shead .k{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
+.lead{font-size:clamp(15px,1.7vw,17px);color:var(--ink-2);max-width:64ch;margin-top:15px;line-height:1.6;}
+
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
+.row{display:grid;grid-template-columns:34px 1.7fr 3fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);border-radius:6px;}
+.rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;}
+.sname{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sname .meta{font-size:11.5px;color:var(--ink-3);}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;background:var(--accent);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:62px;text-align:right;}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:6px 10px;}.bar-wrap{grid-column:1/-1;}.barnum{min-width:52px;text-align:left;}}
+.morebtn{margin-top:16px;background:none;border:none;color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;padding:3px 0;border-bottom:1px solid transparent;transition:border-color .15s;}
+.morebtn:hover{border-bottom-color:var(--accent);}
+
+.types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.2vw,24px);margin-top:14px;}
+.tcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;}
+.tcard .top{display:flex;align-items:baseline;gap:12px;}
+.tcode{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.3px;line-height:1;color:var(--accent);}
+.tname{font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:-.2px;line-height:1.15;margin-top:6px;}
+.tstat{font-size:11px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);margin-top:12px;font-variant-numeric:tabular-nums;text-transform:uppercase;}
+.tstat b{color:var(--ink);font-weight:700;font-size:13px;}
+.tdesc{font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:11px;}
+@media(max-width:860px){.types-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.types-grid{grid-template-columns:1fr;}}
+
+.note{margin-top:24px;font-size:13.5px;color:var(--ink-2);line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;max-width:66ch;}
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+</style>
+<style>
+.d-back{display:inline-block;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
+.d-back:hover{text-decoration:underline}
+.d-search{width:100%;box-sizing:border-box;font-family:var(--sans);font-size:15px;padding:12px 14px;border:1px solid var(--rule-2);border-radius:8px;background:var(--paper-2);color:var(--ink);margin-top:8px}
+.d-search:focus{outline:none;border-color:var(--accent)}
+.d-results{margin-top:12px;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.d-results a{display:block;padding:12px 14px;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.d-results a:last-child{border-bottom:0}
+.d-results a:hover{background:var(--paper-3)}
+.d-results .dn{font-weight:600;font-size:15px}
+.d-results .dm{font-size:12px;color:var(--ink-3);margin-top:2px}
+.d-empty{padding:14px;color:var(--ink-3);font-size:14px}
+.d-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.d-chip{display:inline-block;padding:5px 11px;border-radius:999px;background:var(--paper-3);border:1px solid var(--rule-2);font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.d-tbl{width:100%;border-collapse:collapse;margin-top:4px}
+.d-tbl th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-3);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--ink)}
+.d-tbl td{padding:9px 10px;border-bottom:1px solid var(--rule);font-size:14px}
+.d-tbl td.r,.d-tbl th.r{text-align:right;font-variant-numeric:tabular-nums}
+.d-tbl .m{font-family:var(--serif);font-weight:600;color:var(--accent)}
+.d-note{margin-top:16px;font-size:13.5px;color:var(--ink-2);border-left:3px solid var(--ember);padding-left:14px;max-width:66ch;line-height:1.6}
+.maplink{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--rule-2);border-radius:7px;padding:8px 14px}
+.maplink:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+<div class="wrap"><main><div class="container" id="app">
+  <div class="masthead"><div class="kicker">Disaster profile</div>
+  <h1 class="headline">Loading&hellip;</h1></div>
+</div></main>
+<footer><div class="container"><div class="foot">
+  <div class="disc">Disaster Data &middot; A community project. Figures from OpenFEMA, refreshed weekly. Federal share obligated reflects committed funding and may be revised. Not affiliated with FEMA or DHS.</div>
+  <div><a href="/about.html">About &amp; sources</a></div>
+</div></div></footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var STATES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia",PR:"Puerto Rico",VI:"U.S. Virgin Islands",GU:"Guam",AS:"American Samoa",MP:"N. Mariana Islands"};
+  var TYPE_LONG = {DR:"Major disaster",EM:"Emergency",FM:"Fire management"};
+  var PT_OBL = 3; // pa-timing entry = [declDate, firstObl, lastObl, obligated, topCategory]
+
+  function money(n){ n=+n||0;
+    if(n>=1e9) return "$"+(n/1e9).toFixed(1).replace(/\.0$/,"")+"B";
+    if(n>=1e6) return "$"+Math.round(n/1e6)+"M";
+    if(n>=1e3) return "$"+Math.round(n/1e3)+"K";
+    return "$"+Math.round(n); }
+  function moneyStat(n){ n=+n||0;
+    if(n>=1e9) return "$"+(n/1e9).toFixed(1).replace(/\.0$/,"")+'<small>B</small>';
+    if(n>=1e6) return "$"+Math.round(n/1e6)+'<small>M</small>';
+    return "$"+num(n); }
+  function num(n){ return (+n||0).toLocaleString("en-US"); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;";}); }
+  function qp(k){ try{ return new URLSearchParams(location.search).get(k); }catch(e){ return null; } }
+  var app = document.getElementById("app");
+
+  var EVENTS = [], PT = null;
+  Promise.all([
+    fetch("events.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():[];}).catch(function(){return [];}),
+    fetch("pa-timing.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+  ]).then(function(res){ EVENTS = res[0]||[]; PT = res[1]; route(); });
+
+  function findEvent(id){ for(var i=0;i<EVENTS.length;i++){ if(String(EVENTS[i].id)===String(id)) return EVENTS[i]; } return null; }
+  function route(){ var id=qp("event"); var ev=id?findEvent(id):null; if(ev) renderProfile(ev); else renderPicker(!!id); }
+
+  function computePA(ev){
+    if(!PT) return null;
+    var dnset={}; (ev.dns||[]).forEach(function(d){ dnset[String(d)]=1; });
+    var perState={}, perCounty=[], total=0, hitAny=false;
+    Object.keys(PT).forEach(function(st){
+      var counties=PT[st]||{};
+      Object.keys(counties).forEach(function(cty){
+        var byDn=counties[cty]||{}, cfed=0, hit=false;
+        Object.keys(byDn).forEach(function(dn){
+          if(dnset[dn]){ var obl=Number((byDn[dn]||[])[PT_OBL]||0); if(obl>0){ cfed+=obl; hit=true; } }
+        });
+        if(hit){ hitAny=true; total+=cfed; perCounty.push({st:st,county:cty,fed:cfed});
+          var ps=perState[st]||(perState[st]={fed:0,counties:0}); ps.fed+=cfed; ps.counties+=1; }
+      });
+    });
+    return hitAny ? {total:total,perState:perState,perCounty:perCounty} : {total:0,perState:{},perCounty:[]};
+  }
+
+  function renderProfile(ev){
+    var states=(ev.states||[]).slice(), counties=(ev.f||[]).length, dns=(ev.dns||[]);
+    var pa=computePA(ev);
+    var kick = [ev.y, TYPE_LONG[ev.t]||ev.t, ev.it].filter(Boolean).join(" \u00b7 ");
+
+    var tiles = [
+      [num(states.length), "state"+(states.length===1?"":"s")+" declared"],
+      [num(counties), "counties declared"],
+      [pa ? moneyStat(pa.total) : "\u2014", "PA federal share obligated"],
+      [num(dns.length), "declaration"+(dns.length===1?"":"s")]
+    ];
+    var statHtml = tiles.map(function(t){ return '<div class="stat"><div class="num">'+t[0]+'</div><div class="lab">'+t[1]+'</div></div>'; }).join("");
+
+    var stChips = states.map(function(s){ return '<span class="d-chip">'+esc(STATES[s]||s)+'</span>'; }).join("") || '<span class="d-chip">Statewide only</span>';
+    var dnChips = dns.map(function(d){ return '<span class="d-chip">#'+esc(d)+'</span>'; }).join("") || '<span class="d-chip">None</span>';
+
+    // by state (PA)
+    var stateSec="";
+    if(pa){
+      var srows = states.map(function(s){ var p=pa.perState[s]||{fed:0,counties:0}; return {s:s,fed:p.fed,c:p.counties}; })
+                        .sort(function(a,b){ return b.fed-a.fed; });
+      var maxF = srows.length?Math.max(srows[0].fed,1):1;
+      var body = srows.map(function(r,i){
+        var w=Math.max(2,Math.round(r.fed/maxF*100));
+        return '<div class="row"><div class="rank">'+(i+1)+'</div>'+
+          '<div class="sname"><div class="n">'+esc(STATES[r.s]||r.s)+'</div><div class="meta">'+num(r.c)+' funded '+(r.c===1?'county':'counties')+'</div></div>'+
+          '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+w+'%"></div></div></div>'+
+          '<div class="barnum">'+money(r.fed)+'</div></div>';
+      }).join("");
+      stateSec = '<section class="sec"><div class="shead"><div class="k">By state</div>'+
+        '<h2>Where the Public Assistance landed</h2>'+
+        '<p class="lead">Federal share obligated to each state under this event, summed across its declarations.</p></div>'+
+        '<div class="tier-h"><span class="t">States</span><span class="c">by federal share</span></div>'+body+'</section>';
+    } else {
+      stateSec = '<section class="sec"><div class="shead"><div class="k">By state</div>'+
+        '<h2>States declared</h2></div><div class="d-chips">'+stChips+'</div>'+
+        '<p class="d-note">Public Assistance figures per state appear once pa-timing.json is built.</p></section>';
+    }
+
+    // localities funded (PA)
+    var locSec="";
+    if(pa){
+      var cs=pa.perCounty.slice().sort(function(a,b){ return b.fed-a.fed; });
+      if(cs.length){
+        function crow(r){ return '<tr><td>'+esc(STATES[r.st]||r.st)+'</td><td>'+esc(r.county)+'</td><td class="r m">'+money(r.fed)+'</td></tr>'; }
+        var headRows=cs.slice(0,25).map(crow).join(""), rest=cs.slice(25);
+        var moreBtn = rest.length ? '<button class="morebtn" id="locToggle">Show all '+cs.length+' funded localities</button>' : "";
+        var restHtml = rest.length ? '<tbody id="locMore" hidden>'+rest.map(crow).join("")+'</tbody>' : "";
+        locSec = '<section class="sec"><div class="shead"><div class="k">By locality</div>'+
+          '<h2>Which places the money reached</h2>'+
+          '<p class="lead">Every county or equivalent with Public Assistance obligated under this event, most funded first.</p></div>'+
+          '<table class="d-tbl"><thead><tr><th>State</th><th>County or equivalent</th><th class="r">Federal share</th></tr></thead>'+
+          '<tbody>'+headRows+'</tbody>'+restHtml+'</table>'+moreBtn+'</section>';
+      }
+    }
+
+    // declarations
+    var declSec = '<section class="sec"><div class="shead"><div class="k">Declarations</div>'+
+      '<h2>The declarations grouped here</h2>'+
+      '<p class="lead">This event bundles '+num(dns.length)+' federal '+(dns.length===1?'declaration':'declarations')+' across '+num(states.length)+' '+(states.length===1?'state':'states')+', grouped the same way the Compare tool groups them.</p></div>'+
+      '<div class="d-chips">'+dnChips+'</div>'+
+      '<a class="maplink" href="/map.html">See this footprint on the county map \u2192</a></section>';
+
+    var methodSec = '<section class="sec"><div class="shead"><div class="k">Method</div><h2>About this data</h2>'+
+      '<p class="lead">An event groups every FEMA declaration that shares one incident, by the same key the Compare tool uses. States and counties come from the declaration footprint; Public Assistance is the federal share obligated across the event\u2019s declaration numbers, from OpenFEMA. Committed funding, not final spending, and separate from Individual Assistance and Hazard Mitigation, which are shown per place on the Local pages.</p></div></section>';
+
+    app.innerHTML =
+      '<a class="d-back" href="/map.html">\u2190 Back to the map</a>'+
+      '<header class="masthead"><div class="kicker">'+esc(kick)+'</div>'+
+      '<h1 class="headline">'+esc(ev.n||("Event "+ev.id))+'</h1>'+
+      '<p class="standfirst">Where this disaster was declared, which communities it reached, and the federal recovery funding that followed.</p>'+
+      '<div class="stats">'+statHtml+'</div></header>'+
+      stateSec+locSec+declSec+methodSec;
+
+    var t=document.getElementById("locToggle");
+    if(t){ t.addEventListener("click", function(){ var m=document.getElementById("locMore");
+      if(m.hasAttribute("hidden")){ m.removeAttribute("hidden"); t.textContent="Show top 25 only"; }
+      else { m.setAttribute("hidden",""); t.textContent="Show all funded localities"; } }); }
+  }
+
+  function pickerRow(ev){
+    var meta=[ev.y, TYPE_LONG[ev.t]||ev.t, (ev.states||[]).length+" state"+((ev.states||[]).length===1?"":"s"), (ev.f||[]).length+" counties"].filter(Boolean).join(" \u00b7 ");
+    return '<a href="?event='+encodeURIComponent(ev.id)+'"><span class="dn">'+esc(ev.n||ev.id)+'</span><span class="dm">'+esc(meta)+'</span></a>';
+  }
+
+  function renderPicker(notFound){
+    app.innerHTML =
+      '<header class="masthead"><div class="kicker">Disaster profile</div>'+
+      '<h1 class="headline">Look up a <em>disaster.</em></h1>'+
+      '<p class="standfirst">'+(notFound?'That disaster was not found. ':'')+'Search a named storm or a year to see its states, its localities, and its recovery funding.</p>'+
+      '<input class="d-search" id="dsearch" type="text" placeholder="Search, e.g. Helene or 2024" autocomplete="off" spellcheck="false">'+
+      '<div class="d-results" id="dresults"></div></header>';
+    var input=document.getElementById("dsearch"), out=document.getElementById("dresults");
+    function draw(q){
+      q=(q||"").trim().toLowerCase();
+      var list = q ? EVENTS.filter(function(e){ return String(e.n||"").toLowerCase().indexOf(q)>=0 || String(e.y||"").indexOf(q)>=0; }) : EVENTS.slice(0,25);
+      list = list.slice(0,50);
+      out.innerHTML = list.length ? list.map(pickerRow).join("") : '<div class="d-empty">No matching disasters.</div>';
+    }
+    input.addEventListener("input", function(){ draw(input.value); });
+    draw("");
+  }
+})();
+</script>
+</body></html>
