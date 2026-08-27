@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disaster Data | Hazard Mitigation</title>
+<meta name="description" content="Federal Hazard Mitigation Assistance across the U.S. — dollars obligated by state and by program (HMGP, FMA, BRIC, PDM), and the properties mitigated to reduce the next disaster.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,40px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:15ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:60ch;margin-top:24px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+.sec{padding:clamp(46px,6vw,76px) 0;border-top:1px solid var(--rule);}
+.shead{margin-bottom:clamp(26px,3.5vw,40px);}
+.shead .k{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
+.lead{font-size:clamp(15px,1.7vw,17px);color:var(--ink-2);max-width:64ch;margin-top:15px;line-height:1.6;}
+
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
+.row{display:grid;grid-template-columns:34px 1.7fr 3fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);border-radius:6px;}
+.rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;}
+.sname{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sname .meta{font-size:11.5px;color:var(--ink-3);}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;background:var(--accent);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:62px;text-align:right;}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:6px 10px;}.bar-wrap{grid-column:1/-1;}.barnum{min-width:52px;text-align:left;}}
+.morebtn{margin-top:16px;background:none;border:none;color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;padding:3px 0;border-bottom:1px solid transparent;transition:border-color .15s;}
+.morebtn:hover{border-bottom-color:var(--accent);}
+
+.types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.2vw,24px);margin-top:14px;}
+.tcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;}
+.tcard .top{display:flex;align-items:baseline;gap:12px;}
+.tcode{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.3px;line-height:1;color:var(--accent);}
+.tname{font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:-.2px;line-height:1.15;margin-top:6px;}
+.tstat{font-size:11px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);margin-top:12px;font-variant-numeric:tabular-nums;text-transform:uppercase;}
+.tstat b{color:var(--ink);font-weight:700;font-size:13px;}
+.tdesc{font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:11px;}
+@media(max-width:860px){.types-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.types-grid{grid-template-columns:1fr;}}
+
+.note{margin-top:24px;font-size:13.5px;color:var(--ink-2);line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;max-width:66ch;}
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<div class="wrap">
+<main>
+  <div class="container">
+  <header class="masthead">
+    <div class="kicker">FEMA Hazard Mitigation Assistance · all years</div>
+    <h1 class="headline">Reducing the next disaster, <em>before it hits.</em></h1>
+    <p class="standfirst">Hazard Mitigation Assistance funds the projects that shrink the next disaster: buyouts of flood-prone homes, elevations, safe rooms, and stronger public infrastructure. Here is where that money has gone.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="mit-total">—</div><div class="lab">federal share obligated</div></div>
+      <div class="stat"><div class="num" id="mit-projects">—</div><div class="lab">projects funded</div></div>
+      <div class="stat"><div class="num" id="mit-props">—</div><div class="lab">properties mitigated</div></div>
+      <div class="stat"><div class="num" id="mit-states">—</div><div class="lab">states &amp; territories</div></div>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="shead">
+      <div class="k">By state</div>
+      <h2>Where mitigation has been funded</h2>
+      <p class="lead">Federal mitigation share obligated, by state and territory. The record leans toward the states that flood and burn the most, where repetitive losses drive buyouts and elevations.</p>
+    </div>
+    <div class="tier-h"><span class="t">States &amp; territories</span><span class="c" id="mit-states-count">by federal share</span></div>
+    <div id="mit-states-rows"></div>
+    <div id="mit-states-more" hidden></div>
+    <button class="morebtn" id="mit-states-toggle" hidden></button>
+  </section>
+
+  <section class="sec">
+    <div class="shead">
+      <div class="k">By program</div>
+      <h2>The mitigation programs</h2>
+      <p class="lead">Federal hazard mitigation runs through several programs, each aimed at a different moment or risk — some unlocked by a disaster, others funded to get ahead of one.</p>
+    </div>
+    <div class="types-grid" id="mit-programs"></div>
+  </section>
+
+  <section class="sec">
+    <div class="shead">
+      <div class="k">Method</div>
+      <h2>About this data</h2>
+      <p class="lead">Figures come from OpenFEMA's <em>Hazard Mitigation Assistance Projects</em>, every funded subgrant carrying a federal share obligated. "Federal share obligated" is the federal government's committed portion, not the full project cost and not necessarily the amount finally spent. Hazard Mitigation Assistance spans several programs: the Hazard Mitigation Grant Program after a disaster, and Flood Mitigation Assistance, Building Resilient Infrastructure and Communities, and the earlier Pre-Disaster Mitigation program before one.</p>
+      <p class="note">Every jurisdiction's own mitigation projects are listed on its Local page, alongside the disasters, recovery funding, and individual assistance for that place.</p>
+    </div>
+  </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div class="disc">Disaster Data · A community project. Hazard Mitigation figures from OpenFEMA, refreshed weekly. Federal share obligated reflects committed funding and may be revised as projects close out. Not affiliated with FEMA or DHS.</div>
+        <div><a href="/about.html">About &amp; sources</a></div>
+      </div>
+    </div>
+  </footer>
+</main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STATES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia",PR:"Puerto Rico",VI:"U.S. Virgin Islands",GU:"Guam",AS:"American Samoa",MP:"N. Mariana Islands",FM:"Micronesia",MH:"Marshall Islands",PW:"Palau"};
+
+  var PROG_LABEL = {
+    "HMGP":"Hazard Mitigation Grant Program",
+    "HMGP POST FIRE":"Hazard Mitigation Grant Program (Post Fire)",
+    "FMA":"Flood Mitigation Assistance",
+    "FMA SWIFT CURRENT":"Flood Mitigation Assistance Swift Current",
+    "BRIC":"Building Resilient Infrastructure and Communities",
+    "PDM":"Pre-Disaster Mitigation",
+    "LPDM":"Legislative Pre-Disaster Mitigation",
+    "RFC":"Repetitive Flood Claims",
+    "SRL":"Severe Repetitive Loss"
+  };
+  var PROG_DESC = {
+    "HMGP":"Unlocked after a major disaster declaration, it funds mitigation while a community is still recovering, so the rebuild is stronger than what the storm took.",
+    "FMA":"Targets buildings insured under the National Flood Insurance Program, most often elevating or buying out homes that flood again and again.",
+    "BRIC":"Funds large, proactive resilience work before disaster strikes, drawn from a set-aside of national disaster spending.",
+    "PDM":"The earlier pre-disaster mitigation program, since largely folded into BRIC.",
+    "LPDM":"Congressionally directed pre-disaster mitigation projects.",
+    "FMA SWIFT CURRENT":"A faster track of Flood Mitigation Assistance for properties hit by a recent flood disaster.",
+    "HMGP POST FIRE":"Hazard Mitigation Grant Program funding triggered by a Fire Management Assistance declaration.",
+    "RFC":"An earlier program for repeatedly flooded, NFIP-insured properties.",
+    "SRL":"An earlier program targeting severe repetitive-loss flood properties."
+  };
+
+  function money(n){
+    n = +n || 0;
+    if (n >= 1e9) return "$" + (n/1e9).toFixed(1).replace(/\.0$/,"") + "B";
+    if (n >= 1e6) return "$" + Math.round(n/1e6) + "M";
+    if (n >= 1e3) return "$" + Math.round(n/1e3) + "K";
+    return "$" + Math.round(n);
+  }
+  function moneyStat(n){
+    n = +n || 0;
+    if (n >= 1e9) return "$" + (n/1e9).toFixed(1).replace(/\.0$/,"") + '<small>B</small>';
+    if (n >= 1e6) return "$" + Math.round(n/1e6) + '<small>M</small>';
+    return "$" + num(n);
+  }
+  function num(n){ return (+n || 0).toLocaleString("en-US"); }
+  function projTxt(n){ n = +n || 0; return n >= 1000 ? Math.round(n/1000) + "K projects" : (n + (n === 1 ? " project" : " projects")); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>]/g, function(c){ return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;"; }); }
+  function set(id, html){ var el = document.getElementById(id); if (el) el.innerHTML = html; }
+
+  function fail(msg){
+    set("mit-states-count", "data unavailable");
+    set("mit-states-rows", '<div class="lead" style="margin-top:14px">' + esc(msg) + '</div>');
+    set("mit-programs", '');
+  }
+
+  fetch("hma.json", {cache:"no-cache"})
+    .then(function(r){ if (!r.ok) throw new Error("hma.json " + r.status); return r.json(); })
+    .then(render)
+    .catch(function(){ fail("Mitigation figures will appear here after the next build."); });
+
+  function render(HMA){
+    if (!HMA || typeof HMA !== "object"){ return fail("No mitigation data found."); }
+
+    // ── aggregate: national, by state, by program ──
+    var byState = [];   // {state, fed, n, props}
+    var prog = {};      // code -> [fed, n]
+    var totFed = 0, totN = 0, totProps = 0, nStates = 0;
+
+    Object.keys(HMA).forEach(function(st){
+      var places = HMA[st] || {};
+      var sFed = 0, sN = 0, sProps = 0;
+      Object.keys(places).forEach(function(nm){
+        var rec = places[nm] || {};
+        sFed += (+rec.fed || 0);
+        sN   += (+rec.n   || 0);
+        sProps += (+rec.props || 0);
+        var pg = rec.prog || {};
+        Object.keys(pg).forEach(function(code){
+          var v = pg[code] || [0,0];
+          if (!prog[code]) prog[code] = [0,0];
+          prog[code][0] += (+v[0] || 0);
+          prog[code][1] += (+v[1] || 0);
+        });
+      });
+      if (sFed > 0 || sN > 0){
+        byState.push({state:st, fed:sFed, n:sN, props:sProps});
+        nStates += 1;
+        totFed += sFed; totN += sN; totProps += sProps;
+      }
+    });
+
+    // ── headline stats ──
+    set("mit-total", moneyStat(totFed));
+    set("mit-projects", num(totN));
+    set("mit-props", num(totProps));
+    set("mit-states", num(nStates));
+
+    // ── by state ──
+    byState.sort(function(a,b){ return b.fed - a.fed; });
+    var max = byState.length ? byState[0].fed : 1;
+
+    function stateRow(i, d){
+      var w = Math.max(2, Math.round(d.fed / max * 100));
+      var nm = STATES[d.state] || d.state;
+      return '<div class="row">' +
+          '<div class="rank">' + i + '</div>' +
+          '<div class="sname"><div class="n">' + esc(nm) + '</div><div class="meta">' + projTxt(d.n) + '</div></div>' +
+          '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:' + w + '%"></div></div></div>' +
+          '<div class="barnum">' + money(d.fed) + '</div>' +
+        '</div>';
+    }
+    function rows(arr, start){ return arr.map(function(d,k){ return stateRow(start + k, d); }).join(""); }
+
+    var head = byState.slice(0, 15), rest = byState.slice(15);
+    set("mit-states-rows", rows(head, 1));
+    set("mit-states-count", "by federal share · " + byState.length + " in all");
+    if (rest.length){
+      var moreEl = document.getElementById("mit-states-more");
+      moreEl.innerHTML = rows(rest, 16);
+      var btn = document.getElementById("mit-states-toggle");
+      btn.hidden = false;
+      btn.textContent = "Show all " + byState.length + " states & territories";
+      btn.addEventListener("click", function(){
+        var hidden = moreEl.hasAttribute("hidden");
+        if (hidden){ moreEl.removeAttribute("hidden"); btn.textContent = "Show top 15 only"; }
+        else { moreEl.setAttribute("hidden",""); btn.textContent = "Show all " + byState.length + " states & territories"; }
+      });
+    }
+
+    // ── by program ──
+    var progList = Object.keys(prog).map(function(code){
+      return {code:code, fed:prog[code][0], n:prog[code][1]};
+    }).sort(function(a,b){ return b.fed - a.fed; });
+
+    set("mit-programs", progList.map(function(p){
+      var name = PROG_LABEL[p.code] || p.code;
+      var desc = PROG_DESC[p.code] || "A FEMA hazard mitigation program.";
+      return '<div class="tcard">' +
+          '<div class="top"><div class="tcode">' + esc(p.code) + '</div></div>' +
+          '<div class="tname">' + esc(name) + '</div>' +
+          '<div class="tstat"><b>' + money(p.fed) + '</b> obligated · <b>' + num(p.n) + '</b> ' + (p.n === 1 ? 'project' : 'projects') + '</div>' +
+          '<div class="tdesc">' + esc(desc) + '</div>' +
+        '</div>';
+    }).join(""));
+  }
+})();
+</script>
+</body>
+</html>

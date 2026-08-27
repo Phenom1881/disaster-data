@@ -22,6 +22,7 @@
     ["States",   "/states/"],
     ["Local",    "/jurisdiction.html"],
     ["Funding",  "/public-assistance-projects.html"],
+    ["Mitigation", "/mitigation.html"],
     ["Denials",  "/denials.html"],
     ["About",    "/about.html"]
   ];
