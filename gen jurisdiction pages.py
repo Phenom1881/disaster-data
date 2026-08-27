@@ -69,6 +69,21 @@ def load_hma():
     except Exception:
         return {}
 
+def load_ia():
+    """Per-jurisdiction Individual Assistance rollup written by build.py to ia.json.
+    {ST: {matchName: {"reg":int,"app":int,"ihp":int,"rr":int,"rent":int,"ona":int}}},
+    combined across Housing Assistance owners and renters. matchName is shaped so
+    pa_base_kind() resolves it to the same (base, kind) as the PA data. Returns {}
+    when the file is absent (feature simply skips)."""
+    p = os.path.join(SRC_ROOT, "ia.json")
+    if not os.path.exists(p):
+        return {}
+    try:
+        with open(p, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
 # ---------------------------------------------------------------- helpers
 def fy_of(iso):
     y, m = int(iso[:4]), int(iso[5:7])
@@ -297,6 +312,8 @@ def _content_hash(j):
         "pa_cats": j.get("pa_cats", {}),
         "hma_fed": (j.get("hma") or {}).get("fed", 0),
         "hma_prog": (j.get("hma") or {}).get("prog", {}),
+        "ia_reg": (j.get("ia") or {}).get("reg", 0),
+        "ia_ihp": (j.get("ia") or {}).get("ihp", 0),
         "recs": sorted(
             [r.get("femaDeclarationString", ""), r.get("declarationDate", "")[:10],
              r.get("declarationType", ""), r.get("incidentType", ""),
@@ -698,6 +715,57 @@ def hma_html(j):
             '<tbody>%s</tbody></table></div></section>'
             % (css, stat, body))
 
+def ia_html(j):
+    """Per-jurisdiction Individual Assistance summary: households that applied and
+    were approved, total IHP approved, and the repair/replace + rental + other-needs
+    split, combined across Housing Assistance owners and renters. IA exists only
+    where it was designated, so most jurisdictions render nothing here. Additive to
+    the sections above. Returns "" when there is no IA record for this jurisdiction."""
+    ia = j.get("ia") or {}
+    if not ia or not (ia.get("reg") or ia.get("ihp")):
+        return ""
+    e = html.escape
+    money = lambda n: "$" + format(int(round(n or 0)), ",")
+    reg = ia.get("reg", 0)
+    app = ia.get("app", 0)
+    ihp = ia.get("ihp", 0)
+
+    parts = [("Repair and replacement", ia.get("rr", 0)),
+             ("Rental assistance",      ia.get("rent", 0)),
+             ("Other needs",            ia.get("ona", 0))]
+    body = "".join("<tr><td>%s</td><td>%s</td></tr>" % (e(lbl), money(amt))
+                   for lbl, amt in parts if amt > 0)
+
+    stat = ('<div class="ia-stats">'
+            '<div class="ia-stat"><div class="ia-n">%s</div><div class="ia-l">valid registration%s</div></div>'
+            '<div class="ia-stat"><div class="ia-n">%s</div><div class="ia-l">household%s approved</div></div>'
+            '<div class="ia-stat"><div class="ia-n">%s</div><div class="ia-l">total IHP approved</div></div>'
+            '</div>'
+            % (format(reg, ","), "" if reg == 1 else "s",
+               format(app, ","), "" if app == 1 else "s", money(ihp)))
+
+    table = ("<div class=\"tablewrap\"><table class=\"pa-cat\"><thead><tr>"
+             "<th>Assistance type</th><th>Approved amount</th></tr></thead>"
+             "<tbody>%s</tbody></table></div>" % body) if body else ""
+
+    css = ("<style>"
+           ".ia-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;"
+           "border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}"
+           ".ia-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}"
+           ".ia-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}"
+           ".ia-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}"
+           "</style>")
+
+    return ('<section><h2>Assistance to households (Individual Assistance)</h2>'
+            '<p class="pa-note">FEMA Individual Assistance to households in this jurisdiction, combined '
+            'across the Housing Assistance owner and renter programs. Valid registrations are households '
+            'that applied within a designated Individual Assistance area; approved counts and dollars are '
+            'the households FEMA found eligible under the Individuals and Households Program. Figures are '
+            'self-reported and drawn from NEMIS through OpenFEMA, not audited, and Individual Assistance '
+            'exists only for disasters where it was designated, so many jurisdictions show none.</p>'
+            '%s%s%s</section>'
+            % (css, stat, table))
+
 # ---------------------------------------------------------------- jurisdiction page
 def render_page(j, others):
     e = html.escape
@@ -927,7 +995,7 @@ def render_page(j, others):
             % (robots, e(j["name"]), e(desc), canonical, e(j["name"]), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
                e(j["name"]), j["kind"], label, e(j["name"]), lede, stats, summary_html(j), map_html,
-               pa_breakdown_html(j) + pa_timing_html(j) + hma_html(j),
+               pa_breakdown_html(j) + pa_timing_html(j) + ia_html(j) + hma_html(j),
                haz, hmp, history,
                method_html(j["kind"], bool(j.get("spans"))), grid, footer_html(), copyjs, mapjs))
 
@@ -1031,7 +1099,7 @@ def render_stub(name, canonical_url, primary_name, spans):
                footer_html()))
 
 # ---------------------------------------------------------------- build
-def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, hma, tribal_plan):
+def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, hma, ia, tribal_plan):
     """Generate all keep-localities + hub for one state.
     Returns (kept, dropped, stubs_written, js)."""
     global STATE_AB, STATE_NAME, STATE_SLUG, OUT_DIR
@@ -1130,6 +1198,22 @@ def build_state(state_ab, LOCALITY, by_id, lcfy, NAMES, pa_county, pa_timing, hm
                     or hm_exact.get(j["name"].replace(" (city)", "").strip().lower())
                     or {})
 
+    # match IA household data to jurisdictions, same (base, kind) keying as PA above
+    ia_lookup, ia_exact = {}, {}
+    for ia_name, ia_val in ia.items():
+        ia_exact[ia_name.strip().lower()] = ia_val
+        ia_lookup[pa_base_kind(ia_name)] = ia_val
+    for j in js:
+        if j["kind"] == "city":
+            _k = (j["name"].replace(" (city)", "").strip().lower(), "city")
+        elif j["kind"] == "county":
+            _k = (pa_base_kind(j["name"])[0], "county")
+        else:
+            _k = (j["name"].strip().lower(), "other")
+        j["ia"] = (ia_lookup.get(_k)
+                   or ia_exact.get(j["name"].replace(" (city)", "").strip().lower())
+                   or {})
+
     for j in js:
         j["thin"] = is_thin(j)
         j["content_hash"] = _content_hash(j)
@@ -1154,6 +1238,7 @@ def main():
     LOCALITY, BROWSE, NAMES, PA_COUNTY = load_data()
     PA_TIMING = load_pa_timing()
     HMA = load_hma()
+    IA = load_ia()
     by_id = {r["femaDeclarationString"]: r for r in BROWSE}
     lcfy = last_complete_fy(BROWSE)
     tribal_plan = build_tribal_plan(LOCALITY, NAMES)
@@ -1168,7 +1253,7 @@ def main():
     grand_pages = grand_states = grand_drop = grand_stubs = 0
     all_jurisdictions = []
     for st in targets:
-        kept, dropped, stubs_n, js = build_state(st, LOCALITY, by_id, lcfy, NAMES, PA_COUNTY.get(st, {}), PA_TIMING.get(st, {}), HMA.get(st, {}), tribal_plan)
+        kept, dropped, stubs_n, js = build_state(st, LOCALITY, by_id, lcfy, NAMES, PA_COUNTY.get(st, {}), PA_TIMING.get(st, {}), HMA.get(st, {}), IA.get(st, {}), tribal_plan)
         grand_drop += dropped
         grand_stubs += stubs_n
         if kept or stubs_n:

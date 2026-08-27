@@ -343,6 +343,115 @@ def footer_html():
 
 
 # ---------------------------------------------------------------- per-state page
+# ---- funding helpers: state-level Individual Assistance + Hazard Mitigation ----
+# State pages aggregate their jurisdictions. hma.json / ia.json are keyed
+# {ST: {jurisdiction: {...}}}, so summing a state's entries gives its totals with
+# no new fetch. Both sections degrade to nothing when the file or the state's data
+# is absent (IA in particular exists only where it was designated).
+
+def money(n):
+    n = float(n or 0)
+    if n >= 1e9: return ("$%.1fB" % (n / 1e9)).replace(".0B", "B")
+    if n >= 1e6: return "$%dM" % round(n / 1e6)
+    if n >= 1e3: return "$%dK" % round(n / 1e3)
+    return "$%d" % round(n)
+
+def num(n):
+    return "{:,}".format(int(round(float(n or 0))))
+
+HMA_PROG_LABELS = {
+    "HMGP": "Hazard Mitigation Grant Program",
+    "HMGP POST FIRE": "Hazard Mitigation Grant Program (Post Fire)",
+    "FMA": "Flood Mitigation Assistance",
+    "FMA SWIFT CURRENT": "Flood Mitigation Assistance Swift Current",
+    "BRIC": "Building Resilient Infrastructure and Communities",
+    "PDM": "Pre-Disaster Mitigation",
+    "LPDM": "Legislative Pre-Disaster Mitigation",
+    "RFC": "Repetitive Flood Claims",
+    "SRL": "Severe Repetitive Loss",
+}
+
+def _load_json(fname):
+    p = os.path.join(SRC_ROOT, fname)
+    if not os.path.exists(p):
+        return {}
+    try:
+        with open(p, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+def load_hma():
+    return _load_json("hma.json")
+
+def load_ia():
+    return _load_json("ia.json")
+
+def agg_hma(state_dict):
+    fed = n = props = 0
+    prog = {}
+    for rec in (state_dict or {}).values():
+        fed += rec.get("fed", 0); n += rec.get("n", 0); props += rec.get("props", 0)
+        for code, v in (rec.get("prog") or {}).items():
+            p = prog.setdefault(code, [0, 0]); p[0] += v[0]; p[1] += v[1]
+    return {"fed": fed, "n": n, "props": props, "prog": prog} if (fed or n) else {}
+
+def agg_ia(state_dict):
+    o = {"reg": 0, "app": 0, "ihp": 0, "rr": 0, "rent": 0, "ona": 0}
+    for rec in (state_dict or {}).values():
+        for k in o:
+            o[k] += rec.get(k, 0)
+    return o if (o["reg"] or o["ihp"]) else {}
+
+def state_ia_html(s):
+    ia = s.get("ia") or {}
+    if not ia or not (ia.get("reg") or ia.get("ihp")):
+        return ""
+    e = html.escape
+    tiles = [(num(ia["reg"]), "Valid registrations"),
+             (num(ia["app"]), "Households approved"),
+             (money(ia["ihp"]), "Total IHP approved")]
+    stats = "".join('<div class="stat"><div class="n">%s</div><div class="l">%s</div></div>' % (v, l)
+                    for v, l in tiles)
+    parts = [("Repair and replacement", ia.get("rr", 0)),
+             ("Rental assistance", ia.get("rent", 0)),
+             ("Other needs", ia.get("ona", 0))]
+    body = "".join("<tr><td>%s</td><td>%s</td></tr>" % (lbl, money(amt))
+                   for lbl, amt in parts if amt > 0)
+    table = ('<div class="tablewrap"><table><thead><tr><th>Assistance type</th>'
+             '<th>Approved amount</th></tr></thead><tbody>%s</tbody></table></div>' % body) if body else ""
+    return ('<h2>Individual Assistance to households</h2>'
+            '<p>FEMA Individual Assistance to households across %s, combined across the Housing '
+            'Assistance owner and renter programs. Valid registrations are households that applied '
+            'within a designated Individual Assistance area; approved figures are those FEMA found '
+            'eligible under the Individuals and Households Program. Self-reported, drawn from NEMIS '
+            'through OpenFEMA, and present only where Individual Assistance was designated.</p>'
+            '<div class="stats">%s</div>%s' % (e(s["name"]), stats, table))
+
+def state_hma_html(s):
+    hma = s.get("hma") or {}
+    if not hma or not hma.get("fed"):
+        return ""
+    e = html.escape
+    tiles = [(money(hma["fed"]), "Federal mitigation share"),
+             (num(hma["n"]), "Projects funded"),
+             (num(hma["props"]), "Properties mitigated")]
+    stats = "".join('<div class="stat"><div class="n">%s</div><div class="l">%s</div></div>' % (v, l)
+                    for v, l in tiles)
+    progs = sorted((hma.get("prog") or {}).items(), key=lambda kv: -kv[1][0])
+    body = "".join(
+        '<tr><td>%s <span style="color:#938a78">(%s)</span></td><td>%s</td><td>%s</td></tr>'
+        % (e(HMA_PROG_LABELS.get(c, c)), e(c), num(v[1]), money(v[0]))
+        for c, v in progs)
+    table = ('<div class="tablewrap"><table><thead><tr><th>Program</th><th>Projects</th>'
+             '<th>Federal share obligated</th></tr></thead><tbody>%s</tbody></table></div>' % body)
+    return ('<h2>Hazard mitigation funded</h2>'
+            '<p>Federal Hazard Mitigation Assistance obligated across %s to reduce future disaster '
+            'losses, by program. Figures are federal share obligated, reported through OpenFEMA and '
+            'not audited.</p>'
+            '<div class="stats">%s</div>%s' % (e(s["name"]), stats, table))
+
+
 def render_state_page(s, states, lcfy):
     name, ab, slug = s["name"], s["ab"], s["slug"]
     canonical = "%s/states/%s.html" % (SITE, slug)
@@ -464,6 +573,9 @@ def render_state_page(s, states, lcfy):
     else:
         orphan_html = ''
 
+    ia_sec  = state_ia_html(s)
+    hma_sec = state_hma_html(s)
+
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
             '<title>Disaster Data | %s FEMA Disaster Declarations: Federal Disaster History Since FY2000</title>'
@@ -484,6 +596,7 @@ def render_state_page(s, states, lcfy):
             '%s'
             '<h2>Most common hazards</h2><ul class="haz">%s</ul>'
             '<h2>All declarations on record</h2>%s'
+            '%s%s'
             '<h2>Denied requests</h2>%s'
             '%s'
             '<div class="audience"><strong>Built for emergency managers, grant writers, and '
@@ -496,7 +609,7 @@ def render_state_page(s, states, lcfy):
             '</div></main>%s</body></html>'
             % (e(name), e(desc), canonical, e(name), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
-               e(name), e(name), lede, stats, jlink, haz, recent_tbl, denials, orphan_html,
+               e(name), e(name), lede, stats, jlink, haz, recent_tbl, ia_sec, hma_sec, denials, orphan_html,
                e(name), ab, method_html(), grid, footer_html()))
 
 
@@ -570,6 +683,11 @@ def main():
     rows.sort(key=lambda s: -s["decl"])
     for i, s in enumerate(rows):
         s["rank"] = i + 1
+
+    HMA, IA = load_hma(), load_ia()
+    for s in rows:
+        s["hma"] = agg_hma(HMA.get(s["ab"], {}))
+        s["ia"]  = agg_ia(IA.get(s["ab"], {}))
 
     os.makedirs(STATES_DIR, exist_ok=True)
     for s in rows:
