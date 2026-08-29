@@ -187,6 +187,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   function num(n){ return (+n || 0).toLocaleString("en-US"); }
   function projTxt(n){ n = +n || 0; return n >= 1000 ? Math.round(n/1000) + "K projects" : (n + (n === 1 ? " project" : " projects")); }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>]/g, function(c){ return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;"; }); }
+  function slugify(v){ v=String(v||"").toLowerCase().replace(/&/g,"and").replace(/[.,]/g,""); v=v.replace(/[^\w\s\/-]/g,""); v=v.replace(/[\s\/]+/g,"-").replace(/^-+|-+$/g,""); return v.replace(/-+/g,"-"); }
+  function stateLink(ab){ var nm=STATES[ab]; return nm ? "/states/"+slugify(nm)+".html" : null; }
   function set(id, html){ var el = document.getElementById(id); if (el) el.innerHTML = html; }
 
   function fail(msg){
@@ -246,7 +248,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       var nm = STATES[d.state] || d.state;
       return '<div class="row">' +
           '<div class="rank">' + i + '</div>' +
-          '<div class="sname"><div class="n">' + esc(nm) + '</div><div class="meta">' + projTxt(d.n) + '</div></div>' +
+          '<div class="sname"><div class="n">' + (stateLink(d.state) ? '<a href="'+stateLink(d.state)+'" style="color:inherit;text-decoration:none">'+esc(nm)+'</a>' : esc(nm)) + '</div><div class="meta">' + projTxt(d.n) + '</div></div>' +
           '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:' + w + '%"></div></div></div>' +
           '<div class="barnum">' + money(d.fed) + '</div>' +
         '</div>';
