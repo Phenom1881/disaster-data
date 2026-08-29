@@ -257,11 +257,17 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       '<input class="d-search" id="dsearch" type="text" placeholder="Search, e.g. Helene or 2024" autocomplete="off" spellcheck="false">'+
       '<div class="d-results" id="dresults"></div></header>';
     var input=document.getElementById("dsearch"), out=document.getElementById("dresults");
+    function evHay(e){
+      var st = (e.states||[]).map(function(s){ return s + " " + (STATES[s]||""); }).join(" ");
+      return ((e.n||"")+" "+(e.y||"")+" "+(e.t||"")+" "+(e.it||"")+" "+st).toLowerCase();
+    }
     function draw(q){
       q=(q||"").trim().toLowerCase();
-      var list = q ? EVENTS.filter(function(e){ return String(e.n||"").toLowerCase().indexOf(q)>=0 || String(e.y||"").indexOf(q)>=0; }) : EVENTS.slice(0,25);
+      var list = q ? EVENTS.filter(function(e){ return evHay(e).indexOf(q)>=0; }) : EVENTS.slice(0,25);
       list = list.slice(0,50);
-      out.innerHTML = list.length ? list.map(pickerRow).join("") : '<div class="d-empty">No matching disasters.</div>';
+      if(list.length){ out.innerHTML = list.map(pickerRow).join(""); }
+      else if(!EVENTS.length){ out.innerHTML = '<div class="d-empty">No disaster data loaded. events.json is missing or empty, so it needs the next successful build.</div>'; }
+      else { out.innerHTML = '<div class="d-empty">No matching disasters. Try a storm name, a year, or a state.</div>'; }
     }
     input.addEventListener("input", function(){ draw(input.value); });
     draw("");
