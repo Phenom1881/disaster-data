@@ -1,47 +1,41 @@
 #!/usr/bin/env python3
 """
-gen_map_events.py - build the national event indexes.
+gen_map_events.py - build the national event indexes (map-events.js + events.json).
 
-Reads the per-state declaration index that gen_decl_index.py already writes
-(data/decl-index/{ST}.json, listed in manifest.json), groups declarations
-NATIONALLY by event (eventId, falling back to the declaration id - the SAME
-key Compare groups on), unions the FIPS each event designated across every
-state it touched, and writes TWO files from that one grouping pass:
+Reads data/decl-index/{ST}.json (+ manifest.json) and groups declarations
+NATIONALLY into events, then writes both the Map overlay index and the Disaster
+page index from one pass.
 
-  map-events.js  (unchanged: the Map overlay picker)
-      window.MAP_EVENTS = [ {id, n, y, t, it, sw, f:[...]}, ... ];
-      only events WITH a county footprint (statewide-only rows dropped, since
-      they cannot be drawn per county).
+GROUPING: named tropical systems (hurricanes, tropical storms, typhoons, their
+post-tropical / remnant forms) are merged by STORM NAME + YEAR, because FEMA
+titles the same storm differently in every state it hits ("Hurricane Helene",
+"Tropical Storm Helene", "Post-Tropical Cyclone Helene", "Remnants of Hurricane
+Helene"...) and issues a separate declaration number per state. So all of
+Helene 2024 collapses into one event spanning every state, county, and
+declaration number it touched. Everything else falls back to the declaration's
+eventId (else its id) - the SAME key Compare uses - so unnamed events are left
+as they are. Two different storms that share a name in different years stay
+separate (the year is part of the key).
 
-  events.json  (new: the per-event Disaster view)
-      [ {id, n, y, t, it, sw, states:[...], dns:[...], f:[...]}, ... ]
-      the fuller profile of every event: the states it was declared in, the
-      disaster numbers it groups, and its county footprint. Statewide-only
-      events are KEPT here (empty f), because a disaster profile still wants
-      to show a statewide declaration. The Disaster page reads this to answer
-      "which states, which localities" for an event; funding is layered on at
-      render time (pa-timing.json if present, else a live OpenFEMA fetch by
-      the event's disaster numbers).
+Outputs:
+  map-events.js  window.MAP_EVENTS = [{id, n, y, t, it, sw, f:[...]}, ...]
+                 events WITH a county footprint only (statewide-only dropped).
+  events.json    [{id, n, y, t, it, sw, states:[...], dns:[...], f:[...]}, ...]
+                 all events (statewide-only kept, empty f).
 
-  id  event key (eventId, else declaration id)      n   display name
-  y   year                                          t   DR / EM / FM
-  it  incident type (Flood, Hurricane, ...)         sw  1 if any piece was statewide
-  states  sorted USPS abbrevs the event was declared in
-  dns     sorted disaster numbers grouped under the event
-  f       sorted list of 5-digit county FIPS it hit
+  id  event key   n  display name   y  year   t  DR/EM/FM (DR>EM>FM if mixed)
+  it  incident type   sw 1 if any piece statewide
+  states sorted USPS abbrevs   dns sorted disaster numbers   f sorted 5-digit FIPS
 
-Run it after the decl-index is built, in the same job:
+Run after the decl-index is built:
     python gen_map_events.py --in data/decl-index --out map-events.js
-
-Optional trimming (applies to BOTH outputs):
-    --types DR         only major disasters (comma list, default all)
-    --since 2000       only events in/after a year (default all)
-    --events-out F     path for events.json (default events.json)
+Optional: --types DR   --since 2000   --events-out events.json
 """
 import argparse
 import glob
 import json
 import os
+import re
 import sys
 
 
@@ -59,12 +53,37 @@ def type_from_id(did):
 
 
 def st_from_path(path):
-    """State abbreviation from a {ST}.json filename, e.g. .../NC.json -> NC."""
     return os.path.splitext(os.path.basename(path))[0].upper()
 
 
+# Tropical prefixes ordered longest-first so the captured name is the storm, not a
+# fragment. The name is the word immediately after the prefix.
+_STORM_RE = re.compile(
+    r"\b(?:"
+    r"remnants of post-tropical cyclone|remnants of post-tropical storm|"
+    r"remnants of tropical storm|remnants of tropical depression|"
+    r"remnants of hurricane|remnants of typhoon|"
+    r"post-tropical cyclone|post-tropical storm|post tropical cyclone|post tropical storm|"
+    r"tropical storm|tropical depression|tropical cyclone|super typhoon|"
+    r"hurricane|typhoon"
+    r")\s+([a-z][a-z'\-]+)",
+    re.IGNORECASE,
+)
+_STORM_STOP = {"and", "of", "the", "from", "with", "system", "near", "in", "a"}
+
+
+def storm_name(title):
+    """Return the lowercased tropical-storm name in a FEMA declaration title
+    (e.g. 'Hurricane Helene' -> 'helene'), or None if it isn't a named system."""
+    t = " ".join(str(title or "").split())
+    for m in _STORM_RE.finditer(t):
+        nm = m.group(1).lower()
+        if nm not in _STORM_STOP:
+            return nm
+    return None
+
+
 def load_state_files(in_dir):
-    """Return [(ST, path), ...] for the {ST}.json files, preferring the manifest."""
     manifest_path = os.path.join(in_dir, "manifest.json")
     files = []
     if os.path.exists(manifest_path):
@@ -86,9 +105,9 @@ def load_state_files(in_dir):
 
 
 def build_events(in_dir, types=None, since=0):
-    """Group declarations across all states into national events."""
-    events = {}          # key -> {id, name, year, type, it, sw, number, states, dns, fips}
+    events = {}
     n_decls = 0
+    n_merged = 0
     for st, path in load_state_files(in_dir):
         try:
             with open(path, encoding="utf-8") as fh:
@@ -104,114 +123,129 @@ def build_events(in_dir, types=None, since=0):
             year = d.get("year") or 0
             if since and year < since:
                 continue
-            key = d.get("eventId") or d.get("id")
+
+            title = d.get("title") or d.get("eventName") or ""
+            sname = storm_name(title)
+            if sname:
+                key = "storm-%s-%s" % (sname, year)   # merge the storm across states
+            else:
+                key = d.get("eventId") or d.get("id")
             if not key:
                 continue
+
             fips = [f for f in (d.get("fips") or []) if f]
             dn = d.get("number") or num_from_id(d.get("id"))
+            tl = title.lower()
+
             ev = events.get(key)
             if ev is None:
                 ev = {
                     "id": key,
                     "name": d.get("eventName") or d.get("title") or d.get("id") or key,
+                    "storm": sname,
                     "year": year,
                     "type": dtype,
                     "it": d.get("incidentType") or "Other",
                     "sw": bool(d.get("statewide")),
                     "number": dn or 0,
-                    "states": set(),
-                    "dns": set(),
-                    "fips": set(),
+                    "types": set(),
+                    "has_hurr": False, "has_typhoon": False, "has_ts": False,
+                    "states": set(), "dns": set(), "fips": set(),
                 }
                 events[key] = ev
+            else:
+                n_merged += 1
+
             ev["fips"].update(fips)
             if st:
                 ev["states"].add(st)
             if dn:
                 ev["dns"].add(dn)
+            if dtype:
+                ev["types"].add(dtype)
+            if "hurricane" in tl:
+                ev["has_hurr"] = True
+            if "typhoon" in tl:
+                ev["has_typhoon"] = True
+            if "tropical storm" in tl or "tropical depression" in tl:
+                ev["has_ts"] = True
             if d.get("statewide"):
                 ev["sw"] = True
             ev["number"] = max(ev["number"], dn or 0)
             ev["year"] = max(ev["year"], year)
-    return events, n_decls
+    return events, n_decls, n_merged
+
+
+def finalize(ev):
+    """Compute the display id/name/type/incident for an event after grouping."""
+    if ev.get("storm"):
+        nm = ev["storm"].title()
+        if ev["has_hurr"]:
+            disp, it = "Hurricane " + nm, "Hurricane"
+        elif ev["has_typhoon"]:
+            disp, it = "Typhoon " + nm, "Typhoon"
+        elif ev["has_ts"]:
+            disp, it = "Tropical Storm " + nm, "Tropical Storm"
+        else:
+            disp, it = nm, (ev["it"] or "Tropical")
+        eid = ev["id"]  # already "storm-<name>-<year>"
+    else:
+        disp, it, eid = ev["name"], ev["it"], ev["id"]
+    tset = ev["types"]
+    t = "DR" if "DR" in tset else ("EM" if "EM" in tset else ("FM" if "FM" in tset else ev["type"]))
+    return eid, disp, t, it
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="in_dir", default="data/decl-index",
-                    help="directory holding {ST}.json + manifest.json")
+    ap.add_argument("--in", dest="in_dir", default="data/decl-index")
     ap.add_argument("--out", dest="out", default="map-events.js")
-    ap.add_argument("--events-out", dest="events_out", default="events.json",
-                    help="path for the fuller per-event index (default events.json)")
-    ap.add_argument("--types", default="",
-                    help="comma list of declaration types to keep (e.g. DR,EM). Default: all")
-    ap.add_argument("--since", type=int, default=0,
-                    help="only keep events in/after this year. Default: all")
+    ap.add_argument("--events-out", dest="events_out", default="events.json")
+    ap.add_argument("--types", default="")
+    ap.add_argument("--since", type=int, default=0)
     ap.add_argument("--pretty", action="store_true")
     args = ap.parse_args()
 
     types = set(t.strip().upper() for t in args.types.split(",") if t.strip()) or None
-    events, n_decls = build_events(args.in_dir, types=types, since=args.since)
+    events, n_decls, n_merged = build_events(args.in_dir, types=types, since=args.since)
 
-    # ---- map-events.js: only events with a county footprint (unchanged) ----
-    rows, dropped = [], 0
-    for ev in events.values():
-        if not ev["fips"]:
-            dropped += 1
-            continue
-        rows.append({
-            "id": ev["id"],
-            "n": ev["name"],
-            "y": ev["year"],
-            "t": ev["type"],
-            "it": ev["it"],
+    ordered = sorted(events.values(), key=lambda e: (e["year"], e["number"]), reverse=True)
+
+    map_rows, evt_rows, dropped = [], [], 0
+    for ev in ordered:
+        eid, disp, t, it = finalize(ev)
+        f = sorted(ev["fips"])
+        evt_rows.append({
+            "id": eid, "n": disp, "y": ev["year"], "t": t, "it": it,
             "sw": 1 if ev["sw"] else 0,
-            "f": sorted(ev["fips"]),
+            "states": sorted(ev["states"]), "dns": sorted(ev["dns"]), "f": f,
         })
-    # newest first, so the picker lists recent disasters at the top
-    rows.sort(key=lambda r: (r["y"], num_from_id(r["id"])), reverse=True)
+        if f:
+            map_rows.append({"id": eid, "n": disp, "y": ev["year"], "t": t,
+                             "it": it, "sw": 1 if ev["sw"] else 0, "f": f})
+        else:
+            dropped += 1
 
-    payload = (json.dumps(rows, indent=2) if args.pretty
-               else json.dumps(rows, separators=(",", ":")))
-    out_text = "window.MAP_EVENTS=%s;\n" % payload
+    def dump(obj):
+        return json.dumps(obj, indent=2) if args.pretty else json.dumps(obj, separators=(",", ":"))
+
+    out_text = "window.MAP_EVENTS=%s;\n" % dump(map_rows)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(out_text)
-
-    # ---- events.json: the fuller per-event profile (all events, incl. statewide-only) ----
-    erows = []
-    for ev in events.values():
-        erows.append({
-            "id": ev["id"],
-            "n": ev["name"],
-            "y": ev["year"],
-            "t": ev["type"],
-            "it": ev["it"],
-            "sw": 1 if ev["sw"] else 0,
-            "states": sorted(ev["states"]),
-            "dns": sorted(ev["dns"]),
-            "f": sorted(ev["fips"]),
-        })
-    erows.sort(key=lambda r: (r["y"], num_from_id(r["id"])), reverse=True)
-    epayload = (json.dumps(erows, indent=2) if args.pretty
-                else json.dumps(erows, separators=(",", ":")))
+    epayload = dump(evt_rows) + "\n"
     with open(args.events_out, "w", encoding="utf-8") as fh:
-        fh.write(epayload + "\n")
+        fh.write(epayload)
 
-    total_fips = sum(len(r["f"]) for r in rows)
-    size = len(out_text.encode("utf-8"))
-    esize = len((epayload + "\n").encode("utf-8"))
     print("map-events.js written: %s" % args.out)
     print("  declarations read : %d" % n_decls)
-    print("  events (with fips): %d   (dropped %d with no county footprint)"
-          % (len(rows), dropped))
-    print("  total county refs : %d" % total_fips)
-    print("  file size         : %.1f KB" % (size / 1024.0))
-    print("events.json written: %s" % args.events_out)
-    print("  events (all)      : %d" % len(erows))
-    print("  file size         : %.1f KB" % (esize / 1024.0))
-    for r in sorted(rows, key=lambda r: len(r["f"]), reverse=True)[:5]:
-        print("    %-16s %-30s %4d counties  %s"
-              % (r["id"], (r["n"] or "")[:30], len(r["f"]), r["y"]))
+    print("  merged into events : %d fewer rows via grouping" % n_merged)
+    print("  events (with fips): %d   (dropped %d statewide-only)" % (len(map_rows), dropped))
+    print("  file size         : %.1f KB" % (len(out_text.encode("utf-8")) / 1024.0))
+    print("events.json written: %s   (%d events, %.1f KB)"
+          % (args.events_out, len(evt_rows), len(epayload.encode("utf-8")) / 1024.0))
+    for r in sorted(evt_rows, key=lambda r: len(r["f"]), reverse=True)[:6]:
+        print("    %-22s %-26s %2d states %4d counties  %s"
+              % (r["id"], (r["n"] or "")[:26], len(r["states"]), len(r["f"]), r["y"]))
 
 
 if __name__ == "__main__":
