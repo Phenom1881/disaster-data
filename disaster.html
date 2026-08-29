@@ -106,6 +106,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 </head>
 <body>
 <script src="/nav.js"></script>
+<script src="/locality-index.js"></script>
 <div class="wrap"><main><div class="container" id="app">
   <div class="masthead"><div class="kicker">Disaster profile</div>
   <h1 class="headline">Loading&hellip;</h1></div>
@@ -136,6 +137,19 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;";}); }
   function qp(k){ try{ return new URLSearchParams(location.search).get(k); }catch(e){ return null; } }
   var app = document.getElementById("app");
+
+  // ---- internal links: state + county pages ----
+  function slugify(v){ v=String(v||"").toLowerCase().replace(/&/g,"and").replace(/[.,]/g,"");
+    v=v.replace(/[^\w\s\/-]/g,""); v=v.replace(/[\s\/]+/g,"-").replace(/^-+|-+$/g,""); return v.replace(/-+/g,"-"); }
+  function stateLink(ab){ var nm=STATES[ab]; return nm ? "/states/"+slugify(nm)+".html" : null; }
+  var _SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];
+  function _norm(x){ return String(x||"").replace(/\s*\([^)]*\)/g,"").trim().toLowerCase(); }
+  function _base(v){ var t=_norm(String(v).split(",")[0]); for(var i=0;i<_SX.length;i++){ if(t.endsWith(" "+_SX[i])){ t=t.slice(0,-(_SX[i].length+1)).trim(); break; } } return t; }
+  var _UL=null;
+  function _ul(){ if(_UL) return _UL; _UL={}; (window.LOCALITY_INDEX||[]).forEach(function(r){ var st=r[1]; if(!_UL[st])_UL[st]={};
+    _UL[st][_base(r[0])]=r[3]; _UL[st][String(r[0]).replace(/ \(city\)$/i,"").toLowerCase()]=r[3]; }); return _UL; }
+  function countyLink(st,county){ var m=_ul()[st]; if(!m) return null; var u=m[_base(county)]||m[String(county).toLowerCase()]; return u ? "/"+u : null; }
+  function aWrap(href,text){ return href ? '<a href="'+href+'" style="color:var(--accent);text-decoration:none">'+text+'</a>' : text; }
 
   var EVENTS = [], PT = null;
   Promise.all([
@@ -177,7 +191,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     ];
     var statHtml = tiles.map(function(t){ return '<div class="stat"><div class="num">'+t[0]+'</div><div class="lab">'+t[1]+'</div></div>'; }).join("");
 
-    var stChips = states.map(function(s){ return '<span class="d-chip">'+esc(STATES[s]||s)+'</span>'; }).join("") || '<span class="d-chip">Statewide only</span>';
+    var stChips = states.map(function(s){ return '<span class="d-chip">'+aWrap(stateLink(s),esc(STATES[s]||s))+'</span>'; }).join("") || '<span class="d-chip">Statewide only</span>';
     var dnChips = dns.map(function(d){ return '<span class="d-chip">#'+esc(d)+'</span>'; }).join("") || '<span class="d-chip">None</span>';
 
     // by state (PA)
@@ -189,7 +203,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       var body = srows.map(function(r,i){
         var w=Math.max(2,Math.round(r.fed/maxF*100));
         return '<div class="row"><div class="rank">'+(i+1)+'</div>'+
-          '<div class="sname"><div class="n">'+esc(STATES[r.s]||r.s)+'</div><div class="meta">'+num(r.c)+' funded '+(r.c===1?'county':'counties')+'</div></div>'+
+          '<div class="sname"><div class="n">'+aWrap(stateLink(r.s),esc(STATES[r.s]||r.s))+'</div><div class="meta">'+num(r.c)+' funded '+(r.c===1?'county':'counties')+'</div></div>'+
           '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+w+'%"></div></div></div>'+
           '<div class="barnum">'+money(r.fed)+'</div></div>';
       }).join("");
@@ -208,7 +222,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     if(pa){
       var cs=pa.perCounty.slice().sort(function(a,b){ return b.fed-a.fed; });
       if(cs.length){
-        function crow(r){ return '<tr><td>'+esc(STATES[r.st]||r.st)+'</td><td>'+esc(r.county)+'</td><td class="r m">'+money(r.fed)+'</td></tr>'; }
+        function crow(r){ return '<tr><td>'+aWrap(stateLink(r.st),esc(STATES[r.st]||r.st))+'</td><td>'+aWrap(countyLink(r.st,r.county),esc(r.county))+'</td><td class="r m">'+money(r.fed)+'</td></tr>'; }
         var headRows=cs.slice(0,25).map(crow).join(""), rest=cs.slice(25);
         var moreBtn = rest.length ? '<button class="morebtn" id="locToggle">Show all '+cs.length+' funded localities</button>' : "";
         var restHtml = rest.length ? '<tbody id="locMore" hidden>'+rest.map(crow).join("")+'</tbody>' : "";
