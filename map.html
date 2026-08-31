@@ -5,23 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disaster Data | Map</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+    crossorigin="" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
+      /* FEMA Disaster Explorer, warm editorial palette */
       --navy:    #f6f1e7;
       --navy2:   #fcfaf3;
       --navy3:   #f1ead9;
@@ -48,10 +42,10 @@
       --ink:     #1d1813;
       --ink-2:   #5b5346;
       --accent:  #004c53;
-      --accent-soft: #d7e9ea;
-      --serif: 'Fraunces', Georgia, serif;
-      --sans: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-
+      --accent-soft:#d7e9ea;
+      --serif:'Fraunces',Georgia,serif;
+      --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      /* Choropleth 8-stop ramp (low -> high), warm sequential */
       --ramp-1: #f2d9a0;
       --ramp-2: #ecc278;
       --ramp-3: #e3a652;
@@ -62,14 +56,9 @@
       --ramp-8: #7a2c14;
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       height: 100%;
       font-family: 'Public Sans', sans-serif;
@@ -77,19 +66,13 @@
       color: var(--white);
     }
 
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-
     .layout {
       display: grid;
       grid-template-columns: 380px 1fr;
-      height: calc(100vh - 60px);
+      height: 100vh;
     }
 
     /* ── SIDEBAR ── */
-
     .sidebar {
       background: var(--navy2);
       border-right: 1px solid var(--border);
@@ -99,6 +82,7 @@
       flex-direction: column;
     }
 
+    /* Masthead */
     .masthead {
       padding: 20px 20px 16px;
       border-bottom: 1px solid var(--border);
@@ -116,14 +100,7 @@
       width: 34px;
       height: 34px;
       background: var(--blue2);
-      clip-path: polygon(
-        50% 0%,
-        100% 25%,
-        100% 75%,
-        50% 100%,
-        0% 75%,
-        0% 25%
-      );
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -151,11 +128,12 @@
     }
 
     .page-title {
-      font-family: var(--serif) !important;
-      font-weight: 400 !important;
+      font-family: 'Public Sans', sans-serif;
+      font-weight: 800;
       font-size: 28px;
       line-height: 1.05;
-      letter-spacing: -0.8px;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
       color: var(--white);
       margin: 0 0 6px 0;
     }
@@ -173,6 +151,7 @@
       margin: 0;
     }
 
+    /* Controls */
     .controls-section {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);
@@ -182,37 +161,11 @@
       margin-bottom: 12px;
     }
 
-    .control-group:last-child {
-      margin-bottom: 0;
-    }
+    .control-group:last-child { margin-bottom: 0; }
 
-    .layer-checks {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      padding-top: 2px;
-    }
-
-    .layer-check {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0;
-      text-transform: none;
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    .layer-check input {
-      width: 15px;
-      height: 15px;
-      margin: 0;
-      accent-color: var(--blue2);
-      cursor: pointer;
-    }
+    .layer-checks { display:flex; flex-direction:column; gap:7px; padding-top:2px; }
+    .layer-check { display:flex; align-items:center; gap:8px; margin:0; font-size:13px; font-weight:500; letter-spacing:0; text-transform:none; color:var(--text); cursor:pointer; }
+    .layer-check input { width:15px; height:15px; margin:0; accent-color:var(--blue2); cursor:pointer; }
 
     label {
       display: block;
@@ -244,10 +197,11 @@
     }
 
     select:focus {
-      outline: 2px solid var(--accent);
-      outline-offset: 1px;
+      outline: none;
+      border-color: var(--sky);
     }
 
+    /* Stats section */
     .stats-section {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);
@@ -268,12 +222,12 @@
     }
 
     .big {
-      font-family: var(--serif) !important;
+      font-family: 'Public Sans', sans-serif;
       font-size: 48px;
-      font-weight: 500 !important;
+      font-weight: 900;
       color: var(--sky);
       line-height: 1;
-      letter-spacing: -1px;
+      letter-spacing: -0.01em;
     }
 
     .muted {
@@ -314,6 +268,7 @@
       line-height: 1;
     }
 
+    /* County section */
     .county-section {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);
@@ -342,18 +297,9 @@
       overflow-y: auto;
     }
 
-    #selectedCountyList::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    #selectedCountyList::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    #selectedCountyList::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 2px;
-    }
+    #selectedCountyList::-webkit-scrollbar { width: 4px; }
+    #selectedCountyList::-webkit-scrollbar-track { background: transparent; }
+    #selectedCountyList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .event-item {
       padding: 8px 10px;
@@ -378,19 +324,60 @@
       line-height: 1.4;
     }
 
+    /* How to read the map */
     .top-section {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);
     }
 
-    #topCounties {
-      margin: 8px 0 0 16px;
-      padding: 0;
-      font-size: 13px;
-      line-height: 1.6;
+    .map-guide {
+      font-size: 12px;
+      line-height: 1.55;
       color: var(--text);
     }
 
+    .map-guide-item + .map-guide-item {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .map-guide-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .map-guide p {
+      margin: 0 0 8px;
+      color: var(--muted);
+    }
+
+    .map-guide p:last-child {
+      margin-bottom: 0;
+    }
+
+    .map-guide-scale {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 7px 9px;
+      background: var(--navy3);
+      border-radius: 5px;
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+
+    .map-guide-note {
+      padding: 8px 9px;
+      background: var(--navy3);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Footer */
     .footer-note {
       padding: 14px 20px;
       font-size: 11px;
@@ -400,21 +387,20 @@
     }
 
     /* ── MAP ── */
-
     #map {
       width: 100%;
-      height: 100%;
+      height: 100vh;
       background: var(--navy);
     }
 
-    .info,
-    .legend {
-      background: var(--paper-2) !important;
-      color: var(--ink-2) !important;
-      border: 1px solid var(--rule-2) !important;
-      box-shadow: 0 6px 18px rgba(29, 24, 19, 0.14) !important;
-      border-radius: 10px !important;
+    /* Leaflet overrides for dark sidebar */
+    .info, .legend {
+      background: rgba(13,27,42,0.95);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+      border-radius: 4px;
       padding: 10px 12px;
+      border: 1px solid var(--border);
+      color: var(--white);
     }
 
     .info h4 {
@@ -424,12 +410,7 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--accent) !important;
-    }
-
-    .info b,
-    .info strong {
-      color: var(--ink) !important;
+      color: var(--sky);
     }
 
     .legend {
@@ -443,305 +424,10 @@
       float: left;
       margin-right: 8px;
       border-radius: 2px;
-      opacity: 1;
+      opacity: 0.9;
     }
 
-    .leaflet-container {
-      background: #e9e5da;
-      font-family: var(--sans);
-    }
-
-    .leaflet-tooltip {
-      background: var(--paper-2);
-      color: var(--ink);
-      border: 1px solid var(--rule-2);
-      box-shadow: 0 4px 14px rgba(60, 50, 30, 0.12);
-      font-family: var(--sans);
-      font-weight: 500;
-    }
-
-    .leaflet-tooltip-top:before {
-      border-top-color: var(--rule-2);
-    }
-
-    .leaflet-bar a,
-    .leaflet-bar a:hover {
-      background: var(--paper-2);
-      color: var(--ink);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .leaflet-control-attribution {
-      background: rgba(252, 250, 243, 0.82) !important;
-      color: var(--ink-3) !important;
-    }
-
-    .leaflet-control-attribution a {
-      color: var(--accent) !important;
-    }
-
-    /* Keep zoom controls comfortably inside the visible map. */
-    .leaflet-top.leaflet-left {
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-    }
-
-    .leaflet-control-zoom {
-      margin-top: 0 !important;
-      margin-left: 0 !important;
-    }
-
-    /* Navigation */
-
-    nav.ddnav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(246, 241, 231, 0.9);
-      -webkit-backdrop-filter: saturate(140%) blur(10px);
-      backdrop-filter: saturate(140%) blur(10px);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 clamp(16px, 3.5vw, 40px);
-      height: 60px;
-      flex: 0 0 60px;
-    }
-
-    nav.ddnav .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-
-    nav.ddnav .brand .mark {
-      font-family: var(--serif);
-      font-weight: 600;
-      font-size: 19px;
-      letter-spacing: -0.4px;
-      color: var(--ink);
-    }
-
-    nav.ddnav .brand .beta {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      border-radius: 3px;
-      padding: 2px 6px;
-      text-transform: uppercase;
-      transform: translateY(-1px);
-    }
-
-    nav.ddnav .navlinks {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    nav.ddnav .navlinks a {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink-2);
-      text-decoration: none;
-      padding: 7px 12px;
-      border-radius: 6px;
-      transition: 0.15s;
-      letter-spacing: 0.2px;
-    }
-
-    nav.ddnav .navlinks a:hover {
-      color: var(--ink);
-      background: var(--paper-3);
-    }
-
-    nav.ddnav .navlinks a.on {
-      color: var(--accent);
-      background: var(--accent-soft);
-    }
-
-    nav.ddnav .navmeta {
-      font-size: 11px;
-      color: var(--ink-3);
-      letter-spacing: 0.5px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .navburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 40px;
-      height: 40px;
-      background: none;
-      border: 0;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
-    }
-
-    .navburger span {
-      display: block;
-      height: 2px;
-      width: 100%;
-      background: var(--ink);
-      border-radius: 2px;
-      transition: 0.2s;
-    }
-
-    .navburger[aria-expanded="true"] span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-
-    .navburger[aria-expanded="true"] span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .navburger[aria-expanded="true"] span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-    }
-
-    .mobilemenu {
-      display: none;
-    }
-
-    /* Disaster overlay picker */
-
-    #overlaySearch {
-      width: 100%;
-      box-sizing: border-box;
-      font-family: 'Public Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 9px 12px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--navy3);
-      color: var(--white);
-    }
-
-    #overlaySearch:focus {
-      outline: none;
-      border-color: var(--blue);
-    }
-
-    #overlaySearch:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .overlay-results {
-      margin-top: 6px;
-      max-height: 230px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--card);
-    }
-
-    .overlay-results button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border: 0;
-      border-bottom: 1px solid var(--border);
-      background: none;
-      padding: 8px 10px;
-      cursor: pointer;
-      font-family: 'Public Sans', sans-serif;
-    }
-
-    .overlay-results button:last-child {
-      border-bottom: 0;
-    }
-
-    .overlay-results button:hover {
-      background: var(--navy3);
-    }
-
-    .overlay-results .ovr-name {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .overlay-results .ovr-meta {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-
-    .overlay-results .ovr-empty {
-      padding: 8px 10px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .overlay-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .overlay-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 6px 4px 10px;
-      border-radius: 999px;
-      background: var(--sky);
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .overlay-chip button {
-      background: none;
-      border: 0;
-      color: var(--blue);
-      cursor: pointer;
-      font-size: 15px;
-      line-height: 1;
-      padding: 0 2px;
-    }
-
-    .overlay-chip button:hover {
-      color: var(--red2);
-    }
-
-    .overlay-hint {
-      font-size: 11.5px;
-      line-height: 1.4;
-      color: var(--muted);
-      margin-top: 10px;
-    }
-
-    .overlay-clear {
-      margin-top: 10px;
-      width: 100%;
-      font-family: 'Public Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--navy2);
-      color: var(--blue);
-      cursor: pointer;
-    }
-
-    .overlay-clear:hover {
-      background: var(--navy3);
-    }
-
+    /* Responsive */
     @media (max-width: 980px) {
       .layout {
         grid-template-columns: 1fr;
@@ -754,4161 +440,1027 @@
       }
 
       #map {
-        min-height: 72vh;
+        height: 72vh;
       }
     }
 
-    @media (max-width: 720px) {
-      nav.ddnav .navlinks {
-        display: none !important;
-      }
-
-      nav.ddnav .navmeta {
-        display: none;
-      }
-
-      .navburger {
-        display: flex;
-      }
-
-      .mobilemenu:not([hidden]) {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        padding: 10px clamp(18px, 4vw, 48px) 18px;
-        background: var(--paper);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 60px;
-        z-index: 49;
-      }
-
-      .mobilemenu > a {
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--ink);
-        text-decoration: none;
-        padding: 11px 12px;
-        border-radius: 8px;
-      }
-
-      .mobilemenu > a.on {
-        color: var(--accent);
-        background: var(--accent-soft);
-      }
-
-      .mm-section {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        padding: 6px 0;
-        margin: 2px 0;
-        border-top: 1px solid var(--border);
-      }
-
-      .mm-label {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        color: var(--ink-3);
-        padding: 6px 12px 2px;
-      }
-
-      .mm-section a {
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--ink-2);
-        text-decoration: none;
-        padding: 10px 12px 10px 22px;
-        border-radius: 8px;
-      }
-
-      .mm-section a:hover,
-      .mm-section a.on {
-        color: var(--accent);
-        background: var(--accent-soft);
-      }
+    :root {
+      --font-display: 'Fraunces', sans-serif;
+      --font-body:    'Public Sans', sans-serif;
+      --font-mono:    'Public Sans', sans-serif;
+      --radius: 6px;
     }
 
-    @media (max-width: 640px) {
-      .layout {
-        height: calc(100dvh - 60px);
-      }
+    /* Push layout below header */
+    body { display: flex; flex-direction: column; }
+    .layout { height: calc(100vh - 60px); }
+    @media (max-width: 640px) { .layout { height: calc(100dvh - 60px); } }
+
+    /* ===== Match FEMA Disaster Explorer design language ===== */
+    nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.9);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule,#e0d8c5);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3.5vw,40px);height:60px;flex:0 0 60px;}
+    nav.ddnav .brand{display:flex;align-items:baseline;gap:10px;}
+    nav.ddnav .brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--ink);}
+    nav.ddnav .brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
+    nav.ddnav .navlinks{display:flex;align-items:center;gap:4px;}
+    nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+    nav.ddnav .navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+    nav.ddnav .navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+    nav.ddnav .navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+    @media(max-width:720px){nav .navlinks a:not(.on){display:none;}nav.ddnav .navmeta{display:none;}}
+    .page-title{font-family:var(--serif)!important;font-weight:400!important;letter-spacing:-.8px;}
+    .big{font-family:var(--serif)!important;font-weight:500!important;letter-spacing:-1px;}
+    select:focus{outline:2px solid var(--accent);outline-offset:1px;}
+    /* Light Leaflet surfaces */
+    .leaflet-container{background:#e9e5da;font-family:var(--sans);}
+    .leaflet-tooltip{background:var(--paper-2);color:var(--ink);border:1px solid var(--rule-2);box-shadow:0 4px 14px rgba(60,50,30,.12);font-family:var(--sans);font-weight:500;}
+    .leaflet-tooltip-top:before{border-top-color:var(--rule-2);}
+    .leaflet-bar a,.leaflet-bar a:hover{background:var(--paper-2);color:var(--ink);border-bottom:1px solid var(--rule);}
+    .leaflet-control-attribution{background:rgba(252,250,243,.82)!important;color:var(--ink-3)!important;}
+    .leaflet-control-attribution a{color:var(--accent)!important;}
+
+    /* Warm legend + info box (were dark from old theme; labels were invisible) */
+    .info, .legend{background:var(--paper-2)!important;color:var(--ink-2)!important;border:1px solid var(--rule-2)!important;box-shadow:0 6px 18px rgba(29,24,19,.14)!important;border-radius:10px!important;}
+    .info h4{color:var(--accent)!important;}
+    .info b, .info strong{color:var(--ink)!important;}
+    .legend i{opacity:1;}
+
+    /* Keep Leaflet zoom controls comfortably inside the visible map */
+    .leaflet-top.leaflet-left {
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
     }
+
+    .leaflet-control-zoom {
+      margin-top: 0 !important;
+      margin-left: 0 !important;
+    }
+  
+/* ---- mobile hamburger (desktop unchanged) ---- */
+.navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px;}
+.navburger span{display:block;height:2px;width:100%;background:var(--ink);border-radius:2px;transition:.2s;}
+.navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.navburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobilemenu{display:none;}
+@media(max-width:720px){
+  nav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;}
+  .navlinks{display:none !important;}
+  .navburger{display:flex;}
+  .mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:var(--paper);border-bottom:1px solid var(--rule);position:sticky;top:60px;z-index:49;}
+  .mobilemenu > a{font-size:15px;font-weight:500;color:var(--ink);text-decoration:none;padding:11px 12px;border-radius:8px;}
+  .mobilemenu > a.on{color:var(--accent);background:var(--accent-soft);}
+  .mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid var(--rule);}
+  .mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);padding:6px 12px 2px;}
+  .mm-section a{font-size:15px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px;}
+  .mm-section a:hover,.mm-section a.on{color:var(--accent);background:var(--accent-soft);}
+}
+</style>
+  <style>
+    /* Overlay picker (multi-disaster footprint) */
+    #overlaySearch{width:100%;box-sizing:border-box;font-family:'Public Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 12px;border-radius:4px;border:1px solid var(--border);background:var(--navy3);color:var(--white);}
+    #overlaySearch:focus{outline:none;border-color:var(--blue);}
+    #overlaySearch:disabled{opacity:.6;cursor:not-allowed;}
+    .overlay-results{margin-top:6px;max-height:230px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;background:var(--card);}
+    .overlay-results button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--border);background:none;padding:8px 10px;cursor:pointer;font-family:'Public Sans',sans-serif;}
+    .overlay-results button:last-child{border-bottom:0;}
+    .overlay-results button:hover{background:var(--navy3);}
+    .overlay-results .ovr-name{display:block;font-size:13px;font-weight:600;color:var(--text);}
+    .overlay-results .ovr-meta{display:block;font-size:11px;color:var(--muted);margin-top:1px;}
+    .overlay-results .ovr-empty{padding:8px 10px;font-size:12px;color:var(--muted);}
+    .overlay-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+    .overlay-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border-radius:999px;background:var(--sky);color:var(--blue);font-size:12px;font-weight:600;}
+    .overlay-chip button{background:none;border:0;color:var(--blue);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;}
+    .overlay-chip button:hover{color:var(--red2);}
+    .overlay-hint{font-size:11.5px;line-height:1.4;color:var(--muted);margin-top:10px;}
+    .overlay-clear{margin-top:10px;width:100%;font-family:'Public Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.3px;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--navy2);color:var(--blue);cursor:pointer;}
+    .overlay-clear:hover{background:var(--navy3);}
   </style>
 </head>
-
 <body>
-
 <script src="/nav.js"></script>
 
-<div class="layout">
+  <div class="layout">
+    <aside class="sidebar">
 
-  <aside class="sidebar">
+      <!-- Masthead -->
+      <div class="masthead">
+                <h1 class="page-title">FEMA Declaration Map</h1>
+        <div class="rule-line"></div>
+        <p>
+          A county-by-county map of FEMA disaster declarations across the U.S. Filter by year or declaration type, DR (Major Disaster), EM (Emergency), FM (Fire Management Assistance Grant), then click any county to see its declarations.
+        </p>
+      </div>
 
-    <div class="masthead">
-      <h1 class="page-title">FEMA Declaration Map</h1>
+      <!-- Filters -->
+      <div class="controls-section">
+        <div class="control-group">
+          <label>Map data</label>
+          <div class="layer-checks" role="group" aria-label="Map data layers">
+            <label class="layer-check"><input type="checkbox" id="femaLayerCheck" checked> <span>FEMA Disaster Declarations</span></label>
+            <label class="layer-check"><input type="checkbox" id="sviOverlayCheck"> <span>CDC Social Vulnerability Index</span></label>
+            <label class="layer-check"><input type="checkbox" id="nriOverlayCheck"> <span>FEMA National Risk Index</span></label>
+          </div>
+        </div>
 
-      <div class="rule-line"></div>
+        <div class="control-group" id="sviMetricGroup" hidden>
+          <label for="sviMetricSelect">SVI measure</label>
+          <select id="sviMetricSelect">
+            <option value="overall" selected>Overall SVI</option>
+            <option value="socioeconomic">Socioeconomic Status</option>
+            <option value="household">Household Characteristics</option>
+            <option value="minority">Racial &amp; Ethnic Minority Status</option>
+            <option value="housingTransportation">Housing Type &amp; Transportation</option>
+          </select>
+        </div>
 
-      <p>
-        A county-by-county map of FEMA disaster declarations across the U.S.
-        Filter by year or declaration type, DR (Major Disaster), EM (Emergency),
-        FM (Fire Management Assistance Grant), then click any county to see its declarations.
-      </p>
-    </div>
+        <div class="control-group" id="nriMetricGroup" hidden>
+          <label for="nriMetricSelect">NRI metric</label>
+          <select id="nriMetricSelect">
+            <option value="riskScore" selected>Overall Risk</option>
+            <option value="ealScore">Expected Annual Loss</option>
+            <option value="soviScore">Social Vulnerability</option>
+            <option value="reslScore">Community Resilience</option>
+          </select>
+        </div>
 
-    <div class="controls-section">
+        <div class="control-group" id="nriHazardGroup" hidden>
+          <label for="nriHazardSelect">NRI hazard</label>
+          <select id="nriHazardSelect">
+            <option value="">All hazards (Overall Risk)</option>
+          </select>
+        </div>
 
-      <div class="control-group">
-        <label>Map data</label>
+        <div class="control-group">
+          <label for="metricSelect">Metric</label>
+          <select id="metricSelect">
+            <option value="uniqueDeclarations" selected>Unique FEMA declarations</option>
+            <option value="designatedAreaRecords">Designated-area records</option>
+          </select>
+        </div>
 
-        <div
-          class="layer-checks"
-          role="group"
-          aria-label="Map data layers"
-        >
-          <label class="layer-check">
-            <input
-              type="checkbox"
-              id="femaLayerCheck"
-              checked
-            >
-            <span>FEMA Disaster Declarations</span>
-          </label>
+        <div class="control-group">
+          <label for="yearSelect">Declaration year</label>
+          <select id="yearSelect">
+            <option value="ALL" selected>All years</option>
+          </select>
+        </div>
 
-          <label class="layer-check">
-            <input
-              type="checkbox"
-              id="sviOverlayCheck"
-            >
-            <span>CDC Social Vulnerability Index</span>
-          </label>
+        <div class="control-group">
+          <label for="typeSelect">Declaration type</label>
+          <select id="typeSelect">
+            <option value="ALL" selected>All types</option>
+            <option value="DR">DR: Major Disaster</option>
+            <option value="EM">EM: Emergency Declaration</option>
+            <option value="FM">FM: Fire Management Assistance Grant (FMAG)</option>
+          </select>
+        </div>
 
-          <label class="layer-check">
-            <input
-              type="checkbox"
-              id="nriOverlayCheck"
-            >
-            <span>FEMA National Risk Index</span>
-          </label>
+        <div class="control-group">
+          <label for="stateSelect">State</label>
+          <select id="stateSelect">
+            <option value="" selected>All states</option>
+          </select>
         </div>
       </div>
 
-      <div
-        class="control-group"
-        id="sviMetricGroup"
-        hidden
-      >
-        <label for="sviMetricSelect">SVI measure</label>
-
-        <select id="sviMetricSelect">
-          <option value="overall" selected>
-            Overall SVI
-          </option>
-
-          <option value="socioeconomic">
-            Socioeconomic Status
-          </option>
-
-          <option value="household">
-            Household Characteristics
-          </option>
-
-          <option value="minority">
-            Racial &amp; Ethnic Minority Status
-          </option>
-
-          <option value="housingTransportation">
-            Housing Type &amp; Transportation
-          </option>
-        </select>
-      </div>
-
-      <div
-        class="control-group"
-        id="nriMetricGroup"
-        hidden
-      >
-        <label for="nriMetricSelect">NRI metric</label>
-
-        <select id="nriMetricSelect">
-          <option value="riskScore" selected>
-            Overall Risk
-          </option>
-
-          <option value="ealScore">
-            Expected Annual Loss
-          </option>
-
-          <option value="soviScore">
-            Social Vulnerability
-          </option>
-
-          <option value="reslScore">
-            Community Resilience
-          </option>
-        </select>
-      </div>
-
-      <div
-        class="control-group"
-        id="nriHazardGroup"
-        hidden
-      >
-        <label for="nriHazardSelect">NRI hazard</label>
-
-        <select id="nriHazardSelect">
-          <option value="">
-            All hazards (Overall Risk)
-          </option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="metricSelect">Metric</label>
-
-        <select id="metricSelect">
-          <option
-            value="uniqueDeclarations"
-            selected
-          >
-            Unique FEMA declarations
-          </option>
-
-          <option value="designatedAreaRecords">
-            Designated-area records
-          </option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="yearSelect">Declaration year</label>
-
-        <select id="yearSelect">
-          <option
-            value="ALL"
-            selected
-          >
-            All years
-          </option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="typeSelect">Declaration type</label>
-
-        <select id="typeSelect">
-          <option
-            value="ALL"
-            selected
-          >
-            All types
-          </option>
-
-          <option value="DR">
-            DR: Major Disaster
-          </option>
-
-          <option value="EM">
-            EM: Emergency Declaration
-          </option>
-
-          <option value="FM">
-            FM: Fire Management Assistance Grant (FMAG)
-          </option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="stateSelect">State</label>
-
-        <select id="stateSelect">
-          <option
-            value=""
-            selected
-          >
-            All states
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="controls-section overlay-section">
-
-      <div class="control-group">
-        <label for="overlaySearch">
-          Overlay disasters
-        </label>
-
-        <input
-          type="text"
-          id="overlaySearch"
-          placeholder="Search by name or year, e.g. Helene or 2024"
-          autocomplete="off"
-          spellcheck="false"
-        >
-
-        <div
-          id="overlayResults"
-          class="overlay-results"
-          hidden
-        ></div>
-      </div>
-
-      <div
-        id="overlayChips"
-        class="overlay-chips"
-      ></div>
-
-      <div
-        id="overlayHint"
-        class="overlay-hint"
-      >
-        Pick two or more disasters to shade each county by how many of them hit it.
-      </div>
-
-      <button
-        type="button"
-        id="overlayClear"
-        class="overlay-clear"
-        hidden
-      >
-        Clear overlay
-      </button>
-
-      <a
-        id="overlayProfile"
-        class="overlay-clear"
-        href="#"
-        style="display:none;text-align:center;text-decoration:none;"
-      >
-        See full profile of this disaster →
-      </a>
-    </div>
-
-    <div class="stats-section">
-
-      <div class="section-label">
-        Declarations in view
-      </div>
-
-      <div class="big-stat">
-        <div
-          class="big"
-          id="filteredTotal"
-        >
-          0
+      <!-- Overlay disasters -->
+      <div class="controls-section overlay-section">
+        <div class="control-group">
+          <label for="overlaySearch">Overlay disasters</label>
+          <input type="text" id="overlaySearch" placeholder="Search by name or year, e.g. Helene or 2024" autocomplete="off" spellcheck="false">
+          <div id="overlayResults" class="overlay-results" hidden></div>
         </div>
+        <div id="overlayChips" class="overlay-chips"></div>
+        <div id="overlayHint" class="overlay-hint">Pick two or more disasters to shade each county by how many of them hit it.</div>
+        <button type="button" id="overlayClear" class="overlay-clear" hidden>Clear overlay</button>
+        <a id="overlayProfile" class="overlay-clear" href="#" style="display:none;text-align:center;text-decoration:none;">See full profile of this disaster →</a>
       </div>
 
-      <div
-        class="muted"
-        id="filteredSubtitle"
-      >
-        Mapped across U.S. counties, parishes, and boroughs
-      </div>
-    </div>
-
-    <div class="county-section">
-
-      <div class="section-label">
-        Selected county
+      <!-- Filtered total -->
+      <div class="stats-section">
+        <div class="section-label">Declarations in view</div>
+        <div class="big-stat">
+          <div class="big" id="filteredTotal">0</div>
+        </div>
+        <div class="muted" id="filteredSubtitle">Mapped across U.S. counties, parishes, and boroughs</div>
       </div>
 
-      <div
-        class="muted"
-        id="selectedCountyTitle"
-      >
-        Click a county to list matching declaration numbers.
+      <!-- Selected county -->
+      <div class="county-section">
+        <div class="section-label">Selected county</div>
+        <div class="muted" id="selectedCountyTitle">Click a county to list matching declaration numbers.</div>
+        <div class="muted" id="selectedCountySummary" style="margin-top:4px;"></div>
+        <div id="selectedCountyViz"></div>
+        <a id="selectedCountyLink" style="display:none;font-size:.85rem;font-weight:600;color:#004c53;text-decoration:none;margin-top:6px;display:none;" href="#">View full declaration history &rarr;</a>
+        <div id="selectedCountyList" style="margin-top:10px;"></div>
       </div>
 
-      <div
-        class="muted"
-        id="selectedCountySummary"
-        style="margin-top:4px;"
-      ></div>
+      <!-- How to read the map -->
+      <div class="top-section">
+        <div class="section-label">How to read the map</div>
 
-      <div id="selectedCountyViz"></div>
+        <div class="map-guide">
+          <div class="map-guide-item">
+            <div class="map-guide-title">CDC Social Vulnerability Index</div>
 
-      <a
-        id="selectedCountyLink"
-        style="display:none;font-size:.85rem;font-weight:600;color:#004c53;text-decoration:none;margin-top:6px;"
-        href="#"
-      >
-        View full declaration history &rarr;
-      </a>
+            <p>
+              SVI ranks counties relative to one another from 0 to 1.
+              Higher values indicate greater social vulnerability.
+            </p>
 
-      <div
-        id="selectedCountyList"
-        style="margin-top:10px;"
-      ></div>
-    </div>
+            <p>
+              An SVI of <strong>0.25</strong>, for example, is the
+              <strong>25th percentile</strong>. That means the county has
+              greater social vulnerability than about 25% of U.S. counties
+              and lower vulnerability than about 75%.
+            </p>
 
-    <div class="top-section">
+            <div class="map-guide-scale">
+              <span><strong>0–25th</strong> Lower</span>
+              <span><strong>75–100th</strong> Higher</span>
+            </div>
+          </div>
 
-      <div class="section-label">
-        Top counties · full workbook
+          <div class="map-guide-item">
+            <div class="map-guide-title">FEMA National Risk Index</div>
+
+            <p>
+              NRI compares relative natural-hazard risk across communities.
+              Overall Risk incorporates Expected Annual Loss, Social
+              Vulnerability, and Community Resilience.
+            </p>
+
+            <p>
+              Choose an individual hazard to view its relative risk,
+              including hurricanes, flooding, wildfire, tornadoes,
+              heat waves, earthquakes, and other hazards.
+            </p>
+
+            <p class="map-guide-note">
+              <strong>Important:</strong> FEMA NRI Social Vulnerability
+              and the CDC Social Vulnerability Index are separate measures.
+              They should not be interpreted as the same dataset.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kept for existing JavaScript; intentionally hidden -->
+        <ol id="topCounties" hidden></ol>
       </div>
 
-      <ol id="topCounties"></ol>
-    </div>
+      <div class="footer-note">
+        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map. They are not tied to a single county boundary. Data sourced from FEMA's OpenFEMA dataset. Not endorsed by FEMA. <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener" style="color:#004c53">Report a data issue</a>.
+      </div>
+    </aside>
 
-    <div class="footer-note">
-      County polygons with FIPS code <strong>000</strong>
-      (statewide/jurisdiction-wide rows) are excluded from this map.
-      They are not tied to a single county boundary.
-      Data sourced from FEMA's OpenFEMA dataset.
-      Not endorsed by FEMA.
+    <main id="map"></main>
+  </div>
 
-      <a
-        href="https://forms.gle/NZ6bSadoXrKYHjjH8"
-        target="_blank"
-        rel="noopener"
-        style="color:#004c53"
-      >
-        Report a data issue
-      </a>.
-    </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
 
-  </aside>
+  <script src="map-data.js"></script>
+  <script src="map-events.js"></script>
+  <script src="locality-index.js"></script>
+  <script src="county-svi.js"></script>
+  <script src="county-nri.js"></script>
+  <script>
+    // Data is generated by build.py and served from map-data.js (refreshes weekly).
+    const MAP_DATA = window.MAP_DATA || {};
+    const counts = MAP_DATA.counts || {uniqueDeclarations:{}, designatedAreaRecords:{}};
+    const countyLabels = MAP_DATA.countyLabels || {};
+    const years = MAP_DATA.years || [];
+    const topCounties = MAP_DATA.topCounties || [];
+    const declarationEventTotals = MAP_DATA.declarationEventTotals || {overall:0, byYear:{}, byType:{}, byYearType:{}};
+    const countyDeclarationEvents = MAP_DATA.countyDeclarationEvents || {};
+    const COUNTY_SVI = window.COUNTY_SVI || {};
+    const COUNTY_NRI = window.COUNTY_NRI || {};
+    const NRI_HAZARDS = window.NRI_HAZARDS || {};
 
-  <main id="map"></main>
+    /* ---------------- OVERLAY MODE: multi-disaster footprint ---------------- */
+    const MAP_EVENTS = window.MAP_EVENTS || [];
+    const statLabelEl = document.querySelector('.stats-section .section-label');
+    const statLabelDefault = statLabelEl ? statLabelEl.textContent : '';
+    const filteredSubtitleDefault = 'Mapped across U.S. counties, parishes, and boroughs';
+    let overlayEvents = [];      // selected event objects from MAP_EVENTS
+    let overlayCounts = {};      // fips -> number of selected events that hit it
+    let overlayMaxCount = 0;
 
-</div>
-
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""
-></script>
-
-<script src="https://unpkg.com/topojson-client@3"></script>
-
-<script src="map-data.js"></script>
-<script src="map-events.js"></script>
-<script src="locality-index.js"></script>
-<script src="county-svi.js"></script>
-<script src="county-nri.js"></script>
-
-<script>
-  /*
-   * Data is generated by build.py and served from map-data.js.
-   */
-
-  const MAP_DATA = window.MAP_DATA || {};
-
-  const counts =
-    MAP_DATA.counts ||
-    {
-      uniqueDeclarations: {},
-      designatedAreaRecords: {}
-    };
-
-  const countyLabels =
-    MAP_DATA.countyLabels || {};
-
-  const years =
-    MAP_DATA.years || [];
-
-  const topCounties =
-    MAP_DATA.topCounties || [];
-
-  const declarationEventTotals =
-    MAP_DATA.declarationEventTotals ||
-    {
-      overall: 0,
-      byYear: {},
-      byType: {},
-      byYearType: {}
-    };
-
-  const countyDeclarationEvents =
-    MAP_DATA.countyDeclarationEvents || {};
-
-  const COUNTY_SVI =
-    window.COUNTY_SVI || {};
-
-  const COUNTY_NRI =
-    window.COUNTY_NRI || {};
-
-  const NRI_HAZARDS =
-    window.NRI_HAZARDS || {};
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Multi-disaster overlay
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const MAP_EVENTS =
-    window.MAP_EVENTS || [];
-
-  const statLabelEl =
-    document.querySelector('.stats-section .section-label');
-
-  const statLabelDefault =
-    statLabelEl
-      ? statLabelEl.textContent
-      : '';
-
-  const filteredSubtitleDefault =
-    'Mapped across U.S. counties, parishes, and boroughs';
-
-  let overlayEvents = [];
-  let overlayCounts = {};
-  let overlayMaxCount = 0;
-
-
-  function overlayActive() {
-    return overlayEvents.length > 0;
-  }
-
-
-  function computeOverlayCounts() {
-
-    overlayCounts = {};
-    overlayMaxCount = 0;
-
-    overlayEvents.forEach(function (ev) {
-
-      (ev.f || []).forEach(function (f) {
-
-        const c =
-          (overlayCounts[f] || 0) + 1;
-
-        overlayCounts[f] = c;
-
-        if (c > overlayMaxCount) {
-          overlayMaxCount = c;
-        }
+    function overlayActive(){ return overlayEvents.length > 0; }
+    function computeOverlayCounts(){
+      overlayCounts = {}; overlayMaxCount = 0;
+      overlayEvents.forEach(function(ev){
+        (ev.f || []).forEach(function(f){
+          var c = (overlayCounts[f] || 0) + 1;
+          overlayCounts[f] = c;
+          if (c > overlayMaxCount) overlayMaxCount = c;
+        });
       });
-    });
-  }
+    }
 
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * DOM elements
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const femaLayerCheck =
-    document.getElementById('femaLayerCheck');
-
-  const sviOverlayCheck =
-    document.getElementById('sviOverlayCheck');
-
-  const nriOverlayCheck =
-    document.getElementById('nriOverlayCheck');
-
-  const sviMetricSelect =
-    document.getElementById('sviMetricSelect');
-
-  const sviMetricGroup =
-    document.getElementById('sviMetricGroup');
-
-  const nriMetricSelect =
-    document.getElementById('nriMetricSelect');
-
-  const nriMetricGroup =
-    document.getElementById('nriMetricGroup');
-
-  const nriHazardSelect =
-    document.getElementById('nriHazardSelect');
-
-  const nriHazardGroup =
-    document.getElementById('nriHazardGroup');
-
-  const metricSelect =
-    document.getElementById('metricSelect');
-
-  const yearSelect =
-    document.getElementById('yearSelect');
-
-  const typeSelect =
-    document.getElementById('typeSelect');
-
-  const filteredTotalEl =
-    document.getElementById('filteredTotal');
-
-  const filteredSubtitleEl =
-    document.getElementById('filteredSubtitle');
-
-  const topCountiesEl =
-    document.getElementById('topCounties');
-
-  const selectedCountyTitleEl =
-    document.getElementById('selectedCountyTitle');
-
-  const selectedCountySummaryEl =
-    document.getElementById('selectedCountySummary');
-
-  const selectedCountyListEl =
-    document.getElementById('selectedCountyList');
-
-  const selectedCountyLinkEl =
-    document.getElementById('selectedCountyLink');
-
-  const selectedCountyVizEl =
-    document.getElementById('selectedCountyViz');
-
-  const stateSelect =
-    document.getElementById('stateSelect');
-
-  let focusStateFips = '';
-
-
-  /*
-   * Build the NRI hazard dropdown.
-   */
-
-  if (nriHazardSelect) {
-
-    Object.keys(NRI_HAZARDS)
-      .sort(function (a, b) {
-
-        return String(NRI_HAZARDS[a])
-          .localeCompare(
-            String(NRI_HAZARDS[b])
-          );
-      })
-      .forEach(function (prefix) {
-
-        const option =
-          document.createElement('option');
-
-        option.value =
-          prefix;
-
-        option.textContent =
-          NRI_HAZARDS[prefix];
-
-        nriHazardSelect.appendChild(option);
+    const femaLayerCheck = document.getElementById('femaLayerCheck');
+    const sviOverlayCheck = document.getElementById('sviOverlayCheck');
+    const nriOverlayCheck = document.getElementById('nriOverlayCheck');
+    const sviMetricSelect = document.getElementById('sviMetricSelect');
+    const sviMetricGroup = document.getElementById('sviMetricGroup');
+    const nriMetricSelect = document.getElementById('nriMetricSelect');
+    const nriMetricGroup = document.getElementById('nriMetricGroup');
+    const nriHazardSelect = document.getElementById('nriHazardSelect');
+    const nriHazardGroup = document.getElementById('nriHazardGroup');
+    if (nriHazardSelect) {
+      Object.keys(NRI_HAZARDS).sort((a,b) => String(NRI_HAZARDS[a]).localeCompare(String(NRI_HAZARDS[b]))).forEach(function(prefix) {
+        const o = document.createElement('option');
+        o.value = prefix;
+        o.textContent = NRI_HAZARDS[prefix];
+        nriHazardSelect.appendChild(o);
       });
-  }
+    }
+    const metricSelect = document.getElementById('metricSelect');
+    const yearSelect = document.getElementById('yearSelect');
+    const typeSelect = document.getElementById('typeSelect');
+    const filteredTotalEl = document.getElementById('filteredTotal');
+    const filteredSubtitleEl = document.getElementById('filteredSubtitle');
+    const topCountiesEl = document.getElementById('topCounties');
+    const selectedCountyTitleEl = document.getElementById('selectedCountyTitle');
+    const selectedCountySummaryEl = document.getElementById('selectedCountySummary');
+    const selectedCountyListEl = document.getElementById('selectedCountyList');
+    const selectedCountyLinkEl = document.getElementById('selectedCountyLink');
+    const selectedCountyVizEl = document.getElementById('selectedCountyViz');
+    const stateSelect = document.getElementById('stateSelect');
+    let focusStateFips = '';   /* 2-digit state FIPS to focus/dim, or '' for the whole U.S. */
 
+    // Build county-label -> jurisdiction-page lookup from locality-index.js
+    const localityLookup = {};
+    if (window.LOCALITY_INDEX) {
+      window.LOCALITY_INDEX.forEach(function(r) {
+        var name = r[0], st = r[1], url = r[3], noun = r[6];
+        var base = name;
+        if (noun && name.endsWith(noun)) base = name.slice(0, -noun.length).trim();
+        base = base.replace(/ \(city\)$/i, '');
+        localityLookup[base.toLowerCase() + ',' + st] = url;
+        // also index by full display name (handles "Rose Island" where noun is "Island")
+        var full = name.replace(/ \(city\)$/i, '').toLowerCase();
+        if (!localityLookup[full + ',' + st]) localityLookup[full + ',' + st] = url;
+      });
+    }
 
-  /*
-   * Locality lookup.
-   */
-
-  const localityLookup = {};
-
-  if (window.LOCALITY_INDEX) {
-
-    window.LOCALITY_INDEX.forEach(function (r) {
-
-      const name = r[0];
-      const st = r[1];
-      const url = r[3];
-      const noun = r[6];
-
-      let base = name;
-
-      if (
-        noun &&
-        name.endsWith(noun)
-      ) {
-        base =
-          name
-            .slice(
-              0,
-              -noun.length
-            )
-            .trim();
-      }
-
-      base =
-        base.replace(
-          / \(city\)$/i,
-          ''
-        );
-
-      localityLookup[
-        base.toLowerCase() + ',' + st
-      ] = url;
-
-      const full =
-        name
-          .replace(
-            / \(city\)$/i,
-            ''
-          )
-          .toLowerCase();
-
-      if (
-        !localityLookup[
-          full + ',' + st
-        ]
-      ) {
-        localityLookup[
-          full + ',' + st
-        ] = url;
-      }
+    years.forEach(year => {
+      const opt = document.createElement('option');
+      opt.value = String(year);
+      opt.textContent = String(year);
+      yearSelect.appendChild(opt);
     });
-  }
 
+    topCounties.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.label} · ${item.value.toLocaleString()}`;
+      topCountiesEl.appendChild(li);
+    });
 
-  /*
-   * Populate years.
-   */
+    const map = L.map('map', {
+      preferCanvas: true,
+      zoomSnap: 0.25
+    }).setView([37.8, -96], 4);
 
-  years.forEach(function (year) {
+    // Dedicated panes guarantee the optional vulnerability/risk overlays render
+    // above the FEMA county layer even when Leaflet is using its canvas renderer.
+    map.createPane('femaPane');
+    map.getPane('femaPane').style.zIndex = 400;
+    map.createPane('sviPane');
+    map.getPane('sviPane').style.zIndex = 450;
+    map.createPane('nriPane');
+    map.getPane('nriPane').style.zIndex = 460;
+    map.createPane('statePane');
+    map.getPane('statePane').style.zIndex = 500;
 
-    const opt =
-      document.createElement('option');
-
-    opt.value =
-      String(year);
-
-    opt.textContent =
-      String(year);
-
-    yearSelect.appendChild(opt);
-  });
-
-
-  /*
-   * Populate top counties.
-   */
-
-  topCounties.forEach(function (item) {
-
-    const li =
-      document.createElement('li');
-
-    li.textContent =
-      item.label +
-      ' · ' +
-      item.value.toLocaleString();
-
-    topCountiesEl.appendChild(li);
-  });
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Leaflet map
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const map =
-    L.map(
-      'map',
-      {
-        preferCanvas: true,
-        zoomSnap: 0.25
-      }
-    )
-    .setView(
-      [37.8, -96],
-      4
-    );
-
-
-  /*
-   * Dedicated panes keep FEMA, SVI, NRI and state borders separate.
-   */
-
-  map.createPane('femaPane');
-  map.getPane('femaPane').style.zIndex = 400;
-
-  map.createPane('sviPane');
-  map.getPane('sviPane').style.zIndex = 450;
-
-  map.createPane('nriPane');
-  map.getPane('nriPane').style.zIndex = 460;
-
-  map.createPane('statePane');
-  map.getPane('statePane').style.zIndex = 500;
-
-
-  L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_2n1q_1_ad4306e45519c0e62979dcd7',
-    {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_2n1q_1_ad4306e45519c0e62979dcd7', {
       maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    }
-  ).addTo(map);
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    }).addTo(map);
 
+    let countyLayer;
+    let sviLayer;
+    let nriLayer;
+    let stateOutlineLayer;
+    let currentBreaks = [0, 1, 2, 3, 4, 5];
 
-  let countyLayer;
-  let sviLayer;
-  let nriLayer;
-  let stateOutlineLayer;
+    function isSviMode() { return !!(sviOverlayCheck && sviOverlayCheck.checked); }
+    function isNriMode() { return !!(nriOverlayCheck && nriOverlayCheck.checked); }
+    function isFemaMode() { return !!(femaLayerCheck && femaLayerCheck.checked); }
 
-  let currentBreaks =
-    [0, 1, 2, 3, 4, 5];
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Layer state helpers
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function isSviMode() {
-
-    return !!(
-      sviOverlayCheck &&
-      sviOverlayCheck.checked
-    );
-  }
-
-
-  function isNriMode() {
-
-    return !!(
-      nriOverlayCheck &&
-      nriOverlayCheck.checked
-    );
-  }
-
-
-  function isFemaMode() {
-
-    return !!(
-      femaLayerCheck &&
-      femaLayerCheck.checked
-    );
-  }
-
-
-  function currentSviMetricLabel() {
-
-    const labels = {
-      overall:
-        'Overall SVI',
-
-      socioeconomic:
-        'Socioeconomic Status',
-
-      household:
-        'Household Characteristics',
-
-      minority:
-        'Racial & Ethnic Minority Status',
-
-      housingTransportation:
-        'Housing Type & Transportation'
-    };
-
-    return (
-      labels[
-        sviMetricSelect
-          ? sviMetricSelect.value
-          : 'overall'
-      ] ||
-      'Overall SVI'
-    );
-  }
-
-
-  function currentNriMetricLabel() {
-
-    const hazard =
-      nriHazardSelect &&
-      nriHazardSelect.value;
-
-    if (
-      hazard &&
-      NRI_HAZARDS[hazard]
-    ) {
-      return NRI_HAZARDS[hazard];
+    function currentSviMetricLabel() {
+      const labels = {overall:'Overall SVI', socioeconomic:'Socioeconomic Status', household:'Household Characteristics', minority:'Racial & Ethnic Minority Status', housingTransportation:'Housing Type & Transportation'};
+      return labels[sviMetricSelect ? sviMetricSelect.value : 'overall'] || 'Overall SVI';
     }
 
-    const labels = {
-      riskScore:
-        'Overall Risk',
-
-      ealScore:
-        'Expected Annual Loss',
-
-      soviScore:
-        'Social Vulnerability',
-
-      reslScore:
-        'Community Resilience'
-    };
-
-    return (
-      labels[
-        nriMetricSelect
-          ? nriMetricSelect.value
-          : 'riskScore'
-      ] ||
-      'Overall Risk'
-    );
-  }
-
-
-  function currentMetricLabel() {
-
-    if (isNriMode()) {
-      return (
-        'FEMA National Risk Index · ' +
-        currentNriMetricLabel()
-      );
+    function currentNriMetricLabel() {
+      const hazard = nriHazardSelect && nriHazardSelect.value;
+      if (hazard && NRI_HAZARDS[hazard]) return NRI_HAZARDS[hazard];
+      const labels = {riskScore:'Overall Risk',ealScore:'Expected Annual Loss',soviScore:'Social Vulnerability',reslScore:'Community Resilience'};
+      return labels[nriMetricSelect ? nriMetricSelect.value : 'riskScore'] || 'Overall Risk';
     }
 
-    if (isSviMode()) {
-      return (
-        'CDC Social Vulnerability Index · ' +
-        currentSviMetricLabel()
-      );
+    function currentMetricLabel() {
+      if (isNriMode()) return 'FEMA National Risk Index · ' + currentNriMetricLabel();
+      if (isSviMode()) return 'CDC Social Vulnerability Index · ' + currentSviMetricLabel();
+      if (overlayActive()) return 'Disasters hitting each county';
+      return metricSelect.value === 'uniqueDeclarations' ? 'Unique FEMA declarations' : 'Designated-area records';
     }
 
-    if (overlayActive()) {
-      return 'Disasters hitting each county';
-    }
-
-    return (
-      metricSelect.value ===
-      'uniqueDeclarations'
-    )
-      ? 'Unique FEMA declarations'
-      : 'Designated-area records';
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Data helpers
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function getSviValues() {
-
-    const values = {};
-
-    const metric =
-      sviMetricSelect
-        ? sviMetricSelect.value
-        : 'overall';
-
-    Object.keys(COUNTY_SVI)
-      .forEach(function (fips) {
-
-        const row =
-          COUNTY_SVI[fips];
-
-        if (
-          row &&
-          Number.isFinite(
-            Number(row[metric])
-          )
-        ) {
-          values[fips] =
-            Number(row[metric]);
-        }
+    function getSviValues() {
+      const values = {};
+      const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
+      Object.keys(COUNTY_SVI).forEach(function (fips) {
+        const row = COUNTY_SVI[fips];
+        if (row && Number.isFinite(Number(row[metric]))) values[fips] = Number(row[metric]);
       });
+      return values;
+    }
 
-    return values;
-  }
-
-
-  function getNriValues() {
-
-    const values = {};
-
-    const hazard =
-      nriHazardSelect &&
-      nriHazardSelect.value;
-
-    const metric =
-      nriMetricSelect
-        ? nriMetricSelect.value
-        : 'riskScore';
-
-    Object.keys(COUNTY_NRI)
-      .forEach(function (fips) {
-
-        const row =
-          COUNTY_NRI[fips];
-
-        const value =
-          hazard
-            ? (
-                row &&
-                row.hazards &&
-                row.hazards[hazard]
-                  ? row.hazards[hazard].score
-                  : null
-              )
-            : (
-                row
-                  ? row[metric]
-                  : null
-              );
-
-        if (
-          Number.isFinite(
-            Number(value)
-          )
-        ) {
-          values[fips] =
-            Number(value);
-        }
+    function getNriValues() {
+      const values = {};
+      const hazard = nriHazardSelect && nriHazardSelect.value;
+      const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
+      Object.keys(COUNTY_NRI).forEach(function(fips) {
+        const row = COUNTY_NRI[fips];
+        const value = hazard ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null) : (row ? row[metric] : null);
+        if (Number.isFinite(Number(value))) values[fips] = Number(value);
       });
-
-    return values;
-  }
-
-
-  function getActiveCountyValues() {
-
-    if (overlayActive()) {
-      return overlayCounts;
+      return values;
     }
 
-    const metric =
-      metricSelect.value;
-
-    const year =
-      yearSelect.value;
-
-    const dtype =
-      typeSelect.value;
-
-    const metricData =
-      counts[metric] || {};
-
-    if (
-      year === 'ALL' &&
-      dtype === 'ALL'
-    ) {
-      return (
-        metricData.overall ||
-        {}
-      );
+    function getActiveCountyValues() {
+      if (overlayActive()) return overlayCounts;
+      const metric = metricSelect.value;
+      const year = yearSelect.value;
+      const dtype = typeSelect.value;
+      const metricData = counts[metric] || {};
+      if (year === 'ALL' && dtype === 'ALL') return metricData.overall || {};
+      if (year !== 'ALL' && dtype === 'ALL') return (metricData.byYear && metricData.byYear[year]) || {};
+      if (year === 'ALL' && dtype !== 'ALL') return (metricData.byType && metricData.byType[dtype]) || {};
+      return (metricData.byYearType && metricData.byYearType[year] && metricData.byYearType[year][dtype]) || {};
     }
 
-    if (
-      year !== 'ALL' &&
-      dtype === 'ALL'
-    ) {
-      return (
-        metricData.byYear &&
-        metricData.byYear[year]
-      ) || {};
+    function getMapValues() {
+      return getActiveCountyValues();
     }
 
-    if (
-      year === 'ALL' &&
-      dtype !== 'ALL'
-    ) {
-      return (
-        metricData.byType &&
-        metricData.byType[dtype]
-      ) || {};
-    }
+    function getBreaks(maxValue) {
+      if (!maxValue || maxValue <= 0) return [1, 2, 3, 5, 8, 13, 20, 35];
+      const pcts = [0.03, 0.08, 0.15, 0.25, 0.38, 0.55, 0.72, 0.88];
+      const candidates = pcts.map(p => Math.ceil(maxValue * p)).filter(v => v > 0);
 
-    return (
-      metricData.byYearType &&
-      metricData.byYearType[year] &&
-      metricData.byYearType[year][dtype]
-    ) || {};
-  }
-
-
-  function getMapValues() {
-    return getActiveCountyValues();
-  }
-
-
-  function getBreaks(maxValue) {
-
-    if (
-      !maxValue ||
-      maxValue <= 0
-    ) {
-      return [
-        1,
-        2,
-        3,
-        5,
-        8,
-        13,
-        20,
-        35
-      ];
-    }
-
-    const pcts = [
-      0.03,
-      0.08,
-      0.15,
-      0.25,
-      0.38,
-      0.55,
-      0.72,
-      0.88
-    ];
-
-    const candidates =
-      pcts
-        .map(function (p) {
-          return Math.ceil(
-            maxValue * p
-          );
-        })
-        .filter(function (v) {
-          return v > 0;
-        });
-
-    const uniq =
-      [...new Set(candidates)]
-        .sort(function (a, b) {
-          return a - b;
-        });
-
-    while (
-      uniq.length < 8
-    ) {
-
-      uniq.unshift(
-        Math.max(
-          1,
-          uniq.length
-            ? uniq[0] - 1
-            : 1
-        )
-      );
-
-      uniq.sort(function (a, b) {
-        return a - b;
-      });
-
-      for (
-        let i =
-          uniq.length - 1;
-        i > 0;
-        i--
-      ) {
-        if (
-          uniq[i] ===
-          uniq[i - 1]
-        ) {
-          uniq.splice(i, 1);
+      const uniq = [...new Set(candidates)].sort((a, b) => a - b);
+      while (uniq.length < 8) {
+        uniq.unshift(Math.max(1, uniq.length ? uniq[0] - 1 : 1));
+        uniq.sort((a, b) => a - b);
+        for (let i = uniq.length - 1; i > 0; i--) {
+          if (uniq[i] === uniq[i - 1]) uniq.splice(i, 1);
         }
       }
+      return uniq.slice(0, 8);
     }
 
-    return uniq.slice(0, 8);
-  }
+    function getColor(value, breaks) {
+      if (!Number.isFinite(Number(value)) || Number(value) <= 0) return '#e9e5da';
 
-
-  function getColor(
-    value,
-    breaks
-  ) {
-
-    if (
-      !Number.isFinite(
-        Number(value)
-      ) ||
-      Number(value) <= 0
-    ) {
-      return '#e9e5da';
-    }
-
-    /*
-     * Four-break scale used by SVI and NRI.
-     */
-
-    if (
-      breaks.length === 4
-    ) {
-
-      return (
-        value > breaks[3]
-          ? '#7a2c14'
-          : value > breaks[2]
-            ? '#c96a2e'
-            : value > breaks[1]
-              ? '#e3a652'
-              : value > breaks[0]
-                ? '#ecc278'
-                : '#f2d9a0'
-      );
-    }
-
-    /*
-     * FEMA activity scale.
-     */
-
-    return (
-      value > breaks[7]
-        ? '#7a2c14'
-        : value > breaks[6]
-          ? '#97391b'
-          : value > breaks[5]
-            ? '#b35024'
-            : value > breaks[4]
-              ? '#c96a2e'
-              : value > breaks[3]
-                ? '#d8853a'
-                : value > breaks[2]
-                  ? '#e3a652'
-                  : value > breaks[1]
-                    ? '#ecc278'
-                    : value > breaks[0]
-                      ? '#f2d9a0'
-                      : '#e9e5da'
-    );
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Selected county
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  let selectedCountyFips = null;
-
-
-  function getTypeLongLabel(code) {
-
-    if (code === 'DR') {
-      return 'Major Disaster';
-    }
-
-    if (code === 'EM') {
-      return 'Emergency Declaration';
-    }
-
-    if (code === 'FM') {
-      return 'FMAG';
-    }
-
-    return code || '';
-  }
-
-
-  function getFilteredCountyEvents(fips) {
-
-    const all =
-      countyDeclarationEvents[fips] ||
-      [];
-
-    const year =
-      yearSelect.value;
-
-    const dtype =
-      typeSelect.value;
-
-    return all.filter(function (evt) {
-
-      const yearOk =
-        year === 'ALL' ||
-        String(evt.year) ===
-          String(year);
-
-      const typeOk =
-        dtype === 'ALL' ||
-        evt.type === dtype;
-
-      return (
-        yearOk &&
-        typeOk
-      );
-    });
-  }
-
-
-  function countyVizHtml(events) {
-
-    if (!events.length) {
-      return '';
-    }
-
-    const ys =
-      years.slice();
-
-    const yc = {};
-
-    ys.forEach(function (y) {
-      yc[y] = 0;
-    });
-
-    events.forEach(function (e) {
-
-      if (
-        yc[e.year] == null
-      ) {
-        yc[e.year] = 0;
+      /* SVI mode uses four broad percentile classes. */
+      if (breaks.length === 4) {
+        return value > breaks[3] ? '#7a2c14' :
+               value > breaks[2] ? '#c96a2e' :
+               value > breaks[1] ? '#e3a652' :
+               value > breaks[0] ? '#ecc278' :
+                                    '#f2d9a0';
       }
 
-      yc[e.year]++;
-    });
-
-    const max =
-      Math.max.apply(
-        null,
-        ys
-          .map(function (y) {
-            return yc[y] || 0;
-          })
-          .concat([1])
-      );
-
-    const W = 250;
-    const H = 54;
-    const n = ys.length;
-    const bw = W / n;
-
-    const bars =
-      ys
-        .map(function (y, i) {
-
-          const v =
-            yc[y] || 0;
-
-          const h =
-            v
-              ? Math.max(
-                  2,
-                  (v / max) *
-                    (H - 16)
-                )
-              : 0;
-
-          return (
-            '<rect x="' +
-            (i * bw).toFixed(1) +
-            '" y="' +
-            (H - 12 - h).toFixed(1) +
-            '" width="' +
-            Math.max(
-              1,
-              bw - 1
-            ).toFixed(1) +
-            '" height="' +
-            h.toFixed(1) +
-            '" fill="' +
-            (
-              v
-                ? '#c85c2e'
-                : '#e9e5da'
-            ) +
-            '">' +
-            '<title>' +
-            y +
-            ': ' +
-            v +
-            '</title>' +
-            '</rect>'
-          );
-        })
-        .join('');
-
-    const labs =
-      '<text x="0" y="' +
-      H +
-      '" font-size="9" fill="#938a78">' +
-      ys[0] +
-      '</text>' +
-      '<text x="' +
-      W +
-      '" y="' +
-      H +
-      '" font-size="9" fill="#938a78" text-anchor="end">' +
-      ys[ys.length - 1] +
-      '</text>';
-
-    const chart =
-      '<svg viewBox="0 0 ' +
-      W +
-      ' ' +
-      H +
-      '" width="100%" height="' +
-      H +
-      '" role="img" aria-label="Declarations by year">' +
-      bars +
-      labs +
-      '</svg>';
-
-    const tc = {};
-
-    events.forEach(function (e) {
-
-      const t =
-        e.title ||
-        'Unknown';
-
-      tc[t] =
-        (tc[t] || 0) + 1;
-    });
-
-    const top =
-      Object.keys(tc)
-        .map(function (t) {
-          return [
-            t,
-            tc[t]
-          ];
-        })
-        .sort(function (a, b) {
-          return b[1] - a[1];
-        })
-        .slice(0, 4);
-
-    const tmax =
-      top.length
-        ? top[0][1]
-        : 1;
-
-    const haz =
-      top
-        .map(function (p) {
-
-          const pct =
-            Math.max(
-              6,
-              (p[1] / tmax) * 100
-            );
-
-          return (
-            '<div style="margin-top:6px;font-size:12px">' +
-
-            '<div style="display:flex;justify-content:space-between;gap:8px">' +
-
-            '<span>' +
-            p[0] +
-            '</span>' +
-
-            '<span style="color:#938a78;font-variant-numeric:tabular-nums">' +
-            p[1] +
-            '</span>' +
-
-            '</div>' +
-
-            '<div style="height:5px;background:#e9e5da;border-radius:3px;margin-top:2px;overflow:hidden">' +
-
-            '<div style="height:100%;width:' +
-            pct +
-            '%;background:#004c53;border-radius:3px"></div>' +
-
-            '</div>' +
-
-            '</div>'
-          );
-        })
-        .join('');
-
-    const hd =
-      'font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#938a78';
-
-    return (
-      '<div style="margin-top:10px">' +
-
-      '<div style="' +
-      hd +
-      ';margin-bottom:4px">' +
-      'By year' +
-      '</div>' +
-
-      chart +
-
-      '<div style="' +
-      hd +
-      ';margin:10px 0 2px">' +
-      'Top incident types' +
-      '</div>' +
-
-      haz +
-
-      '</div>'
-    );
-  }
-
-
-  function renderSelectedCounty() {
-
-    if (!selectedCountyFips) {
-
-      selectedCountyTitleEl.textContent =
-        'Click a county to view combined disaster, vulnerability, and risk data.';
-
-      selectedCountySummaryEl.textContent =
-        '';
-
-      selectedCountyListEl.innerHTML =
-        '';
-
-      if (selectedCountyVizEl) {
-        selectedCountyVizEl.innerHTML =
-          '';
-      }
-
-      if (selectedCountyLinkEl) {
-        selectedCountyLinkEl.style.display =
-          'none';
-      }
-
-      return;
+      /* FEMA / disaster mode: 8-stop ramp, low → high. */
+      return value > breaks[7] ? '#7a2c14' :
+             value > breaks[6] ? '#97391b' :
+             value > breaks[5] ? '#b35024' :
+             value > breaks[4] ? '#c96a2e' :
+             value > breaks[3] ? '#d8853a' :
+             value > breaks[2] ? '#e3a652' :
+             value > breaks[1] ? '#ecc278' :
+             value > breaks[0] ? '#f2d9a0' :
+                                 '#e9e5da';
     }
 
+    let selectedCountyFips = null;
 
-    const fips =
-      selectedCountyFips;
-
-    const svi =
-      COUNTY_SVI[fips];
-
-    const nri =
-      COUNTY_NRI[fips];
-
-    const countyLabel =
-      countyLabels[fips] ||
-      (
-        svi
-          ? svi.county +
-            ', ' +
-            svi.state
-          : (
-              nri
-                ? nri.county +
-                  ', ' +
-                  nri.state
-                : 'County FIPS ' +
-                  fips
-            )
-      );
-
-    selectedCountyTitleEl.textContent =
-      countyLabel;
-
-    if (selectedCountyLinkEl) {
-      selectedCountyLinkEl.style.display =
-        'none';
+    function getTypeLongLabel(code) {
+      if (code === 'DR') return 'Major Disaster';
+      if (code === 'EM') return 'Emergency Declaration';
+      if (code === 'FM') return 'FMAG';
+      return code || '';
     }
 
-    if (selectedCountyVizEl) {
-      selectedCountyVizEl.innerHTML =
-        '';
-    }
+    function getFilteredCountyEvents(fips) {
+      const all = countyDeclarationEvents[fips] || [];
+      const year = yearSelect.value;
+      const dtype = typeSelect.value;
 
-    const parts = [];
-
-
-    /*
-     * CDC SVI
-     */
-
-    if (
-      isSviMode() &&
-      svi
-    ) {
-
-      const m =
-        sviMetricSelect
-          ? sviMetricSelect.value
-          : 'overall';
-
-      const v =
-        Number(svi[m]);
-
-      parts.push(
-        '<div class="event-item">' +
-
-        '<div class="num">' +
-        'CDC SVI · ' +
-        currentSviMetricLabel() +
-        '</div>' +
-
-        '<div class="meta">' +
-
-        (
-          Number.isFinite(v)
-            ? v.toFixed(4) +
-              ' · ' +
-              (v * 100).toFixed(1) +
-              ' percentile'
-            : 'No data'
-        ) +
-
-        ' · 2022' +
-
-        '</div>' +
-
-        '</div>'
-      );
-    }
-
-
-    /*
-     * FEMA NRI
-     */
-
-    if (
-      isNriMode() &&
-      nri
-    ) {
-
-      const h =
-        nriHazardSelect
-          ? nriHazardSelect.value
-          : '';
-
-      const m =
-        nriMetricSelect
-          ? nriMetricSelect.value
-          : 'riskScore';
-
-      const v =
-        h
-          ? (
-              nri.hazards &&
-              nri.hazards[h]
-                ? nri.hazards[h].score
-                : null
-            )
-          : nri[m];
-
-      const r =
-        h
-          ? (
-              nri.hazards &&
-              nri.hazards[h]
-                ? nri.hazards[h].rating
-                : null
-            )
-          : nri[
-              m.replace(
-                'Score',
-                'Rating'
-              )
-            ];
-
-      parts.push(
-        '<div class="event-item">' +
-
-        '<div class="num">' +
-        'FEMA NRI · ' +
-        currentNriMetricLabel() +
-        '</div>' +
-
-        '<div class="meta">' +
-
-        (
-          Number.isFinite(
-            Number(v)
-          )
-            ? Number(v).toFixed(2)
-            : 'No data'
-        ) +
-
-        ' · ' +
-
-        (
-          r ||
-          '—'
-        ) +
-
-        ' · December 2025' +
-
-        '</div>' +
-
-        '</div>'
-      );
-    }
-
-
-    /*
-     * FEMA declaration events.
-     */
-
-    const events =
-      getFilteredCountyEvents(fips);
-
-    if (isFemaMode()) {
-
-      selectedCountySummaryEl.textContent =
-        events.length.toLocaleString() +
-        ' declaration event(s) match the current filters.';
-
-      events.forEach(function (evt) {
-
-        parts.push(
-          '<div class="event-item">' +
-
-          '<div class="num">' +
-          '#' +
-          evt.declarationNumber +
-          '</div>' +
-
-          '<div class="meta">' +
-
-          getTypeLongLabel(
-            evt.type
-          ) +
-
-          (
-            evt.date
-              ? ' · ' +
-                evt.date
-              : ''
-          ) +
-
-          (
-            evt.title
-              ? ' · ' +
-                evt.title
-              : ''
-          ) +
-
-          '</div>' +
-
-          '</div>'
-        );
+      return all.filter(evt => {
+        const yearOk = year === 'ALL' || String(evt.year) === String(year);
+        const typeOk = dtype === 'ALL' || evt.type === dtype;
+        return yearOk && typeOk;
       });
-    } else {
-
-      selectedCountySummaryEl.textContent =
-        '';
     }
 
-
-    if (!parts.length) {
-
-      parts.push(
-        '<div class="muted">' +
-        'No data available for the selected layers.' +
-        '</div>'
-      );
+    /* compact linked panel: declarations-by-year mini chart + top incident types for the selection */
+    function countyVizHtml(events) {
+      if (!events.length) return '';
+      var ys = years.slice(), yc = {};
+      ys.forEach(function (y) { yc[y] = 0; });
+      events.forEach(function (e) { if (yc[e.year] == null) yc[e.year] = 0; yc[e.year]++; });
+      var max = Math.max.apply(null, ys.map(function (y) { return yc[y] || 0; }).concat([1]));
+      var W = 250, H = 54, n = ys.length, bw = W / n;
+      var bars = ys.map(function (y, i) {
+        var v = yc[y] || 0, h = v ? Math.max(2, (v / max) * (H - 16)) : 0;
+        return '<rect x="' + (i * bw).toFixed(1) + '" y="' + (H - 12 - h).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + (v ? '#c85c2e' : '#e9e5da') + '"><title>' + y + ': ' + v + '</title></rect>';
+      }).join('');
+      var labs = '<text x="0" y="' + H + '" font-size="9" fill="#938a78">' + ys[0] + '</text><text x="' + W + '" y="' + H + '" font-size="9" fill="#938a78" text-anchor="end">' + ys[ys.length - 1] + '</text>';
+      var chart = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Declarations by year">' + bars + labs + '</svg>';
+      var tc = {};
+      events.forEach(function (e) { var t = e.title || 'Unknown'; tc[t] = (tc[t] || 0) + 1; });
+      var top = Object.keys(tc).map(function (t) { return [t, tc[t]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 4);
+      var tmax = top.length ? top[0][1] : 1;
+      var haz = top.map(function (p) {
+        var pct = Math.max(6, (p[1] / tmax) * 100);
+        return '<div style="margin-top:6px;font-size:12px">'
+          + '<div style="display:flex;justify-content:space-between;gap:8px"><span>' + p[0] + '</span><span style="color:#938a78;font-variant-numeric:tabular-nums">' + p[1] + '</span></div>'
+          + '<div style="height:5px;background:#e9e5da;border-radius:3px;margin-top:2px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:#004c53;border-radius:3px"></div></div></div>';
+      }).join('');
+      var hd = 'font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#938a78';
+      return '<div style="margin-top:10px"><div style="' + hd + ';margin-bottom:4px">By year</div>' + chart
+        + '<div style="' + hd + ';margin:10px 0 2px">Top incident types</div>' + haz + '</div>';
     }
 
-    selectedCountyListEl.innerHTML =
-      parts.join('');
-  }
+    function renderSelectedCounty() {
+      if (!selectedCountyFips) {
+        selectedCountyTitleEl.textContent = 'Click a county to view combined disaster, vulnerability, and risk data.';
+        selectedCountySummaryEl.textContent = ''; selectedCountyListEl.innerHTML = '';
+        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML=''; selectedCountyLinkEl.style.display='none'; return;
+      }
+      const fips=selectedCountyFips, svi=COUNTY_SVI[fips], nri=COUNTY_NRI[fips];
+      const countyLabel=countyLabels[fips] || (svi ? `${svi.county}, ${svi.state}` : (nri ? `${nri.county}, ${nri.state}` : `County FIPS ${fips}`));
+      selectedCountyTitleEl.textContent=countyLabel; selectedCountyLinkEl.style.display='none';
+      if (selectedCountyVizEl) selectedCountyVizEl.innerHTML='';
+      const parts=[];
+      if (isSviMode() && svi) { const m=sviMetricSelect?.value||'overall'; const v=Number(svi[m]); parts.push(`<div class="event-item"><div class="num">CDC SVI · ${currentSviMetricLabel()}</div><div class="meta">${Number.isFinite(v)?v.toFixed(4)+' · '+(v*100).toFixed(1)+' percentile':'No data'} · 2022</div></div>`); }
+      if (isNriMode() && nri) { const h=nriHazardSelect?.value, m=nriMetricSelect?.value||'riskScore'; const v=h?nri.hazards?.[h]?.score:nri[m], r=h?nri.hazards?.[h]?.rating:nri[m.replace('Score','Rating')]; parts.push(`<div class="event-item"><div class="num">FEMA NRI · ${currentNriMetricLabel()}</div><div class="meta">${Number.isFinite(Number(v))?Number(v).toFixed(2):'No data'} · ${r||'—'} · December 2025</div></div>`); }
+      const events=countyDeclarationEvents[fips]||[];
+      if (isFemaMode()) { selectedCountySummaryEl.textContent=`${events.length.toLocaleString()} declaration event(s) match the current filters.`; events.forEach(evt=>parts.push(`<div class="event-item"><div class="num">#${evt.declarationNumber}</div><div class="meta">${getTypeLongLabel(evt.type)}${evt.date?' · '+evt.date:''}${evt.title?' · '+evt.title:''}</div></div>`)); }
+      if (!parts.length) parts.push('<div class="muted">No data available for the selected layers.</div>');
+      selectedCountyListEl.innerHTML=parts.join('');
+    }
 
+    const info = L.control({ position: 'topleft' });
 
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Hover information box
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const info = L.control({ position: 'topleft' });
-
-
-  info.onAdd =
-    function () {
-
-      this._div =
-        L.DomUtil.create(
-          'div',
-          'info'
-        );
-
+    info.onAdd = function () {
+      this._div = L.DomUtil.create('div', 'info');
       this.update();
-
       return this._div;
     };
 
-
-  info.update =
-    function (
-      feature,
-      value
-    ) {
-
+    info.update = function (feature, value) {
       if (!feature) {
-
-        this._div.innerHTML =
-          '<h4>County data</h4>' +
-          'Hover over a county';
-
+        this._div.innerHTML = '<h4>County data</h4>Hover over a county';
         return;
       }
-
-      const fips =
-        featureFips(feature);
-
-      const label =
-        countyLabels[fips] ||
-        (
-          COUNTY_SVI[fips]
-            ? COUNTY_SVI[fips].county
-            : (
-                COUNTY_NRI[fips]
-                  ? COUNTY_NRI[fips].county
-                  : 'County FIPS ' +
-                    fips
-              )
-        );
-
-      let html =
-        '<h4>' +
-        label +
-        '</h4>';
-
-
-      if (isFemaMode()) {
-
-        html +=
-          '<b>FEMA disasters</b>' +
-          '<br/>' +
-          Number(
-            value || 0
-          ).toLocaleString() +
-          ' matching county records';
-      }
-
-
+      const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
+      const label = countyLabels[fips] || COUNTY_SVI[fips]?.county || COUNTY_NRI[fips]?.county || `County FIPS ${fips}`;
+      let html = `<h4>${label}</h4>`;
+      if (isFemaMode()) { html += `<b>FEMA disasters</b><br/>${Number(value||0).toLocaleString()} matching county records`; }
       if (isSviMode()) {
-
-        const row =
-          COUNTY_SVI[fips];
-
-        const metric =
-          sviMetricSelect
-            ? sviMetricSelect.value
-            : 'overall';
-
-        const v =
-          row
-            ? Number(
-                row[metric]
-              )
-            : NaN;
-
-        html +=
-          '<br/><br/>' +
-
-          '<b>CDC SVI · ' +
-          currentSviMetricLabel() +
-          '</b>' +
-
-          '<br/>' +
-
-          (
-            Number.isFinite(v)
-              ? v.toFixed(4) +
-                ' · ' +
-                (v * 100).toFixed(1) +
-                ' percentile'
-              : 'No data'
-          );
+        const row=COUNTY_SVI[fips], v=row ? Number(row[sviMetricSelect?.value || 'overall']) : NaN;
+        html += `<br/><br/><b>CDC SVI · ${currentSviMetricLabel()}</b><br/>` + (Number.isFinite(v) ? `${v.toFixed(4)} · ${(v*100).toFixed(1)} percentile` : 'No data');
       }
-
-
       if (isNriMode()) {
-
-        const row =
-          COUNTY_NRI[fips];
-
-        const hazard =
-          nriHazardSelect
-            ? nriHazardSelect.value
-            : '';
-
-        const metric =
-          nriMetricSelect
-            ? nriMetricSelect.value
-            : 'riskScore';
-
-        const v =
-          hazard
-            ? (
-                row &&
-                row.hazards &&
-                row.hazards[hazard]
-                  ? row.hazards[hazard].score
-                  : null
-              )
-            : (
-                row
-                  ? row[metric]
-                  : null
-              );
-
-        const rating =
-          hazard
-            ? (
-                row &&
-                row.hazards &&
-                row.hazards[hazard]
-                  ? row.hazards[hazard].rating
-                  : null
-              )
-            : (
-                row
-                  ? row[
-                      metric.replace(
-                        'Score',
-                        'Rating'
-                      )
-                    ]
-                  : null
-              );
-
-        html +=
-          '<br/><br/>' +
-
-          '<b>FEMA NRI · ' +
-          currentNriMetricLabel() +
-          '</b>' +
-
-          '<br/>' +
-
-          (
-            Number.isFinite(
-              Number(v)
-            )
-              ? Number(v).toFixed(2) +
-                ' · ' +
-                (
-                  rating ||
-                  '—'
-                )
-              : 'No data'
-          );
+        const row=COUNTY_NRI[fips], hazard=nriHazardSelect?.value, metric=nriMetricSelect?.value || 'riskScore';
+        const v=hazard ? row?.hazards?.[hazard]?.score : row?.[metric];
+        const rating=hazard ? row?.hazards?.[hazard]?.rating : row?.[metric.replace('Score','Rating')];
+        html += `<br/><br/><b>FEMA NRI · ${currentNriMetricLabel()}</b><br/>` + (Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)} · ${rating || '—'}` : 'No data');
       }
-
-
-      html +=
-        '<br/>' +
-        '<span style="color:#938a78">' +
-        'FIPS ' +
-        fips +
-        '</span>';
-
-      this._div.innerHTML =
-        html;
+      html += `<br/><span style="color:#938a78">FIPS ${fips}</span>`;
+      this._div.innerHTML = html;
     };
+    info.addTo(map);
 
 
-  info.addTo(map);
+    const legend = L.control({ position: 'bottomright' });
 
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Legend
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const legend =
-    L.control({
-      position:
-        'bottomright'
-    });
-
-
-  legend.onAdd =
-    function () {
-
-      this._div =
-        L.DomUtil.create(
-          'div',
-          'legend'
-        );
-
-      this._div.style.maxHeight =
-        Math.max(
-          200,
-          map.getSize().y - 40
-        ) +
-        'px';
-
-      this._div.style.overflowY =
-        'auto';
-
-      this._div.style.paddingRight =
-        '8px';
-
-      L.DomEvent.disableScrollPropagation(
-        this._div
-      );
-
+    legend.onAdd = function () {
+      this._div = L.DomUtil.create('div', 'legend');
+      this._div.style.maxHeight = Math.max(200, map.getSize().y - 40) + 'px';
+      this._div.style.overflowY = 'auto';
+      this._div.style.paddingRight = '8px';
+      L.DomEvent.disableScrollPropagation(this._div);
       this.update();
-
       return this._div;
     };
 
-
-  legend.update =
-    function () {
-
-      const div =
-        this._div;
-
-      let html = '';
-
-      const labels = [
-        'Very low',
-        'Low',
-        'Moderate',
-        'Elevated',
-        'High',
-        'Very high',
-        'Severe',
-        'Extreme'
-      ];
-
-
-      /*
-       * FEMA legend
-       */
-
-      if (isFemaMode()) {
-
-        html +=
-          '<div style="' +
-          'font-family:&quot;Public Sans&quot;,sans-serif;' +
-          'font-size:10px;' +
-          'font-weight:700;' +
-          'letter-spacing:.08em;' +
-          'text-transform:uppercase;' +
-          'color:#004c53;' +
-          'margin-bottom:8px;' +
-          '">' +
-          'FEMA disaster activity' +
-          '</div>';
-
-
-        if (overlayActive()) {
-
-          const limit =
-            Math.min(
-              8,
-              overlayMaxCount
-            );
-
-          for (
-            let k = 1;
-            k <= limit;
-            k++
-          ) {
-
-            html +=
-              '<div style="margin-bottom:3px;">' +
-
-              '<i style="background:' +
-              getColor(
-                k,
-                currentBreaks
-              ) +
-              '"></i> ' +
-
-              (
-                k === 8 &&
-                overlayMaxCount > 8
-                  ? '8+'
-                  : k
-              ) +
-
-              '</div>';
-          }
-
-        } else {
-
-          currentBreaks
-            .slice(0, 8)
-            .forEach(function (b, i) {
-
-              html +=
-                '<div style="margin-bottom:3px;">' +
-
-                '<i style="background:' +
-                getColor(
-                  b,
-                  currentBreaks
-                ) +
-                '"></i> ' +
-
-                labels[i] +
-
-                '</div>';
-            });
-        }
-      }
-
-
-      /*
-       * CDC SVI legend
-       */
-
-      if (isSviMode()) {
-
-        html +=
-          '<div style="' +
-          'margin-top:8px;' +
-          'font-family:&quot;Public Sans&quot;,sans-serif;' +
-          'font-size:10px;' +
-          'font-weight:700;' +
-          'letter-spacing:.08em;' +
-          'text-transform:uppercase;' +
-          'color:#b35024;' +
-          'margin-bottom:6px;' +
-          '">' +
-
-          'SVI · ' +
-          currentSviMetricLabel() +
-
-          '</div>';
-
-
-        [
-          [
-            '#f2d9a0',
-            '0–25th'
-          ],
-          [
-            '#ecc278',
-            '25th–50th'
-          ],
-          [
-            '#e3a652',
-            '50th–75th'
-          ],
-          [
-            '#b35024',
-            '75th–100th'
-          ]
-        ].forEach(function (x) {
-
-          html +=
-            '<div style="margin-bottom:3px;">' +
-
-            '<i style="background:' +
-            x[0] +
-            '"></i> ' +
-
-            x[1] +
-            ' percentile' +
-
-            '</div>';
-        });
-      }
-
-
-      /*
-       * FEMA NRI legend
-       */
-
-      if (isNriMode()) {
-
-        html +=
-          '<div style="' +
-          'margin-top:8px;' +
-          'font-family:&quot;Public Sans&quot;,sans-serif;' +
-          'font-size:10px;' +
-          'font-weight:700;' +
-          'letter-spacing:.08em;' +
-          'text-transform:uppercase;' +
-          'color:#004c53;' +
-          'margin-bottom:6px;' +
-          '">' +
-
-          'NRI · ' +
-          currentNriMetricLabel() +
-
-          '</div>';
-
-
-        [
-          'Very Low',
-          'Relatively Low',
-          'Relatively Moderate',
-          'Relatively High',
-          'Very High'
-        ].forEach(function (lab, i) {
-
-          const c =
-            getColor(
-              (i + 1) * 0.2,
-              [
-                0.2,
-                0.4,
-                0.6,
-                0.8
-              ]
-            );
-
-          html +=
-            '<div style="margin-bottom:3px;">' +
-
-            '<i style="background:' +
-            c +
-            '"></i> ' +
-
-            lab +
-
-            '</div>';
-        });
-      }
-
-
-      if (!html) {
-
-        html =
-          '<div style="font-size:11px;">' +
-          'Select one or more layers.' +
-          '</div>';
-      }
-
-      div.innerHTML =
-        html;
+    legend.update = function () {
+      const div=this._div; let html='';
+      if(isFemaMode()){ html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">FEMA disaster activity</div>'; const maxK=Math.min(8,Math.max(1,overlayActive()?overlayMaxCount:Math.max(1,currentBreaks[currentBreaks.length-1]||1))); if(overlayActive()){ for(let k=1;k<=Math.min(8,overlayMaxCount);k++) html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(k,currentBreaks)+'"></i> '+(k===8&&overlayMaxCount>8?'8+':k)+'</div>'; } else { const labels=['Very low','Low','Moderate','Elevated','High','Very high','Severe','Extreme']; currentBreaks.slice(0,8).forEach((b,i)=>{ html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(b,currentBreaks)+'"></i> '+labels[i]+'</div>'; }); } }
+      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [['#f2d9a0','0–25th'],['#ecc278','25th–50th'],['#e3a652','50th–75th'],['#b35024','75th–100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+x[0]+'"></i> '+x[1]+' percentile</div>'); }
+      if(isNriMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=getColor((i+1)*.2,[.2,.4,.6,.8]); html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); }
+      if(!html) html='<div style="font-size:11px;">Select one or more layers.</div>'; div.innerHTML=html;
     };
 
-
-  legend.addTo(map);
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Feature/FIPS helpers
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function featureFips(feature) {
-
-    const raw =
-      feature &&
-      (
-        feature.id ??
-        (
-          feature.properties &&
-          (
-            feature.properties.GEOID ??
-            feature.properties.FIPS
-          )
-        )
-      );
-
-    const digits =
-      String(
-        raw == null
-          ? ''
-          : raw
-      )
-      .replace(
-        /\D/g,
-        ''
-      );
-
-    return digits
-      ? digits
-          .padStart(
-            5,
-            '0'
-          )
-          .slice(-5)
-      : '';
-  }
-
-
-  /*
-   * FEMA county styling.
-   */
-
-  function styleCounty(feature) {
-
-    const values =
-      getActiveCountyValues();
-
-    const fips =
-      featureFips(feature);
-
-    const value =
-      values[fips] || 0;
-
-    const dim =
-      focusStateFips &&
-      fips.slice(0, 2) !==
-        focusStateFips;
-
-    return {
-      fillColor:
-        dim
-          ? '#eee9df'
-          : getColor(
-              value,
-              currentBreaks
-            ),
-
-      weight:
-        0.4,
-
-      opacity:
-        dim
-          ? 0.5
-          : 1,
-
-      color:
-        dim
-          ? '#e3ddce'
-          : '#d3c9b2',
-
-      fillOpacity:
-        isFemaMode()
-          ? (
-              dim
-                ? 0.12
-                : 0.72
-            )
-          : 0.08
-    };
-  }
-
-
-  /*
-   * CDC SVI styling.
-   *
-   * IMPORTANT:
-   * This is the original choropleth behavior.
-   * No purple comparison outline.
-   */
-
-  function styleSviCounty(feature) {
-
-    const fips =
-      featureFips(feature);
-
-    const row =
-      COUNTY_SVI[fips];
-
-    const metric =
-      sviMetricSelect
-        ? sviMetricSelect.value
-        : 'overall';
-
-    const v =
-      row &&
-      Number.isFinite(
-        Number(row[metric])
-      )
-        ? Number(row[metric])
-        : null;
-
-    const dim =
-      focusStateFips &&
-      fips.slice(0, 2) !==
-        focusStateFips;
-
-    return {
-      fillColor:
-        Number.isFinite(v)
-          ? getColor(
-              v,
-              [
-                0,
-                0.25,
-                0.50,
-                0.75
-              ]
-            )
-          : '#ffffff',
-
-      fillOpacity:
-        isSviMode() &&
-        !dim &&
-        Number.isFinite(v)
-          ? 0.55
-          : 0,
-
-      weight:
-        isSviMode() &&
-        Number.isFinite(v)
-          ? 0.7
-          : 0,
-
-      color:
-        '#b35024',
-
-      opacity:
-        isSviMode() &&
-        Number.isFinite(v)
-          ? 0.75
-          : 0
-    };
-  }
-
-
-  /*
-   * FEMA NRI styling.
-   *
-   * IMPORTANT:
-   * This is the normal county choropleth.
-   * No circle markers / NRI dots.
-   */
-
-  function styleNriCounty(feature) {
-
-    const fips =
-      featureFips(feature);
-
-    const row =
-      COUNTY_NRI[fips];
-
-    const hazard =
-      nriHazardSelect &&
-      nriHazardSelect.value;
-
-    const metric =
-      nriMetricSelect
-        ? nriMetricSelect.value
-        : 'riskScore';
-
-
-    const raw =
-      hazard
-        ? (
-            row &&
-            row.hazards &&
-            row.hazards[hazard]
-              ? row.hazards[hazard].score
-              : null
-          )
-        : (
-            row
-              ? row[metric]
-              : null
-          );
-
-
-    const v =
-      Number.isFinite(
-        Number(raw)
-      )
-        ? Number(raw)
-        : null;
-
-
-    const dim =
-      focusStateFips &&
-      fips.slice(0, 2) !==
-        focusStateFips;
-
-
-    const vals =
-      Object.keys(COUNTY_NRI)
-        .map(function (k) {
-
-          const r =
-            COUNTY_NRI[k];
-
-          const x =
-            hazard
-              ? (
-                  r &&
-                  r.hazards &&
-                  r.hazards[hazard]
-                    ? r.hazards[hazard].score
-                    : null
-                )
-              : (
-                  r
-                    ? r[metric]
-                    : null
-                );
-
-          return Number(x);
-        })
-        .filter(function (x) {
-          return Number.isFinite(x);
-        });
-
-
-    const max =
-      vals.length
-        ? Math.max.apply(
-            null,
-            vals
-          )
-        : 1;
-
-
-    const br = [
-      max * 0.2,
-      max * 0.4,
-      max * 0.6,
-      max * 0.8
-    ];
-
-
-    return {
-      fillColor:
-        Number.isFinite(v)
-          ? getColor(
-              v,
-              br
-            )
-          : '#ffffff',
-
-      fillOpacity:
-        isNriMode() &&
-        !dim &&
-        Number.isFinite(v)
-          ? 0.50
-          : 0,
-
-      weight:
-        isNriMode() &&
-        Number.isFinite(v)
-          ? 0.7
-          : 0,
-
-      color:
-        '#004c53',
-
-      opacity:
-        isNriMode() &&
-        Number.isFinite(v)
-          ? 0.8
-          : 0
-    };
-  }
-
-
-  function styleStateOutline() {
-
-    return {
-      color:
-        '#8a7c5e',
-
-      weight:
-        1.1,
-
-      fill:
-        false,
-
-      opacity:
-        0.65,
-
-      interactive:
-        false
-    };
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * County interaction
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function highlightFeature(e) {
-
-    const layer =
-      e.target;
-
-    const values =
-      getMapValues();
-
-    const fips =
-      featureFips(
-        layer.feature
-      );
-
-    const value =
-      values[fips] || 0;
-
-
-    layer.setStyle({
-      weight:
-        1.4,
-
-      color:
-        '#1d1813',
-
-      fillOpacity:
-        0.95
-    });
-
-
-    info.update(
-      layer.feature,
-      value
-    );
-  }
-
-
-  function resetHighlight(e) {
-
-    if (countyLayer) {
-      countyLayer.resetStyle(
-        e.target
-      );
+    legend.addTo(map);
+
+    function styleCounty(feature) {
+      const values = getActiveCountyValues();
+      const fips = featureFips(feature);
+      const value = values[fips] || 0;
+      const dim = focusStateFips && fips.slice(0, 2) !== focusStateFips;
+      return {
+        fillColor: dim ? '#eee9df' : getColor(value, currentBreaks),
+        weight: 0.4,
+        opacity: dim ? 0.5 : 1,
+        color: dim ? '#e3ddce' : '#d3c9b2',
+        fillOpacity: isFemaMode() ? (dim ? 0.12 : 0.72) : 0.08
+      };
     }
 
-    info.update();
-  }
-
-
-  function zoomToFeature(e) {
-
-    const feature =
-      e.target.feature;
-
-    selectedCountyFips =
-      featureFips(feature);
-
-    renderSelectedCounty();
-
-    map.fitBounds(
-      e.target.getBounds(),
-      {
-        padding:
-          [12, 12]
-      }
-    );
-  }
-
-
-  function onEachCounty(
-    feature,
-    layer
-  ) {
-
-    const fips =
-      featureFips(feature);
-
-    const label =
-      countyLabels[fips] ||
-      (
-        COUNTY_SVI[fips]
-          ? COUNTY_SVI[fips].county +
-            ', ' +
-            COUNTY_SVI[fips].state
-          : (
-              COUNTY_NRI[fips]
-                ? COUNTY_NRI[fips].county +
-                  ', ' +
-                  COUNTY_NRI[fips].state
-                : 'County FIPS ' +
-                  fips
-            )
-      );
-
-
-    layer.bindTooltip(
-      label,
-      {
-        sticky:
-          true,
-
-        direction:
-          'top',
-
-        opacity:
-          0.95
-      }
-    );
-
-
-    layer.on({
-      mouseover:
-        highlightFeature,
-
-      mouseout:
-        resetHighlight,
-
-      click:
-        zoomToFeature
-    });
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Optional layer synchronization
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function syncOverlayLayers() {
-
-    if (sviLayer) {
-
-      if (
-        isSviMode() &&
-        !map.hasLayer(sviLayer)
-      ) {
-        sviLayer.addTo(map);
-      }
-
-      if (
-        !isSviMode() &&
-        map.hasLayer(sviLayer)
-      ) {
-        map.removeLayer(sviLayer);
-      }
+    function featureFips(feature) {
+      const raw = feature && (feature.id ?? (feature.properties && (feature.properties.GEOID ?? feature.properties.FIPS)));
+      const digits = String(raw == null ? '' : raw).replace(/\D/g, '');
+      return digits ? digits.padStart(5, '0').slice(-5) : '';
     }
 
-
-    if (nriLayer) {
-
-      if (
-        isNriMode() &&
-        !map.hasLayer(nriLayer)
-      ) {
-        nriLayer.addTo(map);
-      }
-
-      if (
-        !isNriMode() &&
-        map.hasLayer(nriLayer)
-      ) {
-        map.removeLayer(nriLayer);
-      }
-    }
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Refresh map
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function refreshMap() {
-
-    syncOverlayLayers();
-
-    const femaValues =
-      getActiveCountyValues();
-
-    const vals =
-      Object.values(femaValues)
-        .filter(function (v) {
-          return Number.isFinite(
-            Number(v)
-          );
-        });
-
-    const maxValue =
-      vals.length
-        ? Math.max.apply(
-            null,
-            vals
-          )
-        : 0;
-
-    currentBreaks =
-      getBreaks(maxValue);
-
-
-    if (statLabelEl) {
-
-      statLabelEl.textContent =
-        isFemaMode()
-          ? (
-              overlayActive()
-                ? 'Disasters overlaid'
-                : 'Declarations in view'
-            )
-          : 'County data';
+    function styleSviCounty(feature) {
+      const fips = featureFips(feature);
+      const row = COUNTY_SVI[fips];
+      const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
+      const v = row && Number.isFinite(Number(row[metric])) ? Number(row[metric]) : null;
+      const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
+      return {
+        fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : '#ffffff',
+        fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.55 : 0,
+        weight: isSviMode() && Number.isFinite(v) ? 0.7 : 0,
+        color: '#b35024',
+        opacity: isSviMode() && Number.isFinite(v) ? 0.75 : 0
+      };
     }
 
-
-    const sviCount =
-      isSviMode()
-        ? Object.keys(
-            getSviValues()
-          ).length
-        : 0;
-
-
-    const nriCount =
-      isNriMode()
-        ? Object.keys(
-            getNriValues()
-          ).length
-        : 0;
-
-
-    const bits = [];
-
-
-    if (isFemaMode()) {
-
-      bits.push(
-        Object.keys(
-          femaValues
-        ).length.toLocaleString() +
-        ' counties with FEMA data'
-      );
+    function styleNriCounty(feature) {
+      const fips = featureFips(feature);
+      const row = COUNTY_NRI[fips];
+      const hazard = nriHazardSelect && nriHazardSelect.value;
+      const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
+      const raw = hazard ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null) : (row ? row[metric] : null);
+      const v = Number.isFinite(Number(raw)) ? Number(raw) : null;
+      const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
+      const vals = Object.keys(COUNTY_NRI).map(k => {
+        const r=COUNTY_NRI[k];
+        const x=hazard ? (r && r.hazards && r.hazards[hazard] ? r.hazards[hazard].score : null) : (r ? r[metric] : null);
+        return Number(x);
+      }).filter(Number.isFinite);
+      const max = vals.length ? Math.max(...vals) : 1;
+      const br = [max*.2,max*.4,max*.6,max*.8];
+      return {
+        fillColor: Number.isFinite(v) ? getColor(v, br) : '#ffffff',
+        fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.50 : 0,
+        weight: isNriMode() && Number.isFinite(v) ? 0.7 : 0,
+        color: '#004c53',
+        opacity: isNriMode() && Number.isFinite(v) ? 0.8 : 0
+      };
     }
 
-
-    if (isSviMode()) {
-
-      bits.push(
-        sviCount.toLocaleString() +
-        ' counties with SVI'
-      );
+    function styleStateOutline() {
+      return {
+        color: '#8a7c5e',
+        weight: 1.1,
+        fill: false,
+        opacity: 0.65,
+        interactive: false
+      };
     }
 
-
-    if (isNriMode()) {
-
-      bits.push(
-        nriCount.toLocaleString() +
-        ' counties with NRI'
-      );
-    }
-
-
-    if (bits.length) {
-
-      if (isFemaMode()) {
-
-        filteredTotalEl.textContent =
-          (
-            overlayActive()
-              ? overlayEvents.length
-              : Object.keys(
-                  femaValues
-                ).length
-          ).toLocaleString();
-
-      } else if (isSviMode()) {
-
-        filteredTotalEl.textContent =
-          sviCount.toLocaleString();
-
-      } else {
-
-        filteredTotalEl.textContent =
-          nriCount.toLocaleString();
-      }
-
-    } else {
-
-      filteredTotalEl.textContent =
-        '0';
-    }
-
-
-    filteredSubtitleEl.textContent =
-      bits.join(' · ') ||
-      'Select a map layer to display data';
-
-
-    if (countyLayer) {
-      countyLayer.setStyle(
-        styleCounty
-      );
-    }
-
-    if (sviLayer) {
-      sviLayer.setStyle(
-        styleSviCounty
-      );
-    }
-
-    if (nriLayer) {
-      nriLayer.setStyle(
-        styleNriCounty
-      );
-    }
-
-
-    legend.update();
-    info.update();
-    renderSelectedCounty();
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * County boundary loading
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  async function loadCountyTopology() {
-
-    const urls = [
-      'https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json',
-      'https://unpkg.com/us-atlas@3/counties-10m.json'
-    ];
-
-    let lastError;
-
-
-    for (
-      const url of urls
-    ) {
-
-      try {
-
-        const response =
-          await fetch(
-            url,
-            {
-              cache:
-                'no-store'
-            }
-          );
-
-        if (!response.ok) {
-
-          throw new Error(
-            'HTTP ' +
-            response.status
-          );
-        }
-
-        return await response.json();
-
-      } catch (err) {
-
-        lastError =
-          err;
-
-        console.warn(
-          'County boundary source failed:',
-          url,
-          err
-        );
-      }
-    }
-
-
-    throw (
-      lastError ||
-      new Error(
-        'No county boundary source available'
-      )
-    );
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Initialize county layers
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  async function init() {
-
-    const topology =
-      await loadCountyTopology();
-
-
-    if (
-      !topology.objects ||
-      !topology.objects.counties ||
-      !topology.objects.states
-    ) {
-
-      throw new Error(
-        'County boundary file is missing counties/states objects'
-      );
-    }
-
-
-    const countyGeoJson =
-      topojson.feature(
-        topology,
-        topology.objects.counties
-      );
-
-
-    const statesMesh =
-      topojson.mesh(
-        topology,
-        topology.objects.states,
-        function (a, b) {
-          return a !== b;
-        }
-      );
-
-
-    /*
-     * FEMA declaration layer.
-     */
-
-    countyLayer =
-      L.geoJSON(
-        countyGeoJson,
-        {
-          pane:
-            'femaPane',
-
-          renderer:
-            L.svg(),
-
-          style:
-            styleCounty,
-
-          onEachFeature:
-            onEachCounty
-        }
-      )
-      .addTo(map);
-
-
-    /*
-     * CDC SVI layer.
-     */
-
-    sviLayer =
-      L.geoJSON(
-        countyGeoJson,
-        {
-          pane:
-            'sviPane',
-
-          renderer:
-            L.svg(),
-
-          style:
-            styleSviCounty,
-
-          interactive:
-            false
-        }
-      );
-
-
-    /*
-     * FEMA NRI layer.
-     */
-
-    nriLayer =
-      L.geoJSON(
-        countyGeoJson,
-        {
-          pane:
-            'nriPane',
-
-          renderer:
-            L.svg(),
-
-          style:
-            styleNriCounty,
-
-          interactive:
-            false
-        }
-      );
-
-
-    /*
-     * Add SVI/NRI only when their checkboxes are selected.
-     */
-
-    syncOverlayLayers();
-
-
-    /*
-     * State borders.
-     */
-
-    stateOutlineLayer =
-      L.geoJSON(
-        statesMesh,
-        {
-          pane:
-            'statePane',
-
-          renderer:
-            L.svg(),
-
-          style:
-            styleStateOutline
-        }
-      )
-      .addTo(map);
-
-
-    refreshMap();
-    focusStateFromUrl();
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * States
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const STMAP = {
-    AL: ['01', 'Alabama'],
-    AK: ['02', 'Alaska'],
-    AZ: ['04', 'Arizona'],
-    AR: ['05', 'Arkansas'],
-    CA: ['06', 'California'],
-    CO: ['08', 'Colorado'],
-    CT: ['09', 'Connecticut'],
-    DE: ['10', 'Delaware'],
-    DC: ['11', 'Washington D.C.'],
-    FL: ['12', 'Florida'],
-    GA: ['13', 'Georgia'],
-    HI: ['15', 'Hawaii'],
-    ID: ['16', 'Idaho'],
-    IL: ['17', 'Illinois'],
-    IN: ['18', 'Indiana'],
-    IA: ['19', 'Iowa'],
-    KS: ['20', 'Kansas'],
-    KY: ['21', 'Kentucky'],
-    LA: ['22', 'Louisiana'],
-    ME: ['23', 'Maine'],
-    MD: ['24', 'Maryland'],
-    MA: ['25', 'Massachusetts'],
-    MI: ['26', 'Michigan'],
-    MN: ['27', 'Minnesota'],
-    MS: ['28', 'Mississippi'],
-    MO: ['29', 'Missouri'],
-    MT: ['30', 'Montana'],
-    NE: ['31', 'Nebraska'],
-    NV: ['32', 'Nevada'],
-    NH: ['33', 'New Hampshire'],
-    NJ: ['34', 'New Jersey'],
-    NM: ['35', 'New Mexico'],
-    NY: ['36', 'New York'],
-    NC: ['37', 'North Carolina'],
-    ND: ['38', 'North Dakota'],
-    OH: ['39', 'Ohio'],
-    OK: ['40', 'Oklahoma'],
-    OR: ['41', 'Oregon'],
-    PA: ['42', 'Pennsylvania'],
-    RI: ['44', 'Rhode Island'],
-    SC: ['45', 'South Carolina'],
-    SD: ['46', 'South Dakota'],
-    TN: ['47', 'Tennessee'],
-    TX: ['48', 'Texas'],
-    UT: ['49', 'Utah'],
-    VT: ['50', 'Vermont'],
-    VA: ['51', 'Virginia'],
-    WA: ['53', 'Washington'],
-    WV: ['54', 'West Virginia'],
-    WI: ['55', 'Wisconsin'],
-    WY: ['56', 'Wyoming'],
-    PR: ['72', 'Puerto Rico'],
-    VI: ['78', 'U.S. Virgin Islands'],
-    GU: ['66', 'Guam'],
-    AS: ['60', 'American Samoa'],
-    MP: ['69', 'N. Mariana Islands']
-  };
-
-
-  /*
-   * Populate state selector alphabetically.
-   */
-
-  (function () {
-
-    if (!stateSelect) {
-      return;
-    }
-
-    Object.keys(STMAP)
-      .map(function (ab) {
-
-        return [
-          ab,
-          STMAP[ab][1]
-        ];
-      })
-      .sort(function (a, b) {
-
-        return a[1]
-          .localeCompare(
-            b[1]
-          );
-      })
-      .forEach(function (p) {
-
-        const option =
-          document.createElement(
-            'option'
-          );
-
-        option.value =
-          p[0];
-
-        option.textContent =
-          p[1];
-
-        stateSelect.appendChild(
-          option
-        );
+    function highlightFeature(e) {
+      const layer = e.target;
+      const values = getMapValues();
+      const fips = String(layer.feature.id || layer.feature.properties.GEOID || '').padStart(5, '0');
+      const value = values[fips] || 0;
+
+      layer.setStyle({
+        weight: 1.4,
+        color: '#1d1813',
+        fillOpacity: 0.95
       });
-  })();
 
-
-  function zoomToStateFips(fips) {
-
-    if (!countyLayer) {
-      return null;
+      info.update(layer.feature, value);
     }
 
-    const bounds =
-      L.latLngBounds([]);
+    function resetHighlight(e) {
+      countyLayer.resetStyle(e.target);
+      info.update();
+    }
 
+    function zoomToFeature(e) {
+      const feature = e.target.feature;
+      selectedCountyFips = featureFips(feature);
+      renderSelectedCounty();
+      map.fitBounds(e.target.getBounds(), { padding: [12, 12] });
+    }
 
-    countyLayer.eachLayer(
-      function (layer) {
+    function onEachCounty(feature, layer) {
+      const fips = featureFips(feature);
+      const label = countyLabels[fips] || `County FIPS ${fips}`;
 
-        const id =
-          featureFips(
-            layer.feature
-          );
+      layer.bindTooltip(label, {
+        sticky: true,
+        direction: 'top',
+        opacity: 0.95
+      });
 
-        if (
-          id.slice(0, 2) ===
-          fips
-        ) {
-          bounds.extend(
-            layer.getBounds()
-          );
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+      });
+    }
+
+    function syncOverlayLayers() {
+      if (sviLayer) {
+        if (isSviMode() && !map.hasLayer(sviLayer)) sviLayer.addTo(map);
+        if (!isSviMode() && map.hasLayer(sviLayer)) map.removeLayer(sviLayer);
+      }
+      if (nriLayer) {
+        if (isNriMode() && !map.hasLayer(nriLayer)) nriLayer.addTo(map);
+        if (!isNriMode() && map.hasLayer(nriLayer)) map.removeLayer(nriLayer);
+      }
+    }
+
+    function refreshMap() {
+      syncOverlayLayers();
+      const femaValues=getActiveCountyValues();
+      const vals=Object.values(femaValues).filter(v=>Number.isFinite(Number(v)));
+      const maxValue=vals.length?Math.max(...vals):0; currentBreaks=getBreaks(maxValue);
+      if (statLabelEl) statLabelEl.textContent = isFemaMode() ? (overlayActive()?'Disasters overlaid':'Declarations in view') : 'County data';
+      const sviCount=isSviMode()?Object.keys(getSviValues()).length:0, nriCount=isNriMode()?Object.keys(getNriValues()).length:0;
+      const bits=[]; if(isFemaMode()) bits.push(Object.keys(femaValues).length.toLocaleString()+' counties with FEMA data'); if(isSviMode()) bits.push(sviCount.toLocaleString()+' counties with SVI'); if(isNriMode()) bits.push(nriCount.toLocaleString()+' counties with NRI');
+      filteredTotalEl.textContent = bits.length ? (isFemaMode() ? (overlayActive()?overlayEvents.length:Object.keys(femaValues).length).toLocaleString() : (isSviMode()?sviCount:nriCount).toLocaleString()) : '0';
+      filteredSubtitleEl.textContent = bits.join(' · ') || 'Select a map layer to display data';
+      if(countyLayer) countyLayer.setStyle(styleCounty);
+      if(sviLayer) sviLayer.setStyle(styleSviCounty);
+      if(nriLayer) nriLayer.setStyle(styleNriCounty);
+      legend.update(); info.update(); renderSelectedCounty();
+    }
+
+    async function loadCountyTopology() {
+      const urls = [
+        'https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json',
+        'https://unpkg.com/us-atlas@3/counties-10m.json'
+      ];
+      let lastError;
+      for (const url of urls) {
+        try {
+          const response = await fetch(url, { cache: 'no-store' });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return await response.json();
+        } catch (err) {
+          lastError = err;
+          console.warn('County boundary source failed:', url, err);
         }
       }
-    );
-
-
-    return bounds.isValid()
-      ? bounds
-      : null;
-  }
-
-
-  if (stateSelect) {
-
-    stateSelect.addEventListener(
-      'change',
-      function () {
-
-        const ab =
-          stateSelect.value;
-
-
-        focusStateFips =
-          (
-            ab &&
-            STMAP[ab]
-          )
-            ? STMAP[ab][0]
-            : '';
-
-
-        refreshMap();
-
-
-        if (focusStateFips) {
-
-          const b =
-            zoomToStateFips(
-              focusStateFips
-            );
-
-          showStateBanner(
-            STMAP[ab][1],
-            !!b
-          );
-
-          if (b) {
-
-            map.fitBounds(
-              b,
-              {
-                padding:
-                  [24, 24],
-
-                maxZoom:
-                  7
-              }
-            );
-          }
-
-        } else {
-
-          const banner =
-            document.getElementById(
-              'stateFocusBanner'
-            );
-
-          if (banner) {
-            banner.remove();
-          }
-
-          map.setView(
-            [37.8, -96],
-            4
-          );
-        }
-      }
-    );
-  }
-
-
-  function focusStateFromUrl() {
-
-    const ab =
-      (
-        new URLSearchParams(
-          location.search
-        )
-        .get('state') ||
-        ''
-      )
-      .toUpperCase();
-
-
-    if (
-      !ab ||
-      !STMAP[ab] ||
-      !countyLayer
-    ) {
-      return;
+      throw lastError || new Error('No county boundary source available');
     }
 
-
-    const fips =
-      STMAP[ab][0];
-
-    const name =
-      STMAP[ab][1];
-
-
-    focusStateFips =
-      fips;
-
-
-    if (stateSelect) {
-
-      stateSelect.value =
-        ab;
-    }
-
-
-    refreshMap();
-
-
-    const b =
-      zoomToStateFips(
-        fips
-      );
-
-
-    const found =
-      !!b;
-
-
-    showStateBanner(
-      name,
-      found
-    );
-
-
-    if (found) {
-
-      map.fitBounds(
-        b,
-        {
-          padding:
-            [24, 24],
-
-          maxZoom:
-            7
-        }
-      );
-    }
-  }
-
-
-  function showStateBanner(
-    name,
-    found
-  ) {
-
-    const host =
-      document.getElementById('map') ||
-      document.body;
-
-
-    if (
-      host.id === 'map' &&
-      getComputedStyle(host).position ===
-        'static'
-    ) {
-      host.style.position =
-        'relative';
-    }
-
-
-    let banner =
-      document.getElementById(
-        'stateFocusBanner'
-      );
-
-
-    if (!banner) {
-
-      banner =
-        document.createElement(
-          'div'
-        );
-
-      banner.id =
-        'stateFocusBanner';
-
-      banner.style.cssText =
-        'position:absolute;' +
-        'top:14px;' +
-        'left:50%;' +
-        'transform:translateX(-50%);' +
-        'z-index:1000;' +
-        'background:rgba(252,250,243,.96);' +
-        'color:#1d1813;' +
-        'font:500 13px/1.4 "Public Sans",system-ui,sans-serif;' +
-        'padding:9px 15px;' +
-        'border-radius:10px;' +
-        'box-shadow:0 8px 24px rgba(60,50,30,.18);' +
-        'border:1px solid #cfc6b0;' +
-        'display:flex;' +
-        'align-items:center;' +
-        'gap:13px;' +
-        '-webkit-backdrop-filter:blur(6px);' +
-        'backdrop-filter:blur(6px);';
-
-      host.appendChild(
-        banner
-      );
-    }
-
-
-    const button =
-      '<button ' +
-      'id="stateFocusReset" ' +
-      'style="' +
-      'background:#004c53;' +
-      'border:none;' +
-      'color:#fff;' +
-      'font:600 11px system-ui,sans-serif;' +
-      'letter-spacing:.4px;' +
-      'padding:5px 11px;' +
-      'border-radius:7px;' +
-      'cursor:pointer' +
-      '">' +
-
-      (
-        found
-          ? 'View entire U.S.'
-          : 'Dismiss'
-      ) +
-
-      '</button>';
-
-
-    banner.innerHTML =
-      (
-        found
-          ? (
-              '<span>' +
-              'Focused on ' +
-              '<strong style="color:#004c53;font-weight:700">' +
-              name +
-              '</strong>' +
-              '</span>'
-            )
-          : (
-              '<span>' +
-              '<strong style="color:#004c53;font-weight:700">' +
-              name +
-              '</strong> ' +
-              'has no county detail on this map' +
-              '</span>'
-            )
-      ) +
-      button;
-
-
-    document
-      .getElementById(
-        'stateFocusReset'
-      )
-      .onclick =
-        function () {
-
-          banner.remove();
-
-          focusStateFips =
-            '';
-
-          if (stateSelect) {
-            stateSelect.value =
-              '';
-          }
-
-          refreshMap();
-
-          map.setView(
-            [37.8, -96],
-            4
-          );
-        };
-  }
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Disaster overlay picker
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  const overlaySearch =
-    document.getElementById(
-      'overlaySearch'
-    );
-
-  const overlayResults =
-    document.getElementById(
-      'overlayResults'
-    );
-
-  const overlayChips =
-    document.getElementById(
-      'overlayChips'
-    );
-
-  const overlayClear =
-    document.getElementById(
-      'overlayClear'
-    );
-
-  const overlayHint =
-    document.getElementById(
-      'overlayHint'
-    );
-
-  const overlayProfile =
-    document.getElementById(
-      'overlayProfile'
-    );
-
-
-  function escapeHtml(s) {
-
-    return String(s)
-      .replace(
-        /&/g,
-        '&amp;'
-      )
-      .replace(
-        /</g,
-        '&lt;'
-      )
-      .replace(
-        />/g,
-        '&gt;'
-      );
-  }
-
-
-  function eventById(id) {
-
-    for (
-      let i = 0;
-      i < MAP_EVENTS.length;
-      i++
-    ) {
-
-      if (
-        MAP_EVENTS[i].id ===
-        id
-      ) {
-        return MAP_EVENTS[i];
-      }
-    }
-
-    return null;
-  }
-
-
-  function overlaySelectedIds() {
-
-    const selected = {};
-
-    overlayEvents.forEach(
-      function (e) {
-        selected[e.id] = 1;
-      }
-    );
-
-    return selected;
-  }
-
-
-  function setBaseFiltersDisabled(disabled) {
-
-    [
-      metricSelect,
-      yearSelect,
-      typeSelect
-    ].forEach(
-      function (el) {
-
-        if (el) {
-          el.disabled =
-            disabled;
-        }
-      }
-    );
-  }
-
-
-  function renderOverlayResults(q) {
-
-    if (!overlayResults) {
-      return;
-    }
-
-
-    q =
-      (q || '')
-        .trim()
-        .toLowerCase();
-
-
-    if (!q) {
-
-      overlayResults.hidden =
-        true;
-
-      overlayResults.innerHTML =
-        '';
-
-      return;
-    }
-
-
-    const chosen =
-      overlaySelectedIds();
-
-    const out = [];
-
-    let n = 0;
-
-
-    for (
-      let i = 0;
-      i < MAP_EVENTS.length &&
-      n < 40;
-      i++
-    ) {
-
-      const ev =
-        MAP_EVENTS[i];
-
-
-      if (
-        chosen[ev.id]
-      ) {
-        continue;
+    async function init() {
+      const topology = await loadCountyTopology();
+
+      if (!topology.objects || !topology.objects.counties || !topology.objects.states) {
+        throw new Error('County boundary file is missing counties/states objects');
       }
 
+      const countyGeoJson = topojson.feature(topology, topology.objects.counties);
+      const statesMesh = topojson.mesh(topology, topology.objects.states, (a, b) => a !== b);
 
-      const searchable =
-        (
-          ev.n +
-          ' ' +
-          ev.y +
-          ' ' +
-          ev.t +
-          ' ' +
-          ev.it
-        )
-        .toLowerCase();
+      countyLayer = L.geoJSON(countyGeoJson, {
+        pane: 'femaPane',
+        renderer: L.svg(),
+        style: styleCounty,
+        onEachFeature: onEachCounty
+      }).addTo(map);
 
+      // SVI and NRI use separate SVG panes so their fills cannot be hidden by
+      // the FEMA layer or by Leaflet's shared canvas renderer.
+      sviLayer = L.geoJSON(countyGeoJson, {
+        pane: 'sviPane',
+        renderer: L.svg(),
+        style: styleSviCounty,
+        interactive: false
+      });
+      nriLayer = L.geoJSON(countyGeoJson, {
+        pane: 'nriPane',
+        renderer: L.svg(),
+        style: styleNriCounty,
+        interactive: false
+      });
+      syncOverlayLayers();
 
-      if (
-        searchable.indexOf(q) ===
-        -1
-      ) {
-        continue;
-      }
+      stateOutlineLayer = L.geoJSON(statesMesh, {
+        pane: 'statePane',
+        renderer: L.svg(),
+        style: styleStateOutline
+      }).addTo(map);
 
-
-      out.push(
-        '<button ' +
-        'type="button" ' +
-        'data-id="' +
-        String(ev.id)
-          .replace(
-            /"/g,
-            '&quot;'
-          ) +
-        '">' +
-
-        '<span class="ovr-name">' +
-        escapeHtml(ev.n) +
-        '</span>' +
-
-        '<span class="ovr-meta">' +
-        escapeHtml(ev.t) +
-        ' · ' +
-        ev.y +
-        ' · ' +
-        ev.f.length +
-        ' counties' +
-        '</span>' +
-
-        '</button>'
-      );
-
-
-      n++;
+      refreshMap();
+      focusStateFromUrl();
     }
 
+    const STMAP={AL:['01','Alabama'],AK:['02','Alaska'],AZ:['04','Arizona'],AR:['05','Arkansas'],CA:['06','California'],CO:['08','Colorado'],CT:['09','Connecticut'],DE:['10','Delaware'],DC:['11','Washington D.C.'],FL:['12','Florida'],GA:['13','Georgia'],HI:['15','Hawaii'],ID:['16','Idaho'],IL:['17','Illinois'],IN:['18','Indiana'],IA:['19','Iowa'],KS:['20','Kansas'],KY:['21','Kentucky'],LA:['22','Louisiana'],ME:['23','Maine'],MD:['24','Maryland'],MA:['25','Massachusetts'],MI:['26','Michigan'],MN:['27','Minnesota'],MS:['28','Mississippi'],MO:['29','Missouri'],MT:['30','Montana'],NE:['31','Nebraska'],NV:['32','Nevada'],NH:['33','New Hampshire'],NJ:['34','New Jersey'],NM:['35','New Mexico'],NY:['36','New York'],NC:['37','North Carolina'],ND:['38','North Dakota'],OH:['39','Ohio'],OK:['40','Oklahoma'],OR:['41','Oregon'],PA:['42','Pennsylvania'],RI:['44','Rhode Island'],SC:['45','South Carolina'],SD:['46','South Dakota'],TN:['47','Tennessee'],TX:['48','Texas'],UT:['49','Utah'],VT:['50','Vermont'],VA:['51','Virginia'],WA:['53','Washington'],WV:['54','West Virginia'],WI:['55','Wisconsin'],WY:['56','Wyoming'],PR:['72','Puerto Rico'],VI:['78','U.S. Virgin Islands'],GU:['66','Guam'],AS:['60','American Samoa'],MP:['69','N. Mariana Islands']};
 
-    overlayResults.innerHTML =
-      out.length
-        ? out.join('')
-        : (
-            '<div class="ovr-empty">' +
-            'No matching disasters' +
-            '</div>'
-          );
+    /* populate the State filter from STMAP (alphabetical by name) */
+    (function () {
+      if (!stateSelect) return;
+      Object.keys(STMAP).map(function (ab) { return [ab, STMAP[ab][1]]; })
+        .sort(function (a, b) { return a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0); })
+        .forEach(function (p) {
+          var o = document.createElement('option');
+          o.value = p[0]; o.textContent = p[1];
+          stateSelect.appendChild(o);
+        });
+    })();
 
-
-    overlayResults.hidden =
-      false;
-  }
-
-
-  function renderOverlayChips() {
-
-    if (!overlayChips) {
-      return;
+    function zoomToStateFips(fips) {
+      if (!countyLayer) return;
+      const bounds = L.latLngBounds([]);
+      countyLayer.eachLayer(function (l) {
+        const id = String(l.feature.id || (l.feature.properties && l.feature.properties.GEOID) || '').padStart(5, '0');
+        if (id.slice(0, 2) === fips) bounds.extend(l.getBounds());
+      });
+      return bounds.isValid() ? bounds : null;
     }
 
-
-    overlayChips.innerHTML =
-      overlayEvents
-        .map(function (ev) {
-
-          return (
-            '<span class="overlay-chip">' +
-
-            escapeHtml(ev.n) +
-            ' (' +
-            ev.y +
-            ')' +
-
-            '<button ' +
-            'type="button" ' +
-            'data-id="' +
-            String(ev.id)
-              .replace(
-                /"/g,
-                '&quot;'
-              ) +
-            '" ' +
-            'aria-label="Remove">' +
-            '×' +
-            '</button>' +
-
-            '</span>'
-          );
-        })
-        .join('');
-
-
-    if (overlayClear) {
-
-      overlayClear.hidden =
-        overlayEvents.length ===
-        0;
-    }
-
-
-    if (overlayProfile) {
-
-      if (
-        overlayEvents.length ===
-        1
-      ) {
-
-        overlayProfile.href =
-          'disaster.html?event=' +
-          encodeURIComponent(
-            overlayEvents[0].id
-          );
-
-        overlayProfile.style.display =
-          'block';
-
+    /* State filter: dim other states (via styleCounty) and zoom to the chosen one */
+    if (stateSelect) stateSelect.addEventListener('change', function () {
+      const ab = stateSelect.value;
+      focusStateFips = (ab && STMAP[ab]) ? STMAP[ab][0] : '';
+      if (countyLayer) countyLayer.setStyle(styleCounty);
+      if (focusStateFips) {
+        const b = zoomToStateFips(focusStateFips);
+        showStateBanner(STMAP[ab][1], !!b);
+        if (b) map.fitBounds(b, { padding: [24, 24], maxZoom: 7 });
       } else {
-
-        overlayProfile.style.display =
-          'none';
+        const banner = document.getElementById('stateFocusBanner');
+        if (banner) banner.remove();
+        map.setView([37.8, -96], 4);
       }
+    });
+
+    function focusStateFromUrl() {
+      const ab = (new URLSearchParams(location.search).get('state') || '').toUpperCase();
+      if (!ab || !STMAP[ab] || !countyLayer) return;
+      const fips = STMAP[ab][0], name = STMAP[ab][1];
+      focusStateFips = fips;
+      if (stateSelect) stateSelect.value = ab;
+      countyLayer.setStyle(styleCounty);   /* apply dimming */
+      const b = zoomToStateFips(fips);
+      const found = !!b;
+      showStateBanner(name, found);
+      if (found) map.fitBounds(b, { padding: [24, 24], maxZoom: 7 });
     }
 
-
-    if (overlayHint) {
-
-      overlayHint.textContent =
-        overlayEvents.length
-          ? (
-              overlayEvents.length +
-              ' disaster' +
-              (
-                overlayEvents.length > 1
-                  ? 's'
-                  : ''
-              ) +
-              ' overlaid. Darker counties were hit by more of them.'
-            )
-          : (
-              'Pick two or more disasters to shade each county by how many of them hit it.'
-            );
-    }
-  }
-
-
-  function overlayChanged() {
-
-    computeOverlayCounts();
-
-    setBaseFiltersDisabled(
-      overlayActive()
-    );
-
-
-    if (!overlayActive()) {
-
-      if (statLabelEl) {
-        statLabelEl.textContent =
-          statLabelDefault;
+    function showStateBanner(name, found) {
+      const host = document.getElementById('map') || document.body;
+      if (host.id === 'map' && getComputedStyle(host).position === 'static') host.style.position = 'relative';
+      let b = document.getElementById('stateFocusBanner');
+      if (!b) {
+        b = document.createElement('div');
+        b.id = 'stateFocusBanner';
+        b.style.cssText = 'position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(252,250,243,.96);color:#1d1813;font:500 13px/1.4 "Public Sans",system-ui,sans-serif;padding:9px 15px;border-radius:10px;box-shadow:0 8px 24px rgba(60,50,30,.18);border:1px solid #cfc6b0;display:flex;align-items:center;gap:13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);';
+        host.appendChild(b);
       }
-
-      if (filteredSubtitleEl) {
-        filteredSubtitleEl.textContent =
-          filteredSubtitleDefault;
-      }
+      const btn = '<button id="stateFocusReset" style="background:#004c53;border:none;color:#fff;font:600 11px system-ui,sans-serif;letter-spacing:.4px;padding:5px 11px;border-radius:7px;cursor:pointer">' + (found ? 'View entire U.S.' : 'Dismiss') + '</button>';
+      b.innerHTML = (found
+        ? '<span>Focused on <strong style="color:#004c53;font-weight:700">' + name + '</strong></span>'
+        : '<span><strong style="color:#004c53;font-weight:700">' + name + '</strong> has no county detail on this map</span>') + btn;
+      document.getElementById('stateFocusReset').onclick = function () {
+        b.remove();
+        focusStateFips = '';
+        if (stateSelect) stateSelect.value = '';
+        if (countyLayer) countyLayer.setStyle(styleCounty);
+        map.setView([37.8, -96], 4);
+      };
     }
 
+    /* ---- overlay picker wiring ---- */
+    const overlaySearch = document.getElementById('overlaySearch');
+    const overlayResults = document.getElementById('overlayResults');
+    const overlayChips = document.getElementById('overlayChips');
+    const overlayClear = document.getElementById('overlayClear');
+    const overlayHint = document.getElementById('overlayHint');
+    const overlayProfile = document.getElementById('overlayProfile');
 
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function eventById(id){ for (var i=0;i<MAP_EVENTS.length;i++){ if(MAP_EVENTS[i].id===id) return MAP_EVENTS[i]; } return null; }
+    function overlaySelectedIds(){ var s={}; overlayEvents.forEach(function(e){ s[e.id]=1; }); return s; }
+    function setBaseFiltersDisabled(dis){ [metricSelect, yearSelect, typeSelect].forEach(function(el){ if(el) el.disabled = dis; }); }
+
+    function renderOverlayResults(q){
+      if(!overlayResults) return;
+      q = (q||'').trim().toLowerCase();
+      if(!q){ overlayResults.hidden = true; overlayResults.innerHTML=''; return; }
+      var chosen = overlaySelectedIds(), out = [], n = 0;
+      for(var i=0;i<MAP_EVENTS.length && n<40;i++){
+        var ev = MAP_EVENTS[i];
+        if(chosen[ev.id]) continue;
+        if((ev.n+' '+ev.y+' '+ev.t+' '+ev.it).toLowerCase().indexOf(q)===-1) continue;
+        out.push('<button type="button" data-id="'+String(ev.id).replace(/"/g,'&quot;')+'">'
+          + '<span class="ovr-name">'+escapeHtml(ev.n)+'</span>'
+          + '<span class="ovr-meta">'+escapeHtml(ev.t)+' \u00b7 '+ev.y+' \u00b7 '+ev.f.length+' counties</span></button>');
+        n++;
+      }
+      overlayResults.innerHTML = out.length ? out.join('') : '<div class="ovr-empty">No matching disasters</div>';
+      overlayResults.hidden = false;
+    }
+
+    function renderOverlayChips(){
+      if(!overlayChips) return;
+      overlayChips.innerHTML = overlayEvents.map(function(ev){
+        return '<span class="overlay-chip">'+escapeHtml(ev.n)+' ('+ev.y+')'
+          + '<button type="button" data-id="'+String(ev.id).replace(/"/g,'&quot;')+'" aria-label="Remove">\u00d7</button></span>';
+      }).join('');
+      if(overlayClear) overlayClear.hidden = overlayEvents.length===0;
+      if(overlayProfile){
+        if(overlayEvents.length===1){
+          overlayProfile.href = 'disaster.html?event=' + encodeURIComponent(overlayEvents[0].id);
+          overlayProfile.style.display = 'block';
+        } else { overlayProfile.style.display = 'none'; }
+      }
+      if(overlayHint) overlayHint.textContent = overlayEvents.length
+        ? overlayEvents.length + ' disaster' + (overlayEvents.length>1?'s':'') + ' overlaid. Darker counties were hit by more of them.'
+        : 'Pick two or more disasters to shade each county by how many of them hit it.';
+    }
+
+    function overlayChanged(){
+      computeOverlayCounts();
+      setBaseFiltersDisabled(overlayActive());
+      if(!overlayActive()){
+        if(statLabelEl) statLabelEl.textContent = statLabelDefault;
+        if(filteredSubtitleEl) filteredSubtitleEl.textContent = filteredSubtitleDefault;
+      }
+      renderOverlayChips();
+      refreshMap();
+    }
+
+    function addOverlayEvent(id){
+      if(overlaySelectedIds()[id]) return;
+      var ev = eventById(id); if(!ev) return;
+      overlayEvents.push(ev);
+      if(overlaySearch) overlaySearch.value='';
+      if(overlayResults){ overlayResults.hidden=true; overlayResults.innerHTML=''; }
+      overlayChanged();
+    }
+    function removeOverlayEvent(id){ overlayEvents = overlayEvents.filter(function(e){ return e.id!==id; }); overlayChanged(); }
+    function clearOverlay(){
+      overlayEvents = [];
+      if(overlaySearch) overlaySearch.value='';
+      if(overlayResults){ overlayResults.hidden=true; overlayResults.innerHTML=''; }
+      overlayChanged();
+    }
+
+    if(overlaySearch){
+      overlaySearch.addEventListener('input', function(){ renderOverlayResults(overlaySearch.value); });
+      overlaySearch.addEventListener('focus', function(){ if(overlaySearch.value) renderOverlayResults(overlaySearch.value); });
+    }
+    if(overlayResults){ overlayResults.addEventListener('click', function(e){ var b=e.target.closest('button[data-id]'); if(b) addOverlayEvent(b.getAttribute('data-id')); }); }
+    if(overlayChips){ overlayChips.addEventListener('click', function(e){ var b=e.target.closest('button[data-id]'); if(b) removeOverlayEvent(b.getAttribute('data-id')); }); }
+    if(overlayClear){ overlayClear.addEventListener('click', clearOverlay); }
+    document.addEventListener('click', function(e){
+      if(overlayResults && !overlayResults.hidden && e.target && e.target.closest && !e.target.closest('.overlay-section')) overlayResults.hidden = true;
+    });
+    if(MAP_EVENTS.length===0){
+      if(overlayHint) overlayHint.textContent = 'Overlay data is not loaded yet (map-events.js).';
+      if(overlaySearch) overlaySearch.disabled = true;
+    }
     renderOverlayChips();
-    refreshMap();
-  }
 
-
-  function addOverlayEvent(id) {
-
-    if (
-      overlaySelectedIds()[id]
-    ) {
-      return;
+    function setOverlayUi() {
+      if (sviMetricGroup) sviMetricGroup.hidden=!isSviMode();
+      if (nriMetricGroup) nriMetricGroup.hidden=!isNriMode();
+      if (nriHazardGroup) nriHazardGroup.hidden=!isNriMode();
+      if (femaLayerCheck) femaLayerCheck.checked=!!femaLayerCheck.checked;
     }
+    [femaLayerCheck,sviOverlayCheck,nriOverlayCheck,sviMetricSelect,nriMetricSelect,nriHazardSelect].forEach(function(el){ if(el) el.addEventListener('change',function(){ setOverlayUi(); refreshMap(); }); });
+    setOverlayUi();
 
-
-    const ev =
-      eventById(id);
-
-
-    if (!ev) {
-      return;
-    }
-
-
-    overlayEvents.push(ev);
-
-
-    if (overlaySearch) {
-      overlaySearch.value =
-        '';
-    }
-
-
-    if (overlayResults) {
-
-      overlayResults.hidden =
-        true;
-
-      overlayResults.innerHTML =
-        '';
-    }
-
-
-    overlayChanged();
-  }
-
-
-  function removeOverlayEvent(id) {
-
-    overlayEvents =
-      overlayEvents.filter(
-        function (e) {
-          return e.id !== id;
-        }
-      );
-
-    overlayChanged();
-  }
-
-
-  function clearOverlay() {
-
-    overlayEvents = [];
-
-
-    if (overlaySearch) {
-      overlaySearch.value =
-        '';
-    }
-
-
-    if (overlayResults) {
-
-      overlayResults.hidden =
-        true;
-
-      overlayResults.innerHTML =
-        '';
-    }
-
-
-    overlayChanged();
-  }
-
-
-  if (overlaySearch) {
-
-    overlaySearch.addEventListener(
-      'input',
-      function () {
-
-        renderOverlayResults(
-          overlaySearch.value
-        );
-      }
-    );
-
-
-    overlaySearch.addEventListener(
-      'focus',
-      function () {
-
-        if (
-          overlaySearch.value
-        ) {
-          renderOverlayResults(
-            overlaySearch.value
-          );
-        }
-      }
-    );
-  }
-
-
-  if (overlayResults) {
-
-    overlayResults.addEventListener(
-      'click',
-      function (e) {
-
-        const button =
-          e.target.closest(
-            'button[data-id]'
-          );
-
-        if (button) {
-
-          addOverlayEvent(
-            button.getAttribute(
-              'data-id'
-            )
-          );
-        }
-      }
-    );
-  }
-
-
-  if (overlayChips) {
-
-    overlayChips.addEventListener(
-      'click',
-      function (e) {
-
-        const button =
-          e.target.closest(
-            'button[data-id]'
-          );
-
-        if (button) {
-
-          removeOverlayEvent(
-            button.getAttribute(
-              'data-id'
-            )
-          );
-        }
-      }
-    );
-  }
-
-
-  if (overlayClear) {
-
-    overlayClear.addEventListener(
-      'click',
-      clearOverlay
-    );
-  }
-
-
-  document.addEventListener(
-    'click',
-    function (e) {
-
-      if (
-        overlayResults &&
-        !overlayResults.hidden &&
-        e.target &&
-        e.target.closest &&
-        !e.target.closest(
-          '.overlay-section'
-        )
-      ) {
-        overlayResults.hidden =
-          true;
-      }
-    }
-  );
-
-
-  if (
-    MAP_EVENTS.length ===
-    0
-  ) {
-
-    if (overlayHint) {
-
-      overlayHint.textContent =
-        'Overlay data is not loaded yet (map-events.js).';
-    }
-
-    if (overlaySearch) {
-
-      overlaySearch.disabled =
-        true;
-    }
-  }
-
-
-  renderOverlayChips();
-
-
-  /*
-   * ─────────────────────────────────────────────────────────────
-   * Layer control wiring
-   * ─────────────────────────────────────────────────────────────
-   */
-
-  function setOverlayUi() {
-
-    if (sviMetricGroup) {
-
-      sviMetricGroup.hidden =
-        !isSviMode();
-    }
-
-
-    if (nriMetricGroup) {
-
-      nriMetricGroup.hidden =
-        !isNriMode();
-    }
-
-
-    if (nriHazardGroup) {
-
-      nriHazardGroup.hidden =
-        !isNriMode();
-    }
-  }
-
-
-  [
-    femaLayerCheck,
-    sviOverlayCheck,
-    nriOverlayCheck,
-    sviMetricSelect,
-    nriMetricSelect,
-    nriHazardSelect
-  ].forEach(
-    function (el) {
-
-      if (!el) {
-        return;
-      }
-
-      el.addEventListener(
-        'change',
-        function () {
-
-          setOverlayUi();
-          refreshMap();
-        }
-      );
-    }
-  );
-
-
-  /*
-   * FEMA filters.
-   */
-
-  [
-    metricSelect,
-    yearSelect,
-    typeSelect
-  ].forEach(
-    function (el) {
-
-      if (!el) {
-        return;
-      }
-
-      el.addEventListener(
-        'change',
-        function () {
-
-          refreshMap();
-        }
-      );
-    }
-  );
-
-
-  setOverlayUi();
-
-
-  /*
-   * Start map.
-   */
-
-  init().catch(
-    function (err) {
-
+    init().catch(err => {
       console.error(err);
+      alert('Could not load county boundaries. Check your internet connection and reload the page.');
+    });
+  </script>
 
-      alert(
-        'Could not load county boundaries. Check your internet connection and reload the page.'
-      );
-    }
-  );
-</script>
-
-<script>
-  function toggleMobileNav() {}
-</script>
-
-<!-- Cloudflare Web Analytics -->
-<!-- End Cloudflare Web Analytics -->
+  <script>
+    function toggleMobileNav(){}
+  </script>
+<!-- Cloudflare Web Analytics --><!-- End Cloudflare Web Analytics -->
 
 </body>
 </html>
