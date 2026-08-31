@@ -1199,16 +1199,46 @@ function styleSviCounty(feature) {
       });
     }
 
-    function syncOverlayLayers() {
-      if (sviLayer) {
-        if (isSviMode() && !map.hasLayer(sviLayer)) sviLayer.addTo(map);
-        if (!isSviMode() && map.hasLayer(sviLayer)) map.removeLayer(sviLayer);
-      }
-      if (nriLayer) {
-        if (isNriMode() && !map.hasLayer(nriLayer)) nriLayer.addTo(map);
-        if (!isNriMode() && map.hasLayer(nriLayer)) map.removeLayer(nriLayer);
-      }
+   function syncOverlayLayers() {
+
+  // Comparison mode means NRI is selected together
+  // with FEMA and/or SVI.
+  const nriComparisonMode =
+    isNriMode() && (isFemaMode() || isSviMode());
+
+  // SVI behaves normally for now.
+  if (sviLayer) {
+    if (isSviMode() && !map.hasLayer(sviLayer)) {
+      sviLayer.addTo(map);
     }
+
+    if (!isSviMode() && map.hasLayer(sviLayer)) {
+      map.removeLayer(sviLayer);
+    }
+  }
+
+  // Normal NRI choropleth when NRI is the only layer.
+  if (nriLayer) {
+    if (isNriMode() && !nriComparisonMode && !map.hasLayer(nriLayer)) {
+      nriLayer.addTo(map);
+    }
+
+    if ((!isNriMode() || nriComparisonMode) && map.hasLayer(nriLayer)) {
+      map.removeLayer(nriLayer);
+    }
+  }
+
+  // NRI dots when NRI is being compared with another layer.
+  if (nriDotLayer) {
+    if (nriComparisonMode && !map.hasLayer(nriDotLayer)) {
+      nriDotLayer.addTo(map);
+    }
+
+    if (!nriComparisonMode && map.hasLayer(nriDotLayer)) {
+      map.removeLayer(nriDotLayer);
+    }
+  }
+}
 
     function refreshMap() {
       syncOverlayLayers();
