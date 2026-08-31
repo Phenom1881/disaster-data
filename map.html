@@ -961,11 +961,102 @@
     };
 
     legend.update = function () {
-      const div=this._div; let html='';
-const labels=['1 declaration','Low','Moderate','Elevated','High','Very high','Severe','Extreme'];      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [['#f2d9a0','0–25th'],['#ecc278','25th–50th'],['#e3a652','50th–75th'],['#b35024','75th–100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+x[0]+'"></i> '+x[1]+' percentile</div>'); }
-      if(isNriMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=getColor((i+1)*.2,[.2,.4,.6,.8]); html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); }
-      if(!html) html='<div style="font-size:11px;">Select one or more layers.</div>'; div.innerHTML=html;
-    };
+  const div = this._div;
+  let html = '';
+
+  const labels = [
+    '1 declaration',
+    'Low',
+    'Moderate',
+    'Elevated',
+    'High',
+    'Very high',
+    'Severe',
+    'Extreme'
+  ];
+
+  // FEMA legend
+  if (isFemaMode()) {
+    html += '<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">FEMA disaster activity</div>';
+
+    const maxK = Math.min(
+      8,
+      Math.max(
+        1,
+        overlayActive()
+          ? overlayMaxCount
+          : Math.max(1, currentBreaks[currentBreaks.length - 1] || 1)
+      )
+    );
+
+    if (overlayActive()) {
+      for (let k = 1; k <= Math.min(8, overlayMaxCount); k++) {
+        html += '<div style="margin-bottom:3px;"><i style="background:' +
+          getColor(k, currentBreaks) +
+          '"></i> ' +
+          (k === 8 && overlayMaxCount > 8 ? '8+' : k) +
+          '</div>';
+      }
+    } else {
+      currentBreaks.slice(0, 8).forEach((b, i) => {
+        html += '<div style="margin-bottom:3px;"><i style="background:' +
+          getColor(b, currentBreaks) +
+          '"></i> ' +
+          labels[i] +
+          '</div>';
+      });
+    }
+  }
+
+  // SVI legend
+  if (isSviMode()) {
+    html += '<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · ' +
+      currentSviMetricLabel() +
+      '</div>';
+
+    [
+      ['#f2d9a0', '0–25th'],
+      ['#ecc278', '25th–50th'],
+      ['#e3a652', '50th–75th'],
+      ['#b35024', '75th–100th']
+    ].forEach(x => {
+      html += '<div style="margin-bottom:3px;"><i style="background:' +
+        x[0] +
+        '"></i> ' +
+        x[1] +
+        ' percentile</div>';
+    });
+  }
+
+  // NRI legend
+  if (isNriMode()) {
+    html += '<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · ' +
+      currentNriMetricLabel() +
+      '</div>';
+
+    [
+      'Very Low',
+      'Relatively Low',
+      'Relatively Moderate',
+      'Relatively High',
+      'Very High'
+    ].forEach((lab, i) => {
+      const c = getColor((i + 1) * .2, [.2, .4, .6, .8]);
+
+      html += '<div style="margin-bottom:3px;"><i style="background:' +
+        c +
+        '"></i> ' +
+        lab +
+        '</div>';
+    });
+  }
+
+  if (!html) {
+    html = '<div style="font-size:11px;">Select one or more layers.</div>';
+  }
+
+  div.innerHTML = html;
+};
 
     legend.addTo(map);
 
