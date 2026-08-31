@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disaster Data | Map</title>
 
-  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788182254415&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000757c81f58589523afba53f04%26fn%3Dmap%25284%2529.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3Def39aa9e935692d01374c735c25f1c5a03cd45df7c9f1494cc0f952978677b46%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788182254415&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_000000002ce881f5bd138bc45c01f5aa%26fn%3Dmap%25285%2529.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3D4e5b54492fd4cc29beeaffebead3cd3409840fdb15e534db35e823311bedc59a%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />
 
@@ -162,6 +162,10 @@
     }
 
     .control-group:last-child { margin-bottom: 0; }
+
+    .layer-checks { display:flex; flex-direction:column; gap:7px; padding-top:2px; }
+    .layer-check { display:flex; align-items:center; gap:8px; margin:0; font-size:13px; font-weight:500; letter-spacing:0; text-transform:none; color:var(--text); cursor:pointer; }
+    .layer-check input { width:15px; height:15px; margin:0; accent-color:var(--blue2); cursor:pointer; }
 
     label {
       display: block;
@@ -500,11 +504,22 @@
       <!-- Filters -->
       <div class="controls-section">
         <div class="control-group">
-          <label for="dataLayerSelect">Map data</label>
-          <select id="dataLayerSelect">
-            <option value="disasters" selected>FEMA Disaster Declarations</option>
-            <option value="svi">CDC Social Vulnerability Index</option>
-            <option value="nri">FEMA National Risk Index</option>
+          <label>Map data</label>
+          <div class="layer-checks" role="group" aria-label="Map data layers">
+            <label class="layer-check"><input type="checkbox" id="femaLayerCheck" checked> <span>FEMA Disaster Declarations</span></label>
+            <label class="layer-check"><input type="checkbox" id="sviOverlayCheck"> <span>CDC Social Vulnerability Index</span></label>
+            <label class="layer-check"><input type="checkbox" id="nriOverlayCheck"> <span>FEMA National Risk Index</span></label>
+          </div>
+        </div>
+
+        <div class="control-group" id="sviMetricGroup" hidden>
+          <label for="sviMetricSelect">SVI measure</label>
+          <select id="sviMetricSelect">
+            <option value="overall" selected>Overall SVI</option>
+            <option value="socioeconomic">Socioeconomic Status</option>
+            <option value="household">Household Characteristics</option>
+            <option value="minority">Racial &amp; Ethnic Minority Status</option>
+            <option value="housingTransportation">Housing Type &amp; Transportation</option>
           </select>
         </div>
 
@@ -518,7 +533,7 @@
           </select>
         </div>
 
-        <div class="control-group">
+        <div class="control-group" id="nriHazardGroup" hidden>
           <label for="nriHazardSelect">NRI hazard</label>
           <select id="nriHazardSelect">
             <option value="">All hazards (Overall Risk)</option>
@@ -648,10 +663,15 @@
       });
     }
 
-    const dataLayerSelect = document.getElementById('dataLayerSelect');
+    const femaLayerCheck = document.getElementById('femaLayerCheck');
+    const sviOverlayCheck = document.getElementById('sviOverlayCheck');
+    const nriOverlayCheck = document.getElementById('nriOverlayCheck');
+    const sviMetricSelect = document.getElementById('sviMetricSelect');
+    const sviMetricGroup = document.getElementById('sviMetricGroup');
     const nriMetricSelect = document.getElementById('nriMetricSelect');
     const nriMetricGroup = document.getElementById('nriMetricGroup');
     const nriHazardSelect = document.getElementById('nriHazardSelect');
+    const nriHazardGroup = document.getElementById('nriHazardGroup');
     if (nriHazardSelect) {
       Object.keys(NRI_HAZARDS).sort((a,b) => String(NRI_HAZARDS[a]).localeCompare(String(NRI_HAZARDS[b]))).forEach(function(prefix) {
         const o = document.createElement('option');
@@ -713,35 +733,40 @@
     }).addTo(map);
 
     let countyLayer;
+    let sviLayer;
+    let nriLayer;
     let stateOutlineLayer;
     let currentBreaks = [0, 1, 2, 3, 4, 5];
 
-    function isSviMode() {
-      return dataLayerSelect && dataLayerSelect.value === 'svi';
+    function isSviMode() { return !!(sviOverlayCheck && sviOverlayCheck.checked); }
+    function isNriMode() { return !!(nriOverlayCheck && nriOverlayCheck.checked); }
+    function isFemaMode() { return !!(femaLayerCheck && femaLayerCheck.checked); }
+
+    function currentSviMetricLabel() {
+      const labels = {overall:'Overall SVI', socioeconomic:'Socioeconomic Status', household:'Household Characteristics', minority:'Racial & Ethnic Minority Status', housingTransportation:'Housing Type & Transportation'};
+      return labels[sviMetricSelect ? sviMetricSelect.value : 'overall'] || 'Overall SVI';
     }
-    function isNriMode() {
-      return dataLayerSelect && dataLayerSelect.value === 'nri';
+
+    function currentNriMetricLabel() {
+      const hazard = nriHazardSelect && nriHazardSelect.value;
+      if (hazard && NRI_HAZARDS[hazard]) return NRI_HAZARDS[hazard];
+      const labels = {riskScore:'Overall Risk',ealScore:'Expected Annual Loss',soviScore:'Social Vulnerability',reslScore:'Community Resilience'};
+      return labels[nriMetricSelect ? nriMetricSelect.value : 'riskScore'] || 'Overall Risk';
     }
 
     function currentMetricLabel() {
-      if (isNriMode()) {
-        const hazard = nriHazardSelect && nriHazardSelect.value;
-        if (hazard && NRI_HAZARDS[hazard]) return 'FEMA National Risk Index · ' + NRI_HAZARDS[hazard];
-        const labels = {riskScore:'Overall Risk',ealScore:'Expected Annual Loss',soviScore:'Social Vulnerability',reslScore:'Community Resilience'};
-        return 'FEMA National Risk Index · ' + (labels[nriMetricSelect ? nriMetricSelect.value : 'riskScore'] || 'Overall Risk');
-      }
-      if (isSviMode()) return 'CDC Social Vulnerability Index';
+      if (isNriMode()) return 'FEMA National Risk Index · ' + currentNriMetricLabel();
+      if (isSviMode()) return 'CDC Social Vulnerability Index · ' + currentSviMetricLabel();
       if (overlayActive()) return 'Disasters hitting each county';
-      return metricSelect.value === 'uniqueDeclarations'
-        ? 'Unique FEMA declarations'
-        : 'Designated-area records';
+      return metricSelect.value === 'uniqueDeclarations' ? 'Unique FEMA declarations' : 'Designated-area records';
     }
 
     function getSviValues() {
       const values = {};
+      const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
       Object.keys(COUNTY_SVI).forEach(function (fips) {
         const row = COUNTY_SVI[fips];
-        if (row && Number.isFinite(Number(row.overall))) values[fips] = Number(row.overall);
+        if (row && Number.isFinite(Number(row[metric]))) values[fips] = Number(row[metric]);
       });
       return values;
     }
@@ -752,31 +777,14 @@
       const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
       Object.keys(COUNTY_NRI).forEach(function(fips) {
         const row = COUNTY_NRI[fips];
-        const value = hazard
-          ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null)
-          : (row ? row[metric] : null);
+        const value = hazard ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null) : (row ? row[metric] : null);
         if (Number.isFinite(Number(value))) values[fips] = Number(value);
       });
       return values;
     }
 
     function getMapValues() {
-      if (isNriMode()) return getNriValues();
-      if (isSviMode()) return getSviValues();
       return getActiveCountyValues();
-    }
-
-    function getActiveCountyValues() {
-      if (overlayActive()) return overlayCounts;
-      const metric = metricSelect.value;
-      const year = yearSelect.value;
-      const dtype = typeSelect.value;
-      const metricData = counts[metric];
-
-      if (year === 'ALL' && dtype === 'ALL') return metricData.overall;
-      if (year !== 'ALL' && dtype === 'ALL') return metricData.byYear[year] || {};
-      if (year === 'ALL' && dtype !== 'ALL') return metricData.byType[dtype] || {};
-      return (metricData.byYearType[year] && metricData.byYearType[year][dtype]) || {};
     }
 
     function getBreaks(maxValue) {
@@ -871,131 +879,23 @@
 
     function renderSelectedCounty() {
       if (!selectedCountyFips) {
-        selectedCountyTitleEl.textContent = isNriMode()
-          ? 'Click a county to view its National Risk Index profile.'
-          : (isSviMode()
-            ? 'Click a county to view its SVI profile.'
-            : 'Click a county to list matching declaration numbers.');
-        selectedCountySummaryEl.textContent = '';
-        selectedCountyListEl.innerHTML = '';
-        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = '';
-        selectedCountyLinkEl.style.display = 'none';
-        return;
+        selectedCountyTitleEl.textContent = 'Click a county to view combined disaster, vulnerability, and risk data.';
+        selectedCountySummaryEl.textContent = ''; selectedCountyListEl.innerHTML = '';
+        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML=''; selectedCountyLinkEl.style.display='none'; return;
       }
-
-      if (isNriMode()) {
-        const row = COUNTY_NRI[selectedCountyFips];
-        const countyLabel = row ? `${row.county}, ${row.state}` : (countyLabels[selectedCountyFips] || `County FIPS ${selectedCountyFips}`);
-        selectedCountyTitleEl.textContent = countyLabel;
-        selectedCountyLinkEl.style.display = 'none';
-        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = '';
-        if (!row) { selectedCountySummaryEl.textContent = 'No NRI data found for this county.'; selectedCountyListEl.innerHTML = ''; return; }
-        const hazard = nriHazardSelect && nriHazardSelect.value;
-        selectedCountySummaryEl.textContent = 'FEMA National Risk Index · December 2025 county-level data';
-        if (hazard && NRI_HAZARDS[hazard]) {
-          const h = row.hazards?.[hazard];
-          selectedCountyListEl.innerHTML = `<div class="event-item"><div class="num">${NRI_HAZARDS[hazard]}</div><div class="meta">Risk score: ${h ? Number(h.score).toFixed(2) : 'No data'} · ${h?.rating || '—'}</div></div>`;
-          return;
-        }
-        const fmtScore = v => Number.isFinite(Number(v)) ? Number(v).toFixed(2) : 'No data';
-        const fmtMoney = v => Number.isFinite(Number(v)) ? Number(v).toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}) : 'No data';
-        selectedCountyListEl.innerHTML = `
-          <div class="event-item"><div class="num">Overall Risk · ${fmtScore(row.riskScore)}</div><div class="meta">${row.riskRating || '—'}</div></div>
-          <div class="event-item"><div class="num">Expected Annual Loss · ${fmtScore(row.ealScore)}</div><div class="meta">${row.ealRating || '—'} · ${fmtMoney(row.ealValue)}</div></div>
-          <div class="event-item"><div class="num">Social Vulnerability · ${fmtScore(row.soviScore)}</div><div class="meta">${row.soviRating || '—'}</div></div>
-          <div class="event-item"><div class="num">Community Resilience · ${fmtScore(row.reslScore)}</div><div class="meta">${row.reslRating || '—'}</div></div>`;
-        return;
-      }
-
-      if (isSviMode()) {
-        const row = COUNTY_SVI[selectedCountyFips];
-        const countyLabel = row
-          ? `${row.county}, ${row.state}`
-          : (countyLabels[selectedCountyFips] || `County FIPS ${selectedCountyFips}`);
-
-        selectedCountyTitleEl.textContent = countyLabel;
-        selectedCountyLinkEl.style.display = 'none';
-        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = '';
-
-        if (!row) {
-          selectedCountySummaryEl.textContent = 'No SVI data found for this county.';
-          selectedCountyListEl.innerHTML = '';
-          return;
-        }
-
-        selectedCountySummaryEl.textContent = 'CDC/ATSDR SVI 2022 · county-level data';
-        const pct = Number(row.overall) * 100;
-        const fmt = v => Number(v).toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 });
-        const pctFmt = v => `${(Number(v) * 100).toFixed(1)} percentile`;
-        selectedCountyListEl.innerHTML = `
-          <div class="event-item">
-            <div class="num">Overall SVI · ${fmt(row.overall)}</div>
-            <div class="meta">Relative vulnerability: ${pctFmt(row.overall)}</div>
-          </div>
-          <div class="event-item">
-            <div class="num">Socioeconomic Status</div>
-            <div class="meta">${fmt(row.socioeconomic)} · ${pctFmt(row.socioeconomic)}</div>
-          </div>
-          <div class="event-item">
-            <div class="num">Household Characteristics</div>
-            <div class="meta">${fmt(row.household)} · ${pctFmt(row.household)}</div>
-          </div>
-          <div class="event-item">
-            <div class="num">Racial &amp; Ethnic Minority Status</div>
-            <div class="meta">${fmt(row.minority)} · ${pctFmt(row.minority)}</div>
-          </div>
-          <div class="event-item">
-            <div class="num">Housing Type &amp; Transportation</div>
-            <div class="meta">${fmt(row.housingTransportation)} · ${pctFmt(row.housingTransportation)}</div>
-          </div>
-        `;
-        return;
-      }
-
-      let events = getFilteredCountyEvents(selectedCountyFips);
-
-      // Sort alphabetically by type, then numerically by declaration number
-      events = events.sort((a, b) => {
-        if (a.type !== b.type) return a.type.localeCompare(b.type);
-
-        const numA = parseInt((a.declarationNumber || '').match(/\d+/));
-        const numB = parseInt((b.declarationNumber || '').match(/\d+/));
-
-        return (numA || 0) - (numB || 0);
-      });
-
-      const countyLabel = (countyDeclarationEvents[selectedCountyFips] && countyDeclarationEvents[selectedCountyFips][0] && countyDeclarationEvents[selectedCountyFips][0].countyLabel) || `County FIPS ${selectedCountyFips}`;
-
-      selectedCountyTitleEl.textContent = countyLabel;
-      selectedCountySummaryEl.textContent = `${events.length.toLocaleString()} declaration event(s) match the current filters.`;
-
-      // Show link to jurisdiction page if one exists
-      var clParts = countyLabel.split(',');
-      var clSt = (clParts[clParts.length - 1] || '').trim().toUpperCase();
-      var clName = clParts.slice(0, -1).join(',').trim()
-        .replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
-      var jurUrl = localityLookup[clName + ',' + clSt] || null;
-      if (jurUrl) {
-        selectedCountyLinkEl.href = jurUrl;
-        selectedCountyLinkEl.style.display = 'inline-block';
-      } else {
-        selectedCountyLinkEl.style.display = 'none';
-      }
-
-      if (!events.length) {
-        if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = '';
-        selectedCountyListEl.innerHTML = '<div class="muted">No declaration events match the current year/type filters for this county.</div>';
-        return;
-      }
-
-      if (selectedCountyVizEl) selectedCountyVizEl.innerHTML = countyVizHtml(events);
-      selectedCountyListEl.innerHTML = events.map(evt => `
-        <div class="event-item">
-          <div class="num">#${evt.declarationNumber}</div>
-          <div class="meta">${getTypeLongLabel(evt.type)}${evt.date ? ' · ' + evt.date : ''}${evt.title ? ' · ' + evt.title : ''}</div>
-        </div>
-      `).join('');
+      const fips=selectedCountyFips, svi=COUNTY_SVI[fips], nri=COUNTY_NRI[fips];
+      const countyLabel=countyLabels[fips] || (svi ? `${svi.county}, ${svi.state}` : (nri ? `${nri.county}, ${nri.state}` : `County FIPS ${fips}`));
+      selectedCountyTitleEl.textContent=countyLabel; selectedCountyLinkEl.style.display='none';
+      if (selectedCountyVizEl) selectedCountyVizEl.innerHTML='';
+      const parts=[];
+      if (isSviMode() && svi) { const m=sviMetricSelect?.value||'overall'; const v=Number(svi[m]); parts.push(`<div class="event-item"><div class="num">CDC SVI · ${currentSviMetricLabel()}</div><div class="meta">${Number.isFinite(v)?v.toFixed(4)+' · '+(v*100).toFixed(1)+' percentile':'No data'} · 2022</div></div>`); }
+      if (isNriMode() && nri) { const h=nriHazardSelect?.value, m=nriMetricSelect?.value||'riskScore'; const v=h?nri.hazards?.[h]?.score:nri[m], r=h?nri.hazards?.[h]?.rating:nri[m.replace('Score','Rating')]; parts.push(`<div class="event-item"><div class="num">FEMA NRI · ${currentNriMetricLabel()}</div><div class="meta">${Number.isFinite(Number(v))?Number(v).toFixed(2):'No data'} · ${r||'—'} · December 2025</div></div>`); }
+      const events=countyDeclarationEvents[fips]||[];
+      if (isFemaMode()) { selectedCountySummaryEl.textContent=`${events.length.toLocaleString()} declaration event(s) match the current filters.`; events.forEach(evt=>parts.push(`<div class="event-item"><div class="num">#${evt.declarationNumber}</div><div class="meta">${getTypeLongLabel(evt.type)}${evt.date?' · '+evt.date:''}${evt.title?' · '+evt.title:''}</div></div>`)); }
+      if (!parts.length) parts.push('<div class="muted">No data available for the selected layers.</div>');
+      selectedCountyListEl.innerHTML=parts.join('');
     }
+
     const info = L.control();
 
     info.onAdd = function () {
@@ -1005,66 +905,29 @@
     };
 
     info.update = function (feature, value) {
-      if (isNriMode()) {
-        if (!feature) {
-          this._div.innerHTML = `<h4>${currentMetricLabel()}</h4>Hover over a county`;
-          return;
-        }
-        const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
-        const label = countyLabels[fips] || COUNTY_NRI[fips]?.county || `County FIPS ${fips}`;
-        const row = COUNTY_NRI[fips];
-        const hazard = nriHazardSelect && nriHazardSelect.value;
-        const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
-        const score = hazard ? row?.hazards?.[hazard]?.score : row?.[metric];
-        const rating = hazard ? row?.hazards?.[hazard]?.rating : row?.[metric.replace('Score','Rating')];
-        this._div.innerHTML = `<h4>${currentMetricLabel()}</h4><b>${label}</b><br/>` +
-          (Number.isFinite(Number(score)) ? `Score: <strong>${Number(score).toFixed(2)}</strong><br/>Rating: <strong>${rating || '—'}</strong>` : 'No data') +
-          `<br/><span style="color:#938a78">FIPS ${fips} · NRI December 2025</span>`;
-        return;
-      }
-
-      if (isSviMode()) {
-        if (!feature) {
-          this._div.innerHTML = `<h4>CDC Social Vulnerability Index</h4>Hover over a county`;
-          return;
-        }
-
-        const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
-        const label = countyLabels[fips] || COUNTY_SVI[fips]?.county || `County FIPS ${fips}`;
-        const svi = COUNTY_SVI[fips];
-        const sviValue = svi ? Number(svi.overall) : null;
-        this._div.innerHTML =
-          `<h4>CDC Social Vulnerability Index</h4>` +
-          `<b>${label}</b><br/>` +
-          (sviValue == null
-            ? 'Value: <strong>No data</strong>'
-            : `Overall SVI: <strong>${sviValue.toFixed(4)}</strong><br/><span style="color:#938a78">${(sviValue * 100).toFixed(1)} percentile · SVI 2022</span>`) +
-          `<br/><span style="color:#938a78">FIPS ${fips}</span>`;
-        return;
-      }
-
-      const yearText = yearSelect.value === 'ALL' ? 'All years' : yearSelect.value;
-      const typeText = (() => {
-        if (typeSelect.value === 'ALL') return 'All declaration types';
-        if (typeSelect.value === 'DR') return 'DR · Major Disaster';
-        if (typeSelect.value === 'EM') return 'EM · Emergency Declaration';
-        if (typeSelect.value === 'FM') return 'FM · Fire Management Assistance Grant (FMAG)';
-        return typeSelect.value;
-      })();
-
       if (!feature) {
-        this._div.innerHTML = `<h4>${currentMetricLabel()}</h4>Hover over a county<br/><span style="color:#938a78">${yearText} · ${typeText}</span>`;
+        this._div.innerHTML = '<h4>County data</h4>Hover over a county';
         return;
       }
-
       const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
-      const label = countyLabels[fips] || `County FIPS ${fips}`;
-      this._div.innerHTML =
-        `<h4>${currentMetricLabel()}</h4>` +
-        `<b>${label}</b><br/>Value: <strong>${(value || 0).toLocaleString()}</strong><br/>` +
-        `<span style="color:#938a78">${yearText} · ${typeText} · FIPS ${fips}</span>`;
+      const label = countyLabels[fips] || COUNTY_SVI[fips]?.county || COUNTY_NRI[fips]?.county || `County FIPS ${fips}`;
+      let html = `<h4>${label}</h4>`;
+      if (isFemaMode()) { html += `<b>FEMA disasters</b><br/>${Number(value||0).toLocaleString()} matching county records`; }
+      if (isSviMode()) {
+        const row=COUNTY_SVI[fips], v=row ? Number(row[sviMetricSelect?.value || 'overall']) : NaN;
+        html += `<br/><br/><b>CDC SVI · ${currentSviMetricLabel()}</b><br/>` + (Number.isFinite(v) ? `${v.toFixed(4)} · ${(v*100).toFixed(1)} percentile` : 'No data');
+      }
+      if (isNriMode()) {
+        const row=COUNTY_NRI[fips], hazard=nriHazardSelect?.value, metric=nriMetricSelect?.value || 'riskScore';
+        const v=hazard ? row?.hazards?.[hazard]?.score : row?.[metric];
+        const rating=hazard ? row?.hazards?.[hazard]?.rating : row?.[metric.replace('Score','Rating')];
+        html += `<br/><br/><b>FEMA NRI · ${currentNriMetricLabel()}</b><br/>` + (Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)} · ${rating || '—'}` : 'No data');
+      }
+      html += `<br/><span style="color:#938a78">FIPS ${fips}</span>`;
+      this._div.innerHTML = html;
     };
     info.addTo(map);
+
 
     const legend = L.control({ position: 'bottomright' });
 
@@ -1075,68 +938,44 @@
     };
 
     legend.update = function () {
-      const div = this._div;
-
-      if (isNriMode()) {
-        div.innerHTML = '<div style="font-family:\'Public Sans\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">' + currentMetricLabel() + '</div>';
-        const labels = ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'];
-        const max = Math.max(1, ...Object.values(getMapValues()).filter(v => Number.isFinite(Number(v))));
-        for (let i = 0; i < 5; i++) {
-          const v = max * ((i + 1) / 5);
-          div.innerHTML += '<div style="margin-bottom:3px;"><i style="background:' + getColor(v, [max*.2,max*.4,max*.6,max*.8]) + '"></i> ' + labels[i] + '</div>';
-        }
-        div.innerHTML += '<div style="margin-top:6px;font-size:10px;color:#938a78;line-height:1.35;">FEMA National Risk Index · December 2025 county-level data.</div>';
-        return;
-      }
-
-      if (isSviMode()) {
-        div.innerHTML = '<div style="font-family:\'Public Sans\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">CDC/ATSDR SVI 2022</div>';
-        const grades = [0, 0.25, 0.50, 0.75];
-        const labels = ['0–0.25 · Lower', '0.25–0.50 · Moderate', '0.50–0.75 · Higher', '0.75–1.00 · Highest'];
-        for (let i = 0; i < grades.length; i++) {
-          div.innerHTML += '<div style="margin-bottom:3px;"><i style="background:' + getColor(grades[i] + 0.01, grades) + '"></i> ' + labels[i] + '</div>';
-        }
-        div.innerHTML += '<div style="margin-top:6px;font-size:10px;color:#938a78;line-height:1.35;">Relative percentile ranking; higher values indicate greater social vulnerability.</div>';
-        return;
-      }
-
-      if (overlayActive()) {
-        div.innerHTML = '<div style="font-family:\'Public Sans\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">Disasters hitting each county</div>';
-        var maxK = Math.min(8, Math.max(1, overlayMaxCount));
-        for (var k = 1; k <= maxK; k++) {
-          var lab = (k === 8 && overlayMaxCount > 8) ? '8+' : String(k);
-          div.innerHTML += '<div style="margin-bottom:3px;"><i style="background:' + getColor(k, currentBreaks) + '"></i> ' + lab + '</div>';
-        }
-        div.innerHTML += '<div style="margin-top:4px;"><i style="background:#e9e5da;border:1px solid #e0d8c5;"></i> 0 / not hit</div>';
-        return;
-      }
-
-      const grades = currentBreaks;
-      div.innerHTML = `<div style="font-family:'Public Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">${currentMetricLabel()}</div>`;
-      for (let i = 0; i < grades.length; i++) {
-        const from = grades[i];
-        const to = grades[i + 1];
-        div.innerHTML +=
-          '<div style="margin-bottom:3px;"><i style="background:' + getColor(from + 0.01, grades) + '"></i> ' +
-          from.toLocaleString() + (to ? ' to ' + to.toLocaleString() : '+') +
-          '</div>';
-      }
-      div.innerHTML += '<div style="margin-top:4px;"><i style="background:#e9e5da;border:1px solid #e0d8c5;"></i> 0 / no data</div>';
+      const div=this._div; let html='';
+      if(isFemaMode()){ html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">FEMA disaster activity</div>'; const maxK=Math.min(8,Math.max(1,overlayActive()?overlayMaxCount:Math.max(1,currentBreaks[currentBreaks.length-1]||1))); if(overlayActive()){ for(let k=1;k<=Math.min(8,overlayMaxCount);k++) html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(k,currentBreaks)+'"></i> '+(k===8&&overlayMaxCount>8?'8+':k)+'</div>'; } else { const labels=['1–low','Low','Moderate','Elevated','High','Very high','Severe','Extreme']; currentBreaks.slice(0,8).forEach((b,i)=>{ html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(b,currentBreaks)+'"></i> '+labels[i]+'</div>'; }); } }
+      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [['#f2d9a0','0–25th'],['#ecc278','25th–50th'],['#e3a652','50th–75th'],['#b35024','75th–100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+x[0]+'"></i> '+x[1]+' percentile</div>'); }
+      if(isNriMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=getColor((i+1)*.2,[.2,.4,.6,.8]); html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); }
+      if(!html) html='<div style="font-size:11px;">Select one or more layers.</div>'; div.innerHTML=html;
     };
+
     legend.addTo(map);
 
     function styleCounty(feature) {
-      const values = getMapValues();
+      const values = getActiveCountyValues();
       const fips = String(feature.id || feature.properties.GEOID || '').padStart(5, '0');
       const value = values[fips] || 0;
-      const dim = focusStateFips && fips.slice(0, 2) !== focusStateFips;   /* gray out other states when one is focused */
+      const dim = focusStateFips && fips.slice(0, 2) !== focusStateFips;
       return {
         fillColor: dim ? '#eee9df' : getColor(value, currentBreaks),
         weight: 0.4,
         opacity: dim ? 0.5 : 1,
         color: dim ? '#e3ddce' : '#d3c9b2',
-        fillOpacity: dim ? 0.22 : 0.9
+        fillOpacity: isFemaMode() ? (dim ? 0.12 : 0.72) : 0.08
       };
+    }
+
+    function styleSviCounty(feature) {
+      const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
+      const v = getSviValues()[fips];
+      const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
+      return { fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : 'transparent', fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.28 : 0, weight: isSviMode() && Number.isFinite(v) ? 1.2 : 0, color:'#b35024', opacity:isSviMode() && Number.isFinite(v) ? 0.8 : 0, interactive:false };
+    }
+
+    function styleNriCounty(feature) {
+      const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
+      const v = getNriValues()[fips];
+      const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
+      const vals = Object.values(getNriValues()).filter(x=>Number.isFinite(Number(x)));
+      const max = vals.length ? Math.max(...vals) : 1;
+      const br = [max*.2,max*.4,max*.6,max*.8];
+      return { fillColor: Number.isFinite(v) ? getColor(v, br) : 'transparent', fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.24 : 0, weight: isNriMode() && Number.isFinite(v) ? 1.1 : 0, color:'#004c53', opacity:isNriMode() && Number.isFinite(v) ? 0.85 : 0, interactive:false };
     }
 
     function styleStateOutline() {
@@ -1194,75 +1033,18 @@
     }
 
     function refreshMap() {
-      const values = getMapValues();
-
-      if (isNriMode()) {
-        const vals = Object.values(values).filter(v => Number.isFinite(Number(v)));
-        const maxValue = vals.length ? Math.max(...vals) : 1;
-        currentBreaks = [maxValue * .2, maxValue * .4, maxValue * .6, maxValue * .8];
-        const hazard = nriHazardSelect && nriHazardSelect.value;
-        filteredTotalEl.textContent = Object.keys(values).length.toLocaleString();
-        filteredSubtitleEl.textContent = hazard && NRI_HAZARDS[hazard]
-          ? 'FEMA National Risk Index · ' + NRI_HAZARDS[hazard] + ' · December 2025'
-          : 'FEMA National Risk Index · December 2025 county-level data';
-        if (statLabelEl) statLabelEl.textContent = 'Counties with NRI data';
-        if (countyLayer) countyLayer.setStyle(styleCounty);
-        legend.update(); info.update(); renderSelectedCounty();
-        return;
-      }
-
-      if (isSviMode()) {
-        const vals = Object.values(values).filter(v => Number.isFinite(Number(v)));
-        currentBreaks = [0, 0.25, 0.50, 0.75];
-
-        if (statLabelEl) statLabelEl.textContent = 'Counties with SVI data';
-        filteredTotalEl.textContent = Object.keys(values).length.toLocaleString();
-        filteredSubtitleEl.textContent = 'CDC/ATSDR Social Vulnerability Index · 2022 county-level data';
-
-        if (countyLayer) countyLayer.setStyle(styleCounty);
-        legend.update();
-        info.update();
-        renderSelectedCounty();
-        return;
-      }
-
-      if (overlayActive()) {
-        currentBreaks = [0, 1, 2, 3, 4, 5, 6, 7];
-        var hit = Object.keys(values).length;
-        if (statLabelEl) statLabelEl.textContent = 'Disasters overlaid';
-        filteredTotalEl.textContent = overlayEvents.length.toLocaleString();
-        filteredSubtitleEl.textContent = hit.toLocaleString() + ' counties hit · up to ' + overlayMaxCount + ' overlapping';
-        if (countyLayer) countyLayer.setStyle(styleCounty);
-        legend.update(); info.update(); renderSelectedCounty();
-        return;
-      }
-
-      const vals = Object.values(values);
-      const maxValue = vals.length ? Math.max(...vals) : 0;
-      currentBreaks = getBreaks(maxValue);
-
-      const year = yearSelect.value;
-      const dtype = typeSelect.value;
-
-      let eventTotal;
-      if (year === 'ALL' && dtype === 'ALL') {
-        eventTotal = declarationEventTotals.overall;
-      } else if (year !== 'ALL' && dtype === 'ALL') {
-        eventTotal = declarationEventTotals.byYear[year] || 0;
-      } else if (year === 'ALL' && dtype !== 'ALL') {
-        eventTotal = declarationEventTotals.byType[dtype] || 0;
-      } else {
-        eventTotal = (declarationEventTotals.byYearType[year] && declarationEventTotals.byYearType[year][dtype]) || 0;
-      }
-
-      if (statLabelEl) statLabelEl.textContent = statLabelDefault;
-      filteredTotalEl.textContent = eventTotal.toLocaleString();
-      filteredSubtitleEl.textContent = `Mapped across ${Object.keys(values).length.toLocaleString()} counties, parishes, and boroughs`;
-
-      if (countyLayer) countyLayer.setStyle(styleCounty);
-      legend.update();
-      info.update();
-      renderSelectedCounty();
+      const femaValues=getActiveCountyValues();
+      const vals=Object.values(femaValues).filter(v=>Number.isFinite(Number(v)));
+      const maxValue=vals.length?Math.max(...vals):0; currentBreaks=getBreaks(maxValue);
+      if (statLabelEl) statLabelEl.textContent = isFemaMode() ? (overlayActive()?'Disasters overlaid':'Declarations in view') : 'County data';
+      const sviCount=isSviMode()?Object.keys(getSviValues()).length:0, nriCount=isNriMode()?Object.keys(getNriValues()).length:0;
+      const bits=[]; if(isFemaMode()) bits.push(Object.keys(femaValues).length.toLocaleString()+' counties with FEMA data'); if(isSviMode()) bits.push(sviCount.toLocaleString()+' counties with SVI'); if(isNriMode()) bits.push(nriCount.toLocaleString()+' counties with NRI');
+      filteredTotalEl.textContent = bits.length ? (isFemaMode() ? (overlayActive()?overlayEvents.length:Object.keys(femaValues).length).toLocaleString() : (isSviMode()?sviCount:nriCount).toLocaleString()) : '0';
+      filteredSubtitleEl.textContent = bits.join(' · ') || 'Select a map layer to display data';
+      if(countyLayer) countyLayer.setStyle(styleCounty);
+      if(sviLayer) sviLayer.setStyle(styleSviCounty);
+      if(nriLayer) nriLayer.setStyle(styleNriCounty);
+      legend.update(); info.update(); renderSelectedCounty();
     }
 
     async function init() {
@@ -1277,6 +1059,9 @@
         style: styleCounty,
         onEachFeature: onEachCounty
       }).addTo(map);
+
+      sviLayer = L.geoJSON(countyGeoJson, { style: styleSviCounty, interactive:false }).addTo(map);
+      nriLayer = L.geoJSON(countyGeoJson, { style: styleNriCounty, interactive:false }).addTo(map);
 
       stateOutlineLayer = L.geoJSON(statesMesh, {
         style: styleStateOutline
@@ -1454,43 +1239,14 @@
     }
     renderOverlayChips();
 
-    function setSviModeUi() {
-      const svi = isSviMode();
-      [metricSelect, yearSelect, typeSelect].forEach(function (el) {
-        if (el) el.disabled = svi;
-      });
-
-      [overlaySearch, overlayClear].forEach(function (el) {
-        if (el) el.disabled = svi;
-      });
-      if (overlaySearch) overlaySearch.placeholder = svi
-        ? 'Disabled while viewing SVI'
-        : 'Search by name or year, e.g. Helene or 2024';
-      if (overlayHint && svi) overlayHint.textContent = 'Disaster overlays are available when FEMA Disaster Declarations is selected.';
-      if (overlayHint && !svi && !overlayEvents.length) overlayHint.textContent = 'Pick two or more disasters to shade each county by how many of them hit it.';
-
-      if (svi && overlayEvents.length) {
-        overlayEvents = [];
-        computeOverlayCounts();
-        renderOverlayChips();
-      }
-
-      const topSection = document.querySelector('.top-section');
-      if (topSection) topSection.style.display = svi ? 'none' : '';
+    function setOverlayUi() {
+      if (sviMetricGroup) sviMetricGroup.hidden=!isSviMode();
+      if (nriMetricGroup) nriMetricGroup.hidden=!isNriMode();
+      if (nriHazardGroup) nriHazardGroup.hidden=!isNriMode();
+      if (femaLayerCheck) femaLayerCheck.checked=!!femaLayerCheck.checked;
     }
-
-    if (dataLayerSelect) dataLayerSelect.addEventListener('change', function () {
-      setSviModeUi();
-      refreshMap();
-    });
-
-    if (nriMetricGroup) nriMetricGroup.hidden = !(dataLayerSelect && dataLayerSelect.value === 'nri');
-    if (nriHazardSelect) nriHazardSelect.parentElement.hidden = !(dataLayerSelect && dataLayerSelect.value === 'nri');
-
-    metricSelect.addEventListener('change', refreshMap);
-    yearSelect.addEventListener('change', refreshMap);
-    typeSelect.addEventListener('change', refreshMap);
-    setSviModeUi();
+    [femaLayerCheck,sviOverlayCheck,nriOverlayCheck,sviMetricSelect,nriMetricSelect,nriHazardSelect].forEach(function(el){ if(el) el.addEventListener('change',function(){ setOverlayUi(); refreshMap(); }); });
+    setOverlayUi();
 
     init().catch(err => {
       console.error(err);
