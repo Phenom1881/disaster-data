@@ -955,10 +955,19 @@
     const legend = L.control({ position: 'bottomright' });
 
     legend.onAdd = function () {
-      this._div = L.DomUtil.create('div', 'legend');
-      this.update();
-      return this._div;
-    };
+  this._div = L.DomUtil.create('div', 'legend');
+
+  // Keep a tall multi-layer legend inside the visible map.
+  this._div.style.maxHeight = Math.max(200, map.getSize().y - 40) + 'px';
+  this._div.style.overflowY = 'auto';
+  this._div.style.paddingRight = '8px';
+
+  // Scrolling the legend should not zoom the map.
+  L.DomEvent.disableScrollPropagation(this._div);
+
+  this.update();
+  return this._div;
+};
 
     legend.update = function () {
   const div = this._div;
