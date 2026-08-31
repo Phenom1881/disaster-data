@@ -1080,20 +1080,47 @@
       return digits ? digits.padStart(5, '0').slice(-5) : '';
     }
 
-    function styleSviCounty(feature) {
-      const fips = featureFips(feature);
-      const row = COUNTY_SVI[fips];
-      const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
-      const v = row && Number.isFinite(Number(row[metric])) ? Number(row[metric]) : null;
-      const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
-      return {
-        fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : '#ffffff',
-        fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.55 : 0,
-        weight: isSviMode() && Number.isFinite(v) ? 0.7 : 0,
-        color: '#b35024',
-        opacity: isSviMode() && Number.isFinite(v) ? 0.75 : 0
-      };
-    }
+  function styleSviCounty(feature) {
+  const fips = featureFips(feature);
+  const row = COUNTY_SVI[fips];
+  const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
+  const v = row && Number.isFinite(Number(row[metric])) ? Number(row[metric]) : null;
+  const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
+
+  const activeLayerCount =
+    (isFemaMode() ? 1 : 0) +
+    (isSviMode() ? 1 : 0) +
+    (isNriMode() ? 1 : 0);
+
+  const comparisonMode = activeLayerCount > 1;
+
+  return {
+    fillColor: Number.isFinite(v)
+      ? getColor(v, [0, 0.25, 0.50, 0.75])
+      : '#ffffff',
+
+    // SVI remains a choropleth when it is the only selected layer.
+    // With multiple layers, remove the SVI fill.
+    fillOpacity:
+      isSviMode() && !dim && Number.isFinite(v)
+        ? (comparisonMode ? 0 : 0.55)
+        : 0,
+
+    // In comparison mode, higher SVI = thicker outline.
+    weight:
+      isSviMode() && Number.isFinite(v)
+        ? (comparisonMode ? 1 + (v * 3) : 0.7)
+        : 0,
+
+    // Purple keeps SVI visually separate from FEMA orange and NRI teal.
+    color: comparisonMode ? '#6f3c8f' : '#b35024',
+
+    opacity:
+      isSviMode() && Number.isFinite(v)
+        ? (dim ? 0.25 : 0.9)
+        : 0
+  };
+}
 
     function styleNriCounty(feature) {
       const fips = featureFips(feature);
