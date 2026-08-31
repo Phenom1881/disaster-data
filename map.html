@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disaster Data | Map</title>
 
-  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_0000000099fc81f5a3684bfa56030605%26fn%3Dmap%25286%2529.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3Dc6d651f7e236a7153b19a428801931ded136909e2f45d4bc2faac476bc561771%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000d24081f596b79cc98377ed13%26fn%3Ddisasterdata_github_overlay_v4_map.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3D4eb7b883cbbe223fb541e0fb76039b58514531e514bd4d7fa4a20f7fda551b79%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />
 
@@ -781,6 +781,18 @@
         if (Number.isFinite(Number(value))) values[fips] = Number(value);
       });
       return values;
+    }
+
+    function getActiveCountyValues() {
+      if (overlayActive()) return overlayCounts;
+      const metric = metricSelect.value;
+      const year = yearSelect.value;
+      const dtype = typeSelect.value;
+      const metricData = counts[metric] || {};
+      if (year === 'ALL' && dtype === 'ALL') return metricData.overall || {};
+      if (year !== 'ALL' && dtype === 'ALL') return (metricData.byYear && metricData.byYear[year]) || {};
+      if (year === 'ALL' && dtype !== 'ALL') return (metricData.byType && metricData.byType[dtype]) || {};
+      return (metricData.byYearType && metricData.byYearType[year] && metricData.byYearType[year][dtype]) || {};
     }
 
     function getMapValues() {
