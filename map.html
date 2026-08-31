@@ -744,10 +744,11 @@
     }).addTo(map);
 
     let countyLayer;
-    let sviLayer;
-    let nriLayer;
-    let stateOutlineLayer;
-    let currentBreaks = [0, 1, 2, 3, 4, 5];
+let sviLayer;
+let nriLayer;
+let nriDotLayer;
+let stateOutlineLayer;
+let currentBreaks = [0, 1, 2, 3, 4, 5];
 
     function isSviMode() { return !!(sviOverlayCheck && sviOverlayCheck.checked); }
     function isNriMode() { return !!(nriOverlayCheck && nriOverlayCheck.checked); }
@@ -1270,12 +1271,41 @@ function styleSviCounty(feature) {
         interactive: false
       });
       nriLayer = L.geoJSON(countyGeoJson, {
-        pane: 'nriPane',
-        renderer: L.svg(),
-        style: styleNriCounty,
-        interactive: false
-      });
-      syncOverlayLayers();
+  pane: 'nriPane',
+  renderer: L.svg(),
+  style: styleNriCounty,
+  interactive: false
+});
+
+// NRI comparison dots.
+// We create them from the same county polygons so each dot
+// is positioned near the center of its county.
+nriDotLayer = L.layerGroup();
+
+nriLayer.eachLayer(function(layer) {
+  if (!layer.feature || !layer.getBounds) return;
+
+  const fips = featureFips(layer.feature);
+  const row = COUNTY_NRI[fips];
+  if (!row) return;
+
+  const center = layer.getBounds().getCenter();
+
+  const dot = L.circleMarker(center, {
+    pane: 'nriPane',
+    radius: 4,
+    weight: 1,
+    color: '#004c53',
+    fillColor: '#004c53',
+    fillOpacity: 0.75,
+    interactive: false
+  });
+
+  dot._nriFips = fips;
+  nriDotLayer.addLayer(dot);
+});
+
+syncOverlayLayers();
 
       stateOutlineLayer = L.geoJSON(statesMesh, {
         pane: 'statePane',
