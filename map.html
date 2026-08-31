@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disaster Data | Map</title>
 
-  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000d24081f596b79cc98377ed13%26fn%3Ddisasterdata_github_overlay_v4_map.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3D4eb7b883cbbe223fb541e0fb76039b58514531e514bd4d7fa4a20f7fda551b79%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000a17c81f5b3e40da5d26be3eb%26fn%3Ddisasterdata_github_overlay_v5_map.html%26cd%3Dattachment%26ts%3D496719%26p%3Dfs%26cid%3D1%26sig%3Dcff11455f6e9b5af5a790820dbc740733c59b1350ee09744a77f754422555c98%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />
 
@@ -727,6 +727,17 @@
       zoomSnap: 0.25
     }).setView([37.8, -96], 4);
 
+    // Dedicated panes guarantee the optional vulnerability/risk overlays render
+    // above the FEMA county layer even when Leaflet is using its canvas renderer.
+    map.createPane('femaPane');
+    map.getPane('femaPane').style.zIndex = 400;
+    map.createPane('sviPane');
+    map.getPane('sviPane').style.zIndex = 450;
+    map.createPane('nriPane');
+    map.getPane('nriPane').style.zIndex = 460;
+    map.createPane('statePane');
+    map.getPane('statePane').style.zIndex = 500;
+
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_2n1q_1_ad4306e45519c0e62979dcd7', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -961,7 +972,7 @@
 
     function styleCounty(feature) {
       const values = getActiveCountyValues();
-      const fips = String(feature.id || feature.properties.GEOID || '').padStart(5, '0');
+      const fips = featureFips(feature);
       const value = values[fips] || 0;
       const dim = focusStateFips && fips.slice(0, 2) !== focusStateFips;
       return {
@@ -973,21 +984,49 @@
       };
     }
 
+    function featureFips(feature) {
+      const raw = feature && (feature.id ?? (feature.properties && (feature.properties.GEOID ?? feature.properties.FIPS)));
+      const digits = String(raw == null ? '' : raw).replace(/\D/g, '');
+      return digits ? digits.padStart(5, '0').slice(-5) : '';
+    }
+
     function styleSviCounty(feature) {
-      const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
-      const v = getSviValues()[fips];
+      const fips = featureFips(feature);
+      const row = COUNTY_SVI[fips];
+      const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
+      const v = row && Number.isFinite(Number(row[metric])) ? Number(row[metric]) : null;
       const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
-      return { fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : 'transparent', fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.28 : 0, weight: isSviMode() && Number.isFinite(v) ? 1.2 : 0, color:'#b35024', opacity:isSviMode() && Number.isFinite(v) ? 0.8 : 0, interactive:false };
+      return {
+        fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : '#ffffff',
+        fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.55 : 0,
+        weight: isSviMode() && Number.isFinite(v) ? 0.7 : 0,
+        color: '#b35024',
+        opacity: isSviMode() && Number.isFinite(v) ? 0.75 : 0
+      };
     }
 
     function styleNriCounty(feature) {
-      const fips = String(feature.id || feature.properties?.GEOID || '').padStart(5, '0');
-      const v = getNriValues()[fips];
+      const fips = featureFips(feature);
+      const row = COUNTY_NRI[fips];
+      const hazard = nriHazardSelect && nriHazardSelect.value;
+      const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
+      const raw = hazard ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null) : (row ? row[metric] : null);
+      const v = Number.isFinite(Number(raw)) ? Number(raw) : null;
       const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
-      const vals = Object.values(getNriValues()).filter(x=>Number.isFinite(Number(x)));
+      const vals = Object.keys(COUNTY_NRI).map(k => {
+        const r=COUNTY_NRI[k];
+        const x=hazard ? (r && r.hazards && r.hazards[hazard] ? r.hazards[hazard].score : null) : (r ? r[metric] : null);
+        return Number(x);
+      }).filter(Number.isFinite);
       const max = vals.length ? Math.max(...vals) : 1;
       const br = [max*.2,max*.4,max*.6,max*.8];
-      return { fillColor: Number.isFinite(v) ? getColor(v, br) : 'transparent', fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.24 : 0, weight: isNriMode() && Number.isFinite(v) ? 1.1 : 0, color:'#004c53', opacity:isNriMode() && Number.isFinite(v) ? 0.85 : 0, interactive:false };
+      return {
+        fillColor: Number.isFinite(v) ? getColor(v, br) : '#ffffff',
+        fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.50 : 0,
+        weight: isNriMode() && Number.isFinite(v) ? 0.7 : 0,
+        color: '#004c53',
+        opacity: isNriMode() && Number.isFinite(v) ? 0.8 : 0
+      };
     }
 
     function styleStateOutline() {
@@ -1022,13 +1061,13 @@
 
     function zoomToFeature(e) {
       const feature = e.target.feature;
-      selectedCountyFips = String(feature.id || feature.properties.GEOID || '').padStart(5, '0');
+      selectedCountyFips = featureFips(feature);
       renderSelectedCounty();
       map.fitBounds(e.target.getBounds(), { padding: [12, 12] });
     }
 
     function onEachCounty(feature, layer) {
-      const fips = String(feature.id || feature.properties.GEOID || '').padStart(5, '0');
+      const fips = featureFips(feature);
       const label = countyLabels[fips] || `County FIPS ${fips}`;
 
       layer.bindTooltip(label, {
@@ -1101,15 +1140,31 @@
       const statesMesh = topojson.mesh(topology, topology.objects.states, (a, b) => a !== b);
 
       countyLayer = L.geoJSON(countyGeoJson, {
+        pane: 'femaPane',
+        renderer: L.svg(),
         style: styleCounty,
         onEachFeature: onEachCounty
       }).addTo(map);
 
-      sviLayer = L.geoJSON(countyGeoJson, { style: styleSviCounty, interactive:false });
-      nriLayer = L.geoJSON(countyGeoJson, { style: styleNriCounty, interactive:false });
+      // SVI and NRI use separate SVG panes so their fills cannot be hidden by
+      // the FEMA layer or by Leaflet's shared canvas renderer.
+      sviLayer = L.geoJSON(countyGeoJson, {
+        pane: 'sviPane',
+        renderer: L.svg(),
+        style: styleSviCounty,
+        interactive: false
+      });
+      nriLayer = L.geoJSON(countyGeoJson, {
+        pane: 'nriPane',
+        renderer: L.svg(),
+        style: styleNriCounty,
+        interactive: false
+      });
       syncOverlayLayers();
 
       stateOutlineLayer = L.geoJSON(statesMesh, {
+        pane: 'statePane',
+        renderer: L.svg(),
         style: styleStateOutline
       }).addTo(map);
 
