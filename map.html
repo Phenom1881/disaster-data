@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disaster Data | Map</title>
 
-  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_000000009cbc81f592aaf3c0569f2b10%26fn%3Ddisasterdata_github_overlay_v3_map.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3D5f94332e641bcadd7a0249962f759e7c460d137b16058c054bc4860bb0df572e%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_0000000099fc81f5a3684bfa56030605%26fn%3Dmap%25286%2529.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3Dc6d651f7e236a7153b19a428801931ded136909e2f45d4bc2faac476bc561771%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />
 
@@ -1059,7 +1059,7 @@
       legend.update(); info.update(); renderSelectedCounty();
     }
 
-    async async function loadCountyTopology() {
+    async function loadCountyTopology() {
       const urls = [
         'https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json',
         'https://unpkg.com/us-atlas@3/counties-10m.json'
