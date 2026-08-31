@@ -1122,29 +1122,21 @@
   };
 }
 
-    function styleNriCounty(feature) {
-      const fips = featureFips(feature);
-      const row = COUNTY_NRI[fips];
-      const hazard = nriHazardSelect && nriHazardSelect.value;
-      const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
-      const raw = hazard ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null) : (row ? row[metric] : null);
-      const v = Number.isFinite(Number(raw)) ? Number(raw) : null;
-      const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
-      const vals = Object.keys(COUNTY_NRI).map(k => {
-        const r=COUNTY_NRI[k];
-        const x=hazard ? (r && r.hazards && r.hazards[hazard] ? r.hazards[hazard].score : null) : (r ? r[metric] : null);
-        return Number(x);
-      }).filter(Number.isFinite);
-      const max = vals.length ? Math.max(...vals) : 1;
-      const br = [max*.2,max*.4,max*.6,max*.8];
-      return {
-        fillColor: Number.isFinite(v) ? getColor(v, br) : '#ffffff',
-        fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.50 : 0,
-        weight: isNriMode() && Number.isFinite(v) ? 0.7 : 0,
-        color: '#004c53',
-        opacity: isNriMode() && Number.isFinite(v) ? 0.8 : 0
-      };
-    }
+function styleSviCounty(feature) {
+  const fips = featureFips(feature);
+  const row = COUNTY_SVI[fips];
+  const metric = sviMetricSelect ? sviMetricSelect.value : 'overall';
+  const v = row && Number.isFinite(Number(row[metric])) ? Number(row[metric]) : null;
+  const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
+
+  return {
+    fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : '#ffffff',
+    fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.55 : 0,
+    weight: isSviMode() && Number.isFinite(v) ? 0.7 : 0,
+    color: '#b35024',
+    opacity: isSviMode() && Number.isFinite(v) ? 0.75 : 0
+  };
+}
 
     function styleStateOutline() {
       return {
