@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disaster Data | Map</title>
 
-  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788182254415&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_000000002ce881f5bd138bc45c01f5aa%26fn%3Dmap%25285%2529.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3D4e5b54492fd4cc29beeaffebead3cd3409840fdb15e534db35e823311bedc59a%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <script type="text/javascript" nonce="a6168455247745618d629a03b87" src="//local.adguard.org?ts=1788185854421&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_0000000099fc81f5a3684bfa56030605%26fn%3Dmap%25286%2529.html%26cd%3Dattachment%26ts%3D496718%26p%3Dfs%26cid%3D1%26sig%3Dc6d651f7e236a7153b19a428801931ded136909e2f45d4bc2faac476bc561771%26v%3D0&amp;app=com.apple.Safari&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-push&amp;st-loc&amp;st-dnt"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />
 
@@ -1032,7 +1032,19 @@
       });
     }
 
+    function syncOverlayLayers() {
+      if (sviLayer) {
+        if (isSviMode() && !map.hasLayer(sviLayer)) sviLayer.addTo(map);
+        if (!isSviMode() && map.hasLayer(sviLayer)) map.removeLayer(sviLayer);
+      }
+      if (nriLayer) {
+        if (isNriMode() && !map.hasLayer(nriLayer)) nriLayer.addTo(map);
+        if (!isNriMode() && map.hasLayer(nriLayer)) map.removeLayer(nriLayer);
+      }
+    }
+
     function refreshMap() {
+      syncOverlayLayers();
       const femaValues=getActiveCountyValues();
       const vals=Object.values(femaValues).filter(v=>Number.isFinite(Number(v)));
       const maxValue=vals.length?Math.max(...vals):0; currentBreaks=getBreaks(maxValue);
@@ -1047,10 +1059,31 @@
       legend.update(); info.update(); renderSelectedCounty();
     }
 
+    async function loadCountyTopology() {
+      const urls = [
+        'https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json',
+        'https://unpkg.com/us-atlas@3/counties-10m.json'
+      ];
+      let lastError;
+      for (const url of urls) {
+        try {
+          const response = await fetch(url, { cache: 'no-store' });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return await response.json();
+        } catch (err) {
+          lastError = err;
+          console.warn('County boundary source failed:', url, err);
+        }
+      }
+      throw lastError || new Error('No county boundary source available');
+    }
+
     async function init() {
-      const topoUrl = 'https://unpkg.com/us-atlas@3/counties-10m.json';
-      const response = await fetch(topoUrl);
-      const topology = await response.json();
+      const topology = await loadCountyTopology();
+
+      if (!topology.objects || !topology.objects.counties || !topology.objects.states) {
+        throw new Error('County boundary file is missing counties/states objects');
+      }
 
       const countyGeoJson = topojson.feature(topology, topology.objects.counties);
       const statesMesh = topojson.mesh(topology, topology.objects.states, (a, b) => a !== b);
@@ -1060,8 +1093,9 @@
         onEachFeature: onEachCounty
       }).addTo(map);
 
-      sviLayer = L.geoJSON(countyGeoJson, { style: styleSviCounty, interactive:false }).addTo(map);
-      nriLayer = L.geoJSON(countyGeoJson, { style: styleNriCounty, interactive:false }).addTo(map);
+      sviLayer = L.geoJSON(countyGeoJson, { style: styleSviCounty, interactive:false });
+      nriLayer = L.geoJSON(countyGeoJson, { style: styleNriCounty, interactive:false });
+      syncOverlayLayers();
 
       stateOutlineLayer = L.geoJSON(statesMesh, {
         style: styleStateOutline
