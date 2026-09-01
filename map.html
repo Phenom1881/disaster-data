@@ -847,6 +847,34 @@
     let stateOutlineLayer;
     let currentBreaks = [0, 1, 2, 3, 4, 5];
 
+    // NRI performance cache. Recomputed only when the selected NRI
+    // metric/hazard changes, rather than once for every county polygon.
+    let currentNriMax = 1;
+    let currentNriBreaks = [20, 40, 60, 80];
+
+    function updateNriScaleCache() {
+      const hazard = nriHazardSelect && nriHazardSelect.value;
+      const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
+      let max = 0;
+
+      Object.keys(COUNTY_NRI).forEach(function(fips) {
+        const row = COUNTY_NRI[fips];
+        const raw = hazard
+          ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null)
+          : (row ? row[metric] : null);
+        const v = Number(raw);
+        if (Number.isFinite(v) && v > max) max = v;
+      });
+
+      currentNriMax = max > 0 ? max : 1;
+      currentNriBreaks = [
+        currentNriMax * 0.2,
+        currentNriMax * 0.4,
+        currentNriMax * 0.6,
+        currentNriMax * 0.8
+      ];
+    }
+
     function isSviMode() { return !!(sviOverlayCheck && sviOverlayCheck.checked); }
     function isNriMode() { return !!(nriOverlayCheck && nriOverlayCheck.checked); }
     function isFemaMode() { return !!(femaLayerCheck && femaLayerCheck.checked); }
@@ -1129,19 +1157,17 @@
       const row = COUNTY_NRI[fips];
       const hazard = nriHazardSelect && nriHazardSelect.value;
       const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
-      const raw = hazard ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null) : (row ? row[metric] : null);
+      const raw = hazard
+        ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null)
+        : (row ? row[metric] : null);
       const v = Number.isFinite(Number(raw)) ? Number(raw) : null;
       const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
-      const vals = Object.keys(COUNTY_NRI).map(k => {
-        const r=COUNTY_NRI[k];
-        const x=hazard ? (r && r.hazards && r.hazards[hazard] ? r.hazards[hazard].score : null) : (r ? r[metric] : null);
-        return Number(x);
-      }).filter(Number.isFinite);
-      const max = vals.length ? Math.max(...vals) : 1;
-      const br = [max*.2,max*.4,max*.6,max*.8];
       const invRes = !hazard && metric === 'reslScore';
+
       return {
-        fillColor: Number.isFinite(v) ? (invRes ? nriInvColor(v, max) : getColor(v, br)) : '#ffffff',
+        fillColor: Number.isFinite(v)
+          ? (invRes ? nriInvColor(v, currentNriMax) : getColor(v, currentNriBreaks))
+          : '#ffffff',
         fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.50 : 0,
         weight: isNriMode() && Number.isFinite(v) ? 0.7 : 0,
         color: '#004c53',
@@ -1246,8 +1272,10 @@
       filteredTotalEl.textContent = bits.length ? (isFemaMode() ? (overlayActive()?overlayEvents.length:declarationTotal).toLocaleString() : (isSviMode()?sviCount:nriCount).toLocaleString()) : '0';
       filteredSubtitleEl.textContent = bits.join(' · ') || 'Select a map layer to display data';
       if(countyLayer) countyLayer.setStyle(styleCounty);
-      if(sviLayer) sviLayer.setStyle(styleSviCounty);
-      if(nriLayer) nriLayer.setStyle(styleNriCounty);
+      // Only restyle optional overlays when they are actually active.
+      // This keeps FEMA year/type filtering lightweight.
+      if(sviLayer && isSviMode()) sviLayer.setStyle(styleSviCounty);
+      if(nriLayer && isNriMode()) nriLayer.setStyle(styleNriCounty);
       legend.update(); info.update(); renderSelectedCounty();
     }
 
@@ -1301,6 +1329,7 @@
         style: styleNriCounty,
         interactive: false
       });
+      updateNriScaleCache();
       syncOverlayLayers();
 
       stateOutlineLayer = L.geoJSON(statesMesh, {
