@@ -38,7 +38,7 @@ states/<state-slug>/index.html
 locality-index.js
 updated sitemap.xml / sitemap-state.json
 
-The SVI and NRI data are baked directly into the generated static HTML so
+SVI and NRI data are baked directly into the generated static HTML so
 jurisdiction pages do not depend on JavaScript loading those data files in
 the visitor's browser.
 """
@@ -67,6 +67,9 @@ STATE_NAME = STATE_AB
 STATE_SLUG = STATE_AB.lower()
 
 OUT_DIR = os.path.join(OUT_ROOT, "states", STATE_SLUG)
+
+# CARTO public basemap key used by Leaflet jurisdiction maps.
+CARTO_BASEMAP_KEY = "cb1_2n1q_1_ad4306e45519c0e62979dcd7"
 
 
 # =============================================================================
@@ -276,6 +279,7 @@ def fmt_date(iso):
     """
     try:
         d = datetime.datetime.strptime(iso[:10], "%Y-%m-%d")
+
         return "%s %d, %d" % (
             d.strftime("%b"),
             d.day,
@@ -293,6 +297,7 @@ def pretty_title(t):
 
 def slugify(s):
     s = str(s or "").lower()
+
     s = s.replace("&", "and")
     s = s.replace(".", "")
     s = s.replace(",", "")
@@ -308,6 +313,7 @@ def decl_num(s):
     Sortable integer inside FEMA declaration string.
     """
     m = re.search(r"\d+", s or "")
+
     return m.group(0) if m else "0"
 
 
@@ -493,6 +499,7 @@ FILTER_JS = """<script>
           dir
         );
       });
+
     })(heads[h],h);
   }
 
@@ -502,9 +509,7 @@ FILTER_JS = """<script>
 
 
 def type_chips(total, dr, em, fm):
-    """
-    Declaration filter chips.
-    """
+
     def chip(t, n, pressed=False):
         off = "" if n else " off"
         pr = "true" if pressed else "false"
@@ -563,62 +568,13 @@ HMA_PROG_LABELS = {
 
 
 STATE_FIPS = {
-    "AL": "01",
-    "AK": "02",
-    "AZ": "04",
-    "AR": "05",
-    "CA": "06",
-    "CO": "08",
-    "CT": "09",
-    "DE": "10",
-    "DC": "11",
-    "FL": "12",
-    "GA": "13",
-    "HI": "15",
-    "ID": "16",
-    "IL": "17",
-    "IN": "18",
-    "IA": "19",
-    "KS": "20",
-    "KY": "21",
-    "LA": "22",
-    "ME": "23",
-    "MD": "24",
-    "MA": "25",
-    "MI": "26",
-    "MN": "27",
-    "MS": "28",
-    "MO": "29",
-    "MT": "30",
-    "NE": "31",
-    "NV": "32",
-    "NH": "33",
-    "NJ": "34",
-    "NM": "35",
-    "NY": "36",
-    "NC": "37",
-    "ND": "38",
-    "OH": "39",
-    "OK": "40",
-    "OR": "41",
-    "PA": "42",
-    "RI": "44",
-    "SC": "45",
-    "SD": "46",
-    "TN": "47",
-    "TX": "48",
-    "UT": "49",
-    "VT": "50",
-    "VA": "51",
-    "WA": "53",
-    "WV": "54",
-    "WI": "55",
-    "WY": "56",
-    "AS": "60",
-    "GU": "66",
-    "MP": "69",
-    "PR": "72",
-    "VI": "78",
+    "AL":"01","AK":"02","AZ":"04","AR":"05","CA":"06","CO":"08","CT":"09","DE":"10",
+    "DC":"11","FL":"12","GA":"13","HI":"15","ID":"16","IL":"17","IN":"18","IA":"19",
+    "KS":"20","KY":"21","LA":"22","ME":"23","MD":"24","MA":"25","MI":"26","MN":"27",
+    "MS":"28","MO":"29","MT":"30","NE":"31","NV":"32","NH":"33","NJ":"34","NM":"35",
+    "NY":"36","NC":"37","ND":"38","OH":"39","OK":"40","OR":"41","PA":"42","RI":"44",
+    "SC":"45","SD":"46","TN":"47","TX":"48","UT":"49","VT":"50","VA":"51","WA":"53",
+    "WV":"54","WI":"55","WY":"56","AS":"60","GU":"66","MP":"69","PR":"72","VI":"78",
 }
 
 
@@ -640,12 +596,7 @@ _PA_COUNTY_SUFFIXES = [
 
 
 def pa_base_kind(name):
-    """
-    Normalize PA/IA/HMA names to (base, kind).
 
-    This intentionally keeps independent cities separate from like-named
-    counties.
-    """
     low = str(name or "").strip().lower()
 
     for suf in _PA_COUNTY_SUFFIXES:
@@ -666,12 +617,11 @@ def pa_base_kind(name):
 
 
 def make_slug(c, state_ab):
-    """
-    State-qualified, type-aware slug.
-    """
+
     st = "-" + state_ab.lower()
 
     if c["kind"] == "county":
+
         base = slugify(c["base"])
         noun = slugify(c["noun"])
 
@@ -687,6 +637,7 @@ def make_slug(c, state_ab):
 
 
 def kind_label(c):
+
     if c["kind"] == "county":
         return c["noun"]
 
@@ -697,9 +648,7 @@ def kind_label(c):
 
 
 def kind_phrase(js):
-    """
-    Adaptive state hub wording.
-    """
+
     cnouns = sorted(
         {j["noun"] for j in js if j["kind"] == "county"}
     )
@@ -707,10 +656,11 @@ def kind_phrase(js):
     parts = []
 
     if cnouns:
-        if len(cnouns) == 1:
-            parts.append(cnouns[0].lower())
-        else:
-            parts.append("county or county-equivalent")
+        parts.append(
+            cnouns[0].lower()
+            if len(cnouns) == 1
+            else "county or county-equivalent"
+        )
 
     if any(j["kind"] == "city" for j in js):
         parts.append("independent city")
@@ -749,18 +699,14 @@ _RISK_SUFFIXES = [
 
 
 def _risk_base(name):
-    """
-    Normalize a county-equivalent name for SVI/NRI matching.
-    """
+
     s = str(name or "").strip().lower()
 
-    # Remove parenthetical city labels from generated jurisdiction names.
     s = re.sub(r"\s*\([^)]*\)\s*", " ", s)
-
-    # Strip comma-delimited add-ons.
     s = s.split(",", 1)[0].strip()
 
     for suffix in _RISK_SUFFIXES:
+
         tail = " " + suffix
 
         if s.endswith(tail):
@@ -774,12 +720,7 @@ def _risk_base(name):
 
 
 def _risk_kind(fips, source_name):
-    """
-    Classify FIPS county-equivalent as county-like or independent city.
 
-    Virginia independent-city county-equivalent FIPS values have county
-    components 500 and above. Explicit 'city' suffix is a second check.
-    """
     fp = str(fips or "").zfill(5)
     source = str(source_name or "").strip().lower()
 
@@ -797,13 +738,7 @@ def _risk_kind(fips, source_name):
 
 
 def build_risk_lookup(dataset):
-    """
-    Convert FIPS-keyed SVI/NRI data to:
 
-        (state, normalized name, county/city) -> record
-
-    The FIPS code is copied into the record.
-    """
     lookup = {}
 
     for fips, raw in (dataset or {}).items():
@@ -832,9 +767,7 @@ def build_risk_lookup(dataset):
 
 
 def jurisdiction_risk_key(j, state_ab):
-    """
-    Build the lookup key for a generated county or independent city.
-    """
+
     if j.get("kind") not in ("county", "city"):
         return None
 
@@ -855,9 +788,14 @@ def jurisdiction_risk_key(j, state_ab):
 # =============================================================================
 
 def last_complete_fy(browse):
+
     now = datetime.date.today()
 
-    cur = now.year + 1 if now.month >= 10 else now.year
+    cur = (
+        now.year + 1
+        if now.month >= 10
+        else now.year
+    )
 
     avail = max(
         (r.get("fyDeclared", 0) for r in browse),
@@ -871,10 +809,7 @@ MIN_DISTINCT_DECLS = 2
 
 
 def _is_nationwide(rec):
-    """
-    Nationwide declarations such as COVID do not meaningfully distinguish
-    one jurisdiction from another.
-    """
+
     title = (rec.get("declarationTitle") or "").upper()
 
     return (
@@ -884,11 +819,7 @@ def _is_nationwide(rec):
 
 
 def is_thin(j):
-    """
-    Preserve the existing thin-page rule.
 
-    SVI/NRI do not automatically change this SEO gate.
-    """
     if (j.get("pa_obl") or 0) > 0:
         return False
 
@@ -902,27 +833,25 @@ def is_thin(j):
 
 
 def _content_hash(j):
-    """
-    Stable fingerprint of everything material rendered on a jurisdiction
-    page.
 
-    SVI and NRI are included so sitemap lastmod advances when those source
-    records change.
-    """
     payload = {
         "decl": j.get("decl", 0),
         "dr": j.get("dr", 0),
         "em": j.get("em", 0),
         "fm": j.get("fm", 0),
         "latest": j.get("latest", ""),
+
         "pa_obl": j.get("pa_obl", 0),
         "pa_proj": j.get("pa_proj", 0),
         "pa_cats": j.get("pa_cats", {}),
+
         "hma": j.get("hma", {}),
         "ia": j.get("ia", {}),
+
         "svi": j.get("svi", {}),
         "nri": j.get("nri", {}),
         "risk_fips": j.get("risk_fips", ""),
+
         "recs": sorted(
             [
                 r.get("femaDeclarationString", ""),
@@ -948,10 +877,11 @@ def _content_hash(j):
 
 
 # =============================================================================
-# JURISDICTION BASE STATISTICS
+# BASE JURISDICTION STATISTICS
 # =============================================================================
 
 def juris_stats(entry, state_ab, c, by_id, lcfy):
+
     disp = c["display"]
     slug = make_slug(c, state_ab)
     kind = c["kind"]
@@ -977,6 +907,7 @@ def juris_stats(entry, state_ab, c, by_id, lcfy):
     haz = {}
 
     for r in complete:
+
         t = r.get("declarationType", "")
 
         by_type[t] = by_type.get(t, 0) + 1
@@ -1991,14 +1922,16 @@ def header_html():
 
 
 def footer_html():
+
     return (
         '<footer class="site"><div class="wrap">'
         'Disaster Data &middot; built from FEMA OpenFEMA, CDC/ATSDR SVI, '
-        'and FEMA National Risk Index data &middot; refreshed as source data are updated'
+        'and FEMA National Risk Index data'
         ' &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" '
         'target="_blank" rel="noopener">Report a data issue</a>'
         ' &middot; <a href="../../about.html">About and contact</a>'
         '</div></footer>'
+
         '<!-- Cloudflare Web Analytics -->'
         '<script defer '
         'src="https://static.cloudflareinsights.com/beacon.min.js" '
@@ -2013,15 +1946,14 @@ def footer_html():
 # =============================================================================
 
 def summary_html(j):
-    """
-    Data-driven summary paragraph.
-    """
+
     hmp = j.get("hmp", [])
 
     if not hmp:
         return ""
 
     e = html.escape
+
     name = e(j["name"])
 
     dates = sorted(
@@ -2031,15 +1963,18 @@ def summary_html(j):
     )
 
     if dates and dates[0][:4] != dates[-1][:4]:
+
         span = "between %s and %s" % (
             dates[0][:4],
             dates[-1][:4],
         )
 
     elif dates:
+
         span = "in %s" % dates[0][:4]
 
     else:
+
         span = "since FY2000"
 
     sents = [
@@ -2060,6 +1995,7 @@ def summary_html(j):
     ]
 
     if drs:
+
         title = pretty_title(
             drs[0].get("declarationTitle", "")
         ).strip()
@@ -2070,6 +2006,7 @@ def summary_html(j):
         )[:4]
 
         if title and yr:
+
             sents.append(
                 "Its most recent major disaster declaration was %s in %s."
                 % (
@@ -2081,6 +2018,7 @@ def summary_html(j):
     hz = j.get("hazards") or []
 
     if len(hz) >= 2:
+
         sents.append(
             "The hazards behind these declarations were most often %s."
             % _oxford(
@@ -2092,15 +2030,18 @@ def summary_html(j):
         )
 
     elif len(hz) == 1:
+
         sents.append(
             "Every declaration in the completed-year record was tied to %s."
             % e(hz[0][0].lower())
         )
 
     if (j.get("pa_obl") or 0) > 0:
+
         tail = ""
 
         if j.get("pa_top_cat"):
+
             tail = (
                 ", with the largest category being %s"
                 % e(j["pa_top_cat"].lower())
@@ -2116,6 +2057,7 @@ def summary_html(j):
         )
 
     if (j.get("ia") or {}).get("ihp", 0) > 0:
+
         sents.append(
             "FEMA Individual Assistance records show %s approved through "
             "the Individuals and Households Program."
@@ -2131,9 +2073,7 @@ def summary_html(j):
 
 
 def method_html(j):
-    """
-    Page-specific methodology text.
-    """
+
     kind = j["kind"]
     spans = bool(j.get("spans"))
 
@@ -2163,6 +2103,7 @@ def method_html(j):
     risk_text = ""
 
     if j.get("svi") or j.get("nri"):
+
         risk_text = (
             " Risk and vulnerability context is joined at the county-equivalent "
             "level using the five-digit Census/FIPS GEOID. CDC/ATSDR SVI and "
@@ -2175,17 +2116,17 @@ def method_html(j):
         '<h2>How these numbers are built</h2>'
         '<p>'
         "Declaration history comes from FEMA's OpenFEMA Disaster Declarations "
-        "Summaries and is rebuilt with the site data pipeline. A declaration is "
-        "counted once for each designated area it names, so a single disaster "
-        "covering many localities is counted in each locality. For that reason, "
-        "jurisdiction counts do not sum to %s's statewide total. %s "
-        "Headline declaration totals cover completed federal fiscal years "
-        "(Oct. 1 through Sept. 30). Activity from the current fiscal year may "
-        "appear as the most recent event before it is included in those totals.%s "
-        "Public Assistance, Individual Assistance, and Hazard Mitigation figures "
-        "reflect the underlying federal datasets and may change as records are "
-        "updated or projects close out. DisasterData.IO uses federal source data "
-        "but is not endorsed by or affiliated with FEMA, CDC, or ATSDR."
+        "Summaries. A declaration is counted once for each designated area it "
+        "names, so a single disaster covering many localities is counted in "
+        "each locality. For that reason, jurisdiction counts do not sum to "
+        "%s's statewide total. %s Headline declaration totals cover completed "
+        "federal fiscal years (Oct. 1 through Sept. 30). Activity from the "
+        "current fiscal year may appear as the most recent event before it is "
+        "included in those totals.%s Public Assistance, Individual Assistance, "
+        "and Hazard Mitigation figures reflect the underlying federal datasets "
+        "and may change as records are updated or projects close out. "
+        "DisasterData.IO uses federal source data but is not endorsed by or "
+        "affiliated with FEMA, CDC, or ATSDR."
         '</p></section>'
         % (
             STATE_NAME,
@@ -2196,15 +2137,11 @@ def method_html(j):
 
 
 # =============================================================================
-# TOP-OF-PAGE OVERVIEW CARDS
+# TOP OVERVIEW CARDS
 # =============================================================================
 
 def hero_cards_html(j):
-    """
-    Modern four-card overview.
 
-    IA appears only where IA exists. NRI appears only where matched.
-    """
     cards = []
 
     common_hazard = (
@@ -2224,6 +2161,7 @@ def hero_cards_html(j):
     nri = j.get("nri") or {}
 
     if nri:
+
         try:
             score = "%.1f" % float(nri.get("riskScore"))
         except Exception:
@@ -2243,6 +2181,7 @@ def hero_cards_html(j):
         )
 
     elif j.get("latest"):
+
         cards.append(
             (
                 "Most recent",
@@ -2252,6 +2191,7 @@ def hero_cards_html(j):
         )
 
     else:
+
         cards.append(
             (
                 "Major disasters",
@@ -2264,6 +2204,7 @@ def hero_cards_html(j):
     pa = j.get("pa_obl") or 0
 
     if ia.get("ihp", 0) > 0:
+
         cards.append(
             (
                 "Individual Assistance",
@@ -2274,6 +2215,7 @@ def hero_cards_html(j):
         )
 
         if pa > 0:
+
             cards.append(
                 (
                     "Public Assistance",
@@ -2284,6 +2226,7 @@ def hero_cards_html(j):
             )
 
         elif j.get("latest"):
+
             cards.append(
                 (
                     "Most recent",
@@ -2293,6 +2236,7 @@ def hero_cards_html(j):
             )
 
         else:
+
             cards.append(
                 (
                     "Major disasters",
@@ -2302,6 +2246,7 @@ def hero_cards_html(j):
             )
 
     elif pa > 0:
+
         cards.append(
             (
                 "Public Assistance",
@@ -2312,6 +2257,7 @@ def hero_cards_html(j):
         )
 
         if j.get("latest") and nri:
+
             cards.append(
                 (
                     "Most recent",
@@ -2321,6 +2267,7 @@ def hero_cards_html(j):
             )
 
         else:
+
             cards.append(
                 (
                     "Major disasters",
@@ -2330,6 +2277,7 @@ def hero_cards_html(j):
             )
 
     else:
+
         cards.append(
             (
                 "Major disasters",
@@ -2372,16 +2320,16 @@ def hero_cards_html(j):
 
 
 # =============================================================================
-# SVI / NRI SECTION
+# SVI / NRI
 # =============================================================================
 
 def _svi_percent(v):
+
     try:
         v = float(v)
     except (TypeError, ValueError):
         return None
 
-    # CDC missing-value sentinel values should not render.
     if v < 0 or v > 1:
         return None
 
@@ -2389,9 +2337,7 @@ def _svi_percent(v):
 
 
 def risk_context_html(j):
-    """
-    Static risk and vulnerability context.
-    """
+
     svi = j.get("svi") or {}
     nri = j.get("nri") or {}
 
@@ -2402,7 +2348,6 @@ def risk_context_html(j):
 
     cards = []
 
-    # ---------------------------------------------------------------- SVI
     if svi:
 
         overall_raw = svi.get("overall")
@@ -2439,6 +2384,7 @@ def risk_context_html(j):
             )
 
         else:
+
             lead = (
                 '<div class="svi-lead">'
                 '<div>'
@@ -2451,22 +2397,10 @@ def risk_context_html(j):
             interpretation = ""
 
         themes = [
-            (
-                "Socioeconomic status",
-                svi.get("socioeconomic"),
-            ),
-            (
-                "Household characteristics",
-                svi.get("household"),
-            ),
-            (
-                "Racial & ethnic minority status",
-                svi.get("minority"),
-            ),
-            (
-                "Housing type & transportation",
-                svi.get("housingTransportation"),
-            ),
+            ("Socioeconomic status", svi.get("socioeconomic")),
+            ("Household characteristics", svi.get("household")),
+            ("Racial & ethnic minority status", svi.get("minority")),
+            ("Housing type & transportation", svi.get("housingTransportation")),
         ]
 
         theme_rows = []
@@ -2521,7 +2455,6 @@ def risk_context_html(j):
             )
         )
 
-    # ---------------------------------------------------------------- NRI
     if nri:
 
         try:
@@ -2550,17 +2483,13 @@ def risk_context_html(j):
 
         try:
             sv_score = "%.1f" % float(
-                nri.get(
-                    "socialVulnerabilityScore"
-                )
+                nri.get("socialVulnerabilityScore")
             )
         except Exception:
             sv_score = "N/A"
 
         sv_rating = str(
-            nri.get(
-                "socialVulnerabilityRating"
-            )
+            nri.get("socialVulnerabilityRating")
             or "Not rated"
         )
 
@@ -2647,6 +2576,7 @@ def risk_context_html(j):
     meta = ""
 
     if fips:
+
         meta = (
             '<div class="section-meta">'
             "County FIPS %s"
@@ -2688,6 +2618,7 @@ def risk_context_html(j):
 # =============================================================================
 
 def pa_breakdown_html(j):
+
     cats = j.get("pa_cats") or {}
 
     if not cats:
@@ -2780,6 +2711,7 @@ def pa_breakdown_html(j):
 # =============================================================================
 
 def pa_timing_html(j):
+
     timing = j.get("pa_timing") or {}
 
     if not timing:
@@ -2800,6 +2732,7 @@ def pa_timing_html(j):
         )
 
         if m:
+
             meta[m.group(1)] = (
                 pretty_title(
                     r.get(
@@ -2814,7 +2747,9 @@ def pa_timing_html(j):
             )
 
     def _days(d1, d2):
+
         try:
+
             a = datetime.datetime.strptime(
                 d1,
                 "%Y-%m-%d",
@@ -2828,6 +2763,7 @@ def pa_timing_html(j):
             return (b - a).days
 
         except Exception:
+
             return None
 
     rows = []
@@ -3009,15 +2945,18 @@ def pa_timing_html(j):
 # =============================================================================
 
 def ia_html(j):
+
     ia = j.get("ia") or {}
 
     if not ia:
+
         return ""
 
     if not (
         ia.get("reg")
         or ia.get("ihp")
     ):
+
         return ""
 
     e = html.escape
@@ -3096,6 +3035,7 @@ def ia_html(j):
     table = ""
 
     if body:
+
         table = (
             '<div class="tablewrap">'
             '<table class="pa-cat">'
@@ -3133,15 +3073,18 @@ def ia_html(j):
 # =============================================================================
 
 def hma_html(j):
+
     hma = j.get("hma") or {}
 
     if not hma:
+
         return ""
 
     if not (
         hma.get("fed")
         or 0
     ):
+
         return ""
 
     e = html.escape
@@ -3216,6 +3159,7 @@ def hma_html(j):
     )
 
     if props > 0:
+
         stat += (
             '<div class="hm-stat">'
             '<div class="hm-n">%s</div>'
@@ -3225,6 +3169,7 @@ def hma_html(j):
         )
 
     else:
+
         stat += (
             '<div class="hm-stat">'
             '<div class="hm-n">—</div>'
@@ -3263,10 +3208,7 @@ def hma_html(j):
 
 
 def federal_assistance_html(j):
-    """
-    Combine the existing IA / PA / timing / HMA sections into one modern
-    page region.
-    """
+
     parts = [
         ia_html(j),
         pa_breakdown_html(j),
@@ -3281,6 +3223,7 @@ def federal_assistance_html(j):
     ]
 
     if not parts:
+
         return ""
 
     return (
@@ -3306,10 +3249,12 @@ def federal_assistance_html(j):
 # =============================================================================
 
 def jurisdiction_map_html(j):
+
     if j.get("kind") not in (
         "county",
         "city",
     ):
+
         return ""
 
     st_fips = STATE_FIPS.get(
@@ -3318,6 +3263,7 @@ def jurisdiction_map_html(j):
     )
 
     if not st_fips:
+
         return ""
 
     e = html.escape
@@ -3330,6 +3276,7 @@ def jurisdiction_map_html(j):
     map_link = ""
 
     if target_fips:
+
         map_link = (
             '<a class="hero-link" '
             'href="../../map.html?county=%s">'
@@ -3382,16 +3329,28 @@ def jurisdiction_map_html(j):
 
 
 def jurisdiction_map_js(map_html):
+
     if not map_html:
+
         return ""
+
+    tile_url = (
+        "https://{s}.basemaps.cartocdn.com/"
+        "rastertiles/light_nolabels/{z}/{x}/{y}.png"
+        "?key=%s"
+        % CARTO_BASEMAP_KEY
+    )
 
     return (
         '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>'
         '<script src="https://unpkg.com/topojson-client@3"></script>'
         '<script src="../../county-names.js"></script>'
         '<script src="../../locality-index.js"></script>'
+
         "<script>"
+
         "(function(){"
+
         'var el=document.getElementById("locmap");'
         "if(!el)return;"
 
@@ -3411,13 +3370,20 @@ def jurisdiction_map_js(map_html):
 
         "function base(v){"
         "var s=norm(String(v).split(',')[0]);"
+
         "for(var i=0;i<SX.length;i++){"
+
         "if(s.endsWith(' '+SX[i])){"
+
         "s=s.slice(0,-(SX[i].length+1)).trim();"
         "break;"
+
         "}"
+
         "}"
+
         "return s;"
+
         "}"
 
         "var cnBase=base(el.dataset.name);"
@@ -3432,14 +3398,20 @@ def jurisdiction_map_js(map_html):
         "var ul={};"
 
         "window.LOCALITY_INDEX.forEach(function(r){"
+
         "if(r[1]!==sa)return;"
+
         "var full=r[0].replace(/ \\(city\\)$/i,'').toLowerCase();"
+
         "ul[base(r[0])]=r[3];"
         "ul[full]=r[3];"
+
         "});"
 
         'fetch("https://unpkg.com/us-atlas@3/counties-10m.json")'
+
         ".then(function(r){return r.json();})"
+
         ".then(function(topo){"
 
         "var features=topojson.feature("
@@ -3454,13 +3426,17 @@ def jurisdiction_map_js(map_html):
         "};"
 
         "var matches=fc.features.filter(function(f){"
+
         "var fp=String(f.id).padStart(5,'0');"
+
         "return base(window.COUNTY_NAMES[fp]||'')===cnBase;"
+
         "});"
 
         "var collide=matches.length>1;"
 
         "function isTarget(f){"
+
         "var fp=String(f.id).padStart(5,'0');"
 
         "if(tf){"
@@ -3472,22 +3448,33 @@ def jurisdiction_map_js(map_html):
         "}"
 
         "if(collide){"
+
         "var city=(+fp.slice(2))>=500;"
+
         "return (knd==='city')===city;"
+
         "}"
 
         "return true;"
+
         "}"
 
         'var map=L.map("locmap",{'
         "scrollWheelZoom:false,"
         "zoomControl:true,"
-        "attributionControl:false"
+        "attributionControl:true"
         "});"
 
-        'L.tileLayer('
-        '"https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",'
-        "{maxZoom:13}"
+        "L.tileLayer("
+        + json.dumps(tile_url)
+        + ",{"
+        "subdomains:'abcd',"
+        "maxZoom:20,"
+        "attribution:'&copy; "
+        "<a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+        "&copy; "
+        "<a href=\"https://carto.com/attributions\">CARTO</a>'"
+        "}"
         ").addTo(map);"
 
         "var targetLayer=null;"
@@ -3495,13 +3482,16 @@ def jurisdiction_map_js(map_html):
         "var ly=L.geoJson(fc,{"
 
         "style:function(f){"
+
         "if(isTarget(f)){"
+
         "return{"
         'fillColor:"#004c53",'
         "fillOpacity:.58,"
         'color:"#004c53",'
         "weight:2"
         "};"
+
         "}"
 
         "return{"
@@ -3510,17 +3500,23 @@ def jurisdiction_map_js(map_html):
         'color:"#938a78",'
         "weight:1"
         "};"
+
         "},"
 
         "onEachFeature:function(f,layer){"
 
         "var fp=String(f.id).padStart(5,'0');"
+
         "var lb=window.COUNTY_NAMES[fp]||'';"
+
         "var nm=lb.split(',')[0].trim();"
+
         "var u=ul[base(nm)]||ul[nm.toLowerCase()];"
 
         "if(isTarget(f)){"
+
         "targetLayer=layer;"
+
         "layer.bindTooltip("
         "nm,"
         "{"
@@ -3530,27 +3526,41 @@ def jurisdiction_map_js(map_html):
         "offset:[0,0]"
         "}"
         ");"
+
         "}"
+
         "else{"
+
         "layer.bindTooltip(nm,{sticky:true});"
+
         "}"
 
         "if(u){"
+
         "layer.on('click',function(){"
+
         "window.location.href='../../'+u;"
+
         "});"
 
         "layer.on('mouseover',function(){"
+
         "if(this._path)this._path.style.cursor='pointer';"
+
         "this.setStyle({fillOpacity:.62});"
+
         "});"
 
         "layer.on('mouseout',function(){"
+
         "this.setStyle({"
         "fillOpacity:(this===targetLayer)?.58:.34"
         "});"
+
         "});"
+
         "}"
+
         "}"
 
         "}).addTo(map);"
@@ -3561,20 +3571,23 @@ def jurisdiction_map_js(map_html):
         ");"
 
         "});"
+
         "}"
 
         "go();"
 
         "})();"
+
         "</script>"
     )
 
 
 # =============================================================================
-# PREVIOUS OCCURRENCES / DECLARATION RECORD
+# PREVIOUS OCCURRENCES
 # =============================================================================
 
 def mitigation_history_html(j):
+
     e = html.escape
 
     hmp_rows = "".join(
@@ -3649,27 +3662,38 @@ def mitigation_history_html(j):
         "</p>"
         "</div>"
         "</div>"
+
         '<div class="hmp">'
+
         "<p>"
         "This table contains the completed-fiscal-year FEMA declaration "
         "record for %s. Copy the table or download the full declaration "
         "record below."
         "</p>"
+
         '<div class="tablewrap">'
+
         "<table>"
+
         "<thead><tr>"
         "<th>Hazard</th>"
         "<th>Date</th>"
         "<th>FEMA declaration</th>"
         "<th>Type</th>"
         "</tr></thead>"
+
         "<tbody>%s</tbody>"
+
         "</table>"
+
         "</div>"
+
         '<button class="copybtn" type="button" data-hmp="%s">'
         "Copy table"
         "</button>"
+
         "</div>"
+
         "</section>"
         % (
             e(j["name"]),
@@ -3683,17 +3707,30 @@ def mitigation_history_html(j):
     )
 
 
+# =============================================================================
+# DECLARATION RECORD
+# =============================================================================
+
 def declaration_history_html(j):
+
     e = html.escape
 
     rows = "".join(
         (
             '<tr data-t="%s">'
+
             '<td data-s="%s">%s</td>'
+
             '<td data-s="%s">%s</td>'
-            "<td><span class='tag' title='%s'>%s</span></td>"
+
+            "<td>"
+            "<span class='tag' title='%s'>%s</span>"
+            "</td>"
+
             "<td>%s</td>"
+
             "<td>%s</td>"
+
             "</tr>"
         )
         % (
@@ -3703,30 +3740,35 @@ def declaration_history_html(j):
                     "",
                 )
             ),
+
             e(
                 r.get(
                     "declarationDate",
                     "",
                 )[:10]
             ),
+
             fmt_date(
                 r.get(
                     "declarationDate",
                     "",
                 )
             ),
+
             decl_num(
                 r.get(
                     "femaDeclarationString",
                     "",
                 )
             ),
+
             e(
                 r.get(
                     "femaDeclarationString",
                     "",
                 )
             ),
+
             TYPE_LONG.get(
                 r.get(
                     "declarationType",
@@ -3734,18 +3776,21 @@ def declaration_history_html(j):
                 ),
                 "",
             ),
+
             e(
                 r.get(
                     "declarationType",
                     "",
                 )
             ),
+
             e(
                 r.get(
                     "incidentType",
                     "",
                 )
             ),
+
             e(
                 pretty_title(
                     r.get(
@@ -3755,65 +3800,96 @@ def declaration_history_html(j):
                 )
             ),
         )
+
         for r in j.get("hmp", [])
     )
 
     wrap_cls = (
         "tablewrap scroll"
-        if len(
-            j.get(
-                "hmp",
-                [],
-            )
-        ) > 12
+        if len(j.get("hmp", [])) > 12
         else "tablewrap"
     )
 
     return (
         '<section class="major-section">'
+
         '<div class="section-head">'
-        '<div>'
+
+        "<div>"
+
         '<h2>Every declaration on record</h2>'
+
         '<p class="section-deck">'
         "Filter or sort the completed-fiscal-year declaration record, "
         "download it as CSV, or copy a citation for this jurisdiction page."
         "</p>"
+
         "</div>"
+
         "</div>"
+
         '<div id="declbox">'
+
         '<p style="font-size:.79rem;color:#6b6357;margin:.5rem 0 .6rem">'
+
         '<b style="color:#004c53">DR</b> = Major disaster '
+
         "&middot; "
+
         '<b style="color:#004c53">EM</b> = Emergency '
+
         "&middot; "
+
         '<b style="color:#004c53">FM</b> = Fire management assistance'
+
         "</p>"
+
         "%s"
+
         '<p class="decl-count" aria-live="polite">'
         "Showing %d declarations"
         "</p>"
+
         '<div class="%s">'
+
         "<table>"
+
         "<thead><tr>"
+
         '<th class="sortable" data-k="date">Date</th>'
+
         '<th class="sortable" data-k="num">Number</th>'
+
         '<th class="sortable" data-k="text">Type</th>'
+
         '<th class="sortable" data-k="text">Hazard</th>'
+
         '<th class="sortable" data-k="text">Title</th>'
+
         "</tr></thead>"
+
         "<tbody>%s</tbody>"
+
         "</table>"
+
         "</div>"
+
         '<div style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0">'
+
         '<button class="copybtn csvbtn" type="button">'
         "Download CSV"
         "</button>"
+
         '<button class="copybtn citebtn" type="button">'
         "Cite this page"
         "</button>"
+
         "</div>"
+
         "</div>"
+
         "%s"
+
         "</section>"
         % (
             type_chips(
@@ -3822,9 +3898,13 @@ def declaration_history_html(j):
                 j["em"],
                 j["fm"],
             ),
+
             j["decl"],
+
             wrap_cls,
+
             rows,
+
             FILTER_JS,
         )
     )
@@ -3835,6 +3915,7 @@ def declaration_history_html(j):
 # =============================================================================
 
 def render_page(j, others):
+
     e = html.escape
 
     canonical = (
@@ -3883,6 +3964,7 @@ def render_page(j, others):
     ]
 
     if j.get("svi"):
+
         keywords.extend(
             [
                 "CDC SVI",
@@ -3891,6 +3973,7 @@ def render_page(j, others):
         )
 
     if j.get("nri"):
+
         keywords.extend(
             [
                 "FEMA National Risk Index",
@@ -3901,20 +3984,26 @@ def render_page(j, others):
     ld = {
         "@context": "https://schema.org",
         "@type": "Dataset",
+
         "name":
             "%s, %s disaster history and risk context"
             % (
                 j["name"],
                 STATE_NAME,
             ),
+
         "description": desc,
+
         "url": canonical,
+
         "isAccessibleForFree": True,
+
         "creator": {
             "@type": "Organization",
             "name": "Disaster Data",
             "url": SITE,
         },
+
         "spatialCoverage": {
             "@type": "Place",
             "name":
@@ -3924,15 +4013,17 @@ def render_page(j, others):
                     STATE_NAME,
                 ),
         },
+
         "temporalCoverage":
             "2000/%d"
             % lcfy,
+
         "isBasedOn":
             "https://www.fema.gov/about/openfema",
-        "keywords": keywords,
-    }
 
-    # ---------------------------------------------------------------- lede
+        "keywords":
+            keywords,
+    }
 
     lede = (
         "%s recorded <b>%d</b> federal disaster and emergency declarations "
@@ -3949,6 +4040,7 @@ def render_page(j, others):
     )
 
     if j.get("hazards"):
+
         lede += (
             " Its most frequently declared hazard is %s."
             % e(
@@ -3960,6 +4052,7 @@ def render_page(j, others):
         j.get("spans")
         and len(j["spans"]) > 1
     ):
+
         lede += (
             " This record covers the tribal nation across %s."
             % e(
@@ -3968,8 +4061,6 @@ def render_page(j, others):
                 )
             )
         )
-
-    # ---------------------------------------------------------------- current-year note
 
     current_note = ""
 
@@ -3984,6 +4075,7 @@ def render_page(j, others):
         latest_fy
         and latest_fy > lcfy
     ):
+
         current_note = (
             '<p class="current-note">'
             "<b>Current-year activity:</b> the most recent declaration shown "
@@ -3996,11 +4088,10 @@ def render_page(j, others):
             )
         )
 
-    # ---------------------------------------------------------------- map links / actions
-
     hero_actions = ""
 
     if j.get("risk_fips"):
+
         hero_actions = (
             '<div class="hero-actions">'
             '<a class="hero-link" '
@@ -4014,8 +4105,6 @@ def render_page(j, others):
                 )
             )
         )
-
-    # ---------------------------------------------------------------- hazard chips
 
     haz = "".join(
         "<li>%s <b>%d</b></li>"
@@ -4032,8 +4121,6 @@ def render_page(j, others):
     if not haz:
         haz = "<li>None recorded</li>"
 
-    # ---------------------------------------------------------------- sections
-
     risk_html = risk_context_html(j)
 
     map_html = jurisdiction_map_html(j)
@@ -4043,8 +4130,6 @@ def render_page(j, others):
     mitigation_html = mitigation_history_html(j)
 
     history_html = declaration_history_html(j)
-
-    # ---------------------------------------------------------------- downloads / citation JS
 
     csv_rows = [
         [
@@ -4056,22 +4141,10 @@ def render_page(j, others):
         ]
     ] + [
         [
-            r.get(
-                "declarationDate",
-                "",
-            )[:10],
-            r.get(
-                "femaDeclarationString",
-                "",
-            ),
-            r.get(
-                "declarationType",
-                "",
-            ),
-            r.get(
-                "incidentType",
-                "",
-            ),
+            r.get("declarationDate", "")[:10],
+            r.get("femaDeclarationString", ""),
+            r.get("declarationType", ""),
+            r.get("incidentType", ""),
             pretty_title(
                 r.get(
                     "declarationTitle",
@@ -4079,10 +4152,7 @@ def render_page(j, others):
                 )
             ),
         ]
-        for r in j.get(
-            "hmp",
-            [],
-        )
+        for r in j.get("hmp", [])
     ]
 
     csv_json = json.dumps(
@@ -4091,82 +4161,131 @@ def render_page(j, others):
 
     copyjs = (
         "<script>"
+
         "document.addEventListener('click',function(ev){"
 
         "var b=ev.target.closest('.copybtn');"
+
         "if(!b)return;"
 
         "if(b.getAttribute('data-hmp')){"
+
         "var rows=JSON.parse(b.getAttribute('data-hmp'));"
-        "var t=rows.map(function(r){return r.join('\\t');}).join('\\n');"
+
+        "var t=rows.map(function(r){"
+        "return r.join('\\t');"
+        "}).join('\\n');"
 
         "function done(){"
+
         "var p=b.textContent;"
+
         "b.textContent='Copied';"
+
         "setTimeout(function(){b.textContent=p;},1500);"
+
         "}"
 
         "if(navigator.clipboard&&navigator.clipboard.writeText){"
+
         "navigator.clipboard.writeText(t).then(done,function(){"
+
         "window.prompt('Copy:',t);"
+
         "});"
+
         "}"
+
         "else{"
+
         "window.prompt('Copy:',t);"
+
         "}"
+
         "return;"
+
         "}"
 
         "if(b.classList.contains('csvbtn')){"
+
         "var d=%s;"
+
         "var csv=d.map(function(r){"
+
         "return r.map(function(c){"
+
         "return '\"'+String(c).replace(/\"/g,'\"\"')+'\"';"
+
         "}).join(',');"
+
         "}).join('\\n');"
 
         "var blob=new Blob([csv],{type:'text/csv'});"
+
         "var a=document.createElement('a');"
+
         "a.href=URL.createObjectURL(blob);"
+
         "a.download='%s-declarations.csv';"
+
         "a.click();"
+
         "URL.revokeObjectURL(a.href);"
+
         "return;"
+
         "}"
 
         "if(b.classList.contains('citebtn')){"
+
         "var today=new Date().toISOString().slice(0,10);"
+
         "var cite='Disaster Data. "
         "\\\"%s, %s: Disaster History and Risk Context.\\\" "
         "DisasterData.io. Accessed '+today+'. %s';"
 
         "function cd(){"
+
         "var p=b.textContent;"
+
         "b.textContent='Copied';"
+
         "setTimeout(function(){b.textContent=p;},1500);"
+
         "}"
 
         "if(navigator.clipboard&&navigator.clipboard.writeText){"
+
         "navigator.clipboard.writeText(cite).then(cd);"
+
         "}"
+
         "else{"
+
         "window.prompt('Citation:',cite);"
+
         "}"
+
         "}"
 
         "});"
+
         "</script>"
         % (
             csv_json,
+
             j["slug"],
+
             j["name"].replace(
                 "'",
                 "\\'",
             ),
+
             STATE_NAME.replace(
                 "'",
                 "\\'",
             ),
+
             canonical,
         )
     )
@@ -4174,8 +4293,6 @@ def render_page(j, others):
     mapjs = jurisdiction_map_js(
         map_html
     )
-
-    # ---------------------------------------------------------------- other jurisdictions
 
     grid = "".join(
         '<a href="%s.html">%s</a>'
@@ -4187,32 +4304,49 @@ def render_page(j, others):
         if o["slug"] != j["slug"]
     )
 
-    # ---------------------------------------------------------------- final HTML
-
     return (
         '<!doctype html>'
         '<html lang="en">'
+
         "<head>"
+
         '<meta charset="utf-8">'
+
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
+
         "%s"
+
         "<title>"
         "Disaster Data | %s, %s Disaster History, Assistance, SVI and NRI"
         "</title>"
+
         '<meta name="description" content="%s">'
+
         '<link rel="canonical" href="%s">'
+
         '<meta property="og:title" '
         'content="%s, %s: Disaster History and Risk Context">'
+
         '<meta property="og:description" content="%s">'
+
         '<meta property="og:type" content="website">'
+
         '<meta property="og:url" content="%s">'
+
         '<meta name="twitter:card" content="summary">'
+
         "%s"
+
         '<script type="application/ld+json">%s</script>'
+
         "</head>"
+
         "<body>"
+
         "%s"
+
         "<main>"
+
         '<div class="wrap">'
 
         '<p class="crumb">'
@@ -4223,17 +4357,29 @@ def render_page(j, others):
         "</p>"
 
         '<section class="hero">'
+
         '<div class="hero-top">'
+
         "<div>"
+
         '<span class="badge %s">%s</span>'
+
         "<h1>%s, %s</h1>"
+
         "</div>"
+
         "%s"
+
         "</div>"
+
         '<p class="lede">%s</p>'
+
         "%s"
+
         "%s"
+
         "%s"
+
         "</section>"
 
         "%s"
@@ -4241,16 +4387,24 @@ def render_page(j, others):
         "%s"
 
         '<section class="major-section">'
+
         '<div class="section-head">'
+
         "<div>"
+
         "<h2>Most common hazards</h2>"
+
         '<p class="section-deck">'
         "Hazard categories are based on FEMA incident types in this "
         "jurisdiction's completed-fiscal-year declaration record."
         "</p>"
+
         "</div>"
+
         "</div>"
+
         '<ul class="haz">%s</ul>'
+
         "</section>"
 
         "%s"
@@ -4260,22 +4414,33 @@ def render_page(j, others):
         "%s"
 
         '<div style="margin:2rem 0">'
+
         '<a href="../%s.html">&larr; %s statewide overview</a> '
+
         "&middot; "
+
         '<a href="index.html">All %s jurisdictions</a>'
+
         "</div>"
 
         "%s"
 
         "<h2>Other %s jurisdictions</h2>"
+
         '<nav class="jgrid">%s</nav>'
 
         "</div>"
+
         "</main>"
+
         "%s"
+
         "%s"
+
         "%s"
+
         "</body>"
+
         "</html>"
         % (
             robots,
@@ -4284,6 +4449,7 @@ def render_page(j, others):
             e(STATE_NAME),
 
             e(desc),
+
             canonical,
 
             e(j["name"]),
@@ -4341,7 +4507,9 @@ def render_page(j, others):
             grid,
 
             footer_html(),
+
             copyjs,
+
             mapjs,
         )
     )
@@ -4352,6 +4520,7 @@ def render_page(j, others):
 # =============================================================================
 
 def render_hub(js, stubs=()):
+
     e = html.escape
 
     items = [
@@ -4424,46 +4593,79 @@ def render_hub(js, stubs=()):
 
     return (
         '<!doctype html>'
+
         '<html lang="en">'
+
         "<head>"
+
         '<meta charset="utf-8">'
+
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
+
         "<title>"
         "Disaster Data | %s Disaster History by Jurisdiction"
         "</title>"
+
         '<meta name="description" content="%s">'
+
         '<link rel="canonical" href="%s/states/%s/">'
+
         '<meta property="og:title" '
         'content="%s Disaster History by Jurisdiction">'
+
         '<meta property="og:description" content="%s">'
+
         '<meta property="og:type" content="website">'
+
         '<meta name="twitter:card" content="summary">'
+
         "%s"
+
         "</head>"
+
         "<body>"
+
         "%s"
+
         "<main>"
+
         '<div class="wrap">'
+
         '<p class="crumb">'
+
         '<a href="../../index.html">Disaster Data</a> / '
+
         '<a href="../../states/index.html">States</a> / '
+
         '<a href="../%s.html">%s</a> / Jurisdictions'
+
         "</p>"
+
         "<h1>%s, by jurisdiction</h1>"
+
         '<p class="lede">'
         "Explore federal disaster histories for every %s %s. "
         "County-equivalent pages also include CDC Social Vulnerability Index "
         "and FEMA National Risk Index context where those datasets provide "
         "a matching FIPS record."
         "</p>"
+
         '<ol class="rank">%s</ol>'
+
         '<div style="margin:2rem 0">'
+
         '<a href="../%s.html">&larr; Back to %s statewide overview</a>'
+
         "</div>"
+
         "</div>"
+
         "</main>"
+
         "%s"
+
         "</body>"
+
         "</html>"
         % (
             e(STATE_NAME),
@@ -4500,13 +4702,11 @@ def render_hub(js, stubs=()):
 
 
 # =============================================================================
-# TRIBAL MERGE / CANONICAL POINTERS
+# TRIBAL MERGE
 # =============================================================================
 
 def build_tribal_plan(LOCALITY, NAMES):
-    """
-    Aggregate tribal jurisdictions that appear in multiple states.
-    """
+
     agg = {}
 
     for st, entries in LOCALITY.items():
@@ -4522,6 +4722,7 @@ def build_tribal_plan(LOCALITY, NAMES):
                 c["kind"] == "tribal"
                 and c["keep"]
             ):
+
                 continue
 
             d = (
@@ -4575,6 +4776,7 @@ def build_tribal_plan(LOCALITY, NAMES):
             "states/%s/%s.html"
             % (
                 slugify(pname),
+
                 make_slug(
                     pc,
                     primary,
@@ -4634,6 +4836,7 @@ def render_stub(
     primary_name,
     spans,
 ):
+
     e = html.escape
 
     canonical = (
@@ -4666,45 +4869,81 @@ def render_stub(
 
     return (
         '<!doctype html>'
+
         '<html lang="en">'
+
         "<head>"
+
         '<meta charset="utf-8">'
+
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
+
         "<title>Disaster Data | %s</title>"
+
         '<meta name="description" content="%s">'
+
         '<link rel="canonical" href="%s">'
+
         '<meta property="og:title" content="%s">'
+
         '<meta property="og:type" content="website">'
+
         "%s"
+
         "</head>"
+
         "<body>"
+
         "%s"
+
         "<main>"
+
         '<div class="wrap">'
+
         '<p class="crumb">'
+
         '<a href="../../index.html">Disaster Data</a> / '
+
         '<a href="../../states/index.html">States</a> / '
+
         '<a href="../%s.html">%s</a> / %s'
+
         "</p>"
+
         '<span class="badge tribal">Tribal nation</span>'
+
         "<h1>%s</h1>"
+
         '<p class="lede">'
         "%s spans %s. To keep the federal record whole rather than split "
         "across state lines, the full declaration and mitigation history "
         "is maintained on one canonical jurisdiction page."
         "</p>"
+
         '<p style="margin:1.5rem 0">'
+
         '<a class="copybtn" href="%s">'
+
         "View the full %s record on the %s page &rarr;"
+
         "</a>"
+
         "</p>"
+
         '<div style="margin:2rem 0">'
+
         '<a href="index.html">&larr; All %s jurisdictions</a>'
+
         "</div>"
+
         "</div>"
+
         "</main>"
+
         "%s"
+
         "</body>"
+
         "</html>"
         % (
             e(name),
@@ -4757,9 +4996,7 @@ def build_state(
     nri_lookup,
     tribal_plan,
 ):
-    """
-    Generate all jurisdiction pages + state jurisdiction hub.
-    """
+
     global STATE_AB
     global STATE_NAME
     global STATE_SLUG
@@ -4788,13 +5025,15 @@ def build_state(
     )
 
     js = []
+
     stubs = []
+
     dropped = 0
 
     seen_tribal = set()
 
     # ----------------------------------------------------------------
-    # Build base jurisdiction statistics
+    # Base jurisdiction stats
     # ----------------------------------------------------------------
 
     for en in entries:
@@ -4805,7 +5044,9 @@ def build_state(
         )
 
         if not c["keep"]:
+
             dropped += 1
+
             continue
 
         pinfo = (
@@ -4869,6 +5110,7 @@ def build_state(
                 continue
 
             en = dict(en)
+
             en["ids"] = pinfo["all_ids"]
 
         s = juris_stats(
@@ -4886,6 +5128,7 @@ def build_state(
                 pinfo["states"]
             ) > 1
         ):
+
             s["spans"] = [
                 NAMES.get(
                     s2,
@@ -4897,6 +5140,7 @@ def build_state(
         js.append(s)
 
     if not js and not stubs:
+
         return (
             0,
             dropped,
@@ -4905,7 +5149,7 @@ def build_state(
         )
 
     # ----------------------------------------------------------------
-    # Public Assistance
+    # PA
     # ----------------------------------------------------------------
 
     pa_lookup = {}
@@ -4926,6 +5170,7 @@ def build_state(
     for j in js:
 
         if j["kind"] == "city":
+
             key = (
                 j["name"]
                 .replace(
@@ -4934,22 +5179,27 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
+
             key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
+
             key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
@@ -4967,7 +5217,9 @@ def build_state(
         )
 
         if pa:
+
             j["pa_obl"] = pa[0]
+
             j["pa_proj"] = pa[1]
 
             j["pa_top_cat"] = (
@@ -4992,6 +5244,7 @@ def build_state(
             )
 
         else:
+
             j["pa_obl"] = 0
             j["pa_proj"] = 0
             j["pa_top_cat"] = ""
@@ -5019,6 +5272,7 @@ def build_state(
     for j in js:
 
         if j["kind"] == "city":
+
             key = (
                 j["name"]
                 .replace(
@@ -5027,27 +5281,33 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
+
             key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
+
             key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         j["pa_timing"] = (
             pt_lookup.get(key)
+
             or pt_exact.get(
                 j["name"]
                 .replace(
@@ -5057,6 +5317,7 @@ def build_state(
                 .strip()
                 .lower()
             )
+
             or {}
         )
 
@@ -5082,6 +5343,7 @@ def build_state(
     for j in js:
 
         if j["kind"] == "city":
+
             key = (
                 j["name"]
                 .replace(
@@ -5090,27 +5352,33 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
+
             key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
+
             key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         j["hma"] = (
             hm_lookup.get(key)
+
             or hm_exact.get(
                 j["name"]
                 .replace(
@@ -5120,6 +5388,7 @@ def build_state(
                 .strip()
                 .lower()
             )
+
             or {}
         )
 
@@ -5145,6 +5414,7 @@ def build_state(
     for j in js:
 
         if j["kind"] == "city":
+
             key = (
                 j["name"]
                 .replace(
@@ -5153,27 +5423,33 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
+
             key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
+
             key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         j["ia"] = (
             ia_lookup.get(key)
+
             or ia_exact.get(
                 j["name"]
                 .replace(
@@ -5183,11 +5459,12 @@ def build_state(
                 .strip()
                 .lower()
             )
+
             or {}
         )
 
     # ----------------------------------------------------------------
-    # CDC SVI / FEMA NRI
+    # SVI / NRI
     # ----------------------------------------------------------------
 
     svi_matches = 0
@@ -5201,9 +5478,11 @@ def build_state(
         )
 
         if risk_key is None:
+
             j["svi"] = {}
             j["nri"] = {}
             j["risk_fips"] = ""
+
             continue
 
         svi_rec = (
@@ -5221,6 +5500,7 @@ def build_state(
         )
 
         j["svi"] = svi_rec
+
         j["nri"] = nri_rec
 
         if svi_rec:
@@ -5236,18 +5516,22 @@ def build_state(
         )
 
     if js:
+
         print(
             "  %s risk matches: SVI %s / NRI %s across %s generated jurisdictions"
             % (
                 state_ab,
+
                 format(
                     svi_matches,
                     ",",
                 ),
+
                 format(
                     nri_matches,
                     ",",
                 ),
+
                 format(
                     len(js),
                     ",",
@@ -5256,22 +5540,21 @@ def build_state(
         )
 
     # ----------------------------------------------------------------
-    # SEO gate / page hash
+    # SEO / hashes
     # ----------------------------------------------------------------
 
     for j in js:
-        j["thin"] = is_thin(j)
-        j["content_hash"] = _content_hash(j)
 
-    # ----------------------------------------------------------------
-    # De-duplicate slugs
-    # ----------------------------------------------------------------
+        j["thin"] = is_thin(j)
+
+        j["content_hash"] = _content_hash(j)
 
     seen = {}
 
     for j in js:
 
         if j["slug"] in seen:
+
             j["slug"] = (
                 j["slug"]
                 + "-2"
@@ -5287,10 +5570,6 @@ def build_state(
             j["name"],
         )
     )
-
-    # ----------------------------------------------------------------
-    # Write state output
-    # ----------------------------------------------------------------
 
     os.makedirs(
         OUT_DIR,
@@ -5309,6 +5588,7 @@ def build_state(
             "w",
             encoding="utf-8",
         ) as fh:
+
             fh.write(
                 render_page(
                     j,
@@ -5328,6 +5608,7 @@ def build_state(
             "w",
             encoding="utf-8",
         ) as fh:
+
             fh.write(
                 render_stub(
                     stub["name"],
@@ -5347,6 +5628,7 @@ def build_state(
         "w",
         encoding="utf-8",
     ) as fh:
+
         fh.write(
             render_hub(
                 js,
@@ -5373,11 +5655,13 @@ def main():
     LOCALITY, BROWSE, NAMES, PA_COUNTY = load_data()
 
     PA_TIMING = load_pa_timing()
+
     HMA = load_hma()
+
     IA = load_ia()
 
-    # New jurisdiction risk / vulnerability datasets
     SVI_RAW = load_svi()
+
     NRI_RAW = load_nri()
 
     SVI_LOOKUP = build_risk_lookup(
@@ -5423,11 +5707,13 @@ def main():
     )
 
     if one:
+
         targets = [
             one.upper()
         ]
 
     else:
+
         targets = sorted(
             LOCALITY.keys(),
             key=lambda s: NAMES.get(
@@ -5451,24 +5737,31 @@ def main():
             by_id,
             lcfy,
             NAMES,
+
             PA_COUNTY.get(
                 st,
                 {},
             ),
+
             PA_TIMING.get(
                 st,
                 {},
             ),
+
             HMA.get(
                 st,
                 {},
             ),
+
             IA.get(
                 st,
                 {},
             ),
+
             SVI_LOOKUP,
+
             NRI_LOOKUP,
+
             tribal_plan,
         )
 
@@ -5496,18 +5789,22 @@ def main():
                         j["name"],
                         st,
                         state_name,
+
                         "states/%s/%s.html"
                         % (
                             state_slug,
                             j["slug"],
                         ),
+
                         j["decl"],
                         j["kind"],
                         j["noun"],
+
                         j.get(
                             "thin",
                             False,
                         ),
+
                         j.get(
                             "content_hash",
                             "",
@@ -5516,6 +5813,7 @@ def main():
                 )
 
             if one:
+
                 print(
                     "generated %d %s jurisdiction pages + hub "
                     "(+%d canonical pointers), through FY%d"
@@ -5528,7 +5826,7 @@ def main():
                 )
 
     # =========================================================================
-    # FULL NATIONAL RUN: locality-index + sitemap
+    # NATIONAL RUN
     # =========================================================================
 
     if not one:
@@ -5557,13 +5855,10 @@ def main():
             "w",
             encoding="utf-8",
         ) as fh:
+
             fh.write(
                 idx_js
             )
-
-        # ---------------------------------------------------------------------
-        # Sitemap
-        # ---------------------------------------------------------------------
 
         sitemap_path = os.path.join(
             OUT_ROOT,
@@ -5580,13 +5875,16 @@ def main():
         ):
 
             try:
+
                 prev_state = json.load(
                     open(
                         state_path,
                         encoding="utf-8",
                     )
                 )
+
             except Exception:
+
                 prev_state = {}
 
             today = (
@@ -5598,6 +5896,7 @@ def main():
             new_state = {}
 
             entries = []
+
             hub_lastmods = {}
 
             skipped_thin = 0
@@ -5632,12 +5931,14 @@ def main():
                     prev
                     and prev.get("hash") == chash
                 ):
+
                     lastmod = prev.get(
                         "lastmod",
                         today,
                     )
 
                 else:
+
                     lastmod = today
 
                 new_state[url] = {
@@ -5662,12 +5963,15 @@ def main():
                         "",
                     )
                 ):
+
                     hub_lastmods[
                         hub_url
                     ] = lastmod
 
                 if thin:
+
                     skipped_thin += 1
+
                     continue
 
                 entries.append(
@@ -5705,9 +6009,6 @@ def main():
                 encoding="utf-8",
             ).read()
 
-            # Remove jurisdiction/hub URLs from previous run so this remains
-            # idempotent. State overview pages such as /states/virginia.html
-            # are not matched.
             sm = re.sub(
                 (
                     r"<url>\s*<loc>"
@@ -5730,6 +6031,7 @@ def main():
                 "w",
                 encoding="utf-8",
             ) as fh:
+
                 fh.write(sm)
 
             with open(
@@ -5737,6 +6039,7 @@ def main():
                 "w",
                 encoding="utf-8",
             ) as fh:
+
                 json.dump(
                     new_state,
                     fh,
