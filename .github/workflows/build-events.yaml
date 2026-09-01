@@ -3,13 +3,12 @@ name: Refresh Event Indexes
 # Rebuilds map-events.js + events.json from the ALREADY-COMMITTED
 # data/decl-index files.
 #
-# It does NOT fetch anything from FEMA, so it can operate as a Wednesday
-# backstop even if the Sunday OpenFEMA refresh encountered an upstream outage.
+# It does NOT fetch anything from FEMA, so it can run even if the
+# Sunday "Refresh FEMA Data" workflow fails because of an OpenFEMA outage.
 #
-# The release gate runs after the event indexes are generated. If the event
-# files are unchanged, the existing DisasterData release remains in place.
-# If they changed, the complete site is validated before a new release is
-# stamped and committed.
+# It runs on demand or every Wednesday at 04:00 UTC as a backstop.
+# The release gate validates the regenerated event indexes before
+# anything is committed.
 
 on:
   workflow_dispatch:
@@ -20,8 +19,6 @@ on:
 permissions:
   contents: write
 
-# Prevent a manually launched event refresh from writing to main at the same
-# time as the full Sunday DisasterData refresh.
 concurrency:
   group: disasterdata-refresh
   cancel-in-progress: false
@@ -41,6 +38,8 @@ jobs:
           python-version: '3.11'
 
       - name: Build event indexes
+        # Reads data/decl-index/{ST}.json + manifest.json
+        # and writes map-events.js + events.json.
         run: |
           if [ -f gen_map_events.py ]; then
             python -u gen_map_events.py \
@@ -59,7 +58,7 @@ jobs:
           DD_REQUIRE_CONTEXT: '1'
           DD_REQUIRE_JURISDICTIONS: '1'
           DD_REQUIRE_CITATIONS: '1'
-        run: python -u release.py
+        run: python -u .github/workflows/release.py
 
       - name: Commit and push if changed
         run: |
