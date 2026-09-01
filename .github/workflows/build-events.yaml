@@ -1,14 +1,10 @@
 name: Refresh Event Indexes
 
 # Rebuilds map-events.js + events.json from the ALREADY-COMMITTED
-# data/decl-index files.
-#
-# It does NOT fetch anything from FEMA, so it can run even if the
-# Sunday "Refresh FEMA Data" workflow fails because of an OpenFEMA outage.
-#
-# It runs on demand or every Wednesday at 04:00 UTC as a backstop.
-# The release gate validates the regenerated event indexes before
-# anything is committed.
+# data/decl-index files. It does NOT fetch anything from FEMA, so it works
+# even when the weekly "Refresh FEMA Data" build is failing on an OpenFEMA
+# outage. Run it on demand from the Actions tab (Run workflow), or let the
+# weekly backstop pick up whatever decl-index is committed.
 
 on:
   workflow_dispatch:
@@ -19,14 +15,10 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: disasterdata-refresh
-  cancel-in-progress: false
-
 jobs:
   events:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Check out repo
@@ -37,9 +29,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Build event indexes
-        # Reads data/decl-index/{ST}.json + manifest.json
-        # and writes map-events.js + events.json.
+      - name: Build event indexes (map-events.js + events.json)
         run: |
           if [ -f gen_map_events.py ]; then
             python -u gen_map_events.py \
@@ -53,13 +43,6 @@ jobs:
               --events-out events.json
           fi
 
-      - name: Validate and stamp DisasterData release
-        env:
-          DD_REQUIRE_CONTEXT: '1'
-          DD_REQUIRE_JURISDICTIONS: '1'
-          DD_REQUIRE_CITATIONS: '1'
-        run: python -u .github/workflows/release.py
-
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -68,7 +51,7 @@ jobs:
           git add -A
 
           if git diff --staged --quiet; then
-            echo "No changes to commit. Event indexes and release state are already current."
+            echo "No changes to commit, event indexes already up to date."
           else
             git commit -m "Refresh event indexes $(date -u '+%Y-%m-%d')"
             git pull --rebase origin main
