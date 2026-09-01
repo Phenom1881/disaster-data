@@ -710,7 +710,7 @@
       </div>
 
       <div class="footer-note">
-        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map. They are not tied to a single county boundary. Data sourced from FEMA's OpenFEMA dataset. Not endorsed by FEMA. <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener" style="color:#004c53">Report a data issue</a>.
+        County polygons with FIPS code <strong>000</strong> (statewide/jurisdiction-wide rows) are excluded from this map. They are not tied to a single county boundary. Declaration data from FEMA's OpenFEMA dataset. Social vulnerability from the CDC/ATSDR Social Vulnerability Index (2022). Risk from FEMA's National Risk Index. Not endorsed by FEMA or CDC. <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener" style="color:#004c53">Report a data issue</a>.
       </div>
     </aside>
 
@@ -1028,7 +1028,7 @@
       const parts=[];
       if (isSviMode() && svi) { const m=sviMetricSelect?.value||'overall'; const v=Number(svi[m]); parts.push(`<div class="event-item"><div class="num">CDC SVI · ${currentSviMetricLabel()}</div><div class="meta">${Number.isFinite(v)?v.toFixed(4)+' · '+(v*100).toFixed(1)+' percentile':'No data'} · 2022</div></div>`); }
       if (isNriMode() && nri) { const h=nriHazardSelect?.value, m=nriMetricSelect?.value||'riskScore'; const v=h?nri.hazards?.[h]?.score:nri[m], r=h?nri.hazards?.[h]?.rating:nri[m.replace('Score','Rating')]; parts.push(`<div class="event-item"><div class="num">FEMA NRI · ${currentNriMetricLabel()}</div><div class="meta">${Number.isFinite(Number(v))?Number(v).toFixed(2):'No data'} · ${r||'—'} · December 2025</div></div>`); }
-      const events=countyDeclarationEvents[fips]||[];
+      const events=getFilteredCountyEvents(fips);
       if (isFemaMode()) { selectedCountySummaryEl.textContent=`${events.length.toLocaleString()} declaration event(s) match the current filters.`; events.forEach(evt=>parts.push(`<div class="event-item"><div class="num">#${evt.declarationNumber}</div><div class="meta">${getTypeLongLabel(evt.type)}${evt.date?' · '+evt.date:''}${evt.title?' · '+evt.title:''}</div></div>`)); }
       if (!parts.length) parts.push('<div class="muted">No data available for the selected layers.</div>');
       selectedCountyListEl.innerHTML=parts.join('');
@@ -1320,7 +1320,7 @@
     if (stateSelect) stateSelect.addEventListener('change', function () {
       const ab = stateSelect.value;
       focusStateFips = (ab && STMAP[ab]) ? STMAP[ab][0] : '';
-      if (countyLayer) countyLayer.setStyle(styleCounty);
+      refreshMap();
       if (focusStateFips) {
         const b = zoomToStateFips(focusStateFips);
         showStateBanner(STMAP[ab][1], !!b);
@@ -1338,7 +1338,7 @@
       const fips = STMAP[ab][0], name = STMAP[ab][1];
       focusStateFips = fips;
       if (stateSelect) stateSelect.value = ab;
-      countyLayer.setStyle(styleCounty);   /* apply dimming */
+      refreshMap();
       const b = zoomToStateFips(fips);
       const found = !!b;
       showStateBanner(name, found);
@@ -1363,7 +1363,7 @@
         b.remove();
         focusStateFips = '';
         if (stateSelect) stateSelect.value = '';
-        if (countyLayer) countyLayer.setStyle(styleCounty);
+        refreshMap();
         map.setView([37.8, -96], 4);
       };
     }
@@ -1467,6 +1467,7 @@
       if (femaLayerCheck) femaLayerCheck.checked=!!femaLayerCheck.checked;
     }
     [femaLayerCheck,sviOverlayCheck,nriOverlayCheck,sviMetricSelect,nriMetricSelect,nriHazardSelect].forEach(function(el){ if(el) el.addEventListener('change',function(){ setOverlayUi(); refreshMap(); }); });
+    [metricSelect,yearSelect,typeSelect].forEach(function(el){ if(el) el.addEventListener('change', refreshMap); });
     setOverlayUi();
 
     init().catch(err => {
