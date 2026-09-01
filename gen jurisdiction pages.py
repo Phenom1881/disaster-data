@@ -22,6 +22,11 @@ STATE_NAME = STATE_AB
 STATE_SLUG = STATE_AB.lower()
 OUT_DIR = os.path.join(OUT_ROOT, "states", STATE_SLUG)
 
+# CARTO public basemap key used by the embedded Leaflet jurisdiction maps.
+# Keep this in the generator so regenerated pages retain the authenticated
+# basemap URL instead of falling back to an unkeyed tile request.
+CARTO_BASEMAP_KEY = "cb1_2n1q_1_ad4306e45519c0e62979dcd7"
+
 
 # ---------------------------------------------------------------- data loading
 def _grab_js(text, name):
@@ -128,6 +133,50 @@ def load_ia():
             return json.load(fh)
     except Exception:
         return {}
+
+
+def _load_county_js(filename, window_name):
+    """
+    Load a FIPS-keyed county dataset assigned to ``window.<window_name>``.
+
+    The SVI and NRI inputs are optional so jurisdictions without matching
+    county-equivalent data (including tribal jurisdictions) still generate.
+    """
+    p = os.path.join(SRC_ROOT, filename)
+
+    if not os.path.exists(p):
+        print(
+            "  NOTE: %s not found; matching jurisdiction context will be skipped"
+            % filename
+        )
+        return {}
+
+    try:
+        with open(p, encoding="utf-8") as fh:
+            data = _grab_js(fh.read(), window_name)
+
+        if not isinstance(data, dict):
+            raise ValueError("window.%s is not an object" % window_name)
+
+        print(
+            "  loaded %s (%s county records)"
+            % (filename, format(len(data), ","))
+        )
+        return data
+
+    except (Exception, SystemExit) as ex:
+        print("  WARNING: could not read %s: %s" % (filename, ex))
+        return {}
+
+
+def load_svi():
+    """Load CDC/ATSDR 2022 county SVI data keyed by five-digit FIPS."""
+    return _load_county_js("county-svi.js", "COUNTY_SVI")
+
+
+def load_nri():
+    """Load FEMA county National Risk Index data keyed by five-digit FIPS."""
+    return _load_county_js("county-nri.js", "COUNTY_NRI")
 
 
 # ---------------------------------------------------------------- helpers
@@ -372,6 +421,111 @@ def pa_base_kind(name):
     return low, "other"
 
 
+# County-equivalent suffixes used when matching the generated jurisdiction
+# names to the FIPS-keyed CDC SVI and FEMA NRI rows.
+_RISK_SUFFIXES = [
+    "city and borough",
+    "census area",
+    "county",
+    "parish",
+    "borough",
+    "municipio",
+    "municipality",
+    "independent city",
+    "city",
+    "island",
+    "district",
+]
+
+
+def _risk_base(name):
+    """Return a normalized county/county-equivalent name for matching."""
+    s = str(name or "").strip().lower()
+    s = re.sub(r"\s*\([^)]*\)\s*", " ", s)
+    s = s.split(",", 1)[0].strip()
+
+    for suffix in _RISK_SUFFIXES:
+        tail = " " + suffix
+
+        if s.endswith(tail):
+            s = s[:-len(tail)].strip()
+            break
+
+    s = s.replace("&", "and")
+    s = re.sub(r"[^a-z0-9]+", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _risk_kind(fips, source_name):
+    """
+    Classify a county-equivalent risk row as county-like or independent city.
+
+    County-equivalent FIPS codes 500 and above identify independent cities.
+    The explicit ``city`` suffix is retained as a second safety check.
+    """
+    fp = str(fips or "").zfill(5)
+    source = str(source_name or "").strip().lower()
+
+    try:
+        city_equivalent = int(fp[2:]) >= 500
+    except (TypeError, ValueError):
+        city_equivalent = False
+
+    if source.endswith(" city") or source.endswith(" independent city"):
+        city_equivalent = True
+
+    return "city" if city_equivalent else "county"
+
+
+def build_risk_lookup(dataset):
+    """
+    Convert FIPS-keyed SVI/NRI data to a jurisdiction matching lookup.
+
+    Keys are ``(state abbreviation, normalized place name, county/city kind)``.
+    Each matched record retains its canonical five-digit FIPS/GEOID.
+    """
+    lookup = {}
+
+    for fips, raw in (dataset or {}).items():
+        if not isinstance(raw, dict):
+            continue
+
+        state_ab = str(raw.get("state") or "").upper().strip()
+        source_name = raw.get("county") or ""
+
+        if not state_ab or not source_name:
+            continue
+
+        rec = dict(raw)
+        rec["fips"] = str(fips).zfill(5)
+
+        key = (
+            state_ab,
+            _risk_base(source_name),
+            _risk_kind(fips, source_name),
+        )
+        lookup[key] = rec
+
+    return lookup
+
+
+def jurisdiction_risk_key(j, state_ab):
+    """Return the SVI/NRI lookup key for a generated jurisdiction."""
+    if j.get("kind") not in ("county", "city"):
+        return None
+
+    name = j.get("name", "")
+
+    if j.get("kind") == "city":
+        name = name.replace(" (city)", "")
+
+    return (
+        state_ab.upper(),
+        _risk_base(name),
+        "city" if j.get("kind") == "city" else "county",
+    )
+
+
 STATE_FIPS = {
     "AL":"01","AK":"02","AZ":"04","AR":"05","CA":"06","CO":"08",
     "CT":"09","DE":"10","DC":"11","FL":"12","GA":"13","HI":"15",
@@ -513,6 +667,8 @@ def _content_hash(j):
         "hma_prog": (j.get("hma") or {}).get("prog", {}),
         "ia_reg": (j.get("ia") or {}).get("reg", 0),
         "ia_ihp": (j.get("ia") or {}).get("ihp", 0),
+        "svi": j.get("svi") or {},
+        "nri": j.get("nri") or {},
         "recs": sorted(
             [
                 r.get("femaDeclarationString", ""),
@@ -966,6 +1122,188 @@ th[aria-sort="descending"]::after{
   opacity:.95
 }
 
+.risk-section{margin:2.4rem 0}
+
+.section-heading-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem
+}
+
+.section-heading-row h2{margin:0 0 .25rem}
+
+.section-deck{
+  margin:0;
+  color:var(--ink3);
+  font-size:.92rem;
+  max-width:66ch
+}
+
+.risk-fips{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  white-space:nowrap
+}
+
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem
+}
+
+.risk-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.2rem;
+  box-shadow:0 1px 0 rgba(43,43,43,.03)
+}
+
+.risk-card h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.18rem;
+  line-height:1.2;
+  margin:.15rem 0 0
+}
+
+.risk-kicker{
+  font-size:.69rem;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:#8a5a2b
+}
+
+.risk-version{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.18rem 0 .9rem
+}
+
+.risk-score{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:2.15rem;
+  font-weight:600;
+  line-height:1
+}
+
+.risk-score.na{font-size:1.55rem}
+
+.risk-score-label{
+  color:var(--ink3);
+  font-size:.76rem;
+  margin-top:.2rem
+}
+
+.risk-interpret{
+  color:var(--ink3);
+  font-size:.83rem;
+  margin:.7rem 0
+}
+
+.theme-list{margin-top:.9rem}
+
+.theme-row{margin:.58rem 0}
+
+.theme-head{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  font-size:.76rem
+}
+
+.theme-head b{
+  color:var(--teal);
+  font-variant-numeric:tabular-nums
+}
+
+.theme-track{
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#e8e0d0;
+  margin-top:.25rem
+}
+
+.theme-track span{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#4c8b90
+}
+
+.nri-lead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem
+}
+
+.risk-rating{
+  display:inline-block;
+  border-radius:999px;
+  background:#f3e4d2;
+  color:#7a4a20;
+  font-size:.72rem;
+  font-weight:700;
+  padding:.3rem .62rem;
+  text-align:center
+}
+
+.risk-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.55rem;
+  margin-top:1rem
+}
+
+.risk-mini{
+  border-top:1px solid var(--rule);
+  padding-top:.55rem;
+  min-width:0
+}
+
+.risk-mini span,
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.68rem;
+  line-height:1.35
+}
+
+.risk-mini b{
+  display:block;
+  color:var(--teal);
+  font-size:.95rem;
+  margin:.18rem 0;
+  overflow-wrap:anywhere
+}
+
+.risk-source{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.9rem 0 0
+}
+
+.risk-source a{font-weight:600}
+
+.risk-caution{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:10px;
+  padding:.8rem .9rem;
+  margin-top:.8rem;
+  color:#3f5557;
+  font-size:.8rem
+}
+
 .method{
   background:var(--paper);
   border:1px solid var(--rule);
@@ -1181,6 +1519,15 @@ nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){
 .mobilemenu{display:none}
 
 @media(max-width:720px){
+  .section-heading-row{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .risk-grid{grid-template-columns:1fr}
+
+  .risk-mini-grid{grid-template-columns:1fr}
+
   nav.ddnav{
     flex-direction:row;
     align-items:center;
@@ -2508,6 +2855,246 @@ def ia_html(j):
     )
 
 
+# ---------------------------------------------------------------- SVI / NRI risk context
+def _finite_number(value):
+    """Return a finite float, or None for blank, sentinel, or invalid data."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+
+    if number != number or number in (float("inf"), float("-inf")):
+        return None
+
+    return number
+
+
+def _short_money(value):
+    """Format a numeric dollar value compactly without turning missing into $0."""
+    number = _finite_number(value)
+
+    if number is None:
+        return "N/A"
+
+    if abs(number) >= 1e9:
+        return "$%.1fB" % (number / 1e9)
+
+    if abs(number) >= 1e6:
+        return "$%.1fM" % (number / 1e6)
+
+    if abs(number) >= 1e3:
+        return "$%.0fK" % (number / 1e3)
+
+    return "$%s" % format(int(round(number)), ",")
+
+
+def _svi_percent(value):
+    """Return a CDC SVI percentile on a 0-100 scale, or None if invalid."""
+    number = _finite_number(value)
+
+    if number is None or number < 0 or number > 1:
+        return None
+
+    return number * 100.0
+
+
+def _first_value(record, *keys):
+    """Return the first populated field, supporting older NRI field aliases."""
+    for key in keys:
+        value = record.get(key)
+
+        if value is not None and str(value).strip() != "":
+            return value
+
+    return None
+
+
+def _score_text(value):
+    number = _finite_number(value)
+    return "%.1f" % number if number is not None else "N/A"
+
+
+def risk_context_html(j):
+    """
+    Render static county-level CDC SVI and FEMA NRI context.
+
+    The two social-vulnerability measures remain explicitly separate because
+    they use different methods and should not be interpreted as one score.
+    """
+    svi = j.get("svi") or {}
+    nri = j.get("nri") or {}
+
+    if not svi and not nri:
+        return ""
+
+    e = html.escape
+    cards = []
+
+    if svi:
+        overall = _svi_percent(svi.get("overall"))
+
+        if overall is None:
+            overall_html = (
+                '<div class="risk-score na">N/A</div>'
+                '<div class="risk-score-label">overall percentile</div>'
+            )
+            interpretation = ""
+
+        else:
+            overall_html = (
+                '<div class="risk-score">%.1f</div>'
+                '<div class="risk-score-label">overall percentile nationally</div>'
+                % overall
+            )
+            interpretation = (
+                '<p class="risk-interpret">Approximately %.1f%% of U.S. '
+                'counties have an equal or lower overall SVI ranking.</p>'
+                % overall
+            )
+
+        themes = [
+            ("Socioeconomic status", svi.get("socioeconomic")),
+            ("Household characteristics", svi.get("household")),
+            ("Racial and ethnic minority status", svi.get("minority")),
+            (
+                "Housing type and transportation",
+                svi.get("housingTransportation"),
+            ),
+        ]
+
+        theme_rows = []
+
+        for theme_label, value in themes:
+            percentile = _svi_percent(value)
+
+            if percentile is None:
+                continue
+
+            theme_rows.append(
+                '<div class="theme-row">'
+                '<div class="theme-head"><span>%s</span><b>%.1f</b></div>'
+                '<div class="theme-track"><span style="width:%.1f%%"></span></div>'
+                '</div>'
+                % (
+                    e(theme_label),
+                    percentile,
+                    max(0, min(100, percentile)),
+                )
+            )
+
+        cards.append(
+            '<article class="risk-card">'
+            '<div class="risk-kicker">CDC / ATSDR</div>'
+            '<h3>Social Vulnerability Index</h3>'
+            '<div class="risk-version">2022 county-level SVI</div>'
+            '%s%s'
+            '<div class="theme-list">%s</div>'
+            '<p class="risk-source">Higher percentiles indicate greater '
+            'relative social vulnerability within the CDC SVI framework. '
+            '<a href="https://www.atsdr.cdc.gov/place-health/php/svi/'
+            'svi-data-documentation-download.html">CDC SVI documentation</a>'
+            '</p>'
+            '</article>'
+            % (
+                overall_html,
+                interpretation,
+                "".join(theme_rows),
+            )
+        )
+
+    if nri:
+        risk_score = _score_text(nri.get("riskScore"))
+        risk_rating = str(nri.get("riskRating") or "Not rated")
+        version = str(nri.get("version") or "December 2025 county dataset")
+
+        eal_value = _short_money(nri.get("ealValue"))
+        eal_rating = str(nri.get("ealRating") or "Not rated")
+
+        sovi_score = _score_text(
+            _first_value(nri, "soviScore", "socialVulnerabilityScore")
+        )
+        sovi_rating = str(
+            _first_value(nri, "soviRating", "socialVulnerabilityRating")
+            or "Not rated"
+        )
+
+        resilience_score = _score_text(
+            _first_value(nri, "reslScore", "resilienceScore")
+        )
+        resilience_rating = str(
+            _first_value(nri, "reslRating", "resilienceRating")
+            or "Not rated"
+        )
+
+        cards.append(
+            '<article class="risk-card">'
+            '<div class="risk-kicker">FEMA</div>'
+            '<h3>National Risk Index</h3>'
+            '<div class="risk-version">%s</div>'
+            '<div class="nri-lead">'
+            '<div><div class="risk-score">%s</div>'
+            '<div class="risk-score-label">overall risk score</div></div>'
+            '<span class="risk-rating">%s</span>'
+            '</div>'
+            '<div class="risk-mini-grid">'
+            '<div class="risk-mini"><span>Expected annual loss</span>'
+            '<b>%s</b><small>%s</small></div>'
+            '<div class="risk-mini"><span>NRI social vulnerability</span>'
+            '<b>%s</b><small>%s</small></div>'
+            '<div class="risk-mini"><span>Community resilience</span>'
+            '<b>%s</b><small>%s</small></div>'
+            '</div>'
+            '<p class="risk-source">The NRI combines expected annual loss, '
+            'social vulnerability, and community resilience to describe '
+            'relative natural-hazard risk. '
+            '<a href="https://hazards.fema.gov/nri/">FEMA NRI documentation</a>'
+            '</p>'
+            '</article>'
+            % (
+                e(version),
+                e(risk_score),
+                e(risk_rating),
+                e(eal_value),
+                e(eal_rating),
+                e(sovi_score),
+                e(sovi_rating),
+                e(resilience_score),
+                e(resilience_rating),
+            )
+        )
+
+    fips = (
+        svi.get("fips")
+        or nri.get("fips")
+        or j.get("risk_fips")
+        or ""
+    )
+
+    fips_note = (
+        '<span class="risk-fips">County FIPS %s</span>' % e(str(fips))
+        if fips
+        else ""
+    )
+
+    return (
+        '<section class="risk-section">'
+        '<div class="section-heading-row">'
+        '<div><h2>Risk and vulnerability context</h2>'
+        '<p class="section-deck">Historical declarations show what has '
+        'happened here. These national datasets add context about underlying '
+        'natural-hazard risk and community vulnerability.</p></div>%s'
+        '</div>'
+        '<div class="risk-grid">%s</div>'
+        '<div class="risk-caution"><b>About these measures:</b> CDC Social '
+        'Vulnerability Index and FEMA National Risk Index Social Vulnerability '
+        'are separate measures built with different methods. They are shown '
+        'side by side for context and should not be interpreted as equivalent '
+        'scores.</div>'
+        '</section>'
+        % (fips_note, "".join(cards))
+    )
+
+
 # ---------------------------------------------------------------- jurisdiction page
 def render_page(j, others):
     e = html.escape
@@ -2534,7 +3121,7 @@ def render_page(j, others):
         "since FY2000 (%d major disasters, %d emergencies, "
         "%d fire-management). Full FEMA declaration history and a "
         "ready-to-use previous-occurrences table for hazard mitigation "
-        "planning."
+        "planning, with CDC SVI and FEMA NRI context where available."
         % (
             j["name"],
             STATE_NAME,
@@ -2579,6 +3166,8 @@ def render_page(j, others):
             "disaster declarations",
             "hazard mitigation plan",
             "previous occurrences",
+            "CDC Social Vulnerability Index",
+            "FEMA National Risk Index",
         ],
     }
 
@@ -3478,14 +4067,21 @@ def render_page(j, others):
             '{'
             'scrollWheelZoom:false,'
             'zoomControl:true,'
-            'attributionControl:false'
+            'attributionControl:true'
             '}'
             ');'
 
             'L.tileLayer('
             '"https://{s}.basemaps.cartocdn.com/'
-            'light_nolabels/{z}/{x}/{y}{r}.png",'
-            '{maxZoom:13}'
+            f'light_nolabels/{{z}}/{{x}}/{{y}}{{r}}.png?key={CARTO_BASEMAP_KEY}",'
+            '{'
+            'maxZoom:13,'
+            "attribution:'"
+            '&copy; <a href="https://www.openstreetmap.org/copyright">'
+            'OpenStreetMap</a> contributors &copy; '
+            '<a href="https://carto.com/attributions">CARTO</a>'
+            "'"
+            '}'
             ').addTo(map);'
 
             'var targetLayer=null;'
@@ -3656,6 +4252,8 @@ def render_page(j, others):
 
         '%s'
 
+        '%s'
+
         '<h2>Most common hazards</h2>'
 
         '<ul class="haz">%s</ul>'
@@ -3741,6 +4339,8 @@ def render_page(j, others):
             summary_html(j),
 
             map_html,
+
+            risk_context_html(j),
 
             (
                 pa_breakdown_html(j)
@@ -4267,6 +4867,8 @@ def build_state(
     pa_timing,
     hma,
     ia,
+    svi_lookup,
+    nri_lookup,
     tribal_plan,
 ):
     """
@@ -4689,6 +5291,32 @@ def build_state(
             or {}
         )
 
+    # ------------------------------------------------------------ SVI / NRI matching
+    for j in js:
+        risk_key = jurisdiction_risk_key(
+            j,
+            state_ab,
+        )
+
+        if risk_key:
+            j["svi"] = svi_lookup.get(
+                risk_key,
+                {},
+            )
+            j["nri"] = nri_lookup.get(
+                risk_key,
+                {},
+            )
+        else:
+            j["svi"] = {}
+            j["nri"] = {}
+
+        j["risk_fips"] = (
+            (j["svi"] or {}).get("fips")
+            or (j["nri"] or {}).get("fips")
+            or ""
+        )
+
     for j in js:
         j["thin"] = is_thin(j)
 
@@ -4783,6 +5411,15 @@ def main():
     PA_TIMING = load_pa_timing()
     HMA = load_hma()
     IA = load_ia()
+    SVI = load_svi()
+    NRI = load_nri()
+
+    SVI_LOOKUP = build_risk_lookup(
+        SVI
+    )
+    NRI_LOOKUP = build_risk_lookup(
+        NRI
+    )
 
     by_id = {
         r[
@@ -4853,6 +5490,8 @@ def main():
                 st,
                 {},
             ),
+            SVI_LOOKUP,
+            NRI_LOOKUP,
             tribal_plan,
         )
 
