@@ -32,7 +32,7 @@
     moneyGeo: 'state'     /* dollars only: 'state' (dated, animatable) | 'county' (all-time) */
   });
 
-  var SPEEDS = [0, 120, 300, 700, 1400, 2600, 5200];   /* days per second */
+  var SPEEDS = [0, 25, 55, 110, 220, 450, 900];   /* days per second */
 
   var el = {};
   ['mapwrap','hud-date','hud-sub','ctr-decl','ctr-county','ctr-events','play','play-icon','spd',
