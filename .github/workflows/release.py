@@ -17,6 +17,8 @@ What this script does in one pass:
   5. Writes a public status.html page from the same source of truth.
   6. Writes build-report.json with every PASS/WARN/FAIL check.
   7. Tracks the last successful release in release-state.json.
+  8. Validates map-events.js against events.json.
+  9. Keeps the existing release number when the generated content is unchanged.
 
 No third-party Python packages are required.
 
@@ -39,14 +41,39 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+
 ROOT = Path(os.environ.get("DD_ROOT", ".")).resolve()
+
 TODAY = _dt.date.today()
 TODAY_ISO = TODAY.isoformat()
-NOW_UTC = _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
-REQUIRE_CONTEXT = os.environ.get("DD_REQUIRE_CONTEXT", "").strip().lower() in {"1", "true", "yes", "on"}
-REQUIRE_JURISDICTIONS = os.environ.get("DD_REQUIRE_JURISDICTIONS", "").strip().lower() in {"1", "true", "yes", "on"}
-REQUIRE_CITATIONS = os.environ.get("DD_REQUIRE_CITATIONS", "").strip().lower() in {"1", "true", "yes", "on"}
+NOW_UTC = (
+    _dt.datetime.now(_dt.timezone.utc)
+    .replace(microsecond=0)
+    .isoformat()
+    .replace("+00:00", "Z")
+)
+
+REQUIRE_CONTEXT = (
+    os.environ.get("DD_REQUIRE_CONTEXT", "")
+    .strip()
+    .lower()
+    in {"1", "true", "yes", "on"}
+)
+
+REQUIRE_JURISDICTIONS = (
+    os.environ.get("DD_REQUIRE_JURISDICTIONS", "")
+    .strip()
+    .lower()
+    in {"1", "true", "yes", "on"}
+)
+
+REQUIRE_CITATIONS = (
+    os.environ.get("DD_REQUIRE_CITATIONS", "")
+    .strip()
+    .lower()
+    in {"1", "true", "yes", "on"}
+)
 
 PUBLIC_STATUS = ROOT / "data-status.json"
 STATUS_HTML = ROOT / "status.html"
@@ -56,9 +83,14 @@ RELEASE_STATE = ROOT / "release-state.json"
 CHECKS: List[Dict[str, Any]] = []
 
 
+# ======================================================================
+# BASIC HELPERS
+# ======================================================================
+
 def _status_for(ok: bool, severity: str) -> str:
     if ok:
         return "pass"
+
     return "fail" if severity == "error" else "warn"
 
 
@@ -71,7 +103,10 @@ def check(
     category: str = "General",
     metrics: Optional[Dict[str, Any]] = None,
 ) -> bool:
-    """Record one validation check and return the original truth value."""
+    """
+    Record one validation check and return the original truth value.
+    """
+
     CHECKS.append(
         {
             "name": name,
@@ -82,6 +117,7 @@ def check(
             "metrics": metrics or {},
         }
     )
+
     return bool(ok)
 
 
@@ -93,6 +129,7 @@ def warning(
     category: str = "General",
     metrics: Optional[Dict[str, Any]] = None,
 ) -> bool:
+
     return check(
         name,
         ok,
@@ -107,54 +144,104 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def load_json(path: Path, default: Any = None) -> Any:
+def load_json(
+    path: Path,
+    default: Any = None,
+) -> Any:
+
     try:
         with path.open(encoding="utf-8") as fh:
             return json.load(fh)
+
     except Exception:
         return default
 
 
-def grab_js(text: str, name: str, default: Any = None) -> Any:
-    """Decode a JSON value assigned as window.NAME = ... in a JS data file."""
-    m = re.search(r"window\." + re.escape(name) + r"\s*=\s*", text)
+def grab_js(
+    text: str,
+    name: str,
+    default: Any = None,
+) -> Any:
+    """
+    Decode a JSON value assigned as:
+
+        window.NAME = ...
+
+    inside a JavaScript data file.
+    """
+
+    m = re.search(
+        r"window\."
+        + re.escape(name)
+        + r"\s*=\s*",
+        text,
+    )
+
     if not m:
         return default
 
     try:
-        return json.JSONDecoder().raw_decode(text, m.end())[0]
+        return json.JSONDecoder().raw_decode(
+            text,
+            m.end(),
+        )[0]
+
     except Exception:
         return default
 
 
-def js_file(path: Path, name: str, default: Any = None) -> Any:
+def js_file(
+    path: Path,
+    name: str,
+    default: Any = None,
+) -> Any:
+
     if not path.exists():
         return default
 
     try:
-        return grab_js(read_text(path), name, default)
+        return grab_js(
+            read_text(path),
+            name,
+            default,
+        )
+
     except Exception:
         return default
 
 
-def file_hash(path: Path, n: int = 16) -> str:
+def file_hash(
+    path: Path,
+    n: int = 16,
+) -> str:
+
     if not path.exists() or not path.is_file():
         return ""
 
     h = hashlib.sha256()
 
     with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+        for chunk in iter(
+            lambda: fh.read(1024 * 1024),
+            b"",
+        ):
             h.update(chunk)
 
     return h.hexdigest()[:n]
 
 
 def safe_num(v: Any) -> Optional[float]:
+
     try:
         x = float(v)
 
-        if x != x or x in (float("inf"), float("-inf")):
+        if (
+            x != x
+            or x in (
+                float("inf"),
+                float("-inf"),
+            )
+        ):
             return None
 
         return x
@@ -164,22 +251,35 @@ def safe_num(v: Any) -> Optional[float]:
 
 
 def valid_iso_day(v: Any) -> bool:
-    if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+
+    if (
+        not isinstance(v, str)
+        or not re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}",
+            v,
+        )
+    ):
         return False
 
     try:
         _dt.date.fromisoformat(v)
         return True
+
     except ValueError:
         return False
 
 
-def flatten_values(obj: Any) -> Iterable[Any]:
+def flatten_values(
+    obj: Any,
+) -> Iterable[Any]:
+
     if isinstance(obj, dict):
+
         for v in obj.values():
             yield from flatten_values(v)
 
     elif isinstance(obj, list):
+
         for v in obj:
             yield from flatten_values(v)
 
@@ -192,9 +292,16 @@ def validate_nonnegative_rollup(
     fields: Tuple[str, ...],
     label: str,
 ) -> Tuple[bool, int, int]:
-    """Validate numeric rollup fields inside state -> jurisdiction -> record JSON."""
+    """
+    Validate numeric rollup fields inside:
 
-    data = load_json(path, None)
+        state -> jurisdiction -> record JSON
+    """
+
+    data = load_json(
+        path,
+        None,
+    )
 
     if not isinstance(data, dict):
         return False, 0, 0
@@ -204,14 +311,21 @@ def validate_nonnegative_rollup(
 
     for state_rows in data.values():
 
-        if not isinstance(state_rows, dict):
+        if not isinstance(
+            state_rows,
+            dict,
+        ):
             bad += 1
             continue
 
         for rec in state_rows.values():
+
             rows += 1
 
-            if not isinstance(rec, dict):
+            if not isinstance(
+                rec,
+                dict,
+            ):
                 bad += 1
                 continue
 
@@ -220,36 +334,69 @@ def validate_nonnegative_rollup(
                 if fld not in rec:
                     continue
 
-                n = safe_num(rec.get(fld))
+                n = safe_num(
+                    rec.get(fld)
+                )
 
-                if n is None or n < 0:
+                if (
+                    n is None
+                    or n < 0
+                ):
                     bad += 1
 
-    return bad == 0 and rows > 0, rows, bad
+    return (
+        bad == 0
+        and rows > 0,
+        rows,
+        bad,
+    )
 
 
-def parse_locality_index(path: Path) -> Optional[List[Any]]:
-    return js_file(path, "LOCALITY_INDEX", None)
+def parse_locality_index(
+    path: Path,
+) -> Optional[List[Any]]:
+
+    return js_file(
+        path,
+        "LOCALITY_INDEX",
+        None,
+    )
 
 
-def detect_static_release(path: Path, fallback: str = "") -> str:
-    """Best-effort release label from the first few comments of a static JS file."""
+def detect_static_release(
+    path: Path,
+    fallback: str = "",
+) -> str:
+    """
+    Best-effort release label from the first few comments of
+    a static JavaScript file.
+    """
 
     if not path.exists():
         return fallback
 
     try:
-        head = "\n".join(read_text(path).splitlines()[:30])
+        head = "\n".join(
+            read_text(path)
+            .splitlines()[:30]
+        )
+
     except Exception:
         return fallback
 
     patterns = [
         r"\b(20\d{2})\b",
-        r"\b(?:release|version|updated|published)\s*[:=-]?\s*([^\n*/]+)",
+        r"\b(?:release|version|updated|published)"
+        r"\s*[:=-]?\s*([^\n*/]+)",
     ]
 
     for pat in patterns:
-        m = re.search(pat, head, re.I)
+
+        m = re.search(
+            pat,
+            head,
+            re.I,
+        )
 
         if m:
             return m.group(1).strip()
@@ -257,8 +404,20 @@ def detect_static_release(path: Path, fallback: str = "") -> str:
     return fallback
 
 
+# ======================================================================
+# RELEASE NUMBERING
+# ======================================================================
+
 def next_release() -> Tuple[str, int]:
-    override = os.environ.get("DD_RELEASE", "").strip()
+
+    override = (
+        os.environ
+        .get(
+            "DD_RELEASE",
+            "",
+        )
+        .strip()
+    )
 
     if override:
 
@@ -272,38 +431,81 @@ def next_release() -> Tuple[str, int]:
                 "DD_RELEASE must look like YYYY.MM.DD.N"
             )
 
-        return override, int(m.group(4))
+        return (
+            override,
+            int(m.group(4)),
+        )
 
-    state = load_json(RELEASE_STATE, {}) or {}
+    state = (
+        load_json(
+            RELEASE_STATE,
+            {},
+        )
+        or {}
+    )
 
-    same_day = state.get("date") == TODAY_ISO
+    same_day = (
+        state.get("date")
+        == TODAY_ISO
+    )
 
     previous_build = (
-        int(state.get("build", 0) or 0)
+        int(
+            state.get(
+                "build",
+                0,
+            )
+            or 0
+        )
         if same_day
         else 0
     )
 
-    build_no = previous_build + 1
-
-    return f"{TODAY:%Y.%m.%d}.{build_no}", build_no
-
-
-def previous_metrics() -> Dict[str, Any]:
-    prior = load_json(PUBLIC_STATUS, {}) or {}
+    build_no = (
+        previous_build
+        + 1
+    )
 
     return (
-        prior.get("metrics", {})
-        if isinstance(prior, dict)
-        else {}
+        f"{TODAY:%Y.%m.%d}.{build_no}",
+        build_no,
     )
 
 
-def delta(current: Any, previous: Any) -> Optional[float]:
+def previous_metrics() -> Dict[str, Any]:
+
+    prior = (
+        load_json(
+            PUBLIC_STATUS,
+            {},
+        )
+        or {}
+    )
+
+    if isinstance(
+        prior,
+        dict,
+    ):
+        return prior.get(
+            "metrics",
+            {},
+        )
+
+    return {}
+
+
+def delta(
+    current: Any,
+    previous: Any,
+) -> Optional[float]:
+
     a = safe_num(current)
     b = safe_num(previous)
 
-    if a is None or b is None:
+    if (
+        a is None
+        or b is None
+    ):
         return None
 
     return a - b
@@ -317,18 +519,41 @@ def delta_text(
     if value is None:
         return ""
 
-    sign = "+" if value > 0 else ""
+    sign = (
+        "+"
+        if value > 0
+        else ""
+    )
 
     if money:
-        return f"{sign}${value:,.0f}"
+        return (
+            f"{sign}${value:,.0f}"
+        )
 
     if float(value).is_integer():
-        return f"{sign}{int(value):,}"
+        return (
+            f"{sign}{int(value):,}"
+        )
 
-    return f"{sign}{value:,.1f}"
+    return (
+        f"{sign}{value:,.1f}"
+    )
 
 
-def fingerprint(paths: Iterable[Path]) -> str:
+# ======================================================================
+# PRODUCT FINGERPRINT
+# ======================================================================
+
+def fingerprint(
+    paths: Iterable[Path],
+) -> str:
+    """
+    Build one deterministic SHA-256 fingerprint from the substantive
+    generated DisasterData files.
+
+    Release/status files themselves are intentionally excluded.
+    """
+
     h = hashlib.sha256()
     found = False
 
@@ -337,7 +562,10 @@ def fingerprint(paths: Iterable[Path]) -> str:
         key=lambda x: str(x),
     ):
 
-        if not p.exists() or not p.is_file():
+        if (
+            not p.exists()
+            or not p.is_file()
+        ):
             continue
 
         found = True
@@ -354,43 +582,91 @@ def fingerprint(paths: Iterable[Path]) -> str:
         with p.open("rb") as fh:
 
             for chunk in iter(
-                lambda: fh.read(1024 * 1024),
+                lambda: fh.read(
+                    1024 * 1024
+                ),
                 b"",
             ):
                 h.update(chunk)
 
-    return (
-        h.hexdigest()[:20]
-        if found
-        else ""
-    )
+    if not found:
+        return ""
 
+    return h.hexdigest()[:20]
+
+
+# ======================================================================
+# VALIDATION
+# ======================================================================
 
 def validate() -> Dict[str, Any]:
-    """Run the release gate against files produced by the DisasterData build."""
+    """
+    Run the release gate against files produced by the DisasterData build.
+    """
 
-    data_path = ROOT / "data.js"
-    map_path = ROOT / "map-data.js"
-    latest_path = ROOT / "latest-data.js"
-    index_path = ROOT / "index.html"
-    svi_path = ROOT / "county-svi.js"
-    nri_path = ROOT / "county-nri.js"
-    locality_index_path = ROOT / "locality-index.js"
-    jurisdiction_landing = ROOT / "jurisdiction.html"
+    data_path = (
+        ROOT / "data.js"
+    )
 
-    # ------------------------------------------------------------
-    # data.js / canonical declaration data
-    # ------------------------------------------------------------
+    map_path = (
+        ROOT / "map-data.js"
+    )
+
+    map_events_path = (
+        ROOT / "map-events.js"
+    )
+
+    events_path = (
+        ROOT / "events.json"
+    )
+
+    decl_index_dir = (
+        ROOT
+        / "data"
+        / "decl-index"
+    )
+
+    latest_path = (
+        ROOT / "latest-data.js"
+    )
+
+    index_path = (
+        ROOT / "index.html"
+    )
+
+    svi_path = (
+        ROOT / "county-svi.js"
+    )
+
+    nri_path = (
+        ROOT / "county-nri.js"
+    )
+
+    locality_index_path = (
+        ROOT / "locality-index.js"
+    )
+
+    jurisdiction_landing = (
+        ROOT / "jurisdiction.html"
+    )
+
+    # ==============================================================
+    # CORE DATA.JS
+    # ==============================================================
 
     data_ok = check(
         "data.js exists",
+
         data_path.exists()
-        and data_path.stat().st_size > 1024,
+        and data_path.stat().st_size
+        > 1024,
+
         (
             f"{data_path.name} is present and non-trivial"
             if data_path.exists()
             else "data.js is missing"
         ),
+
         category="Core build",
     )
 
@@ -450,108 +726,198 @@ def validate() -> Dict[str, Any]:
 
     check(
         "BROWSE parsed",
-        isinstance(browse, list)
+
+        isinstance(
+            browse,
+            list,
+        )
         and len(browse) > 0,
+
         (
             f"Parsed {len(browse):,} unique declarations"
-            if isinstance(browse, list)
-            else "window.BROWSE could not be parsed"
+            if isinstance(
+                browse,
+                list,
+            )
+            else (
+                "window.BROWSE "
+                "could not be parsed"
+            )
         ),
+
         category="Declarations",
     )
 
     check(
         "LOCALITY_DATA parsed",
-        isinstance(locality, dict)
+
+        isinstance(
+            locality,
+            dict,
+        )
         and len(locality) > 0,
+
         (
-            f"Parsed locality data for {len(locality):,} states/territories"
-            if isinstance(locality, dict)
-            else "window.LOCALITY_DATA could not be parsed"
+            f"Parsed locality data for "
+            f"{len(locality):,} states/territories"
+            if isinstance(
+                locality,
+                dict,
+            )
+            else (
+                "window.LOCALITY_DATA "
+                "could not be parsed"
+            )
         ),
+
         category="Jurisdictions",
     )
 
     check(
         "STATE_NAMES parsed",
-        isinstance(state_names, dict)
+
+        isinstance(
+            state_names,
+            dict,
+        )
         and len(state_names) >= 50,
+
         (
-            f"Parsed {len(state_names):,} state/territory labels"
-            if isinstance(state_names, dict)
-            else "window.STATE_NAMES could not be parsed"
+            f"Parsed {len(state_names):,} "
+            "state/territory labels"
+            if isinstance(
+                state_names,
+                dict,
+            )
+            else (
+                "window.STATE_NAMES "
+                "could not be parsed"
+            )
         ),
+
         category="Core build",
     )
 
     check(
         "NATIONAL_TOTALS parsed",
-        isinstance(totals, dict)
+
+        isinstance(
+            totals,
+            dict,
+        )
         and "current" in totals
         and "completed" in totals,
+
         (
-            "Canonical current and completed-FY totals are present"
-            if isinstance(totals, dict)
-            else "window.NATIONAL_TOTALS could not be parsed"
+            "Canonical current and completed-FY "
+            "totals are present"
+            if isinstance(
+                totals,
+                dict,
+            )
+            else (
+                "window.NATIONAL_TOTALS "
+                "could not be parsed"
+            )
         ),
+
         category="Declarations",
     )
 
     check(
         "DATA_DATE is valid",
-        valid_iso_day(data_date),
+
+        valid_iso_day(
+            data_date
+        ),
+
         (
             f"Data date: {data_date}"
             if data_date
-            else "window.DATA_DATE is missing or invalid"
+            else (
+                "window.DATA_DATE is "
+                "missing or invalid"
+            )
         ),
+
         category="Freshness",
     )
 
+    # ==============================================================
+    # DECLARATION RECORD VALIDATION
+    # ==============================================================
+
     browse_ids: List[str] = []
+
     blank_ids = 0
     bad_dates = 0
-    bad_types: Dict[str, int] = {}
 
-    if isinstance(browse, list):
+    bad_types: Dict[
+        str,
+        int,
+    ] = {}
+
+    if isinstance(
+        browse,
+        list,
+    ):
 
         for r in browse:
 
-            if not isinstance(r, dict):
+            if not isinstance(
+                r,
+                dict,
+            ):
                 blank_ids += 1
                 continue
 
             fid = str(
-                r.get("femaDeclarationString")
+                r.get(
+                    "femaDeclarationString"
+                )
                 or r.get("id")
                 or ""
             ).strip()
 
             if not fid:
                 blank_ids += 1
+
             else:
-                browse_ids.append(fid)
+                browse_ids.append(
+                    fid
+                )
 
             d = str(
-                r.get("declarationDate")
+                r.get(
+                    "declarationDate"
+                )
                 or r.get("date")
                 or ""
             )[:10]
 
-            if d and not valid_iso_day(d):
+            if (
+                d
+                and not valid_iso_day(d)
+            ):
                 bad_dates += 1
 
             ty = str(
-                r.get("declarationType")
+                r.get(
+                    "declarationType"
+                )
                 or r.get("dt")
                 or ""
             ).strip()
 
-            if ty and ty not in {
-                "DR",
-                "EM",
-                "FM",
-            }:
+            if (
+                ty
+                and ty not in {
+                    "DR",
+                    "EM",
+                    "FM",
+                }
+            ):
+
                 bad_types[ty] = (
                     bad_types.get(
                         ty,
@@ -567,14 +933,18 @@ def validate() -> Dict[str, Any]:
 
         check(
             "Declaration IDs are unique",
+
             dupes == 0
             and blank_ids == 0,
+
             (
                 f"{len(browse_ids):,} IDs; "
                 f"{dupes:,} duplicate(s); "
                 f"{blank_ids:,} blank ID(s)"
             ),
+
             category="Declarations",
+
             metrics={
                 "duplicates": dupes,
                 "blankIds": blank_ids,
@@ -583,29 +953,48 @@ def validate() -> Dict[str, Any]:
 
         warning(
             "Declaration dates parse",
+
             bad_dates == 0,
+
             (
-                f"{bad_dates:,} malformed declaration date(s)"
+                f"{bad_dates:,} malformed "
+                "declaration date(s)"
                 if bad_dates
-                else "All populated declaration dates use YYYY-MM-DD"
+                else (
+                    "All populated declaration "
+                    "dates use YYYY-MM-DD"
+                )
             ),
+
             category="Declarations",
         )
 
         warning(
             "Declaration types recognized",
+
             not bad_types,
+
             (
                 "Only DR, EM, and FM types found"
                 if not bad_types
-                else f"Unexpected types: {bad_types}"
+                else (
+                    f"Unexpected types: "
+                    f"{bad_types}"
+                )
             ),
+
             category="Declarations",
         )
 
     if (
-        isinstance(totals, dict)
-        and isinstance(browse, list)
+        isinstance(
+            totals,
+            dict,
+        )
+        and isinstance(
+            browse,
+            list,
+        )
     ):
 
         current_total = (
@@ -617,16 +1006,24 @@ def validate() -> Dict[str, Any]:
 
         check(
             "Canonical current total reconciles",
-            current_total == len(browse),
+
+            current_total
+            == len(browse),
+
             (
-                f"NATIONAL_TOTALS current={current_total:,}; "
+                f"NATIONAL_TOTALS current="
+                f"{current_total:,}; "
                 f"BROWSE={len(browse):,}"
                 if isinstance(
                     current_total,
                     int,
                 )
-                else "Canonical current total is missing"
+                else (
+                    "Canonical current "
+                    "total is missing"
+                )
             ),
+
             category="Declarations",
         )
 
@@ -638,12 +1035,13 @@ def validate() -> Dict[str, Any]:
         )
 
     else:
+
         current_total = None
         completed = None
 
-    # ------------------------------------------------------------
-    # Map
-    # ------------------------------------------------------------
+    # ==============================================================
+    # MAP DATA
+    # ==============================================================
 
     map_data = js_file(
         map_path,
@@ -653,23 +1051,30 @@ def validate() -> Dict[str, Any]:
 
     check(
         "map-data.js parsed",
+
         isinstance(
             map_data,
             dict,
         ),
+
         (
             "County map data parsed successfully"
             if isinstance(
                 map_data,
                 dict,
             )
-            else "map-data.js is missing or invalid"
+            else (
+                "map-data.js is "
+                "missing or invalid"
+            )
         ),
+
         category="Map",
     )
 
     map_counties = 0
     map_event_total = None
+
     invalid_fips: List[str] = []
 
     if isinstance(
@@ -697,6 +1102,7 @@ def validate() -> Dict[str, Any]:
             labels,
             dict,
         ):
+
             invalid_fips = [
                 str(k)
                 for k in labels.keys()
@@ -708,12 +1114,17 @@ def validate() -> Dict[str, Any]:
 
         check(
             "County FIPS keys valid",
+
             not invalid_fips
             and map_counties > 0,
+
             (
-                f"{map_counties:,} county/county-equivalent FIPS keys; "
+                f"{map_counties:,} "
+                "county/county-equivalent "
+                "FIPS keys; "
                 f"{len(invalid_fips):,} invalid"
             ),
+
             category="Map",
         )
 
@@ -733,8 +1144,10 @@ def validate() -> Dict[str, Any]:
 
             check(
                 "Map declaration total reconciles",
+
                 map_event_total
                 == len(browse),
+
                 (
                     f"Map={map_event_total:,}; "
                     f"BROWSE={len(browse):,}"
@@ -742,14 +1155,621 @@ def validate() -> Dict[str, Any]:
                         map_event_total,
                         int,
                     )
-                    else "Map declaration total missing"
+                    else (
+                        "Map declaration "
+                        "total missing"
+                    )
                 ),
+
                 category="Map",
             )
 
-    # ------------------------------------------------------------
-    # Latest declarations + homepage
-    # ------------------------------------------------------------
+    # ==============================================================
+    # DECLARATION COMPARE INDEX
+    # ==============================================================
+
+    manifest_path = (
+        decl_index_dir
+        / "manifest.json"
+    )
+
+    manifest = load_json(
+        manifest_path,
+        None,
+    )
+
+    manifest_states = []
+
+    missing_index_files = 0
+    duplicate_manifest_states = 0
+
+    if isinstance(
+        manifest,
+        dict,
+    ):
+
+        manifest_states = (
+            manifest.get("states")
+            or []
+        )
+
+    check(
+        "Declaration-index manifest parsed",
+
+        isinstance(
+            manifest,
+            dict,
+        )
+        and isinstance(
+            manifest_states,
+            list,
+        )
+        and len(manifest_states) > 0,
+
+        (
+            f"Manifest lists "
+            f"{len(manifest_states):,} "
+            "state/territory index file(s)"
+            if isinstance(
+                manifest_states,
+                list,
+            )
+            else (
+                "data/decl-index/manifest.json "
+                "is missing or invalid"
+            )
+        ),
+
+        category="Event indexes",
+    )
+
+    if (
+        isinstance(
+            manifest_states,
+            list,
+        )
+        and manifest_states
+    ):
+
+        seen_manifest_states = set()
+
+        for item in manifest_states:
+
+            if not isinstance(
+                item,
+                dict,
+            ):
+
+                missing_index_files += 1
+                continue
+
+            st = str(
+                item.get("state")
+                or ""
+            ).upper().strip()
+
+            fn = str(
+                item.get("file")
+                or ""
+            ).strip()
+
+            if st:
+
+                if st in seen_manifest_states:
+                    duplicate_manifest_states += 1
+
+                seen_manifest_states.add(
+                    st
+                )
+
+            if (
+                not fn
+                or not (
+                    decl_index_dir
+                    / fn
+                ).exists()
+            ):
+                missing_index_files += 1
+
+        check(
+            "Declaration-index files present",
+
+            missing_index_files == 0
+            and duplicate_manifest_states == 0,
+
+            (
+                f"{len(manifest_states):,} "
+                "manifest entries; "
+                f"{missing_index_files:,} "
+                "missing file(s); "
+                f"{duplicate_manifest_states:,} "
+                "duplicate state entry/entries"
+            ),
+
+            category="Event indexes",
+        )
+
+    # ==============================================================
+    # EVENT INDEXES
+    # ==============================================================
+
+    map_events = js_file(
+        map_events_path,
+        "MAP_EVENTS",
+        None,
+    )
+
+    detailed_events = load_json(
+        events_path,
+        None,
+    )
+
+    check(
+        "map-events.js parsed",
+
+        isinstance(
+            map_events,
+            list,
+        )
+        and len(map_events) > 0,
+
+        (
+            f"Parsed {len(map_events):,} "
+            "map event(s)"
+            if isinstance(
+                map_events,
+                list,
+            )
+            else (
+                "map-events.js is "
+                "missing or invalid"
+            )
+        ),
+
+        category="Event indexes",
+    )
+
+    check(
+        "events.json parsed",
+
+        isinstance(
+            detailed_events,
+            list,
+        )
+        and len(detailed_events) > 0,
+
+        (
+            f"Parsed {len(detailed_events):,} "
+            "detailed event(s)"
+            if isinstance(
+                detailed_events,
+                list,
+            )
+            else (
+                "events.json is "
+                "missing or invalid"
+            )
+        ),
+
+        category="Event indexes",
+    )
+
+    def validate_event_rows(
+        rows: Any,
+        detailed: bool,
+    ) -> Tuple[
+        int,
+        int,
+        int,
+        int,
+        int,
+    ]:
+        """
+        Return:
+
+          rows
+          duplicate_ids
+          bad_core
+          bad_fips
+          bad_detail
+        """
+
+        if not isinstance(
+            rows,
+            list,
+        ):
+            return (
+                0,
+                0,
+                1,
+                0,
+                0,
+            )
+
+        seen = set()
+
+        duplicate_ids = 0
+        bad_core = 0
+        bad_fips = 0
+        bad_detail = 0
+
+        current_year = (
+            TODAY.year
+            + 1
+        )
+
+        for row in rows:
+
+            if not isinstance(
+                row,
+                dict,
+            ):
+
+                bad_core += 1
+                continue
+
+            eid = str(
+                row.get("id")
+                or ""
+            ).strip()
+
+            if not eid:
+                bad_core += 1
+
+            elif eid in seen:
+                duplicate_ids += 1
+
+            else:
+                seen.add(eid)
+
+            if not str(
+                row.get("n")
+                or ""
+            ).strip():
+
+                bad_core += 1
+
+            year = row.get("y")
+
+            if (
+                not isinstance(
+                    year,
+                    int,
+                )
+                or year < 1900
+                or year > current_year
+            ):
+                bad_core += 1
+
+            if str(
+                row.get("t")
+                or ""
+            ).upper() not in {
+                "DR",
+                "EM",
+                "FM",
+            }:
+
+                bad_core += 1
+
+            sw = row.get("sw")
+
+            if sw not in (
+                0,
+                1,
+                False,
+                True,
+            ):
+                bad_core += 1
+
+            fips = row.get("f")
+
+            if not isinstance(
+                fips,
+                list,
+            ):
+
+                bad_fips += 1
+                fips = []
+
+            else:
+
+                if (
+                    len(fips)
+                    != len(
+                        set(
+                            map(
+                                str,
+                                fips,
+                            )
+                        )
+                    )
+                ):
+                    bad_fips += 1
+
+                for f in fips:
+
+                    if not re.fullmatch(
+                        r"\d{5}",
+                        str(f),
+                    ):
+                        bad_fips += 1
+
+            if detailed:
+
+                states = row.get(
+                    "states"
+                )
+
+                dns = row.get(
+                    "dns"
+                )
+
+                if (
+                    not isinstance(
+                        states,
+                        list,
+                    )
+                    or any(
+                        not re.fullmatch(
+                            r"[A-Z]{2}",
+                            str(st),
+                        )
+                        for st
+                        in (
+                            states
+                            or []
+                        )
+                    )
+                ):
+                    bad_detail += 1
+
+                if not isinstance(
+                    dns,
+                    list,
+                ):
+                    bad_detail += 1
+
+                else:
+
+                    for dn in dns:
+
+                        try:
+
+                            if int(dn) <= 0:
+                                bad_detail += 1
+
+                        except (
+                            TypeError,
+                            ValueError,
+                        ):
+                            bad_detail += 1
+
+        return (
+            len(rows),
+            duplicate_ids,
+            bad_core,
+            bad_fips,
+            bad_detail,
+        )
+
+    (
+        me_rows,
+        me_dupes,
+        me_bad_core,
+        me_bad_fips,
+        _,
+    ) = validate_event_rows(
+        map_events,
+        False,
+    )
+
+    (
+        ev_rows,
+        ev_dupes,
+        ev_bad_core,
+        ev_bad_fips,
+        ev_bad_detail,
+    ) = validate_event_rows(
+        detailed_events,
+        True,
+    )
+
+    if isinstance(
+        map_events,
+        list,
+    ):
+
+        check(
+            "Map event rows valid",
+
+            me_dupes == 0
+            and me_bad_core == 0
+            and me_bad_fips == 0,
+
+            (
+                f"{me_rows:,} rows; "
+                f"{me_dupes:,} duplicate ID(s); "
+                f"{me_bad_core:,} core issue(s); "
+                f"{me_bad_fips:,} FIPS issue(s)"
+            ),
+
+            category="Event indexes",
+        )
+
+    if isinstance(
+        detailed_events,
+        list,
+    ):
+
+        check(
+            "Detailed event rows valid",
+
+            ev_dupes == 0
+            and ev_bad_core == 0
+            and ev_bad_fips == 0
+            and ev_bad_detail == 0,
+
+            (
+                f"{ev_rows:,} rows; "
+                f"{ev_dupes:,} duplicate ID(s); "
+                f"{ev_bad_core:,} core issue(s); "
+                f"{ev_bad_fips:,} FIPS issue(s); "
+                f"{ev_bad_detail:,} "
+                "state/disaster-number issue(s)"
+            ),
+
+            category="Event indexes",
+        )
+
+    statewide_only_events = 0
+
+    if (
+        isinstance(
+            map_events,
+            list,
+        )
+        and isinstance(
+            detailed_events,
+            list,
+        )
+    ):
+
+        map_by_id = {
+            str(
+                r.get("id")
+            ): r
+            for r in map_events
+            if (
+                isinstance(
+                    r,
+                    dict,
+                )
+                and r.get("id")
+            )
+        }
+
+        detail_by_id = {
+            str(
+                r.get("id")
+            ): r
+            for r in detailed_events
+            if (
+                isinstance(
+                    r,
+                    dict,
+                )
+                and r.get("id")
+            )
+        }
+
+        detailed_with_fips = {
+            eid
+            for eid, r
+            in detail_by_id.items()
+            if (
+                isinstance(
+                    r.get("f"),
+                    list,
+                )
+                and len(
+                    r.get("f")
+                ) > 0
+            )
+        }
+
+        statewide_only_events = sum(
+            1
+            for r
+            in detail_by_id.values()
+            if not (
+                isinstance(
+                    r.get("f"),
+                    list,
+                )
+                and len(
+                    r.get("f")
+                ) > 0
+            )
+        )
+
+        map_ids = set(
+            map_by_id
+        )
+
+        missing_from_map = (
+            detailed_with_fips
+            - map_ids
+        )
+
+        extra_on_map = (
+            map_ids
+            - detailed_with_fips
+        )
+
+        check(
+            "Map and detailed event coverage reconciles",
+
+            not missing_from_map
+            and not extra_on_map,
+
+            (
+                f"{len(detailed_with_fips):,} "
+                "detailed event(s) with county footprints; "
+                f"{len(missing_from_map):,} missing from map; "
+                f"{len(extra_on_map):,} unexpected map event(s); "
+                f"{statewide_only_events:,} "
+                "statewide-only detailed event(s)"
+            ),
+
+            category="Event indexes",
+        )
+
+        mismatches = 0
+
+        common_fields = (
+            "id",
+            "n",
+            "y",
+            "t",
+            "it",
+            "sw",
+            "f",
+        )
+
+        for eid in (
+            map_ids
+            & detailed_with_fips
+        ):
+
+            a = map_by_id[eid]
+            b = detail_by_id[eid]
+
+            if any(
+                a.get(k)
+                != b.get(k)
+                for k
+                in common_fields
+            ):
+                mismatches += 1
+
+        check(
+            "Map events match detailed events",
+
+            mismatches == 0,
+
+            (
+                f"{len(map_ids & detailed_with_fips):,} "
+                "shared event(s); "
+                f"{mismatches:,} field mismatch(es)"
+            ),
+
+            category="Event indexes",
+        )
+
+    # ==============================================================
+    # LATEST DECLARATIONS / HOMEPAGE
+    # ==============================================================
 
     latest = js_file(
         latest_path,
@@ -759,51 +1779,79 @@ def validate() -> Dict[str, Any]:
 
     check(
         "latest-data.js parsed",
-        isinstance(latest, list)
+
+        isinstance(
+            latest,
+            list,
+        )
         and len(latest) > 0,
+
         (
-            f"{len(latest):,} latest declarations available"
-            if isinstance(latest, list)
-            else "latest-data.js is missing or invalid"
+            f"{len(latest):,} "
+            "latest declarations available"
+            if isinstance(
+                latest,
+                list,
+            )
+            else (
+                "latest-data.js is "
+                "missing or invalid"
+            )
         ),
+
         category="Website",
     )
 
     index_ok = check(
         "Homepage exists",
+
         index_path.exists()
-        and index_path.stat().st_size > 1024,
+        and index_path.stat().st_size
+        > 1024,
+
         (
             "index.html is present"
             if index_path.exists()
             else "index.html is missing"
         ),
+
         category="Website",
     )
 
     if index_ok:
 
-        idx = read_text(index_path)
+        idx = read_text(
+            index_path
+        )
 
         check(
             "Homepage update stamp matches build",
-            data_date
-            and data_date in idx,
-            (
-                f"Homepage contains build date {data_date}"
-                if data_date
+
+            bool(
+                data_date
                 and data_date in idx
+            ),
+
+            (
+                f"Homepage contains build date "
+                f"{data_date}"
+                if (
+                    data_date
+                    and data_date in idx
+                )
                 else (
-                    "Homepage does not contain current "
-                    f"data date {data_date}"
+                    "Homepage does not contain "
+                    "current data date "
+                    f"{data_date}"
                 )
             ),
+
             category="Freshness",
         )
 
-    # ------------------------------------------------------------
-    # Optional OpenFEMA rollups
-    # ------------------------------------------------------------
+    # ==============================================================
+    # PUBLIC ASSISTANCE
+    # ==============================================================
 
     pa_total_obl = 0
     pa_total_proj = 0
@@ -813,22 +1861,11 @@ def validate() -> Dict[str, Any]:
         dict,
     ):
 
-        nums = [
-            safe_num(v)
-            for v in flatten_values(
-                pa_national
-            )
-        ]
-
-        nums = [
-            v
-            for v in nums
-            if v is not None
-        ]
-
         warning(
             "Public Assistance output present",
+
             bool(pa_national),
+
             (
                 "PA_NATIONAL is populated"
                 if pa_national
@@ -837,6 +1874,7 @@ def validate() -> Dict[str, Any]:
                     "(upstream PA may have been unavailable)"
                 )
             ),
+
             category="Assistance",
         )
 
@@ -847,23 +1885,17 @@ def validate() -> Dict[str, Any]:
             "total",
         ):
 
-            n = (
-                safe_num(
-                    pa_national.get(
-                        key
-                    )
+            n = safe_num(
+                pa_national.get(
+                    key
                 )
-                if isinstance(
-                    pa_national,
-                    dict,
-                )
-                else None
             )
 
             if (
                 n is not None
                 and n >= 0
             ):
+
                 pa_total_obl = n
                 break
 
@@ -874,23 +1906,17 @@ def validate() -> Dict[str, Any]:
             "proj",
         ):
 
-            n = (
-                safe_num(
-                    pa_national.get(
-                        key
-                    )
+            n = safe_num(
+                pa_national.get(
+                    key
                 )
-                if isinstance(
-                    pa_national,
-                    dict,
-                )
-                else None
             )
 
             if (
                 n is not None
                 and n >= 0
             ):
+
                 pa_total_proj = int(n)
                 break
 
@@ -905,16 +1931,21 @@ def validate() -> Dict[str, Any]:
         pa_bad = 0
         pa_jurisdictions = 0
 
-        for state_rows in pa_county.values():
+        for state_rows in (
+            pa_county.values()
+        ):
 
             if not isinstance(
                 state_rows,
                 dict,
             ):
+
                 pa_bad += 1
                 continue
 
-            for vals in state_rows.values():
+            for vals in (
+                state_rows.values()
+            ):
 
                 pa_jurisdictions += 1
 
@@ -925,6 +1956,7 @@ def validate() -> Dict[str, Any]:
                     )
                     or len(vals) < 2
                 ):
+
                     pa_bad += 1
                     continue
 
@@ -946,11 +1978,15 @@ def validate() -> Dict[str, Any]:
 
         check(
             "PA county rollups are nonnegative",
+
             pa_bad == 0,
+
             (
-                f"{pa_jurisdictions:,} PA jurisdiction rollups; "
+                f"{pa_jurisdictions:,} "
+                "PA jurisdiction rollups; "
                 f"{pa_bad:,} invalid"
             ),
+
             category="Assistance",
         )
 
@@ -964,6 +2000,10 @@ def validate() -> Dict[str, Any]:
         )
 
         pa_jurisdictions = 0
+
+    # ==============================================================
+    # PA TIMING / HMA / IA
+    # ==============================================================
 
     rollups = [
         (
@@ -994,9 +2034,16 @@ def validate() -> Dict[str, Any]:
         ),
     ]
 
-    rollup_counts: Dict[str, int] = {}
+    rollup_counts: Dict[
+        str,
+        int,
+    ] = {}
 
-    for path, fields, label in rollups:
+    for (
+        path,
+        fields,
+        label,
+    ) in rollups:
 
         if not path.exists():
 
@@ -1049,12 +2096,19 @@ def validate() -> Dict[str, Any]:
 
             warning(
                 f"{label} output parses",
+
                 ok,
+
                 (
-                    f"{count_rows:,} jurisdiction rollups"
+                    f"{count_rows:,} "
+                    "jurisdiction rollups"
                     if ok
-                    else f"{path.name} is invalid or empty"
+                    else (
+                        f"{path.name} is "
+                        "invalid or empty"
+                    )
                 ),
+
                 category="Assistance",
             )
 
@@ -1064,21 +2118,26 @@ def validate() -> Dict[str, Any]:
 
         else:
 
-            ok, rows, bad = (
-                validate_nonnegative_rollup(
-                    path,
-                    fields,
-                    label,
-                )
+            (
+                ok,
+                rows,
+                bad,
+            ) = validate_nonnegative_rollup(
+                path,
+                fields,
+                label,
             )
 
             warning(
                 f"{label} values valid",
+
                 ok,
+
                 (
                     f"{rows:,} jurisdiction rollups; "
                     f"{bad:,} invalid numeric record(s)"
                 ),
+
                 category="Assistance",
             )
 
@@ -1086,9 +2145,9 @@ def validate() -> Dict[str, Any]:
                 path.name
             ] = rows
 
-    # ------------------------------------------------------------
-    # SVI / NRI context
-    # ------------------------------------------------------------
+    # ==============================================================
+    # CDC SVI
+    # ==============================================================
 
     svi = js_file(
         svi_path,
@@ -1104,16 +2163,26 @@ def validate() -> Dict[str, Any]:
 
     check(
         "CDC SVI file available",
-        isinstance(svi, dict)
+
+        isinstance(
+            svi,
+            dict,
+        )
         and len(svi) > 0,
+
         (
-            f"{len(svi):,} county records in county-svi.js"
+            f"{len(svi):,} county records "
+            "in county-svi.js"
             if isinstance(
                 svi,
                 dict,
             )
-            else "county-svi.js is missing or invalid"
+            else (
+                "county-svi.js is "
+                "missing or invalid"
+            )
         ),
+
         severity=context_severity,
         category="Risk context",
     )
@@ -1126,7 +2195,10 @@ def validate() -> Dict[str, Any]:
         dict,
     ):
 
-        for fips, rec in svi.items():
+        for (
+            fips,
+            rec,
+        ) in svi.items():
 
             if not re.fullmatch(
                 r"\d{5}",
@@ -1138,6 +2210,7 @@ def validate() -> Dict[str, Any]:
                 rec,
                 dict,
             ):
+
                 svi_bad_values += 1
                 continue
 
@@ -1167,15 +2240,23 @@ def validate() -> Dict[str, Any]:
 
         check(
             "CDC SVI values valid",
+
             svi_bad_fips == 0
             and svi_bad_values == 0,
+
             (
                 f"{svi_bad_fips:,} invalid FIPS; "
-                f"{svi_bad_values:,} percentile value issue(s)"
+                f"{svi_bad_values:,} "
+                "percentile value issue(s)"
             ),
+
             severity=context_severity,
             category="Risk context",
         )
+
+    # ==============================================================
+    # FEMA NRI
+    # ==============================================================
 
     nri = js_file(
         nri_path,
@@ -1185,16 +2266,26 @@ def validate() -> Dict[str, Any]:
 
     check(
         "FEMA NRI file available",
-        isinstance(nri, dict)
+
+        isinstance(
+            nri,
+            dict,
+        )
         and len(nri) > 0,
+
         (
-            f"{len(nri):,} county records in county-nri.js"
+            f"{len(nri):,} county records "
+            "in county-nri.js"
             if isinstance(
                 nri,
                 dict,
             )
-            else "county-nri.js is missing or invalid"
+            else (
+                "county-nri.js is "
+                "missing or invalid"
+            )
         ),
+
         severity=context_severity,
         category="Risk context",
     )
@@ -1207,7 +2298,10 @@ def validate() -> Dict[str, Any]:
         dict,
     ):
 
-        for fips, rec in nri.items():
+        for (
+            fips,
+            rec,
+        ) in nri.items():
 
             if not re.fullmatch(
                 r"\d{5}",
@@ -1219,6 +2313,7 @@ def validate() -> Dict[str, Any]:
                 rec,
                 dict,
             ):
+
                 nri_bad_values += 1
                 continue
 
@@ -1240,19 +2335,23 @@ def validate() -> Dict[str, Any]:
 
         check(
             "FEMA NRI values parse",
+
             nri_bad_fips == 0
             and nri_bad_values == 0,
+
             (
                 f"{nri_bad_fips:,} invalid FIPS; "
-                f"{nri_bad_values:,} score parse issue(s)"
+                f"{nri_bad_values:,} "
+                "score parse issue(s)"
             ),
+
             severity=context_severity,
             category="Risk context",
         )
 
-    # ------------------------------------------------------------
-    # Jurisdiction pages
-    # ------------------------------------------------------------
+    # ==============================================================
+    # JURISDICTION PAGES
+    # ==============================================================
 
     loc_index = parse_locality_index(
         locality_index_path
@@ -1266,19 +2365,26 @@ def validate() -> Dict[str, Any]:
 
     check(
         "Jurisdiction search index available",
+
         isinstance(
             loc_index,
             list,
         )
         and len(loc_index) > 0,
+
         (
-            f"{len(loc_index):,} generated jurisdiction entries"
+            f"{len(loc_index):,} "
+            "generated jurisdiction entries"
             if isinstance(
                 loc_index,
                 list,
             )
-            else "locality-index.js is missing or invalid"
+            else (
+                "locality-index.js is "
+                "missing or invalid"
+            )
         ),
+
         severity=jur_severity,
         category="Jurisdiction pages",
     )
@@ -1308,6 +2414,7 @@ def validate() -> Dict[str, Any]:
                 )
                 or len(row) < 4
             ):
+
                 missing_pages += 1
                 continue
 
@@ -1317,59 +2424,70 @@ def validate() -> Dict[str, Any]:
             ).lstrip("/")
 
             if not url:
+
                 missing_pages += 1
                 continue
 
             if url in seen_urls:
                 duplicate_urls += 1
 
-            seen_urls.add(url)
+            seen_urls.add(
+                url
+            )
 
             p = ROOT / url
 
             if not p.exists():
+
                 missing_pages += 1
                 continue
 
+            try:
+
+                page = read_text(
+                    p
+                )
+
+            except Exception:
+
+                citation_missing += 1
+                continue
+
             if (
-                REQUIRE_CITATIONS
-                or p.exists()
+                "Cite this profile"
+                not in page
+                and 'id="cite"'
+                not in page
+                and 'class="citation"'
+                not in page
             ):
-
-                try:
-                    page = read_text(p)
-                except Exception:
-                    citation_missing += 1
-                    continue
-
-                if (
-                    "Cite this profile"
-                    not in page
-                    and 'id="cite"'
-                    not in page
-                    and 'class="citation"'
-                    not in page
-                ):
-                    citation_missing += 1
+                citation_missing += 1
 
         check(
             "Jurisdiction URLs are unique",
+
             duplicate_urls == 0,
+
             (
                 f"{jurisdiction_count:,} entries; "
                 f"{duplicate_urls:,} duplicate URL(s)"
             ),
+
             severity=jur_severity,
             category="Jurisdiction pages",
         )
 
         check(
             "Jurisdiction pages exist",
+
             missing_pages == 0,
+
             (
                 f"{jurisdiction_count - missing_pages:,}/"
-                f"{jurisdiction_count:,} indexed jurisdiction files found"
+                f"{jurisdiction_count:,} "
+                "indexed jurisdiction files found"
             ),
+
             severity=jur_severity,
             category="Jurisdiction pages",
         )
@@ -1382,18 +2500,22 @@ def validate() -> Dict[str, Any]:
 
         check(
             "Jurisdiction citation blocks present",
+
             citation_missing == 0,
+
             (
                 f"{jurisdiction_count - citation_missing:,}/"
-                f"{jurisdiction_count:,} pages contain a citation block"
+                f"{jurisdiction_count:,} "
+                "pages contain a citation block"
             ),
+
             severity=citation_severity,
             category="Jurisdiction pages",
         )
 
-    # ------------------------------------------------------------
-    # Old Example County placeholder
-    # ------------------------------------------------------------
+    # ==============================================================
+    # OLD EXAMPLE COUNTY PLACEHOLDER
+    # ==============================================================
 
     if jurisdiction_landing.exists():
 
@@ -1403,17 +2525,23 @@ def validate() -> Dict[str, Any]:
 
         check(
             "No Example County placeholder",
+
             "Example County"
             not in landing,
+
             (
-                "jurisdiction.html contains no Example County placeholder"
-                if "Example County"
-                not in landing
+                "jurisdiction.html contains "
+                "no Example County placeholder"
+                if (
+                    "Example County"
+                    not in landing
+                )
                 else (
                     "Example County placeholder text "
                     "found in jurisdiction.html"
                 )
             ),
+
             category="Website",
         )
 
@@ -1426,11 +2554,13 @@ def validate() -> Dict[str, Any]:
             category="Website",
         )
 
-    # ------------------------------------------------------------
-    # Sitemap
-    # ------------------------------------------------------------
+    # ==============================================================
+    # SITEMAP
+    # ==============================================================
 
-    sitemap = ROOT / "sitemap.xml"
+    sitemap = (
+        ROOT / "sitemap.xml"
+    )
 
     if sitemap.exists():
 
@@ -1451,11 +2581,14 @@ def validate() -> Dict[str, Any]:
 
         check(
             "Sitemap has no duplicate URLs",
+
             dup_sitemap == 0,
+
             (
                 f"{len(locs):,} sitemap URLs; "
                 f"{dup_sitemap:,} duplicate(s)"
             ),
+
             category="Website",
         )
 
@@ -1468,9 +2601,9 @@ def validate() -> Dict[str, Any]:
             category="Website",
         )
 
-    # ------------------------------------------------------------
-    # Freshness
-    # ------------------------------------------------------------
+    # ==============================================================
+    # FRESHNESS
+    # ==============================================================
 
     age_days = None
 
@@ -1487,11 +2620,15 @@ def validate() -> Dict[str, Any]:
 
         check(
             "Data freshness acceptable",
+
             0 <= age_days <= 8,
+
             (
-                f"Data date is {age_days} day(s) old; "
+                f"Data date is "
+                f"{age_days} day(s) old; "
                 "weekly target is <= 8 days"
             ),
+
             category="Freshness",
         )
 
@@ -1507,7 +2644,8 @@ def validate() -> Dict[str, Any]:
     localities = (
         sum(
             len(v)
-            for v in locality.values()
+            for v
+            in locality.values()
             if isinstance(
                 v,
                 list,
@@ -1529,9 +2667,9 @@ def validate() -> Dict[str, Any]:
         else 0
     )
 
-    # ------------------------------------------------------------
-    # Best-effort PA totals from build.py schema
-    # ------------------------------------------------------------
+    # ==============================================================
+    # BEST-EFFORT PA NATIONAL TOTALS
+    # ==============================================================
 
     if isinstance(
         pa_national,
@@ -1539,8 +2677,12 @@ def validate() -> Dict[str, Any]:
     ):
 
         for path in (
-            ("totalObligated",),
-            ("federalShareObligated",),
+            (
+                "totalObligated",
+            ),
+            (
+                "federalShareObligated",
+            ),
             (
                 "summary",
                 "totalObligated",
@@ -1555,7 +2697,9 @@ def validate() -> Dict[str, Any]:
             ),
         ):
 
-            cur: Any = pa_national
+            cur: Any = (
+                pa_national
+            )
 
             for part in path:
 
@@ -1566,24 +2710,36 @@ def validate() -> Dict[str, Any]:
                     )
                     or part not in cur
                 ):
+
                     cur = None
                     break
 
-                cur = cur[part]
+                cur = cur[
+                    part
+                ]
 
-            n = safe_num(cur)
+            n = safe_num(
+                cur
+            )
 
             if (
                 n is not None
                 and n >= 0
             ):
+
                 pa_total_obl = n
                 break
 
         for path in (
-            ("totalProjects",),
-            ("projectCount",),
-            ("projects",),
+            (
+                "totalProjects",
+            ),
+            (
+                "projectCount",
+            ),
+            (
+                "projects",
+            ),
             (
                 "summary",
                 "projects",
@@ -1594,7 +2750,9 @@ def validate() -> Dict[str, Any]:
             ),
         ):
 
-            cur = pa_national
+            cur = (
+                pa_national
+            )
 
             for part in path:
 
@@ -1605,76 +2763,171 @@ def validate() -> Dict[str, Any]:
                     )
                     or part not in cur
                 ):
+
                     cur = None
                     break
 
-                cur = cur[part]
+                cur = cur[
+                    part
+                ]
 
-            n = safe_num(cur)
+            n = safe_num(
+                cur
+            )
 
             if (
                 n is not None
                 and n >= 0
             ):
-                pa_total_proj = int(n)
+
+                pa_total_proj = int(
+                    n
+                )
+
                 break
 
+    # ==============================================================
+    # RETURN METRICS
+    # ==============================================================
+
     return {
-        "dataDate": data_date,
-        "ageDays": age_days,
-        "declarationsCurrent": current_total,
-        "declarationsCompletedFY": completed,
-        "denials": denial_count,
-        "statesTerritories": states_territories,
-        "localities": localities,
-        "mapCounties": map_counties,
-        "mapDeclarationEvents": map_event_total,
-        "jurisdictionPages": jurisdiction_count,
-        "paJurisdictions": pa_jurisdictions,
-        "paTotalObligated": pa_total_obl,
-        "paProjects": pa_total_proj,
-        "paTimingJurisdictions": rollup_counts.get(
-            "pa-timing.json",
-            0,
-        ),
-        "hmaJurisdictions": rollup_counts.get(
-            "hma.json",
-            0,
-        ),
-        "iaJurisdictions": rollup_counts.get(
-            "ia.json",
-            0,
-        ),
-        "sviCounties": (
-            len(svi)
-            if isinstance(
-                svi,
-                dict,
-            )
-            else 0
-        ),
-        "nriCounties": (
-            len(nri)
-            if isinstance(
-                nri,
-                dict,
-            )
-            else 0
-        ),
-        "sviRelease": detect_static_release(
-            svi_path,
+        "dataDate":
+            data_date,
+
+        "ageDays":
+            age_days,
+
+        "declarationsCurrent":
+            current_total,
+
+        "declarationsCompletedFY":
+            completed,
+
+        "denials":
+            denial_count,
+
+        "statesTerritories":
+            states_territories,
+
+        "localities":
+            localities,
+
+        "mapCounties":
+            map_counties,
+
+        "mapDeclarationEvents":
+            map_event_total,
+
+        "eventCount":
             (
-                "2022"
-                if svi_path.exists()
-                else ""
+                len(
+                    detailed_events
+                )
+                if isinstance(
+                    detailed_events,
+                    list,
+                )
+                else 0
             ),
-        ),
-        "nriRelease": detect_static_release(
-            nri_path,
-            "",
-        ),
+
+        "mapEventCount":
+            (
+                len(
+                    map_events
+                )
+                if isinstance(
+                    map_events,
+                    list,
+                )
+                else 0
+            ),
+
+        "statewideOnlyEvents":
+            statewide_only_events,
+
+        "declIndexStates":
+            (
+                len(
+                    manifest_states
+                )
+                if isinstance(
+                    manifest_states,
+                    list,
+                )
+                else 0
+            ),
+
+        "jurisdictionPages":
+            jurisdiction_count,
+
+        "paJurisdictions":
+            pa_jurisdictions,
+
+        "paTotalObligated":
+            pa_total_obl,
+
+        "paProjects":
+            pa_total_proj,
+
+        "paTimingJurisdictions":
+            rollup_counts.get(
+                "pa-timing.json",
+                0,
+            ),
+
+        "hmaJurisdictions":
+            rollup_counts.get(
+                "hma.json",
+                0,
+            ),
+
+        "iaJurisdictions":
+            rollup_counts.get(
+                "ia.json",
+                0,
+            ),
+
+        "sviCounties":
+            (
+                len(svi)
+                if isinstance(
+                    svi,
+                    dict,
+                )
+                else 0
+            ),
+
+        "nriCounties":
+            (
+                len(nri)
+                if isinstance(
+                    nri,
+                    dict,
+                )
+                else 0
+            ),
+
+        "sviRelease":
+            detect_static_release(
+                svi_path,
+                (
+                    "2022"
+                    if svi_path.exists()
+                    else ""
+                ),
+            ),
+
+        "nriRelease":
+            detect_static_release(
+                nri_path,
+                "",
+            ),
     }
 
+
+# ======================================================================
+# DATA SOURCE STATUS
+# ======================================================================
 
 def build_sources(
     metrics: Dict[str, Any],
@@ -1726,17 +2979,30 @@ def build_sources(
             state = "warning"
 
         return {
-            "name": name,
-            "status": state,
-            "file": file,
-            "records": records,
-            "release": release,
-            "hash": (
-                file_hash(p)
-                if p
-                else ""
-            ),
-            "note": note,
+            "name":
+                name,
+
+            "status":
+                state,
+
+            "file":
+                file,
+
+            "records":
+                records,
+
+            "release":
+                release,
+
+            "hash":
+                (
+                    file_hash(p)
+                    if p
+                    else ""
+                ),
+
+            "note":
+                note,
         }
 
     return [
@@ -1763,8 +3029,9 @@ def build_sources(
             False,
             "OpenFEMA v1",
             (
-                "Turndown/denial records; the build can continue "
-                "if the upstream endpoint is unavailable."
+                "Turndown/denial records; "
+                "the build can continue if "
+                "the upstream endpoint is unavailable."
             ),
         ),
 
@@ -1805,7 +3072,8 @@ def build_sources(
             False,
             "OpenFEMA v4",
             (
-                "Funded mitigation project rollups."
+                "Funded mitigation "
+                "project rollups."
             ),
         ),
 
@@ -1818,7 +3086,24 @@ def build_sources(
             False,
             "OpenFEMA v2",
             (
-                "Housing Assistance owner/renter rollups."
+                "Housing Assistance "
+                "owner/renter rollups."
+            ),
+        ),
+
+        source(
+            "DisasterData Event Index",
+            "events.json",
+            metrics.get(
+                "eventCount"
+            ),
+            True,
+            "Derived",
+            (
+                "National event index derived "
+                "from the committed declaration index; "
+                "named tropical systems are grouped "
+                "by storm name and year."
             ),
         ),
 
@@ -1862,6 +3147,10 @@ def build_sources(
     ]
 
 
+# ======================================================================
+# STATUS.HTML
+# ======================================================================
+
 def render_status_html(
     status: Dict[str, Any],
 ) -> str:
@@ -1891,10 +3180,12 @@ def render_status_html(
     )
 
     checks = (
-        status.get(
+        status
+        .get(
             "validation",
             {},
-        ).get(
+        )
+        .get(
             "checks",
             [],
         )
@@ -1926,6 +3217,7 @@ def render_status_html(
             v,
             float,
         ):
+
             return (
                 f"{v:,.0f}"
                 if v.is_integer()
@@ -1951,15 +3243,21 @@ def render_status_html(
             "warning",
         )
 
-        dot = "●"
-
         source_rows.append(
             "<tr>"
-            f"<td><span class='dot {e(st)}'>{dot}</span>"
-            f"{e(str(s.get('name','')))}</td>"
-            f"<td>{e(str(s.get('release') or '—'))}</td>"
-            f"<td>{fmt(s.get('records'))}</td>"
-            f"<td>{e(st.title())}</td>"
+            f"<td>"
+            f"<span class='dot {e(st)}'>●</span>"
+            f"{e(str(s.get('name','')))}"
+            f"</td>"
+            f"<td>"
+            f"{e(str(s.get('release') or '—'))}"
+            f"</td>"
+            f"<td>"
+            f"{fmt(s.get('records'))}"
+            f"</td>"
+            f"<td>"
+            f"{e(st.title())}"
+            f"</td>"
             "</tr>"
         )
 
@@ -1974,10 +3272,16 @@ def render_status_html(
 
         check_rows.append(
             "<tr>"
-            f"<td><span class='dot {e(st)}'>●</span>"
-            f"{e(str(c.get('name','')))}</td>"
-            f"<td>{e(str(c.get('category','')))}</td>"
-            f"<td>{e(str(c.get('detail','')))}</td>"
+            f"<td>"
+            f"<span class='dot {e(st)}'>●</span>"
+            f"{e(str(c.get('name','')))}"
+            f"</td>"
+            f"<td>"
+            f"{e(str(c.get('category','')))}"
+            f"</td>"
+            f"<td>"
+            f"{e(str(c.get('detail','')))}"
+            f"</td>"
             "</tr>"
         )
 
@@ -1986,40 +3290,197 @@ def render_status_html(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Disaster Data | Data Status</title>
-<meta name="description" content="Current DisasterData.io release, source status, and automated build validation results.">
-<link rel="canonical" href="https://disasterdata.io/status.html">
+
+<meta name="description"
+content="Current DisasterData.io release, source status, and automated build validation results.">
+
+<link rel="canonical"
+href="https://disasterdata.io/status.html">
+
 <style>
-:root{{--paper:#f6f1e7;--card:#fffdf7;--ink:#1d1813;--muted:#6b6357;--rule:#ddd3bf;--teal:#004c53;--green:#2e6a45;--amber:#9a661e;--red:#9e3b32}}
-*{{box-sizing:border-box}}
-body{{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}}
-a{{color:var(--teal)}}
-.wrap{{max-width:1000px;margin:auto;padding:42px 22px 64px}}
-.eyebrow{{font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}}
-h1{{font-family:Georgia,serif;font-weight:500;font-size:clamp(2.1rem,6vw,3.8rem);line-height:1;margin:.4rem 0 .8rem;color:var(--teal)}}
-.lede{{max-width:70ch;color:var(--muted);font-size:1.05rem}}
-.release{{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:24px 0}}
-.pill{{border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:700;background:#d7e9ea;color:var(--teal)}}
-.pill.ok{{background:#dcebdd;color:var(--green)}}
-.pill.warn{{background:#f6e8c9;color:var(--amber)}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:25px 0 35px}}
-.metric{{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:15px}}
-.metric b{{display:block;font-family:Georgia,serif;font-size:1.55rem;color:var(--teal)}}
-.metric span{{font-size:.78rem;color:var(--muted)}}
-h2{{font-family:Georgia,serif;color:var(--teal);margin-top:36px}}
-.table{{overflow:auto;border:1px solid var(--rule);border-radius:12px;background:var(--card)}}
-table{{border-collapse:collapse;width:100%;min-width:650px;font-size:.88rem}}
-th,td{{text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top}}
-th{{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#faf6ec}}
-tr:last-child td{{border-bottom:0}}
-.dot{{margin-right:8px}}
-.dot.current,.dot.pass{{color:var(--green)}}
-.dot.warning,.dot.warn{{color:var(--amber)}}
-.dot.unavailable,.dot.fail{{color:var(--red)}}
-footer{{margin-top:42px;padding-top:20px;border-top:1px solid var(--rule);font-size:.82rem;color:var(--muted)}}
+:root{{
+  --paper:#f6f1e7;
+  --card:#fffdf7;
+  --ink:#1d1813;
+  --muted:#6b6357;
+  --rule:#ddd3bf;
+  --teal:#004c53;
+  --green:#2e6a45;
+  --amber:#9a661e;
+  --red:#9e3b32
+}}
+
+*{{
+  box-sizing:border-box
+}}
+
+body{{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.55
+}}
+
+a{{
+  color:var(--teal)
+}}
+
+.wrap{{
+  max-width:1000px;
+  margin:auto;
+  padding:42px 22px 64px
+}}
+
+.eyebrow{{
+  font-size:.74rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--teal)
+}}
+
+h1{{
+  font-family:Georgia,serif;
+  font-weight:500;
+  font-size:clamp(2.1rem,6vw,3.8rem);
+  line-height:1;
+  margin:.4rem 0 .8rem;
+  color:var(--teal)
+}}
+
+.lede{{
+  max-width:70ch;
+  color:var(--muted);
+  font-size:1.05rem
+}}
+
+.release{{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+  margin:24px 0
+}}
+
+.pill{{
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:.82rem;
+  font-weight:700;
+  background:#d7e9ea;
+  color:var(--teal)
+}}
+
+.pill.ok{{
+  background:#dcebdd;
+  color:var(--green)
+}}
+
+.pill.warn{{
+  background:#f6e8c9;
+  color:var(--amber)
+}}
+
+.grid{{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:10px;
+  margin:25px 0 35px
+}}
+
+.metric{{
+  background:var(--card);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:15px
+}}
+
+.metric b{{
+  display:block;
+  font-family:Georgia,serif;
+  font-size:1.55rem;
+  color:var(--teal)
+}}
+
+.metric span{{
+  font-size:.78rem;
+  color:var(--muted)
+}}
+
+h2{{
+  font-family:Georgia,serif;
+  color:var(--teal);
+  margin-top:36px
+}}
+
+.table{{
+  overflow:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--card)
+}}
+
+table{{
+  border-collapse:collapse;
+  width:100%;
+  min-width:650px;
+  font-size:.88rem
+}}
+
+th,
+td{{
+  text-align:left;
+  padding:10px 12px;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top
+}}
+
+th{{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+  background:#faf6ec
+}}
+
+tr:last-child td{{
+  border-bottom:0
+}}
+
+.dot{{
+  margin-right:8px
+}}
+
+.dot.current,
+.dot.pass{{
+  color:var(--green)
+}}
+
+.dot.warning,
+.dot.warn{{
+  color:var(--amber)
+}}
+
+.dot.unavailable,
+.dot.fail{{
+  color:var(--red)
+}}
+
+footer{{
+  margin-top:42px;
+  padding-top:20px;
+  border-top:1px solid var(--rule);
+  font-size:.82rem;
+  color:var(--muted)
+}}
 </style>
 </head>
+
 <body>
+
 <script src="/nav.js"></script>
 
 <main class="wrap">
@@ -2033,7 +3494,9 @@ Data status
 </h1>
 
 <p class="lede">
-This page is generated from the same automated release gate that validates DisasterData.io before a successful data build is stamped for publication.
+This page is generated from the same automated release gate
+that validates DisasterData.io before a successful data build
+is stamped for publication.
 </p>
 
 <div class="release">
@@ -2067,6 +3530,11 @@ Built {e(str(status.get('builtAt','')))}
 <div class="metric">
 <b>{fmt(metrics.get('mapCounties'))}</b>
 <span>county map geographies</span>
+</div>
+
+<div class="metric">
+<b>{fmt(metrics.get('eventCount'))}</b>
+<span>national disaster events</span>
 </div>
 
 <div class="metric">
@@ -2131,8 +3599,10 @@ Automated validation
 </div>
 
 <footer>
-Disaster Data &middot;
-Release {release} &middot;
+Disaster Data
+&middot;
+Release {release}
+&middot;
 <a href="/about.html">About and methodology</a>
 &middot;
 <a href="/data-status.json">Machine-readable status JSON</a>
@@ -2143,6 +3613,10 @@ Release {release} &middot;
 </body>
 </html>"""
 
+
+# ======================================================================
+# MAIN RELEASE GATE
+# ======================================================================
 
 def main() -> int:
 
@@ -2174,44 +3648,106 @@ def main() -> int:
         if c["status"] == "pass"
     ]
 
-    # Always write the diagnostic report.
-    # A failed CI run should not publish a new
-    # data-status.json/release-state.json,
-    # but its artifact/log can still explain why.
+    # ------------------------------------------------------------------
+    # Fingerprint substantive generated content.
+    #
+    # status.html, build-report.json, data-status.json and
+    # release-state.json are intentionally NOT included.
+    #
+    # This prevents their timestamps/release numbers from causing a new
+    # release by themselves.
+    # ------------------------------------------------------------------
 
-    candidate, candidate_build = next_release()
+    key_files = [
+        ROOT / "data.js",
+        ROOT / "map-data.js",
+        ROOT / "map-events.js",
+        ROOT / "events.json",
+        ROOT / "latest-data.js",
+        ROOT / "pa-timing.json",
+        ROOT / "hma.json",
+        ROOT / "ia.json",
+        ROOT / "county-svi.js",
+        ROOT / "county-nri.js",
+        ROOT / "locality-index.js",
+        ROOT / "sitemap.xml",
+    ]
 
-    report = {
-        "schemaVersion": 1,
-        "releaseCandidate": candidate,
-        "builtAt": NOW_UTC,
-        "status": (
-            "failed"
-            if failed
-            else (
-                "passed-with-warnings"
-                if warned
-                else "passed"
-            )
-        ),
-        "summary": {
-            "passed": len(passed),
-            "warnings": len(warned),
-            "failed": len(failed),
-        },
-        "metrics": metrics,
-        "checks": CHECKS,
-    }
-
-    BUILD_REPORT.write_text(
-        json.dumps(
-            report,
-            indent=2,
-            ensure_ascii=False,
-        )
-        + "\n",
-        encoding="utf-8",
+    decl_index_dir = (
+        ROOT
+        / "data"
+        / "decl-index"
     )
+
+    if decl_index_dir.exists():
+
+        key_files.extend(
+            sorted(
+                decl_index_dir.glob(
+                    "*.json"
+                )
+            )
+        )
+
+    # Include generated state/jurisdiction HTML so a template change such
+    # as the new citation feature also counts as a substantive release.
+    states_dir = (
+        ROOT / "states"
+    )
+
+    if states_dir.exists():
+
+        key_files.extend(
+            sorted(
+                states_dir.rglob(
+                    "*.html"
+                )
+            )
+        )
+
+    fp = fingerprint(
+        key_files
+    )
+
+    prior_state = (
+        load_json(
+            RELEASE_STATE,
+            {},
+        )
+        or {}
+    )
+
+    prior_release = str(
+        prior_state.get(
+            "release"
+        )
+        or ""
+    )
+
+    prior_fp = str(
+        prior_state.get(
+            "fingerprint"
+        )
+        or ""
+    )
+
+    forced_release = bool(
+        os.environ.get(
+            "DD_RELEASE",
+            "",
+        ).strip()
+    )
+
+    unchanged = bool(
+        fp
+        and prior_fp
+        and fp == prior_fp
+        and not forced_release
+    )
+
+    # ------------------------------------------------------------------
+    # Print every check into GitHub Actions log.
+    # ------------------------------------------------------------------
 
     for c in CHECKS:
 
@@ -2239,7 +3775,59 @@ def main() -> int:
         f"FAIL {len(failed)}"
     )
 
+    # ==============================================================
+    # FAILED BUILD
+    # ==============================================================
+
     if failed:
+
+        candidate, _ = (
+            next_release()
+        )
+
+        report = {
+            "schemaVersion":
+                2,
+
+            "releaseCandidate":
+                candidate,
+
+            "builtAt":
+                NOW_UTC,
+
+            "status":
+                "failed",
+
+            "summary": {
+                "passed":
+                    len(passed),
+
+                "warnings":
+                    len(warned),
+
+                "failed":
+                    len(failed),
+            },
+
+            "fingerprint":
+                fp,
+
+            "metrics":
+                metrics,
+
+            "checks":
+                CHECKS,
+        }
+
+        BUILD_REPORT.write_text(
+            json.dumps(
+                report,
+                indent=2,
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
 
         print(
             "\nRELEASE REFUSED. "
@@ -2250,98 +3838,208 @@ def main() -> int:
 
         return 1
 
-    release = candidate
-    build_no = candidate_build
+    # ==============================================================
+    # SUCCESSFUL BUT IDENTICAL BUILD
+    # ==============================================================
 
-    previous = previous_metrics()
+    if unchanged:
 
-    changes = {
-        "declarationsCurrent": delta(
-            metrics.get(
-                "declarationsCurrent"
-            ),
-            previous.get(
-                "declarationsCurrent"
-            ),
-        ),
+        print(
+            "\nNO CONTENT CHANGE. "
+            "Validation passed; keeping existing release "
+            f"{prior_release or '(unknown)'}."
+        )
 
-        "jurisdictionPages": delta(
-            metrics.get(
-                "jurisdictionPages"
-            ),
-            previous.get(
-                "jurisdictionPages"
-            ),
-        ),
+        print(
+            "No release/status files were rewritten, "
+            "so an unchanged backstop run produces no commit."
+        )
 
-        "mapCounties": delta(
-            metrics.get(
-                "mapCounties"
-            ),
-            previous.get(
-                "mapCounties"
-            ),
-        ),
+        print(
+            "══════════════════════════════════════════\n"
+        )
 
-        "sviCounties": delta(
-            metrics.get(
-                "sviCounties"
-            ),
-            previous.get(
-                "sviCounties"
-            ),
-        ),
+        return 0
 
-        "nriCounties": delta(
-            metrics.get(
-                "nriCounties"
-            ),
-            previous.get(
-                "nriCounties"
-            ),
-        ),
-    }
+    # ==============================================================
+    # NEW SUCCESSFUL RELEASE
+    # ==============================================================
 
-    key_files = [
-        ROOT / "data.js",
-        ROOT / "map-data.js",
-        ROOT / "latest-data.js",
-        ROOT / "pa-timing.json",
-        ROOT / "hma.json",
-        ROOT / "ia.json",
-        ROOT / "county-svi.js",
-        ROOT / "county-nri.js",
-        ROOT / "locality-index.js",
-        ROOT / "sitemap.xml",
-    ]
+    (
+        release,
+        build_no,
+    ) = next_release()
 
-    fp = fingerprint(
-        key_files
+    previous = (
+        previous_metrics()
     )
 
+    changes = {
+        "declarationsCurrent":
+            delta(
+                metrics.get(
+                    "declarationsCurrent"
+                ),
+                previous.get(
+                    "declarationsCurrent"
+                ),
+            ),
+
+        "jurisdictionPages":
+            delta(
+                metrics.get(
+                    "jurisdictionPages"
+                ),
+                previous.get(
+                    "jurisdictionPages"
+                ),
+            ),
+
+        "mapCounties":
+            delta(
+                metrics.get(
+                    "mapCounties"
+                ),
+                previous.get(
+                    "mapCounties"
+                ),
+            ),
+
+        "eventCount":
+            delta(
+                metrics.get(
+                    "eventCount"
+                ),
+                previous.get(
+                    "eventCount"
+                ),
+            ),
+
+        "sviCounties":
+            delta(
+                metrics.get(
+                    "sviCounties"
+                ),
+                previous.get(
+                    "sviCounties"
+                ),
+            ),
+
+        "nriCounties":
+            delta(
+                metrics.get(
+                    "nriCounties"
+                ),
+                previous.get(
+                    "nriCounties"
+                ),
+            ),
+    }
+
+    # ------------------------------------------------------------------
+    # Build report
+    # ------------------------------------------------------------------
+
+    report = {
+        "schemaVersion":
+            2,
+
+        "releaseCandidate":
+            release,
+
+        "builtAt":
+            NOW_UTC,
+
+        "status":
+            (
+                "passed-with-warnings"
+                if warned
+                else "passed"
+            ),
+
+        "summary": {
+            "passed":
+                len(passed),
+
+            "warnings":
+                len(warned),
+
+            "failed":
+                0,
+        },
+
+        "fingerprint":
+            fp,
+
+        "metrics":
+            metrics,
+
+        "checks":
+            CHECKS,
+    }
+
+    BUILD_REPORT.write_text(
+        json.dumps(
+            report,
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    # ------------------------------------------------------------------
+    # Public data-status.json
+    # ------------------------------------------------------------------
+
     status = {
-        "schemaVersion": 1,
-        "release": release,
-        "status": (
-            "passed"
-            if not warned
-            else "passed-with-warnings"
-        ),
-        "builtAt": NOW_UTC,
-        "dataDate": metrics.get(
-            "dataDate"
-        ),
-        "fingerprint": fp,
-        "metrics": metrics,
-        "changesFromPreviousRelease": changes,
-        "sources": build_sources(
-            metrics
-        ),
+        "schemaVersion":
+            2,
+
+        "release":
+            release,
+
+        "status":
+            (
+                "passed"
+                if not warned
+                else "passed-with-warnings"
+            ),
+
+        "builtAt":
+            NOW_UTC,
+
+        "dataDate":
+            metrics.get(
+                "dataDate"
+            ),
+
+        "fingerprint":
+            fp,
+
+        "metrics":
+            metrics,
+
+        "changesFromPreviousRelease":
+            changes,
+
+        "sources":
+            build_sources(
+                metrics
+            ),
+
         "validation": {
-            "passed": len(passed),
-            "warnings": len(warned),
-            "failed": 0,
-            "checks": CHECKS,
+            "passed":
+                len(passed),
+
+            "warnings":
+                len(warned),
+
+            "failed":
+                0,
+
+            "checks":
+                CHECKS,
         },
     }
 
@@ -2355,6 +4053,10 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    # ------------------------------------------------------------------
+    # Public status.html
+    # ------------------------------------------------------------------
+
     STATUS_HTML.write_text(
         render_status_html(
             status
@@ -2362,14 +4064,27 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    # ------------------------------------------------------------------
+    # Persist release state.
+    # ------------------------------------------------------------------
+
     RELEASE_STATE.write_text(
         json.dumps(
             {
-                "release": release,
-                "date": TODAY_ISO,
-                "build": build_no,
-                "builtAt": NOW_UTC,
-                "fingerprint": fp,
+                "release":
+                    release,
+
+                "date":
+                    TODAY_ISO,
+
+                "build":
+                    build_no,
+
+                "builtAt":
+                    NOW_UTC,
+
+                "fingerprint":
+                    fp,
             },
             indent=2,
         )
@@ -2377,22 +4092,26 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    # ------------------------------------------------------------------
+    # Console summary
+    # ------------------------------------------------------------------
+
     print(
         f"\nRELEASE APPROVED: {release}"
     )
 
     print(
-        "  data-status.json  "
+        "  data-status.json   "
         "-> public machine-readable status"
     )
 
     print(
-        "  status.html       "
+        "  status.html        "
         "-> public human-readable status page"
     )
 
     print(
-        "  build-report.json "
+        "  build-report.json  "
         "-> complete validation report"
     )
 
@@ -2414,6 +4133,19 @@ def main() -> int:
             f"{delta_text(changes['declarationsCurrent'])}"
         )
 
+    if (
+        changes.get(
+            "eventCount"
+        )
+        is not None
+    ):
+
+        print(
+            "  change vs previous: "
+            "events "
+            f"{delta_text(changes['eventCount'])}"
+        )
+
     print(
         "══════════════════════════════════════════\n"
     )
@@ -2422,6 +4154,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+
     raise SystemExit(
         main()
     )
