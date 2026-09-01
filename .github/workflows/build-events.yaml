@@ -1,23 +1,36 @@
 name: Refresh Event Indexes
 
 # Rebuilds map-events.js + events.json from the ALREADY-COMMITTED
-# data/decl-index files. It does NOT fetch anything from FEMA, so it works
-# even when the weekly "Refresh FEMA Data" build is failing on an OpenFEMA
-# outage. Run it on demand from the Actions tab (Run workflow), or let the
-# weekly backstop pick up whatever decl-index is committed.
+# data/decl-index files.
+#
+# It does NOT fetch anything from FEMA, so it can operate as a Wednesday
+# backstop even if the Sunday OpenFEMA refresh encountered an upstream outage.
+#
+# The release gate runs after the event indexes are generated. If the event
+# files are unchanged, the existing DisasterData release remains in place.
+# If they changed, the complete site is validated before a new release is
+# stamped and committed.
 
 on:
   workflow_dispatch:
+
   schedule:
-    - cron: '0 4 * * 3'   # Wednesday 04:00 UTC, offset from the Sunday data build
+    - cron: '0 4 * * 3'
 
 permissions:
   contents: write
 
+# Prevent a manually launched event refresh from writing to main at the same
+# time as the full Sunday DisasterData refresh.
+concurrency:
+  group: disasterdata-refresh
+  cancel-in-progress: false
+
 jobs:
   events:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -27,19 +40,36 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Build event indexes (map-events.js + events.json)
-        # Reads data/decl-index/{ST}.json + manifest.json, writes map-events.js
-        # and events.json to the repo root. Standard library only, no pip install.
+      - name: Build event indexes
         run: |
-          if [ -f gen_map_events.py ]; then python -u gen_map_events.py --in data/decl-index --out map-events.js --events-out events.json; else python -u "gen map events.py" --in data/decl-index --out map-events.js --events-out events.json; fi
+          if [ -f gen_map_events.py ]; then
+            python -u gen_map_events.py \
+              --in data/decl-index \
+              --out map-events.js \
+              --events-out events.json
+          else
+            python -u "gen map events.py" \
+              --in data/decl-index \
+              --out map-events.js \
+              --events-out events.json
+          fi
+
+      - name: Validate and stamp DisasterData release
+        env:
+          DD_REQUIRE_CONTEXT: '1'
+          DD_REQUIRE_JURISDICTIONS: '1'
+          DD_REQUIRE_CITATIONS: '1'
+        run: python -u release.py
 
       - name: Commit and push if changed
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           git add -A
+
           if git diff --staged --quiet; then
-            echo "No changes to commit, event indexes already up to date."
+            echo "No changes to commit. Event indexes and release state are already current."
           else
             git commit -m "Refresh event indexes $(date -u '+%Y-%m-%d')"
             git pull --rebase origin main
