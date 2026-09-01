@@ -1214,6 +1214,26 @@
       }
     }
 
+    function getActiveDeclarationTotal() {
+      const year = yearSelect.value;
+      const dtype = typeSelect.value;
+
+      if (year === 'ALL' && dtype === 'ALL') {
+        return Number(declarationEventTotals.overall || 0);
+      }
+      if (year !== 'ALL' && dtype === 'ALL') {
+        return Number((declarationEventTotals.byYear && declarationEventTotals.byYear[year]) || 0);
+      }
+      if (year === 'ALL' && dtype !== 'ALL') {
+        return Number((declarationEventTotals.byType && declarationEventTotals.byType[dtype]) || 0);
+      }
+      return Number(
+        (declarationEventTotals.byYearType &&
+         declarationEventTotals.byYearType[year] &&
+         declarationEventTotals.byYearType[year][dtype]) || 0
+      );
+    }
+
     function refreshMap() {
       syncOverlayLayers();
       const femaValues=getActiveCountyValues();
@@ -1222,7 +1242,8 @@
       if (statLabelEl) statLabelEl.textContent = isFemaMode() ? (overlayActive()?'Disasters overlaid':'Declarations in view') : 'County data';
       const sviCount=isSviMode()?Object.keys(getSviValues()).length:0, nriCount=isNriMode()?Object.keys(getNriValues()).length:0;
       const bits=[]; if(isFemaMode()) bits.push(Object.keys(femaValues).length.toLocaleString()+' counties with FEMA data'); if(isSviMode()) bits.push(sviCount.toLocaleString()+' counties with SVI'); if(isNriMode()) bits.push(nriCount.toLocaleString()+' counties with NRI');
-      filteredTotalEl.textContent = bits.length ? (isFemaMode() ? (overlayActive()?overlayEvents.length:Object.keys(femaValues).length).toLocaleString() : (isSviMode()?sviCount:nriCount).toLocaleString()) : '0';
+      const declarationTotal = getActiveDeclarationTotal();
+      filteredTotalEl.textContent = bits.length ? (isFemaMode() ? (overlayActive()?overlayEvents.length:declarationTotal).toLocaleString() : (isSviMode()?sviCount:nriCount).toLocaleString()) : '0';
       filteredSubtitleEl.textContent = bits.join(' · ') || 'Select a map layer to display data';
       if(countyLayer) countyLayer.setStyle(styleCounty);
       if(sviLayer) sviLayer.setStyle(styleSviCounty);
