@@ -1,75 +1,870 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Guam Disaster Declarations by Jurisdiction</title><meta name="description" content="Federal disaster and emergency declaration history for every Guam county since FY2000, with a ready-to-use previous-occurrences table for hazard mitigation planning."><link rel="canonical" href="https://disasterdata.io/states/guam/"><meta property="og:title" content="Guam Disaster Declarations by Jurisdiction"><meta property="og:description" content="Federal disaster and emergency declaration history for every Guam county since FY2000, with a ready-to-use previous-occurrences table for hazard mitigation planning."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--teal:#004c53;--cream:#f6f1e7;--paper:#fffdf7;--ink:#2b2b2b;--ink3:#6b6357;--rule:#e4dccb}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Public Sans',system-ui,-apple-system,sans-serif;line-height:1.6}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Guam Disaster Declarations by Jurisdiction</title><meta name="description" content="Federal disaster and emergency declaration history for every Guam county since FY2000, with a ready-to-use previous-occurrences table for hazard mitigation planning."><link rel="canonical" href="https://disasterdata.io/states/guam/"><meta property="og:title" content="Guam Disaster Declarations by Jurisdiction"><meta property="og:description" content="Federal disaster and emergency declaration history for every Guam county since FY2000, with a ready-to-use previous-occurrences table for hazard mitigation planning."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
+  --teal:#004c53;
+  --cream:#f6f1e7;
+  --paper:#fffdf7;
+  --ink:#2b2b2b;
+  --ink3:#6b6357;
+  --rule:#e4dccb
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  line-height:1.6
+}
+
 a{color:var(--teal)}
-.wrap{max-width:980px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
-nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid #e0d8c5;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px}
-nav.ddnav .brand{display:flex;align-items:baseline;gap:10px}
-nav.ddnav .brand .mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;letter-spacing:-.4px;color:#1d1813;text-decoration:none}
-nav.ddnav .navlinks{display:flex;align-items:center;gap:4px}
-nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:#5b5346;text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px}
-nav.ddnav .navlinks a:hover{color:#1d1813;background:#f1ead9}
-nav.ddnav .navlinks a.on{color:#004c53;background:#d7e9ea}
-nav.ddnav .navmeta{font-size:11px;color:#938a78;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 clamp(18px,4vw,40px)
+}
+
+nav.ddnav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(246,241,231,.86);
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid #e0d8c5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(18px,4vw,48px);
+  height:60px
+}
+
+nav.ddnav .brand{
+  display:flex;
+  align-items:baseline;
+  gap:10px
+}
+
+nav.ddnav .brand .mark{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:19px;
+  letter-spacing:-.4px;
+  color:#1d1813;
+  text-decoration:none
+}
+
+nav.ddnav .navlinks{
+  display:flex;
+  align-items:center;
+  gap:4px
+}
+
+nav.ddnav .navlinks a{
+  font-size:13px;
+  font-weight:500;
+  color:#5b5346;
+  text-decoration:none;
+  padding:7px 12px;
+  border-radius:6px;
+  transition:.15s;
+  letter-spacing:.2px
+}
+
+nav.ddnav .navlinks a:hover{
+  color:#1d1813;
+  background:#f1ead9
+}
+
+nav.ddnav .navlinks a.on{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+nav.ddnav .navmeta{
+  font-size:11px;
+  color:#938a78;
+  letter-spacing:.5px;
+  font-variant-numeric:tabular-nums
+}
+
 main{padding:2rem 0 1rem}
-.crumb{font-size:.82rem;color:var(--ink3);margin:0 0 1rem}.crumb a{text-decoration:none}
-.badge{display:inline-block;font:600 .72rem 'Public Sans',sans-serif;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
-.badge.county{color:#004c53;background:#d7e9ea}.badge.city{color:#8a5a2b;background:#f3e4d2}.badge.tribal{color:#6a2f6a;background:#efddef}
-h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
-h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
-.lede{font-size:1.08rem;max-width:62ch}
-.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
-.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
-.stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
-.stat .l{font-size:.78rem;color:var(--ink3);margin-top:.3rem}
-ul.haz{list-style:none;padding:0;margin:.5rem 0;display:flex;flex-wrap:wrap;gap:.5rem}
-ul.haz li{background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.3rem .8rem;font-size:.85rem}ul.haz b{color:var(--teal)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
-table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
-th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);background:#faf6ec}
-tr:last-child td{border-bottom:none}.tag{font-weight:700;color:var(--teal)}
-.hmp{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 0}
-.hmp p{margin:.2rem 0 .9rem;font-size:.92rem}
-.copybtn{font:600 .8rem 'Public Sans',sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .85rem;cursor:pointer;margin-top:.8rem}
-.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
-.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
-.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
-.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
-.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
-.decl-chip.off{opacity:.42;cursor:default}
-.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
-.tablewrap.scroll{max-height:430px;overflow-y:auto}
-.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
+
+.crumb{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:0 0 1rem
+}
+
+.crumb a{text-decoration:none}
+
+.badge{
+  display:inline-block;
+  font:600 .72rem 'Public Sans',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  padding:.2rem .6rem;
+  border-radius:999px;
+  margin-bottom:.6rem
+}
+
+.badge.county{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+.badge.city{
+  color:#8a5a2b;
+  background:#f3e4d2
+}
+
+.badge.tribal{
+  color:#6a2f6a;
+  background:#efddef
+}
+
+h1{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  line-height:1.1;
+  margin:.2rem 0 .6rem
+}
+
+h2{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.3rem;
+  margin:2.2rem 0 .8rem
+}
+
+.lede{
+  font-size:1.08rem;
+  max-width:62ch
+}
+
+.jsummary{
+  margin:1.1rem 0 .4rem
+}
+
+.jsummary p{
+  margin:0;
+  font-size:1rem;
+  color:var(--ink);
+  max-width:66ch
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+  gap:.7rem;
+  margin:1.5rem 0
+}
+
+.stat{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:.85rem 1rem
+}
+
+.stat .n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.7rem;
+  color:var(--teal);
+  font-weight:600;
+  line-height:1
+}
+
+.stat .l{
+  font-size:.78rem;
+  color:var(--ink3);
+  margin-top:.3rem
+}
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.5rem 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.3rem .8rem;
+  font-size:.85rem
+}
+
+ul.haz b{color:var(--teal)}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper)
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.86rem;
+  min-width:560px
+}
+
+th,td{
+  text-align:left;
+  padding:.55rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top
+}
+
+th{
+  font-size:.74rem;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  color:var(--ink3);
+  background:#faf6ec
+}
+
+tr:last-child td{border-bottom:none}
+
+.tag{
+  font-weight:700;
+  color:var(--teal)
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:12px;
+  padding:1.1rem 1.3rem;
+  margin:1rem 0
+}
+
+.hmp p{
+  margin:.2rem 0 .9rem;
+  font-size:.92rem
+}
+
+.copybtn{
+  font:600 .8rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.4rem .85rem;
+  cursor:pointer;
+  margin-top:.8rem
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem
+}
+
+.decl-chip{
+  font:700 .82rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .72rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.42rem
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .44rem;
+  font-size:.76rem;
+  font-weight:700
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal)
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default
+}
+
+.decl-count{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1
+}
+
 tr.hide{display:none}
-th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
-th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400
+}
+
 th.sortable:hover{color:var(--teal)}
-th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
-th[aria-sort="descending"]::after{content:"↓";opacity:.95}
-.method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}.method h2{margin-top:0;font-size:1.1rem}
-.pa-note{font-size:.9rem;color:var(--ink3);max-width:64ch;margin:.4rem 0 .8rem}
-table.pa-cat tfoot td{font-weight:700;color:var(--teal);border-top:2px solid var(--rule);background:#faf6ec}
-.pa-cat .catcode{color:var(--ink3);font-weight:400;font-size:.85em;margin-left:.15em}
-table.pa-cat td:nth-child(2),table.pa-cat th:nth-child(2),table.pa-cat td:nth-child(3),table.pa-cat th:nth-child(3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.jgrid{display:flex;flex-wrap:wrap;gap:.4rem .7rem;margin:.6rem 0}.jgrid a{font-size:.86rem;text-decoration:none}
-ol.rank{padding-left:0;list-style:none;counter-reset:r}
-ol.rank li{counter-increment:r;display:flex;align-items:baseline;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--rule)}
-ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--ink3);min-width:2.6ch;text-align:right}
-ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
-ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
-footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
-nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95
+}
+
+.risk-section{margin:2.4rem 0}
+
+.section-heading-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem
+}
+
+.section-heading-row h2{margin:0 0 .25rem}
+
+.section-deck{
+  margin:0;
+  color:var(--ink3);
+  font-size:.92rem;
+  max-width:66ch
+}
+
+.risk-fips{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  white-space:nowrap
+}
+
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem
+}
+
+.risk-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.2rem;
+  box-shadow:0 1px 0 rgba(43,43,43,.03)
+}
+
+.risk-card h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.18rem;
+  line-height:1.2;
+  margin:.15rem 0 0
+}
+
+.risk-kicker{
+  font-size:.69rem;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:#8a5a2b
+}
+
+.risk-version{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.18rem 0 .9rem
+}
+
+.risk-score{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:2.15rem;
+  font-weight:600;
+  line-height:1
+}
+
+.risk-score.na{font-size:1.55rem}
+
+.risk-score-label{
+  color:var(--ink3);
+  font-size:.76rem;
+  margin-top:.2rem
+}
+
+.risk-interpret{
+  color:var(--ink3);
+  font-size:.83rem;
+  margin:.7rem 0
+}
+
+.theme-list{margin-top:.9rem}
+
+.theme-row{margin:.58rem 0}
+
+.theme-head{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  font-size:.76rem
+}
+
+.theme-head b{
+  color:var(--teal);
+  font-variant-numeric:tabular-nums
+}
+
+.theme-track{
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#e8e0d0;
+  margin-top:.25rem
+}
+
+.theme-track span{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#4c8b90
+}
+
+.nri-lead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem
+}
+
+.risk-rating{
+  display:inline-block;
+  border-radius:999px;
+  background:#f3e4d2;
+  color:#7a4a20;
+  font-size:.72rem;
+  font-weight:700;
+  padding:.3rem .62rem;
+  text-align:center
+}
+
+.risk-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.55rem;
+  margin-top:1rem
+}
+
+.risk-mini{
+  border-top:1px solid var(--rule);
+  padding-top:.55rem;
+  min-width:0
+}
+
+.risk-mini span,
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.68rem;
+  line-height:1.35
+}
+
+.risk-mini b{
+  display:block;
+  color:var(--teal);
+  font-size:.95rem;
+  margin:.18rem 0;
+  overflow-wrap:anywhere
+}
+
+.risk-source{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.9rem 0 0
+}
+
+.risk-source a{font-weight:600}
+
+.risk-caution{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:10px;
+  padding:.8rem .9rem;
+  margin-top:.8rem;
+  color:#3f5557;
+  font-size:.8rem
+}
+
+.method{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:1.2rem 1.4rem;
+  margin:2rem 0;
+  font-size:.92rem
+}
+
+.method h2{
+  margin-top:0;
+  font-size:1.1rem
+}
+
+/* Citation block */
+.citation{
+  background:#153c40;
+  color:#eef9f8;
+  border-radius:14px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0
+}
+
+.citation h2{
+  color:#fff;
+  margin:0 0 .45rem;
+  font-size:1.2rem
+}
+
+.citation p{
+  font-size:.84rem;
+  color:#d6e9e7;
+  margin:.2rem 0 .85rem;
+  max-width:68ch
+}
+
+.cite-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:0 0 .7rem
+}
+
+.citefmt{
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#d6e9e7;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  padding:.38rem .72rem;
+  cursor:pointer
+}
+
+.citefmt:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.citefmt[aria-pressed="true"]{
+  background:#fff;
+  color:#153c40;
+  border-color:#fff
+}
+
+.cite-text{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:9px;
+  padding:.85rem;
+  font-size:.79rem;
+  line-height:1.6;
+  color:#fff
+}
+
+.citation .copybtn{
+  color:#fff;
+  border-color:#bcd8d5
+}
+
+.citation .copybtn:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.pa-note{
+  font-size:.9rem;
+  color:var(--ink3);
+  max-width:64ch;
+  margin:.4rem 0 .8rem
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0
+}
+
+.jgrid a{
+  font-size:.86rem;
+  text-decoration:none
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule)
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3)
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.9rem;
+  margin-left:auto
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.85rem
+}
+
+footer.site a{color:var(--ink3)}
+
+nav.ddnav .navburger{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  width:40px;
+  height:40px;
+  background:none;
+  border:0;
+  cursor:pointer;
+  padding:8px;
+  border-radius:8px
+}
+
+nav.ddnav .navburger span{
+  display:block;
+  height:2px;
+  width:100%;
+  background:#1d1813;
+  border-radius:2px;
+  transition:.2s
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){
+  transform:translateY(7px) rotate(45deg)
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){
+  opacity:0
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){
+  transform:translateY(-7px) rotate(-45deg)
+}
+
 .mobilemenu{display:none}
-@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
-.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
-.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
-.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
-.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
-.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
-.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
-.mm-section a.on{color:#004c53;background:#d7e9ea}}#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}@media(max-width:600px){#locmap{height:240px}}.locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}.locmap-cap b{font-weight:700}.loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}.loc-lbl:before,.loc-lbl:after{display:none !important}</style></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../guam.html">Guam</a> / Jurisdictions</p><h1>Guam, by jurisdiction</h1><p class="lede">Every Guam county, ranked by federal disaster and emergency declarations since FY2000. Each page carries the full declaration history and a previous-occurrences table built for local mitigation plans.</p><ol class="rank"><li><a href="guam-county-gu.html">Guam County</a> <span class="k">County</span><span class="c">13 declarations</span></li></ol><div style="margin:2rem 0"><a href="../guam.html">&larr; Back to Guam statewide overview</a></div></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script></body></html>
+
+@media(max-width:720px){
+  .section-heading-row{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .risk-grid{grid-template-columns:1fr}
+
+  .risk-mini-grid{grid-template-columns:1fr}
+
+  nav.ddnav{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    height:60px;
+    padding-top:0;
+    padding-bottom:0
+  }
+
+  nav.ddnav .navmeta{display:none}
+  nav.ddnav .navlinks{display:none !important}
+  nav.ddnav .navburger{display:flex}
+
+  .mobilemenu:not([hidden]){
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:10px clamp(18px,4vw,48px) 18px;
+    background:#f6f1e7;
+    border-bottom:1px solid #e0d8c5;
+    position:sticky;
+    top:60px;
+    z-index:49
+  }
+
+  .mobilemenu>a{
+    font-size:15px;
+    font-weight:500;
+    color:#1d1813;
+    text-decoration:none;
+    padding:11px 12px;
+    border-radius:8px
+  }
+
+  .mobilemenu>a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+
+  .mm-section{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:6px 0;
+    margin:2px 0;
+    border-top:1px solid #e0d8c5
+  }
+
+  .mm-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:#938a78;
+    padding:6px 12px 2px
+  }
+
+  .mm-section a{
+    font-size:15px;
+    font-weight:500;
+    color:#5b5346;
+    text-decoration:none;
+    padding:10px 12px 10px 22px;
+    border-radius:8px
+  }
+
+  .mm-section a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+}
+#locmap{
+  height:320px;
+  border-radius:10px;
+  border:1px solid #e4dccb;
+  margin:1rem 0 .5rem;
+  background:#f6f1e7
+}
+
+@media(max-width:600px){
+  #locmap{height:240px}
+}
+
+.locmap-cap{
+  font:600 .86rem/1.3 'Public Sans',sans-serif;
+  color:#004c53;
+  margin:0 0 1.5rem;
+  text-align:center
+}
+
+.locmap-cap b{font-weight:700}
+
+.loc-lbl{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  color:#fff;
+  font:700 12px/1 'Public Sans',sans-serif;
+  padding:0;
+  white-space:nowrap;
+  pointer-events:none;
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.6),
+    0 0 3px rgba(0,0,0,.55)
+}
+
+.loc-lbl:before,
+.loc-lbl:after{
+  display:none !important
+}
+</style></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../guam.html">Guam</a> / Jurisdictions</p><h1>Guam, by jurisdiction</h1><p class="lede">Every Guam county, ranked by federal disaster and emergency declarations since FY2000. Each page carries the full declaration history and a previous-occurrences table built for local mitigation plans.</p><ol class="rank"><li><a href="guam-county-gu.html">Guam County</a> <span class="k">County</span><span class="c">13 declarations</span></li></ol><div style="margin:2rem 0"><a href="../guam.html">&larr; Back to Guam statewide overview</a></div></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script></body></html>

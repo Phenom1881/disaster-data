@@ -1,128 +1,971 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Sequatchie County, Tennessee FEMA Disaster Declarations and Mitigation History</title><meta name="description" content="Sequatchie County, Tennessee has had 12 federal disaster and emergency declarations since FY2000 (7 major disasters, 3 emergencies, 2 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning."><link rel="canonical" href="https://disasterdata.io/states/tennessee/sequatchie-county-tn.html"><meta property="og:title" content="Sequatchie County, Tennessee: Federal Disaster Declarations"><meta property="og:description" content="Sequatchie County, Tennessee has had 12 federal disaster and emergency declarations since FY2000 (7 major disasters, 3 emergencies, 2 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/tennessee/sequatchie-county-tn.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--teal:#004c53;--cream:#f6f1e7;--paper:#fffdf7;--ink:#2b2b2b;--ink3:#6b6357;--rule:#e4dccb}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Public Sans',system-ui,-apple-system,sans-serif;line-height:1.6}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Sequatchie County, Tennessee FEMA Disaster Declarations and Mitigation History</title><meta name="description" content="Sequatchie County, Tennessee has had 12 federal disaster and emergency declarations since FY2000 (7 major disasters, 3 emergencies, 2 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available."><link rel="canonical" href="https://disasterdata.io/states/tennessee/sequatchie-county-tn.html"><meta property="og:title" content="Sequatchie County, Tennessee: Federal Disaster Declarations"><meta property="og:description" content="Sequatchie County, Tennessee has had 12 federal disaster and emergency declarations since FY2000 (7 major disasters, 3 emergencies, 2 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/tennessee/sequatchie-county-tn.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
+  --teal:#004c53;
+  --cream:#f6f1e7;
+  --paper:#fffdf7;
+  --ink:#2b2b2b;
+  --ink3:#6b6357;
+  --rule:#e4dccb
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  line-height:1.6
+}
+
 a{color:var(--teal)}
-.wrap{max-width:980px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
-nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid #e0d8c5;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px}
-nav.ddnav .brand{display:flex;align-items:baseline;gap:10px}
-nav.ddnav .brand .mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;letter-spacing:-.4px;color:#1d1813;text-decoration:none}
-nav.ddnav .navlinks{display:flex;align-items:center;gap:4px}
-nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:#5b5346;text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px}
-nav.ddnav .navlinks a:hover{color:#1d1813;background:#f1ead9}
-nav.ddnav .navlinks a.on{color:#004c53;background:#d7e9ea}
-nav.ddnav .navmeta{font-size:11px;color:#938a78;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 clamp(18px,4vw,40px)
+}
+
+nav.ddnav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(246,241,231,.86);
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid #e0d8c5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(18px,4vw,48px);
+  height:60px
+}
+
+nav.ddnav .brand{
+  display:flex;
+  align-items:baseline;
+  gap:10px
+}
+
+nav.ddnav .brand .mark{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:19px;
+  letter-spacing:-.4px;
+  color:#1d1813;
+  text-decoration:none
+}
+
+nav.ddnav .navlinks{
+  display:flex;
+  align-items:center;
+  gap:4px
+}
+
+nav.ddnav .navlinks a{
+  font-size:13px;
+  font-weight:500;
+  color:#5b5346;
+  text-decoration:none;
+  padding:7px 12px;
+  border-radius:6px;
+  transition:.15s;
+  letter-spacing:.2px
+}
+
+nav.ddnav .navlinks a:hover{
+  color:#1d1813;
+  background:#f1ead9
+}
+
+nav.ddnav .navlinks a.on{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+nav.ddnav .navmeta{
+  font-size:11px;
+  color:#938a78;
+  letter-spacing:.5px;
+  font-variant-numeric:tabular-nums
+}
+
 main{padding:2rem 0 1rem}
-.crumb{font-size:.82rem;color:var(--ink3);margin:0 0 1rem}.crumb a{text-decoration:none}
-.badge{display:inline-block;font:600 .72rem 'Public Sans',sans-serif;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
-.badge.county{color:#004c53;background:#d7e9ea}.badge.city{color:#8a5a2b;background:#f3e4d2}.badge.tribal{color:#6a2f6a;background:#efddef}
-h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
-h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
-.lede{font-size:1.08rem;max-width:62ch}
-.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
-.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
-.stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
-.stat .l{font-size:.78rem;color:var(--ink3);margin-top:.3rem}
-ul.haz{list-style:none;padding:0;margin:.5rem 0;display:flex;flex-wrap:wrap;gap:.5rem}
-ul.haz li{background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.3rem .8rem;font-size:.85rem}ul.haz b{color:var(--teal)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
-table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
-th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);background:#faf6ec}
-tr:last-child td{border-bottom:none}.tag{font-weight:700;color:var(--teal)}
-.hmp{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 0}
-.hmp p{margin:.2rem 0 .9rem;font-size:.92rem}
-.copybtn{font:600 .8rem 'Public Sans',sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .85rem;cursor:pointer;margin-top:.8rem}
-.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
-.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
-.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
-.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
-.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
-.decl-chip.off{opacity:.42;cursor:default}
-.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
-.tablewrap.scroll{max-height:430px;overflow-y:auto}
-.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
+
+.crumb{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:0 0 1rem
+}
+
+.crumb a{text-decoration:none}
+
+.badge{
+  display:inline-block;
+  font:600 .72rem 'Public Sans',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  padding:.2rem .6rem;
+  border-radius:999px;
+  margin-bottom:.6rem
+}
+
+.badge.county{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+.badge.city{
+  color:#8a5a2b;
+  background:#f3e4d2
+}
+
+.badge.tribal{
+  color:#6a2f6a;
+  background:#efddef
+}
+
+h1{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  line-height:1.1;
+  margin:.2rem 0 .6rem
+}
+
+h2{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.3rem;
+  margin:2.2rem 0 .8rem
+}
+
+.lede{
+  font-size:1.08rem;
+  max-width:62ch
+}
+
+.jsummary{
+  margin:1.1rem 0 .4rem
+}
+
+.jsummary p{
+  margin:0;
+  font-size:1rem;
+  color:var(--ink);
+  max-width:66ch
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+  gap:.7rem;
+  margin:1.5rem 0
+}
+
+.stat{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:.85rem 1rem
+}
+
+.stat .n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.7rem;
+  color:var(--teal);
+  font-weight:600;
+  line-height:1
+}
+
+.stat .l{
+  font-size:.78rem;
+  color:var(--ink3);
+  margin-top:.3rem
+}
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.5rem 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.3rem .8rem;
+  font-size:.85rem
+}
+
+ul.haz b{color:var(--teal)}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper)
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.86rem;
+  min-width:560px
+}
+
+th,td{
+  text-align:left;
+  padding:.55rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top
+}
+
+th{
+  font-size:.74rem;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  color:var(--ink3);
+  background:#faf6ec
+}
+
+tr:last-child td{border-bottom:none}
+
+.tag{
+  font-weight:700;
+  color:var(--teal)
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:12px;
+  padding:1.1rem 1.3rem;
+  margin:1rem 0
+}
+
+.hmp p{
+  margin:.2rem 0 .9rem;
+  font-size:.92rem
+}
+
+.copybtn{
+  font:600 .8rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.4rem .85rem;
+  cursor:pointer;
+  margin-top:.8rem
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem
+}
+
+.decl-chip{
+  font:700 .82rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .72rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.42rem
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .44rem;
+  font-size:.76rem;
+  font-weight:700
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal)
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default
+}
+
+.decl-count{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1
+}
+
 tr.hide{display:none}
-th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
-th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400
+}
+
 th.sortable:hover{color:var(--teal)}
-th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
-th[aria-sort="descending"]::after{content:"↓";opacity:.95}
-.method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}.method h2{margin-top:0;font-size:1.1rem}
-.pa-note{font-size:.9rem;color:var(--ink3);max-width:64ch;margin:.4rem 0 .8rem}
-table.pa-cat tfoot td{font-weight:700;color:var(--teal);border-top:2px solid var(--rule);background:#faf6ec}
-.pa-cat .catcode{color:var(--ink3);font-weight:400;font-size:.85em;margin-left:.15em}
-table.pa-cat td:nth-child(2),table.pa-cat th:nth-child(2),table.pa-cat td:nth-child(3),table.pa-cat th:nth-child(3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.jgrid{display:flex;flex-wrap:wrap;gap:.4rem .7rem;margin:.6rem 0}.jgrid a{font-size:.86rem;text-decoration:none}
-ol.rank{padding-left:0;list-style:none;counter-reset:r}
-ol.rank li{counter-increment:r;display:flex;align-items:baseline;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--rule)}
-ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--ink3);min-width:2.6ch;text-align:right}
-ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
-ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
-footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
-nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95
+}
+
+.risk-section{margin:2.4rem 0}
+
+.section-heading-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem
+}
+
+.section-heading-row h2{margin:0 0 .25rem}
+
+.section-deck{
+  margin:0;
+  color:var(--ink3);
+  font-size:.92rem;
+  max-width:66ch
+}
+
+.risk-fips{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  white-space:nowrap
+}
+
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem
+}
+
+.risk-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.2rem;
+  box-shadow:0 1px 0 rgba(43,43,43,.03)
+}
+
+.risk-card h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.18rem;
+  line-height:1.2;
+  margin:.15rem 0 0
+}
+
+.risk-kicker{
+  font-size:.69rem;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:#8a5a2b
+}
+
+.risk-version{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.18rem 0 .9rem
+}
+
+.risk-score{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:2.15rem;
+  font-weight:600;
+  line-height:1
+}
+
+.risk-score.na{font-size:1.55rem}
+
+.risk-score-label{
+  color:var(--ink3);
+  font-size:.76rem;
+  margin-top:.2rem
+}
+
+.risk-interpret{
+  color:var(--ink3);
+  font-size:.83rem;
+  margin:.7rem 0
+}
+
+.theme-list{margin-top:.9rem}
+
+.theme-row{margin:.58rem 0}
+
+.theme-head{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  font-size:.76rem
+}
+
+.theme-head b{
+  color:var(--teal);
+  font-variant-numeric:tabular-nums
+}
+
+.theme-track{
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#e8e0d0;
+  margin-top:.25rem
+}
+
+.theme-track span{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#4c8b90
+}
+
+.nri-lead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem
+}
+
+.risk-rating{
+  display:inline-block;
+  border-radius:999px;
+  background:#f3e4d2;
+  color:#7a4a20;
+  font-size:.72rem;
+  font-weight:700;
+  padding:.3rem .62rem;
+  text-align:center
+}
+
+.risk-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.55rem;
+  margin-top:1rem
+}
+
+.risk-mini{
+  border-top:1px solid var(--rule);
+  padding-top:.55rem;
+  min-width:0
+}
+
+.risk-mini span,
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.68rem;
+  line-height:1.35
+}
+
+.risk-mini b{
+  display:block;
+  color:var(--teal);
+  font-size:.95rem;
+  margin:.18rem 0;
+  overflow-wrap:anywhere
+}
+
+.risk-source{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.9rem 0 0
+}
+
+.risk-source a{font-weight:600}
+
+.risk-caution{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:10px;
+  padding:.8rem .9rem;
+  margin-top:.8rem;
+  color:#3f5557;
+  font-size:.8rem
+}
+
+.method{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:1.2rem 1.4rem;
+  margin:2rem 0;
+  font-size:.92rem
+}
+
+.method h2{
+  margin-top:0;
+  font-size:1.1rem
+}
+
+/* Citation block */
+.citation{
+  background:#153c40;
+  color:#eef9f8;
+  border-radius:14px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0
+}
+
+.citation h2{
+  color:#fff;
+  margin:0 0 .45rem;
+  font-size:1.2rem
+}
+
+.citation p{
+  font-size:.84rem;
+  color:#d6e9e7;
+  margin:.2rem 0 .85rem;
+  max-width:68ch
+}
+
+.cite-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:0 0 .7rem
+}
+
+.citefmt{
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#d6e9e7;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  padding:.38rem .72rem;
+  cursor:pointer
+}
+
+.citefmt:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.citefmt[aria-pressed="true"]{
+  background:#fff;
+  color:#153c40;
+  border-color:#fff
+}
+
+.cite-text{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:9px;
+  padding:.85rem;
+  font-size:.79rem;
+  line-height:1.6;
+  color:#fff
+}
+
+.citation .copybtn{
+  color:#fff;
+  border-color:#bcd8d5
+}
+
+.citation .copybtn:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.pa-note{
+  font-size:.9rem;
+  color:var(--ink3);
+  max-width:64ch;
+  margin:.4rem 0 .8rem
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0
+}
+
+.jgrid a{
+  font-size:.86rem;
+  text-decoration:none
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule)
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3)
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.9rem;
+  margin-left:auto
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.85rem
+}
+
+footer.site a{color:var(--ink3)}
+
+nav.ddnav .navburger{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  width:40px;
+  height:40px;
+  background:none;
+  border:0;
+  cursor:pointer;
+  padding:8px;
+  border-radius:8px
+}
+
+nav.ddnav .navburger span{
+  display:block;
+  height:2px;
+  width:100%;
+  background:#1d1813;
+  border-radius:2px;
+  transition:.2s
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){
+  transform:translateY(7px) rotate(45deg)
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){
+  opacity:0
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){
+  transform:translateY(-7px) rotate(-45deg)
+}
+
 .mobilemenu{display:none}
-@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
-.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
-.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
-.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
-.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
-.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
-.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
-.mm-section a.on{color:#004c53;background:#d7e9ea}}#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}@media(max-width:600px){#locmap{height:240px}}.locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}.locmap-cap b{font-weight:700}.loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}.loc-lbl:before,.loc-lbl:after{display:none !important}</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Sequatchie County, Tennessee FEMA disaster declarations", "description": "Sequatchie County, Tennessee has had 12 federal disaster and emergency declarations since FY2000 (7 major disasters, 3 emergencies, 2 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning.", "url": "https://disasterdata.io/states/tennessee/sequatchie-county-tn.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Sequatchie County, Tennessee"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Sequatchie County", "Tennessee", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../tennessee.html">Tennessee</a> / Sequatchie County</p><span class="badge county">County</span><h1>Sequatchie County, Tennessee</h1><p class="lede">Sequatchie County recorded <b>12</b> federal disaster and emergency declarations since FY2000 (through FY2025): 7 major disasters, 3 emergencies, and 2 fire-management declarations. Its most common hazard is severe storm.</p><div class="stats"><div class="stat"><div class="n">12</div><div class="l">Declarations since FY2000</div></div><div class="stat"><div class="n">7</div><div class="l">Major disasters (DR)</div></div><div class="stat"><div class="n">3</div><div class="l">Emergencies (EM)</div></div><div class="stat"><div class="n">2</div><div class="l">Fire management (FM)</div></div><div class="stat"><div class="n">Feb&nbsp;2026</div><div class="l">Most recent</div></div><div class="stat"><div class="n">$325K</div><div class="l">Federal PA obligated (top: roads and bridges)</div></div></div><section class="jsummary"><p>The federal disaster record for Sequatchie County runs between 2001 and 2025, covering 12 declarations in all. Its most recent major disaster declaration was Covid-19 Pandemic in 2020. The hazards behind these declarations were most often severe storm, biological, and fire. Since 2000, FEMA has obligated $324,570 in Public Assistance funding to the jurisdiction, most of it for roads and bridges.</p></section><div id="locmap" data-fips="47" data-name="Sequatchie County" data-st="TN" data-kind="county"></div><p class="locmap-cap">Highlighted: <b>Sequatchie County, TN</b></p><section><h2>Federal Public Assistance by category</h2><p class="pa-note">Federal share obligated to this jurisdiction under FEMA Public Assistance since 2000, grouped by damage category. Figures are rounded to the nearest dollar and reflect obligations, which may change as projects close out.</p><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Category</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Roads and bridges<span class='catcode'>(C)</span></td><td>7</td><td>$148,235</td></tr><tr><td>Debris removal<span class='catcode'>(A)</span></td><td>7</td><td>$86,615</td></tr><tr><td>Emergency protective measures<span class='catcode'>(B)</span></td><td>15</td><td>$67,751</td></tr><tr><td>Buildings and equipment<span class='catcode'>(E)</span></td><td>5</td><td>$11,921</td></tr><tr><td>Utilities<span class='catcode'>(F)</span></td><td>1</td><td>$4,309</td></tr><tr><td>Management costs<span class='catcode'>(Z)</span></td><td>1</td><td>$3,977</td></tr><tr><td>Parks and recreation<span class='catcode'>(G)</span></td><td>1</td><td>$1,762</td></tr></tbody><tfoot><tr><td>All categories</td><td>37</td><td>$324,570</td></tr></tfoot></table></div></section><section><h2>Recovery funding, how fast it came</h2><p class="pa-note">For each disaster, the wait from the declaration to the first federal obligation (amber), then the federal share obligating after that (teal), on a shared 2-year scale. Typical wait to the first obligation here: about 105 days. An obligation is the federal share committed to the recipient state, not funds disbursed to the locality, which comes later and is not shown.</p><style>.ft-list{display:grid;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .3rem}.ft-row{background:#f6f1e7;padding:.7rem .9rem}.ft-top{display:flex;justify-content:space-between;gap:.8rem;align-items:baseline}.ft-name{font-size:.92rem;color:#17211f;font-weight:600}.ft-date{color:#6b6357;font-weight:400}.ft-val{font-family:Fraunces,Georgia,serif;font-size:1rem;color:#004c53}.ft-track{position:relative;height:11px;margin:.5rem 0 .35rem;background:#ece7d8;border:1px solid #e2dccb;border-radius:6px;overflow:hidden}.ft-gap{position:absolute;top:0;left:0;height:100%;background:#c85c2e}.ft-flow{position:absolute;top:0;height:100%;background:#004c53}.ft-meta{font-size:.72rem;color:#6b6357}.ft-meta b{color:#c85c2e}.ft-axis{position:relative;height:1.1rem;margin:.15rem .9rem 0;font-size:.66rem;color:#6b6357}.ft-axis span{position:absolute;transform:translateX(-50%)}.ft-axis span:first-child{transform:none}</style><div class="ft-list"><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Flooding, Landslides, And Mudslides <span class="ft-date">2019</span></span><span class="ft-val">$64K</span></div><div class="ft-track"><span class="ft-gap" style="width:22.5%"></span><span class="ft-flow" style="left:22.5%;width:27.8%"></span></div><div class="ft-meta"><b>164 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, Straight-Line Winds, And Flooding <span class="ft-date">2014</span></span><span class="ft-val">$49K</span></div><div class="ft-track"><span class="ft-gap" style="width:14.2%"></span><span class="ft-flow" style="left:14.2%;width:14.8%"></span></div><div class="ft-meta"><b>104 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, Straight-Line Winds, And Associated Flooding <span class="ft-date">2011</span></span><span class="ft-val">$54K</span></div><div class="ft-track"><span class="ft-gap" style="width:14.7%"></span><span class="ft-flow" style="left:14.7%;width:8.8%"></span></div><div class="ft-meta"><b>107 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, And Flooding <span class="ft-date">2009</span></span><span class="ft-val">$28K</span></div><div class="ft-track"><span class="ft-gap" style="width:3.0%"></span><span class="ft-flow" style="left:3.0%;width:1.2%"></span></div><div class="ft-meta"><b>22 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, And Flooding <span class="ft-date">2003</span></span><span class="ft-val">$78K</span></div><div class="ft-track"><span class="ft-gap" style="width:17.0%"></span><span class="ft-flow" style="left:17.0%;width:42.2%"></span></div><div class="ft-meta"><b>124 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms And Flooding <span class="ft-date">2003</span></span><span class="ft-val">$52K</span></div><div class="ft-track"><span class="ft-gap" style="width:5.6%"></span><span class="ft-flow" style="left:5.6%;width:0.0%"></span></div><div class="ft-meta"><b>41 days</b> to first federal obligation</div></div></div><div class="ft-axis"><span style="left:0">Declared</span><span style="left:50.0%">1 yr</span><span style="left:100.0%">2 yr</span></div></section><section><h2>Assistance to households (Individual Assistance)</h2><p class="pa-note">FEMA Individual Assistance to households in this jurisdiction, combined across the Housing Assistance owner and renter programs. Valid registrations are households that applied within a designated Individual Assistance area; approved counts and dollars are the households FEMA found eligible under the Individuals and Households Program. Figures are self-reported and drawn from NEMIS through OpenFEMA, not audited, and Individual Assistance exists only for disasters where it was designated, so many jurisdictions show none.</p><style>.ia-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.ia-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.ia-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.ia-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="ia-stats"><div class="ia-stat"><div class="ia-n">78</div><div class="ia-l">valid registrations</div></div><div class="ia-stat"><div class="ia-n">46</div><div class="ia-l">households approved</div></div><div class="ia-stat"><div class="ia-n">$175,139</div><div class="ia-l">total IHP approved</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Assistance type</th><th>Approved amount</th></tr></thead><tbody><tr><td>Repair and replacement</td><td>$51,110</td></tr><tr><td>Rental assistance</td><td>$7,987</td></tr><tr><td>Other needs</td><td>$116,042</td></tr></tbody></table></div></section><section><h2>Hazard mitigation, what has been funded here</h2><p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to reduce future disaster losses, across the FEMA mitigation programs. This is the record of past mitigation investment a local hazard mitigation plan documents. Figures are federal share obligated, reported through OpenFEMA and not audited, and are separate from the Public Assistance funding above.</p><style>.hm-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.hm-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.hm-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.hm-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="hm-stats"><div class="hm-stat"><div class="hm-n">$24,483</div><div class="hm-l">federal mitigation share</div></div><div class="hm-stat"><div class="hm-n">1</div><div class="hm-l">funded project</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Hazard Mitigation Grant Program<span class='catcode'>(HMGP)</span></td><td>1</td><td>$24,483</td></tr></tbody></table></div></section><h2>Most common hazards</h2><ul class="haz"><li>Severe Storm <b>6</b></li><li>Biological <b>2</b></li><li>Fire <b>2</b></li><li>Flood <b>1</b></li><li>Hurricane <b>1</b></li></ul><section><h2>Previous occurrences, for your mitigation plan</h2><div class="hmp"><p>Every local hazard mitigation plan must document previous occurrences of each hazard. Here is that record for Sequatchie County, sourced to OpenFEMA and refreshed weekly. Copy it straight into your plan.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Severe Storm</td><td>Apr 2, 2025</td><td>EM-3625-TN</td><td>EM</td></tr><tr><td>Biological</td><td>Apr 2, 2020</td><td>DR-4514-TN</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3473-TN</td><td>EM</td></tr><tr><td>Flood</td><td>Apr 17, 2019</td><td>DR-4427-TN</td><td>DR</td></tr><tr><td>Fire</td><td>Nov 11, 2016</td><td>FM-5160-TN</td><td>FM</td></tr><tr><td>Severe Storm</td><td>Aug 13, 2014</td><td>DR-4189-TN</td><td>DR</td></tr><tr><td>Severe Storm</td><td>May 1, 2011</td><td>DR-1974-TN</td><td>DR</td></tr><tr><td>Severe Storm</td><td>May 15, 2009</td><td>DR-1839-TN</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 5, 2005</td><td>EM-3217-TN</td><td>EM</td></tr><tr><td>Severe Storm</td><td>May 8, 2003</td><td>DR-1464-TN</td><td>DR</td></tr><tr><td>Severe Storm</td><td>Mar 20, 2003</td><td>DR-1456-TN</td><td>DR</td></tr><tr><td>Fire</td><td>Nov 3, 2001</td><td>FM-2387-TN</td><td>FM</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Severe Storm&quot;, &quot;Apr 2, 2025&quot;, &quot;EM-3625-TN&quot;, &quot;EM&quot;], [&quot;Biological&quot;, &quot;Apr 2, 2020&quot;, &quot;DR-4514-TN&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3473-TN&quot;, &quot;EM&quot;], [&quot;Flood&quot;, &quot;Apr 17, 2019&quot;, &quot;DR-4427-TN&quot;, &quot;DR&quot;], [&quot;Fire&quot;, &quot;Nov 11, 2016&quot;, &quot;FM-5160-TN&quot;, &quot;FM&quot;], [&quot;Severe Storm&quot;, &quot;Aug 13, 2014&quot;, &quot;DR-4189-TN&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;May 1, 2011&quot;, &quot;DR-1974-TN&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;May 15, 2009&quot;, &quot;DR-1839-TN&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 5, 2005&quot;, &quot;EM-3217-TN&quot;, &quot;EM&quot;], [&quot;Severe Storm&quot;, &quot;May 8, 2003&quot;, &quot;DR-1464-TN&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;Mar 20, 2003&quot;, &quot;DR-1456-TN&quot;, &quot;DR&quot;], [&quot;Fire&quot;, &quot;Nov 3, 2001&quot;, &quot;FM-2387-TN&quot;, &quot;FM&quot;]]">Copy table</button></div></section><h2>Every declaration on record</h2><div id="declbox"><p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; <b style="color:#004c53">EM</b> = Emergency declaration &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">12</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">7</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">3</span></button><button type="button" class="decl-chip" data-t="FM" aria-pressed="false">FM <span class="n">2</span></button></div><p class="decl-count" aria-live="polite">Showing 12 declarations</p><div class="tablewrap"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="EM"><td data-s="2025-04-02">Apr 2, 2025</td><td data-s="3625">EM-3625-TN</td><td><span class='tag' title='Emergency'>EM</span></td><td>Severe Storm</td><td>Severe Storms, Straight-Line Winds, Tornadoes, And Flooding</td></tr><tr data-t="DR"><td data-s="2020-04-02">Apr 2, 2020</td><td data-s="4514">DR-4514-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3473">EM-3473-TN</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr><tr data-t="DR"><td data-s="2019-04-17">Apr 17, 2019</td><td data-s="4427">DR-4427-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Flood</td><td>Severe Storms, Flooding, Landslides, And Mudslides</td></tr><tr data-t="FM"><td data-s="2016-11-11">Nov 11, 2016</td><td data-s="5160">FM-5160-TN</td><td><span class='tag' title='Fire management'>FM</span></td><td>Fire</td><td>Smith Mountain Fire Complex</td></tr><tr data-t="DR"><td data-s="2014-08-13">Aug 13, 2014</td><td data-s="4189">DR-4189-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, Straight-Line Winds, And Flooding</td></tr><tr data-t="DR"><td data-s="2011-05-01">May 1, 2011</td><td data-s="1974">DR-1974-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, Straight-Line Winds, And Associated Flooding</td></tr><tr data-t="DR"><td data-s="2009-05-15">May 15, 2009</td><td data-s="1839">DR-1839-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, And Flooding</td></tr><tr data-t="EM"><td data-s="2005-09-05">Sep 5, 2005</td><td data-s="3217">EM-3217-TN</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Katrina Evacuation</td></tr><tr data-t="DR"><td data-s="2003-05-08">May 8, 2003</td><td data-s="1464">DR-1464-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, And Flooding</td></tr><tr data-t="DR"><td data-s="2003-03-20">Mar 20, 2003</td><td data-s="1456">DR-1456-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms And Flooding</td></tr><tr data-t="FM"><td data-s="2001-11-03">Nov 3, 2001</td><td data-s="2387">FM-2387-TN</td><td><span class='tag' title='Fire management'>FM</span></td><td>Fire</td><td>Tn - Chattanooga Fire Complex - 11/03/01</td></tr></tbody></table></div><div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button><button class="copybtn citebtn" type="button">Cite this page</button></div></div><script>
+
+@media(max-width:720px){
+  .section-heading-row{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .risk-grid{grid-template-columns:1fr}
+
+  .risk-mini-grid{grid-template-columns:1fr}
+
+  nav.ddnav{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    height:60px;
+    padding-top:0;
+    padding-bottom:0
+  }
+
+  nav.ddnav .navmeta{display:none}
+  nav.ddnav .navlinks{display:none !important}
+  nav.ddnav .navburger{display:flex}
+
+  .mobilemenu:not([hidden]){
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:10px clamp(18px,4vw,48px) 18px;
+    background:#f6f1e7;
+    border-bottom:1px solid #e0d8c5;
+    position:sticky;
+    top:60px;
+    z-index:49
+  }
+
+  .mobilemenu>a{
+    font-size:15px;
+    font-weight:500;
+    color:#1d1813;
+    text-decoration:none;
+    padding:11px 12px;
+    border-radius:8px
+  }
+
+  .mobilemenu>a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+
+  .mm-section{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:6px 0;
+    margin:2px 0;
+    border-top:1px solid #e0d8c5
+  }
+
+  .mm-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:#938a78;
+    padding:6px 12px 2px
+  }
+
+  .mm-section a{
+    font-size:15px;
+    font-weight:500;
+    color:#5b5346;
+    text-decoration:none;
+    padding:10px 12px 10px 22px;
+    border-radius:8px
+  }
+
+  .mm-section a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+}
+#locmap{
+  height:320px;
+  border-radius:10px;
+  border:1px solid #e4dccb;
+  margin:1rem 0 .5rem;
+  background:#f6f1e7
+}
+
+@media(max-width:600px){
+  #locmap{height:240px}
+}
+
+.locmap-cap{
+  font:600 .86rem/1.3 'Public Sans',sans-serif;
+  color:#004c53;
+  margin:0 0 1.5rem;
+  text-align:center
+}
+
+.locmap-cap b{font-weight:700}
+
+.loc-lbl{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  color:#fff;
+  font:700 12px/1 'Public Sans',sans-serif;
+  padding:0;
+  white-space:nowrap;
+  pointer-events:none;
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.6),
+    0 0 3px rgba(0,0,0,.55)
+}
+
+.loc-lbl:before,
+.loc-lbl:after{
+  display:none !important
+}
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Sequatchie County, Tennessee FEMA disaster declarations", "description": "Sequatchie County, Tennessee has had 12 federal disaster and emergency declarations since FY2000 (7 major disasters, 3 emergencies, 2 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available.", "url": "https://disasterdata.io/states/tennessee/sequatchie-county-tn.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Sequatchie County, Tennessee"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Sequatchie County", "Tennessee", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences", "CDC Social Vulnerability Index", "FEMA National Risk Index"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../tennessee.html">Tennessee</a> / Sequatchie County</p><span class="badge county">County</span><h1>Sequatchie County, Tennessee</h1><p class="lede">Sequatchie County recorded <b>12</b> federal disaster and emergency declarations since FY2000 (through FY2025): 7 major disasters, 3 emergencies, and 2 fire-management declarations. Its most common hazard is severe storm.</p><div class="stats"><div class="stat"><div class="n">12</div><div class="l">Declarations since FY2000</div></div><div class="stat"><div class="n">7</div><div class="l">Major disasters (DR)</div></div><div class="stat"><div class="n">3</div><div class="l">Emergencies (EM)</div></div><div class="stat"><div class="n">2</div><div class="l">Fire management (FM)</div></div><div class="stat"><div class="n">Feb&nbsp;2026</div><div class="l">Most recent</div></div><div class="stat"><div class="n">$325K</div><div class="l">Federal PA obligated (top: roads and bridges)</div></div></div><section class="jsummary"><p>The federal disaster record for Sequatchie County runs between 2001 and 2025, covering 12 declarations in all. Its most recent major disaster declaration was Covid-19 Pandemic in 2020. The hazards behind these declarations were most often severe storm, biological, and fire. Since 2000, FEMA has obligated $324,570 in Public Assistance funding to the jurisdiction, most of it for roads and bridges.</p></section><div id="locmap" data-fips="47" data-name="Sequatchie County" data-st="TN" data-kind="county"></div><p class="locmap-cap">Highlighted: <b>Sequatchie County, TN</b></p><section class="risk-section"><div class="section-heading-row"><div><h2>Risk and vulnerability context</h2><p class="section-deck">Historical declarations show what has happened here. These national datasets add context about underlying natural-hazard risk and community vulnerability.</p></div><span class="risk-fips">County FIPS 47153</span></div><div class="risk-grid"><article class="risk-card"><div class="risk-kicker">CDC / ATSDR</div><h3>Social Vulnerability Index</h3><div class="risk-version">2022 county-level SVI</div><div class="risk-score">50.4</div><div class="risk-score-label">overall percentile nationally</div><p class="risk-interpret">Approximately 50.4% of U.S. counties have an equal or lower overall SVI ranking.</p><div class="theme-list"><div class="theme-row"><div class="theme-head"><span>Socioeconomic status</span><b>67.3</b></div><div class="theme-track"><span style="width:67.3%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Household characteristics</span><b>79.0</b></div><div class="theme-track"><span style="width:79.0%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Racial and ethnic minority status</span><b>19.3</b></div><div class="theme-track"><span style="width:19.3%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Housing type and transportation</span><b>17.6</b></div><div class="theme-track"><span style="width:17.6%"></span></div></div></div><p class="risk-source">Higher percentiles indicate greater relative social vulnerability within the CDC SVI framework. <a href="https://www.atsdr.cdc.gov/place-health/php/svi/svi-data-documentation-download.html">CDC SVI documentation</a></p></article><article class="risk-card"><div class="risk-kicker">FEMA</div><h3>National Risk Index</h3><div class="risk-version">December 2025</div><div class="nri-lead"><div><div class="risk-score">40.2</div><div class="risk-score-label">overall risk score</div></div><span class="risk-rating">Very Low</span></div><div class="risk-mini-grid"><div class="risk-mini"><span>Expected annual loss</span><b>$11.0M</b><small>Very Low</small></div><div class="risk-mini"><span>NRI social vulnerability</span><b>54.2</b><small>Relatively Moderate</small></div><div class="risk-mini"><span>Community resilience</span><b>20.2</b><small>Relatively Low</small></div></div><p class="risk-source">The NRI combines expected annual loss, social vulnerability, and community resilience to describe relative natural-hazard risk. <a href="https://hazards.fema.gov/nri/">FEMA NRI documentation</a></p></article></div><div class="risk-caution"><b>About these measures:</b> CDC Social Vulnerability Index and FEMA National Risk Index Social Vulnerability are separate measures built with different methods. They are shown side by side for context and should not be interpreted as equivalent scores.</div></section><section><h2>Federal Public Assistance by category</h2><p class="pa-note">Federal share obligated to this jurisdiction under FEMA Public Assistance since 2000, grouped by damage category. Figures are rounded to the nearest dollar and reflect obligations, which may change as projects close out.</p><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Category</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Roads and bridges<span class='catcode'>(C)</span></td><td>7</td><td>$148,235</td></tr><tr><td>Debris removal<span class='catcode'>(A)</span></td><td>7</td><td>$86,615</td></tr><tr><td>Emergency protective measures<span class='catcode'>(B)</span></td><td>15</td><td>$67,751</td></tr><tr><td>Buildings and equipment<span class='catcode'>(E)</span></td><td>5</td><td>$11,921</td></tr><tr><td>Utilities<span class='catcode'>(F)</span></td><td>1</td><td>$4,309</td></tr><tr><td>Management costs<span class='catcode'>(Z)</span></td><td>1</td><td>$3,977</td></tr><tr><td>Parks and recreation<span class='catcode'>(G)</span></td><td>1</td><td>$1,762</td></tr></tbody><tfoot><tr><td>All categories</td><td>37</td><td>$324,570</td></tr></tfoot></table></div></section><section><h2>Recovery funding, how fast it came</h2><p class="pa-note">For each disaster, the wait from the declaration to the first federal obligation (amber), then the federal share obligating after that (teal), on a shared 2-year scale. Typical wait to the first obligation here: about 105 days. An obligation is the federal share committed to the recipient state, not funds disbursed to the locality, which comes later and is not shown.</p><style>.ft-list{display:grid;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .3rem}.ft-row{background:#f6f1e7;padding:.7rem .9rem}.ft-top{display:flex;justify-content:space-between;gap:.8rem;align-items:baseline}.ft-name{font-size:.92rem;color:#17211f;font-weight:600}.ft-date{color:#6b6357;font-weight:400}.ft-val{font-family:Fraunces,Georgia,serif;font-size:1rem;color:#004c53}.ft-track{position:relative;height:11px;margin:.5rem 0 .35rem;background:#ece7d8;border:1px solid #e2dccb;border-radius:6px;overflow:hidden}.ft-gap{position:absolute;top:0;left:0;height:100%;background:#c85c2e}.ft-flow{position:absolute;top:0;height:100%;background:#004c53}.ft-meta{font-size:.72rem;color:#6b6357}.ft-meta b{color:#c85c2e}.ft-axis{position:relative;height:1.1rem;margin:.15rem .9rem 0;font-size:.66rem;color:#6b6357}.ft-axis span{position:absolute;transform:translateX(-50%)}.ft-axis span:first-child{transform:none}</style><div class="ft-list"><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Flooding, Landslides, And Mudslides <span class="ft-date">2019</span></span><span class="ft-val">$64K</span></div><div class="ft-track"><span class="ft-gap" style="width:22.5%"></span><span class="ft-flow" style="left:22.5%;width:27.8%"></span></div><div class="ft-meta"><b>164 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, Straight-Line Winds, And Flooding <span class="ft-date">2014</span></span><span class="ft-val">$49K</span></div><div class="ft-track"><span class="ft-gap" style="width:14.2%"></span><span class="ft-flow" style="left:14.2%;width:14.8%"></span></div><div class="ft-meta"><b>104 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, Straight-Line Winds, And Associated Flooding <span class="ft-date">2011</span></span><span class="ft-val">$54K</span></div><div class="ft-track"><span class="ft-gap" style="width:14.7%"></span><span class="ft-flow" style="left:14.7%;width:8.8%"></span></div><div class="ft-meta"><b>107 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, And Flooding <span class="ft-date">2009</span></span><span class="ft-val">$28K</span></div><div class="ft-track"><span class="ft-gap" style="width:3.0%"></span><span class="ft-flow" style="left:3.0%;width:1.2%"></span></div><div class="ft-meta"><b>22 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, And Flooding <span class="ft-date">2003</span></span><span class="ft-val">$78K</span></div><div class="ft-track"><span class="ft-gap" style="width:17.0%"></span><span class="ft-flow" style="left:17.0%;width:42.2%"></span></div><div class="ft-meta"><b>124 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms And Flooding <span class="ft-date">2003</span></span><span class="ft-val">$52K</span></div><div class="ft-track"><span class="ft-gap" style="width:5.6%"></span><span class="ft-flow" style="left:5.6%;width:0.0%"></span></div><div class="ft-meta"><b>41 days</b> to first federal obligation</div></div></div><div class="ft-axis"><span style="left:0">Declared</span><span style="left:50.0%">1 yr</span><span style="left:100.0%">2 yr</span></div></section><section><h2>Assistance to households (Individual Assistance)</h2><p class="pa-note">FEMA Individual Assistance to households in this jurisdiction, combined across the Housing Assistance owner and renter programs. Valid registrations are households that applied within a designated Individual Assistance area; approved counts and dollars are the households FEMA found eligible under the Individuals and Households Program. Figures are self-reported and drawn from NEMIS through OpenFEMA, not audited, and Individual Assistance exists only for disasters where it was designated, so many jurisdictions show none.</p><style>.ia-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.ia-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.ia-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.ia-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="ia-stats"><div class="ia-stat"><div class="ia-n">78</div><div class="ia-l">valid registrations</div></div><div class="ia-stat"><div class="ia-n">46</div><div class="ia-l">households approved</div></div><div class="ia-stat"><div class="ia-n">$175,139</div><div class="ia-l">total IHP approved</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Assistance type</th><th>Approved amount</th></tr></thead><tbody><tr><td>Repair and replacement</td><td>$51,110</td></tr><tr><td>Rental assistance</td><td>$7,987</td></tr><tr><td>Other needs</td><td>$116,042</td></tr></tbody></table></div></section><section><h2>Hazard mitigation, what has been funded here</h2><p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to reduce future disaster losses, across the FEMA mitigation programs. This is the record of past mitigation investment a local hazard mitigation plan documents. Figures are federal share obligated, reported through OpenFEMA and not audited, and are separate from the Public Assistance funding above.</p><style>.hm-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.hm-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.hm-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.hm-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="hm-stats"><div class="hm-stat"><div class="hm-n">$24,483</div><div class="hm-l">federal mitigation share</div></div><div class="hm-stat"><div class="hm-n">1</div><div class="hm-l">funded project</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Hazard Mitigation Grant Program<span class='catcode'>(HMGP)</span></td><td>1</td><td>$24,483</td></tr></tbody></table></div></section><h2>Most common hazards</h2><ul class="haz"><li>Severe Storm <b>6</b></li><li>Biological <b>2</b></li><li>Fire <b>2</b></li><li>Flood <b>1</b></li><li>Hurricane <b>1</b></li></ul><section><h2>Previous occurrences, for your mitigation plan</h2><div class="hmp"><p>Every local hazard mitigation plan must document previous occurrences of each hazard. Here is that record for Sequatchie County, sourced to OpenFEMA and refreshed weekly. Copy it straight into your plan.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Severe Storm</td><td>Apr 2, 2025</td><td>EM-3625-TN</td><td>EM</td></tr><tr><td>Biological</td><td>Apr 2, 2020</td><td>DR-4514-TN</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3473-TN</td><td>EM</td></tr><tr><td>Flood</td><td>Apr 17, 2019</td><td>DR-4427-TN</td><td>DR</td></tr><tr><td>Fire</td><td>Nov 11, 2016</td><td>FM-5160-TN</td><td>FM</td></tr><tr><td>Severe Storm</td><td>Aug 13, 2014</td><td>DR-4189-TN</td><td>DR</td></tr><tr><td>Severe Storm</td><td>May 1, 2011</td><td>DR-1974-TN</td><td>DR</td></tr><tr><td>Severe Storm</td><td>May 15, 2009</td><td>DR-1839-TN</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 5, 2005</td><td>EM-3217-TN</td><td>EM</td></tr><tr><td>Severe Storm</td><td>May 8, 2003</td><td>DR-1464-TN</td><td>DR</td></tr><tr><td>Severe Storm</td><td>Mar 20, 2003</td><td>DR-1456-TN</td><td>DR</td></tr><tr><td>Fire</td><td>Nov 3, 2001</td><td>FM-2387-TN</td><td>FM</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Severe Storm&quot;, &quot;Apr 2, 2025&quot;, &quot;EM-3625-TN&quot;, &quot;EM&quot;], [&quot;Biological&quot;, &quot;Apr 2, 2020&quot;, &quot;DR-4514-TN&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3473-TN&quot;, &quot;EM&quot;], [&quot;Flood&quot;, &quot;Apr 17, 2019&quot;, &quot;DR-4427-TN&quot;, &quot;DR&quot;], [&quot;Fire&quot;, &quot;Nov 11, 2016&quot;, &quot;FM-5160-TN&quot;, &quot;FM&quot;], [&quot;Severe Storm&quot;, &quot;Aug 13, 2014&quot;, &quot;DR-4189-TN&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;May 1, 2011&quot;, &quot;DR-1974-TN&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;May 15, 2009&quot;, &quot;DR-1839-TN&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 5, 2005&quot;, &quot;EM-3217-TN&quot;, &quot;EM&quot;], [&quot;Severe Storm&quot;, &quot;May 8, 2003&quot;, &quot;DR-1464-TN&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;Mar 20, 2003&quot;, &quot;DR-1456-TN&quot;, &quot;DR&quot;], [&quot;Fire&quot;, &quot;Nov 3, 2001&quot;, &quot;FM-2387-TN&quot;, &quot;FM&quot;]]">Copy table</button></div></section><h2>Every declaration on record</h2><div id="declbox"><p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; <b style="color:#004c53">EM</b> = Emergency declaration &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">12</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">7</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">3</span></button><button type="button" class="decl-chip" data-t="FM" aria-pressed="false">FM <span class="n">2</span></button></div><p class="decl-count" aria-live="polite">Showing 12 declarations</p><div class="tablewrap"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="EM"><td data-s="2025-04-02">Apr 2, 2025</td><td data-s="3625">EM-3625-TN</td><td><span class='tag' title='Emergency'>EM</span></td><td>Severe Storm</td><td>Severe Storms, Straight-Line Winds, Tornadoes, And Flooding</td></tr><tr data-t="DR"><td data-s="2020-04-02">Apr 2, 2020</td><td data-s="4514">DR-4514-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3473">EM-3473-TN</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr><tr data-t="DR"><td data-s="2019-04-17">Apr 17, 2019</td><td data-s="4427">DR-4427-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Flood</td><td>Severe Storms, Flooding, Landslides, And Mudslides</td></tr><tr data-t="FM"><td data-s="2016-11-11">Nov 11, 2016</td><td data-s="5160">FM-5160-TN</td><td><span class='tag' title='Fire management'>FM</span></td><td>Fire</td><td>Smith Mountain Fire Complex</td></tr><tr data-t="DR"><td data-s="2014-08-13">Aug 13, 2014</td><td data-s="4189">DR-4189-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, Straight-Line Winds, And Flooding</td></tr><tr data-t="DR"><td data-s="2011-05-01">May 1, 2011</td><td data-s="1974">DR-1974-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, Straight-Line Winds, And Associated Flooding</td></tr><tr data-t="DR"><td data-s="2009-05-15">May 15, 2009</td><td data-s="1839">DR-1839-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, And Flooding</td></tr><tr data-t="EM"><td data-s="2005-09-05">Sep 5, 2005</td><td data-s="3217">EM-3217-TN</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Katrina Evacuation</td></tr><tr data-t="DR"><td data-s="2003-05-08">May 8, 2003</td><td data-s="1464">DR-1464-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Tornadoes, And Flooding</td></tr><tr data-t="DR"><td data-s="2003-03-20">Mar 20, 2003</td><td data-s="1456">DR-1456-TN</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms And Flooding</td></tr><tr data-t="FM"><td data-s="2001-11-03">Nov 3, 2001</td><td data-s="2387">FM-2387-TN</td><td><span class='tag' title='Fire management'>FM</span></td><td>Fire</td><td>Tn - Chattanooga Fire Complex - 11/03/01</td></tr></tbody></table></div><div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button></div></div><script>
 (function(){
-  var box=document.getElementById('declbox'); if(!box) return;
+  var box=document.getElementById('declbox');
+  if(!box) return;
+
   var cap=box.querySelector('.decl-count');
   var chips=box.querySelectorAll('.decl-chip');
   var table=box.querySelector('table');
   var tbody=table.querySelector('tbody');
   var heads=table.querySelectorAll('thead th');
   var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
-  var label={ALL:'declarations',DR:'major disaster declarations',EM:'emergency declarations',FM:'fire-management declarations'};
+
+  var label={
+    ALL:'declarations',
+    DR:'major disaster declarations',
+    EM:'emergency declarations',
+    FM:'fire-management declarations'
+  };
 
   function filter(t){
     var shown=0,i;
+
     for(i=0;i<rows.length;i++){
       var m=(t==='ALL'||rows[i].getAttribute('data-t')===t);
       rows[i].classList.toggle('hide',!m);
       if(m) shown++;
     }
-    for(i=0;i<chips.length;i++) chips[i].setAttribute('aria-pressed', chips[i].getAttribute('data-t')===t?'true':'false');
-    if(cap) cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+
+    for(i=0;i<chips.length;i++){
+      chips[i].setAttribute(
+        'aria-pressed',
+        chips[i].getAttribute('data-t')===t?'true':'false'
+      );
+    }
+
+    if(cap){
+      cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+    }
   }
+
   box.addEventListener('click',function(ev){
-    var c=ev.target.closest('.decl-chip'); if(!c||c.classList.contains('off')) return;
+    var c=ev.target.closest('.decl-chip');
+    if(!c||c.classList.contains('off')) return;
     filter(c.getAttribute('data-t'));
   });
 
   function val(row,i,k){
     var td=row.children[i];
-    if(k==='num'){ var v=td.getAttribute('data-s'); return v==null?0:(parseFloat(v)||0); }
-    if(k==='date'){ return td.getAttribute('data-s')||''; }
+
+    if(k==='num'){
+      var v=td.getAttribute('data-s');
+      return v==null?0:(parseFloat(v)||0);
+    }
+
+    if(k==='date'){
+      return td.getAttribute('data-s')||'';
+    }
+
     return (td.textContent||'').trim().toLowerCase();
   }
+
   function sortCol(i,k,dir){
     var mul=dir==='descending'?-1:1;
+
     rows.sort(function(a,b){
       var x=val(a,i,k), y=val(b,i,k);
-      if(k==='num') return (x-y)*mul;
+
+      if(k==='num'){
+        return (x-y)*mul;
+      }
+
       return (x<y?-1:x>y?1:0)*mul;
     });
-    for(var n=0;n<rows.length;n++) tbody.appendChild(rows[n]);
+
+    for(var n=0;n<rows.length;n++){
+      tbody.appendChild(rows[n]);
+    }
   }
-  for(var h=0;h<heads.length;h++){ (function(th,i){
-    if(!th.classList.contains('sortable')) return;
-    th.addEventListener('click',function(){
-      var dir=th.getAttribute('aria-sort')==='ascending'?'descending':'ascending';
-      for(var k=0;k<heads.length;k++) heads[k].removeAttribute('aria-sort');
-      th.setAttribute('aria-sort',dir);
-      sortCol(i, th.getAttribute('data-k')||'text', dir);
-    });
-  })(heads[h],h); }
+
+  for(var h=0;h<heads.length;h++){
+    (function(th,i){
+      if(!th.classList.contains('sortable')) return;
+
+      th.addEventListener('click',function(){
+        var dir=
+          th.getAttribute('aria-sort')==='ascending'
+          ?'descending'
+          :'ascending';
+
+        for(var k=0;k<heads.length;k++){
+          heads[k].removeAttribute('aria-sort');
+        }
+
+        th.setAttribute('aria-sort',dir);
+        sortCol(i,th.getAttribute('data-k')||'text',dir);
+      });
+    })(heads[h],h);
+  }
 
   filter('ALL');
 })();
-</script><div style="margin:2rem 0"><a href="../tennessee.html">&larr; Tennessee statewide overview</a> &middot; <a href="index.html">All Tennessee jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, rebuilt each week. A declaration is counted here once for each designated area it names, so a single disaster covering many localities is counted in each one. For that reason these jurisdiction counts do not sum to Tennessee's statewide total. This page counts declarations that named this jurisdiction as a designated area. Totals cover complete fiscal years (Oct 1 to Sep 30); the in-progress year may appear in the most-recent list but is not counted in the totals. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section><h2>Other Tennessee jurisdictions</h2><nav class="jgrid"><a href="shelby-county-tn.html">Shelby County</a><a href="jackson-county-tn.html">Jackson County</a><a href="houston-county-tn.html">Houston County</a><a href="davidson-county-tn.html">Davidson County</a><a href="decatur-county-tn.html">Decatur County</a><a href="dickson-county-tn.html">Dickson County</a><a href="hardin-county-tn.html">Hardin County</a><a href="henderson-county-tn.html">Henderson County</a><a href="tipton-county-tn.html">Tipton County</a><a href="wayne-county-tn.html">Wayne County</a><a href="cheatham-county-tn.html">Cheatham County</a><a href="fayette-county-tn.html">Fayette County</a><a href="gibson-county-tn.html">Gibson County</a><a href="hickman-county-tn.html">Hickman County</a><a href="humphreys-county-tn.html">Humphreys County</a><a href="benton-county-tn.html">Benton County</a><a href="bledsoe-county-tn.html">Bledsoe County</a><a href="carroll-county-tn.html">Carroll County</a><a href="fentress-county-tn.html">Fentress County</a><a href="haywood-county-tn.html">Haywood County</a><a href="henry-county-tn.html">Henry County</a><a href="lake-county-tn.html">Lake County</a><a href="lewis-county-tn.html">Lewis County</a><a href="madison-county-tn.html">Madison County</a><a href="montgomery-county-tn.html">Montgomery County</a><a href="obion-county-tn.html">Obion County</a><a href="perry-county-tn.html">Perry County</a><a href="stewart-county-tn.html">Stewart County</a><a href="weakley-county-tn.html">Weakley County</a><a href="cocke-county-tn.html">Cocke County</a><a href="dyer-county-tn.html">Dyer County</a><a href="giles-county-tn.html">Giles County</a><a href="hamilton-county-tn.html">Hamilton County</a><a href="mcnairy-county-tn.html">McNairy County</a><a href="anderson-county-tn.html">Anderson County</a><a href="campbell-county-tn.html">Campbell County</a><a href="cumberland-county-tn.html">Cumberland County</a><a href="marion-county-tn.html">Marion County</a><a href="rhea-county-tn.html">Rhea County</a><a href="roane-county-tn.html">Roane County</a><a href="scott-county-tn.html">Scott County</a><a href="sevier-county-tn.html">Sevier County</a><a href="smith-county-tn.html">Smith County</a><a href="sumner-county-tn.html">Sumner County</a><a href="cannon-county-tn.html">Cannon County</a><a href="claiborne-county-tn.html">Claiborne County</a><a href="clay-county-tn.html">Clay County</a><a href="grainger-county-tn.html">Grainger County</a><a href="knox-county-tn.html">Knox County</a><a href="lauderdale-county-tn.html">Lauderdale County</a><a href="lawrence-county-tn.html">Lawrence County</a><a href="loudon-county-tn.html">Loudon County</a><a href="maury-county-tn.html">Maury County</a><a href="pickett-county-tn.html">Pickett County</a><a href="crockett-county-tn.html">Crockett County</a><a href="jefferson-county-tn.html">Jefferson County</a><a href="johnson-county-tn.html">Johnson County</a><a href="macon-county-tn.html">Macon County</a><a href="meigs-county-tn.html">Meigs County</a><a href="moore-county-tn.html">Moore County</a><a href="overton-county-tn.html">Overton County</a><a href="polk-county-tn.html">Polk County</a><a href="blount-county-tn.html">Blount County</a><a href="coffee-county-tn.html">Coffee County</a><a href="dekalb-county-tn.html">DeKalb County</a><a href="greene-county-tn.html">Greene County</a><a href="hardeman-county-tn.html">Hardeman County</a><a href="marshall-county-tn.html">Marshall County</a><a href="morgan-county-tn.html">Morgan County</a><a href="putnam-county-tn.html">Putnam County</a><a href="warren-county-tn.html">Warren County</a><a href="bedford-county-tn.html">Bedford County</a><a href="carter-county-tn.html">Carter County</a><a href="grundy-county-tn.html">Grundy County</a><a href="hancock-county-tn.html">Hancock County</a><a href="hawkins-county-tn.html">Hawkins County</a><a href="monroe-county-tn.html">Monroe County</a><a href="unicoi-county-tn.html">Unicoi County</a><a href="van-buren-county-tn.html">Van Buren County</a><a href="washington-county-tn.html">Washington County</a><a href="wilson-county-tn.html">Wilson County</a><a href="chester-county-tn.html">Chester County</a><a href="lincoln-county-tn.html">Lincoln County</a><a href="mcminn-county-tn.html">McMinn County</a><a href="robertson-county-tn.html">Robertson County</a><a href="rutherford-county-tn.html">Rutherford County</a><a href="bradley-county-tn.html">Bradley County</a><a href="hamblen-county-tn.html">Hamblen County</a><a href="union-county-tn.html">Union County</a><a href="williamson-county-tn.html">Williamson County</a><a href="trousdale-county-tn.html">Trousdale County</a><a href="white-county-tn.html">White County</a><a href="franklin-county-tn.html">Franklin County</a><a href="sullivan-county-tn.html">Sullivan County</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2025-04-02", "EM-3625-TN", "EM", "Severe Storm", "Severe Storms, Straight-Line Winds, Tornadoes, And Flooding"], ["2020-04-02", "DR-4514-TN", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3473-TN", "EM", "Biological", "Covid-19"], ["2019-04-17", "DR-4427-TN", "DR", "Flood", "Severe Storms, Flooding, Landslides, And Mudslides"], ["2016-11-11", "FM-5160-TN", "FM", "Fire", "Smith Mountain Fire Complex"], ["2014-08-13", "DR-4189-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, Straight-Line Winds, And Flooding"], ["2011-05-01", "DR-1974-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, Straight-Line Winds, And Associated Flooding"], ["2009-05-15", "DR-1839-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, And Flooding"], ["2005-09-05", "EM-3217-TN", "EM", "Hurricane", "Hurricane Katrina Evacuation"], ["2003-05-08", "DR-1464-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, And Flooding"], ["2003-03-20", "DR-1456-TN", "DR", "Severe Storm", "Severe Storms And Flooding"], ["2001-11-03", "FM-2387-TN", "FM", "Fire", "Tn - Chattanooga Fire Complex - 11/03/01"]];var csv=d.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sequatchie-county-tn-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citebtn')){var today=new Date().toISOString().slice(0,10);var cite='Disaster Data. "Sequatchie County, Tennessee: FEMA Disaster Declarations." DisasterData.io. Accessed '+today+'. https://disasterdata.io/states/tennessee/sequatchie-county-tn.html';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd);}else{window.prompt('Citation:',cite);}}});</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/topojson-client@3"></script><script src="../../county-names.js"></script><script src="../../locality-index.js"></script><script>(function(){var el=document.getElementById("locmap");if(!el)return;var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];function norm(s){return String(s||"").replace(/\s*\([^)]*\)/g,"").trim().toLowerCase();}function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}var cnBase=base(el.dataset.name);function go(){if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}var ul={};window.LOCALITY_INDEX.forEach(function(r){if(r[1]!==sa)return;var full=r[0].replace(/ \(city\)$/i,"").toLowerCase();ul[base(r[0])]=r[3];ul[full]=r[3];});fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json()}).then(function(topo){var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf})};var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});var collide=matches.length>1;function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:false});L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:13}).addTo(map);var targetLayer=null;var ly=L.geoJson(fc,{style:function(f){if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};},onEachFeature:function(f,layer){var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();var u=ul[base(nm)]||ul[nm.toLowerCase()];if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}else{layer.bindTooltip(nm,{sticky:true});}if(u){layer.on("click",function(){window.location.href="../../"+u});layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6})});layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35})});}}}).addTo(map);map.fitBounds(ly.getBounds(),{padding:[15,15]});});}go();})();</script></body></html>
+</script><div style="margin:2rem 0"><a href="../tennessee.html">&larr; Tennessee statewide overview</a> &middot; <a href="index.html">All Tennessee jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, rebuilt each week. A declaration is counted here once for each designated area it names, so a single disaster covering many localities is counted in each one. For that reason these jurisdiction counts do not sum to Tennessee's statewide total. This page counts declarations that named this jurisdiction as a designated area. Totals cover complete fiscal years (Oct 1 to Sep 30); the in-progress year may appear in the most-recent list but is not counted in the totals. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section><section class="citation" id="cite" data-cite-title="Sequatchie County, Tennessee: Disaster Declarations, Federal Assistance, and Mitigation History" data-cite-url="https://disasterdata.io/states/tennessee/sequatchie-county-tn.html" data-cite-key="disasterdata_sequatchie_county_tn"><h2>Cite this profile</h2><p>Choose a citation style, then copy the formatted citation. This profile is derived from FEMA OpenFEMA data and is updated as the underlying Disaster Data build is refreshed.</p><div class="cite-tabs" role="group" aria-label="Citation format"><button class="citefmt" type="button" data-fmt="apa" aria-pressed="true">APA</button><button class="citefmt" type="button" data-fmt="chicago" aria-pressed="false">Chicago</button><button class="citefmt" type="button" data-fmt="plain" aria-pressed="false">Plain text</button><button class="citefmt" type="button" data-fmt="bibtex" aria-pressed="false">BibTeX</button></div><div class="cite-text" id="citationText" aria-live="polite"></div><button class="copybtn citecopy" type="button">Copy citation</button></section><h2>Other Tennessee jurisdictions</h2><nav class="jgrid"><a href="shelby-county-tn.html">Shelby County</a><a href="jackson-county-tn.html">Jackson County</a><a href="houston-county-tn.html">Houston County</a><a href="davidson-county-tn.html">Davidson County</a><a href="decatur-county-tn.html">Decatur County</a><a href="dickson-county-tn.html">Dickson County</a><a href="hardin-county-tn.html">Hardin County</a><a href="henderson-county-tn.html">Henderson County</a><a href="tipton-county-tn.html">Tipton County</a><a href="wayne-county-tn.html">Wayne County</a><a href="cheatham-county-tn.html">Cheatham County</a><a href="fayette-county-tn.html">Fayette County</a><a href="gibson-county-tn.html">Gibson County</a><a href="hickman-county-tn.html">Hickman County</a><a href="humphreys-county-tn.html">Humphreys County</a><a href="benton-county-tn.html">Benton County</a><a href="bledsoe-county-tn.html">Bledsoe County</a><a href="carroll-county-tn.html">Carroll County</a><a href="fentress-county-tn.html">Fentress County</a><a href="haywood-county-tn.html">Haywood County</a><a href="henry-county-tn.html">Henry County</a><a href="lake-county-tn.html">Lake County</a><a href="lewis-county-tn.html">Lewis County</a><a href="madison-county-tn.html">Madison County</a><a href="montgomery-county-tn.html">Montgomery County</a><a href="obion-county-tn.html">Obion County</a><a href="perry-county-tn.html">Perry County</a><a href="stewart-county-tn.html">Stewart County</a><a href="weakley-county-tn.html">Weakley County</a><a href="cocke-county-tn.html">Cocke County</a><a href="dyer-county-tn.html">Dyer County</a><a href="giles-county-tn.html">Giles County</a><a href="hamilton-county-tn.html">Hamilton County</a><a href="mcnairy-county-tn.html">McNairy County</a><a href="anderson-county-tn.html">Anderson County</a><a href="campbell-county-tn.html">Campbell County</a><a href="cumberland-county-tn.html">Cumberland County</a><a href="marion-county-tn.html">Marion County</a><a href="rhea-county-tn.html">Rhea County</a><a href="roane-county-tn.html">Roane County</a><a href="scott-county-tn.html">Scott County</a><a href="sevier-county-tn.html">Sevier County</a><a href="smith-county-tn.html">Smith County</a><a href="sumner-county-tn.html">Sumner County</a><a href="cannon-county-tn.html">Cannon County</a><a href="claiborne-county-tn.html">Claiborne County</a><a href="clay-county-tn.html">Clay County</a><a href="grainger-county-tn.html">Grainger County</a><a href="knox-county-tn.html">Knox County</a><a href="lauderdale-county-tn.html">Lauderdale County</a><a href="lawrence-county-tn.html">Lawrence County</a><a href="loudon-county-tn.html">Loudon County</a><a href="maury-county-tn.html">Maury County</a><a href="pickett-county-tn.html">Pickett County</a><a href="crockett-county-tn.html">Crockett County</a><a href="jefferson-county-tn.html">Jefferson County</a><a href="johnson-county-tn.html">Johnson County</a><a href="macon-county-tn.html">Macon County</a><a href="meigs-county-tn.html">Meigs County</a><a href="moore-county-tn.html">Moore County</a><a href="overton-county-tn.html">Overton County</a><a href="polk-county-tn.html">Polk County</a><a href="blount-county-tn.html">Blount County</a><a href="coffee-county-tn.html">Coffee County</a><a href="dekalb-county-tn.html">DeKalb County</a><a href="greene-county-tn.html">Greene County</a><a href="hardeman-county-tn.html">Hardeman County</a><a href="marshall-county-tn.html">Marshall County</a><a href="morgan-county-tn.html">Morgan County</a><a href="putnam-county-tn.html">Putnam County</a><a href="warren-county-tn.html">Warren County</a><a href="bedford-county-tn.html">Bedford County</a><a href="carter-county-tn.html">Carter County</a><a href="grundy-county-tn.html">Grundy County</a><a href="hancock-county-tn.html">Hancock County</a><a href="hawkins-county-tn.html">Hawkins County</a><a href="monroe-county-tn.html">Monroe County</a><a href="unicoi-county-tn.html">Unicoi County</a><a href="van-buren-county-tn.html">Van Buren County</a><a href="washington-county-tn.html">Washington County</a><a href="wilson-county-tn.html">Wilson County</a><a href="chester-county-tn.html">Chester County</a><a href="lincoln-county-tn.html">Lincoln County</a><a href="mcminn-county-tn.html">McMinn County</a><a href="robertson-county-tn.html">Robertson County</a><a href="rutherford-county-tn.html">Rutherford County</a><a href="bradley-county-tn.html">Bradley County</a><a href="hamblen-county-tn.html">Hamblen County</a><a href="union-county-tn.html">Union County</a><a href="williamson-county-tn.html">Williamson County</a><a href="trousdale-county-tn.html">Trousdale County</a><a href="white-county-tn.html">White County</a><a href="franklin-county-tn.html">Franklin County</a><a href="sullivan-county-tn.html">Sullivan County</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2025-04-02", "EM-3625-TN", "EM", "Severe Storm", "Severe Storms, Straight-Line Winds, Tornadoes, And Flooding"], ["2020-04-02", "DR-4514-TN", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3473-TN", "EM", "Biological", "Covid-19"], ["2019-04-17", "DR-4427-TN", "DR", "Flood", "Severe Storms, Flooding, Landslides, And Mudslides"], ["2016-11-11", "FM-5160-TN", "FM", "Fire", "Smith Mountain Fire Complex"], ["2014-08-13", "DR-4189-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, Straight-Line Winds, And Flooding"], ["2011-05-01", "DR-1974-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, Straight-Line Winds, And Associated Flooding"], ["2009-05-15", "DR-1839-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, And Flooding"], ["2005-09-05", "EM-3217-TN", "EM", "Hurricane", "Hurricane Katrina Evacuation"], ["2003-05-08", "DR-1464-TN", "DR", "Severe Storm", "Severe Storms, Tornadoes, And Flooding"], ["2003-03-20", "DR-1456-TN", "DR", "Severe Storm", "Severe Storms And Flooding"], ["2001-11-03", "FM-2387-TN", "FM", "Fire", "Tn - Chattanooga Fire Complex - 11/03/01"]];var csv=d.map(function(r){return r.map(function(c){return '\"'+String(c).replace(/\"/g,'\"\"')+'\"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sequatchie-county-tn-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citecopy')){var out=document.getElementById('citationText');var cite=out?out.textContent:'';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd,function(){window.prompt('Citation:',cite);});}else{window.prompt('Citation:',cite);}return;}});(function(){var box=document.querySelector('.citation'),out=document.getElementById('citationText');if(!box||!out)return;var title=box.getAttribute('data-cite-title')||'',url=box.getAttribute('data-cite-url')||'',key=box.getAttribute('data-cite-key')||'disasterdata_profile';function pad(n){return String(n).padStart(2,'0');}function dates(){var d=new Date();return{iso:d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),long:d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};}function text(fmt){var d=dates();if(fmt==='chicago')return 'Disaster Data. "'+title+'" DisasterData.IO. Accessed '+d.long+'. '+url+'.';if(fmt==='plain')return 'Disaster Data. '+title+'. DisasterData.IO. Derived from FEMA OpenFEMA. Accessed '+d.long+'. '+url;if(fmt==='bibtex')return '@misc{'+key+',\n  author = {{Disaster Data}},\n  title = {'+title+'},\n  howpublished = {DisasterData.IO},\n  url = {'+url+'},\n  urldate = {'+d.iso+'},\n  note = {Derived from FEMA OpenFEMA}\n}';return 'Disaster Data. (n.d.). '+title+'. Retrieved '+d.long+', from '+url;}function render(fmt){out.textContent=text(fmt);var bs=box.querySelectorAll('.citefmt');for(var i=0;i<bs.length;i++){bs[i].setAttribute('aria-pressed',bs[i].getAttribute('data-fmt')===fmt?'true':'false');}}box.addEventListener('click',function(ev){var c=ev.target.closest('.citefmt');if(c){render(c.getAttribute('data-fmt'));}});render('apa');})();</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/topojson-client@3"></script><script src="../../county-names.js"></script><script src="../../locality-index.js"></script><script>(function(){var el=document.getElementById("locmap");if(!el)return;var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];function norm(s){return String(s||"").replace(/\s*\([^)]*\)/g,"").trim().toLowerCase();}function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}var cnBase=base(el.dataset.name);function go(){if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}var ul={};window.LOCALITY_INDEX.forEach(function(r){if(r[1]!==sa)return;var full=r[0].replace(/ \(city\)$/i,"").toLowerCase();ul[base(r[0])]=r[3];ul[full]=r[3];});fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json();}).then(function(topo){var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf;})};var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});var collide=matches.length>1;function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:true});L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_2n1q_1_ad4306e45519c0e62979dcd7",{maxZoom:13,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);var targetLayer=null;var ly=L.geoJson(fc,{style:function(f){if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};},onEachFeature:function(f,layer){var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();var u=ul[base(nm)]||ul[nm.toLowerCase()];if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}else{layer.bindTooltip(nm,{sticky:true});}if(u){layer.on("click",function(){window.location.href="../../"+u;});layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6});});layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35});});}}}).addTo(map);map.fitBounds(ly.getBounds(),{padding:[15,15]});});}go();})();</script></body></html>

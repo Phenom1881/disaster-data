@@ -1,128 +1,971 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Glacier County, Montana FEMA Disaster Declarations and Mitigation History</title><meta name="description" content="Glacier County, Montana has had 7 federal disaster and emergency declarations since FY2000 (5 major disasters, 2 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning."><link rel="canonical" href="https://disasterdata.io/states/montana/glacier-county-mt.html"><meta property="og:title" content="Glacier County, Montana: Federal Disaster Declarations"><meta property="og:description" content="Glacier County, Montana has had 7 federal disaster and emergency declarations since FY2000 (5 major disasters, 2 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/montana/glacier-county-mt.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--teal:#004c53;--cream:#f6f1e7;--paper:#fffdf7;--ink:#2b2b2b;--ink3:#6b6357;--rule:#e4dccb}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Public Sans',system-ui,-apple-system,sans-serif;line-height:1.6}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Glacier County, Montana FEMA Disaster Declarations and Mitigation History</title><meta name="description" content="Glacier County, Montana has had 7 federal disaster and emergency declarations since FY2000 (5 major disasters, 2 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available."><link rel="canonical" href="https://disasterdata.io/states/montana/glacier-county-mt.html"><meta property="og:title" content="Glacier County, Montana: Federal Disaster Declarations"><meta property="og:description" content="Glacier County, Montana has had 7 federal disaster and emergency declarations since FY2000 (5 major disasters, 2 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/montana/glacier-county-mt.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
+  --teal:#004c53;
+  --cream:#f6f1e7;
+  --paper:#fffdf7;
+  --ink:#2b2b2b;
+  --ink3:#6b6357;
+  --rule:#e4dccb
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  line-height:1.6
+}
+
 a{color:var(--teal)}
-.wrap{max-width:980px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
-nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid #e0d8c5;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px}
-nav.ddnav .brand{display:flex;align-items:baseline;gap:10px}
-nav.ddnav .brand .mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;letter-spacing:-.4px;color:#1d1813;text-decoration:none}
-nav.ddnav .navlinks{display:flex;align-items:center;gap:4px}
-nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:#5b5346;text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px}
-nav.ddnav .navlinks a:hover{color:#1d1813;background:#f1ead9}
-nav.ddnav .navlinks a.on{color:#004c53;background:#d7e9ea}
-nav.ddnav .navmeta{font-size:11px;color:#938a78;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 clamp(18px,4vw,40px)
+}
+
+nav.ddnav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(246,241,231,.86);
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid #e0d8c5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(18px,4vw,48px);
+  height:60px
+}
+
+nav.ddnav .brand{
+  display:flex;
+  align-items:baseline;
+  gap:10px
+}
+
+nav.ddnav .brand .mark{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:19px;
+  letter-spacing:-.4px;
+  color:#1d1813;
+  text-decoration:none
+}
+
+nav.ddnav .navlinks{
+  display:flex;
+  align-items:center;
+  gap:4px
+}
+
+nav.ddnav .navlinks a{
+  font-size:13px;
+  font-weight:500;
+  color:#5b5346;
+  text-decoration:none;
+  padding:7px 12px;
+  border-radius:6px;
+  transition:.15s;
+  letter-spacing:.2px
+}
+
+nav.ddnav .navlinks a:hover{
+  color:#1d1813;
+  background:#f1ead9
+}
+
+nav.ddnav .navlinks a.on{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+nav.ddnav .navmeta{
+  font-size:11px;
+  color:#938a78;
+  letter-spacing:.5px;
+  font-variant-numeric:tabular-nums
+}
+
 main{padding:2rem 0 1rem}
-.crumb{font-size:.82rem;color:var(--ink3);margin:0 0 1rem}.crumb a{text-decoration:none}
-.badge{display:inline-block;font:600 .72rem 'Public Sans',sans-serif;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
-.badge.county{color:#004c53;background:#d7e9ea}.badge.city{color:#8a5a2b;background:#f3e4d2}.badge.tribal{color:#6a2f6a;background:#efddef}
-h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
-h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
-.lede{font-size:1.08rem;max-width:62ch}
-.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
-.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
-.stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
-.stat .l{font-size:.78rem;color:var(--ink3);margin-top:.3rem}
-ul.haz{list-style:none;padding:0;margin:.5rem 0;display:flex;flex-wrap:wrap;gap:.5rem}
-ul.haz li{background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.3rem .8rem;font-size:.85rem}ul.haz b{color:var(--teal)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
-table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
-th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);background:#faf6ec}
-tr:last-child td{border-bottom:none}.tag{font-weight:700;color:var(--teal)}
-.hmp{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 0}
-.hmp p{margin:.2rem 0 .9rem;font-size:.92rem}
-.copybtn{font:600 .8rem 'Public Sans',sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .85rem;cursor:pointer;margin-top:.8rem}
-.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
-.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
-.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
-.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
-.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
-.decl-chip.off{opacity:.42;cursor:default}
-.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
-.tablewrap.scroll{max-height:430px;overflow-y:auto}
-.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
+
+.crumb{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:0 0 1rem
+}
+
+.crumb a{text-decoration:none}
+
+.badge{
+  display:inline-block;
+  font:600 .72rem 'Public Sans',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  padding:.2rem .6rem;
+  border-radius:999px;
+  margin-bottom:.6rem
+}
+
+.badge.county{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+.badge.city{
+  color:#8a5a2b;
+  background:#f3e4d2
+}
+
+.badge.tribal{
+  color:#6a2f6a;
+  background:#efddef
+}
+
+h1{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  line-height:1.1;
+  margin:.2rem 0 .6rem
+}
+
+h2{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.3rem;
+  margin:2.2rem 0 .8rem
+}
+
+.lede{
+  font-size:1.08rem;
+  max-width:62ch
+}
+
+.jsummary{
+  margin:1.1rem 0 .4rem
+}
+
+.jsummary p{
+  margin:0;
+  font-size:1rem;
+  color:var(--ink);
+  max-width:66ch
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+  gap:.7rem;
+  margin:1.5rem 0
+}
+
+.stat{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:.85rem 1rem
+}
+
+.stat .n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.7rem;
+  color:var(--teal);
+  font-weight:600;
+  line-height:1
+}
+
+.stat .l{
+  font-size:.78rem;
+  color:var(--ink3);
+  margin-top:.3rem
+}
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.5rem 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.3rem .8rem;
+  font-size:.85rem
+}
+
+ul.haz b{color:var(--teal)}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper)
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.86rem;
+  min-width:560px
+}
+
+th,td{
+  text-align:left;
+  padding:.55rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top
+}
+
+th{
+  font-size:.74rem;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  color:var(--ink3);
+  background:#faf6ec
+}
+
+tr:last-child td{border-bottom:none}
+
+.tag{
+  font-weight:700;
+  color:var(--teal)
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:12px;
+  padding:1.1rem 1.3rem;
+  margin:1rem 0
+}
+
+.hmp p{
+  margin:.2rem 0 .9rem;
+  font-size:.92rem
+}
+
+.copybtn{
+  font:600 .8rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.4rem .85rem;
+  cursor:pointer;
+  margin-top:.8rem
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem
+}
+
+.decl-chip{
+  font:700 .82rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .72rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.42rem
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .44rem;
+  font-size:.76rem;
+  font-weight:700
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal)
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default
+}
+
+.decl-count{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1
+}
+
 tr.hide{display:none}
-th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
-th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400
+}
+
 th.sortable:hover{color:var(--teal)}
-th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
-th[aria-sort="descending"]::after{content:"↓";opacity:.95}
-.method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}.method h2{margin-top:0;font-size:1.1rem}
-.pa-note{font-size:.9rem;color:var(--ink3);max-width:64ch;margin:.4rem 0 .8rem}
-table.pa-cat tfoot td{font-weight:700;color:var(--teal);border-top:2px solid var(--rule);background:#faf6ec}
-.pa-cat .catcode{color:var(--ink3);font-weight:400;font-size:.85em;margin-left:.15em}
-table.pa-cat td:nth-child(2),table.pa-cat th:nth-child(2),table.pa-cat td:nth-child(3),table.pa-cat th:nth-child(3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.jgrid{display:flex;flex-wrap:wrap;gap:.4rem .7rem;margin:.6rem 0}.jgrid a{font-size:.86rem;text-decoration:none}
-ol.rank{padding-left:0;list-style:none;counter-reset:r}
-ol.rank li{counter-increment:r;display:flex;align-items:baseline;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--rule)}
-ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--ink3);min-width:2.6ch;text-align:right}
-ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
-ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
-footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
-nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95
+}
+
+.risk-section{margin:2.4rem 0}
+
+.section-heading-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem
+}
+
+.section-heading-row h2{margin:0 0 .25rem}
+
+.section-deck{
+  margin:0;
+  color:var(--ink3);
+  font-size:.92rem;
+  max-width:66ch
+}
+
+.risk-fips{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  white-space:nowrap
+}
+
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem
+}
+
+.risk-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.2rem;
+  box-shadow:0 1px 0 rgba(43,43,43,.03)
+}
+
+.risk-card h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.18rem;
+  line-height:1.2;
+  margin:.15rem 0 0
+}
+
+.risk-kicker{
+  font-size:.69rem;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:#8a5a2b
+}
+
+.risk-version{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.18rem 0 .9rem
+}
+
+.risk-score{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:2.15rem;
+  font-weight:600;
+  line-height:1
+}
+
+.risk-score.na{font-size:1.55rem}
+
+.risk-score-label{
+  color:var(--ink3);
+  font-size:.76rem;
+  margin-top:.2rem
+}
+
+.risk-interpret{
+  color:var(--ink3);
+  font-size:.83rem;
+  margin:.7rem 0
+}
+
+.theme-list{margin-top:.9rem}
+
+.theme-row{margin:.58rem 0}
+
+.theme-head{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  font-size:.76rem
+}
+
+.theme-head b{
+  color:var(--teal);
+  font-variant-numeric:tabular-nums
+}
+
+.theme-track{
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#e8e0d0;
+  margin-top:.25rem
+}
+
+.theme-track span{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#4c8b90
+}
+
+.nri-lead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem
+}
+
+.risk-rating{
+  display:inline-block;
+  border-radius:999px;
+  background:#f3e4d2;
+  color:#7a4a20;
+  font-size:.72rem;
+  font-weight:700;
+  padding:.3rem .62rem;
+  text-align:center
+}
+
+.risk-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.55rem;
+  margin-top:1rem
+}
+
+.risk-mini{
+  border-top:1px solid var(--rule);
+  padding-top:.55rem;
+  min-width:0
+}
+
+.risk-mini span,
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.68rem;
+  line-height:1.35
+}
+
+.risk-mini b{
+  display:block;
+  color:var(--teal);
+  font-size:.95rem;
+  margin:.18rem 0;
+  overflow-wrap:anywhere
+}
+
+.risk-source{
+  color:var(--ink3);
+  font-size:.78rem;
+  margin:.9rem 0 0
+}
+
+.risk-source a{font-weight:600}
+
+.risk-caution{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:10px;
+  padding:.8rem .9rem;
+  margin-top:.8rem;
+  color:#3f5557;
+  font-size:.8rem
+}
+
+.method{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:1.2rem 1.4rem;
+  margin:2rem 0;
+  font-size:.92rem
+}
+
+.method h2{
+  margin-top:0;
+  font-size:1.1rem
+}
+
+/* Citation block */
+.citation{
+  background:#153c40;
+  color:#eef9f8;
+  border-radius:14px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0
+}
+
+.citation h2{
+  color:#fff;
+  margin:0 0 .45rem;
+  font-size:1.2rem
+}
+
+.citation p{
+  font-size:.84rem;
+  color:#d6e9e7;
+  margin:.2rem 0 .85rem;
+  max-width:68ch
+}
+
+.cite-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:0 0 .7rem
+}
+
+.citefmt{
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#d6e9e7;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  padding:.38rem .72rem;
+  cursor:pointer
+}
+
+.citefmt:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.citefmt[aria-pressed="true"]{
+  background:#fff;
+  color:#153c40;
+  border-color:#fff
+}
+
+.cite-text{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:9px;
+  padding:.85rem;
+  font-size:.79rem;
+  line-height:1.6;
+  color:#fff
+}
+
+.citation .copybtn{
+  color:#fff;
+  border-color:#bcd8d5
+}
+
+.citation .copybtn:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.pa-note{
+  font-size:.9rem;
+  color:var(--ink3);
+  max-width:64ch;
+  margin:.4rem 0 .8rem
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0
+}
+
+.jgrid a{
+  font-size:.86rem;
+  text-decoration:none
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule)
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3)
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.9rem;
+  margin-left:auto
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.85rem
+}
+
+footer.site a{color:var(--ink3)}
+
+nav.ddnav .navburger{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  width:40px;
+  height:40px;
+  background:none;
+  border:0;
+  cursor:pointer;
+  padding:8px;
+  border-radius:8px
+}
+
+nav.ddnav .navburger span{
+  display:block;
+  height:2px;
+  width:100%;
+  background:#1d1813;
+  border-radius:2px;
+  transition:.2s
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){
+  transform:translateY(7px) rotate(45deg)
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){
+  opacity:0
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){
+  transform:translateY(-7px) rotate(-45deg)
+}
+
 .mobilemenu{display:none}
-@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
-.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
-.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
-.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
-.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
-.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
-.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
-.mm-section a.on{color:#004c53;background:#d7e9ea}}#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}@media(max-width:600px){#locmap{height:240px}}.locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}.locmap-cap b{font-weight:700}.loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}.loc-lbl:before,.loc-lbl:after{display:none !important}</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Glacier County, Montana FEMA disaster declarations", "description": "Glacier County, Montana has had 7 federal disaster and emergency declarations since FY2000 (5 major disasters, 2 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning.", "url": "https://disasterdata.io/states/montana/glacier-county-mt.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Glacier County, Montana"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Glacier County", "Montana", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../montana.html">Montana</a> / Glacier County</p><span class="badge county">County</span><h1>Glacier County, Montana</h1><p class="lede">Glacier County recorded <b>7</b> federal disaster and emergency declarations since FY2000 (through FY2025): 5 major disasters, 2 emergencies, and 0 fire-management declarations. Its most common hazard is severe storm.</p><div class="stats"><div class="stat"><div class="n">7</div><div class="l">Declarations since FY2000</div></div><div class="stat"><div class="n">5</div><div class="l">Major disasters (DR)</div></div><div class="stat"><div class="n">2</div><div class="l">Emergencies (EM)</div></div><div class="stat"><div class="n">0</div><div class="l">Fire management (FM)</div></div><div class="stat"><div class="n">Apr&nbsp;2026</div><div class="l">Most recent</div></div><div class="stat"><div class="n">$954K</div><div class="l">Federal PA obligated (top: utilities)</div></div></div><section class="jsummary"><p>The federal disaster record for Glacier County runs between 2000 and 2020, covering 7 declarations in all. Its most recent major disaster declaration was Covid-19 Pandemic in 2020. The hazards behind these declarations were most often severe storm, biological, and fire. Since 2000, FEMA has obligated $953,991 in Public Assistance funding to the jurisdiction, most of it for utilities.</p></section><div id="locmap" data-fips="30" data-name="Glacier County" data-st="MT" data-kind="county"></div><p class="locmap-cap">Highlighted: <b>Glacier County, MT</b></p><section><h2>Federal Public Assistance by category</h2><p class="pa-note">Federal share obligated to this jurisdiction under FEMA Public Assistance since 2000, grouped by damage category. Figures are rounded to the nearest dollar and reflect obligations, which may change as projects close out.</p><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Category</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Utilities<span class='catcode'>(F)</span></td><td>11</td><td>$879,189</td></tr><tr><td>Roads and bridges<span class='catcode'>(C)</span></td><td>6</td><td>$38,946</td></tr><tr><td>Emergency protective measures<span class='catcode'>(B)</span></td><td>6</td><td>$34,999</td></tr><tr><td>Parks and recreation<span class='catcode'>(G)</span></td><td>1</td><td>$856</td></tr></tbody><tfoot><tr><td>All categories</td><td>24</td><td>$953,990</td></tr></tfoot></table></div></section><section><h2>Recovery funding, how fast it came</h2><p class="pa-note">For each disaster, the wait from the declaration to the first federal obligation (amber), then the federal share obligating after that (teal), on a shared 3-year scale. Typical wait to the first obligation here: about 28 days. An obligation is the federal share committed to the recipient state, not funds disbursed to the locality, which comes later and is not shown.</p><style>.ft-list{display:grid;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .3rem}.ft-row{background:#f6f1e7;padding:.7rem .9rem}.ft-top{display:flex;justify-content:space-between;gap:.8rem;align-items:baseline}.ft-name{font-size:.92rem;color:#17211f;font-weight:600}.ft-date{color:#6b6357;font-weight:400}.ft-val{font-family:Fraunces,Georgia,serif;font-size:1rem;color:#004c53}.ft-track{position:relative;height:11px;margin:.5rem 0 .35rem;background:#ece7d8;border:1px solid #e2dccb;border-radius:6px;overflow:hidden}.ft-gap{position:absolute;top:0;left:0;height:100%;background:#c85c2e}.ft-flow{position:absolute;top:0;height:100%;background:#004c53}.ft-meta{font-size:.72rem;color:#6b6357}.ft-meta b{color:#c85c2e}.ft-axis{position:relative;height:1.1rem;margin:.15rem .9rem 0;font-size:.66rem;color:#6b6357}.ft-axis span{position:absolute;transform:translateX(-50%)}.ft-axis span:first-child{transform:none}</style><div class="ft-list"><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Winter Storm And Straight-Line Winds <span class="ft-date">2016</span></span><span class="ft-val">$62K</span></div><div class="ft-track"><span class="ft-gap" style="width:4.1%"></span><span class="ft-flow" style="left:4.1%;width:0.0%"></span></div><div class="ft-meta"><b>45 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms And Flooding <span class="ft-date">2002</span></span><span class="ft-val">$892K</span></div><div class="ft-track"><span class="ft-gap" style="width:1.1%"></span><span class="ft-flow" style="left:1.1%;width:84.7%"></span></div><div class="ft-meta"><b>12 days</b> to first federal obligation</div></div></div><div class="ft-axis"><span style="left:0">Declared</span><span style="left:33.3%">1 yr</span><span style="left:66.7%">2 yr</span><span style="left:100.0%">3 yr</span></div></section><section><h2>Assistance to households (Individual Assistance)</h2><p class="pa-note">FEMA Individual Assistance to households in this jurisdiction, combined across the Housing Assistance owner and renter programs. Valid registrations are households that applied within a designated Individual Assistance area; approved counts and dollars are the households FEMA found eligible under the Individuals and Households Program. Figures are self-reported and drawn from NEMIS through OpenFEMA, not audited, and Individual Assistance exists only for disasters where it was designated, so many jurisdictions show none.</p><style>.ia-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.ia-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.ia-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.ia-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="ia-stats"><div class="ia-stat"><div class="ia-n">7</div><div class="ia-l">valid registrations</div></div><div class="ia-stat"><div class="ia-n">4</div><div class="ia-l">households approved</div></div><div class="ia-stat"><div class="ia-n">$25,820</div><div class="ia-l">total IHP approved</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Assistance type</th><th>Approved amount</th></tr></thead><tbody><tr><td>Other needs</td><td>$25,820</td></tr></tbody></table></div></section><section><h2>Hazard mitigation, what has been funded here</h2><p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to reduce future disaster losses, across the FEMA mitigation programs. This is the record of past mitigation investment a local hazard mitigation plan documents. Figures are federal share obligated, reported through OpenFEMA and not audited, and are separate from the Public Assistance funding above.</p><style>.hm-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.hm-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.hm-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.hm-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="hm-stats"><div class="hm-stat"><div class="hm-n">$56,779</div><div class="hm-l">federal mitigation share</div></div><div class="hm-stat"><div class="hm-n">2</div><div class="hm-l">funded projects</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Pre-Disaster Mitigation<span class='catcode'>(PDM)</span></td><td>1</td><td>$28,530</td></tr><tr><td>Hazard Mitigation Grant Program<span class='catcode'>(HMGP)</span></td><td>1</td><td>$28,249</td></tr></tbody></table></div></section><h2>Most common hazards</h2><ul class="haz"><li>Severe Storm <b>3</b></li><li>Biological <b>2</b></li><li>Fire <b>1</b></li><li>Hurricane <b>1</b></li></ul><section><h2>Previous occurrences, for your mitigation plan</h2><div class="hmp"><p>Every local hazard mitigation plan must document previous occurrences of each hazard. Here is that record for Glacier County, sourced to OpenFEMA and refreshed weekly. Copy it straight into your plan.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Biological</td><td>Mar 31, 2020</td><td>DR-4508-MT</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3476-MT</td><td>EM</td></tr><tr><td>Severe Storm</td><td>May 24, 2016</td><td>DR-4271-MT</td><td>DR</td></tr><tr><td>Severe Storm</td><td>Jun 17, 2011</td><td>DR-1996-MT</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 13, 2005</td><td>EM-3253-MT</td><td>EM</td></tr><tr><td>Severe Storm</td><td>Jul 3, 2002</td><td>DR-1424-MT</td><td>DR</td></tr><tr><td>Fire</td><td>Aug 30, 2000</td><td>DR-1340-MT</td><td>DR</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Biological&quot;, &quot;Mar 31, 2020&quot;, &quot;DR-4508-MT&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3476-MT&quot;, &quot;EM&quot;], [&quot;Severe Storm&quot;, &quot;May 24, 2016&quot;, &quot;DR-4271-MT&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;Jun 17, 2011&quot;, &quot;DR-1996-MT&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 13, 2005&quot;, &quot;EM-3253-MT&quot;, &quot;EM&quot;], [&quot;Severe Storm&quot;, &quot;Jul 3, 2002&quot;, &quot;DR-1424-MT&quot;, &quot;DR&quot;], [&quot;Fire&quot;, &quot;Aug 30, 2000&quot;, &quot;DR-1340-MT&quot;, &quot;DR&quot;]]">Copy table</button></div></section><h2>Every declaration on record</h2><div id="declbox"><p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; <b style="color:#004c53">EM</b> = Emergency declaration &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">7</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">5</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">2</span></button><button type="button" class="decl-chip off" data-t="FM" aria-pressed="false">FM <span class="n">0</span></button></div><p class="decl-count" aria-live="polite">Showing 7 declarations</p><div class="tablewrap"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="DR"><td data-s="2020-03-31">Mar 31, 2020</td><td data-s="4508">DR-4508-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3476">EM-3476-MT</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr><tr data-t="DR"><td data-s="2016-05-24">May 24, 2016</td><td data-s="4271">DR-4271-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Winter Storm And Straight-Line Winds</td></tr><tr data-t="DR"><td data-s="2011-06-17">Jun 17, 2011</td><td data-s="1996">DR-1996-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms And Flooding</td></tr><tr data-t="EM"><td data-s="2005-09-13">Sep 13, 2005</td><td data-s="3253">EM-3253-MT</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Katrina Evacuation</td></tr><tr data-t="DR"><td data-s="2002-07-03">Jul 3, 2002</td><td data-s="1424">DR-1424-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms And Flooding</td></tr><tr data-t="DR"><td data-s="2000-08-30">Aug 30, 2000</td><td data-s="1340">DR-1340-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Fire</td><td>Wildfires</td></tr></tbody></table></div><div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button><button class="copybtn citebtn" type="button">Cite this page</button></div></div><script>
+
+@media(max-width:720px){
+  .section-heading-row{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .risk-grid{grid-template-columns:1fr}
+
+  .risk-mini-grid{grid-template-columns:1fr}
+
+  nav.ddnav{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    height:60px;
+    padding-top:0;
+    padding-bottom:0
+  }
+
+  nav.ddnav .navmeta{display:none}
+  nav.ddnav .navlinks{display:none !important}
+  nav.ddnav .navburger{display:flex}
+
+  .mobilemenu:not([hidden]){
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:10px clamp(18px,4vw,48px) 18px;
+    background:#f6f1e7;
+    border-bottom:1px solid #e0d8c5;
+    position:sticky;
+    top:60px;
+    z-index:49
+  }
+
+  .mobilemenu>a{
+    font-size:15px;
+    font-weight:500;
+    color:#1d1813;
+    text-decoration:none;
+    padding:11px 12px;
+    border-radius:8px
+  }
+
+  .mobilemenu>a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+
+  .mm-section{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:6px 0;
+    margin:2px 0;
+    border-top:1px solid #e0d8c5
+  }
+
+  .mm-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:#938a78;
+    padding:6px 12px 2px
+  }
+
+  .mm-section a{
+    font-size:15px;
+    font-weight:500;
+    color:#5b5346;
+    text-decoration:none;
+    padding:10px 12px 10px 22px;
+    border-radius:8px
+  }
+
+  .mm-section a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+}
+#locmap{
+  height:320px;
+  border-radius:10px;
+  border:1px solid #e4dccb;
+  margin:1rem 0 .5rem;
+  background:#f6f1e7
+}
+
+@media(max-width:600px){
+  #locmap{height:240px}
+}
+
+.locmap-cap{
+  font:600 .86rem/1.3 'Public Sans',sans-serif;
+  color:#004c53;
+  margin:0 0 1.5rem;
+  text-align:center
+}
+
+.locmap-cap b{font-weight:700}
+
+.loc-lbl{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  color:#fff;
+  font:700 12px/1 'Public Sans',sans-serif;
+  padding:0;
+  white-space:nowrap;
+  pointer-events:none;
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.6),
+    0 0 3px rgba(0,0,0,.55)
+}
+
+.loc-lbl:before,
+.loc-lbl:after{
+  display:none !important
+}
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Glacier County, Montana FEMA disaster declarations", "description": "Glacier County, Montana has had 7 federal disaster and emergency declarations since FY2000 (5 major disasters, 2 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available.", "url": "https://disasterdata.io/states/montana/glacier-county-mt.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Glacier County, Montana"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Glacier County", "Montana", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences", "CDC Social Vulnerability Index", "FEMA National Risk Index"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../montana.html">Montana</a> / Glacier County</p><span class="badge county">County</span><h1>Glacier County, Montana</h1><p class="lede">Glacier County recorded <b>7</b> federal disaster and emergency declarations since FY2000 (through FY2025): 5 major disasters, 2 emergencies, and 0 fire-management declarations. Its most common hazard is severe storm.</p><div class="stats"><div class="stat"><div class="n">7</div><div class="l">Declarations since FY2000</div></div><div class="stat"><div class="n">5</div><div class="l">Major disasters (DR)</div></div><div class="stat"><div class="n">2</div><div class="l">Emergencies (EM)</div></div><div class="stat"><div class="n">0</div><div class="l">Fire management (FM)</div></div><div class="stat"><div class="n">Apr&nbsp;2026</div><div class="l">Most recent</div></div><div class="stat"><div class="n">$954K</div><div class="l">Federal PA obligated (top: utilities)</div></div></div><section class="jsummary"><p>The federal disaster record for Glacier County runs between 2000 and 2020, covering 7 declarations in all. Its most recent major disaster declaration was Covid-19 Pandemic in 2020. The hazards behind these declarations were most often severe storm, biological, and fire. Since 2000, FEMA has obligated $953,991 in Public Assistance funding to the jurisdiction, most of it for utilities.</p></section><div id="locmap" data-fips="30" data-name="Glacier County" data-st="MT" data-kind="county"></div><p class="locmap-cap">Highlighted: <b>Glacier County, MT</b></p><section class="risk-section"><div class="section-heading-row"><div><h2>Risk and vulnerability context</h2><p class="section-deck">Historical declarations show what has happened here. These national datasets add context about underlying natural-hazard risk and community vulnerability.</p></div><span class="risk-fips">County FIPS 30035</span></div><div class="risk-grid"><article class="risk-card"><div class="risk-kicker">CDC / ATSDR</div><h3>Social Vulnerability Index</h3><div class="risk-version">2022 county-level SVI</div><div class="risk-score">97.5</div><div class="risk-score-label">overall percentile nationally</div><p class="risk-interpret">Approximately 97.5% of U.S. counties have an equal or lower overall SVI ranking.</p><div class="theme-list"><div class="theme-row"><div class="theme-head"><span>Socioeconomic status</span><b>95.8</b></div><div class="theme-track"><span style="width:95.8%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Household characteristics</span><b>84.0</b></div><div class="theme-track"><span style="width:84.0%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Racial and ethnic minority status</span><b>96.3</b></div><div class="theme-track"><span style="width:96.3%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Housing type and transportation</span><b>95.3</b></div><div class="theme-track"><span style="width:95.3%"></span></div></div></div><p class="risk-source">Higher percentiles indicate greater relative social vulnerability within the CDC SVI framework. <a href="https://www.atsdr.cdc.gov/place-health/php/svi/svi-data-documentation-download.html">CDC SVI documentation</a></p></article><article class="risk-card"><div class="risk-kicker">FEMA</div><h3>National Risk Index</h3><div class="risk-version">December 2025</div><div class="nri-lead"><div><div class="risk-score">51.5</div><div class="risk-score-label">overall risk score</div></div><span class="risk-rating">Relatively Low</span></div><div class="risk-mini-grid"><div class="risk-mini"><span>Expected annual loss</span><b>$9.8M</b><small>Very Low</small></div><div class="risk-mini"><span>NRI social vulnerability</span><b>99.2</b><small>Very High</small></div><div class="risk-mini"><span>Community resilience</span><b>28.1</b><small>Relatively Low</small></div></div><p class="risk-source">The NRI combines expected annual loss, social vulnerability, and community resilience to describe relative natural-hazard risk. <a href="https://hazards.fema.gov/nri/">FEMA NRI documentation</a></p></article></div><div class="risk-caution"><b>About these measures:</b> CDC Social Vulnerability Index and FEMA National Risk Index Social Vulnerability are separate measures built with different methods. They are shown side by side for context and should not be interpreted as equivalent scores.</div></section><section><h2>Federal Public Assistance by category</h2><p class="pa-note">Federal share obligated to this jurisdiction under FEMA Public Assistance since 2000, grouped by damage category. Figures are rounded to the nearest dollar and reflect obligations, which may change as projects close out.</p><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Category</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Utilities<span class='catcode'>(F)</span></td><td>11</td><td>$879,189</td></tr><tr><td>Roads and bridges<span class='catcode'>(C)</span></td><td>6</td><td>$38,946</td></tr><tr><td>Emergency protective measures<span class='catcode'>(B)</span></td><td>6</td><td>$34,999</td></tr><tr><td>Parks and recreation<span class='catcode'>(G)</span></td><td>1</td><td>$856</td></tr></tbody><tfoot><tr><td>All categories</td><td>24</td><td>$953,990</td></tr></tfoot></table></div></section><section><h2>Recovery funding, how fast it came</h2><p class="pa-note">For each disaster, the wait from the declaration to the first federal obligation (amber), then the federal share obligating after that (teal), on a shared 3-year scale. Typical wait to the first obligation here: about 28 days. An obligation is the federal share committed to the recipient state, not funds disbursed to the locality, which comes later and is not shown.</p><style>.ft-list{display:grid;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .3rem}.ft-row{background:#f6f1e7;padding:.7rem .9rem}.ft-top{display:flex;justify-content:space-between;gap:.8rem;align-items:baseline}.ft-name{font-size:.92rem;color:#17211f;font-weight:600}.ft-date{color:#6b6357;font-weight:400}.ft-val{font-family:Fraunces,Georgia,serif;font-size:1rem;color:#004c53}.ft-track{position:relative;height:11px;margin:.5rem 0 .35rem;background:#ece7d8;border:1px solid #e2dccb;border-radius:6px;overflow:hidden}.ft-gap{position:absolute;top:0;left:0;height:100%;background:#c85c2e}.ft-flow{position:absolute;top:0;height:100%;background:#004c53}.ft-meta{font-size:.72rem;color:#6b6357}.ft-meta b{color:#c85c2e}.ft-axis{position:relative;height:1.1rem;margin:.15rem .9rem 0;font-size:.66rem;color:#6b6357}.ft-axis span{position:absolute;transform:translateX(-50%)}.ft-axis span:first-child{transform:none}</style><div class="ft-list"><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Winter Storm And Straight-Line Winds <span class="ft-date">2016</span></span><span class="ft-val">$62K</span></div><div class="ft-track"><span class="ft-gap" style="width:4.1%"></span><span class="ft-flow" style="left:4.1%;width:0.0%"></span></div><div class="ft-meta"><b>45 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms And Flooding <span class="ft-date">2002</span></span><span class="ft-val">$892K</span></div><div class="ft-track"><span class="ft-gap" style="width:1.1%"></span><span class="ft-flow" style="left:1.1%;width:84.7%"></span></div><div class="ft-meta"><b>12 days</b> to first federal obligation</div></div></div><div class="ft-axis"><span style="left:0">Declared</span><span style="left:33.3%">1 yr</span><span style="left:66.7%">2 yr</span><span style="left:100.0%">3 yr</span></div></section><section><h2>Assistance to households (Individual Assistance)</h2><p class="pa-note">FEMA Individual Assistance to households in this jurisdiction, combined across the Housing Assistance owner and renter programs. Valid registrations are households that applied within a designated Individual Assistance area; approved counts and dollars are the households FEMA found eligible under the Individuals and Households Program. Figures are self-reported and drawn from NEMIS through OpenFEMA, not audited, and Individual Assistance exists only for disasters where it was designated, so many jurisdictions show none.</p><style>.ia-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.ia-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.ia-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.ia-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="ia-stats"><div class="ia-stat"><div class="ia-n">7</div><div class="ia-l">valid registrations</div></div><div class="ia-stat"><div class="ia-n">4</div><div class="ia-l">households approved</div></div><div class="ia-stat"><div class="ia-n">$25,820</div><div class="ia-l">total IHP approved</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Assistance type</th><th>Approved amount</th></tr></thead><tbody><tr><td>Other needs</td><td>$25,820</td></tr></tbody></table></div></section><section><h2>Hazard mitigation, what has been funded here</h2><p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to reduce future disaster losses, across the FEMA mitigation programs. This is the record of past mitigation investment a local hazard mitigation plan documents. Figures are federal share obligated, reported through OpenFEMA and not audited, and are separate from the Public Assistance funding above.</p><style>.hm-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.hm-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.hm-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.hm-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="hm-stats"><div class="hm-stat"><div class="hm-n">$56,779</div><div class="hm-l">federal mitigation share</div></div><div class="hm-stat"><div class="hm-n">2</div><div class="hm-l">funded projects</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Pre-Disaster Mitigation<span class='catcode'>(PDM)</span></td><td>1</td><td>$28,530</td></tr><tr><td>Hazard Mitigation Grant Program<span class='catcode'>(HMGP)</span></td><td>1</td><td>$28,249</td></tr></tbody></table></div></section><h2>Most common hazards</h2><ul class="haz"><li>Severe Storm <b>3</b></li><li>Biological <b>2</b></li><li>Fire <b>1</b></li><li>Hurricane <b>1</b></li></ul><section><h2>Previous occurrences, for your mitigation plan</h2><div class="hmp"><p>Every local hazard mitigation plan must document previous occurrences of each hazard. Here is that record for Glacier County, sourced to OpenFEMA and refreshed weekly. Copy it straight into your plan.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Biological</td><td>Mar 31, 2020</td><td>DR-4508-MT</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3476-MT</td><td>EM</td></tr><tr><td>Severe Storm</td><td>May 24, 2016</td><td>DR-4271-MT</td><td>DR</td></tr><tr><td>Severe Storm</td><td>Jun 17, 2011</td><td>DR-1996-MT</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 13, 2005</td><td>EM-3253-MT</td><td>EM</td></tr><tr><td>Severe Storm</td><td>Jul 3, 2002</td><td>DR-1424-MT</td><td>DR</td></tr><tr><td>Fire</td><td>Aug 30, 2000</td><td>DR-1340-MT</td><td>DR</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Biological&quot;, &quot;Mar 31, 2020&quot;, &quot;DR-4508-MT&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3476-MT&quot;, &quot;EM&quot;], [&quot;Severe Storm&quot;, &quot;May 24, 2016&quot;, &quot;DR-4271-MT&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;Jun 17, 2011&quot;, &quot;DR-1996-MT&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 13, 2005&quot;, &quot;EM-3253-MT&quot;, &quot;EM&quot;], [&quot;Severe Storm&quot;, &quot;Jul 3, 2002&quot;, &quot;DR-1424-MT&quot;, &quot;DR&quot;], [&quot;Fire&quot;, &quot;Aug 30, 2000&quot;, &quot;DR-1340-MT&quot;, &quot;DR&quot;]]">Copy table</button></div></section><h2>Every declaration on record</h2><div id="declbox"><p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; <b style="color:#004c53">EM</b> = Emergency declaration &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">7</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">5</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">2</span></button><button type="button" class="decl-chip off" data-t="FM" aria-pressed="false">FM <span class="n">0</span></button></div><p class="decl-count" aria-live="polite">Showing 7 declarations</p><div class="tablewrap"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="DR"><td data-s="2020-03-31">Mar 31, 2020</td><td data-s="4508">DR-4508-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3476">EM-3476-MT</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr><tr data-t="DR"><td data-s="2016-05-24">May 24, 2016</td><td data-s="4271">DR-4271-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Winter Storm And Straight-Line Winds</td></tr><tr data-t="DR"><td data-s="2011-06-17">Jun 17, 2011</td><td data-s="1996">DR-1996-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms And Flooding</td></tr><tr data-t="EM"><td data-s="2005-09-13">Sep 13, 2005</td><td data-s="3253">EM-3253-MT</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Katrina Evacuation</td></tr><tr data-t="DR"><td data-s="2002-07-03">Jul 3, 2002</td><td data-s="1424">DR-1424-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms And Flooding</td></tr><tr data-t="DR"><td data-s="2000-08-30">Aug 30, 2000</td><td data-s="1340">DR-1340-MT</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Fire</td><td>Wildfires</td></tr></tbody></table></div><div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button></div></div><script>
 (function(){
-  var box=document.getElementById('declbox'); if(!box) return;
+  var box=document.getElementById('declbox');
+  if(!box) return;
+
   var cap=box.querySelector('.decl-count');
   var chips=box.querySelectorAll('.decl-chip');
   var table=box.querySelector('table');
   var tbody=table.querySelector('tbody');
   var heads=table.querySelectorAll('thead th');
   var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
-  var label={ALL:'declarations',DR:'major disaster declarations',EM:'emergency declarations',FM:'fire-management declarations'};
+
+  var label={
+    ALL:'declarations',
+    DR:'major disaster declarations',
+    EM:'emergency declarations',
+    FM:'fire-management declarations'
+  };
 
   function filter(t){
     var shown=0,i;
+
     for(i=0;i<rows.length;i++){
       var m=(t==='ALL'||rows[i].getAttribute('data-t')===t);
       rows[i].classList.toggle('hide',!m);
       if(m) shown++;
     }
-    for(i=0;i<chips.length;i++) chips[i].setAttribute('aria-pressed', chips[i].getAttribute('data-t')===t?'true':'false');
-    if(cap) cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+
+    for(i=0;i<chips.length;i++){
+      chips[i].setAttribute(
+        'aria-pressed',
+        chips[i].getAttribute('data-t')===t?'true':'false'
+      );
+    }
+
+    if(cap){
+      cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+    }
   }
+
   box.addEventListener('click',function(ev){
-    var c=ev.target.closest('.decl-chip'); if(!c||c.classList.contains('off')) return;
+    var c=ev.target.closest('.decl-chip');
+    if(!c||c.classList.contains('off')) return;
     filter(c.getAttribute('data-t'));
   });
 
   function val(row,i,k){
     var td=row.children[i];
-    if(k==='num'){ var v=td.getAttribute('data-s'); return v==null?0:(parseFloat(v)||0); }
-    if(k==='date'){ return td.getAttribute('data-s')||''; }
+
+    if(k==='num'){
+      var v=td.getAttribute('data-s');
+      return v==null?0:(parseFloat(v)||0);
+    }
+
+    if(k==='date'){
+      return td.getAttribute('data-s')||'';
+    }
+
     return (td.textContent||'').trim().toLowerCase();
   }
+
   function sortCol(i,k,dir){
     var mul=dir==='descending'?-1:1;
+
     rows.sort(function(a,b){
       var x=val(a,i,k), y=val(b,i,k);
-      if(k==='num') return (x-y)*mul;
+
+      if(k==='num'){
+        return (x-y)*mul;
+      }
+
       return (x<y?-1:x>y?1:0)*mul;
     });
-    for(var n=0;n<rows.length;n++) tbody.appendChild(rows[n]);
+
+    for(var n=0;n<rows.length;n++){
+      tbody.appendChild(rows[n]);
+    }
   }
-  for(var h=0;h<heads.length;h++){ (function(th,i){
-    if(!th.classList.contains('sortable')) return;
-    th.addEventListener('click',function(){
-      var dir=th.getAttribute('aria-sort')==='ascending'?'descending':'ascending';
-      for(var k=0;k<heads.length;k++) heads[k].removeAttribute('aria-sort');
-      th.setAttribute('aria-sort',dir);
-      sortCol(i, th.getAttribute('data-k')||'text', dir);
-    });
-  })(heads[h],h); }
+
+  for(var h=0;h<heads.length;h++){
+    (function(th,i){
+      if(!th.classList.contains('sortable')) return;
+
+      th.addEventListener('click',function(){
+        var dir=
+          th.getAttribute('aria-sort')==='ascending'
+          ?'descending'
+          :'ascending';
+
+        for(var k=0;k<heads.length;k++){
+          heads[k].removeAttribute('aria-sort');
+        }
+
+        th.setAttribute('aria-sort',dir);
+        sortCol(i,th.getAttribute('data-k')||'text',dir);
+      });
+    })(heads[h],h);
+  }
 
   filter('ALL');
 })();
-</script><div style="margin:2rem 0"><a href="../montana.html">&larr; Montana statewide overview</a> &middot; <a href="index.html">All Montana jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, rebuilt each week. A declaration is counted here once for each designated area it names, so a single disaster covering many localities is counted in each one. For that reason these jurisdiction counts do not sum to Montana's statewide total. This page counts declarations that named this jurisdiction as a designated area. Totals cover complete fiscal years (Oct 1 to Sep 30); the in-progress year may appear in the most-recent list but is not counted in the totals. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section><h2>Other Montana jurisdictions</h2><nav class="jgrid"><a href="missoula-county-mt.html">Missoula County</a><a href="lewis-and-clark-county-mt.html">Lewis and Clark County</a><a href="stillwater-county-mt.html">Stillwater County</a><a href="musselshell-county-mt.html">Musselshell County</a><a href="powell-county-mt.html">Powell County</a><a href="rosebud-county-mt.html">Rosebud County</a><a href="yellowstone-county-mt.html">Yellowstone County</a><a href="garfield-county-mt.html">Garfield County</a><a href="hill-county-mt.html">Hill County</a><a href="park-county-mt.html">Park County</a><a href="petroleum-county-mt.html">Petroleum County</a><a href="pondera-county-mt.html">Pondera County</a><a href="blaine-county-mt.html">Blaine County</a><a href="carbon-county-mt.html">Carbon County</a><a href="flathead-county-mt.html">Flathead County</a><a href="powder-river-county-mt.html">Powder River County</a><a href="ravalli-county-mt.html">Ravalli County</a><a href="sanders-county-mt.html">Sanders County</a><a href="custer-county-mt.html">Custer County</a><a href="toole-county-mt.html">Toole County</a><a href="treasure-county-mt.html">Treasure County</a><a href="valley-county-mt.html">Valley County</a><a href="broadwater-county-mt.html">Broadwater County</a><a href="carter-county-mt.html">Carter County</a><a href="chouteau-county-mt.html">Chouteau County</a><a href="crow-indian-reservation-mt.html">Crow Indian Reservation</a><a href="fallon-county-mt.html">Fallon County</a><a href="fergus-county-mt.html">Fergus County</a><a href="golden-valley-county-mt.html">Golden Valley County</a><a href="jefferson-county-mt.html">Jefferson County</a><a href="liberty-county-mt.html">Liberty County</a><a href="mccone-county-mt.html">McCone County</a><a href="sweet-grass-county-mt.html">Sweet Grass County</a><a href="teton-county-mt.html">Teton County</a><a href="big-horn-county-mt.html">Big Horn County</a><a href="daniels-county-mt.html">Daniels County</a><a href="dawson-county-mt.html">Dawson County</a><a href="fort-belknap-indian-reservation-mt.html">Fort Belknap Indian Reservation</a><a href="gallatin-county-mt.html">Gallatin County</a><a href="lake-county-mt.html">Lake County</a><a href="lincoln-county-mt.html">Lincoln County</a><a href="mineral-county-mt.html">Mineral County</a><a href="richland-county-mt.html">Richland County</a><a href="rocky-boys-indian-reservation-mt.html">Rocky Boy&#x27;s Indian Reservation</a><a href="roosevelt-county-mt.html">Roosevelt County</a><a href="wheatland-county-mt.html">Wheatland County</a><a href="blackfeet-indian-reservation-mt.html">Blackfeet Indian Reservation</a><a href="deer-lodge-county-mt.html">Deer Lodge County</a><a href="fort-peck-indian-reservation-mt.html">Fort Peck Indian Reservation</a><a href="granite-county-mt.html">Granite County</a><a href="judith-basin-county-mt.html">Judith Basin County</a><a href="madison-county-mt.html">Madison County</a><a href="meagher-county-mt.html">Meagher County</a><a href="phillips-county-mt.html">Phillips County</a><a href="prairie-county-mt.html">Prairie County</a><a href="sheridan-county-mt.html">Sheridan County</a><a href="beaverhead-county-mt.html">Beaverhead County</a><a href="cascade-county-mt.html">Cascade County</a><a href="northern-cheyenne-indian-reservation-mt.html">Northern Cheyenne Indian Reservation</a><a href="silver-bow-county-mt.html">Silver Bow County</a><a href="wibaux-county-mt.html">Wibaux County</a><a href="flathead-indian-reservation-mt.html">Flathead Indian Reservation</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2020-03-31", "DR-4508-MT", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3476-MT", "EM", "Biological", "Covid-19"], ["2016-05-24", "DR-4271-MT", "DR", "Severe Storm", "Severe Winter Storm And Straight-Line Winds"], ["2011-06-17", "DR-1996-MT", "DR", "Severe Storm", "Severe Storms And Flooding"], ["2005-09-13", "EM-3253-MT", "EM", "Hurricane", "Hurricane Katrina Evacuation"], ["2002-07-03", "DR-1424-MT", "DR", "Severe Storm", "Severe Storms And Flooding"], ["2000-08-30", "DR-1340-MT", "DR", "Fire", "Wildfires"]];var csv=d.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='glacier-county-mt-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citebtn')){var today=new Date().toISOString().slice(0,10);var cite='Disaster Data. "Glacier County, Montana: FEMA Disaster Declarations." DisasterData.io. Accessed '+today+'. https://disasterdata.io/states/montana/glacier-county-mt.html';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd);}else{window.prompt('Citation:',cite);}}});</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/topojson-client@3"></script><script src="../../county-names.js"></script><script src="../../locality-index.js"></script><script>(function(){var el=document.getElementById("locmap");if(!el)return;var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];function norm(s){return String(s||"").replace(/\s*\([^)]*\)/g,"").trim().toLowerCase();}function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}var cnBase=base(el.dataset.name);function go(){if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}var ul={};window.LOCALITY_INDEX.forEach(function(r){if(r[1]!==sa)return;var full=r[0].replace(/ \(city\)$/i,"").toLowerCase();ul[base(r[0])]=r[3];ul[full]=r[3];});fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json()}).then(function(topo){var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf})};var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});var collide=matches.length>1;function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:false});L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:13}).addTo(map);var targetLayer=null;var ly=L.geoJson(fc,{style:function(f){if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};},onEachFeature:function(f,layer){var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();var u=ul[base(nm)]||ul[nm.toLowerCase()];if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}else{layer.bindTooltip(nm,{sticky:true});}if(u){layer.on("click",function(){window.location.href="../../"+u});layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6})});layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35})});}}}).addTo(map);map.fitBounds(ly.getBounds(),{padding:[15,15]});});}go();})();</script></body></html>
+</script><div style="margin:2rem 0"><a href="../montana.html">&larr; Montana statewide overview</a> &middot; <a href="index.html">All Montana jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, rebuilt each week. A declaration is counted here once for each designated area it names, so a single disaster covering many localities is counted in each one. For that reason these jurisdiction counts do not sum to Montana's statewide total. This page counts declarations that named this jurisdiction as a designated area. Totals cover complete fiscal years (Oct 1 to Sep 30); the in-progress year may appear in the most-recent list but is not counted in the totals. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section><section class="citation" id="cite" data-cite-title="Glacier County, Montana: Disaster Declarations, Federal Assistance, and Mitigation History" data-cite-url="https://disasterdata.io/states/montana/glacier-county-mt.html" data-cite-key="disasterdata_glacier_county_mt"><h2>Cite this profile</h2><p>Choose a citation style, then copy the formatted citation. This profile is derived from FEMA OpenFEMA data and is updated as the underlying Disaster Data build is refreshed.</p><div class="cite-tabs" role="group" aria-label="Citation format"><button class="citefmt" type="button" data-fmt="apa" aria-pressed="true">APA</button><button class="citefmt" type="button" data-fmt="chicago" aria-pressed="false">Chicago</button><button class="citefmt" type="button" data-fmt="plain" aria-pressed="false">Plain text</button><button class="citefmt" type="button" data-fmt="bibtex" aria-pressed="false">BibTeX</button></div><div class="cite-text" id="citationText" aria-live="polite"></div><button class="copybtn citecopy" type="button">Copy citation</button></section><h2>Other Montana jurisdictions</h2><nav class="jgrid"><a href="missoula-county-mt.html">Missoula County</a><a href="lewis-and-clark-county-mt.html">Lewis and Clark County</a><a href="stillwater-county-mt.html">Stillwater County</a><a href="musselshell-county-mt.html">Musselshell County</a><a href="powell-county-mt.html">Powell County</a><a href="rosebud-county-mt.html">Rosebud County</a><a href="yellowstone-county-mt.html">Yellowstone County</a><a href="garfield-county-mt.html">Garfield County</a><a href="hill-county-mt.html">Hill County</a><a href="park-county-mt.html">Park County</a><a href="petroleum-county-mt.html">Petroleum County</a><a href="pondera-county-mt.html">Pondera County</a><a href="blaine-county-mt.html">Blaine County</a><a href="carbon-county-mt.html">Carbon County</a><a href="flathead-county-mt.html">Flathead County</a><a href="powder-river-county-mt.html">Powder River County</a><a href="ravalli-county-mt.html">Ravalli County</a><a href="sanders-county-mt.html">Sanders County</a><a href="custer-county-mt.html">Custer County</a><a href="toole-county-mt.html">Toole County</a><a href="treasure-county-mt.html">Treasure County</a><a href="valley-county-mt.html">Valley County</a><a href="broadwater-county-mt.html">Broadwater County</a><a href="carter-county-mt.html">Carter County</a><a href="chouteau-county-mt.html">Chouteau County</a><a href="crow-indian-reservation-mt.html">Crow Indian Reservation</a><a href="fallon-county-mt.html">Fallon County</a><a href="fergus-county-mt.html">Fergus County</a><a href="golden-valley-county-mt.html">Golden Valley County</a><a href="jefferson-county-mt.html">Jefferson County</a><a href="liberty-county-mt.html">Liberty County</a><a href="mccone-county-mt.html">McCone County</a><a href="sweet-grass-county-mt.html">Sweet Grass County</a><a href="teton-county-mt.html">Teton County</a><a href="big-horn-county-mt.html">Big Horn County</a><a href="daniels-county-mt.html">Daniels County</a><a href="dawson-county-mt.html">Dawson County</a><a href="fort-belknap-indian-reservation-mt.html">Fort Belknap Indian Reservation</a><a href="gallatin-county-mt.html">Gallatin County</a><a href="lake-county-mt.html">Lake County</a><a href="lincoln-county-mt.html">Lincoln County</a><a href="mineral-county-mt.html">Mineral County</a><a href="richland-county-mt.html">Richland County</a><a href="rocky-boys-indian-reservation-mt.html">Rocky Boy&#x27;s Indian Reservation</a><a href="roosevelt-county-mt.html">Roosevelt County</a><a href="wheatland-county-mt.html">Wheatland County</a><a href="blackfeet-indian-reservation-mt.html">Blackfeet Indian Reservation</a><a href="deer-lodge-county-mt.html">Deer Lodge County</a><a href="fort-peck-indian-reservation-mt.html">Fort Peck Indian Reservation</a><a href="granite-county-mt.html">Granite County</a><a href="judith-basin-county-mt.html">Judith Basin County</a><a href="madison-county-mt.html">Madison County</a><a href="meagher-county-mt.html">Meagher County</a><a href="phillips-county-mt.html">Phillips County</a><a href="prairie-county-mt.html">Prairie County</a><a href="sheridan-county-mt.html">Sheridan County</a><a href="beaverhead-county-mt.html">Beaverhead County</a><a href="cascade-county-mt.html">Cascade County</a><a href="northern-cheyenne-indian-reservation-mt.html">Northern Cheyenne Indian Reservation</a><a href="silver-bow-county-mt.html">Silver Bow County</a><a href="wibaux-county-mt.html">Wibaux County</a><a href="flathead-indian-reservation-mt.html">Flathead Indian Reservation</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2020-03-31", "DR-4508-MT", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3476-MT", "EM", "Biological", "Covid-19"], ["2016-05-24", "DR-4271-MT", "DR", "Severe Storm", "Severe Winter Storm And Straight-Line Winds"], ["2011-06-17", "DR-1996-MT", "DR", "Severe Storm", "Severe Storms And Flooding"], ["2005-09-13", "EM-3253-MT", "EM", "Hurricane", "Hurricane Katrina Evacuation"], ["2002-07-03", "DR-1424-MT", "DR", "Severe Storm", "Severe Storms And Flooding"], ["2000-08-30", "DR-1340-MT", "DR", "Fire", "Wildfires"]];var csv=d.map(function(r){return r.map(function(c){return '\"'+String(c).replace(/\"/g,'\"\"')+'\"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='glacier-county-mt-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citecopy')){var out=document.getElementById('citationText');var cite=out?out.textContent:'';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd,function(){window.prompt('Citation:',cite);});}else{window.prompt('Citation:',cite);}return;}});(function(){var box=document.querySelector('.citation'),out=document.getElementById('citationText');if(!box||!out)return;var title=box.getAttribute('data-cite-title')||'',url=box.getAttribute('data-cite-url')||'',key=box.getAttribute('data-cite-key')||'disasterdata_profile';function pad(n){return String(n).padStart(2,'0');}function dates(){var d=new Date();return{iso:d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),long:d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};}function text(fmt){var d=dates();if(fmt==='chicago')return 'Disaster Data. "'+title+'" DisasterData.IO. Accessed '+d.long+'. '+url+'.';if(fmt==='plain')return 'Disaster Data. '+title+'. DisasterData.IO. Derived from FEMA OpenFEMA. Accessed '+d.long+'. '+url;if(fmt==='bibtex')return '@misc{'+key+',\n  author = {{Disaster Data}},\n  title = {'+title+'},\n  howpublished = {DisasterData.IO},\n  url = {'+url+'},\n  urldate = {'+d.iso+'},\n  note = {Derived from FEMA OpenFEMA}\n}';return 'Disaster Data. (n.d.). '+title+'. Retrieved '+d.long+', from '+url;}function render(fmt){out.textContent=text(fmt);var bs=box.querySelectorAll('.citefmt');for(var i=0;i<bs.length;i++){bs[i].setAttribute('aria-pressed',bs[i].getAttribute('data-fmt')===fmt?'true':'false');}}box.addEventListener('click',function(ev){var c=ev.target.closest('.citefmt');if(c){render(c.getAttribute('data-fmt'));}});render('apa');})();</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/topojson-client@3"></script><script src="../../county-names.js"></script><script src="../../locality-index.js"></script><script>(function(){var el=document.getElementById("locmap");if(!el)return;var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];function norm(s){return String(s||"").replace(/\s*\([^)]*\)/g,"").trim().toLowerCase();}function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}var cnBase=base(el.dataset.name);function go(){if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}var ul={};window.LOCALITY_INDEX.forEach(function(r){if(r[1]!==sa)return;var full=r[0].replace(/ \(city\)$/i,"").toLowerCase();ul[base(r[0])]=r[3];ul[full]=r[3];});fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json();}).then(function(topo){var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf;})};var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});var collide=matches.length>1;function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:true});L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_2n1q_1_ad4306e45519c0e62979dcd7",{maxZoom:13,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);var targetLayer=null;var ly=L.geoJson(fc,{style:function(f){if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};},onEachFeature:function(f,layer){var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();var u=ul[base(nm)]||ul[nm.toLowerCase()];if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}else{layer.bindTooltip(nm,{sticky:true});}if(u){layer.on("click",function(){window.location.href="../../"+u;});layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6});});layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35});});}}}).addTo(map);map.fitBounds(ly.getBounds(),{padding:[15,15]});});}go();})();</script></body></html>
