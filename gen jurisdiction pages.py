@@ -1,74 +1,133 @@
 #!/usr/bin/env python3
 """
-gen_jurisdiction_pages.py  --  Disaster Data per-jurisdiction pages (Virginia pilot).
+gen_jurisdiction_pages.py
+-------------------------
 
-Reads LOCALITY_DATA + BROWSE from data.js and writes one crawlable page per
-Virginia jurisdiction (counties, independent cities, and tribal areas), plus a
-hub, into states/virginia/. Joins each jurisdiction's declaration IDs back to
-BROWSE for full per-declaration detail, and emits an HMP "previous occurrences"
-table for each one.
+Build DisasterData.IO jurisdiction pages for counties, county-equivalents,
+independent cities, and tribal areas.
 
-Pilot is scoped to one state (STATE_AB below) but written to generalize.
+Inputs
+------
+data.js
+    window.LOCALITY_DATA
+    window.BROWSE
+    window.STATE_NAMES
+    window.PA_BY_COUNTY
+
+pa-timing.json
+    Public Assistance obligation timing produced by build.py.
+
+hma.json
+    Hazard Mitigation Assistance rollups produced by build.py.
+
+ia.json
+    Individual Assistance rollups produced by build.py.
+
+county-svi.js
+    window.COUNTY_SVI
+    CDC/ATSDR Social Vulnerability Index 2022, keyed by 5-digit FIPS/GEOID.
+
+county-nri.js
+    window.COUNTY_NRI
+    FEMA National Risk Index county data, keyed by 5-digit FIPS/GEOID.
+
+Outputs
+-------
+states/<state-slug>/<jurisdiction-slug>.html
+states/<state-slug>/index.html
+locality-index.js
+updated sitemap.xml / sitemap-state.json
+
+SVI and NRI data are baked directly into the generated static HTML so
+jurisdiction pages do not depend on JavaScript loading those data files in
+the visitor's browser.
 """
 
-import os, re, json, html, datetime, hashlib
+import os
+import re
+import json
+import html
+import datetime
+import hashlib
+
 from dd_classify import classify
 
+
+# =============================================================================
+# SITE / PATH CONFIGURATION
+# =============================================================================
+
 SITE = "https://disasterdata.io"
+
 OUT_ROOT = os.environ.get("DD_OUT", ".")
 SRC_ROOT = os.environ.get("DD_SRC", OUT_ROOT)
+
 STATE_AB = os.environ.get("DD_STATE", "VA").upper()
 STATE_NAME = STATE_AB
 STATE_SLUG = STATE_AB.lower()
+
 OUT_DIR = os.path.join(OUT_ROOT, "states", STATE_SLUG)
 
-# CARTO public basemap key used by the embedded Leaflet jurisdiction maps.
-# Keep this in the generator so regenerated pages retain the authenticated
-# basemap URL instead of falling back to an unkeyed tile request.
+# CARTO public basemap key used by Leaflet jurisdiction maps.
 CARTO_BASEMAP_KEY = "cb1_2n1q_1_ad4306e45519c0e62979dcd7"
 
 
-# ---------------------------------------------------------------- data loading
+# =============================================================================
+# DATA LOADING
+# =============================================================================
+
 def _grab_js(text, name):
+    """
+    Extract JSON assigned to window.<name> from a JavaScript data file.
+    """
     m = re.search(r"window\." + re.escape(name) + r"\s*=\s*", text)
+
     if not m:
         raise SystemExit("could not find window.%s" % name)
+
     return json.JSONDecoder().raw_decode(text, m.end())[0]
 
 
 def load_data():
+    """
+    Read the core DisasterData data.js bundle.
+    """
     p = os.path.join(SRC_ROOT, "data.js")
+
     if not os.path.exists(p):
         raise SystemExit("data.js not found in %s" % SRC_ROOT)
 
-    t = open(p, encoding="utf-8").read()
+    text = open(p, encoding="utf-8").read()
 
     try:
-        pa_county = _grab_js(t, "PA_BY_COUNTY")
+        pa_county = _grab_js(text, "PA_BY_COUNTY")
     except (Exception, SystemExit):
         pa_county = {}
 
     return (
-        _grab_js(t, "LOCALITY_DATA"),
-        _grab_js(t, "BROWSE"),
-        _grab_js(t, "STATE_NAMES"),
+        _grab_js(text, "LOCALITY_DATA"),
+        _grab_js(text, "BROWSE"),
+        _grab_js(text, "STATE_NAMES"),
         pa_county,
     )
 
 
 def load_pa_timing():
     """
-    Per (county, disaster) obligation timing written by build.py to
-    pa-timing.json.
+    Per-jurisdiction Public Assistance obligation timing.
 
-    {ST: {county: {disasterNumber: [declDate, firstObl, lastObl, obl, topCat]}}}
-
-    Kept out of data.js so the client bundle stays small; baked into each
-    static page at build time here.
-
-    Returns {} when the file is absent.
+    Shape:
+    {
+        ST: {
+            county: {
+                disasterNumber:
+                    [declDate, firstObl, lastObl, obl, topCat]
+            }
+        }
+    }
     """
     p = os.path.join(SRC_ROOT, "pa-timing.json")
+
     if not os.path.exists(p):
         return {}
 
@@ -81,21 +140,22 @@ def load_pa_timing():
 
 def load_hma():
     """
-    Per-jurisdiction Hazard Mitigation Assistance rollup written by build.py
-    to hma.json.
+    Hazard Mitigation Assistance rollup.
 
-    {ST: {
-        matchName: {
-            "fed": int,
-            "n": int,
-            "prog": {code:[fed,n]},
-            "props": int
+    Shape:
+    {
+        ST: {
+            matchName: {
+                "fed": int,
+                "n": int,
+                "prog": {code: [fed, n]},
+                "props": int
+            }
         }
-    }}
-
-    Returns {} when the file is absent.
+    }
     """
     p = os.path.join(SRC_ROOT, "hma.json")
+
     if not os.path.exists(p):
         return {}
 
@@ -108,23 +168,24 @@ def load_hma():
 
 def load_ia():
     """
-    Per-jurisdiction Individual Assistance rollup written by build.py to
-    ia.json.
+    Individual Assistance rollup.
 
-    {ST: {
-        matchName: {
-            "reg":int,
-            "app":int,
-            "ihp":int,
-            "rr":int,
-            "rent":int,
-            "ona":int
+    Shape:
+    {
+        ST: {
+            matchName: {
+                "reg": int,
+                "app": int,
+                "ihp": int,
+                "rr": int,
+                "rent": int,
+                "ona": int
+            }
         }
-    }}
-
-    Returns {} when the file is absent.
+    }
     """
     p = os.path.join(SRC_ROOT, "ia.json")
+
     if not os.path.exists(p):
         return {}
 
@@ -137,31 +198,36 @@ def load_ia():
 
 def _load_county_js(filename, window_name):
     """
-    Load a FIPS-keyed county dataset assigned to ``window.<window_name>``.
+    Load one of the FIPS-keyed static county data files.
 
-    The SVI and NRI inputs are optional so jurisdictions without matching
-    county-equivalent data (including tribal jurisdictions) still generate.
+    Expected:
+
+        window.COUNTY_SVI = {...};
+
+    or:
+
+        window.COUNTY_NRI = {...};
+
+    Missing optional files do not stop jurisdiction generation.
     """
     p = os.path.join(SRC_ROOT, filename)
 
     if not os.path.exists(p):
         print(
-            "  NOTE: %s not found; matching jurisdiction context will be skipped"
+            "  NOTE: %s not found; matching jurisdiction risk section will be skipped"
             % filename
         )
         return {}
 
     try:
-        with open(p, encoding="utf-8") as fh:
-            data = _grab_js(fh.read(), window_name)
-
-        if not isinstance(data, dict):
-            raise ValueError("window.%s is not an object" % window_name)
+        text = open(p, encoding="utf-8").read()
+        data = _grab_js(text, window_name)
 
         print(
             "  loaded %s (%s county records)"
             % (filename, format(len(data), ","))
         )
+
         return data
 
     except (Exception, SystemExit) as ex:
@@ -170,26 +236,56 @@ def _load_county_js(filename, window_name):
 
 
 def load_svi():
-    """Load CDC/ATSDR 2022 county SVI data keyed by five-digit FIPS."""
-    return _load_county_js("county-svi.js", "COUNTY_SVI")
+    """
+    CDC/ATSDR Social Vulnerability Index 2022.
+    """
+    return _load_county_js(
+        "county-svi.js",
+        "COUNTY_SVI",
+    )
 
 
 def load_nri():
-    """Load FEMA county National Risk Index data keyed by five-digit FIPS."""
-    return _load_county_js("county-nri.js", "COUNTY_NRI")
+    """
+    FEMA National Risk Index county data.
+    """
+    return _load_county_js(
+        "county-nri.js",
+        "COUNTY_NRI",
+    )
 
 
-# ---------------------------------------------------------------- helpers
+# =============================================================================
+# GENERIC HELPERS
+# =============================================================================
+
 def fy_of(iso):
-    y, m = int(iso[:4]), int(iso[5:7])
-    return y + 1 if m >= 10 else y
+    """
+    Convert YYYY-MM-DD to federal fiscal year.
+    """
+    try:
+        y = int(iso[:4])
+        m = int(iso[5:7])
+
+        return y + 1 if m >= 10 else y
+
+    except Exception:
+        return 0
 
 
 def fmt_date(iso):
+    """
+    Readable date without relying on platform-specific %-d.
+    """
     try:
-        return datetime.datetime.strptime(
-            iso, "%Y-%m-%d"
-        ).strftime("%b %-d, %Y")
+        d = datetime.datetime.strptime(iso[:10], "%Y-%m-%d")
+
+        return "%s %d, %d" % (
+            d.strftime("%b"),
+            d.day,
+            d.year,
+        )
+
     except Exception:
         return iso
 
@@ -200,15 +296,89 @@ def pretty_title(t):
 
 
 def slugify(s):
-    s = (
-        s.lower()
-        .replace("&", "and")
-        .replace(".", "")
-        .replace(",", "")
-    )
+    s = str(s or "").lower()
+
+    s = s.replace("&", "and")
+    s = s.replace(".", "")
+    s = s.replace(",", "")
+
     s = re.sub(r"[^\w\s/-]", "", s)
     s = re.sub(r"[\s/]+", "-", s).strip("-")
+
     return re.sub(r"-+", "-", s)
+
+
+def decl_num(s):
+    """
+    Sortable integer inside FEMA declaration string.
+    """
+    m = re.search(r"\d+", s or "")
+
+    return m.group(0) if m else "0"
+
+
+def _money_full(n):
+    """
+    Full-dollar format.
+    """
+    try:
+        return "$" + format(int(round(float(n or 0))), ",")
+    except Exception:
+        return "$0"
+
+
+def _money_short(n):
+    """
+    Compact money format for top-level metrics.
+    """
+    try:
+        n = float(n or 0)
+    except Exception:
+        n = 0
+
+    if n >= 1e9:
+        return "$%.1fB" % (n / 1e9)
+
+    if n >= 1e6:
+        return "$%.1fM" % (n / 1e6)
+
+    if n >= 1e3:
+        return "$%.0fK" % (n / 1e3)
+
+    return "$%s" % format(int(round(n)), ",")
+
+
+def _money_words(n):
+    """
+    Human-readable Public Assistance dollars for narrative text.
+    """
+    try:
+        n = float(n or 0)
+    except Exception:
+        n = 0
+
+    if n >= 1e9:
+        return "about $%.1f billion" % (n / 1e9)
+
+    if n >= 1e6:
+        return "about $%.1f million" % (n / 1e6)
+
+    return "$" + format(int(round(n)), ",")
+
+
+def _oxford(items):
+    items = list(items)
+
+    if not items:
+        return ""
+
+    if len(items) == 1:
+        return items[0]
+
+    if len(items) == 2:
+        return items[0] + " and " + items[1]
+
+    return ", ".join(items[:-1]) + ", and " + items[-1]
 
 
 TYPE_LONG = {
@@ -218,7 +388,10 @@ TYPE_LONG = {
 }
 
 
-# Client-side filter + column sort.
+# =============================================================================
+# DECLARATION FILTER JAVASCRIPT
+# =============================================================================
+
 FILTER_JS = """<script>
 (function(){
   var box=document.getElementById('declbox');
@@ -227,6 +400,9 @@ FILTER_JS = """<script>
   var cap=box.querySelector('.decl-count');
   var chips=box.querySelectorAll('.decl-chip');
   var table=box.querySelector('table');
+
+  if(!table) return;
+
   var tbody=table.querySelector('tbody');
   var heads=table.querySelectorAll('thead th');
   var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
@@ -261,7 +437,9 @@ FILTER_JS = """<script>
 
   box.addEventListener('click',function(ev){
     var c=ev.target.closest('.decl-chip');
+
     if(!c||c.classList.contains('off')) return;
+
     filter(c.getAttribute('data-t'));
   });
 
@@ -284,7 +462,8 @@ FILTER_JS = """<script>
     var mul=dir==='descending'?-1:1;
 
     rows.sort(function(a,b){
-      var x=val(a,i,k), y=val(b,i,k);
+      var x=val(a,i,k);
+      var y=val(b,i,k);
 
       if(k==='num'){
         return (x-y)*mul;
@@ -313,8 +492,14 @@ FILTER_JS = """<script>
         }
 
         th.setAttribute('aria-sort',dir);
-        sortCol(i,th.getAttribute('data-k')||'text',dir);
+
+        sortCol(
+          i,
+          th.getAttribute('data-k')||'text',
+          dir
+        );
       });
+
     })(heads[h],h);
   }
 
@@ -324,7 +509,6 @@ FILTER_JS = """<script>
 
 
 def type_chips(total, dr, em, fm):
-    """Filter chips with baked-in counts."""
 
     def chip(t, n, pressed=False):
         off = "" if n else " off"
@@ -344,8 +528,8 @@ def type_chips(total, dr, em, fm):
         )
 
     return (
-        '<div class="decl-filters" role="group" '
-        'aria-label="Filter declarations by type">'
+        '<div class="decl-filters" '
+        'role="group" aria-label="Filter declarations by type">'
         + chip("ALL", total, True)
         + chip("DR", dr)
         + chip("EM", em)
@@ -354,11 +538,9 @@ def type_chips(total, dr, em, fm):
     )
 
 
-def decl_num(s):
-    """Sortable integer inside a FEMA declaration string."""
-    m = re.search(r"\d+", s or "")
-    return m.group(0) if m else "0"
-
+# =============================================================================
+# PROGRAM LABELS / STATE FIPS
+# =============================================================================
 
 PA_CAT_LABELS = {
     "A": "Debris removal",
@@ -385,6 +567,21 @@ HMA_PROG_LABELS = {
 }
 
 
+STATE_FIPS = {
+    "AL":"01","AK":"02","AZ":"04","AR":"05","CA":"06","CO":"08","CT":"09","DE":"10",
+    "DC":"11","FL":"12","GA":"13","HI":"15","ID":"16","IL":"17","IN":"18","IA":"19",
+    "KS":"20","KY":"21","LA":"22","ME":"23","MD":"24","MA":"25","MI":"26","MN":"27",
+    "MS":"28","MO":"29","MT":"30","NE":"31","NV":"32","NH":"33","NJ":"34","NM":"35",
+    "NY":"36","NC":"37","ND":"38","OH":"39","OK":"40","OR":"41","PA":"42","RI":"44",
+    "SC":"45","SD":"46","TN":"47","TX":"48","UT":"49","VT":"50","VA":"51","WA":"53",
+    "WV":"54","WI":"55","WY":"56","AS":"60","GU":"66","MP":"69","PR":"72","VI":"78",
+}
+
+
+# =============================================================================
+# JURISDICTION NAME MATCHING
+# =============================================================================
+
 _PA_COUNTY_SUFFIXES = [
     "City and Borough",
     "Census Area",
@@ -399,10 +596,8 @@ _PA_COUNTY_SUFFIXES = [
 
 
 def pa_base_kind(name):
-    """
-    Normalize a place name to (base, kind) for PA matching.
-    """
-    low = name.strip().lower()
+
+    low = str(name or "").strip().lower()
 
     for suf in _PA_COUNTY_SUFFIXES:
         s = " " + suf.lower()
@@ -421,140 +616,19 @@ def pa_base_kind(name):
     return low, "other"
 
 
-# County-equivalent suffixes used when matching the generated jurisdiction
-# names to the FIPS-keyed CDC SVI and FEMA NRI rows.
-_RISK_SUFFIXES = [
-    "city and borough",
-    "census area",
-    "county",
-    "parish",
-    "borough",
-    "municipio",
-    "municipality",
-    "independent city",
-    "city",
-    "island",
-    "district",
-]
-
-
-def _risk_base(name):
-    """Return a normalized county/county-equivalent name for matching."""
-    s = str(name or "").strip().lower()
-    s = re.sub(r"\s*\([^)]*\)\s*", " ", s)
-    s = s.split(",", 1)[0].strip()
-
-    for suffix in _RISK_SUFFIXES:
-        tail = " " + suffix
-
-        if s.endswith(tail):
-            s = s[:-len(tail)].strip()
-            break
-
-    s = s.replace("&", "and")
-    s = re.sub(r"[^a-z0-9]+", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
-
-
-def _risk_kind(fips, source_name):
-    """
-    Classify a county-equivalent risk row as county-like or independent city.
-
-    County-equivalent FIPS codes 500 and above identify independent cities.
-    The explicit ``city`` suffix is retained as a second safety check.
-    """
-    fp = str(fips or "").zfill(5)
-    source = str(source_name or "").strip().lower()
-
-    try:
-        city_equivalent = int(fp[2:]) >= 500
-    except (TypeError, ValueError):
-        city_equivalent = False
-
-    if source.endswith(" city") or source.endswith(" independent city"):
-        city_equivalent = True
-
-    return "city" if city_equivalent else "county"
-
-
-def build_risk_lookup(dataset):
-    """
-    Convert FIPS-keyed SVI/NRI data to a jurisdiction matching lookup.
-
-    Keys are ``(state abbreviation, normalized place name, county/city kind)``.
-    Each matched record retains its canonical five-digit FIPS/GEOID.
-    """
-    lookup = {}
-
-    for fips, raw in (dataset or {}).items():
-        if not isinstance(raw, dict):
-            continue
-
-        state_ab = str(raw.get("state") or "").upper().strip()
-        source_name = raw.get("county") or ""
-
-        if not state_ab or not source_name:
-            continue
-
-        rec = dict(raw)
-        rec["fips"] = str(fips).zfill(5)
-
-        key = (
-            state_ab,
-            _risk_base(source_name),
-            _risk_kind(fips, source_name),
-        )
-        lookup[key] = rec
-
-    return lookup
-
-
-def jurisdiction_risk_key(j, state_ab):
-    """Return the SVI/NRI lookup key for a generated jurisdiction."""
-    if j.get("kind") not in ("county", "city"):
-        return None
-
-    name = j.get("name", "")
-
-    if j.get("kind") == "city":
-        name = name.replace(" (city)", "")
-
-    return (
-        state_ab.upper(),
-        _risk_base(name),
-        "city" if j.get("kind") == "city" else "county",
-    )
-
-
-STATE_FIPS = {
-    "AL":"01","AK":"02","AZ":"04","AR":"05","CA":"06","CO":"08",
-    "CT":"09","DE":"10","DC":"11","FL":"12","GA":"13","HI":"15",
-    "ID":"16","IL":"17","IN":"18","IA":"19","KS":"20","KY":"21",
-    "LA":"22","ME":"23","MD":"24","MA":"25","MI":"26","MN":"27",
-    "MS":"28","MO":"29","MT":"30","NE":"31","NV":"32","NH":"33",
-    "NJ":"34","NM":"35","NY":"36","NC":"37","ND":"38","OH":"39",
-    "OK":"40","OR":"41","PA":"42","RI":"44","SC":"45","SD":"46",
-    "TN":"47","TX":"48","UT":"49","VT":"50","VA":"51","WA":"53",
-    "WV":"54","WI":"55","WY":"56","AS":"60","GU":"66","MP":"69",
-    "PR":"72","VI":"78",
-}
-
-
 def make_slug(c, state_ab):
-    """
-    State-qualified, type-aware slug.
-    """
+
     st = "-" + state_ab.lower()
 
     if c["kind"] == "county":
+
         base = slugify(c["base"])
         noun = slugify(c["noun"])
 
-        return (
-            base
-            if base.endswith("-" + noun) or base == noun
-            else base + "-" + noun
-        ) + st
+        if base.endswith("-" + noun) or base == noun:
+            return base + st
+
+        return base + "-" + noun + st
 
     if c["kind"] == "city":
         return slugify(c["base"]) + "-city" + st
@@ -563,6 +637,7 @@ def make_slug(c, state_ab):
 
 
 def kind_label(c):
+
     if c["kind"] == "county":
         return c["noun"]
 
@@ -573,14 +648,10 @@ def kind_label(c):
 
 
 def kind_phrase(js):
-    """
-    Adaptive state jurisdiction phrase.
-    """
-    cnouns = sorted({
-        j["noun"]
-        for j in js
-        if j["kind"] == "county"
-    })
+
+    cnouns = sorted(
+        {j["noun"] for j in js if j["kind"] == "county"}
+    )
 
     parts = []
 
@@ -609,9 +680,122 @@ def kind_phrase(js):
     return ", ".join(parts[:-1]) + ", and " + parts[-1]
 
 
+# =============================================================================
+# SVI / NRI MATCHING
+# =============================================================================
+
+_RISK_SUFFIXES = [
+    "city and borough",
+    "census area",
+    "county",
+    "parish",
+    "borough",
+    "municipio",
+    "municipality",
+    "island",
+    "district",
+    "city",
+]
+
+
+def _risk_base(name):
+
+    s = str(name or "").strip().lower()
+
+    s = re.sub(r"\s*\([^)]*\)\s*", " ", s)
+    s = s.split(",", 1)[0].strip()
+
+    for suffix in _RISK_SUFFIXES:
+
+        tail = " " + suffix
+
+        if s.endswith(tail):
+            s = s[:-len(tail)].strip()
+            break
+
+    s = s.replace("&", "and")
+    s = re.sub(r"[^a-z0-9]+", " ", s)
+
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _risk_kind(fips, source_name):
+
+    fp = str(fips or "").zfill(5)
+    source = str(source_name or "").strip().lower()
+
+    city_equivalent = False
+
+    try:
+        city_equivalent = int(fp[2:]) >= 500
+    except Exception:
+        pass
+
+    if source.endswith(" city"):
+        city_equivalent = True
+
+    return "city" if city_equivalent else "county"
+
+
+def build_risk_lookup(dataset):
+
+    lookup = {}
+
+    for fips, raw in (dataset or {}).items():
+
+        if not isinstance(raw, dict):
+            continue
+
+        st = str(raw.get("state") or "").upper().strip()
+        source_name = raw.get("county") or ""
+
+        if not st or not source_name:
+            continue
+
+        rec = dict(raw)
+        rec["fips"] = str(fips).zfill(5)
+
+        key = (
+            st,
+            _risk_base(source_name),
+            _risk_kind(fips, source_name),
+        )
+
+        lookup[key] = rec
+
+    return lookup
+
+
+def jurisdiction_risk_key(j, state_ab):
+
+    if j.get("kind") not in ("county", "city"):
+        return None
+
+    name = j.get("name", "")
+
+    if j.get("kind") == "city":
+        name = name.replace(" (city)", "")
+
+    return (
+        state_ab.upper(),
+        _risk_base(name),
+        "city" if j.get("kind") == "city" else "county",
+    )
+
+
+# =============================================================================
+# FISCAL YEAR / THIN PAGE / CONTENT HASH
+# =============================================================================
+
 def last_complete_fy(browse):
+
     now = datetime.date.today()
-    cur = now.year + 1 if now.month >= 10 else now.year
+
+    cur = (
+        now.year + 1
+        if now.month >= 10
+        else now.year
+    )
 
     avail = max(
         (r.get("fyDeclared", 0) for r in browse),
@@ -621,23 +805,21 @@ def last_complete_fy(browse):
     return min(cur - 1, avail)
 
 
-# ---------------------------------------------------------------- gating and freshness
 MIN_DISTINCT_DECLS = 2
 
 
 def _is_nationwide(rec):
-    """
-    True for declarations that reached nearly every jurisdiction.
-    """
+
     title = (rec.get("declarationTitle") or "").upper()
 
-    return "COVID" in title or "PANDEMIC" in title
+    return (
+        "COVID" in title
+        or "PANDEMIC" in title
+    )
 
 
 def is_thin(j):
-    """
-    Determine whether a jurisdiction page should remain noindex.
-    """
+
     if (j.get("pa_obl") or 0) > 0:
         return False
 
@@ -651,33 +833,32 @@ def is_thin(j):
 
 
 def _content_hash(j):
-    """
-    Stable fingerprint of rendered jurisdiction data.
-    """
+
     payload = {
         "decl": j.get("decl", 0),
         "dr": j.get("dr", 0),
         "em": j.get("em", 0),
         "fm": j.get("fm", 0),
         "latest": j.get("latest", ""),
+
         "pa_obl": j.get("pa_obl", 0),
         "pa_proj": j.get("pa_proj", 0),
         "pa_cats": j.get("pa_cats", {}),
-        "hma_fed": (j.get("hma") or {}).get("fed", 0),
-        "hma_prog": (j.get("hma") or {}).get("prog", {}),
-        "ia_reg": (j.get("ia") or {}).get("reg", 0),
-        "ia_ihp": (j.get("ia") or {}).get("ihp", 0),
-        "svi": j.get("svi") or {},
-        "nri": j.get("nri") or {},
+
+        "hma": j.get("hma", {}),
+        "ia": j.get("ia", {}),
+
+        "svi": j.get("svi", {}),
+        "nri": j.get("nri", {}),
+        "risk_fips": j.get("risk_fips", ""),
+
         "recs": sorted(
             [
                 r.get("femaDeclarationString", ""),
                 r.get("declarationDate", "")[:10],
                 r.get("declarationType", ""),
                 r.get("incidentType", ""),
-                pretty_title(
-                    r.get("declarationTitle", "")
-                ),
+                pretty_title(r.get("declarationTitle", "")),
             ]
             for r in j.get("hmp", [])
         ),
@@ -695,8 +876,12 @@ def _content_hash(j):
     ).hexdigest()[:16]
 
 
-# ---------------------------------------------------------------- per-jurisdiction stats
+# =============================================================================
+# BASE JURISDICTION STATISTICS
+# =============================================================================
+
 def juris_stats(entry, state_ab, c, by_id, lcfy):
+
     disp = c["display"]
     slug = make_slug(c, state_ab)
     kind = c["kind"]
@@ -722,11 +907,15 @@ def juris_stats(entry, state_ab, c, by_id, lcfy):
     haz = {}
 
     for r in complete:
+
         t = r.get("declarationType", "")
+
         by_type[t] = by_type.get(t, 0) + 1
 
         h = r.get("incidentType", "")
-        haz[h] = haz.get(h, 0) + 1
+
+        if h:
+            haz[h] = haz.get(h, 0) + 1
 
     recent = sorted(
         recs,
@@ -746,118 +935,69 @@ def juris_stats(entry, state_ab, c, by_id, lcfy):
         "kind": kind,
         "noun": c["noun"],
         "label": kind_label(c),
+
         "decl": len(complete),
         "dr": by_type["DR"],
         "em": by_type["EM"],
         "fm": by_type["FM"],
+
         "days": entry.get("a", 0),
+
         "hazards": sorted(
             haz.items(),
             key=lambda kv: -kv[1],
         ),
+
         "recent": recent[:40],
+
         "hmp": sorted(
             complete,
-            key=lambda r: r.get(
-                "declarationDate", ""
-            ),
+            key=lambda r: r.get("declarationDate", ""),
             reverse=True,
         ),
+
         "latest": latest,
+        "lcfy": lcfy,
     }
 
 
-# ---------------------------------------------------------------- CSS
+# =============================================================================
+# PAGE CSS
+# =============================================================================
+
 CSS = """
 :root{
   --teal:#004c53;
+  --teal2:#0f6870;
+  --teal-soft:#d7e9ea;
   --cream:#f6f1e7;
   --paper:#fffdf7;
   --ink:#2b2b2b;
+  --ink2:#4e493f;
   --ink3:#6b6357;
-  --rule:#e4dccb
+  --rule:#e4dccb;
+  --amber:#c85c2e;
+  --shadow:0 8px 28px rgba(47,40,27,.055);
 }
 
 *{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
 
 body{
   margin:0;
   background:var(--cream);
   color:var(--ink);
   font-family:'Public Sans',system-ui,-apple-system,sans-serif;
-  line-height:1.6
+  line-height:1.6;
 }
 
 a{color:var(--teal)}
 
 .wrap{
-  max-width:980px;
+  max-width:1080px;
   margin:0 auto;
-  padding:0 clamp(18px,4vw,40px)
-}
-
-nav.ddnav{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:rgba(246,241,231,.86);
-  backdrop-filter:saturate(140%) blur(10px);
-  -webkit-backdrop-filter:saturate(140%) blur(10px);
-  border-bottom:1px solid #e0d8c5;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 clamp(18px,4vw,48px);
-  height:60px
-}
-
-nav.ddnav .brand{
-  display:flex;
-  align-items:baseline;
-  gap:10px
-}
-
-nav.ddnav .brand .mark{
-  font-family:'Fraunces',Georgia,serif;
-  font-weight:600;
-  font-size:19px;
-  letter-spacing:-.4px;
-  color:#1d1813;
-  text-decoration:none
-}
-
-nav.ddnav .navlinks{
-  display:flex;
-  align-items:center;
-  gap:4px
-}
-
-nav.ddnav .navlinks a{
-  font-size:13px;
-  font-weight:500;
-  color:#5b5346;
-  text-decoration:none;
-  padding:7px 12px;
-  border-radius:6px;
-  transition:.15s;
-  letter-spacing:.2px
-}
-
-nav.ddnav .navlinks a:hover{
-  color:#1d1813;
-  background:#f1ead9
-}
-
-nav.ddnav .navlinks a.on{
-  color:#004c53;
-  background:#d7e9ea
-}
-
-nav.ddnav .navmeta{
-  font-size:11px;
-  color:#938a78;
-  letter-spacing:.5px;
-  font-variant-numeric:tabular-nums
+  padding:0 clamp(18px,4vw,44px);
 }
 
 main{padding:2rem 0 1rem}
@@ -865,780 +1005,385 @@ main{padding:2rem 0 1rem}
 .crumb{
   font-size:.82rem;
   color:var(--ink3);
-  margin:0 0 1rem
+  margin:0 0 1.2rem;
 }
 
 .crumb a{text-decoration:none}
 
 .badge{
   display:inline-block;
-  font:600 .72rem 'Public Sans',sans-serif;
+  font:700 .7rem 'Public Sans',sans-serif;
   text-transform:uppercase;
-  letter-spacing:.04em;
-  padding:.2rem .6rem;
+  letter-spacing:.055em;
+  padding:.24rem .65rem;
   border-radius:999px;
-  margin-bottom:.6rem
 }
 
 .badge.county{
   color:#004c53;
-  background:#d7e9ea
+  background:#d7e9ea;
 }
 
 .badge.city{
   color:#8a5a2b;
-  background:#f3e4d2
+  background:#f3e4d2;
 }
 
 .badge.tribal{
   color:#6a2f6a;
-  background:#efddef
+  background:#efddef;
+}
+
+.hero{
+  padding:.4rem 0 .7rem;
+}
+
+.hero-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:.5rem;
+}
+
+.hero-link{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  text-decoration:none;
+  font-size:.8rem;
+  font-weight:700;
+  border:1px solid #b7cfce;
+  background:#edf5f4;
+  color:var(--teal);
+  border-radius:999px;
+  padding:.42rem .75rem;
+  white-space:nowrap;
+}
+
+.hero-link:hover{
+  background:#dcebea;
 }
 
 h1{
   font-family:'Fraunces',Georgia,serif;
   color:var(--teal);
-  font-size:clamp(1.7rem,4vw,2.5rem);
-  line-height:1.1;
-  margin:.2rem 0 .6rem
+  font-size:clamp(2rem,5vw,3.05rem);
+  line-height:1.04;
+  letter-spacing:-.035em;
+  margin:.42rem 0 .75rem;
 }
 
 h2{
   font-family:'Fraunces',Georgia,serif;
   color:var(--teal);
-  font-size:1.3rem;
-  margin:2.2rem 0 .8rem
+  font-size:1.45rem;
+  line-height:1.2;
+  letter-spacing:-.015em;
+  margin:2.4rem 0 .7rem;
+}
+
+h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.16rem;
+  line-height:1.25;
+  margin:0 0 .35rem;
 }
 
 .lede{
+  margin:.25rem 0 0;
   font-size:1.08rem;
-  max-width:62ch
+  max-width:72ch;
+  color:var(--ink2);
+}
+
+.current-note{
+  margin:.8rem 0 0;
+  max-width:72ch;
+  font-size:.79rem;
+  color:var(--ink3);
+}
+
+.overview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.8rem;
+  margin:1.55rem 0 1.2rem;
+}
+
+.overview-card{
+  min-height:122px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1rem 1.05rem;
+  box-shadow:var(--shadow);
+}
+
+.overview-kicker{
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.075em;
+  text-transform:uppercase;
+  color:var(--ink3);
+}
+
+.overview-value{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.85rem;
+  line-height:1;
+  letter-spacing:-.035em;
+  color:var(--teal);
+  margin:.35rem 0 .28rem;
+}
+
+.overview-label{
+  color:var(--ink3);
+  font-size:.78rem;
+  line-height:1.35;
 }
 
 .jsummary{
-  margin:1.1rem 0 .4rem
+  margin:1.15rem 0 .5rem;
 }
 
 .jsummary p{
   margin:0;
   font-size:1rem;
-  color:var(--ink);
-  max-width:66ch
+  max-width:74ch;
 }
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
-  gap:.7rem;
-  margin:1.5rem 0
+.major-section{
+  margin:2.5rem 0;
 }
 
-.stat{
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:12px;
-  padding:.85rem 1rem
-}
-
-.stat .n{
-  font-family:'Fraunces',Georgia,serif;
-  font-size:1.7rem;
-  color:var(--teal);
-  font-weight:600;
-  line-height:1
-}
-
-.stat .l{
-  font-size:.78rem;
-  color:var(--ink3);
-  margin-top:.3rem
-}
-
-ul.haz{
-  list-style:none;
-  padding:0;
-  margin:.5rem 0;
-  display:flex;
-  flex-wrap:wrap;
-  gap:.5rem
-}
-
-ul.haz li{
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:999px;
-  padding:.3rem .8rem;
-  font-size:.85rem
-}
-
-ul.haz b{color:var(--teal)}
-
-.tablewrap{
-  overflow-x:auto;
-  border:1px solid var(--rule);
-  border-radius:12px;
-  background:var(--paper)
-}
-
-table{
-  border-collapse:collapse;
-  width:100%;
-  font-size:.86rem;
-  min-width:560px
-}
-
-th,td{
-  text-align:left;
-  padding:.55rem .8rem;
-  border-bottom:1px solid var(--rule);
-  vertical-align:top
-}
-
-th{
-  font-size:.74rem;
-  text-transform:uppercase;
-  letter-spacing:.03em;
-  color:var(--ink3);
-  background:#faf6ec
-}
-
-tr:last-child td{border-bottom:none}
-
-.tag{
-  font-weight:700;
-  color:var(--teal)
-}
-
-.hmp{
-  background:#eef4f4;
-  border:1px solid #cfe0e0;
-  border-radius:12px;
-  padding:1.1rem 1.3rem;
-  margin:1rem 0
-}
-
-.hmp p{
-  margin:.2rem 0 .9rem;
-  font-size:.92rem
-}
-
-.copybtn{
-  font:600 .8rem 'Public Sans',sans-serif;
-  color:#004c53;
-  background:none;
-  border:1px solid #004c53;
-  border-radius:8px;
-  padding:.4rem .85rem;
-  cursor:pointer;
-  margin-top:.8rem
-}
-
-.decl-filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.4rem;
-  margin:.2rem 0 .5rem
-}
-
-.decl-chip{
-  font:700 .82rem/1 'Public Sans',sans-serif;
-  color:var(--teal);
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:999px;
-  padding:.42rem .72rem;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:.42rem
-}
-
-.decl-chip .n{
-  background:#eef3f2;
-  border-radius:999px;
-  padding:.06rem .44rem;
-  font-size:.76rem;
-  font-weight:700
-}
-
-.decl-chip[aria-pressed="true"]{
-  background:var(--teal);
-  color:#fff;
-  border-color:var(--teal)
-}
-
-.decl-chip[aria-pressed="true"] .n{
-  background:rgba(255,255,255,.22);
-  color:#fff
-}
-
-.decl-chip.off{
-  opacity:.42;
-  cursor:default
-}
-
-.decl-count{
-  font-size:.82rem;
-  color:var(--ink3);
-  margin:.05rem 0 .55rem
-}
-
-.tablewrap.scroll{
-  max-height:430px;
-  overflow-y:auto
-}
-
-.tablewrap.scroll thead th{
-  position:sticky;
-  top:0;
-  z-index:1
-}
-
-tr.hide{display:none}
-
-th.sortable{
-  cursor:pointer;
-  user-select:none;
-  -webkit-user-select:none;
-  white-space:nowrap
-}
-
-th.sortable::after{
-  content:"↕";
-  opacity:.32;
-  margin-left:.35em;
-  font-weight:400
-}
-
-th.sortable:hover{color:var(--teal)}
-
-th[aria-sort="ascending"]::after{
-  content:"↑";
-  opacity:.95
-}
-
-th[aria-sort="descending"]::after{
-  content:"↓";
-  opacity:.95
-}
-
-.risk-section{margin:2.4rem 0}
-
-.section-heading-row{
+.section-head{
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
   gap:1rem;
-  margin-bottom:1rem
+  margin-bottom:1rem;
 }
 
-.section-heading-row h2{margin:0 0 .25rem}
+.section-head h2{
+  margin:0 0 .25rem;
+}
 
 .section-deck{
+  max-width:72ch;
   margin:0;
   color:var(--ink3);
-  font-size:.92rem;
-  max-width:66ch
+  font-size:.9rem;
 }
 
-.risk-fips{
-  font-size:.72rem;
-  font-weight:700;
-  letter-spacing:.04em;
+.section-meta{
+  flex:none;
+  font-size:.7rem;
+  font-weight:800;
   text-transform:uppercase;
+  letter-spacing:.055em;
   color:var(--ink3);
-  white-space:nowrap
+  white-space:nowrap;
 }
 
 .risk-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:1rem
+  gap:1rem;
 }
 
 .risk-card{
   background:var(--paper);
   border:1px solid var(--rule);
-  border-radius:16px;
-  padding:1.15rem 1.2rem;
-  box-shadow:0 1px 0 rgba(43,43,43,.03)
-}
-
-.risk-card h3{
-  font-family:'Fraunces',Georgia,serif;
-  color:var(--teal);
-  font-size:1.18rem;
-  line-height:1.2;
-  margin:.15rem 0 0
+  border-radius:18px;
+  padding:1.15rem 1.2rem 1.25rem;
+  box-shadow:var(--shadow);
 }
 
 .risk-kicker{
-  font-size:.69rem;
+  font-size:.68rem;
   font-weight:800;
-  letter-spacing:.09em;
+  letter-spacing:.085em;
   text-transform:uppercase;
-  color:#8a5a2b
+  color:var(--ink3);
 }
 
 .risk-version{
+  margin:.05rem 0 .95rem;
+  font-size:.75rem;
   color:var(--ink3);
-  font-size:.78rem;
-  margin:.18rem 0 .9rem
+}
+
+.svi-lead,
+.nri-lead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin:.65rem 0 .95rem;
 }
 
 .risk-score{
   font-family:'Fraunces',Georgia,serif;
   color:var(--teal);
   font-size:2.15rem;
-  font-weight:600;
-  line-height:1
+  line-height:.95;
+  letter-spacing:-.04em;
 }
 
-.risk-score.na{font-size:1.55rem}
-
 .risk-score-label{
+  margin-top:.28rem;
+  font-size:.72rem;
   color:var(--ink3);
-  font-size:.76rem;
-  margin-top:.2rem
+}
+
+.risk-rating{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  background:#edf5f4;
+  color:var(--teal);
+  border:1px solid #cfe0df;
+  font-size:.72rem;
+  font-weight:800;
+  padding:.3rem .6rem;
+  white-space:nowrap;
 }
 
 .risk-interpret{
-  color:var(--ink3);
   font-size:.83rem;
-  margin:.7rem 0
+  color:var(--ink2);
+  margin:.3rem 0 .95rem;
 }
 
-.theme-list{margin-top:.9rem}
-
-.theme-row{margin:.58rem 0}
+.theme-list{
+  display:grid;
+  gap:.65rem;
+  margin-top:.9rem;
+}
 
 .theme-head{
   display:flex;
   justify-content:space-between;
+  align-items:baseline;
   gap:.8rem;
-  font-size:.76rem
+  font-size:.76rem;
+}
+
+.theme-head span{
+  color:var(--ink2);
 }
 
 .theme-head b{
   color:var(--teal);
-  font-variant-numeric:tabular-nums
+  font-variant-numeric:tabular-nums;
 }
 
 .theme-track{
   height:6px;
-  overflow:hidden;
   border-radius:999px;
-  background:#e8e0d0;
-  margin-top:.25rem
+  background:#ebe5d8;
+  overflow:hidden;
+  margin-top:.25rem;
 }
 
 .theme-track span{
   display:block;
   height:100%;
-  border-radius:inherit;
-  background:#4c8b90
-}
-
-.nri-lead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem
-}
-
-.risk-rating{
-  display:inline-block;
+  background:#2d7d83;
   border-radius:999px;
-  background:#f3e4d2;
-  color:#7a4a20;
-  font-size:.72rem;
-  font-weight:700;
-  padding:.3rem .62rem;
-  text-align:center
 }
 
 .risk-mini-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:.55rem;
-  margin-top:1rem
+  margin-top:.8rem;
 }
 
 .risk-mini{
-  border-top:1px solid var(--rule);
-  padding-top:.55rem;
-  min-width:0
+  background:#faf7ef;
+  border:1px solid #ece5d7;
+  border-radius:11px;
+  padding:.7rem;
 }
 
-.risk-mini span,
-.risk-mini small{
+.risk-mini span{
   display:block;
   color:var(--ink3);
-  font-size:.68rem;
-  line-height:1.35
+  font-size:.67rem;
+  line-height:1.3;
 }
 
 .risk-mini b{
   display:block;
+  margin-top:.2rem;
   color:var(--teal);
-  font-size:.95rem;
-  margin:.18rem 0;
-  overflow-wrap:anywhere
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1rem;
+  line-height:1.15;
+}
+
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.63rem;
+  line-height:1.25;
+  margin-top:.12rem;
 }
 
 .risk-source{
+  margin:.9rem 0 0;
+  font-size:.74rem;
   color:var(--ink3);
-  font-size:.78rem;
-  margin:.9rem 0 0
 }
-
-.risk-source a{font-weight:600}
 
 .risk-caution{
-  background:#eef4f4;
-  border:1px solid #cfe0e0;
-  border-radius:10px;
-  padding:.8rem .9rem;
   margin-top:.8rem;
-  color:#3f5557;
-  font-size:.8rem
+  padding:.72rem .85rem;
+  border:1px solid #d6dfdc;
+  border-radius:11px;
+  background:#f0f6f5;
+  font-size:.77rem;
+  color:#4b5b58;
 }
 
-.method{
+.map-shell{
   background:var(--paper);
   border:1px solid var(--rule);
-  border-radius:12px;
-  padding:1.2rem 1.4rem;
-  margin:2rem 0;
-  font-size:.92rem
+  border-radius:18px;
+  padding:1rem;
+  box-shadow:var(--shadow);
+  margin:1rem 0;
 }
 
-.method h2{
-  margin-top:0;
-  font-size:1.1rem
-}
-
-/* Citation block */
-.citation{
-  background:#153c40;
-  color:#eef9f8;
-  border-radius:14px;
-  padding:1.15rem 1.25rem;
-  margin:2rem 0
-}
-
-.citation h2{
-  color:#fff;
-  margin:0 0 .45rem;
-  font-size:1.2rem
-}
-
-.citation p{
-  font-size:.84rem;
-  color:#d6e9e7;
-  margin:.2rem 0 .85rem;
-  max-width:68ch
-}
-
-.cite-tabs{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.4rem;
-  margin:0 0 .7rem
-}
-
-.citefmt{
-  font:700 .78rem 'Public Sans',sans-serif;
-  color:#d6e9e7;
-  background:transparent;
-  border:1px solid rgba(255,255,255,.28);
-  border-radius:999px;
-  padding:.38rem .72rem;
-  cursor:pointer
-}
-
-.citefmt:hover{
-  background:rgba(255,255,255,.08)
-}
-
-.citefmt[aria-pressed="true"]{
-  background:#fff;
-  color:#153c40;
-  border-color:#fff
-}
-
-.cite-text{
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:9px;
-  padding:.85rem;
-  font-size:.79rem;
-  line-height:1.6;
-  color:#fff
-}
-
-.citation .copybtn{
-  color:#fff;
-  border-color:#bcd8d5
-}
-
-.citation .copybtn:hover{
-  background:rgba(255,255,255,.08)
-}
-
-.pa-note{
-  font-size:.9rem;
-  color:var(--ink3);
-  max-width:64ch;
-  margin:.4rem 0 .8rem
-}
-
-table.pa-cat tfoot td{
-  font-weight:700;
-  color:var(--teal);
-  border-top:2px solid var(--rule);
-  background:#faf6ec
-}
-
-.pa-cat .catcode{
-  color:var(--ink3);
-  font-weight:400;
-  font-size:.85em;
-  margin-left:.15em
-}
-
-table.pa-cat td:nth-child(2),
-table.pa-cat th:nth-child(2),
-table.pa-cat td:nth-child(3),
-table.pa-cat th:nth-child(3){
-  text-align:right;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap
-}
-
-.jgrid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.4rem .7rem;
-  margin:.6rem 0
-}
-
-.jgrid a{
-  font-size:.86rem;
-  text-decoration:none
-}
-
-ol.rank{
-  padding-left:0;
-  list-style:none;
-  counter-reset:r
-}
-
-ol.rank li{
-  counter-increment:r;
-  display:flex;
-  align-items:baseline;
-  gap:.7rem;
-  padding:.45rem 0;
-  border-bottom:1px solid var(--rule)
-}
-
-ol.rank li::before{
-  content:counter(r);
-  font-family:'Fraunces',serif;
-  color:var(--ink3);
-  min-width:2.6ch;
-  text-align:right
-}
-
-ol.rank a{
-  text-decoration:none;
-  font-weight:600
-}
-
-ol.rank .k{
-  font-size:.7rem;
-  text-transform:uppercase;
-  letter-spacing:.04em;
-  color:var(--ink3)
-}
-
-ol.rank .c{
-  color:var(--ink3);
-  font-size:.9rem;
-  margin-left:auto
-}
-
-footer.site{
-  border-top:1px solid var(--rule);
-  margin-top:2rem;
-  padding:1.5rem 0;
-  color:var(--ink3);
-  font-size:.85rem
-}
-
-footer.site a{color:var(--ink3)}
-
-nav.ddnav .navburger{
-  display:none;
-  flex-direction:column;
-  justify-content:center;
-  gap:5px;
-  width:40px;
-  height:40px;
-  background:none;
-  border:0;
-  cursor:pointer;
-  padding:8px;
-  border-radius:8px
-}
-
-nav.ddnav .navburger span{
-  display:block;
-  height:2px;
-  width:100%;
-  background:#1d1813;
-  border-radius:2px;
-  transition:.2s
-}
-
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){
-  transform:translateY(7px) rotate(45deg)
-}
-
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){
-  opacity:0
-}
-
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){
-  transform:translateY(-7px) rotate(-45deg)
-}
-
-.mobilemenu{display:none}
-
-@media(max-width:720px){
-  .section-heading-row{
-    align-items:flex-start;
-    flex-direction:column
-  }
-
-  .risk-grid{grid-template-columns:1fr}
-
-  .risk-mini-grid{grid-template-columns:1fr}
-
-  nav.ddnav{
-    flex-direction:row;
-    align-items:center;
-    justify-content:space-between;
-    height:60px;
-    padding-top:0;
-    padding-bottom:0
-  }
-
-  nav.ddnav .navmeta{display:none}
-  nav.ddnav .navlinks{display:none !important}
-  nav.ddnav .navburger{display:flex}
-
-  .mobilemenu:not([hidden]){
-    display:flex;
-    flex-direction:column;
-    gap:2px;
-    padding:10px clamp(18px,4vw,48px) 18px;
-    background:#f6f1e7;
-    border-bottom:1px solid #e0d8c5;
-    position:sticky;
-    top:60px;
-    z-index:49
-  }
-
-  .mobilemenu>a{
-    font-size:15px;
-    font-weight:500;
-    color:#1d1813;
-    text-decoration:none;
-    padding:11px 12px;
-    border-radius:8px
-  }
-
-  .mobilemenu>a.on{
-    color:#004c53;
-    background:#d7e9ea
-  }
-
-  .mm-section{
-    display:flex;
-    flex-direction:column;
-    gap:2px;
-    padding:6px 0;
-    margin:2px 0;
-    border-top:1px solid #e0d8c5
-  }
-
-  .mm-label{
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:1.2px;
-    text-transform:uppercase;
-    color:#938a78;
-    padding:6px 12px 2px
-  }
-
-  .mm-section a{
-    font-size:15px;
-    font-weight:500;
-    color:#5b5346;
-    text-decoration:none;
-    padding:10px 12px 10px 22px;
-    border-radius:8px
-  }
-
-  .mm-section a.on{
-    color:#004c53;
-    background:#d7e9ea
-  }
-}
-""".strip()
-
-
-FONTS = (
-    '<link rel="preconnect" href="https://fonts.googleapis.com">'
-    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-    '<link href="https://fonts.googleapis.com/css2?'
-    'family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600'
-    '&family=Public+Sans:wght@400;500;600;700'
-    '&display=swap" rel="stylesheet">'
-)
-
-
-HEAD = (
-    FONTS
-    + '<link rel="stylesheet" '
-      'href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">'
-    + "<style>"
-    + CSS
-    + """
 #locmap{
-  height:320px;
-  border-radius:10px;
+  height:330px;
+  border-radius:12px;
   border:1px solid #e4dccb;
-  margin:1rem 0 .5rem;
-  background:#f6f1e7
-}
-
-@media(max-width:600px){
-  #locmap{height:240px}
+  background:#f6f1e7;
 }
 
 .locmap-cap{
-  font:600 .86rem/1.3 'Public Sans',sans-serif;
+  font:600 .8rem/1.3 'Public Sans',sans-serif;
   color:#004c53;
-  margin:0 0 1.5rem;
-  text-align:center
+  margin:.65rem 0 .05rem;
+  text-align:center;
 }
 
-.locmap-cap b{font-weight:700}
+.locmap-cap b{
+  font-weight:700;
+}
 
 .loc-lbl{
   background:transparent;
@@ -1651,74 +1396,687 @@ HEAD = (
   pointer-events:none;
   text-shadow:
     0 1px 2px rgba(0,0,0,.6),
-    0 0 3px rgba(0,0,0,.55)
+    0 0 3px rgba(0,0,0,.55);
 }
 
 .loc-lbl:before,
 .loc-lbl:after{
-  display:none !important
+  display:none !important;
 }
-"""
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.65rem 0 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.32rem .78rem;
+  font-size:.82rem;
+}
+
+ul.haz b{
+  color:var(--teal);
+  margin-left:.15rem;
+}
+
+.assistance-stack{
+  display:grid;
+  gap:1rem;
+  margin-top:1rem;
+}
+
+.data-panel{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.05rem 1.1rem 1.15rem;
+  box-shadow:var(--shadow);
+}
+
+.data-panel h3{
+  margin-top:0;
+}
+
+.pa-note{
+  font-size:.86rem;
+  color:var(--ink3);
+  max-width:74ch;
+  margin:.3rem 0 .85rem;
+}
+
+.hm-stats,
+.ia-stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  background:#e2dccb;
+  border:1px solid #cec7b6;
+  border-radius:10px;
+  overflow:hidden;
+  margin:.65rem 0 .9rem;
+}
+
+.hm-stat,
+.ia-stat{
+  background:#faf7ef;
+  padding:.75rem .9rem;
+}
+
+.hm-n,
+.ia-n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.15rem;
+  color:#004c53;
+  letter-spacing:-.3px;
+}
+
+.hm-l,
+.ia-l{
+  font-size:.7rem;
+  color:#6b6357;
+  margin-top:.15rem;
+}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper);
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.84rem;
+  min-width:560px;
+}
+
+th,
+td{
+  text-align:left;
+  padding:.58rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top;
+}
+
+th{
+  font-size:.71rem;
+  text-transform:uppercase;
+  letter-spacing:.035em;
+  color:var(--ink3);
+  background:#faf6ec;
+}
+
+tr:last-child td{
+  border-bottom:none;
+}
+
+.tag{
+  font-weight:700;
+  color:var(--teal);
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec;
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em;
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.ft-list{
+  display:grid;
+  gap:1px;
+  background:#e2dccb;
+  border:1px solid #cec7b6;
+  border-radius:10px;
+  overflow:hidden;
+  margin:.6rem 0 .3rem;
+}
+
+.ft-row{
+  background:#faf7ef;
+  padding:.72rem .9rem;
+}
+
+.ft-top{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  align-items:baseline;
+}
+
+.ft-name{
+  font-size:.88rem;
+  color:#17211f;
+  font-weight:600;
+}
+
+.ft-date{
+  color:#6b6357;
+  font-weight:400;
+}
+
+.ft-val{
+  font-family:Fraunces,Georgia,serif;
+  font-size:1rem;
+  color:#004c53;
+}
+
+.ft-track{
+  position:relative;
+  height:11px;
+  margin:.5rem 0 .35rem;
+  background:#ece7d8;
+  border:1px solid #e2dccb;
+  border-radius:6px;
+  overflow:hidden;
+}
+
+.ft-gap{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background:#c85c2e;
+}
+
+.ft-flow{
+  position:absolute;
+  top:0;
+  height:100%;
+  background:#004c53;
+}
+
+.ft-meta{
+  font-size:.7rem;
+  color:#6b6357;
+}
+
+.ft-meta b{
+  color:#c85c2e;
+}
+
+.ft-axis{
+  position:relative;
+  height:1.1rem;
+  margin:.15rem .9rem 0;
+  font-size:.64rem;
+  color:#6b6357;
+}
+
+.ft-axis span{
+  position:absolute;
+  transform:translateX(-50%);
+}
+
+.ft-axis span:first-child{
+  transform:none;
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:14px;
+  padding:1.1rem 1.2rem;
+  margin:1rem 0;
+}
+
+.hmp p{
+  margin:.1rem 0 .9rem;
+  font-size:.88rem;
+}
+
+.copybtn{
+  display:inline-flex;
+  align-items:center;
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.42rem .8rem;
+  cursor:pointer;
+  margin-top:.8rem;
+  text-decoration:none;
+}
+
+.copybtn:hover{
+  background:#e6f0ef;
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem;
+}
+
+.decl-chip{
+  font:700 .78rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .7rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .42rem;
+  font-size:.73rem;
+  font-weight:700;
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal);
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff;
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default;
+}
+
+.decl-count{
+  font-size:.8rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem;
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto;
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+
+tr.hide{
+  display:none;
+}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap;
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400;
+}
+
+th.sortable:hover{
+  color:var(--teal);
+}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95;
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95;
+}
+
+.method{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0;
+  font-size:.86rem;
+}
+
+.method h2{
+  margin-top:0;
+  font-size:1.15rem;
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0;
+}
+
+.jgrid a{
+  font-size:.83rem;
+  text-decoration:none;
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r;
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule);
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right;
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600;
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3);
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.86rem;
+  margin-left:auto;
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.82rem;
+}
+
+footer.site a{
+  color:var(--ink3);
+}
+
+@media(max-width:860px){
+  .overview-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .risk-mini-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:720px){
+  .hero-top{
+    display:block;
+  }
+
+  .hero-actions{
+    justify-content:flex-start;
+    margin-top:.65rem;
+  }
+
+  .risk-grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-head{
+    display:block;
+  }
+
+  .section-meta{
+    margin-top:.45rem;
+  }
+}
+
+@media(max-width:600px){
+  .overview-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .overview-card{
+    min-height:112px;
+  }
+
+  #locmap{
+    height:245px;
+  }
+
+  .hm-stats,
+  .ia-stats{
+    grid-template-columns:1fr;
+  }
+}
+""".strip()
+
+
+FONTS = (
+    '<link rel="preconnect" href="https://fonts.googleapis.com">'
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    '<link href="https://fonts.googleapis.com/css2?'
+    'family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600'
+    '&family=Public+Sans:wght@400;500;600;700&display=swap" '
+    'rel="stylesheet">'
+)
+
+
+HEAD = (
+    FONTS
+    + '<link rel="stylesheet" '
+      'href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">'
+    + "<style>"
+    + CSS
     + "</style>"
 )
 
+
+# =============================================================================
+# SHARED PAGE CHROME
+# =============================================================================
 
 def header_html():
     return '<script src="/nav.js"></script>'
 
 
 def footer_html():
+
     return (
         '<footer class="site"><div class="wrap">'
-        'Disaster Data &middot; built from FEMA OpenFEMA, '
-        'refreshed weekly &middot; '
-        '<a href="https://forms.gle/NZ6bSadoXrKYHjjH8" '
+        'Disaster Data &middot; built from FEMA OpenFEMA, CDC/ATSDR SVI, '
+        'and FEMA National Risk Index data'
+        ' &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" '
         'target="_blank" rel="noopener">Report a data issue</a>'
-        ' &middot; '
-        '<a href="../../about.html">About and contact</a>'
+        ' &middot; <a href="../../about.html">About and contact</a>'
         '</div></footer>'
+
         '<!-- Cloudflare Web Analytics -->'
         '<script defer '
         'src="https://static.cloudflareinsights.com/beacon.min.js" '
-        'data-cf-beacon=\'{"token": '
-        '"ceea2416f66a424981ba37fcb9440d68"}\'></script>'
-        '<!-- End Cloudflare Web Analytics -->'
-        '<script>'
-        '(function(){'
-        'var b=document.querySelector(".navburger"),'
-        'm=document.querySelector(".mobilemenu");'
-        'if(b&&m){'
-        'b.addEventListener("click",function(){'
-        'var o=b.getAttribute("aria-expanded")==="true";'
-        'b.setAttribute("aria-expanded",String(!o));'
-        'if(o){'
-        'm.setAttribute("hidden","");'
-        '}else{'
-        'm.removeAttribute("hidden");'
-        '}'
-        '});'
-        '}'
-        '})();'
+        'data-cf-beacon=\'{"token":"ceea2416f66a424981ba37fcb9440d68"}\'>'
         '</script>'
+        '<!-- End Cloudflare Web Analytics -->'
     )
 
 
-def _oxford(items):
-    items = [i for i in items]
+# =============================================================================
+# SUMMARY / METHODOLOGY
+# =============================================================================
 
-    if not items:
+def summary_html(j):
+
+    hmp = j.get("hmp", [])
+
+    if not hmp:
         return ""
 
-    if len(items) == 1:
-        return items[0]
+    e = html.escape
 
-    if len(items) == 2:
-        return items[0] + " and " + items[1]
+    name = e(j["name"])
 
-    return ", ".join(items[:-1]) + ", and " + items[-1]
+    dates = sorted(
+        r.get("declarationDate", "")[:10]
+        for r in hmp
+        if r.get("declarationDate")
+    )
+
+    if dates and dates[0][:4] != dates[-1][:4]:
+
+        span = "between %s and %s" % (
+            dates[0][:4],
+            dates[-1][:4],
+        )
+
+    elif dates:
+
+        span = "in %s" % dates[0][:4]
+
+    else:
+
+        span = "since FY2000"
+
+    sents = [
+        "The federal disaster record for %s runs %s, covering %d declaration%s "
+        "in completed fiscal years."
+        % (
+            name,
+            span,
+            j["decl"],
+            "" if j["decl"] == 1 else "s",
+        )
+    ]
+
+    drs = [
+        r
+        for r in hmp
+        if r.get("declarationType") == "DR"
+    ]
+
+    if drs:
+
+        title = pretty_title(
+            drs[0].get("declarationTitle", "")
+        ).strip()
+
+        yr = drs[0].get(
+            "declarationDate",
+            "",
+        )[:4]
+
+        if title and yr:
+
+            sents.append(
+                "Its most recent major disaster declaration was %s in %s."
+                % (
+                    e(title),
+                    yr,
+                )
+            )
+
+    hz = j.get("hazards") or []
+
+    if len(hz) >= 2:
+
+        sents.append(
+            "The hazards behind these declarations were most often %s."
+            % _oxford(
+                [
+                    e(h.lower())
+                    for h, _ in hz[:3]
+                ]
+            )
+        )
+
+    elif len(hz) == 1:
+
+        sents.append(
+            "Every declaration in the completed-year record was tied to %s."
+            % e(hz[0][0].lower())
+        )
+
+    if (j.get("pa_obl") or 0) > 0:
+
+        tail = ""
+
+        if j.get("pa_top_cat"):
+
+            tail = (
+                ", with the largest category being %s"
+                % e(j["pa_top_cat"].lower())
+            )
+
+        sents.append(
+            "Since 2000, FEMA has obligated %s in Public Assistance "
+            "funding to the jurisdiction%s."
+            % (
+                _money_words(j["pa_obl"]),
+                tail,
+            )
+        )
+
+    if (j.get("ia") or {}).get("ihp", 0) > 0:
+
+        sents.append(
+            "FEMA Individual Assistance records show %s approved through "
+            "the Individuals and Households Program."
+            % _money_words(
+                (j.get("ia") or {}).get("ihp", 0)
+            )
+        )
+
+    return (
+        '<section class="jsummary"><p>%s</p></section>'
+        % " ".join(sents)
+    )
 
 
-def method_html(kind, spans=False):
+def method_html(j):
+
+    kind = j["kind"]
+    spans = bool(j.get("spans"))
+
     extra = {
         "county":
             "This page counts declarations that named this jurisdiction "
@@ -1731,127 +2089,536 @@ def method_html(kind, spans=False):
         "tribal":
             (
                 "Tribal areas are counted as their own jurisdictions, "
-                "separate from the counties they sit within."
+                "separate from counties."
                 + (
-                    " Because this nation's lands cross state lines, the "
-                    "declarations FEMA recorded for it in each state are "
-                    "combined here so its record is not split across pages."
+                    " Because this nation's lands cross state lines, FEMA "
+                    "declarations recorded for it in multiple states are "
+                    "combined here so the record is not split."
                     if spans
                     else ""
                 )
             ),
     }[kind]
 
+    risk_text = ""
+
+    if j.get("svi") or j.get("nri"):
+
+        risk_text = (
+            " Risk and vulnerability context is joined at the county-equivalent "
+            "level using the five-digit Census/FIPS GEOID. CDC/ATSDR SVI and "
+            "FEMA National Risk Index Social Vulnerability are different measures "
+            "and are not treated as interchangeable."
+        )
+
     return (
         '<section class="method">'
         '<h2>How these numbers are built</h2>'
-        "<p>"
-        "Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, "
-        "rebuilt each week. "
-        "A declaration is counted here once for each designated area it "
-        "names, so a single disaster covering many localities is counted "
-        "in each one. For that reason these jurisdiction counts do not "
-        "sum to %s's statewide total. "
-        "%s "
-        "Totals cover complete fiscal years (Oct 1 to Sep 30); the "
-        "in-progress year may appear in the most-recent list but is not "
-        "counted in the totals. Uses OpenFEMA data but is not endorsed by "
-        "or affiliated with FEMA."
-        "</p>"
-        "</section>"
-        % (STATE_NAME, extra)
-    )
-
-
-# ---------------------------------------------------------------- citation feature
-def citation_html(j, canonical):
-    """
-    Visible citation helper for a generated jurisdiction profile.
-
-    The access date is filled in client-side so it reflects the day the
-    reader actually uses the page rather than the date the static file
-    was built.
-
-    Keep the source statement limited to data this generator actually uses.
-    """
-    e = html.escape
-
-    display_name = j["name"].replace(" (city)", "")
-
-    title = (
-        "%s, %s: Disaster Declarations, Federal Assistance, "
-        "and Mitigation History"
+        '<p>'
+        "Declaration history comes from FEMA's OpenFEMA Disaster Declarations "
+        "Summaries. A declaration is counted once for each designated area it "
+        "names, so a single disaster covering many localities is counted in "
+        "each locality. For that reason, jurisdiction counts do not sum to "
+        "%s's statewide total. %s Headline declaration totals cover completed "
+        "federal fiscal years (Oct. 1 through Sept. 30). Activity from the "
+        "current fiscal year may appear as the most recent event before it is "
+        "included in those totals.%s Public Assistance, Individual Assistance, "
+        "and Hazard Mitigation figures reflect the underlying federal datasets "
+        "and may change as records are updated or projects close out. "
+        "DisasterData.IO uses federal source data but is not endorsed by or "
+        "affiliated with FEMA, CDC, or ATSDR."
+        '</p></section>'
         % (
-            display_name,
             STATE_NAME,
+            extra,
+            risk_text,
         )
     )
 
-    bibkey = "disasterdata_%s_%s" % (
-        slugify(display_name).replace("-", "_"),
-        STATE_AB.lower(),
+
+# =============================================================================
+# TOP OVERVIEW CARDS
+# =============================================================================
+
+def hero_cards_html(j):
+
+    cards = []
+
+    common_hazard = (
+        j["hazards"][0][0]
+        if j.get("hazards")
+        else "No dominant hazard"
     )
+
+    cards.append(
+        (
+            "Federal disaster history",
+            format(j.get("decl", 0), ","),
+            "%s most common" % common_hazard,
+        )
+    )
+
+    nri = j.get("nri") or {}
+
+    if nri:
+
+        try:
+            score = "%.1f" % float(nri.get("riskScore"))
+        except Exception:
+            score = "N/A"
+
+        rating = nri.get(
+            "riskRating",
+            "Not rated",
+        )
+
+        cards.append(
+            (
+                "Natural-hazard risk",
+                score,
+                "FEMA NRI · %s" % rating,
+            )
+        )
+
+    elif j.get("latest"):
+
+        cards.append(
+            (
+                "Most recent",
+                fmt_date(j["latest"]),
+                "Newest declaration activity",
+            )
+        )
+
+    else:
+
+        cards.append(
+            (
+                "Major disasters",
+                format(j.get("dr", 0), ","),
+                "Stafford Act DR declarations",
+            )
+        )
+
+    ia = j.get("ia") or {}
+    pa = j.get("pa_obl") or 0
+
+    if ia.get("ihp", 0) > 0:
+
+        cards.append(
+            (
+                "Individual Assistance",
+                _money_short(ia.get("ihp", 0)),
+                "%s households approved"
+                % format(ia.get("app", 0), ","),
+            )
+        )
+
+        if pa > 0:
+
+            cards.append(
+                (
+                    "Public Assistance",
+                    _money_short(pa),
+                    "%s projects"
+                    % format(j.get("pa_proj", 0), ","),
+                )
+            )
+
+        elif j.get("latest"):
+
+            cards.append(
+                (
+                    "Most recent",
+                    fmt_date(j["latest"]),
+                    "Newest declaration activity",
+                )
+            )
+
+        else:
+
+            cards.append(
+                (
+                    "Major disasters",
+                    format(j.get("dr", 0), ","),
+                    "Stafford Act DR declarations",
+                )
+            )
+
+    elif pa > 0:
+
+        cards.append(
+            (
+                "Public Assistance",
+                _money_short(pa),
+                "%s projects"
+                % format(j.get("pa_proj", 0), ","),
+            )
+        )
+
+        if j.get("latest") and nri:
+
+            cards.append(
+                (
+                    "Most recent",
+                    fmt_date(j["latest"]),
+                    "Newest declaration activity",
+                )
+            )
+
+        else:
+
+            cards.append(
+                (
+                    "Major disasters",
+                    format(j.get("dr", 0), ","),
+                    "Stafford Act DR declarations",
+                )
+            )
+
+    else:
+
+        cards.append(
+            (
+                "Major disasters",
+                format(j.get("dr", 0), ","),
+                "Stafford Act DR declarations",
+            )
+        )
+
+        cards.append(
+            (
+                "Emergencies",
+                format(j.get("em", 0), ","),
+                "Federal EM declarations",
+            )
+        )
+
+    cards = cards[:4]
 
     return (
-        '<section class="citation" id="cite" '
-        'data-cite-title="%s" '
-        'data-cite-url="%s" '
-        'data-cite-key="%s">'
+        '<div class="overview-grid">'
+        + "".join(
+            (
+                '<article class="overview-card">'
+                '<div class="overview-kicker">%s</div>'
+                '<div>'
+                '<div class="overview-value">%s</div>'
+                '<div class="overview-label">%s</div>'
+                '</div>'
+                '</article>'
+            )
+            % (
+                html.escape(str(kicker)),
+                html.escape(str(value)),
+                html.escape(str(label)),
+            )
+            for kicker, value, label in cards
+        )
+        + "</div>"
+    )
 
-        '<h2>Cite this profile</h2>'
 
-        '<p>'
-        'Choose a citation style, then copy the formatted citation. '
-        'This profile is derived from FEMA OpenFEMA data and is updated '
-        'as the underlying Disaster Data build is refreshed.'
-        '</p>'
+# =============================================================================
+# SVI / NRI
+# =============================================================================
 
-        '<div class="cite-tabs" '
-        'role="group" aria-label="Citation format">'
+def _svi_percent(v):
 
-        '<button class="citefmt" type="button" '
-        'data-fmt="apa" aria-pressed="true">'
-        'APA'
-        '</button>'
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return None
 
-        '<button class="citefmt" type="button" '
-        'data-fmt="chicago" aria-pressed="false">'
-        'Chicago'
-        '</button>'
+    if v < 0 or v > 1:
+        return None
 
-        '<button class="citefmt" type="button" '
-        'data-fmt="plain" aria-pressed="false">'
-        'Plain text'
-        '</button>'
+    return v * 100.0
 
-        '<button class="citefmt" type="button" '
-        'data-fmt="bibtex" aria-pressed="false">'
-        'BibTeX'
-        '</button>'
 
-        '</div>'
+def risk_context_html(j):
 
-        '<div class="cite-text" '
-        'id="citationText" aria-live="polite"></div>'
+    svi = j.get("svi") or {}
+    nri = j.get("nri") or {}
 
-        '<button class="copybtn citecopy" type="button">'
-        'Copy citation'
-        '</button>'
+    if not svi and not nri:
+        return ""
 
-        '</section>'
+    e = html.escape
+
+    cards = []
+
+    if svi:
+
+        overall_raw = svi.get("overall")
+        overall_pct = _svi_percent(overall_raw)
+
+        if overall_pct is not None:
+
+            try:
+                overall_value = "%.4f" % float(overall_raw)
+            except Exception:
+                overall_value = "N/A"
+
+            lead = (
+                '<div class="svi-lead">'
+                '<div>'
+                '<div class="risk-score">%s</div>'
+                '<div class="risk-score-label">overall SVI score</div>'
+                '</div>'
+                '<span class="risk-rating">%.1fth percentile</span>'
+                '</div>'
+                % (
+                    e(overall_value),
+                    overall_pct,
+                )
+            )
+
+            interpretation = (
+                '<p class="risk-interpret">'
+                "This places the jurisdiction at approximately the %.1fth "
+                "percentile nationally for overall social vulnerability. "
+                "Higher SVI percentiles indicate greater relative vulnerability."
+                "</p>"
+                % overall_pct
+            )
+
+        else:
+
+            lead = (
+                '<div class="svi-lead">'
+                '<div>'
+                '<div class="risk-score">N/A</div>'
+                '<div class="risk-score-label">overall SVI</div>'
+                '</div>'
+                '</div>'
+            )
+
+            interpretation = ""
+
+        themes = [
+            ("Socioeconomic status", svi.get("socioeconomic")),
+            ("Household characteristics", svi.get("household")),
+            ("Racial & ethnic minority status", svi.get("minority")),
+            ("Housing type & transportation", svi.get("housingTransportation")),
+        ]
+
+        theme_rows = []
+
+        for label, value in themes:
+
+            pct = _svi_percent(value)
+
+            if pct is None:
+                continue
+
+            width = max(
+                0,
+                min(100, pct),
+            )
+
+            theme_rows.append(
+                '<div class="theme-row">'
+                '<div class="theme-head">'
+                '<span>%s</span>'
+                '<b>%.1f</b>'
+                '</div>'
+                '<div class="theme-track">'
+                '<span style="width:%.1f%%"></span>'
+                '</div>'
+                '</div>'
+                % (
+                    e(label),
+                    pct,
+                    width,
+                )
+            )
+
+        cards.append(
+            '<article class="risk-card">'
+            '<div class="risk-kicker">CDC / ATSDR</div>'
+            '<h3>Social Vulnerability Index</h3>'
+            '<div class="risk-version">2022 county-level SVI</div>'
+            '%s'
+            '%s'
+            '<div class="theme-list">%s</div>'
+            '<p class="risk-source">'
+            "CDC/ATSDR SVI is a percentile-based measure used to identify "
+            "communities that may need additional support before, during, "
+            "or after hazardous events."
+            '</p>'
+            '</article>'
+            % (
+                lead,
+                interpretation,
+                "".join(theme_rows),
+            )
+        )
+
+    if nri:
+
+        try:
+            risk_score = "%.1f" % float(
+                nri.get("riskScore")
+            )
+        except Exception:
+            risk_score = "N/A"
+
+        risk_rating = str(
+            nri.get("riskRating")
+            or "Not rated"
+        )
+
+        version = str(
+            nri.get("version")
+            or "County-level NRI"
+        )
+
+        try:
+            eal = _money_short(
+                nri.get("ealValue")
+            )
+        except Exception:
+            eal = "N/A"
+
+        try:
+            sv_score = "%.1f" % float(
+                nri.get("socialVulnerabilityScore")
+            )
+        except Exception:
+            sv_score = "N/A"
+
+        sv_rating = str(
+            nri.get("socialVulnerabilityRating")
+            or "Not rated"
+        )
+
+        try:
+            res_score = "%.1f" % float(
+                nri.get("resilienceScore")
+            )
+        except Exception:
+            res_score = "N/A"
+
+        res_rating = str(
+            nri.get("resilienceRating")
+            or "Not rated"
+        )
+
+        try:
+            eal_score = "%.1f" % float(
+                nri.get("ealScore")
+            )
+        except Exception:
+            eal_score = "N/A"
+
+        eal_rating = str(
+            nri.get("ealRating")
+            or "Not rated"
+        )
+
+        cards.append(
+            '<article class="risk-card">'
+            '<div class="risk-kicker">FEMA</div>'
+            '<h3>National Risk Index</h3>'
+            '<div class="risk-version">%s</div>'
+            '<div class="nri-lead">'
+            '<div>'
+            '<div class="risk-score">%s</div>'
+            '<div class="risk-score-label">overall risk score</div>'
+            '</div>'
+            '<span class="risk-rating">%s</span>'
+            '</div>'
+            '<div class="risk-mini-grid">'
+            '<div class="risk-mini">'
+            '<span>Expected annual loss</span>'
+            '<b>%s</b>'
+            '<small>Score %s · %s</small>'
+            '</div>'
+            '<div class="risk-mini">'
+            '<span>NRI social vulnerability</span>'
+            '<b>%s</b>'
+            '<small>%s</small>'
+            '</div>'
+            '<div class="risk-mini">'
+            '<span>Community resilience</span>'
+            '<b>%s</b>'
+            '<small>%s</small>'
+            '</div>'
+            '</div>'
+            '<p class="risk-source">'
+            "The FEMA National Risk Index describes relative natural-hazard "
+            "risk using Expected Annual Loss, Social Vulnerability, and "
+            "Community Resilience."
+            '</p>'
+            '</article>'
+            % (
+                e(version),
+                e(risk_score),
+                e(risk_rating),
+                e(eal),
+                e(eal_score),
+                e(eal_rating),
+                e(sv_score),
+                e(sv_rating),
+                e(res_score),
+                e(res_rating),
+            )
+        )
+
+    fips = (
+        svi.get("fips")
+        or nri.get("fips")
+        or j.get("risk_fips")
+        or ""
+    )
+
+    meta = ""
+
+    if fips:
+
+        meta = (
+            '<div class="section-meta">'
+            "County FIPS %s"
+            "</div>"
+            % e(str(fips))
+        )
+
+    return (
+        '<section class="major-section">'
+        '<div class="section-head">'
+        '<div>'
+        '<h2>Risk and vulnerability context</h2>'
+        '<p class="section-deck">'
+        "Historical declarations describe what has happened here. "
+        "CDC SVI and FEMA NRI add context about community vulnerability "
+        "and underlying natural-hazard risk."
+        "</p>"
+        "</div>"
+        "%s"
+        "</div>"
+        '<div class="risk-grid">%s</div>'
+        '<div class="risk-caution">'
+        '<b>About these measures:</b> '
+        "CDC/ATSDR Social Vulnerability Index and FEMA National Risk Index "
+        "Social Vulnerability are separate measures built using different "
+        "methods. They are shown together for context and should not be "
+        "interpreted as equivalent scores."
+        "</div>"
+        "</section>"
         % (
-            e(title, quote=True),
-            e(canonical, quote=True),
-            e(bibkey, quote=True),
+            meta,
+            "".join(cards),
         )
     )
 
 
-# ---------------------------------------------------------------- PA category breakdown
+# =============================================================================
+# PUBLIC ASSISTANCE
+# =============================================================================
+
 def pa_breakdown_html(j):
-    """
-    Per-jurisdiction Public Assistance category table.
-    """
+
     cats = j.get("pa_cats") or {}
 
     if not cats:
@@ -1861,7 +2628,10 @@ def pa_breakdown_html(j):
         (
             [
                 code,
-                PA_CAT_LABELS.get(code, "Other"),
+                PA_CAT_LABELS.get(
+                    code,
+                    "Other",
+                ),
                 vals[0],
                 vals[1],
             ]
@@ -1870,18 +2640,20 @@ def pa_breakdown_html(j):
         key=lambda x: -x[2],
     )
 
-    total_obl = sum(r[2] for r in rows_data)
-    total_proj = sum(r[3] for r in rows_data)
+    total_obl = sum(
+        r[2]
+        for r in rows_data
+    )
 
-    money = lambda n: "$" + format(
-        int(round(n)),
-        ",",
+    total_proj = sum(
+        r[3]
+        for r in rows_data
     )
 
     body = "".join(
         (
             "<tr>"
-            "<td>%s<span class='catcode'>(%s)</span></td>"
+            "<td>%s<span class='catcode'> (%s)</span></td>"
             "<td>%s</td>"
             "<td>%s</td>"
             "</tr>"
@@ -1890,7 +2662,7 @@ def pa_breakdown_html(j):
             html.escape(lbl),
             html.escape(code),
             format(proj, ","),
-            money(obl),
+            _money_full(obl),
         )
         for code, lbl, obl, proj in rows_data
     )
@@ -1903,39 +2675,30 @@ def pa_breakdown_html(j):
         "</tr>"
         % (
             format(total_proj, ","),
-            money(total_obl),
+            _money_full(total_obl),
         )
     )
 
     return (
-        '<section>'
-        '<h2>Federal Public Assistance by category</h2>'
-
+        '<section class="data-panel">'
+        '<h3>Public Assistance by category</h3>'
         '<p class="pa-note">'
-        'Federal share obligated to this jurisdiction under FEMA Public '
-        'Assistance since 2000, grouped by damage category. Figures are '
-        'rounded to the nearest dollar and reflect obligations, which may '
-        'change as projects close out.'
-        '</p>'
-
+        "Federal share obligated to this jurisdiction under FEMA Public "
+        "Assistance since 2000, grouped by damage category. Obligations may "
+        "change as projects are amended or closed."
+        "</p>"
         '<div class="tablewrap">'
         '<table class="pa-cat">'
-
-        '<thead>'
-        '<tr>'
-        '<th>Category</th>'
-        '<th>Projects</th>'
-        '<th>Federal share obligated</th>'
-        '</tr>'
-        '</thead>'
-
-        '<tbody>%s</tbody>'
-
-        '<tfoot>%s</tfoot>'
-
-        '</table>'
-        '</div>'
-        '</section>'
+        '<thead><tr>'
+        "<th>Category</th>"
+        "<th>Projects</th>"
+        "<th>Federal share obligated</th>"
+        "</tr></thead>"
+        "<tbody>%s</tbody>"
+        "<tfoot>%s</tfoot>"
+        "</table>"
+        "</div>"
+        "</section>"
         % (
             body,
             foot,
@@ -1943,147 +2706,12 @@ def pa_breakdown_html(j):
     )
 
 
-# ---------------------------------------------------------------- data-driven prose
-def _money_words(n):
-    """
-    Public Assistance dollars in readable words.
-    """
-    n = float(n or 0)
-
-    if n >= 1e9:
-        return "about $%.1f billion" % (n / 1e9)
-
-    if n >= 1e6:
-        return "about $%.1f million" % (n / 1e6)
-
-    return "$" + format(
-        int(round(n)),
-        ",",
-    )
-
-
-def summary_html(j):
-    """
-    Short plain-language jurisdiction summary.
-    """
-    hmp = j.get("hmp", [])
-
-    if not hmp:
-        return ""
-
-    e = html.escape
-    name = e(j["name"])
-
-    dates = sorted(
-        r.get("declarationDate", "")[:10]
-        for r in hmp
-        if r.get("declarationDate")
-    )
-
-    if dates and dates[0][:4] != dates[-1][:4]:
-        span = "between %s and %s" % (
-            dates[0][:4],
-            dates[-1][:4],
-        )
-
-    elif dates:
-        span = "in %s" % dates[0][:4]
-
-    else:
-        span = "since FY2000"
-
-    sents = [
-        (
-            "The federal disaster record for %s runs %s, covering "
-            "%d declaration%s in all."
-            % (
-                name,
-                span,
-                j["decl"],
-                "" if j["decl"] == 1 else "s",
-            )
-        )
-    ]
-
-    drs = [
-        r
-        for r in hmp
-        if r.get("declarationType") == "DR"
-    ]
-
-    if drs:
-        title = pretty_title(
-            drs[0].get("declarationTitle", "")
-        ).strip()
-
-        yr = drs[0].get(
-            "declarationDate",
-            "",
-        )[:4]
-
-        if title and yr:
-            sents.append(
-                "Its most recent major disaster declaration was %s in %s."
-                % (
-                    e(title),
-                    yr,
-                )
-            )
-
-    hz = j.get("hazards") or []
-
-    if len(hz) >= 2:
-        sents.append(
-            "The hazards behind these declarations were most often %s."
-            % _oxford(
-                [
-                    e(h.lower())
-                    for h, _ in hz[:3]
-                ]
-            )
-        )
-
-    elif len(hz) == 1:
-        sents.append(
-            "Every one was tied to %s."
-            % e(
-                hz[0][0].lower()
-            )
-        )
-
-    if (j.get("pa_obl") or 0) > 0:
-        tail = (
-            ", most of it for %s"
-            % e(
-                j["pa_top_cat"].lower()
-            )
-            if j.get("pa_top_cat")
-            else ""
-        )
-
-        sents.append(
-            "Since 2000, FEMA has obligated %s in Public Assistance "
-            "funding to the jurisdiction%s."
-            % (
-                _money_words(
-                    j["pa_obl"]
-                ),
-                tail,
-            )
-        )
-
-    return (
-        '<section class="jsummary">'
-        '<p>%s</p>'
-        '</section>'
-        % " ".join(sents)
-    )
-
+# =============================================================================
+# PA OBLIGATION TIMING
+# =============================================================================
 
 def pa_timing_html(j):
-    """
-    Per-disaster federal obligation timing.
-    """
+
     timing = j.get("pa_timing") or {}
 
     if not timing:
@@ -2094,6 +2722,7 @@ def pa_timing_html(j):
     meta = {}
 
     for r in j.get("hmp", []):
+
         m = re.search(
             r"(\d+)",
             r.get(
@@ -2103,6 +2732,7 @@ def pa_timing_html(j):
         )
 
         if m:
+
             meta[m.group(1)] = (
                 pretty_title(
                     r.get(
@@ -2117,7 +2747,9 @@ def pa_timing_html(j):
             )
 
     def _days(d1, d2):
+
         try:
+
             a = datetime.datetime.strptime(
                 d1,
                 "%Y-%m-%d",
@@ -2131,11 +2763,13 @@ def pa_timing_html(j):
             return (b - a).days
 
         except Exception:
+
             return None
 
     rows = []
 
     for dn, v in timing.items():
+
         decl, first, last, obl, _tc = (
             list(v)
             + [
@@ -2166,18 +2800,18 @@ def pa_timing_html(j):
         if ld is None or ld < fd:
             ld = fd
 
-        rows.append({
-            "decl": decl,
-            "first": fd,
-            "last": ld,
-            "obl": float(
-                obl or 0
-            ),
-            "name": meta.get(
-                str(dn),
-                "DR-" + str(dn),
-            ),
-        })
+        rows.append(
+            {
+                "decl": decl,
+                "first": fd,
+                "last": ld,
+                "obl": float(obl or 0),
+                "name": meta.get(
+                    str(dn),
+                    "DR-" + str(dn),
+                ),
+            }
+        )
 
     if not rows:
         return ""
@@ -2220,24 +2854,10 @@ def pa_timing_html(j):
         ) // 2
     )
 
-    def _money(x):
-        x = float(x or 0)
-
-        if x >= 1e6:
-            return "$%.1fM" % (
-                x / 1e6
-            )
-
-        if x >= 1e3:
-            return "$%.0fK" % (
-                x / 1e3
-            )
-
-        return "$%d" % int(x)
-
     bars = []
 
     for r in rows:
+
         gapw = (
             r["first"]
             / scale
@@ -2255,40 +2875,26 @@ def pa_timing_html(j):
 
         bars.append(
             '<div class="ft-row">'
-
             '<div class="ft-top">'
-
             '<span class="ft-name">'
-            '%s '
+            "%s "
             '<span class="ft-date">%s</span>'
-            '</span>'
-
+            "</span>"
             '<span class="ft-val">%s</span>'
-
-            '</div>'
-
+            "</div>"
             '<div class="ft-track">'
-
-            '<span class="ft-gap" '
-            'style="width:%.1f%%">'
-            '</span>'
-
+            '<span class="ft-gap" style="width:%.1f%%"></span>'
             '<span class="ft-flow" '
-            'style="left:%.1f%%;width:%.1f%%">'
-            '</span>'
-
-            '</div>'
-
+            'style="left:%.1f%%;width:%.1f%%"></span>'
+            "</div>"
             '<div class="ft-meta">'
-            '<b>%d days</b> '
-            'to first federal obligation'
-            '</div>'
-
-            '</div>'
+            "<b>%d days</b> to first federal obligation"
+            "</div>"
+            "</div>"
             % (
                 e(r["name"]),
                 e(r["decl"][:4]),
-                _money(r["obl"]),
+                _money_short(r["obl"]),
                 gapw,
                 gapw,
                 floww,
@@ -2297,15 +2903,13 @@ def pa_timing_html(j):
         )
 
     ticks = "".join(
-        (
-            '<span style="left:%.1f%%">%d yr</span>'
-            % (
-                yy
-                * 365.0
-                / scale
-                * 100.0,
-                yy,
-            )
+        '<span style="left:%.1f%%">%d yr</span>'
+        % (
+            yy
+            * 365.0
+            / scale
+            * 100.0,
+            yy,
         )
         for yy in range(
             1,
@@ -2313,367 +2917,49 @@ def pa_timing_html(j):
         )
     )
 
-    css = (
-        "<style>"
-
-        ".ft-list{"
-        "display:grid;"
-        "gap:1px;"
-        "background:#e2dccb;"
-        "border:1px solid #cec7b6;"
-        "border-radius:8px;"
-        "overflow:hidden;"
-        "margin:.6rem 0 .3rem"
-        "}"
-
-        ".ft-row{"
-        "background:#f6f1e7;"
-        "padding:.7rem .9rem"
-        "}"
-
-        ".ft-top{"
-        "display:flex;"
-        "justify-content:space-between;"
-        "gap:.8rem;"
-        "align-items:baseline"
-        "}"
-
-        ".ft-name{"
-        "font-size:.92rem;"
-        "color:#17211f;"
-        "font-weight:600"
-        "}"
-
-        ".ft-date{"
-        "color:#6b6357;"
-        "font-weight:400"
-        "}"
-
-        ".ft-val{"
-        "font-family:Fraunces,Georgia,serif;"
-        "font-size:1rem;"
-        "color:#004c53"
-        "}"
-
-        ".ft-track{"
-        "position:relative;"
-        "height:11px;"
-        "margin:.5rem 0 .35rem;"
-        "background:#ece7d8;"
-        "border:1px solid #e2dccb;"
-        "border-radius:6px;"
-        "overflow:hidden"
-        "}"
-
-        ".ft-gap{"
-        "position:absolute;"
-        "top:0;"
-        "left:0;"
-        "height:100%;"
-        "background:#c85c2e"
-        "}"
-
-        ".ft-flow{"
-        "position:absolute;"
-        "top:0;"
-        "height:100%;"
-        "background:#004c53"
-        "}"
-
-        ".ft-meta{"
-        "font-size:.72rem;"
-        "color:#6b6357"
-        "}"
-
-        ".ft-meta b{"
-        "color:#c85c2e"
-        "}"
-
-        ".ft-axis{"
-        "position:relative;"
-        "height:1.1rem;"
-        "margin:.15rem .9rem 0;"
-        "font-size:.66rem;"
-        "color:#6b6357"
-        "}"
-
-        ".ft-axis span{"
-        "position:absolute;"
-        "transform:translateX(-50%)"
-        "}"
-
-        ".ft-axis span:first-child{"
-        "transform:none"
-        "}"
-
-        "</style>"
-    )
-
     return (
-        '<section>'
-
-        '<h2>'
-        'Recovery funding, how fast it came'
-        '</h2>'
-
+        '<section class="data-panel">'
+        '<h3>Recovery funding: how fast it came</h3>'
         '<p class="pa-note">'
-        'For each disaster, the wait from the declaration to the first '
-        'federal obligation (amber), then the federal share obligating '
-        'after that (teal), on a shared %d-year scale. '
-        'Typical wait to the first obligation here: about %d days. '
-        'An obligation is the federal share committed to the recipient '
-        'state, not funds disbursed to the locality, which comes later '
-        'and is not shown.'
-        '</p>'
-
-        '%s'
-
-        '<div class="ft-list">'
-        '%s'
-        '</div>'
-
+        "For each recent disaster, amber shows the wait from declaration "
+        "to the first federal obligation and teal shows the obligation "
+        "period after that. Typical wait to first obligation here was about "
+        "%d days. An obligation is the federal share committed to the "
+        "recipient; it is not the same as a local cash disbursement."
+        "</p>"
+        '<div class="ft-list">%s</div>'
         '<div class="ft-axis">'
-        '<span style="left:0">Declared</span>'
-        '%s'
-        '</div>'
-
-        '</section>'
+        '<span style="left:0">Declared</span>%s'
+        "</div>"
+        "</section>"
         % (
-            years,
             med,
-            css,
             "".join(bars),
             ticks,
         )
     )
 
 
-def hma_html(j):
-    """
-    Per-jurisdiction Hazard Mitigation Assistance summary.
-    """
-    hma = j.get("hma") or {}
-
-    if not hma or not (
-        hma.get("fed") or 0
-    ):
-        return ""
-
-    e = html.escape
-
-    money = lambda n: "$" + format(
-        int(round(n or 0)),
-        ",",
-    )
-
-    total_fed = hma.get(
-        "fed",
-        0,
-    )
-
-    n_proj = hma.get(
-        "n",
-        0,
-    )
-
-    props = hma.get(
-        "props",
-        0,
-    )
-
-    prog = (
-        hma.get(
-            "prog",
-            {},
-        )
-        or {}
-    )
-
-    rows_data = sorted(
-        (
-            [
-                HMA_PROG_LABELS.get(
-                    code,
-                    code,
-                ),
-                code,
-                vals[0],
-                vals[1],
-            ]
-            for code, vals in prog.items()
-        ),
-        key=lambda x: -x[2],
-    )
-
-    body = "".join(
-        (
-            "<tr>"
-            "<td>%s<span class='catcode'>(%s)</span></td>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "</tr>"
-        )
-        % (
-            e(lbl),
-            e(code),
-            format(
-                cnt,
-                ",",
-            ),
-            money(obl),
-        )
-        for lbl, code, obl, cnt in rows_data
-    )
-
-    stat = (
-        '<div class="hm-stats">'
-
-        '<div class="hm-stat">'
-        '<div class="hm-n">%s</div>'
-        '<div class="hm-l">'
-        'federal mitigation share'
-        '</div>'
-        '</div>'
-
-        '<div class="hm-stat">'
-        '<div class="hm-n">%s</div>'
-        '<div class="hm-l">'
-        'funded project%s'
-        '</div>'
-        '</div>'
-        % (
-            money(total_fed),
-            format(
-                n_proj,
-                ",",
-            ),
-            ""
-            if n_proj == 1
-            else "s",
-        )
-    )
-
-    if props > 0:
-        stat += (
-            '<div class="hm-stat">'
-            '<div class="hm-n">%s</div>'
-            '<div class="hm-l">'
-            'propert%s mitigated'
-            '</div>'
-            '</div>'
-            % (
-                format(
-                    props,
-                    ",",
-                ),
-                "y"
-                if props == 1
-                else "ies",
-            )
-        )
-
-    stat += "</div>"
-
-    css = (
-        "<style>"
-
-        ".hm-stats{"
-        "display:flex;"
-        "flex-wrap:wrap;"
-        "gap:1px;"
-        "background:#e2dccb;"
-        "border:1px solid #cec7b6;"
-        "border-radius:8px;"
-        "overflow:hidden;"
-        "margin:.6rem 0 .9rem"
-        "}"
-
-        ".hm-stat{"
-        "background:#f6f1e7;"
-        "padding:.7rem 1rem;"
-        "flex:1 1 130px"
-        "}"
-
-        ".hm-n{"
-        "font-family:Fraunces,Georgia,serif;"
-        "font-size:1.15rem;"
-        "color:#004c53;"
-        "letter-spacing:-.3px"
-        "}"
-
-        ".hm-l{"
-        "font-size:.72rem;"
-        "color:#6b6357;"
-        "margin-top:.15rem"
-        "}"
-
-        "</style>"
-    )
-
-    return (
-        '<section>'
-
-        '<h2>'
-        'Hazard mitigation, what has been funded here'
-        '</h2>'
-
-        '<p class="pa-note">'
-        'Federal Hazard Mitigation Assistance obligated to this jurisdiction '
-        'to reduce future disaster losses, across the FEMA mitigation '
-        'programs. This is the record of past mitigation investment a local '
-        'hazard mitigation plan documents. Figures are federal share '
-        'obligated, reported through OpenFEMA and not audited, and are '
-        'separate from the Public Assistance funding above.'
-        '</p>'
-
-        '%s'
-        '%s'
-
-        '<div class="tablewrap">'
-
-        '<table class="pa-cat">'
-
-        '<thead>'
-        '<tr>'
-        '<th>Program</th>'
-        '<th>Projects</th>'
-        '<th>Federal share obligated</th>'
-        '</tr>'
-        '</thead>'
-
-        '<tbody>%s</tbody>'
-
-        '</table>'
-
-        '</div>'
-
-        '</section>'
-        % (
-            css,
-            stat,
-            body,
-        )
-    )
-
+# =============================================================================
+# INDIVIDUAL ASSISTANCE
+# =============================================================================
 
 def ia_html(j):
-    """
-    Per-jurisdiction Individual Assistance summary.
-    """
+
     ia = j.get("ia") or {}
 
-    if not ia or not (
+    if not ia:
+
+        return ""
+
+    if not (
         ia.get("reg")
         or ia.get("ihp")
     ):
+
         return ""
 
     e = html.escape
-
-    money = lambda n: "$" + format(
-        int(round(n or 0)),
-        ",",
-    )
 
     reg = ia.get(
         "reg",
@@ -2718,7 +3004,7 @@ def ia_html(j):
         "<tr><td>%s</td><td>%s</td></tr>"
         % (
             e(lbl),
-            money(amt),
+            _money_full(amt),
         )
         for lbl, amt in parts
         if amt > 0
@@ -2726,377 +3012,910 @@ def ia_html(j):
 
     stat = (
         '<div class="ia-stats">'
-
         '<div class="ia-stat">'
         '<div class="ia-n">%s</div>'
-        '<div class="ia-l">'
-        'valid registration%s'
-        '</div>'
-        '</div>'
-
+        '<div class="ia-l">valid registrations</div>'
+        "</div>"
         '<div class="ia-stat">'
         '<div class="ia-n">%s</div>'
-        '<div class="ia-l">'
-        'household%s approved'
-        '</div>'
-        '</div>'
-
+        '<div class="ia-l">households approved</div>'
+        "</div>"
         '<div class="ia-stat">'
         '<div class="ia-n">%s</div>'
-        '<div class="ia-l">'
-        'total IHP approved'
-        '</div>'
-        '</div>'
-
-        '</div>'
+        '<div class="ia-l">total IHP approved</div>'
+        "</div>"
+        "</div>"
         % (
-            format(
-                reg,
-                ",",
-            ),
-            ""
-            if reg == 1
-            else "s",
-
-            format(
-                app,
-                ",",
-            ),
-            ""
-            if app == 1
-            else "s",
-
-            money(ihp),
+            format(reg, ","),
+            format(app, ","),
+            _money_full(ihp),
         )
     )
 
-    table = (
-        '<div class="tablewrap">'
-        '<table class="pa-cat">'
+    table = ""
 
-        '<thead>'
-        '<tr>'
-        '<th>Assistance type</th>'
-        '<th>Approved amount</th>'
-        '</tr>'
-        '</thead>'
+    if body:
 
-        '<tbody>%s</tbody>'
-
-        '</table>'
-        '</div>'
-        % body
-    ) if body else ""
-
-    css = (
-        "<style>"
-
-        ".ia-stats{"
-        "display:flex;"
-        "flex-wrap:wrap;"
-        "gap:1px;"
-        "background:#e2dccb;"
-        "border:1px solid #cec7b6;"
-        "border-radius:8px;"
-        "overflow:hidden;"
-        "margin:.6rem 0 .9rem"
-        "}"
-
-        ".ia-stat{"
-        "background:#f6f1e7;"
-        "padding:.7rem 1rem;"
-        "flex:1 1 130px"
-        "}"
-
-        ".ia-n{"
-        "font-family:Fraunces,Georgia,serif;"
-        "font-size:1.15rem;"
-        "color:#004c53;"
-        "letter-spacing:-.3px"
-        "}"
-
-        ".ia-l{"
-        "font-size:.72rem;"
-        "color:#6b6357;"
-        "margin-top:.15rem"
-        "}"
-
-        "</style>"
-    )
+        table = (
+            '<div class="tablewrap">'
+            '<table class="pa-cat">'
+            '<thead><tr>'
+            "<th>Assistance type</th>"
+            "<th>Approved amount</th>"
+            "</tr></thead>"
+            "<tbody>%s</tbody>"
+            "</table>"
+            "</div>"
+            % body
+        )
 
     return (
-        '<section>'
-
-        '<h2>'
-        'Assistance to households (Individual Assistance)'
-        '</h2>'
-
+        '<section class="data-panel">'
+        '<h3>Individual Assistance to households</h3>'
         '<p class="pa-note">'
-        'FEMA Individual Assistance to households in this jurisdiction, '
-        'combined across the Housing Assistance owner and renter programs. '
-        'Valid registrations are households that applied within a designated '
-        'Individual Assistance area; approved counts and dollars are the '
-        'households FEMA found eligible under the Individuals and Households '
-        'Program. Figures are self-reported and drawn from NEMIS through '
-        'OpenFEMA, not audited, and Individual Assistance exists only for '
-        'disasters where it was designated, so many jurisdictions show none.'
-        '</p>'
-
-        '%s'
-        '%s'
-        '%s'
-
-        '</section>'
+        "FEMA Individual Assistance records for households in this "
+        "jurisdiction. IA exists only when a disaster receives an Individual "
+        "Assistance designation, so many jurisdictions have no IA section. "
+        "Registrations, approvals, and dollars reflect the underlying "
+        "OpenFEMA/NEMIS records and may be revised."
+        "</p>"
+        "%s%s"
+        "</section>"
         % (
-            css,
             stat,
             table,
         )
     )
 
 
-# ---------------------------------------------------------------- SVI / NRI risk context
-def _finite_number(value):
-    """Return a finite float, or None for blank, sentinel, or invalid data."""
-    try:
-        number = float(value)
-    except (TypeError, ValueError):
-        return None
+# =============================================================================
+# HAZARD MITIGATION ASSISTANCE
+# =============================================================================
 
-    if number != number or number in (float("inf"), float("-inf")):
-        return None
+def hma_html(j):
 
-    return number
+    hma = j.get("hma") or {}
 
+    if not hma:
 
-def _short_money(value):
-    """Format a numeric dollar value compactly without turning missing into $0."""
-    number = _finite_number(value)
+        return ""
 
-    if number is None:
-        return "N/A"
+    if not (
+        hma.get("fed")
+        or 0
+    ):
 
-    if abs(number) >= 1e9:
-        return "$%.1fB" % (number / 1e9)
-
-    if abs(number) >= 1e6:
-        return "$%.1fM" % (number / 1e6)
-
-    if abs(number) >= 1e3:
-        return "$%.0fK" % (number / 1e3)
-
-    return "$%s" % format(int(round(number)), ",")
-
-
-def _svi_percent(value):
-    """Return a CDC SVI percentile on a 0-100 scale, or None if invalid."""
-    number = _finite_number(value)
-
-    if number is None or number < 0 or number > 1:
-        return None
-
-    return number * 100.0
-
-
-def _first_value(record, *keys):
-    """Return the first populated field, supporting older NRI field aliases."""
-    for key in keys:
-        value = record.get(key)
-
-        if value is not None and str(value).strip() != "":
-            return value
-
-    return None
-
-
-def _score_text(value):
-    number = _finite_number(value)
-    return "%.1f" % number if number is not None else "N/A"
-
-
-def risk_context_html(j):
-    """
-    Render static county-level CDC SVI and FEMA NRI context.
-
-    The two social-vulnerability measures remain explicitly separate because
-    they use different methods and should not be interpreted as one score.
-    """
-    svi = j.get("svi") or {}
-    nri = j.get("nri") or {}
-
-    if not svi and not nri:
         return ""
 
     e = html.escape
-    cards = []
 
-    if svi:
-        overall = _svi_percent(svi.get("overall"))
-
-        if overall is None:
-            overall_html = (
-                '<div class="risk-score na">N/A</div>'
-                '<div class="risk-score-label">overall percentile</div>'
-            )
-            interpretation = ""
-
-        else:
-            overall_html = (
-                '<div class="risk-score">%.1f</div>'
-                '<div class="risk-score-label">overall percentile nationally</div>'
-                % overall
-            )
-            interpretation = (
-                '<p class="risk-interpret">Approximately %.1f%% of U.S. '
-                'counties have an equal or lower overall SVI ranking.</p>'
-                % overall
-            )
-
-        themes = [
-            ("Socioeconomic status", svi.get("socioeconomic")),
-            ("Household characteristics", svi.get("household")),
-            ("Racial and ethnic minority status", svi.get("minority")),
-            (
-                "Housing type and transportation",
-                svi.get("housingTransportation"),
-            ),
-        ]
-
-        theme_rows = []
-
-        for theme_label, value in themes:
-            percentile = _svi_percent(value)
-
-            if percentile is None:
-                continue
-
-            theme_rows.append(
-                '<div class="theme-row">'
-                '<div class="theme-head"><span>%s</span><b>%.1f</b></div>'
-                '<div class="theme-track"><span style="width:%.1f%%"></span></div>'
-                '</div>'
-                % (
-                    e(theme_label),
-                    percentile,
-                    max(0, min(100, percentile)),
-                )
-            )
-
-        cards.append(
-            '<article class="risk-card">'
-            '<div class="risk-kicker">CDC / ATSDR</div>'
-            '<h3>Social Vulnerability Index</h3>'
-            '<div class="risk-version">2022 county-level SVI</div>'
-            '%s%s'
-            '<div class="theme-list">%s</div>'
-            '<p class="risk-source">Higher percentiles indicate greater '
-            'relative social vulnerability within the CDC SVI framework. '
-            '<a href="https://www.atsdr.cdc.gov/place-health/php/svi/'
-            'svi-data-documentation-download.html">CDC SVI documentation</a>'
-            '</p>'
-            '</article>'
-            % (
-                overall_html,
-                interpretation,
-                "".join(theme_rows),
-            )
-        )
-
-    if nri:
-        risk_score = _score_text(nri.get("riskScore"))
-        risk_rating = str(nri.get("riskRating") or "Not rated")
-        version = str(nri.get("version") or "December 2025 county dataset")
-
-        eal_value = _short_money(nri.get("ealValue"))
-        eal_rating = str(nri.get("ealRating") or "Not rated")
-
-        sovi_score = _score_text(
-            _first_value(nri, "soviScore", "socialVulnerabilityScore")
-        )
-        sovi_rating = str(
-            _first_value(nri, "soviRating", "socialVulnerabilityRating")
-            or "Not rated"
-        )
-
-        resilience_score = _score_text(
-            _first_value(nri, "reslScore", "resilienceScore")
-        )
-        resilience_rating = str(
-            _first_value(nri, "reslRating", "resilienceRating")
-            or "Not rated"
-        )
-
-        cards.append(
-            '<article class="risk-card">'
-            '<div class="risk-kicker">FEMA</div>'
-            '<h3>National Risk Index</h3>'
-            '<div class="risk-version">%s</div>'
-            '<div class="nri-lead">'
-            '<div><div class="risk-score">%s</div>'
-            '<div class="risk-score-label">overall risk score</div></div>'
-            '<span class="risk-rating">%s</span>'
-            '</div>'
-            '<div class="risk-mini-grid">'
-            '<div class="risk-mini"><span>Expected annual loss</span>'
-            '<b>%s</b><small>%s</small></div>'
-            '<div class="risk-mini"><span>NRI social vulnerability</span>'
-            '<b>%s</b><small>%s</small></div>'
-            '<div class="risk-mini"><span>Community resilience</span>'
-            '<b>%s</b><small>%s</small></div>'
-            '</div>'
-            '<p class="risk-source">The NRI combines expected annual loss, '
-            'social vulnerability, and community resilience to describe '
-            'relative natural-hazard risk. '
-            '<a href="https://hazards.fema.gov/nri/">FEMA NRI documentation</a>'
-            '</p>'
-            '</article>'
-            % (
-                e(version),
-                e(risk_score),
-                e(risk_rating),
-                e(eal_value),
-                e(eal_rating),
-                e(sovi_score),
-                e(sovi_rating),
-                e(resilience_score),
-                e(resilience_rating),
-            )
-        )
-
-    fips = (
-        svi.get("fips")
-        or nri.get("fips")
-        or j.get("risk_fips")
-        or ""
+    total_fed = hma.get(
+        "fed",
+        0,
     )
 
-    fips_note = (
-        '<span class="risk-fips">County FIPS %s</span>' % e(str(fips))
-        if fips
-        else ""
+    n_proj = hma.get(
+        "n",
+        0,
+    )
+
+    props = hma.get(
+        "props",
+        0,
+    )
+
+    prog = (
+        hma.get("prog")
+        or {}
+    )
+
+    rows_data = sorted(
+        (
+            [
+                HMA_PROG_LABELS.get(
+                    code,
+                    code,
+                ),
+                code,
+                vals[0],
+                vals[1],
+            ]
+            for code, vals in prog.items()
+        ),
+        key=lambda x: -x[2],
+    )
+
+    body = "".join(
+        (
+            "<tr>"
+            "<td>%s<span class='catcode'> (%s)</span></td>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "</tr>"
+        )
+        % (
+            e(lbl),
+            e(code),
+            format(cnt, ","),
+            _money_full(obl),
+        )
+        for lbl, code, obl, cnt in rows_data
+    )
+
+    stat = (
+        '<div class="hm-stats">'
+        '<div class="hm-stat">'
+        '<div class="hm-n">%s</div>'
+        '<div class="hm-l">federal mitigation share</div>'
+        "</div>"
+        '<div class="hm-stat">'
+        '<div class="hm-n">%s</div>'
+        '<div class="hm-l">funded projects</div>'
+        "</div>"
+        % (
+            _money_full(total_fed),
+            format(n_proj, ","),
+        )
+    )
+
+    if props > 0:
+
+        stat += (
+            '<div class="hm-stat">'
+            '<div class="hm-n">%s</div>'
+            '<div class="hm-l">properties mitigated</div>'
+            "</div>"
+            % format(props, ",")
+        )
+
+    else:
+
+        stat += (
+            '<div class="hm-stat">'
+            '<div class="hm-n">—</div>'
+            '<div class="hm-l">properties reported</div>'
+            "</div>"
+        )
+
+    stat += "</div>"
+
+    return (
+        '<section class="data-panel">'
+        '<h3>Hazard mitigation investment</h3>'
+        '<p class="pa-note">'
+        "Federal Hazard Mitigation Assistance obligated to this "
+        "jurisdiction to reduce future disaster losses. These figures "
+        "represent federal mitigation investment and are separate from "
+        "Public Assistance recovery funding."
+        "</p>"
+        "%s"
+        '<div class="tablewrap">'
+        '<table class="pa-cat">'
+        '<thead><tr>'
+        "<th>Program</th>"
+        "<th>Projects</th>"
+        "<th>Federal share obligated</th>"
+        "</tr></thead>"
+        "<tbody>%s</tbody>"
+        "</table>"
+        "</div>"
+        "</section>"
+        % (
+            stat,
+            body,
+        )
+    )
+
+
+def federal_assistance_html(j):
+
+    parts = [
+        ia_html(j),
+        pa_breakdown_html(j),
+        pa_timing_html(j),
+        hma_html(j),
+    ]
+
+    parts = [
+        p
+        for p in parts
+        if p
+    ]
+
+    if not parts:
+
+        return ""
+
+    return (
+        '<section class="major-section">'
+        '<div class="section-head">'
+        '<div>'
+        '<h2>Federal assistance and recovery</h2>'
+        '<p class="section-deck">'
+        "Federal assistance records show how households, public facilities, "
+        "and mitigation projects have been supported following disasters "
+        "affecting this jurisdiction."
+        "</p>"
+        "</div>"
+        "</div>"
+        '<div class="assistance-stack">%s</div>'
+        "</section>"
+        % "".join(parts)
+    )
+
+
+# =============================================================================
+# EMBEDDED JURISDICTION MAP
+# =============================================================================
+
+def jurisdiction_map_html(j):
+
+    if j.get("kind") not in (
+        "county",
+        "city",
+    ):
+
+        return ""
+
+    st_fips = STATE_FIPS.get(
+        STATE_AB,
+        "",
+    )
+
+    if not st_fips:
+
+        return ""
+
+    e = html.escape
+
+    target_fips = j.get(
+        "risk_fips",
+        "",
+    )
+
+    map_link = ""
+
+    if target_fips:
+
+        map_link = (
+            '<a class="hero-link" '
+            'href="../../map.html?county=%s">'
+            "View on national map &rarr;"
+            "</a>"
+            % e(str(target_fips))
+        )
+
+    return (
+        '<section class="major-section">'
+        '<div class="section-head">'
+        '<div>'
+        '<h2>Disaster history</h2>'
+        '<p class="section-deck">'
+        "See the jurisdiction in geographic context, then review the "
+        "declaration hazards and complete federal record below."
+        "</p>"
+        "</div>"
+        "%s"
+        "</div>"
+        '<div class="map-shell">'
+        '<div id="locmap" '
+        'data-state-fips="%s" '
+        'data-target-fips="%s" '
+        'data-name="%s" '
+        'data-st="%s" '
+        'data-kind="%s"></div>'
+        '<p class="locmap-cap">'
+        "Highlighted: <b>%s, %s</b>"
+        "</p>"
+        "</div>"
+        "</section>"
+        % (
+            map_link,
+            e(st_fips),
+            e(str(target_fips)),
+            html.escape(
+                j["name"].replace(
+                    " (city)",
+                    "",
+                ),
+                quote=True,
+            ),
+            e(STATE_AB),
+            e(j["kind"]),
+            e(j["name"]),
+            e(STATE_AB),
+        )
+    )
+
+
+def jurisdiction_map_js(map_html):
+
+    if not map_html:
+
+        return ""
+
+    tile_url = (
+        "https://{s}.basemaps.cartocdn.com/"
+        "rastertiles/light_nolabels/{z}/{x}/{y}.png"
+        "?key=%s"
+        % CARTO_BASEMAP_KEY
     )
 
     return (
-        '<section class="risk-section">'
-        '<div class="section-heading-row">'
-        '<div><h2>Risk and vulnerability context</h2>'
-        '<p class="section-deck">Historical declarations show what has '
-        'happened here. These national datasets add context about underlying '
-        'natural-hazard risk and community vulnerability.</p></div>%s'
-        '</div>'
-        '<div class="risk-grid">%s</div>'
-        '<div class="risk-caution"><b>About these measures:</b> CDC Social '
-        'Vulnerability Index and FEMA National Risk Index Social Vulnerability '
-        'are separate measures built with different methods. They are shown '
-        'side by side for context and should not be interpreted as equivalent '
-        'scores.</div>'
-        '</section>'
-        % (fips_note, "".join(cards))
+        '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>'
+        '<script src="https://unpkg.com/topojson-client@3"></script>'
+        '<script src="../../county-names.js"></script>'
+        '<script src="../../locality-index.js"></script>'
+
+        "<script>"
+
+        "(function(){"
+
+        'var el=document.getElementById("locmap");'
+        "if(!el)return;"
+
+        "var sf=el.dataset.stateFips||'';"
+        "var tf=el.dataset.targetFips||'';"
+        "var sa=el.dataset.st||'';"
+        "var knd=el.dataset.kind||'';"
+
+        'var SX=["county","parish","borough","census area",'
+        '"municipio","municipality","city and borough","island","district"];'
+
+        "function norm(s){"
+        "return String(s||'')"
+        ".replace(/\\s*\\([^)]*\\)/g,'')"
+        ".trim().toLowerCase();"
+        "}"
+
+        "function base(v){"
+        "var s=norm(String(v).split(',')[0]);"
+
+        "for(var i=0;i<SX.length;i++){"
+
+        "if(s.endsWith(' '+SX[i])){"
+
+        "s=s.slice(0,-(SX[i].length+1)).trim();"
+        "break;"
+
+        "}"
+
+        "}"
+
+        "return s;"
+
+        "}"
+
+        "var cnBase=base(el.dataset.name);"
+
+        "function go(){"
+
+        "if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){"
+        "setTimeout(go,100);"
+        "return;"
+        "}"
+
+        "var ul={};"
+
+        "window.LOCALITY_INDEX.forEach(function(r){"
+
+        "if(r[1]!==sa)return;"
+
+        "var full=r[0].replace(/ \\(city\\)$/i,'').toLowerCase();"
+
+        "ul[base(r[0])]=r[3];"
+        "ul[full]=r[3];"
+
+        "});"
+
+        'fetch("https://unpkg.com/us-atlas@3/counties-10m.json")'
+
+        ".then(function(r){return r.json();})"
+
+        ".then(function(topo){"
+
+        "var features=topojson.feature("
+        "topo,topo.objects.counties"
+        ").features;"
+
+        "var fc={"
+        'type:"FeatureCollection",'
+        "features:features.filter(function(f){"
+        "return String(f.id).padStart(5,'0').slice(0,2)===sf;"
+        "})"
+        "};"
+
+        "var matches=fc.features.filter(function(f){"
+
+        "var fp=String(f.id).padStart(5,'0');"
+
+        "return base(window.COUNTY_NAMES[fp]||'')===cnBase;"
+
+        "});"
+
+        "var collide=matches.length>1;"
+
+        "function isTarget(f){"
+
+        "var fp=String(f.id).padStart(5,'0');"
+
+        "if(tf){"
+        "return fp===tf;"
+        "}"
+
+        "if(base(window.COUNTY_NAMES[fp]||'')!==cnBase){"
+        "return false;"
+        "}"
+
+        "if(collide){"
+
+        "var city=(+fp.slice(2))>=500;"
+
+        "return (knd==='city')===city;"
+
+        "}"
+
+        "return true;"
+
+        "}"
+
+        'var map=L.map("locmap",{'
+        "scrollWheelZoom:false,"
+        "zoomControl:true,"
+        "attributionControl:true"
+        "});"
+
+        "L.tileLayer("
+        + json.dumps(tile_url)
+        + ",{"
+        "subdomains:'abcd',"
+        "maxZoom:20,"
+        "attribution:'&copy; "
+        "<a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+        "&copy; "
+        "<a href=\"https://carto.com/attributions\">CARTO</a>'"
+        "}"
+        ").addTo(map);"
+
+        "var targetLayer=null;"
+
+        "var ly=L.geoJson(fc,{"
+
+        "style:function(f){"
+
+        "if(isTarget(f)){"
+
+        "return{"
+        'fillColor:"#004c53",'
+        "fillOpacity:.58,"
+        'color:"#004c53",'
+        "weight:2"
+        "};"
+
+        "}"
+
+        "return{"
+        'fillColor:"#d7e9ea",'
+        "fillOpacity:.34,"
+        'color:"#938a78",'
+        "weight:1"
+        "};"
+
+        "},"
+
+        "onEachFeature:function(f,layer){"
+
+        "var fp=String(f.id).padStart(5,'0');"
+
+        "var lb=window.COUNTY_NAMES[fp]||'';"
+
+        "var nm=lb.split(',')[0].trim();"
+
+        "var u=ul[base(nm)]||ul[nm.toLowerCase()];"
+
+        "if(isTarget(f)){"
+
+        "targetLayer=layer;"
+
+        "layer.bindTooltip("
+        "nm,"
+        "{"
+        "permanent:true,"
+        'direction:"center",'
+        'className:"loc-lbl",'
+        "offset:[0,0]"
+        "}"
+        ");"
+
+        "}"
+
+        "else{"
+
+        "layer.bindTooltip(nm,{sticky:true});"
+
+        "}"
+
+        "if(u){"
+
+        "layer.on('click',function(){"
+
+        "window.location.href='../../'+u;"
+
+        "});"
+
+        "layer.on('mouseover',function(){"
+
+        "if(this._path)this._path.style.cursor='pointer';"
+
+        "this.setStyle({fillOpacity:.62});"
+
+        "});"
+
+        "layer.on('mouseout',function(){"
+
+        "this.setStyle({"
+        "fillOpacity:(this===targetLayer)?.58:.34"
+        "});"
+
+        "});"
+
+        "}"
+
+        "}"
+
+        "}).addTo(map);"
+
+        "map.fitBounds("
+        "ly.getBounds(),"
+        "{padding:[15,15]}"
+        ");"
+
+        "});"
+
+        "}"
+
+        "go();"
+
+        "})();"
+
+        "</script>"
     )
 
 
-# ---------------------------------------------------------------- jurisdiction page
+# =============================================================================
+# PREVIOUS OCCURRENCES
+# =============================================================================
+
+def mitigation_history_html(j):
+
+    e = html.escape
+
+    hmp_rows = "".join(
+        (
+            "<tr>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "</tr>"
+        )
+        % (
+            e(r.get("incidentType", "")),
+            fmt_date(
+                r.get(
+                    "declarationDate",
+                    "",
+                )
+            ),
+            e(
+                r.get(
+                    "femaDeclarationString",
+                    "",
+                )
+            ),
+            e(
+                r.get(
+                    "declarationType",
+                    "",
+                )
+            ),
+        )
+        for r in j.get("hmp", [])
+    )
+
+    hmp_data = [
+        [
+            "Hazard",
+            "Date",
+            "FEMA declaration",
+            "Type",
+        ]
+    ] + [
+        [
+            r.get("incidentType", ""),
+            fmt_date(
+                r.get(
+                    "declarationDate",
+                    "",
+                )
+            ),
+            r.get(
+                "femaDeclarationString",
+                "",
+            ),
+            r.get(
+                "declarationType",
+                "",
+            ),
+        ]
+        for r in j.get("hmp", [])
+    ]
+
+    return (
+        '<section class="major-section">'
+        '<div class="section-head">'
+        '<div>'
+        '<h2>Previous occurrences for mitigation planning</h2>'
+        '<p class="section-deck">'
+        "A ready-to-use federal declaration history for documenting "
+        "previous hazard occurrences in local hazard mitigation planning."
+        "</p>"
+        "</div>"
+        "</div>"
+
+        '<div class="hmp">'
+
+        "<p>"
+        "This table contains the completed-fiscal-year FEMA declaration "
+        "record for %s. Copy the table or download the full declaration "
+        "record below."
+        "</p>"
+
+        '<div class="tablewrap">'
+
+        "<table>"
+
+        "<thead><tr>"
+        "<th>Hazard</th>"
+        "<th>Date</th>"
+        "<th>FEMA declaration</th>"
+        "<th>Type</th>"
+        "</tr></thead>"
+
+        "<tbody>%s</tbody>"
+
+        "</table>"
+
+        "</div>"
+
+        '<button class="copybtn" type="button" data-hmp="%s">'
+        "Copy table"
+        "</button>"
+
+        "</div>"
+
+        "</section>"
+        % (
+            e(j["name"]),
+            hmp_rows,
+            e(
+                json.dumps(
+                    hmp_data
+                )
+            ),
+        )
+    )
+
+
+# =============================================================================
+# DECLARATION RECORD
+# =============================================================================
+
+def declaration_history_html(j):
+
+    e = html.escape
+
+    rows = "".join(
+        (
+            '<tr data-t="%s">'
+
+            '<td data-s="%s">%s</td>'
+
+            '<td data-s="%s">%s</td>'
+
+            "<td>"
+            "<span class='tag' title='%s'>%s</span>"
+            "</td>"
+
+            "<td>%s</td>"
+
+            "<td>%s</td>"
+
+            "</tr>"
+        )
+        % (
+            e(
+                r.get(
+                    "declarationType",
+                    "",
+                )
+            ),
+
+            e(
+                r.get(
+                    "declarationDate",
+                    "",
+                )[:10]
+            ),
+
+            fmt_date(
+                r.get(
+                    "declarationDate",
+                    "",
+                )
+            ),
+
+            decl_num(
+                r.get(
+                    "femaDeclarationString",
+                    "",
+                )
+            ),
+
+            e(
+                r.get(
+                    "femaDeclarationString",
+                    "",
+                )
+            ),
+
+            TYPE_LONG.get(
+                r.get(
+                    "declarationType",
+                    "",
+                ),
+                "",
+            ),
+
+            e(
+                r.get(
+                    "declarationType",
+                    "",
+                )
+            ),
+
+            e(
+                r.get(
+                    "incidentType",
+                    "",
+                )
+            ),
+
+            e(
+                pretty_title(
+                    r.get(
+                        "declarationTitle",
+                        "",
+                    )
+                )
+            ),
+        )
+
+        for r in j.get("hmp", [])
+    )
+
+    wrap_cls = (
+        "tablewrap scroll"
+        if len(j.get("hmp", [])) > 12
+        else "tablewrap"
+    )
+
+    return (
+        '<section class="major-section">'
+
+        '<div class="section-head">'
+
+        "<div>"
+
+        '<h2>Every declaration on record</h2>'
+
+        '<p class="section-deck">'
+        "Filter or sort the completed-fiscal-year declaration record, "
+        "download it as CSV, or copy a citation for this jurisdiction page."
+        "</p>"
+
+        "</div>"
+
+        "</div>"
+
+        '<div id="declbox">'
+
+        '<p style="font-size:.79rem;color:#6b6357;margin:.5rem 0 .6rem">'
+
+        '<b style="color:#004c53">DR</b> = Major disaster '
+
+        "&middot; "
+
+        '<b style="color:#004c53">EM</b> = Emergency '
+
+        "&middot; "
+
+        '<b style="color:#004c53">FM</b> = Fire management assistance'
+
+        "</p>"
+
+        "%s"
+
+        '<p class="decl-count" aria-live="polite">'
+        "Showing %d declarations"
+        "</p>"
+
+        '<div class="%s">'
+
+        "<table>"
+
+        "<thead><tr>"
+
+        '<th class="sortable" data-k="date">Date</th>'
+
+        '<th class="sortable" data-k="num">Number</th>'
+
+        '<th class="sortable" data-k="text">Type</th>'
+
+        '<th class="sortable" data-k="text">Hazard</th>'
+
+        '<th class="sortable" data-k="text">Title</th>'
+
+        "</tr></thead>"
+
+        "<tbody>%s</tbody>"
+
+        "</table>"
+
+        "</div>"
+
+        '<div style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0">'
+
+        '<button class="copybtn csvbtn" type="button">'
+        "Download CSV"
+        "</button>"
+
+        '<button class="copybtn citebtn" type="button">'
+        "Cite this page"
+        "</button>"
+
+        "</div>"
+
+        "</div>"
+
+        "%s"
+
+        "</section>"
+        % (
+            type_chips(
+                j["decl"],
+                j["dr"],
+                j["em"],
+                j["fm"],
+            ),
+
+            j["decl"],
+
+            wrap_cls,
+
+            rows,
+
+            FILTER_JS,
+        )
+    )
+
+
+# =============================================================================
+# MAIN JURISDICTION PAGE
+# =============================================================================
+
 def render_page(j, others):
+
     e = html.escape
 
     canonical = (
@@ -3116,536 +3935,126 @@ def render_page(j, others):
         else ""
     )
 
+    lcfy = j.get(
+        "lcfy",
+        2025,
+    )
+
     desc = (
-        "%s, %s has had %d federal disaster and emergency declarations "
-        "since FY2000 (%d major disasters, %d emergencies, "
-        "%d fire-management). Full FEMA declaration history and a "
-        "ready-to-use previous-occurrences table for hazard mitigation "
-        "planning, with CDC SVI and FEMA NRI context where available."
+        "%s, %s federal disaster history through FY%d, including FEMA "
+        "declarations, Public Assistance, Individual Assistance where "
+        "designated, mitigation investment, and county risk and vulnerability "
+        "context where available."
         % (
             j["name"],
             STATE_NAME,
-            j["decl"],
-            j["dr"],
-            j["em"],
-            j["fm"],
+            lcfy,
         )
     )
+
+    keywords = [
+        j["name"],
+        STATE_NAME,
+        "FEMA",
+        "disaster declarations",
+        "hazard mitigation plan",
+        "previous occurrences",
+        "Public Assistance",
+        "Individual Assistance",
+    ]
+
+    if j.get("svi"):
+
+        keywords.extend(
+            [
+                "CDC SVI",
+                "Social Vulnerability Index",
+            ]
+        )
+
+    if j.get("nri"):
+
+        keywords.extend(
+            [
+                "FEMA National Risk Index",
+                "NRI",
+            ]
+        )
 
     ld = {
         "@context": "https://schema.org",
         "@type": "Dataset",
-        "name": "%s, %s FEMA disaster declarations"
-        % (
-            j["name"],
-            STATE_NAME,
-        ),
+
+        "name":
+            "%s, %s disaster history and risk context"
+            % (
+                j["name"],
+                STATE_NAME,
+            ),
+
         "description": desc,
+
         "url": canonical,
+
         "isAccessibleForFree": True,
+
         "creator": {
             "@type": "Organization",
             "name": "Disaster Data",
             "url": SITE,
         },
+
         "spatialCoverage": {
             "@type": "Place",
-            "name": "%s, %s"
-            % (
-                j["name"],
-                STATE_NAME,
-            ),
+            "name":
+                "%s, %s"
+                % (
+                    j["name"],
+                    STATE_NAME,
+                ),
         },
-        "temporalCoverage": "2000/2025",
+
+        "temporalCoverage":
+            "2000/%d"
+            % lcfy,
+
         "isBasedOn":
             "https://www.fema.gov/about/openfema",
-        "keywords": [
-            j["name"],
-            STATE_NAME,
-            "FEMA",
-            "disaster declarations",
-            "hazard mitigation plan",
-            "previous occurrences",
-            "CDC Social Vulnerability Index",
-            "FEMA National Risk Index",
-        ],
+
+        "keywords":
+            keywords,
     }
-
-    cards = [
-        (
-            "%d" % j["decl"],
-            "Declarations since FY2000",
-        ),
-        (
-            "%d" % j["dr"],
-            "Major disasters (DR)",
-        ),
-        (
-            "%d" % j["em"],
-            "Emergencies (EM)",
-        ),
-        (
-            "%d" % j["fm"],
-            "Fire management (FM)",
-        ),
-    ]
-
-    if j["latest"]:
-        try:
-            mr = datetime.datetime.strptime(
-                j["latest"],
-                "%Y-%m-%d",
-            ).strftime(
-                "%b&nbsp;%Y"
-            )
-        except Exception:
-            mr = j["latest"]
-
-        cards.append(
-            (
-                mr,
-                "Most recent",
-            )
-        )
-
-    if j.get("pa_obl") and j["pa_obl"] > 0:
-        obl = j["pa_obl"]
-
-        if obl >= 1e9:
-            pa_fmt = "$%.1fB" % (
-                obl / 1e9
-            )
-
-        elif obl >= 1e6:
-            pa_fmt = "$%.1fM" % (
-                obl / 1e6
-            )
-
-        elif obl >= 1e3:
-            pa_fmt = "$%.0fK" % (
-                obl / 1e3
-            )
-
-        else:
-            pa_fmt = "$%d" % obl
-
-        pa_label = (
-            "Federal PA obligated"
-        )
-
-        if j.get(
-            "pa_top_cat"
-        ):
-            pa_label += (
-                " (top: %s)"
-                % j[
-                    "pa_top_cat"
-                ].lower()
-            )
-
-        cards.append(
-            (
-                pa_fmt,
-                pa_label,
-            )
-        )
-
-    stats = "".join(
-        (
-            '<div class="stat">'
-            '<div class="n">%s</div>'
-            '<div class="l">%s</div>'
-            '</div>'
-            % c
-        )
-        for c in cards
-    )
-
-    # embedded state map
-    st_fips = STATE_FIPS.get(
-        STATE_AB,
-        "",
-    )
-
-    if (
-        j["kind"] in (
-            "county",
-            "city",
-        )
-        and st_fips
-    ):
-        map_html = (
-            '<div id="locmap" '
-            'data-fips="%s" '
-            'data-name="%s" '
-            'data-st="%s" '
-            'data-kind="%s">'
-            '</div>'
-
-            '<p class="locmap-cap">'
-            'Highlighted: '
-            '<b>%s, %s</b>'
-            '</p>'
-        ) % (
-            st_fips,
-            html.escape(
-                j["name"].replace(
-                    " (city)",
-                    "",
-                ),
-                quote=True,
-            ),
-            STATE_AB,
-            j["kind"],
-            html.escape(
-                j["name"],
-                quote=True,
-            ),
-            STATE_AB,
-        )
-
-    else:
-        map_html = ""
-
-    haz = "".join(
-        '<li>%s <b>%d</b></li>'
-        % (
-            e(h),
-            n,
-        )
-        for h, n in j[
-            "hazards"
-        ][:8]
-    ) or (
-        "<li>"
-        "None recorded"
-        "</li>"
-    )
-
-    rows = "".join(
-        (
-            '<tr data-t="%s">'
-
-            '<td data-s="%s">%s</td>'
-
-            '<td data-s="%s">%s</td>'
-
-            "<td>"
-            "<span class='tag' title='%s'>%s</span>"
-            "</td>"
-
-            "<td>%s</td>"
-            "<td>%s</td>"
-
-            "</tr>"
-        )
-        % (
-            e(
-                r.get(
-                    "declarationType",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "declarationDate",
-                    "",
-                )[:10]
-            ),
-            fmt_date(
-                r.get(
-                    "declarationDate",
-                    "",
-                )
-            ),
-            decl_num(
-                r.get(
-                    "femaDeclarationString",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "femaDeclarationString",
-                    "",
-                )
-            ),
-            TYPE_LONG.get(
-                r.get(
-                    "declarationType",
-                    "",
-                ),
-                "",
-            ),
-            e(
-                r.get(
-                    "declarationType",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "incidentType",
-                    "",
-                )
-            ),
-            e(
-                pretty_title(
-                    r.get(
-                        "declarationTitle",
-                        "",
-                    )
-                )
-            ),
-        )
-        for r in j["hmp"]
-    )
-
-    wrap_cls = (
-        "tablewrap scroll"
-        if len(
-            j["hmp"]
-        ) > 12
-        else "tablewrap"
-    )
-
-    history = (
-        '<div id="declbox">'
-
-        '<p class="legend" '
-        'style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem">'
-        '<b style="color:#004c53">DR</b> = Major disaster (Stafford Act) '
-        '&middot; '
-        '<b style="color:#004c53">EM</b> = Emergency declaration '
-        '&middot; '
-        '<b style="color:#004c53">FM</b> = Fire management assistance'
-        '</p>'
-
-        + type_chips(
-            j["decl"],
-            j["dr"],
-            j["em"],
-            j["fm"],
-        )
-
-        + (
-            '<p class="decl-count" aria-live="polite">'
-            'Showing %d declarations'
-            '</p>'
-            % j["decl"]
-        )
-
-        + '<div class="'
-        + wrap_cls
-        + '">'
-
-        '<table>'
-
-        '<thead>'
-        '<tr>'
-
-        '<th class="sortable" data-k="date">'
-        'Date'
-        '</th>'
-
-        '<th class="sortable" data-k="num">'
-        'Number'
-        '</th>'
-
-        '<th class="sortable" data-k="text">'
-        'Type'
-        '</th>'
-
-        '<th class="sortable" data-k="text">'
-        'Hazard'
-        '</th>'
-
-        '<th class="sortable" data-k="text">'
-        'Title'
-        '</th>'
-
-        '</tr>'
-        '</thead>'
-
-        '<tbody>'
-        + rows
-        + '</tbody>'
-
-        '</table>'
-
-        '</div>'
-
-        '<div class="export-bar" '
-        'style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0">'
-
-        '<button class="copybtn csvbtn" type="button">'
-        'Download CSV'
-        '</button>'
-
-        '</div>'
-
-        '</div>'
-        + FILTER_JS
-    )
-
-    hmp_rows = "".join(
-        (
-            "<tr>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "</tr>"
-        )
-        % (
-            e(
-                r.get(
-                    "incidentType",
-                    "",
-                )
-            ),
-            fmt_date(
-                r.get(
-                    "declarationDate",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "femaDeclarationString",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "declarationType",
-                    "",
-                )
-            ),
-        )
-        for r in j["hmp"]
-    )
-
-    hmp_data = [
-        [
-            "Hazard",
-            "Date",
-            "FEMA declaration",
-            "Type",
-        ]
-    ] + [
-        [
-            r.get(
-                "incidentType",
-                "",
-            ),
-            fmt_date(
-                r.get(
-                    "declarationDate",
-                    "",
-                )
-            ),
-            r.get(
-                "femaDeclarationString",
-                "",
-            ),
-            r.get(
-                "declarationType",
-                "",
-            ),
-        ]
-        for r in j["hmp"]
-    ]
-
-    hmp = (
-        '<section>'
-
-        '<h2>'
-        'Previous occurrences, for your mitigation plan'
-        '</h2>'
-
-        '<div class="hmp">'
-
-        '<p>'
-        'Every local hazard mitigation plan must document previous '
-        'occurrences of each hazard. Here is that record for %s, sourced '
-        'to OpenFEMA and refreshed weekly. Copy it straight into your plan.'
-        '</p>'
-
-        '<div class="tablewrap">'
-
-        '<table>'
-
-        '<thead>'
-        '<tr>'
-        '<th>Hazard</th>'
-        '<th>Date</th>'
-        '<th>FEMA declaration</th>'
-        '<th>Type</th>'
-        '</tr>'
-        '</thead>'
-
-        '<tbody>'
-        '%s'
-        '</tbody>'
-
-        '</table>'
-
-        '</div>'
-
-        '<button class="copybtn" '
-        'type="button" '
-        'data-hmp="%s">'
-        'Copy table'
-        '</button>'
-
-        '</div>'
-
-        '</section>'
-        % (
-            e(
-                j["name"]
-            ),
-            hmp_rows,
-            e(
-                json.dumps(
-                    hmp_data
-                )
-            ),
-        )
-    )
 
     lede = (
         "%s recorded <b>%d</b> federal disaster and emergency declarations "
-        "since FY2000 (through FY2025): %d major disasters, %d emergencies, "
-        "and %d fire-management declarations.%s"
+        "in completed fiscal years from FY2000 through FY%d: %d major "
+        "disasters, %d emergencies, and %d fire-management declarations."
         % (
-            e(
-                j["name"]
-            ),
+            e(j["name"]),
             j["decl"],
+            lcfy,
             j["dr"],
             j["em"],
             j["fm"],
-            (
-                " Its most common hazard is %s."
-                % e(
-                    j["hazards"][0][0].lower()
-                )
-            )
-            if j["hazards"]
-            else "",
         )
     )
 
+    if j.get("hazards"):
+
+        lede += (
+            " Its most frequently declared hazard is %s."
+            % e(
+                j["hazards"][0][0].lower()
+            )
+        )
+
     if (
         j.get("spans")
-        and len(
-            j["spans"]
-        ) > 1
+        and len(j["spans"]) > 1
     ):
+
         lede += (
-            " This record covers the nation across %s."
+            " This record covers the tribal nation across %s."
             % e(
                 _oxford(
                     j["spans"]
@@ -3653,19 +4062,74 @@ def render_page(j, others):
             )
         )
 
-    grid = "".join(
-        (
-            '<a href="%s.html">%s</a>'
+    current_note = ""
+
+    latest_fy = fy_of(
+        j.get(
+            "latest",
+            "",
+        )
+    )
+
+    if (
+        latest_fy
+        and latest_fy > lcfy
+    ):
+
+        current_note = (
+            '<p class="current-note">'
+            "<b>Current-year activity:</b> the most recent declaration shown "
+            "on this page falls in FY%d. Headline declaration totals currently "
+            "cover completed fiscal years through FY%d."
+            "</p>"
             % (
-                o["slug"],
-                e(
-                    o["name"]
-                ),
+                latest_fy,
+                lcfy,
             )
         )
-        for o in others
-        if o["slug"] != j["slug"]
+
+    hero_actions = ""
+
+    if j.get("risk_fips"):
+
+        hero_actions = (
+            '<div class="hero-actions">'
+            '<a class="hero-link" '
+            'href="../../map.html?county=%s">'
+            "View on map &rarr;"
+            "</a>"
+            "</div>"
+            % e(
+                str(
+                    j["risk_fips"]
+                )
+            )
+        )
+
+    haz = "".join(
+        "<li>%s <b>%d</b></li>"
+        % (
+            e(h),
+            n,
+        )
+        for h, n in j.get(
+            "hazards",
+            [],
+        )[:8]
     )
+
+    if not haz:
+        haz = "<li>None recorded</li>"
+
+    risk_html = risk_context_html(j)
+
+    map_html = jurisdiction_map_html(j)
+
+    assistance_html = federal_assistance_html(j)
+
+    mitigation_html = mitigation_history_html(j)
+
+    history_html = declaration_history_html(j)
 
     csv_rows = [
         [
@@ -3677,22 +4141,10 @@ def render_page(j, others):
         ]
     ] + [
         [
-            r.get(
-                "declarationDate",
-                "",
-            )[:10],
-            r.get(
-                "femaDeclarationString",
-                "",
-            ),
-            r.get(
-                "declarationType",
-                "",
-            ),
-            r.get(
-                "incidentType",
-                "",
-            ),
+            r.get("declarationDate", "")[:10],
+            r.get("femaDeclarationString", ""),
+            r.get("declarationType", ""),
+            r.get("incidentType", ""),
             pretty_title(
                 r.get(
                     "declarationTitle",
@@ -3700,23 +4152,22 @@ def render_page(j, others):
                 )
             ),
         ]
-        for r in j["hmp"]
+        for r in j.get("hmp", [])
     ]
 
     csv_json = json.dumps(
         csv_rows
     )
 
-    # ------------------------------------------------------------ copy/download/citation JS
     copyjs = (
         "<script>"
 
         "document.addEventListener('click',function(ev){"
 
         "var b=ev.target.closest('.copybtn');"
+
         "if(!b)return;"
 
-        # Copy HMP table
         "if(b.getAttribute('data-hmp')){"
 
         "var rows=JSON.parse(b.getAttribute('data-hmp'));"
@@ -3726,34 +4177,47 @@ def render_page(j, others):
         "}).join('\\n');"
 
         "function done(){"
+
         "var p=b.textContent;"
+
         "b.textContent='Copied';"
-        "setTimeout(function(){"
-        "b.textContent=p;"
-        "},1500);"
+
+        "setTimeout(function(){b.textContent=p;},1500);"
+
         "}"
 
         "if(navigator.clipboard&&navigator.clipboard.writeText){"
-        "navigator.clipboard.writeText(t).then("
-        "done,"
-        "function(){window.prompt('Copy:',t);}"
-        ");"
-        "}else{"
+
+        "navigator.clipboard.writeText(t).then(done,function(){"
+
         "window.prompt('Copy:',t);"
+
+        "});"
+
+        "}"
+
+        "else{"
+
+        "window.prompt('Copy:',t);"
+
         "}"
 
         "return;"
+
         "}"
 
-        # Download CSV
         "if(b.classList.contains('csvbtn')){"
 
         "var d=%s;"
 
         "var csv=d.map(function(r){"
+
         "return r.map(function(c){"
-        "return '\\\"'+String(c).replace(/\\\"/g,'\\\"\\\"')+'\\\"';"
+
+        "return '\"'+String(c).replace(/\"/g,'\"\"')+'\"';"
+
         "}).join(',');"
+
         "}).join('\\n');"
 
         "var blob=new Blob([csv],{type:'text/csv'});"
@@ -3769,443 +4233,99 @@ def render_page(j, others):
         "URL.revokeObjectURL(a.href);"
 
         "return;"
+
         "}"
 
-        # Copy currently selected citation
-        "if(b.classList.contains('citecopy')){"
+        "if(b.classList.contains('citebtn')){"
 
-        "var out=document.getElementById('citationText');"
+        "var today=new Date().toISOString().slice(0,10);"
 
-        "var cite=out?out.textContent:'';"
+        "var cite='Disaster Data. "
+        "\\\"%s, %s: Disaster History and Risk Context.\\\" "
+        "DisasterData.io. Accessed '+today+'. %s';"
 
         "function cd(){"
+
         "var p=b.textContent;"
+
         "b.textContent='Copied';"
-        "setTimeout(function(){"
-        "b.textContent=p;"
-        "},1500);"
+
+        "setTimeout(function(){b.textContent=p;},1500);"
+
         "}"
 
         "if(navigator.clipboard&&navigator.clipboard.writeText){"
 
-        "navigator.clipboard.writeText(cite).then("
-        "cd,"
-        "function(){window.prompt('Citation:',cite);}"
-        ");"
+        "navigator.clipboard.writeText(cite).then(cd);"
 
-        "}else{"
+        "}"
+
+        "else{"
 
         "window.prompt('Citation:',cite);"
 
         "}"
 
-        "return;"
         "}"
 
         "});"
-
-        # Citation format switching
-        "(function(){"
-
-        "var box=document.querySelector('.citation'),"
-        "out=document.getElementById('citationText');"
-
-        "if(!box||!out)return;"
-
-        "var title=box.getAttribute('data-cite-title')||'',"
-        "url=box.getAttribute('data-cite-url')||'',"
-        "key=box.getAttribute('data-cite-key')||"
-        "'disasterdata_profile';"
-
-        "function pad(n){"
-        "return String(n).padStart(2,'0');"
-        "}"
-
-        "function dates(){"
-
-        "var d=new Date();"
-
-        "return{"
-        "iso:"
-        "d.getFullYear()+'-'+"
-        "pad(d.getMonth()+1)+'-'+"
-        "pad(d.getDate()),"
-
-        "long:d.toLocaleDateString("
-        "'en-US',"
-        "{"
-        "year:'numeric',"
-        "month:'long',"
-        "day:'numeric'"
-        "}"
-        ")"
-        "};"
-
-        "}"
-
-        "function text(fmt){"
-
-        "var d=dates();"
-
-        # Chicago
-        "if(fmt==='chicago')"
-        "return "
-        "'Disaster Data. \"'+title+'\" "
-        "DisasterData.IO. Accessed '+"
-        "d.long+'. '+url+'.';"
-
-        # Plain text
-        "if(fmt==='plain')"
-        "return "
-        "'Disaster Data. '+title+'. "
-        "DisasterData.IO. Derived from FEMA OpenFEMA. "
-        "Accessed '+d.long+'. '+url;"
-
-        # BibTeX
-        "if(fmt==='bibtex')"
-        "return "
-        "'@misc{'+key+',\\n"
-        "  author = {{Disaster Data}},\\n"
-        "  title = {'+title+'},\\n"
-        "  howpublished = {DisasterData.IO},\\n"
-        "  url = {'+url+'},\\n"
-        "  urldate = {'+d.iso+'},\\n"
-        "  note = {Derived from FEMA OpenFEMA}\\n"
-        "}';"
-
-        # APA default
-        "return "
-        "'Disaster Data. (n.d.). '+title+'. "
-        "Retrieved '+d.long+', from '+url;"
-
-        "}"
-
-        "function render(fmt){"
-
-        "out.textContent=text(fmt);"
-
-        "var bs=box.querySelectorAll('.citefmt');"
-
-        "for(var i=0;i<bs.length;i++){"
-
-        "bs[i].setAttribute("
-        "'aria-pressed',"
-        "bs[i].getAttribute('data-fmt')===fmt?"
-        "'true':'false'"
-        ");"
-
-        "}"
-
-        "}"
-
-        "box.addEventListener('click',function(ev){"
-
-        "var c=ev.target.closest('.citefmt');"
-
-        "if(c){"
-        "render(c.getAttribute('data-fmt'));"
-        "}"
-
-        "});"
-
-        "render('apa');"
-
-        "})();"
 
         "</script>"
         % (
             csv_json,
+
             j["slug"],
+
+            j["name"].replace(
+                "'",
+                "\\'",
+            ),
+
+            STATE_NAME.replace(
+                "'",
+                "\\'",
+            ),
+
+            canonical,
         )
     )
 
-    # ------------------------------------------------------------ map scripts
-    if map_html:
-        mapjs = (
-            '<script '
-            'src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">'
-            '</script>'
-
-            '<script '
-            'src="https://unpkg.com/topojson-client@3">'
-            '</script>'
-
-            '<script src="../../county-names.js"></script>'
-
-            '<script src="../../locality-index.js"></script>'
-
-            '<script>'
-
-            '(function(){'
-
-            'var el=document.getElementById("locmap");'
-            'if(!el)return;'
-
-            'var sf=el.dataset.fips,'
-            'sa=el.dataset.st,'
-            'knd=(el.dataset.kind||"");'
-
-            'var SX=['
-            '"county",'
-            '"parish",'
-            '"borough",'
-            '"census area",'
-            '"municipio",'
-            '"municipality",'
-            '"city and borough",'
-            '"island",'
-            '"district"'
-            '];'
-
-            'function norm(s){'
-            'return String(s||"")'
-            '.replace(/\\s*\\([^)]*\\)/g,"")'
-            '.trim()'
-            '.toLowerCase();'
-            '}'
-
-            'function base(v){'
-
-            'var s=norm(String(v).split(",")[0]);'
-
-            'for(var i=0;i<SX.length;i++){'
-
-            'if(s.endsWith(" "+SX[i])){'
-
-            's=s.slice('
-            '0,'
-            '-(SX[i].length+1)'
-            ').trim();'
-
-            'break;'
-
-            '}'
-
-            '}'
-
-            'return s;'
-
-            '}'
-
-            'var cnBase=base(el.dataset.name);'
-
-            'function go(){'
-
-            'if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){'
-            'setTimeout(go,100);'
-            'return;'
-            '}'
-
-            'var ul={};'
-
-            'window.LOCALITY_INDEX.forEach(function(r){'
-
-            'if(r[1]!==sa)return;'
-
-            'var full=r[0]'
-            '.replace(/ \\(city\\)$/i,"")'
-            '.toLowerCase();'
-
-            'ul[base(r[0])]=r[3];'
-            'ul[full]=r[3];'
-
-            '});'
-
-            'fetch('
-            '"https://unpkg.com/us-atlas@3/counties-10m.json"'
-            ')'
-
-            '.then(function(r){'
-            'return r.json();'
-            '})'
-
-            '.then(function(topo){'
-
-            'var fc={'
-            'type:"FeatureCollection",'
-            'features:topojson.feature('
-            'topo,'
-            'topo.objects.counties'
-            ').features.filter(function(f){'
-            'return String(f.id)'
-            '.padStart(5,"0")'
-            '.slice(0,2)===sf;'
-            '})'
-            '};'
-
-            'var matches=fc.features.filter(function(f){'
-            'return base('
-            'window.COUNTY_NAMES['
-            'String(f.id).padStart(5,"0")'
-            ']||""'
-            ')===cnBase;'
-            '});'
-
-            'var collide=matches.length>1;'
-
-            'function isTarget(f){'
-
-            'var fp=String(f.id).padStart(5,"0");'
-
-            'if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)'
-            'return false;'
-
-            'if(collide){'
-
-            'var city=(+fp.slice(2))>=500;'
-
-            'return (knd==="city")===city;'
-
-            '}'
-
-            'return true;'
-
-            '}'
-
-            'var map=L.map('
-            '"locmap",'
-            '{'
-            'scrollWheelZoom:false,'
-            'zoomControl:true,'
-            'attributionControl:true'
-            '}'
-            ');'
-
-            'L.tileLayer('
-            '"https://{s}.basemaps.cartocdn.com/'
-            f'light_nolabels/{{z}}/{{x}}/{{y}}{{r}}.png?key={CARTO_BASEMAP_KEY}",'
-            '{'
-            'maxZoom:13,'
-            "attribution:'"
-            '&copy; <a href="https://www.openstreetmap.org/copyright">'
-            'OpenStreetMap</a> contributors &copy; '
-            '<a href="https://carto.com/attributions">CARTO</a>'
-            "'"
-            '}'
-            ').addTo(map);'
-
-            'var targetLayer=null;'
-
-            'var ly=L.geoJson(fc,{'
-
-            'style:function(f){'
-
-            'if(isTarget(f))'
-            'return{'
-            'fillColor:"#004c53",'
-            'fillOpacity:.55,'
-            'color:"#004c53",'
-            'weight:2'
-            '};'
-
-            'return{'
-            'fillColor:"#d7e9ea",'
-            'fillOpacity:.35,'
-            'color:"#938a78",'
-            'weight:1'
-            '};'
-
-            '},'
-
-            'onEachFeature:function(f,layer){'
-
-            'var fp=String(f.id).padStart(5,"0"),'
-            'lb=window.COUNTY_NAMES[fp]||"",'
-            'nm=lb.split(",")[0].trim();'
-
-            'var u='
-            'ul[base(nm)]||'
-            'ul[nm.toLowerCase()];'
-
-            'if(isTarget(f)){'
-
-            'targetLayer=layer;'
-
-            'layer.bindTooltip('
-            'nm,'
-            '{'
-            'permanent:true,'
-            'direction:"center",'
-            'className:"loc-lbl",'
-            'offset:[0,0]'
-            '}'
-            ');'
-
-            '}else{'
-
-            'layer.bindTooltip('
-            'nm,'
-            '{sticky:true}'
-            ');'
-
-            '}'
-
-            'if(u){'
-
-            'layer.on("click",function(){'
-            'window.location.href="../../"+u;'
-            '});'
-
-            'layer.on("mouseover",function(){'
-            'this._path.style.cursor="pointer";'
-            'this.setStyle({fillOpacity:.6});'
-            '});'
-
-            'layer.on("mouseout",function(){'
-            'this.setStyle({'
-            'fillOpacity:(this===targetLayer)?.55:.35'
-            '});'
-            '});'
-
-            '}'
-
-            '}'
-
-            '}).addTo(map);'
-
-            'map.fitBounds('
-            'ly.getBounds(),'
-            '{padding:[15,15]}'
-            ');'
-
-            '});'
-
-            '}'
-
-            'go();'
-
-            '})();'
-
-            '</script>'
+    mapjs = jurisdiction_map_js(
+        map_html
+    )
+
+    grid = "".join(
+        '<a href="%s.html">%s</a>'
+        % (
+            o["slug"],
+            e(o["name"]),
         )
-
-    else:
-        mapjs = ""
+        for o in others
+        if o["slug"] != j["slug"]
+    )
 
     return (
         '<!doctype html>'
         '<html lang="en">'
 
-        '<head>'
+        "<head>"
 
         '<meta charset="utf-8">'
 
-        '<meta name="viewport" '
-        'content="width=device-width, initial-scale=1">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
 
-        '%s'
+        "%s"
 
-        '<title>'
-        'Disaster Data | %s, %s FEMA Disaster Declarations '
-        'and Mitigation History'
-        '</title>'
+        "<title>"
+        "Disaster Data | %s, %s Disaster History, Assistance, SVI and NRI"
+        "</title>"
 
         '<meta name="description" content="%s">'
 
         '<link rel="canonical" href="%s">'
 
         '<meta property="og:title" '
-        'content="%s, %s: Federal Disaster Declarations">'
+        'content="%s, %s: Disaster History and Risk Context">'
 
         '<meta property="og:description" content="%s">'
 
@@ -4215,19 +4335,17 @@ def render_page(j, others):
 
         '<meta name="twitter:card" content="summary">'
 
-        '%s'
+        "%s"
 
-        '<script type="application/ld+json">'
-        '%s'
-        '</script>'
+        '<script type="application/ld+json">%s</script>'
 
-        '</head>'
+        "</head>"
 
-        '<body>'
+        "<body>"
 
-        '%s'
+        "%s"
 
-        '<main>'
+        "<main>"
 
         '<div class="wrap">'
 
@@ -4235,82 +4353,107 @@ def render_page(j, others):
         '<a href="../../index.html">Disaster Data</a> / '
         '<a href="../../states/index.html">States</a> / '
         '<a href="../%s.html">%s</a> / '
-        '%s'
-        '</p>'
+        "%s"
+        "</p>"
+
+        '<section class="hero">'
+
+        '<div class="hero-top">'
+
+        "<div>"
 
         '<span class="badge %s">%s</span>'
 
-        '<h1>%s, %s</h1>'
+        "<h1>%s, %s</h1>"
+
+        "</div>"
+
+        "%s"
+
+        "</div>"
 
         '<p class="lede">%s</p>'
 
-        '<div class="stats">%s</div>'
+        "%s"
 
-        '%s'
+        "%s"
 
-        '%s'
+        "%s"
 
-        '%s'
+        "</section>"
 
-        '%s'
+        "%s"
 
-        '<h2>Most common hazards</h2>'
+        "%s"
+
+        '<section class="major-section">'
+
+        '<div class="section-head">'
+
+        "<div>"
+
+        "<h2>Most common hazards</h2>"
+
+        '<p class="section-deck">'
+        "Hazard categories are based on FEMA incident types in this "
+        "jurisdiction's completed-fiscal-year declaration record."
+        "</p>"
+
+        "</div>"
+
+        "</div>"
 
         '<ul class="haz">%s</ul>'
 
-        '%s'
+        "</section>"
 
-        '<h2>Every declaration on record</h2>'
+        "%s"
 
-        '%s'
+        "%s"
+
+        "%s"
 
         '<div style="margin:2rem 0">'
 
-        '<a href="../%s.html">'
-        '&larr; %s statewide overview'
-        '</a> '
+        '<a href="../%s.html">&larr; %s statewide overview</a> '
 
-        '&middot; '
+        "&middot; "
 
-        '<a href="index.html">'
-        'All %s jurisdictions'
-        '</a>'
+        '<a href="index.html">All %s jurisdictions</a>'
 
-        '</div>'
+        "</div>"
 
-        '%s'
+        "%s"
 
-        '<h2>Other %s jurisdictions</h2>'
+        "<h2>Other %s jurisdictions</h2>"
 
-        '<nav class="jgrid">'
-        '%s'
-        '</nav>'
+        '<nav class="jgrid">%s</nav>'
 
-        '</div>'
+        "</div>"
 
-        '</main>'
+        "</main>"
 
-        '%s'
+        "%s"
 
-        '%s'
+        "%s"
 
-        '%s'
+        "%s"
 
-        '</body>'
+        "</body>"
 
-        '</html>'
+        "</html>"
         % (
             robots,
 
             e(j["name"]),
-            STATE_NAME,
+            e(STATE_NAME),
 
             e(desc),
 
             canonical,
 
             e(j["name"]),
-            STATE_NAME,
+            e(STATE_NAME),
 
             e(desc),
 
@@ -4323,57 +4466,44 @@ def render_page(j, others):
             header_html(),
 
             STATE_SLUG,
-            STATE_NAME,
+            e(STATE_NAME),
             e(j["name"]),
 
-            j["kind"],
-            label,
+            e(j["kind"]),
+            e(label),
 
             e(j["name"]),
-            STATE_NAME,
+            e(STATE_NAME),
+
+            hero_actions,
 
             lede,
 
-            stats,
+            current_note,
+
+            hero_cards_html(j),
 
             summary_html(j),
 
+            risk_html,
+
             map_html,
-
-            risk_context_html(j),
-
-            (
-                pa_breakdown_html(j)
-                + pa_timing_html(j)
-                + ia_html(j)
-                + hma_html(j)
-            ),
 
             haz,
 
-            hmp,
+            assistance_html,
 
-            history,
+            mitigation_html,
+
+            history_html,
 
             STATE_SLUG,
-            STATE_NAME,
-            STATE_NAME,
+            e(STATE_NAME),
+            e(STATE_NAME),
 
-            (
-                method_html(
-                    j["kind"],
-                    bool(
-                        j.get("spans")
-                    ),
-                )
-                + citation_html(
-                    j,
-                    canonical,
-                )
-            ),
+            method_html(j),
 
-            STATE_NAME,
-
+            e(STATE_NAME),
             grid,
 
             footer_html(),
@@ -4385,8 +4515,12 @@ def render_page(j, others):
     )
 
 
-# ---------------------------------------------------------------- hub
+# =============================================================================
+# STATE JURISDICTION HUB
+# =============================================================================
+
 def render_hub(js, stubs=()):
+
     e = html.escape
 
     items = [
@@ -4401,9 +4535,8 @@ def render_hub(js, stubs=()):
     ]
 
     for s in stubs:
-        rel = s[
-            "canonical_url"
-        ].replace(
+
+        rel = s["canonical_url"].replace(
             "states/",
             "../",
             1,
@@ -4415,13 +4548,9 @@ def render_hub(js, stubs=()):
                 s["name"],
                 s["label"],
                 rel,
-                (
-                    " &middot; full record on the %s page"
-                    % e(
-                        s[
-                            "primary_name"
-                        ]
-                    )
+                " &middot; full record on the %s page"
+                % e(
+                    s["primary_name"]
                 ),
             )
         )
@@ -4438,35 +4567,24 @@ def render_hub(js, stubs=()):
             '<li>'
             '<a href="%s">%s</a> '
             '<span class="k">%s</span>'
-            '<span class="c">'
-            '%d declarations%s'
-            '</span>'
-            '</li>'
+            '<span class="c">%d declarations%s</span>'
+            "</li>"
         )
         % (
             href,
             e(name),
-            label,
+            e(label),
             decl,
             note,
         )
-        for (
-            decl,
-            name,
-            label,
-            href,
-            note,
-        ) in items
+        for decl, name, label, href, note in items
     )
 
-    phrase = kind_phrase(
-        js
-    )
+    phrase = kind_phrase(js)
 
     desc = (
-        "Federal disaster and emergency declaration history for every "
-        "%s %s since FY2000, with a ready-to-use previous-occurrences "
-        "table for hazard mitigation planning."
+        "Federal disaster declaration history, assistance, risk, and "
+        "vulnerability context for every %s %s."
         % (
             STATE_NAME,
             phrase,
@@ -4475,25 +4593,25 @@ def render_hub(js, stubs=()):
 
     return (
         '<!doctype html>'
+
         '<html lang="en">'
 
-        '<head>'
+        "<head>"
 
         '<meta charset="utf-8">'
 
-        '<meta name="viewport" '
-        'content="width=device-width, initial-scale=1">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
 
-        '<title>'
-        'Disaster Data | %s Disaster Declarations by Jurisdiction'
-        '</title>'
+        "<title>"
+        "Disaster Data | %s Disaster History by Jurisdiction"
+        "</title>"
 
         '<meta name="description" content="%s">'
 
         '<link rel="canonical" href="%s/states/%s/">'
 
         '<meta property="og:title" '
-        'content="%s Disaster Declarations by Jurisdiction">'
+        'content="%s Disaster History by Jurisdiction">'
 
         '<meta property="og:description" content="%s">'
 
@@ -4501,62 +4619,63 @@ def render_hub(js, stubs=()):
 
         '<meta name="twitter:card" content="summary">'
 
-        '%s'
+        "%s"
 
-        '</head>'
+        "</head>"
 
-        '<body>'
+        "<body>"
 
-        '%s'
+        "%s"
 
-        '<main>'
+        "<main>"
 
         '<div class="wrap">'
 
         '<p class="crumb">'
-        '<a href="../../index.html">Disaster Data</a> / '
-        '<a href="../../states/index.html">States</a> / '
-        '<a href="../%s.html">%s</a> / '
-        'Jurisdictions'
-        '</p>'
 
-        '<h1>%s, by jurisdiction</h1>'
+        '<a href="../../index.html">Disaster Data</a> / '
+
+        '<a href="../../states/index.html">States</a> / '
+
+        '<a href="../%s.html">%s</a> / Jurisdictions'
+
+        "</p>"
+
+        "<h1>%s, by jurisdiction</h1>"
 
         '<p class="lede">'
-        'Every %s %s, ranked by federal disaster and emergency '
-        'declarations since FY2000. Each page carries the full declaration '
-        'history and a previous-occurrences table built for local '
-        'mitigation plans.'
-        '</p>'
+        "Explore federal disaster histories for every %s %s. "
+        "County-equivalent pages also include CDC Social Vulnerability Index "
+        "and FEMA National Risk Index context where those datasets provide "
+        "a matching FIPS record."
+        "</p>"
 
-        '<ol class="rank">'
-        '%s'
-        '</ol>'
+        '<ol class="rank">%s</ol>'
 
         '<div style="margin:2rem 0">'
-        '<a href="../%s.html">'
-        '&larr; Back to %s statewide overview'
-        '</a>'
-        '</div>'
 
-        '</div>'
+        '<a href="../%s.html">&larr; Back to %s statewide overview</a>'
 
-        '</main>'
+        "</div>"
 
-        '%s'
+        "</div>"
 
-        '</body>'
+        "</main>"
 
-        '</html>'
+        "%s"
+
+        "</body>"
+
+        "</html>"
         % (
-            STATE_NAME,
+            e(STATE_NAME),
 
             e(desc),
 
             SITE,
             STATE_SLUG,
 
-            STATE_NAME,
+            e(STATE_NAME),
 
             e(desc),
 
@@ -4565,34 +4684,35 @@ def render_hub(js, stubs=()):
             header_html(),
 
             STATE_SLUG,
-            STATE_NAME,
+            e(STATE_NAME),
 
-            STATE_NAME,
+            e(STATE_NAME),
 
-            STATE_NAME,
-            phrase,
+            e(STATE_NAME),
+            e(phrase),
 
             rows,
 
             STATE_SLUG,
-            STATE_NAME,
+            e(STATE_NAME),
 
             footer_html(),
         )
     )
 
 
-# ---------------------------------------------------------------- tribal merge
-def build_tribal_plan(LOCALITY, NAMES):
-    """
-    Aggregate every tribal jurisdiction across the states it appears in.
+# =============================================================================
+# TRIBAL MERGE
+# =============================================================================
 
-    Each tribe gets one canonical page on its primary state.
-    """
+def build_tribal_plan(LOCALITY, NAMES):
+
     agg = {}
 
     for st, entries in LOCALITY.items():
+
         for en in entries:
+
             c = classify(
                 st,
                 en["n"],
@@ -4602,6 +4722,7 @@ def build_tribal_plan(LOCALITY, NAMES):
                 c["kind"] == "tribal"
                 and c["keep"]
             ):
+
                 continue
 
             d = (
@@ -4635,6 +4756,7 @@ def build_tribal_plan(LOCALITY, NAMES):
     plan = {}
 
     for disp, smap in agg.items():
+
         primary = sorted(
             smap.items(),
             key=lambda kv: (
@@ -4643,9 +4765,7 @@ def build_tribal_plan(LOCALITY, NAMES):
             ),
         )[0][0]
 
-        pc = smap[
-            primary
-        ]["cls"]
+        pc = smap[primary]["cls"]
 
         pname = NAMES.get(
             primary,
@@ -4655,9 +4775,8 @@ def build_tribal_plan(LOCALITY, NAMES):
         purl = (
             "states/%s/%s.html"
             % (
-                slugify(
-                    pname
-                ),
+                slugify(pname),
+
                 make_slug(
                     pc,
                     primary,
@@ -4683,6 +4802,7 @@ def build_tribal_plan(LOCALITY, NAMES):
         )
 
         for st in smap:
+
             plan[
                 (
                     st,
@@ -4716,14 +4836,15 @@ def render_stub(
     primary_name,
     spans,
 ):
-    """
-    Thin canonical-pointer page for cross-state tribal jurisdictions.
-    """
+
     e = html.escape
 
-    canonical = "%s/%s" % (
-        SITE,
-        canonical_url,
+    canonical = (
+        "%s/%s"
+        % (
+            SITE,
+            canonical_url,
+        )
     )
 
     rel = canonical_url.replace(
@@ -4737,8 +4858,8 @@ def render_stub(
     )
 
     desc = (
-        "%s spans %s. Its full federal disaster and emergency declaration "
-        "history and mitigation table are maintained on the %s page."
+        "%s spans %s. Its complete DisasterData.IO jurisdiction record "
+        "is maintained on the %s page."
         % (
             name,
             span_txt,
@@ -4748,18 +4869,16 @@ def render_stub(
 
     return (
         '<!doctype html>'
+
         '<html lang="en">'
 
-        '<head>'
+        "<head>"
 
         '<meta charset="utf-8">'
 
-        '<meta name="viewport" '
-        'content="width=device-width, initial-scale=1">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
 
-        '<title>'
-        'Disaster Data | %s'
-        '</title>'
+        "<title>Disaster Data | %s</title>"
 
         '<meta name="description" content="%s">'
 
@@ -4769,60 +4888,63 @@ def render_stub(
 
         '<meta property="og:type" content="website">'
 
-        '%s'
+        "%s"
 
-        '</head>'
+        "</head>"
 
-        '<body>'
+        "<body>"
 
-        '%s'
+        "%s"
 
-        '<main>'
+        "<main>"
 
         '<div class="wrap">'
 
         '<p class="crumb">'
+
         '<a href="../../index.html">Disaster Data</a> / '
+
         '<a href="../../states/index.html">States</a> / '
-        '<a href="../%s.html">%s</a> / '
-        '%s'
-        '</p>'
 
-        '<span class="badge tribal">'
-        'Tribal nation'
-        '</span>'
+        '<a href="../%s.html">%s</a> / %s'
 
-        '<h1>%s</h1>'
+        "</p>"
+
+        '<span class="badge tribal">Tribal nation</span>'
+
+        "<h1>%s</h1>"
 
         '<p class="lede">'
-        '%s spans %s. To keep its record whole rather than split across '
-        'state lines, the full declaration history and previous-occurrences '
-        'table live on one page.'
-        '</p>'
+        "%s spans %s. To keep the federal record whole rather than split "
+        "across state lines, the full declaration and mitigation history "
+        "is maintained on one canonical jurisdiction page."
+        "</p>"
 
         '<p style="margin:1.5rem 0">'
 
         '<a class="copybtn" href="%s">'
-        'View the full %s record on the %s page &rarr;'
-        '</a>'
 
-        '</p>'
+        "View the full %s record on the %s page &rarr;"
+
+        "</a>"
+
+        "</p>"
 
         '<div style="margin:2rem 0">'
-        '<a href="index.html">'
-        '&larr; All %s jurisdictions'
-        '</a>'
-        '</div>'
 
-        '</div>'
+        '<a href="index.html">&larr; All %s jurisdictions</a>'
 
-        '</main>'
+        "</div>"
 
-        '%s'
+        "</div>"
 
-        '</body>'
+        "</main>"
 
-        '</html>'
+        "%s"
+
+        "</body>"
+
+        "</html>"
         % (
             e(name),
 
@@ -4837,7 +4959,7 @@ def render_stub(
             header_html(),
 
             STATE_SLUG,
-            STATE_NAME,
+            e(STATE_NAME),
             e(name),
 
             e(name),
@@ -4849,14 +4971,17 @@ def render_stub(
             e(name),
             e(primary_name),
 
-            STATE_NAME,
+            e(STATE_NAME),
 
             footer_html(),
         )
     )
 
 
-# ---------------------------------------------------------------- build
+# =============================================================================
+# BUILD ONE STATE
+# =============================================================================
+
 def build_state(
     state_ab,
     LOCALITY,
@@ -4871,9 +4996,7 @@ def build_state(
     nri_lookup,
     tribal_plan,
 ):
-    """
-    Generate all keep-localities plus hub for one state.
-    """
+
     global STATE_AB
     global STATE_NAME
     global STATE_SLUG
@@ -4902,18 +5025,28 @@ def build_state(
     )
 
     js = []
+
     stubs = []
+
     dropped = 0
+
     seen_tribal = set()
 
+    # ----------------------------------------------------------------
+    # Base jurisdiction stats
+    # ----------------------------------------------------------------
+
     for en in entries:
+
         c = classify(
             state_ab,
             en["n"],
         )
 
         if not c["keep"]:
+
             dropped += 1
+
             continue
 
         pinfo = (
@@ -4928,6 +5061,7 @@ def build_state(
         )
 
         if pinfo:
+
             if c["display"] in seen_tribal:
                 continue
 
@@ -4936,55 +5070,48 @@ def build_state(
             )
 
             if pinfo["role"] == "secondary":
-                stubs.append({
-                    "name":
-                        c["display"],
 
-                    "slug":
-                        make_slug(
-                            c,
-                            state_ab,
-                        ),
+                stubs.append(
+                    {
+                        "name":
+                            c["display"],
 
-                    "canonical_url":
-                        pinfo[
-                            "primary_url"
-                        ],
+                        "slug":
+                            make_slug(
+                                c,
+                                state_ab,
+                            ),
 
-                    "primary_name":
-                        pinfo[
-                            "primary_name"
-                        ],
+                        "canonical_url":
+                            pinfo["primary_url"],
 
-                    "spans":
-                        [
-                            NAMES.get(
-                                s,
-                                s,
-                            )
-                            for s in pinfo[
-                                "states"
-                            ]
-                        ],
+                        "primary_name":
+                            pinfo["primary_name"],
 
-                    "label":
-                        kind_label(c),
+                        "spans":
+                            [
+                                NAMES.get(
+                                    s,
+                                    s,
+                                )
+                                for s in pinfo["states"]
+                            ],
 
-                    "decl":
-                        len(
-                            pinfo[
-                                "all_ids"
-                            ]
-                        ),
-                })
+                        "label":
+                            kind_label(c),
+
+                        "decl":
+                            len(
+                                pinfo["all_ids"]
+                            ),
+                    }
+                )
 
                 continue
 
             en = dict(en)
 
-            en["ids"] = pinfo[
-                "all_ids"
-            ]
+            en["ids"] = pinfo["all_ids"]
 
         s = juris_stats(
             en,
@@ -5001,19 +5128,19 @@ def build_state(
                 pinfo["states"]
             ) > 1
         ):
+
             s["spans"] = [
                 NAMES.get(
                     s2,
                     s2,
                 )
-                for s2 in pinfo[
-                    "states"
-                ]
+                for s2 in pinfo["states"]
             ]
 
         js.append(s)
 
     if not js and not stubs:
+
         return (
             0,
             dropped,
@@ -5021,11 +5148,15 @@ def build_state(
             [],
         )
 
-    # ------------------------------------------------------------ PA matching
+    # ----------------------------------------------------------------
+    # PA
+    # ----------------------------------------------------------------
+
     pa_lookup = {}
     pa_exact = {}
 
     for pa_name, pa_val in pa_county.items():
+
         pa_exact[
             pa_name.strip().lower()
         ] = pa_val
@@ -5037,7 +5168,9 @@ def build_state(
         ] = pa_val
 
     for j in js:
+
         if j["kind"] == "city":
+
             key = (
                 j["name"]
                 .replace(
@@ -5046,29 +5179,32 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
+
             key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
+
             key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         pa = (
-            pa_lookup.get(
-                key
-            )
+            pa_lookup.get(key)
             or pa_exact.get(
                 j["name"]
                 .replace(
@@ -5081,7 +5217,9 @@ def build_state(
         )
 
         if pa:
+
             j["pa_obl"] = pa[0]
+
             j["pa_proj"] = pa[1]
 
             j["pa_top_cat"] = (
@@ -5106,16 +5244,21 @@ def build_state(
             )
 
         else:
+
             j["pa_obl"] = 0
             j["pa_proj"] = 0
             j["pa_top_cat"] = ""
             j["pa_cats"] = {}
 
-    # ------------------------------------------------------------ PA timing
+    # ----------------------------------------------------------------
+    # PA timing
+    # ----------------------------------------------------------------
+
     pt_lookup = {}
     pt_exact = {}
 
     for pt_name, pt_val in pa_timing.items():
+
         pt_exact[
             pt_name.strip().lower()
         ] = pt_val
@@ -5127,8 +5270,10 @@ def build_state(
         ] = pt_val
 
     for j in js:
+
         if j["kind"] == "city":
-            _k = (
+
+            key = (
                 j["name"]
                 .replace(
                     " (city)",
@@ -5136,29 +5281,33 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
-            _k = (
+
+            key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
-            _k = (
+
+            key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         j["pa_timing"] = (
-            pt_lookup.get(
-                _k
-            )
+            pt_lookup.get(key)
+
             or pt_exact.get(
                 j["name"]
                 .replace(
@@ -5168,14 +5317,19 @@ def build_state(
                 .strip()
                 .lower()
             )
+
             or {}
         )
 
-    # ------------------------------------------------------------ HMA matching
+    # ----------------------------------------------------------------
+    # HMA
+    # ----------------------------------------------------------------
+
     hm_lookup = {}
     hm_exact = {}
 
     for hm_name, hm_val in hma.items():
+
         hm_exact[
             hm_name.strip().lower()
         ] = hm_val
@@ -5187,8 +5341,10 @@ def build_state(
         ] = hm_val
 
     for j in js:
+
         if j["kind"] == "city":
-            _k = (
+
+            key = (
                 j["name"]
                 .replace(
                     " (city)",
@@ -5196,29 +5352,33 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
-            _k = (
+
+            key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
-            _k = (
+
+            key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         j["hma"] = (
-            hm_lookup.get(
-                _k
-            )
+            hm_lookup.get(key)
+
             or hm_exact.get(
                 j["name"]
                 .replace(
@@ -5228,14 +5388,19 @@ def build_state(
                 .strip()
                 .lower()
             )
+
             or {}
         )
 
-    # ------------------------------------------------------------ IA matching
+    # ----------------------------------------------------------------
+    # IA
+    # ----------------------------------------------------------------
+
     ia_lookup = {}
     ia_exact = {}
 
     for ia_name, ia_val in ia.items():
+
         ia_exact[
             ia_name.strip().lower()
         ] = ia_val
@@ -5247,8 +5412,10 @@ def build_state(
         ] = ia_val
 
     for j in js:
+
         if j["kind"] == "city":
-            _k = (
+
+            key = (
                 j["name"]
                 .replace(
                     " (city)",
@@ -5256,29 +5423,33 @@ def build_state(
                 )
                 .strip()
                 .lower(),
+
                 "city",
             )
 
         elif j["kind"] == "county":
-            _k = (
+
+            key = (
                 pa_base_kind(
                     j["name"]
                 )[0],
+
                 "county",
             )
 
         else:
-            _k = (
+
+            key = (
                 j["name"]
                 .strip()
                 .lower(),
+
                 "other",
             )
 
         j["ia"] = (
-            ia_lookup.get(
-                _k
-            )
+            ia_lookup.get(key)
+
             or ia_exact.get(
                 j["name"]
                 .replace(
@@ -5288,46 +5459,102 @@ def build_state(
                 .strip()
                 .lower()
             )
+
             or {}
         )
 
-    # ------------------------------------------------------------ SVI / NRI matching
+    # ----------------------------------------------------------------
+    # SVI / NRI
+    # ----------------------------------------------------------------
+
+    svi_matches = 0
+    nri_matches = 0
+
     for j in js:
+
         risk_key = jurisdiction_risk_key(
             j,
             state_ab,
         )
 
-        if risk_key:
-            j["svi"] = svi_lookup.get(
-                risk_key,
-                {},
-            )
-            j["nri"] = nri_lookup.get(
-                risk_key,
-                {},
-            )
-        else:
+        if risk_key is None:
+
             j["svi"] = {}
             j["nri"] = {}
+            j["risk_fips"] = ""
+
+            continue
+
+        svi_rec = (
+            svi_lookup.get(
+                risk_key
+            )
+            or {}
+        )
+
+        nri_rec = (
+            nri_lookup.get(
+                risk_key
+            )
+            or {}
+        )
+
+        j["svi"] = svi_rec
+
+        j["nri"] = nri_rec
+
+        if svi_rec:
+            svi_matches += 1
+
+        if nri_rec:
+            nri_matches += 1
 
         j["risk_fips"] = (
-            (j["svi"] or {}).get("fips")
-            or (j["nri"] or {}).get("fips")
+            svi_rec.get("fips")
+            or nri_rec.get("fips")
             or ""
         )
 
+    if js:
+
+        print(
+            "  %s risk matches: SVI %s / NRI %s across %s generated jurisdictions"
+            % (
+                state_ab,
+
+                format(
+                    svi_matches,
+                    ",",
+                ),
+
+                format(
+                    nri_matches,
+                    ",",
+                ),
+
+                format(
+                    len(js),
+                    ",",
+                ),
+            )
+        )
+
+    # ----------------------------------------------------------------
+    # SEO / hashes
+    # ----------------------------------------------------------------
+
     for j in js:
+
         j["thin"] = is_thin(j)
 
-        j["content_hash"] = _content_hash(
-            j
-        )
+        j["content_hash"] = _content_hash(j)
 
     seen = {}
 
     for j in js:
+
         if j["slug"] in seen:
+
             j["slug"] = (
                 j["slug"]
                 + "-2"
@@ -5350,52 +5577,64 @@ def build_state(
     )
 
     for j in js:
-        open(
-            os.path.join(
-                OUT_DIR,
-                j["slug"]
-                + ".html",
-            ),
+
+        page_path = os.path.join(
+            OUT_DIR,
+            j["slug"] + ".html",
+        )
+
+        with open(
+            page_path,
             "w",
             encoding="utf-8",
-        ).write(
-            render_page(
-                j,
-                js,
+        ) as fh:
+
+            fh.write(
+                render_page(
+                    j,
+                    js,
+                )
             )
-        )
 
     for stub in stubs:
-        open(
-            os.path.join(
-                OUT_DIR,
-                stub["slug"]
-                + ".html",
-            ),
-            "w",
-            encoding="utf-8",
-        ).write(
-            render_stub(
-                stub["name"],
-                stub["canonical_url"],
-                stub["primary_name"],
-                stub["spans"],
-            )
+
+        stub_path = os.path.join(
+            OUT_DIR,
+            stub["slug"] + ".html",
         )
 
-    open(
-        os.path.join(
-            OUT_DIR,
-            "index.html",
-        ),
+        with open(
+            stub_path,
+            "w",
+            encoding="utf-8",
+        ) as fh:
+
+            fh.write(
+                render_stub(
+                    stub["name"],
+                    stub["canonical_url"],
+                    stub["primary_name"],
+                    stub["spans"],
+                )
+            )
+
+    hub_path = os.path.join(
+        OUT_DIR,
+        "index.html",
+    )
+
+    with open(
+        hub_path,
         "w",
         encoding="utf-8",
-    ).write(
-        render_hub(
-            js,
-            stubs,
+    ) as fh:
+
+        fh.write(
+            render_hub(
+                js,
+                stubs,
+            )
         )
-    )
 
     return (
         len(js),
@@ -5405,26 +5644,52 @@ def build_state(
     )
 
 
+# =============================================================================
+# MAIN
+# =============================================================================
+
 def main():
+
+    print("Loading jurisdiction page inputs...")
+
     LOCALITY, BROWSE, NAMES, PA_COUNTY = load_data()
 
     PA_TIMING = load_pa_timing()
+
     HMA = load_hma()
+
     IA = load_ia()
-    SVI = load_svi()
-    NRI = load_nri()
+
+    SVI_RAW = load_svi()
+
+    NRI_RAW = load_nri()
 
     SVI_LOOKUP = build_risk_lookup(
-        SVI
+        SVI_RAW
     )
+
     NRI_LOOKUP = build_risk_lookup(
-        NRI
+        NRI_RAW
+    )
+
+    print(
+        "  SVI lookup: %s normalized county-equivalent records"
+        % format(
+            len(SVI_LOOKUP),
+            ",",
+        )
+    )
+
+    print(
+        "  NRI lookup: %s normalized county-equivalent records"
+        % format(
+            len(NRI_LOOKUP),
+            ",",
+        )
     )
 
     by_id = {
-        r[
-            "femaDeclarationString"
-        ]: r
+        r["femaDeclarationString"]: r
         for r in BROWSE
     }
 
@@ -5442,11 +5707,13 @@ def main():
     )
 
     if one:
+
         targets = [
             one.upper()
         ]
 
     else:
+
         targets = sorted(
             LOCALITY.keys(),
             key=lambda s: NAMES.get(
@@ -5463,35 +5730,38 @@ def main():
     all_jurisdictions = []
 
     for st in targets:
-        (
-            kept,
-            dropped,
-            stubs_n,
-            js,
-        ) = build_state(
+
+        kept, dropped, stubs_n, js = build_state(
             st,
             LOCALITY,
             by_id,
             lcfy,
             NAMES,
+
             PA_COUNTY.get(
                 st,
                 {},
             ),
+
             PA_TIMING.get(
                 st,
                 {},
             ),
+
             HMA.get(
                 st,
                 {},
             ),
+
             IA.get(
                 st,
                 {},
             ),
+
             SVI_LOOKUP,
+
             NRI_LOOKUP,
+
             tribal_plan,
         )
 
@@ -5499,6 +5769,7 @@ def main():
         grand_stubs += stubs_n
 
         if kept or stubs_n:
+
             grand_states += 1
             grand_pages += kept
 
@@ -5512,31 +5783,37 @@ def main():
             )
 
             for j in js:
-                all_jurisdictions.append([
-                    j["name"],
-                    st,
-                    state_name,
-                    (
+
+                all_jurisdictions.append(
+                    [
+                        j["name"],
+                        st,
+                        state_name,
+
                         "states/%s/%s.html"
                         % (
                             state_slug,
                             j["slug"],
-                        )
-                    ),
-                    j["decl"],
-                    j["kind"],
-                    j["noun"],
-                    j.get(
-                        "thin",
-                        False,
-                    ),
-                    j.get(
-                        "content_hash",
-                        "",
-                    ),
-                ])
+                        ),
+
+                        j["decl"],
+                        j["kind"],
+                        j["noun"],
+
+                        j.get(
+                            "thin",
+                            False,
+                        ),
+
+                        j.get(
+                            "content_hash",
+                            "",
+                        ),
+                    ]
+                )
 
             if one:
+
                 print(
                     "generated %d %s jurisdiction pages + hub "
                     "(+%d canonical pointers), through FY%d"
@@ -5548,8 +5825,12 @@ def main():
                     )
                 )
 
-    # ------------------------------------------------------------ locality search index
+    # =========================================================================
+    # NATIONAL RUN
+    # =========================================================================
+
     if not one:
+
         idx_path = os.path.join(
             OUT_ROOT,
             "locality-index.js",
@@ -5564,23 +5845,21 @@ def main():
             "window.LOCALITY_INDEX="
             + json.dumps(
                 idx_rows,
-                separators=(
-                    ",",
-                    ":",
-                ),
+                separators=(",", ":"),
             )
             + ";"
         )
 
-        open(
+        with open(
             idx_path,
             "w",
             encoding="utf-8",
-        ).write(
-            idx_js
-        )
+        ) as fh:
 
-        # -------------------------------------------------------- sitemap
+            fh.write(
+                idx_js
+            )
+
         sitemap_path = os.path.join(
             OUT_ROOT,
             "sitemap.xml",
@@ -5594,7 +5873,9 @@ def main():
         if os.path.exists(
             sitemap_path
         ):
+
             try:
+
                 prev_state = json.load(
                     open(
                         state_path,
@@ -5603,10 +5884,12 @@ def main():
                 )
 
             except Exception:
+
                 prev_state = {}
 
             today = (
-                datetime.date.today()
+                datetime.date
+                .today()
                 .isoformat()
             )
 
@@ -5619,15 +5902,17 @@ def main():
             skipped_thin = 0
 
             for j in all_jurisdictions:
-                url = "%s/%s" % (
-                    SITE,
-                    j[3],
+
+                url = (
+                    "%s/%s"
+                    % (
+                        SITE,
+                        j[3],
+                    )
                 )
 
                 thin = (
-                    bool(
-                        j[7]
-                    )
+                    bool(j[7])
                     if len(j) > 7
                     else False
                 )
@@ -5642,37 +5927,33 @@ def main():
                     url
                 )
 
-                lastmod = (
-                    prev.get(
+                if (
+                    prev
+                    and prev.get("hash") == chash
+                ):
+
+                    lastmod = prev.get(
                         "lastmod",
                         today,
                     )
-                    if (
-                        prev
-                        and prev.get(
-                            "hash"
-                        ) == chash
-                    )
-                    else today
-                )
 
-                new_state[
-                    url
-                ] = {
-                    "hash":
-                        chash,
+                else:
 
-                    "lastmod":
-                        lastmod,
+                    lastmod = today
+
+                new_state[url] = {
+                    "hash": chash,
+                    "lastmod": lastmod,
                 }
 
-                hub_url = "%s/%s/" % (
-                    SITE,
-                    "/".join(
-                        j[3].split(
-                            "/"
-                        )[:2]
-                    ),
+                hub_url = (
+                    "%s/%s/"
+                    % (
+                        SITE,
+                        "/".join(
+                            j[3].split("/")[:2]
+                        ),
+                    )
                 )
 
                 if (
@@ -5682,12 +5963,15 @@ def main():
                         "",
                     )
                 ):
+
                     hub_lastmods[
                         hub_url
                     ] = lastmod
 
                 if thin:
+
                     skipped_thin += 1
+
                     continue
 
                 entries.append(
@@ -5697,10 +5981,8 @@ def main():
                     )
                 )
 
-            for (
-                hub_url,
-                lastmod,
-            ) in hub_lastmods.items():
+            for hub_url, lastmod in hub_lastmods.items():
+
                 entries.append(
                     (
                         hub_url,
@@ -5714,10 +5996,10 @@ def main():
                     "<loc>%s</loc>"
                     "<lastmod>%s</lastmod>"
                     "</url>"
-                    % (
-                        u,
-                        lm,
-                    )
+                )
+                % (
+                    u,
+                    lm,
                 )
                 for u, lm in entries
             )
@@ -5730,9 +6012,7 @@ def main():
             sm = re.sub(
                 (
                     r"<url>\s*<loc>"
-                    + re.escape(
-                        SITE
-                    )
+                    + re.escape(SITE)
                     + r"/states/[^/<]+/[^<]*</loc>.*?</url>"
                 ),
                 "",
@@ -5746,27 +6026,26 @@ def main():
                 + "</urlset>",
             )
 
-            open(
+            with open(
                 sitemap_path,
                 "w",
                 encoding="utf-8",
-            ).write(
-                sm
-            )
+            ) as fh:
 
-            json.dump(
-                new_state,
-                open(
-                    state_path,
-                    "w",
-                    encoding="utf-8",
-                ),
-                separators=(
-                    ",",
-                    ":",
-                ),
-                sort_keys=True,
-            )
+                fh.write(sm)
+
+            with open(
+                state_path,
+                "w",
+                encoding="utf-8",
+            ) as fh:
+
+                json.dump(
+                    new_state,
+                    fh,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                )
 
             print(
                 "extended sitemap.xml with %d indexed URLs "
@@ -5797,9 +6076,7 @@ def main():
                 len(
                     all_jurisdictions
                 ),
-                len(
-                    idx_js
-                ) // 1024,
+                len(idx_js) // 1024,
             )
         )
 
