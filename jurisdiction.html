@@ -4,455 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>Disaster Data | Example County, Virginia</title>
+<title>Disaster Data | Jurisdiction Profiles</title>
+<meta name="description" content="Find county, county-equivalent, independent-city, and tribal jurisdiction disaster profiles built from FEMA OpenFEMA data, with risk and vulnerability context where available.">
+<link rel="canonical" href="https://www.disasterdata.io/jurisdiction.html">
+<meta property="og:title" content="Disaster Data | Jurisdiction Profiles">
+<meta property="og:description" content="Find local disaster-history profiles with FEMA declaration, assistance, mitigation, CDC SVI, and FEMA NRI context where available.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io/jurisdiction.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#f6f1e7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
-  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
-  --rule:#e0d8c5;--rule-2:#cfc6b0;
-  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
-  --ember:#c85c2e;
-  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  color-scheme:light;
+  --paper:#f6f1e7;
+  --paper-2:#fcfaf3;
+  --paper-3:#f1ead9;
+  --ink:#1d1813;
+  --ink-2:#5b5346;
+  --ink-3:#938a78;
+  --rule:#e0d8c5;
+  --rule-2:#cfc6b0;
+  --accent:#004c53;
+  --accent-2:#0a6b73;
+  --accent-soft:#d7e9ea;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-::selection{background:var(--accent);color:#fff;}
-.wrap{max-width:920px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
-
-/* nav */
-nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
-.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);}
-.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;}
-.brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
-.navlinks{display:flex;gap:2px;}
-.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;}
-.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
-.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
-
-/* buttons */
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13.5px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:11px 18px;text-decoration:none;cursor:pointer;transition:.15s;}
-.btn:hover{background:var(--accent-2);border-color:var(--accent-2);}
-.btn.ghost{color:var(--accent);background:transparent;}
-.btn.ghost:hover{background:var(--accent-soft);}
-
-/* back link */
-.back{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-3);text-decoration:none;letter-spacing:.3px;margin-top:clamp(22px,3vw,32px);}
-.back:hover{color:var(--accent);}
-
-/* jurisdiction hero */
-.jhero{padding:14px 0 clamp(26px,4vw,38px);border-bottom:1px solid var(--rule);}
-.jhero .eye{font-size:11.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px;}
-.jhero h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,60px);line-height:1.02;letter-spacing:-1.6px;}
-.snapshot{font-size:clamp(15px,2vw,18px);color:var(--ink-2);margin-top:16px;max-width:60ch;line-height:1.5;}
-.snapshot b{color:var(--ink);font-weight:600;}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
-
-/* stat strip */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin:clamp(26px,4vw,38px) 0;}
-.stat{background:var(--paper-2);padding:18px 20px;}
-.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.3vw,34px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
-.stat .num small{font-size:.46em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:3px;}
-.stat .lab{font-size:12px;color:var(--ink-2);margin-top:8px;}
-.stat .ctx{font-size:11px;color:var(--ember);font-weight:600;margin-top:3px;}
-
-/* section heading */
-.sec{padding:clamp(30px,5vw,52px) 0;border-bottom:1px solid var(--rule);}
-.shead .eye{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px;}
-.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.6vw,36px);line-height:1.1;letter-spacing:-.8px;}
-.shead .sub{font-size:14.5px;color:var(--ink-2);max-width:64ch;margin-top:11px;line-height:1.55;}
-
-/* declaration table */
-.decl{margin-top:24px;width:100%;border-collapse:collapse;font-size:14px;}
-.decl thead th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-3);padding:0 12px 10px;border-bottom:1px solid var(--rule-2);}
-.decl thead th:last-child{text-align:right;}
-.decl tbody td{padding:13px 12px;border-bottom:1px solid var(--rule);vertical-align:middle;}
-.decl tbody td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);}
-.decl .id{font-family:var(--serif);font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:13px;}
-.decl .inc{font-weight:500;color:var(--ink);}
-.decl .dt{color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;}
-.t{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 8px;border-radius:5px;}
-.t.dr{color:var(--accent);background:var(--accent-soft);}
-.t.em{color:#8a6d2f;background:#f3ead2;}
-.t.fm{color:var(--ink-2);background:var(--paper-3);}
-.more{margin-top:16px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule-2);padding-bottom:1px;}
-.more:hover{border-color:var(--accent);}
-.legend{margin-top:14px;font-size:12px;color:var(--ink-3);}
-.legend b{color:var(--ink-2);font-weight:600;}
-
-/* hazard bars */
-.haz{margin-top:22px;display:grid;gap:11px;}
-.hrow{display:grid;grid-template-columns:130px 1fr 36px;align-items:center;gap:14px;}
-.hrow .hl{font-size:13.5px;color:var(--ink-2);font-weight:500;}
-.hbar{height:16px;background:var(--paper-3);border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
-.hbar span{display:block;height:100%;background:var(--accent);}
-.hrow .hc{font-family:var(--serif);font-weight:500;font-size:16px;text-align:right;color:var(--ink);}
-
-/* timeline */
-.tl{margin-top:24px;display:flex;align-items:flex-end;gap:3px;height:120px;padding-bottom:22px;position:relative;border-bottom:1px solid var(--rule-2);}
-.tlbar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative;}
-.tlbar i{display:block;width:100%;max-width:18px;background:var(--accent);border-radius:3px 3px 0 0;transition:.15s;}
-.tlbar:hover i{background:var(--ember);}
-.tlbar em{position:absolute;bottom:-20px;font-size:9px;color:var(--ink-3);font-style:normal;font-variant-numeric:tabular-nums;}
-.tlnote{font-size:12.5px;color:var(--ink-2);margin-top:30px;max-width:60ch;}
-.tlnote b{color:var(--accent);font-weight:600;}
-
-/* PA dollars */
-.pa{margin-top:24px;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
-.parow{background:var(--paper-2);display:grid;grid-template-columns:1fr auto;gap:14px;padding:14px 18px;align-items:center;}
-.parow .pl{font-size:14px;color:var(--ink-2);}
-.parow .pl b{color:var(--ink);font-weight:600;}
-.parow .pv{font-family:var(--serif);font-weight:500;font-size:17px;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
-.parow.tot{background:var(--paper-3);}
-.parow.tot .pl{font-weight:700;color:var(--ink);text-transform:uppercase;font-size:12px;letter-spacing:.8px;}
-.parow.tot .pv{font-size:20px;color:var(--accent);}
-
-/* funding: how much + how fast (recovery timing) */
-.fhead{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:22px;}
-.fhead .fbig{font-family:var(--serif);font-weight:500;font-size:clamp(22px,3vw,30px);letter-spacing:-.8px;color:var(--accent);font-variant-numeric:tabular-nums;}
-.fhead .fbig small{font-size:.5em;color:var(--ink-3);font-weight:600;letter-spacing:0;margin-left:3px;}
-.fhead .fbl{font-size:13px;color:var(--ink-2);max-width:48ch;line-height:1.5;}
-.fund{margin-top:18px;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;}
-.frow{background:var(--paper-2);padding:14px 18px;}
-.frow .ftop{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:baseline;}
-.frow .fname{font-size:14px;color:var(--ink-2);}
-.frow .fname b{color:var(--ink);font-weight:600;}
-.frow .fval{font-family:var(--serif);font-weight:500;font-size:17px;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
-.ftrack{position:relative;height:12px;margin-top:11px;background:var(--paper-3);border:1px solid var(--rule);border-radius:7px;overflow:hidden;}
-.ftrack .gap{position:absolute;top:0;height:100%;background:var(--ember);}
-.ftrack .flow{position:absolute;top:0;height:100%;background:var(--accent);}
-.fmeta{display:flex;justify-content:space-between;gap:12px;margin-top:6px;font-size:11.5px;color:var(--ink-3);}
-.fmeta b{color:var(--ember);font-weight:600;}
-.faxisrow{background:var(--paper-2);padding:2px 18px 10px;}
-.faxis{position:relative;height:14px;}
-.faxis span{position:absolute;font-size:10px;color:var(--ink-3);transform:translateX(-50%);font-variant-numeric:tabular-nums;white-space:nowrap;}
-.faxis span:first-child{transform:none;}
-.frow.tot{background:var(--paper-3);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;}
-.frow.tot .fname{font-weight:700;color:var(--ink);text-transform:uppercase;font-size:12px;letter-spacing:.8px;}
-.frow.tot .fval{font-size:20px;color:var(--accent);}
-.flegend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12px;color:var(--ink-3);}
-.flegend span{display:inline-flex;align-items:center;gap:7px;}
-.fsw{width:11px;height:11px;border-radius:3px;display:inline-block;}
-.fnote{margin-top:16px;font-size:12px;color:var(--ink-3);line-height:1.55;border-top:1px solid var(--rule);padding-top:14px;}
-.fnote b{color:var(--ink-2);font-weight:600;}
-
-/* denials (carried over) */
-.compare{margin-top:22px;display:grid;gap:14px;}
-.crow{display:grid;grid-template-columns:130px 1fr auto;align-items:center;gap:14px;}
-.crow .who{font-size:13px;color:var(--ink-2);font-weight:500;}
-.crow .who.me{color:var(--ink);font-weight:600;}
-.cbar{height:14px;background:var(--paper-3);border:1px solid var(--rule);border-radius:7px;overflow:hidden;}
-.cbar span{display:block;height:100%;}
-.cbar .me{background:var(--ember);}
-.cbar .nat{background:var(--accent);}
-.crow .v{font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;min-width:52px;text-align:right;}
-.crow .v small{font-size:11px;color:var(--ink-3);font-family:var(--sans);font-weight:600;display:block;margin-top:-2px;}
-.denlist{margin-top:18px;font-size:13.5px;color:var(--ink-2);}
-.denlist .di{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
-.denlist .di:last-child{border-bottom:none;}
-.denlist .di b{color:var(--ink);font-weight:600;}
-.denlist .di .dd{color:var(--ink-3);font-size:12px;margin-left:auto;white-space:nowrap;}
-.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.3px;padding:3px 9px;border-radius:20px;white-space:nowrap;}
-.tag.den{color:var(--ember);background:#f6e4da;}
-.tag.pend{color:#8a6d2f;background:#f3ead2;}
-.tag.over{color:var(--accent);background:var(--accent-soft);}
-
-/* HMP wedge panel */
-.hmp{margin:clamp(30px,5vw,52px) 0;background:#072e31;color:#eaf3f3;border-radius:14px;padding:clamp(26px,4vw,40px);}
-.hmp .eye{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#5fb4ba;margin-bottom:11px;}
-.hmp h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.6vw,34px);line-height:1.08;letter-spacing:-.8px;color:#fff;}
-.hmp .sub{font-size:14.5px;color:#bcd6d7;max-width:58ch;margin-top:12px;line-height:1.55;}
-.hmptbl{margin-top:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;overflow:hidden;}
-.hmptbl table{width:100%;border-collapse:collapse;font-size:13px;}
-.hmptbl thead th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#7fb9be;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.12);}
-.hmptbl thead th:last-child{text-align:right;}
-.hmptbl tbody td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);color:#d9e8e8;}
-.hmptbl tbody td:last-child{text-align:right;font-variant-numeric:tabular-nums;color:#fff;font-weight:600;}
-.hmptbl tbody tr:last-child td{border-bottom:none;}
-.hmpcap{font-size:11.5px;color:#8fb6b8;margin-top:10px;font-style:italic;}
-.hmpcta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px;}
-.btn.lime{background:#cffa66;border-color:#cffa66;color:#0a2a2c;}
-.btn.lime:hover{background:#d8ff80;border-color:#d8ff80;}
-.hmpcta .fineprint{font-size:12px;color:#8fb6b8;}
-
-/* cite/export */
-.cite{margin-top:22px;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;}
-.cite .cl{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;}
-.cite .ct{font-size:13.5px;color:var(--ink);line-height:1.6;font-family:var(--sans);}
-.cite .ct i{color:var(--ink-2);}
-
-/* footer */
-.foot{padding:clamp(28px,4vw,44px) 0;color:var(--ink-3);font-size:12.5px;line-height:1.7;}
-.foot b{color:var(--ink-2);font-weight:600;}
-.foot a{color:var(--accent);text-decoration:none;}
-
-.banner{max-width:920px;margin:0 auto;padding:13px clamp(18px,4vw,48px);font-size:12px;color:var(--ink-3);border-bottom:1px dashed var(--rule-2);letter-spacing:.2px;}
-
-@media(max-width:660px){
-  .stats{grid-template-columns:repeat(2,1fr);}
-  .navlinks{display:none;}
-  .hrow{grid-template-columns:92px 1fr 30px;gap:10px;}
-  .crow{grid-template-columns:92px 1fr auto;gap:10px;}
-  .decl thead th:nth-child(3),.decl tbody td:nth-child(3){display:none;}
-  .tlbar em{display:none;}
-}
-
-/* ---- mobile hamburger (desktop unchanged) ---- */
-.navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px;}
-.navburger span{display:block;height:2px;width:100%;background:var(--ink);border-radius:2px;transition:.2s;}
-.navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.navburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
-.navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mobilemenu{display:none;}
-@media(max-width:720px){
-  nav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;}
-  .navlinks{display:none !important;}
-  .navburger{display:flex;}
-  .mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:var(--paper);border-bottom:1px solid var(--rule);position:sticky;top:60px;z-index:49;}
-  .mobilemenu > a{font-size:15px;font-weight:500;color:var(--ink);text-decoration:none;padding:11px 12px;border-radius:8px;}
-  .mobilemenu > a.on{color:var(--accent);background:var(--accent-soft);}
-  .mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid var(--rule);}
-  .mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);padding:6px 12px 2px;}
-  .mm-section a{font-size:15px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px;}
-  .mm-section a:hover,.mm-section a.on{color:var(--accent);background:var(--accent-soft);}
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:980px;margin:0 auto;padding:0 clamp(18px,4vw,48px)}
+main{padding:clamp(42px,7vw,84px) 0 60px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,64px);line-height:1.03;letter-spacing:-1.5px;max-width:14ch}
+.lede{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:64ch;margin-top:22px;line-height:1.6}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:11px 18px;text-decoration:none;transition:.15s}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn.ghost{color:var(--accent);background:transparent}
+.btn.ghost:hover{background:var(--accent-soft)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:clamp(38px,6vw,64px)}
+.card{background:var(--paper-2);padding:24px 24px 26px}
+.card .k{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3)}
+.card h2{font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.15;color:var(--accent);margin-top:8px}
+.card p{font-size:13.5px;color:var(--ink-2);margin-top:10px;line-height:1.6}
+.note{margin-top:28px;padding:18px 20px;background:var(--paper-3);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:13.5px;color:var(--ink-2);max-width:76ch}
+.note b{color:var(--ink);font-weight:600}
+footer{border-top:1px solid var(--rule);padding:28px 0 44px;color:var(--ink-3);font-size:12px}
+footer a{text-decoration:none}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.card{padding:20px}}
 </style>
 </head>
 <body>
 <script src="/nav.js"></script>
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Local disaster data</div>
+    <h1>Find a jurisdiction profile</h1>
+    <p class="lede">DisasterData.IO builds individual profiles for counties, county-equivalents, independent cities, and tribal jurisdictions. Each generated profile brings together federal declaration history, assistance and mitigation records, and county-level risk and vulnerability context where matching CDC SVI and FEMA NRI data are available.</p>
 
-<div class="banner">Preview · full jurisdiction page (the map-search destination) · all figures are <b>illustrative</b> placeholders pending data wiring.</div>
-
-<div class="wrap">
-
-  <a class="back" href="#map">&larr; Back to map</a>
-
-  <!-- JURISDICTION HERO -->
-  <header class="jhero">
-    <div class="eye">Jurisdiction profile · Virginia</div>
-    <h1>Example County</h1>
-    <p class="snapshot">Since 2000, this county has received <b>15 federal disaster declarations</b> and <b>$47.2M in Public Assistance</b> — a flood-dominant record, with its <b>most recent declaration in October 2024</b>.</p>
     <div class="actions">
-      <a class="btn" href="#hmp">Export for your plan</a>
-      <a class="btn ghost" href="#cite">Cite this page</a>
-      <a class="btn ghost" href="#" onclick="window.print();return false;">Print / PDF</a>
+      <a class="btn" href="/map.html">Explore the national map</a>
+      <a class="btn ghost" href="/states/index.html">Browse by state</a>
     </div>
-  </header>
 
-  <!-- STAT STRIP -->
-  <div class="stats">
-    <div class="stat"><div class="num">15</div><div class="lab">federal declarations</div></div>
-    <div class="stat"><div class="num">$47.2<small>M</small></div><div class="lab">Public Assistance obligated</div></div>
-    <div class="stat"><div class="num">16.7<small>%</small></div><div class="lab">request denial rate</div><div class="ctx">vs 11.8% national</div></div>
-    <div class="stat"><div class="num">Oct<small>’24</small></div><div class="lab">most recent declaration</div></div>
+    <div class="grid" aria-label="What jurisdiction profiles include">
+      <section class="card">
+        <div class="k">History</div>
+        <h2>Federal declarations</h2>
+        <p>Review the complete FEMA declaration record for a jurisdiction, including major disasters, emergencies, fire-management declarations, hazards, and dates.</p>
+      </section>
+      <section class="card">
+        <div class="k">Recovery</div>
+        <h2>Federal assistance</h2>
+        <p>Where data exist, profiles include Public Assistance, Individual Assistance, recovery-timing, and Hazard Mitigation Assistance information.</p>
+      </section>
+      <section class="card">
+        <div class="k">Context</div>
+        <h2>Risk &amp; vulnerability</h2>
+        <p>County-equivalent profiles can include CDC/ATSDR Social Vulnerability Index and FEMA National Risk Index context joined by five-digit FIPS/GEOID.</p>
+      </section>
+    </div>
+
+    <div class="note"><b>No sample data live here anymore.</b> The former development preview used illustrative placeholder values. Real jurisdiction pages are generated from the DisasterData.IO build pipeline and live under each state’s jurisdiction directory.</div>
   </div>
-
-  <!-- DECLARATION HISTORY -->
-  <section class="sec" id="history">
-    <div class="shead">
-      <div class="eye">The record</div>
-      <h2>Every declaration on file</h2>
-      <p class="sub">The complete federal declaration history for this county, straight from OpenFEMA. This is the table you cite — every row is a public record with a disaster number you can verify.</p>
-    </div>
-    <table class="decl">
-      <thead><tr><th>Declaration</th><th>Type</th><th>Incident</th><th>Declared</th><th>PA share</th></tr></thead>
-      <tbody>
-        <tr><td class="id">DR-4811-VA</td><td><span class="t dr">DR</span></td><td class="inc">Tropical storm — flooding</td><td class="dt">Oct 2024</td><td>$12.4M</td></tr>
-        <tr><td class="id">DR-4762-VA</td><td><span class="t dr">DR</span></td><td class="inc">Severe storms &amp; flooding</td><td class="dt">Jul 2023</td><td>$6.1M</td></tr>
-        <tr><td class="id">DR-4644-VA</td><td><span class="t dr">DR</span></td><td class="inc">Remnants of a tropical storm</td><td class="dt">Aug 2022</td><td>$4.8M</td></tr>
-        <tr><td class="id">EM-3578-VA</td><td><span class="t em">EM</span></td><td class="inc">Severe winter storm</td><td class="dt">Jan 2022</td><td>$0.9M</td></tr>
-        <tr><td class="id">DR-4571-VA</td><td><span class="t dr">DR</span></td><td class="inc">Severe winter storm &amp; ice</td><td class="dt">Feb 2021</td><td>$3.2M</td></tr>
-        <tr><td class="id">DR-4512-VA</td><td><span class="t dr">DR</span></td><td class="inc">Severe storms &amp; flooding</td><td class="dt">Apr 2020</td><td>$5.7M</td></tr>
-        <tr><td class="id">DR-4291-VA</td><td><span class="t dr">DR</span></td><td class="inc">Storms, flooding &amp; landslides</td><td class="dt">Jun 2016</td><td>$7.0M</td></tr>
-        <tr><td class="id">FM-5189-VA</td><td><span class="t fm">FM</span></td><td class="inc">Wildfire complex</td><td class="dt">Apr 2012</td><td>$0.4M</td></tr>
-      </tbody>
-    </table>
-    <a class="more" href="#">Show all 15 declarations &darr;</a>
-    <div class="legend"><b>DR</b> major disaster · <b>EM</b> emergency · <b>FM</b> fire management — the three declaration types, counted separately so totals aren't inflated.</div>
-  </section>
-
-  <!-- HAZARD MIX -->
-  <section class="sec" id="hazards">
-    <div class="shead">
-      <div class="eye">The pattern</div>
-      <h2>What hits this county</h2>
-      <p class="sub">Declarations grouped by hazard. This is the evidence behind a risk assessment — what your community actually faces, in proportion.</p>
-    </div>
-    <div class="haz">
-      <div class="hrow"><div class="hl">Flood</div><div class="hbar"><span style="width:100%"></span></div><div class="hc">5</div></div>
-      <div class="hrow"><div class="hl">Severe storm</div><div class="hbar"><span style="width:80%"></span></div><div class="hc">4</div></div>
-      <div class="hrow"><div class="hl">Hurricane / tropical</div><div class="hbar"><span style="width:60%"></span></div><div class="hc">3</div></div>
-      <div class="hrow"><div class="hl">Winter storm</div><div class="hbar"><span style="width:40%"></span></div><div class="hc">2</div></div>
-      <div class="hrow"><div class="hl">Wildfire</div><div class="hbar"><span style="width:20%"></span></div><div class="hc">1</div></div>
-    </div>
-  </section>
-
-  <!-- TIMELINE -->
-  <section class="sec" id="timeline">
-    <div class="shead">
-      <div class="eye">The frequency</div>
-      <h2>A quarter-century of record</h2>
-      <p class="sub">Declarations by year. The argument a grant makes isn't "a disaster happened" — it's "this keeps happening." Here's the proof, in one line.</p>
-    </div>
-    <div class="tl">
-      <div class="tlbar"><i style="height:0%"></i><em>’00</em></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:50%"></i><em>’03</em></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:50%"></i><em>’09</em></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:50%"></i><em>’11</em></div>
-      <div class="tlbar"><i style="height:50%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:50%"></i><em>’16</em></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:50%"></i><em>’18</em></div>
-      <div class="tlbar"><i style="height:0%"></i></div>
-      <div class="tlbar"><i style="height:100%"></i><em>’20</em></div>
-      <div class="tlbar"><i style="height:50%"></i></div>
-      <div class="tlbar"><i style="height:100%"></i><em>’22</em></div>
-      <div class="tlbar"><i style="height:50%"></i></div>
-      <div class="tlbar"><i style="height:100%"></i><em>’24</em></div>
-      <div class="tlbar"><i style="height:50%"></i></div>
-      <div class="tlbar"><i style="height:0%"></i><em>’26</em></div>
-    </div>
-    <p class="tlnote"><b>Nine of the 15 declarations fall in the last decade.</b> Whatever the cause, the record shows the frequency is rising — exactly the trend a mitigation case is built on.</p>
-  </section>
-
-  <!-- PA DOLLARS + RECOVERY TIMING -->
-  <!--
-    DATA WIRING (build script):
-      Amounts  -> Public Assistance Funded Projects Details, summed by disaster for this county.
-      Timing   -> Public Assistance Grant Award Activities v2, filtered to this county, grouped by
-                  disasterNumber. Per disaster compute, in days since declarationDate:
-                    firstDays = min(dateObligated) - declarationDate
-                    lastDays  = max(dateObligated) - declarationDate
-      Shared scale MAXDAYS = 912 (about 2.5 years). Ticks: 1yr = 365/912 = 40%, 2yr = 730/912 = 80%.
-      Per bar:  gap  width% = firstDays / MAXDAYS * 100
-                flow left%  = firstDays / MAXDAYS * 100
-                flow width% = (lastDays - firstDays) / MAXDAYS * 100
-      Headline = median(firstDays) across the county's declarations.
-      All values below are ILLUSTRATIVE placeholders (see page banner) pending wiring.
-      NOTE: obligation is the federal share committed to the recipient state, not cash to the
-      county. Keep the axis labeled as obligation and keep the .fnote intact.
-  -->
-  <section class="sec" id="funding">
-    <div class="shead">
-      <div class="eye">The dollars, and the wait</div>
-      <h2>Recovery funding, by disaster</h2>
-      <p class="sub">Public Assistance obligated to this county, and how long each award took to start. Every bar begins at the declaration date. The amber stretch is the wait to the first federal obligation. The teal is the federal share obligating after that, which usually plays out over years.</p>
-    </div>
-
-    <div class="fhead">
-      <div class="fbig">~75<small>days</small></div>
-      <div class="fbl">typical wait from declaration to the first federal obligation for this county, with the full award landing over the one to two years that follow.</div>
-    </div>
-
-    <div class="fund">
-      <div class="frow">
-        <div class="ftop"><div class="fname"><b>Tropical storm, flooding</b> · Oct 2024</div><div class="fval">$12.4M</div></div>
-        <div class="ftrack"><span class="gap" style="left:0;width:4.6%"></span><span class="flow" style="left:4.6%;width:50.8%"></span></div>
-        <div class="fmeta"><span><b>42 days</b> to first obligation</span><span>still obligating</span></div>
-      </div>
-      <div class="frow">
-        <div class="ftop"><div class="fname"><b>Storms, flooding &amp; landslides</b> · Jun 2016</div><div class="fval">$7.0M</div></div>
-        <div class="ftrack"><span class="gap" style="left:0;width:9.6%"></span><span class="flow" style="left:9.6%;width:73.7%"></span></div>
-        <div class="fmeta"><span><b>88 days</b> to first obligation</span><span>fully obligated in about 2.1 years</span></div>
-      </div>
-      <div class="frow">
-        <div class="ftop"><div class="fname"><b>Severe storms &amp; flooding</b> · Jul 2023</div><div class="fval">$6.1M</div></div>
-        <div class="ftrack"><span class="gap" style="left:0;width:6.7%"></span><span class="flow" style="left:6.7%;width:69.0%"></span></div>
-        <div class="fmeta"><span><b>61 days</b> to first obligation</span><span>fully obligated in about 1.9 years</span></div>
-      </div>
-      <div class="frow">
-        <div class="ftop"><div class="fname"><b>Severe storms &amp; flooding</b> · Apr 2020</div><div class="fval">$5.7M</div></div>
-        <div class="ftrack"><span class="gap" style="left:0;width:13.2%"></span><span class="flow" style="left:13.2%;width:83.3%"></span></div>
-        <div class="fmeta"><span><b>120 days</b> to first obligation</span><span>fully obligated in about 2.4 years</span></div>
-      </div>
-      <div class="faxisrow">
-        <div class="faxis"><span style="left:0">Declared</span><span style="left:40%">1 year</span><span style="left:80%">2 years</span></div>
-      </div>
-      <div class="frow tot"><div class="fname">Total PA obligated · 15 declarations</div><div class="fval">$47.2M</div></div>
-    </div>
-
-    <div class="flegend">
-      <span><i class="fsw" style="background:var(--ember)"></i> Wait to first federal obligation</span>
-      <span><i class="fsw" style="background:var(--accent)"></i> Federal share obligating</span>
-    </div>
-
-    <div class="fnote"><b>What an obligation is.</b> FEMA obligates the federal share to the Commonwealth, the recipient, not to the county directly. The state then disburses to the county on its own schedule, and Public Assistance is reimbursement-based, so this is the earliest the money could move, not the day the county was made whole. This shows the federal leg and puts the dates on the record. It does not assign blame: a short wait here alongside a long local delay points to the state disbursement step, a long wait here points to federal formulation. Obligation figures are FEMA's reported data, not audited financials.</div>
-  </section>
-
-  <!-- DENIALS -->
-  <section class="sec" id="denials">
-    <div class="shead">
-      <div class="eye">The denials</div>
-      <h2>What got turned down</h2>
-      <p class="sub">Every request FEMA declined for this county, against the national rate. A denial isn't always final — where an appeal is on record, the outcome is shown.</p>
-    </div>
-    <div class="compare">
-      <div class="crow"><div class="who me">Example County</div><div class="cbar"><span class="me" style="width:62%"></span></div><div class="v">16.7%<small>3 of 18</small></div></div>
-      <div class="crow"><div class="who">National rate</div><div class="cbar"><span class="nat" style="width:44%"></span></div><div class="v">11.8%<small>all records</small></div></div>
-    </div>
-    <div class="denlist">
-      <div class="di"><span>Tropical storm — flooding · <b>Public Assistance</b></span><span class="tag pend">Denied · appeal pending</span><span class="dd">Oct 2024</span></div>
-      <div class="di"><span>Severe winter storm · <b>Individual Assistance</b></span><span class="tag den">Denied</span><span class="dd">Mar 2022</span></div>
-      <div class="di"><span>Severe storm — flooding · <b>Individual Assistance</b></span><span class="tag over">Overturned on appeal</span><span class="dd">May 2021</span></div>
-    </div>
-  </section>
-
-  <!-- HMP WEDGE -->
-  <section class="hmp" id="hmp">
-    <div class="eye">Hazard mitigation plan</div>
-    <h2>Your risk assessment, half-written.</h2>
-    <p class="sub">Every local HMP requires a documented record of previous occurrences. Here is that table for this county — formatted to the standard, sourced to OpenFEMA, and refreshed every Sunday so your plan cites current figures.</p>
-    <div class="hmptbl">
-      <table>
-        <thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Federal share</th></tr></thead>
-        <tbody>
-          <tr><td>Flood</td><td>Oct 2024</td><td>DR-4811-VA</td><td>$12.4M</td></tr>
-          <tr><td>Flood</td><td>Jul 2023</td><td>DR-4762-VA</td><td>$6.1M</td></tr>
-          <tr><td>Severe storm</td><td>Apr 2020</td><td>DR-4512-VA</td><td>$5.7M</td></tr>
-          <tr><td>Winter storm</td><td>Feb 2021</td><td>DR-4571-VA</td><td>$3.2M</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="hmpcap">Preview — 4 of 15 occurrences shown. Full export includes all declarations, dates, types, and obligated dollars.</div>
-    <div class="hmpcta">
-      <a class="btn lime" href="#">Export “previous occurrences” table &rarr;</a>
-      <span class="fineprint">Word &amp; CSV · drops straight into your plan</span>
-    </div>
-  </section>
-
-  <!-- CITE / EXPORT -->
-  <section class="sec" id="cite">
-    <div class="shead">
-      <div class="eye">Use it anywhere</div>
-      <h2>Cite this page</h2>
-      <p class="sub">Built to be defensible. Every figure here traces to OpenFEMA and carries the date it was pulled.</p>
-    </div>
-    <div class="cite">
-      <div class="cl">Suggested citation</div>
-      <div class="ct">Disaster Data. (2026). <i>Federal disaster declaration history: Example County, Virginia.</i> Derived from OpenFEMA. Data as of June 14, 2026. Retrieved from disasterdata.io/va/example-county</div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="foot">
-    <b>Data as of Sunday, June 14, 2026.</b> Source: OpenFEMA, refreshed weekly. Figures reflect federal declaration records and obligated Public Assistance; obligated amounts may change as projects close out. Disaster Data is an independent project and is not affiliated with or endorsed by FEMA. <a href="#methodology">Read the full methodology &amp; limitations &rarr;</a><br><br>
-    Part of CompliAid.
-  </footer>
-
-</div>
-
+</main>
+<footer>
+  <div class="wrap">Disaster Data &middot; built from public federal data &middot; <a href="/about.html">About and contact</a></div>
+</footer>
 </body>
 </html>
