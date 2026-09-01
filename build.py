@@ -182,18 +182,21 @@ def clean_designated_area(area):
     if not s:
         return ""
 
-    # Normal parenthetical historical metro annotation.
+    # Historical metro annotations appear in several FEMA forms, including
+    # '(in PMSA 2480,6480)' and '(in (P)MSA 1120,2600,4560)'.  Match
+    # the complete annotation explicitly so the inner '(P)' does not cause
+    # the regex to stop early and leave fragments such as '(in (P)'.
     s = re.sub(
-        r"\s*\([^)]*\b(?:PMSA|MSA|CMSA)\b[^)]*\)\s*",
+        r"\s*\((?:in\s+)?(?:\(P\)MSA|PMSA|MSA|CMSA)\s+[^)]*\)\s*",
         " ",
         s,
         flags=re.I,
     )
 
     # Defensive cleanup for malformed legacy text such as
-    # 'New Haven MSA 1160,5480,8880) County'.
+    # 'New Haven MSA 1160,5480,8880) County' or '(P)MSA ... )'.
     s = re.sub(
-        r"\s*\b(?:PMSA|MSA|CMSA)\b[\s\d,./-]*\)\s*",
+        r"\s*(?:\(P\)MSA|PMSA|MSA|CMSA)[\s\d,./-]*\)\s*",
         " ",
         s,
         flags=re.I,
@@ -1028,10 +1031,43 @@ den_valid = [r for r in den_processed if r["days_to_deny"] >= 0]
 # county/designated area, so per-row counting inflates totals, while filtering on a valid
 # begin date (dec_valid) silently drops legitimate declarations. dec_unique is the complete,
 # deduplicated set used for ALL counts; timing averages still ignore missing begin dates via avg().
+from collections import Counter as _Counter
 dec_unique = list({r["femaDeclarationString"]: r for r in dec_processed}.values())
 
+# ── CANONICAL NATIONAL DECLARATION TOTALS ──────────────────────────────────
+# One authoritative set of declaration counts for the entire site.
+#
+# IMPORTANT: DisasterData.IO intentionally exposes TWO time windows:
+#   1) completed fiscal years only (stable reporting headline)
+#   2) through the current, in-progress fiscal year (live/current activity)
+#
+# Keeping both values here prevents pages from silently mixing FY windows.
+LAST_COMPLETE_FY = CURRENT_FY - 1
+
+def _national_decl_totals(rows, through_fy):
+    selected = [r for r in rows if START_YEAR <= r["fyDeclared"] <= through_fy]
+    by_type = _Counter(r.get("declarationType") or "Unknown" for r in selected)
+    return {
+        "startFY": START_YEAR,
+        "throughFY": through_fy,
+        "total": len(selected),
+        "byType": {
+            "DR": by_type.get("DR", 0),
+            "EM": by_type.get("EM", 0),
+            "FM": by_type.get("FM", 0),
+        },
+        "statesTerritories": len({r.get("state") for r in selected if r.get("state")}),
+    }
+
+NATIONAL_TOTALS = {
+    "completed": _national_decl_totals(dec_unique, LAST_COMPLETE_FY),
+    "current": _national_decl_totals(dec_unique, CURRENT_FY),
+    "currentFY": CURRENT_FY,
+    "lastCompleteFY": LAST_COMPLETE_FY,
+    "dataDate": TODAY,
+}
+
 # ── DATA INTEGRITY REPORT ─────────────────────────────────────────────────
-from collections import Counter as _Counter
 _dropped = sum(1 for r in dec_unique if r["days_to_approve"] < 0)
 _bytype  = _Counter(r["declarationType"] for r in dec_unique)
 _byfy    = _Counter(r["fyDeclared"] for r in dec_unique)
@@ -1538,11 +1574,29 @@ _state_sum = sum(s["declarations"] for s in state_summary)
 _uniq_n    = len({r["femaDeclarationString"] for r in dec_processed})
 assert _browse_n == _uniq_n,   f"BROWSE ({_browse_n}) != unique declarations ({_uniq_n}) — refusing to write data.js"
 assert _browse_n == _state_sum, f"BROWSE ({_browse_n}) != per-state total ({_state_sum}) — refusing to write data.js"
+assert NATIONAL_TOTALS["current"]["total"] == _browse_n, (
+    f"canonical current total ({NATIONAL_TOTALS['current']['total']}) != BROWSE ({_browse_n}) — refusing to write data.js"
+)
+_complete_from_yoy = sum(
+    row.get("declarations", 0) for row in yoy if row.get("fyDeclared", 0) <= LAST_COMPLETE_FY
+)
+assert NATIONAL_TOTALS["completed"]["total"] == _complete_from_yoy, (
+    f"canonical completed-FY total ({NATIONAL_TOTALS['completed']['total']}) != YoY completed-FY sum ({_complete_from_yoy}) — refusing to write data.js"
+)
 print(f"  integrity OK: {_browse_n} unique declarations reconcile across BROWSE and per-state totals")
+print(
+    f"  canonical totals: FY{START_YEAR}–FY{LAST_COMPLETE_FY} = "
+    f"{NATIONAL_TOTALS['completed']['total']:,} "
+    f"(DR {NATIONAL_TOTALS['completed']['byType']['DR']:,}, "
+    f"EM {NATIONAL_TOTALS['completed']['byType']['EM']:,}, "
+    f"FM {NATIONAL_TOTALS['completed']['byType']['FM']:,}); "
+    f"including FY{CURRENT_FY} to date = {NATIONAL_TOTALS['current']['total']:,}"
+)
 
 # Write data.js — all window.VAR = ... assignments
 lines = [
     f'window.SUMMARY          ={json.dumps(summary,         separators=(",",":"))}',
+    f'window.NATIONAL_TOTALS  ={json.dumps(NATIONAL_TOTALS, separators=(",",":"))}',
     f'window.STATE_SUMMARY    ={json.dumps(state_summary,   separators=(",",":"))}',
     f'window.STATE_YOY        ={json.dumps(state_yoy,       separators=(",",":"))}',
     f'window.STATE_INC        ={json.dumps(state_inc,       separators=(",",":"))}',
@@ -1810,6 +1864,59 @@ if os.path.exists("index.html"):
         lines_out.append(line)
     html = ''.join(lines_out)
 
+    # Refresh the homepage's baked-in declaration totals from the SAME
+    # canonical completed-fiscal-year totals written to data.js.  These are
+    # fallback/first-paint values; the page can still recalculate interactively
+    # when the visitor changes the year range.
+    _home = NATIONAL_TOTALS["completed"]
+    _home_total = f"{_home['total']:,}"
+    _home_dr = f"{_home['byType']['DR']:,}"
+    _home_em = f"{_home['byType']['EM']:,}"
+    _home_fm = f"{_home['byType']['FM']:,}"
+
+    html, _n_st = re.subn(
+        r'(<div class="num" id="st-total">)[^<]*(</div>)',
+        lambda m: m.group(1) + _home_total + m.group(2),
+        html,
+        count=1,
+    )
+    html, _n_tl = re.subn(
+        r'(<b id="tl-sum">)[^<]*(</b>)',
+        lambda m: m.group(1) + _home_total + m.group(2),
+        html,
+        count=1,
+    )
+
+    def _replace_type_stat(doc, code, count_text):
+        pattern = (
+            r'(<div class="tcode"[^>]*>\s*' + re.escape(code) +
+            r'\s*</div>\s*<div class="tname">[^<]*</div>\s*'
+            r'<div class="tstat">)([^<]*)(</div>)'
+        )
+        def repl(m):
+            tail = m.group(2)
+            # Preserve the explanatory timing phrase after the declaration count.
+            timing = ''
+            if '·' in tail:
+                timing = ' ·' + tail.split('·', 1)[1]
+            return m.group(1) + count_text + ' declarations' + timing + m.group(3)
+        return re.subn(pattern, repl, doc, count=1, flags=re.S)
+
+    html, _n_dr = _replace_type_stat(html, "DR", _home_dr)
+    html, _n_em = _replace_type_stat(html, "EM", _home_em)
+    html, _n_fm = _replace_type_stat(html, "FM", _home_fm)
+
+    if all((_n_st, _n_tl, _n_dr, _n_em, _n_fm)):
+        print(
+            f"  index.html canonical declaration totals updated: "
+            f"{_home_total} total (DR {_home_dr}, EM {_home_em}, FM {_home_fm})"
+        )
+    else:
+        print(
+            "  NOTE: one or more homepage total placeholders were not found "
+            f"(st={_n_st}, timeline={_n_tl}, DR={_n_dr}, EM={_n_em}, FM={_n_fm})"
+        )
+
     # Inject the latest-declarations cards between the homepage markers
     _ls, _le = "<!-- LATEST:START -->", "<!-- LATEST:END -->"
     if _ls in html and _le in html:
@@ -1829,3 +1936,5 @@ print(f"  Declarations: {len(dec_processed):,}")
 print(f"  Denials:      {len(den_processed):,}")
 print(f"  Browse items: {len(browse):,}")
 print(f"  Localities:   {sum(len(v) for v in locality_data.values()):,}")
+print(f"  Canonical completed-FY declarations (FY{START_YEAR}–FY{LAST_COMPLETE_FY}): {NATIONAL_TOTALS['completed']['total']:,}")
+print(f"  Canonical current declarations (through FY{CURRENT_FY} to date): {NATIONAL_TOTALS['current']['total']:,}")
