@@ -548,7 +548,7 @@
                 <h1 class="page-title">FEMA Declaration Map</h1>
         <div class="rule-line"></div>
         <p>
-          A county-by-county map of FEMA disaster declarations across the U.S. Filter by year or declaration type, DR (Major Disaster), EM (Emergency), FM (Fire Management Assistance Grant), then click any county to see its declarations.
+          A county-by-county map of FEMA disaster declarations across the U.S. Filter by year or declaration type, DR (Major Disaster), EM (Emergency), FM (Fire Management Assistance Grant), then click any county to see its declarations and open its full jurisdiction profile.
         </p>
       </div>
 
@@ -649,10 +649,10 @@
       <!-- Selected county -->
       <div class="county-section">
         <div class="section-label">Selected county</div>
-        <div class="muted" id="selectedCountyTitle">Click a county to list matching declaration numbers.</div>
+        <div class="muted" id="selectedCountyTitle">Click a county to view its data and open the full jurisdiction profile.</div>
         <div class="muted" id="selectedCountySummary" style="margin-top:4px;"></div>
         <div id="selectedCountyViz"></div>
-        <a id="selectedCountyLink" style="display:none;font-size:.85rem;font-weight:600;color:#004c53;text-decoration:none;margin-top:6px;display:none;" href="#">View full declaration history &rarr;</a>
+        <a id="selectedCountyLink" style="display:none;align-items:center;justify-content:center;width:100%;font-size:.84rem;font-weight:700;color:#fff;background:#004c53;text-decoration:none;margin-top:10px;padding:9px 12px;border-radius:7px;" href="#">View full jurisdiction profile &rarr;</a>
         <div id="selectedCountyList" style="margin-top:10px;"></div>
       </div>
 
@@ -792,19 +792,75 @@
     const stateSelect = document.getElementById('stateSelect');
     let focusStateFips = '';   /* 2-digit state FIPS to focus/dim, or '' for the whole U.S. */
 
-    // Build county-label -> jurisdiction-page lookup from locality-index.js
+    // Build jurisdiction-page lookup from locality-index.js.
+    // Keep county-like places and independent cities separate so names such as
+    // Fairfax County and Fairfax city cannot overwrite one another.
     const localityLookup = {};
+    const localityLookupByKind = {};
+    const localitySuffixes = [
+      'city and borough','census area','county','parish','borough',
+      'municipio','municipality','island','district','city'
+    ];
+
+    function normalizeLocalityName(name) {
+      let s = String(name || '').replace(/\s*\(city\)$/i, '').split(',')[0].trim().toLowerCase();
+      for (const suffix of localitySuffixes) {
+        const tail = ' ' + suffix;
+        if (s.endsWith(tail)) {
+          s = s.slice(0, -tail.length).trim();
+          break;
+        }
+      }
+      return s.replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
     if (window.LOCALITY_INDEX) {
       window.LOCALITY_INDEX.forEach(function(r) {
-        var name = r[0], st = r[1], url = r[3], noun = r[6];
-        var base = name;
-        if (noun && name.endsWith(noun)) base = name.slice(0, -noun.length).trim();
-        base = base.replace(/ \(city\)$/i, '');
-        localityLookup[base.toLowerCase() + ',' + st] = url;
-        // also index by full display name (handles "Rose Island" where noun is "Island")
-        var full = name.replace(/ \(city\)$/i, '').toLowerCase();
-        if (!localityLookup[full + ',' + st]) localityLookup[full + ',' + st] = url;
+        const name = r[0];
+        const st = String(r[1] || '').toUpperCase();
+        const url = r[3];
+        const kind = r[5] === 'city' ? 'city' : (r[5] === 'county' ? 'county' : 'other');
+        const base = normalizeLocalityName(name);
+        if (!base || !st || !url) return;
+
+        localityLookupByKind[base + ',' + st + ',' + kind] = url;
+        if (!localityLookup[base + ',' + st]) localityLookup[base + ',' + st] = url;
       });
+    }
+
+    function stateAbForCounty(fips) {
+      const riskRow = COUNTY_SVI[fips] || COUNTY_NRI[fips];
+      if (riskRow && riskRow.state) return String(riskRow.state).toUpperCase();
+
+      const label = String(countyLabels[fips] || '');
+      const match = label.match(/,\s*([A-Z]{2})\s*$/);
+      return match ? match[1] : '';
+    }
+
+    function localityKindForFips(fips) {
+      const label = String(countyLabels[fips] || COUNTY_SVI[fips]?.county || COUNTY_NRI[fips]?.county || '').toLowerCase();
+      const countyCode = Number(String(fips || '').slice(2));
+      return label.endsWith(' city') || countyCode >= 500 ? 'city' : 'county';
+    }
+
+    function jurisdictionUrlForFips(fips) {
+      const st = stateAbForCounty(fips);
+      if (!st) return '';
+
+      const kind = localityKindForFips(fips);
+      const candidates = [
+        countyLabels[fips],
+        COUNTY_SVI[fips] && COUNTY_SVI[fips].county,
+        COUNTY_NRI[fips] && COUNTY_NRI[fips].county
+      ].filter(Boolean);
+
+      for (const candidate of candidates) {
+        const base = normalizeLocalityName(candidate);
+        if (!base) continue;
+        const url = localityLookupByKind[base + ',' + st + ',' + kind] || localityLookup[base + ',' + st];
+        if (url) return url.startsWith('/') ? url : '/' + url;
+      }
+      return '';
     }
 
     years.forEach(year => {
@@ -1017,13 +1073,24 @@
 
     function renderSelectedCounty() {
       if (!selectedCountyFips) {
-        selectedCountyTitleEl.textContent = 'Click a county to view combined disaster, vulnerability, and risk data.';
+        selectedCountyTitleEl.textContent = 'Click a county to view its disaster, vulnerability, and risk data, then open the full jurisdiction profile.';
         selectedCountySummaryEl.textContent = ''; selectedCountyListEl.innerHTML = '';
         if (selectedCountyVizEl) selectedCountyVizEl.innerHTML=''; selectedCountyLinkEl.style.display='none'; return;
       }
       const fips=selectedCountyFips, svi=COUNTY_SVI[fips], nri=COUNTY_NRI[fips];
       const countyLabel=countyLabels[fips] || (svi ? `${svi.county}, ${svi.state}` : (nri ? `${nri.county}, ${nri.state}` : `County FIPS ${fips}`));
-      selectedCountyTitleEl.textContent=countyLabel; selectedCountyLinkEl.style.display='none';
+      selectedCountyTitleEl.textContent=countyLabel;
+
+      const jurisdictionUrl = jurisdictionUrlForFips(fips);
+      if (jurisdictionUrl) {
+        selectedCountyLinkEl.href = jurisdictionUrl;
+        selectedCountyLinkEl.textContent = 'View full jurisdiction profile →';
+        selectedCountyLinkEl.style.display = 'inline-flex';
+      } else {
+        selectedCountyLinkEl.removeAttribute('href');
+        selectedCountyLinkEl.style.display = 'none';
+      }
+
       if (selectedCountyVizEl) selectedCountyVizEl.innerHTML='';
       const parts=[];
       if (isSviMode() && svi) { const m=sviMetricSelect?.value||'overall'; const v=Number(svi[m]); parts.push(`<div class="event-item"><div class="num">CDC SVI · ${currentSviMetricLabel()}</div><div class="meta">${Number.isFinite(v)?v.toFixed(4)+' · '+(v*100).toFixed(1)+' percentile':'No data'} · 2022</div></div>`); }

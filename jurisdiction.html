@@ -46,6 +46,23 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,64px);line-
 .btn:hover{background:var(--accent-2);border-color:var(--accent-2)}
 .btn.ghost{color:var(--accent);background:transparent}
 .btn.ghost:hover{background:var(--accent-soft)}
+.searchbox{margin-top:clamp(30px,5vw,46px);max-width:760px}
+.searchbox label{display:block;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.searchrow{display:flex;gap:8px;align-items:stretch}
+.searchrow input{flex:1;min-width:0;font:400 16px var(--sans);color:var(--ink);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:9px;padding:12px 14px;outline:none}
+.searchrow input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,76,83,.10)}
+.searchrow button{flex:none;font:700 13px var(--sans);color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:9px;padding:0 18px;cursor:pointer}
+.searchrow button:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.searchhint{font-size:12.5px;color:var(--ink-3);margin-top:7px}
+.searchresults{margin-top:8px;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--paper-2);box-shadow:0 8px 24px rgba(50,40,25,.08)}
+.searchresults[hidden]{display:none}
+.searchresult{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--rule);color:var(--ink);text-decoration:none}
+.searchresult:last-child{border-bottom:none}
+.searchresult:hover,.searchresult:focus{background:var(--accent-soft);outline:none}
+.searchresult strong{display:block;font-size:14px;color:var(--accent)}
+.searchresult span{display:block;font-size:12px;color:var(--ink-3);margin-top:1px}
+.searchresult .count{flex:none;text-align:right;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.searchempty{padding:12px 14px;font-size:13px;color:var(--ink-3)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:clamp(38px,6vw,64px)}
 .card{background:var(--paper-2);padding:24px 24px 26px}
 .card .k{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3)}
@@ -55,7 +72,7 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,64px);line-
 .note b{color:var(--ink);font-weight:600}
 footer{border-top:1px solid var(--rule);padding:28px 0 44px;color:var(--ink-3);font-size:12px}
 footer a{text-decoration:none}
-@media(max-width:720px){.grid{grid-template-columns:1fr}.card{padding:20px}}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.card{padding:20px}.searchrow{flex-direction:column}.searchrow button{min-height:44px}.searchresult{align-items:flex-start}.searchresult .count{display:none}}
 </style>
 </head>
 <body>
@@ -70,6 +87,17 @@ footer a{text-decoration:none}
       <a class="btn" href="/map.html">Explore the national map</a>
       <a class="btn ghost" href="/states/index.html">Browse by state</a>
     </div>
+
+
+    <form class="searchbox" id="jurisdictionSearch" role="search">
+      <label for="jurisdictionQuery">Search for your locality</label>
+      <div class="searchrow">
+        <input id="jurisdictionQuery" type="search" autocomplete="off" placeholder="Try Kanawha County, WV or Pottawatomie County, OK" aria-controls="jurisdictionResults" aria-expanded="false">
+        <button type="submit">Search</button>
+      </div>
+      <p class="searchhint">Search counties, parishes, boroughs, independent cities, and tribal jurisdictions.</p>
+      <div class="searchresults" id="jurisdictionResults" role="listbox" aria-label="Jurisdiction search results" hidden></div>
+    </form>
 
     <div class="grid" aria-label="What jurisdiction profiles include">
       <section class="card">
@@ -89,11 +117,107 @@ footer a{text-decoration:none}
       </section>
     </div>
 
-    <div class="note"><b>No sample data live here anymore.</b> The former development preview used illustrative placeholder values. Real jurisdiction pages are generated from the DisasterData.IO build pipeline and live under each state’s jurisdiction directory.</div>
+    <div class="note"><b>Looking for a specific community?</b> Use the search above to go directly to its generated jurisdiction profile. You can also browse by state or select a county from the national map.</div>
   </div>
 </main>
 <footer>
   <div class="wrap">Disaster Data &middot; built from public federal data &middot; <a href="/about.html">About and contact</a></div>
 </footer>
+<script src="/locality-index.js"></script>
+<script>
+(function(){
+  const form = document.getElementById('jurisdictionSearch');
+  const input = document.getElementById('jurisdictionQuery');
+  const results = document.getElementById('jurisdictionResults');
+  if (!form || !input || !results) return;
+
+  const rows = Array.isArray(window.LOCALITY_INDEX) ? window.LOCALITY_INDEX : [];
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+
+  function hrefFor(url){
+    const clean = String(url || '').replace(/^\/+/, '');
+    return clean ? '/' + clean : '#';
+  }
+
+  function search(q){
+    const needle = String(q || '').trim().toLowerCase();
+    if (needle.length < 2) return [];
+
+    return rows.map(function(r){
+      const name = String(r[0] || '');
+      const ab = String(r[1] || '');
+      const state = String(r[2] || '');
+      const url = String(r[3] || '');
+      const count = Number(r[4] || 0);
+      const kind = String(r[5] || 'jurisdiction');
+      const hay = (name + ' ' + ab + ' ' + state).toLowerCase();
+      const n = name.toLowerCase();
+      const s = state.toLowerCase();
+      if (!hay.includes(needle)) return null;
+
+      let rank = 4;
+      if (n === needle || (n + ', ' + ab.toLowerCase()) === needle) rank = 0;
+      else if (n.startsWith(needle)) rank = 1;
+      else if (hay.startsWith(needle)) rank = 2;
+      else if (s.startsWith(needle)) rank = 3;
+
+      return {name:name,ab:ab,state:state,url:url,count:count,kind:kind,rank:rank};
+    }).filter(Boolean).sort(function(a,b){
+      return a.rank - b.rank || b.count - a.count || a.name.localeCompare(b.name);
+    }).slice(0,10);
+  }
+
+  function render(){
+    const matches = search(input.value);
+    const q = input.value.trim();
+
+    if (q.length < 2) {
+      results.hidden = true;
+      results.innerHTML = '';
+      input.setAttribute('aria-expanded','false');
+      return matches;
+    }
+
+    if (!matches.length) {
+      results.innerHTML = '<div class="searchempty">No matching jurisdiction found. Try the county or city name, or search by state.</div>';
+      results.hidden = false;
+      input.setAttribute('aria-expanded','true');
+      return matches;
+    }
+
+    results.innerHTML = matches.map(function(r){
+      const typeLabel = r.kind === 'city' ? 'Independent city' : (r.kind === 'tribal' ? 'Tribal jurisdiction' : 'County / county-equivalent');
+      return '<a class="searchresult" role="option" href="' + esc(hrefFor(r.url)) + '">' +
+        '<div><strong>' + esc(r.name) + '</strong><span>' + esc(r.state || r.ab) + ' · ' + esc(typeLabel) + '</span></div>' +
+        '<div class="count">' + r.count.toLocaleString() + ' declarations</div>' +
+        '</a>';
+    }).join('');
+    results.hidden = false;
+    input.setAttribute('aria-expanded','true');
+    return matches;
+  }
+
+  input.addEventListener('input', render);
+  input.addEventListener('focus', function(){ if (input.value.trim().length >= 2) render(); });
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    const matches = render();
+    if (matches && matches.length) window.location.href = hrefFor(matches[0].url);
+  });
+
+  document.addEventListener('click', function(ev){
+    if (!form.contains(ev.target)) {
+      results.hidden = true;
+      input.setAttribute('aria-expanded','false');
+    }
+  });
+})();
+</script>
 </body>
 </html>
