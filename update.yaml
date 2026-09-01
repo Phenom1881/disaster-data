@@ -1,0 +1,63 @@
+name: Refresh FEMA Data
+
+on:
+  schedule:
+    - cron: '0 4 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pandas requests
+
+      - name: Build data.js
+        run: python -u build.py
+
+      - name: Generate state SEO pages
+        run: |
+          if [ -f gen_state_pages.py ]; then python -u gen_state_pages.py; else python -u "gen state pages.py"; fi
+
+      - name: Generate jurisdiction pages
+        run: |
+          if [ -f gen_jurisdiction_pages.py ]; then python -u gen_jurisdiction_pages.py; else python -u "gen jurisdiction pages.py"; fi
+
+      - name: Build compare index
+        # Writes one JSON per state plus manifest.json into data/decl-index.
+        # Uses only the Python standard library, so no extra pip install.
+        # The first run pulls the full declarations dataset from OpenFEMA
+        # (roughly 68,000 rows) and takes a couple of minutes longer.
+        run: |
+          if [ -f gen_decl_index.py ]; then python -u gen_decl_index.py --out data/decl-index; else python -u "gen decl index.py" --out data/decl-index; fi
+
+      - name: Build event indexes
+        # map-events.js (Map overlay) + events.json (Disaster page), from the
+        # decl-index the previous step just wrote. Standard library only.
+        run: |
+          if [ -f gen_map_events.py ]; then python -u gen_map_events.py --in data/decl-index --out map-events.js --events-out events.json; else python -u "gen map events.py" --in data/decl-index --out map-events.js --events-out events.json; fi
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit, data is already up to date."
+          else
+            git commit -m "Auto-refresh FEMA data $(date -u '+%Y-%m-%d')"
+            git pull --rebase origin main
+            git push
+          fi
