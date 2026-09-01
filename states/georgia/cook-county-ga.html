@@ -1,128 +1,1036 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Cook County, Georgia FEMA Disaster Declarations and Mitigation History</title><meta name="description" content="Cook County, Georgia has had 15 federal disaster and emergency declarations since FY2000 (9 major disasters, 6 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning."><link rel="canonical" href="https://disasterdata.io/states/georgia/cook-county-ga.html"><meta property="og:title" content="Cook County, Georgia: Federal Disaster Declarations"><meta property="og:description" content="Cook County, Georgia has had 15 federal disaster and emergency declarations since FY2000 (9 major disasters, 6 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/georgia/cook-county-ga.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--teal:#004c53;--cream:#f6f1e7;--paper:#fffdf7;--ink:#2b2b2b;--ink3:#6b6357;--rule:#e4dccb}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Public Sans',system-ui,-apple-system,sans-serif;line-height:1.6}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Disaster Data | Cook County, Georgia Disaster History, Assistance, SVI and NRI</title><meta name="description" content="Cook County, Georgia federal disaster history through FY2025, including FEMA declarations, Public Assistance, Individual Assistance where designated, mitigation investment, and county risk and vulnerability context where available."><link rel="canonical" href="https://disasterdata.io/states/georgia/cook-county-ga.html"><meta property="og:title" content="Cook County, Georgia: Disaster History and Risk Context"><meta property="og:description" content="Cook County, Georgia federal disaster history through FY2025, including FEMA declarations, Public Assistance, Individual Assistance where designated, mitigation investment, and county risk and vulnerability context where available."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/georgia/cook-county-ga.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
+  --teal:#004c53;
+  --teal2:#0f6870;
+  --teal-soft:#d7e9ea;
+  --cream:#f6f1e7;
+  --paper:#fffdf7;
+  --ink:#2b2b2b;
+  --ink2:#4e493f;
+  --ink3:#6b6357;
+  --rule:#e4dccb;
+  --amber:#c85c2e;
+  --shadow:0 8px 28px rgba(47,40,27,.055);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+}
+
 a{color:var(--teal)}
-.wrap{max-width:980px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
-nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid #e0d8c5;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px}
-nav.ddnav .brand{display:flex;align-items:baseline;gap:10px}
-nav.ddnav .brand .mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;letter-spacing:-.4px;color:#1d1813;text-decoration:none}
-nav.ddnav .navlinks{display:flex;align-items:center;gap:4px}
-nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:#5b5346;text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px}
-nav.ddnav .navlinks a:hover{color:#1d1813;background:#f1ead9}
-nav.ddnav .navlinks a.on{color:#004c53;background:#d7e9ea}
-nav.ddnav .navmeta{font-size:11px;color:#938a78;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.wrap{
+  max-width:1080px;
+  margin:0 auto;
+  padding:0 clamp(18px,4vw,44px);
+}
+
 main{padding:2rem 0 1rem}
-.crumb{font-size:.82rem;color:var(--ink3);margin:0 0 1rem}.crumb a{text-decoration:none}
-.badge{display:inline-block;font:600 .72rem 'Public Sans',sans-serif;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
-.badge.county{color:#004c53;background:#d7e9ea}.badge.city{color:#8a5a2b;background:#f3e4d2}.badge.tribal{color:#6a2f6a;background:#efddef}
-h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
-h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
-.lede{font-size:1.08rem;max-width:62ch}
-.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
-.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
-.stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
-.stat .l{font-size:.78rem;color:var(--ink3);margin-top:.3rem}
-ul.haz{list-style:none;padding:0;margin:.5rem 0;display:flex;flex-wrap:wrap;gap:.5rem}
-ul.haz li{background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.3rem .8rem;font-size:.85rem}ul.haz b{color:var(--teal)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
-table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
-th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);background:#faf6ec}
-tr:last-child td{border-bottom:none}.tag{font-weight:700;color:var(--teal)}
-.hmp{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 0}
-.hmp p{margin:.2rem 0 .9rem;font-size:.92rem}
-.copybtn{font:600 .8rem 'Public Sans',sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .85rem;cursor:pointer;margin-top:.8rem}
-.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
-.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
-.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
-.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
-.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
-.decl-chip.off{opacity:.42;cursor:default}
-.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
-.tablewrap.scroll{max-height:430px;overflow-y:auto}
-.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
-tr.hide{display:none}
-th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
-th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
-th.sortable:hover{color:var(--teal)}
-th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
-th[aria-sort="descending"]::after{content:"↓";opacity:.95}
-.method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}.method h2{margin-top:0;font-size:1.1rem}
-.pa-note{font-size:.9rem;color:var(--ink3);max-width:64ch;margin:.4rem 0 .8rem}
-table.pa-cat tfoot td{font-weight:700;color:var(--teal);border-top:2px solid var(--rule);background:#faf6ec}
-.pa-cat .catcode{color:var(--ink3);font-weight:400;font-size:.85em;margin-left:.15em}
-table.pa-cat td:nth-child(2),table.pa-cat th:nth-child(2),table.pa-cat td:nth-child(3),table.pa-cat th:nth-child(3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.jgrid{display:flex;flex-wrap:wrap;gap:.4rem .7rem;margin:.6rem 0}.jgrid a{font-size:.86rem;text-decoration:none}
-ol.rank{padding-left:0;list-style:none;counter-reset:r}
-ol.rank li{counter-increment:r;display:flex;align-items:baseline;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--rule)}
-ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--ink3);min-width:2.6ch;text-align:right}
-ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
-ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
-footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
-nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.mobilemenu{display:none}
-@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
-.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
-.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
-.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
-.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
-.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
-.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
-.mm-section a.on{color:#004c53;background:#d7e9ea}}#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}@media(max-width:600px){#locmap{height:240px}}.locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}.locmap-cap b{font-weight:700}.loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}.loc-lbl:before,.loc-lbl:after{display:none !important}</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Cook County, Georgia FEMA disaster declarations", "description": "Cook County, Georgia has had 15 federal disaster and emergency declarations since FY2000 (9 major disasters, 6 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning.", "url": "https://disasterdata.io/states/georgia/cook-county-ga.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Cook County, Georgia"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Cook County", "Georgia", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../georgia.html">Georgia</a> / Cook County</p><span class="badge county">County</span><h1>Cook County, Georgia</h1><p class="lede">Cook County recorded <b>15</b> federal disaster and emergency declarations since FY2000 (through FY2025): 9 major disasters, 6 emergencies, and 0 fire-management declarations. Its most common hazard is hurricane.</p><div class="stats"><div class="stat"><div class="n">15</div><div class="l">Declarations since FY2000</div></div><div class="stat"><div class="n">9</div><div class="l">Major disasters (DR)</div></div><div class="stat"><div class="n">6</div><div class="l">Emergencies (EM)</div></div><div class="stat"><div class="n">0</div><div class="l">Fire management (FM)</div></div><div class="stat"><div class="n">Sep&nbsp;2024</div><div class="l">Most recent</div></div><div class="stat"><div class="n">$9.5M</div><div class="l">Federal PA obligated (top: debris removal)</div></div></div><section class="jsummary"><p>The federal disaster record for Cook County runs between 2004 and 2024, covering 15 declarations in all. Its most recent major disaster declaration was Hurricane Helene in 2024. The hazards behind these declarations were most often hurricane, tropical storm, and biological. Since 2000, FEMA has obligated about $9.5 million in Public Assistance funding to the jurisdiction, most of it for debris removal.</p></section><div id="locmap" data-fips="13" data-name="Cook County" data-st="GA" data-kind="county"></div><p class="locmap-cap">Highlighted: <b>Cook County, GA</b></p><section><h2>Federal Public Assistance by category</h2><p class="pa-note">Federal share obligated to this jurisdiction under FEMA Public Assistance since 2000, grouped by damage category. Figures are rounded to the nearest dollar and reflect obligations, which may change as projects close out.</p><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Category</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Debris removal<span class='catcode'>(A)</span></td><td>26</td><td>$6,314,027</td></tr><tr><td>Roads and bridges<span class='catcode'>(C)</span></td><td>39</td><td>$2,105,525</td></tr><tr><td>Emergency protective measures<span class='catcode'>(B)</span></td><td>19</td><td>$536,506</td></tr><tr><td>Utilities<span class='catcode'>(F)</span></td><td>7</td><td>$415,827</td></tr><tr><td>Buildings and equipment<span class='catcode'>(E)</span></td><td>5</td><td>$53,560</td></tr><tr><td>Management costs<span class='catcode'>(Z)</span></td><td>8</td><td>$48,968</td></tr><tr><td>Parks and recreation<span class='catcode'>(G)</span></td><td>1</td><td>$11,380</td></tr></tbody><tfoot><tr><td>All categories</td><td>105</td><td>$9,485,793</td></tr></tfoot></table></div></section><section><h2>Recovery funding, how fast it came</h2><p class="pa-note">For each disaster, the wait from the declaration to the first federal obligation (amber), then the federal share obligating after that (teal), on a shared 9-year scale. Typical wait to the first obligation here: about 165 days. An obligation is the federal share committed to the recipient state, not funds disbursed to the locality, which comes later and is not shown.</p><style>.ft-list{display:grid;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .3rem}.ft-row{background:#f6f1e7;padding:.7rem .9rem}.ft-top{display:flex;justify-content:space-between;gap:.8rem;align-items:baseline}.ft-name{font-size:.92rem;color:#17211f;font-weight:600}.ft-date{color:#6b6357;font-weight:400}.ft-val{font-family:Fraunces,Georgia,serif;font-size:1rem;color:#004c53}.ft-track{position:relative;height:11px;margin:.5rem 0 .35rem;background:#ece7d8;border:1px solid #e2dccb;border-radius:6px;overflow:hidden}.ft-gap{position:absolute;top:0;left:0;height:100%;background:#c85c2e}.ft-flow{position:absolute;top:0;height:100%;background:#004c53}.ft-meta{font-size:.72rem;color:#6b6357}.ft-meta b{color:#c85c2e}.ft-axis{position:relative;height:1.1rem;margin:.15rem .9rem 0;font-size:.66rem;color:#6b6357}.ft-axis span{position:absolute;transform:translateX(-50%)}.ft-axis span:first-child{transform:none}</style><div class="ft-list"><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Helene <span class="ft-date">2024</span></span><span class="ft-val">$6.7M</span></div><div class="ft-track"><span class="ft-gap" style="width:5.6%"></span><span class="ft-flow" style="left:5.6%;width:14.9%"></span></div><div class="ft-meta"><b>184 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Idalia <span class="ft-date">2023</span></span><span class="ft-val">$356K</span></div><div class="ft-track"><span class="ft-gap" style="width:5.9%"></span><span class="ft-flow" style="left:5.9%;width:6.8%"></span></div><div class="ft-meta"><b>195 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Michael <span class="ft-date">2018</span></span><span class="ft-val">$56K</span></div><div class="ft-track"><span class="ft-gap" style="width:12.8%"></span><span class="ft-flow" style="left:12.8%;width:0.0%"></span></div><div class="ft-meta"><b>422 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Irma <span class="ft-date">2017</span></span><span class="ft-val">$410K</span></div><div class="ft-track"><span class="ft-gap" style="width:4.5%"></span><span class="ft-flow" style="left:4.5%;width:46.8%"></span></div><div class="ft-meta"><b>147 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, Straight-Line Winds, And Flooding <span class="ft-date">2017</span></span><span class="ft-val">$534K</span></div><div class="ft-track"><span class="ft-gap" style="width:3.8%"></span><span class="ft-flow" style="left:3.8%;width:87.6%"></span></div><div class="ft-meta"><b>125 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Flooding, Tornadoes, And Straight-Line Winds <span class="ft-date">2009</span></span><span class="ft-val">$1.4M</span></div><div class="ft-track"><span class="ft-gap" style="width:2.3%"></span><span class="ft-flow" style="left:2.3%;width:59.3%"></span></div><div class="ft-meta"><b>76 days</b> to first federal obligation</div></div></div><div class="ft-axis"><span style="left:0">Declared</span><span style="left:11.1%">1 yr</span><span style="left:22.2%">2 yr</span><span style="left:33.3%">3 yr</span><span style="left:44.4%">4 yr</span><span style="left:55.6%">5 yr</span><span style="left:66.7%">6 yr</span><span style="left:77.8%">7 yr</span><span style="left:88.9%">8 yr</span><span style="left:100.0%">9 yr</span></div></section><section><h2>Assistance to households (Individual Assistance)</h2><p class="pa-note">FEMA Individual Assistance to households in this jurisdiction, combined across the Housing Assistance owner and renter programs. Valid registrations are households that applied within a designated Individual Assistance area; approved counts and dollars are the households FEMA found eligible under the Individuals and Households Program. Figures are self-reported and drawn from NEMIS through OpenFEMA, not audited, and Individual Assistance exists only for disasters where it was designated, so many jurisdictions show none.</p><style>.ia-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.ia-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.ia-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.ia-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="ia-stats"><div class="ia-stat"><div class="ia-n">3,756</div><div class="ia-l">valid registrations</div></div><div class="ia-stat"><div class="ia-n">1,229</div><div class="ia-l">households approved</div></div><div class="ia-stat"><div class="ia-n">$2,833,178</div><div class="ia-l">total IHP approved</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Assistance type</th><th>Approved amount</th></tr></thead><tbody><tr><td>Repair and replacement</td><td>$867,121</td></tr><tr><td>Rental assistance</td><td>$232,264</td></tr><tr><td>Other needs</td><td>$1,730,486</td></tr></tbody></table></div></section><section><h2>Hazard mitigation, what has been funded here</h2><p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to reduce future disaster losses, across the FEMA mitigation programs. This is the record of past mitigation investment a local hazard mitigation plan documents. Figures are federal share obligated, reported through OpenFEMA and not audited, and are separate from the Public Assistance funding above.</p><style>.hm-stats{display:flex;flex-wrap:wrap;gap:1px;background:#e2dccb;border:1px solid #cec7b6;border-radius:8px;overflow:hidden;margin:.6rem 0 .9rem}.hm-stat{background:#f6f1e7;padding:.7rem 1rem;flex:1 1 130px}.hm-n{font-family:Fraunces,Georgia,serif;font-size:1.15rem;color:#004c53;letter-spacing:-.3px}.hm-l{font-size:.72rem;color:#6b6357;margin-top:.15rem}</style><div class="hm-stats"><div class="hm-stat"><div class="hm-n">$360,627</div><div class="hm-l">federal mitigation share</div></div><div class="hm-stat"><div class="hm-n">6</div><div class="hm-l">funded projects</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Hazard Mitigation Grant Program<span class='catcode'>(HMGP)</span></td><td>6</td><td>$360,627</td></tr></tbody></table></div></section><h2>Most common hazards</h2><ul class="haz"><li>Hurricane <b>8</b></li><li>Tropical Storm <b>3</b></li><li>Biological <b>2</b></li><li>Severe Storm <b>1</b></li><li>Tornado <b>1</b></li></ul><section><h2>Previous occurrences, for your mitigation plan</h2><div class="hmp"><p>Every local hazard mitigation plan must document previous occurrences of each hazard. Here is that record for Cook County, sourced to OpenFEMA and refreshed weekly. Copy it straight into your plan.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Hurricane</td><td>Sep 30, 2024</td><td>DR-4830-GA</td><td>DR</td></tr><tr><td>Tropical Storm</td><td>Sep 26, 2024</td><td>EM-3616-GA</td><td>EM</td></tr><tr><td>Tropical Storm</td><td>Sep 24, 2024</td><td>DR-4821-GA</td><td>DR</td></tr><tr><td>Tropical Storm</td><td>Aug 5, 2024</td><td>EM-3607-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Sep 7, 2023</td><td>DR-4738-GA</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 29, 2020</td><td>DR-4501-GA</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3464-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Oct 14, 2018</td><td>DR-4400-GA</td><td>DR</td></tr><tr><td>Hurricane</td><td>Oct 10, 2018</td><td>EM-3406-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Sep 15, 2017</td><td>DR-4338-GA</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 8, 2017</td><td>EM-3387-GA</td><td>EM</td></tr><tr><td>Tornado</td><td>Jan 26, 2017</td><td>DR-4297-GA</td><td>DR</td></tr><tr><td>Severe Storm</td><td>Apr 23, 2009</td><td>DR-1833-GA</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 5, 2005</td><td>EM-3218-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Sep 24, 2004</td><td>DR-1560-GA</td><td>DR</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Hurricane&quot;, &quot;Sep 30, 2024&quot;, &quot;DR-4830-GA&quot;, &quot;DR&quot;], [&quot;Tropical Storm&quot;, &quot;Sep 26, 2024&quot;, &quot;EM-3616-GA&quot;, &quot;EM&quot;], [&quot;Tropical Storm&quot;, &quot;Sep 24, 2024&quot;, &quot;DR-4821-GA&quot;, &quot;DR&quot;], [&quot;Tropical Storm&quot;, &quot;Aug 5, 2024&quot;, &quot;EM-3607-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Sep 7, 2023&quot;, &quot;DR-4738-GA&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 29, 2020&quot;, &quot;DR-4501-GA&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3464-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Oct 14, 2018&quot;, &quot;DR-4400-GA&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Oct 10, 2018&quot;, &quot;EM-3406-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Sep 15, 2017&quot;, &quot;DR-4338-GA&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 8, 2017&quot;, &quot;EM-3387-GA&quot;, &quot;EM&quot;], [&quot;Tornado&quot;, &quot;Jan 26, 2017&quot;, &quot;DR-4297-GA&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;Apr 23, 2009&quot;, &quot;DR-1833-GA&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 5, 2005&quot;, &quot;EM-3218-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Sep 24, 2004&quot;, &quot;DR-1560-GA&quot;, &quot;DR&quot;]]">Copy table</button></div></section><h2>Every declaration on record</h2><div id="declbox"><p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; <b style="color:#004c53">EM</b> = Emergency declaration &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">15</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">9</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">6</span></button><button type="button" class="decl-chip off" data-t="FM" aria-pressed="false">FM <span class="n">0</span></button></div><p class="decl-count" aria-live="polite">Showing 15 declarations</p><div class="tablewrap scroll"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="DR"><td data-s="2024-09-30">Sep 30, 2024</td><td data-s="4830">DR-4830-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Helene</td></tr><tr data-t="EM"><td data-s="2024-09-26">Sep 26, 2024</td><td data-s="3616">EM-3616-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Tropical Storm</td><td>Hurricane Helene</td></tr><tr data-t="DR"><td data-s="2024-09-24">Sep 24, 2024</td><td data-s="4821">DR-4821-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Tropical Storm</td><td>Tropical Storm Debby</td></tr><tr data-t="EM"><td data-s="2024-08-05">Aug 5, 2024</td><td data-s="3607">EM-3607-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Tropical Storm</td><td>Hurricane Debby</td></tr><tr data-t="DR"><td data-s="2023-09-07">Sep 7, 2023</td><td data-s="4738">DR-4738-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Idalia</td></tr><tr data-t="DR"><td data-s="2020-03-29">Mar 29, 2020</td><td data-s="4501">DR-4501-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3464">EM-3464-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr><tr data-t="DR"><td data-s="2018-10-14">Oct 14, 2018</td><td data-s="4400">DR-4400-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Michael</td></tr><tr data-t="EM"><td data-s="2018-10-10">Oct 10, 2018</td><td data-s="3406">EM-3406-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Michael</td></tr><tr data-t="DR"><td data-s="2017-09-15">Sep 15, 2017</td><td data-s="4338">DR-4338-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Irma</td></tr><tr data-t="EM"><td data-s="2017-09-08">Sep 8, 2017</td><td data-s="3387">EM-3387-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Irma</td></tr><tr data-t="DR"><td data-s="2017-01-26">Jan 26, 2017</td><td data-s="4297">DR-4297-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Tornado</td><td>Severe Storms, Tornadoes, Straight-Line Winds, And Flooding</td></tr><tr data-t="DR"><td data-s="2009-04-23">Apr 23, 2009</td><td data-s="1833">DR-1833-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Flooding, Tornadoes, And Straight-Line Winds</td></tr><tr data-t="EM"><td data-s="2005-09-05">Sep 5, 2005</td><td data-s="3218">EM-3218-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Katrina Evacuation</td></tr><tr data-t="DR"><td data-s="2004-09-24">Sep 24, 2004</td><td data-s="1560">DR-1560-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Tropical Storm Frances</td></tr></tbody></table></div><div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button><button class="copybtn citebtn" type="button">Cite this page</button></div></div><script>
+
+.crumb{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:0 0 1.2rem;
+}
+
+.crumb a{text-decoration:none}
+
+.badge{
+  display:inline-block;
+  font:700 .7rem 'Public Sans',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+  padding:.24rem .65rem;
+  border-radius:999px;
+}
+
+.badge.county{
+  color:#004c53;
+  background:#d7e9ea;
+}
+
+.badge.city{
+  color:#8a5a2b;
+  background:#f3e4d2;
+}
+
+.badge.tribal{
+  color:#6a2f6a;
+  background:#efddef;
+}
+
+.hero{
+  padding:.4rem 0 .7rem;
+}
+
+.hero-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:.5rem;
+}
+
+.hero-link{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  text-decoration:none;
+  font-size:.8rem;
+  font-weight:700;
+  border:1px solid #b7cfce;
+  background:#edf5f4;
+  color:var(--teal);
+  border-radius:999px;
+  padding:.42rem .75rem;
+  white-space:nowrap;
+}
+
+.hero-link:hover{
+  background:#dcebea;
+}
+
+h1{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:clamp(2rem,5vw,3.05rem);
+  line-height:1.04;
+  letter-spacing:-.035em;
+  margin:.42rem 0 .75rem;
+}
+
+h2{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.45rem;
+  line-height:1.2;
+  letter-spacing:-.015em;
+  margin:2.4rem 0 .7rem;
+}
+
+h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.16rem;
+  line-height:1.25;
+  margin:0 0 .35rem;
+}
+
+.lede{
+  margin:.25rem 0 0;
+  font-size:1.08rem;
+  max-width:72ch;
+  color:var(--ink2);
+}
+
+.current-note{
+  margin:.8rem 0 0;
+  max-width:72ch;
+  font-size:.79rem;
+  color:var(--ink3);
+}
+
+.overview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.8rem;
+  margin:1.55rem 0 1.2rem;
+}
+
+.overview-card{
+  min-height:122px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1rem 1.05rem;
+  box-shadow:var(--shadow);
+}
+
+.overview-kicker{
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.075em;
+  text-transform:uppercase;
+  color:var(--ink3);
+}
+
+.overview-value{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.85rem;
+  line-height:1;
+  letter-spacing:-.035em;
+  color:var(--teal);
+  margin:.35rem 0 .28rem;
+}
+
+.overview-label{
+  color:var(--ink3);
+  font-size:.78rem;
+  line-height:1.35;
+}
+
+.jsummary{
+  margin:1.15rem 0 .5rem;
+}
+
+.jsummary p{
+  margin:0;
+  font-size:1rem;
+  max-width:74ch;
+}
+
+.major-section{
+  margin:2.5rem 0;
+}
+
+.section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem;
+}
+
+.section-head h2{
+  margin:0 0 .25rem;
+}
+
+.section-deck{
+  max-width:72ch;
+  margin:0;
+  color:var(--ink3);
+  font-size:.9rem;
+}
+
+.section-meta{
+  flex:none;
+  font-size:.7rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+  color:var(--ink3);
+  white-space:nowrap;
+}
+
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem;
+}
+
+.risk-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:18px;
+  padding:1.15rem 1.2rem 1.25rem;
+  box-shadow:var(--shadow);
+}
+
+.risk-kicker{
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.085em;
+  text-transform:uppercase;
+  color:var(--ink3);
+}
+
+.risk-version{
+  margin:.05rem 0 .95rem;
+  font-size:.75rem;
+  color:var(--ink3);
+}
+
+.svi-lead,
+.nri-lead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin:.65rem 0 .95rem;
+}
+
+.risk-score{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:2.15rem;
+  line-height:.95;
+  letter-spacing:-.04em;
+}
+
+.risk-score-label{
+  margin-top:.28rem;
+  font-size:.72rem;
+  color:var(--ink3);
+}
+
+.risk-rating{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  background:#edf5f4;
+  color:var(--teal);
+  border:1px solid #cfe0df;
+  font-size:.72rem;
+  font-weight:800;
+  padding:.3rem .6rem;
+  white-space:nowrap;
+}
+
+.risk-interpret{
+  font-size:.83rem;
+  color:var(--ink2);
+  margin:.3rem 0 .95rem;
+}
+
+.theme-list{
+  display:grid;
+  gap:.65rem;
+  margin-top:.9rem;
+}
+
+.theme-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.8rem;
+  font-size:.76rem;
+}
+
+.theme-head span{
+  color:var(--ink2);
+}
+
+.theme-head b{
+  color:var(--teal);
+  font-variant-numeric:tabular-nums;
+}
+
+.theme-track{
+  height:6px;
+  border-radius:999px;
+  background:#ebe5d8;
+  overflow:hidden;
+  margin-top:.25rem;
+}
+
+.theme-track span{
+  display:block;
+  height:100%;
+  background:#2d7d83;
+  border-radius:999px;
+}
+
+.risk-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.55rem;
+  margin-top:.8rem;
+}
+
+.risk-mini{
+  background:#faf7ef;
+  border:1px solid #ece5d7;
+  border-radius:11px;
+  padding:.7rem;
+}
+
+.risk-mini span{
+  display:block;
+  color:var(--ink3);
+  font-size:.67rem;
+  line-height:1.3;
+}
+
+.risk-mini b{
+  display:block;
+  margin-top:.2rem;
+  color:var(--teal);
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1rem;
+  line-height:1.15;
+}
+
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.63rem;
+  line-height:1.25;
+  margin-top:.12rem;
+}
+
+.risk-source{
+  margin:.9rem 0 0;
+  font-size:.74rem;
+  color:var(--ink3);
+}
+
+.risk-caution{
+  margin-top:.8rem;
+  padding:.72rem .85rem;
+  border:1px solid #d6dfdc;
+  border-radius:11px;
+  background:#f0f6f5;
+  font-size:.77rem;
+  color:#4b5b58;
+}
+
+.map-shell{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:18px;
+  padding:1rem;
+  box-shadow:var(--shadow);
+  margin:1rem 0;
+}
+
+#locmap{
+  height:330px;
+  border-radius:12px;
+  border:1px solid #e4dccb;
+  background:#f6f1e7;
+}
+
+.locmap-cap{
+  font:600 .8rem/1.3 'Public Sans',sans-serif;
+  color:#004c53;
+  margin:.65rem 0 .05rem;
+  text-align:center;
+}
+
+.locmap-cap b{
+  font-weight:700;
+}
+
+.loc-lbl{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  color:#fff;
+  font:700 12px/1 'Public Sans',sans-serif;
+  padding:0;
+  white-space:nowrap;
+  pointer-events:none;
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.6),
+    0 0 3px rgba(0,0,0,.55);
+}
+
+.loc-lbl:before,
+.loc-lbl:after{
+  display:none !important;
+}
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.65rem 0 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.32rem .78rem;
+  font-size:.82rem;
+}
+
+ul.haz b{
+  color:var(--teal);
+  margin-left:.15rem;
+}
+
+.assistance-stack{
+  display:grid;
+  gap:1rem;
+  margin-top:1rem;
+}
+
+.data-panel{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.05rem 1.1rem 1.15rem;
+  box-shadow:var(--shadow);
+}
+
+.data-panel h3{
+  margin-top:0;
+}
+
+.pa-note{
+  font-size:.86rem;
+  color:var(--ink3);
+  max-width:74ch;
+  margin:.3rem 0 .85rem;
+}
+
+.hm-stats,
+.ia-stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  background:#e2dccb;
+  border:1px solid #cec7b6;
+  border-radius:10px;
+  overflow:hidden;
+  margin:.65rem 0 .9rem;
+}
+
+.hm-stat,
+.ia-stat{
+  background:#faf7ef;
+  padding:.75rem .9rem;
+}
+
+.hm-n,
+.ia-n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.15rem;
+  color:#004c53;
+  letter-spacing:-.3px;
+}
+
+.hm-l,
+.ia-l{
+  font-size:.7rem;
+  color:#6b6357;
+  margin-top:.15rem;
+}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper);
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.84rem;
+  min-width:560px;
+}
+
+th,
+td{
+  text-align:left;
+  padding:.58rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top;
+}
+
+th{
+  font-size:.71rem;
+  text-transform:uppercase;
+  letter-spacing:.035em;
+  color:var(--ink3);
+  background:#faf6ec;
+}
+
+tr:last-child td{
+  border-bottom:none;
+}
+
+.tag{
+  font-weight:700;
+  color:var(--teal);
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec;
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em;
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.ft-list{
+  display:grid;
+  gap:1px;
+  background:#e2dccb;
+  border:1px solid #cec7b6;
+  border-radius:10px;
+  overflow:hidden;
+  margin:.6rem 0 .3rem;
+}
+
+.ft-row{
+  background:#faf7ef;
+  padding:.72rem .9rem;
+}
+
+.ft-top{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  align-items:baseline;
+}
+
+.ft-name{
+  font-size:.88rem;
+  color:#17211f;
+  font-weight:600;
+}
+
+.ft-date{
+  color:#6b6357;
+  font-weight:400;
+}
+
+.ft-val{
+  font-family:Fraunces,Georgia,serif;
+  font-size:1rem;
+  color:#004c53;
+}
+
+.ft-track{
+  position:relative;
+  height:11px;
+  margin:.5rem 0 .35rem;
+  background:#ece7d8;
+  border:1px solid #e2dccb;
+  border-radius:6px;
+  overflow:hidden;
+}
+
+.ft-gap{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background:#c85c2e;
+}
+
+.ft-flow{
+  position:absolute;
+  top:0;
+  height:100%;
+  background:#004c53;
+}
+
+.ft-meta{
+  font-size:.7rem;
+  color:#6b6357;
+}
+
+.ft-meta b{
+  color:#c85c2e;
+}
+
+.ft-axis{
+  position:relative;
+  height:1.1rem;
+  margin:.15rem .9rem 0;
+  font-size:.64rem;
+  color:#6b6357;
+}
+
+.ft-axis span{
+  position:absolute;
+  transform:translateX(-50%);
+}
+
+.ft-axis span:first-child{
+  transform:none;
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:14px;
+  padding:1.1rem 1.2rem;
+  margin:1rem 0;
+}
+
+.hmp p{
+  margin:.1rem 0 .9rem;
+  font-size:.88rem;
+}
+
+.copybtn{
+  display:inline-flex;
+  align-items:center;
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.42rem .8rem;
+  cursor:pointer;
+  margin-top:.8rem;
+  text-decoration:none;
+}
+
+.copybtn:hover{
+  background:#e6f0ef;
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem;
+}
+
+.decl-chip{
+  font:700 .78rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .7rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .42rem;
+  font-size:.73rem;
+  font-weight:700;
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal);
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff;
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default;
+}
+
+.decl-count{
+  font-size:.8rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem;
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto;
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+
+tr.hide{
+  display:none;
+}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap;
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400;
+}
+
+th.sortable:hover{
+  color:var(--teal);
+}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95;
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95;
+}
+
+.method{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0;
+  font-size:.86rem;
+}
+
+.method h2{
+  margin-top:0;
+  font-size:1.15rem;
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0;
+}
+
+.jgrid a{
+  font-size:.83rem;
+  text-decoration:none;
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r;
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule);
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right;
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600;
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3);
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.86rem;
+  margin-left:auto;
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.82rem;
+}
+
+footer.site a{
+  color:var(--ink3);
+}
+
+@media(max-width:860px){
+  .overview-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .risk-mini-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:720px){
+  .hero-top{
+    display:block;
+  }
+
+  .hero-actions{
+    justify-content:flex-start;
+    margin-top:.65rem;
+  }
+
+  .risk-grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-head{
+    display:block;
+  }
+
+  .section-meta{
+    margin-top:.45rem;
+  }
+}
+
+@media(max-width:600px){
+  .overview-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .overview-card{
+    min-height:112px;
+  }
+
+  #locmap{
+    height:245px;
+  }
+
+  .hm-stats,
+  .ia-stats{
+    grid-template-columns:1fr;
+  }
+}</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Cook County, Georgia disaster history and risk context", "description": "Cook County, Georgia federal disaster history through FY2025, including FEMA declarations, Public Assistance, Individual Assistance where designated, mitigation investment, and county risk and vulnerability context where available.", "url": "https://disasterdata.io/states/georgia/cook-county-ga.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Cook County, Georgia"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Cook County", "Georgia", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences", "Public Assistance", "Individual Assistance", "CDC SVI", "Social Vulnerability Index", "FEMA National Risk Index", "NRI"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../georgia.html">Georgia</a> / Cook County</p><section class="hero"><div class="hero-top"><div><span class="badge county">County</span><h1>Cook County, Georgia</h1></div><div class="hero-actions"><a class="hero-link" href="../../map.html?county=13075">View on map &rarr;</a></div></div><p class="lede">Cook County recorded <b>15</b> federal disaster and emergency declarations in completed fiscal years from FY2000 through FY2025: 9 major disasters, 6 emergencies, and 0 fire-management declarations. Its most frequently declared hazard is hurricane.</p><div class="overview-grid"><article class="overview-card"><div class="overview-kicker">Federal disaster history</div><div><div class="overview-value">15</div><div class="overview-label">Hurricane most common</div></div></article><article class="overview-card"><div class="overview-kicker">Natural-hazard risk</div><div><div class="overview-value">34.8</div><div class="overview-label">FEMA NRI · Very Low</div></div></article><article class="overview-card"><div class="overview-kicker">Individual Assistance</div><div><div class="overview-value">$2.8M</div><div class="overview-label">1,229 households approved</div></div></article><article class="overview-card"><div class="overview-kicker">Public Assistance</div><div><div class="overview-value">$9.5M</div><div class="overview-label">105 projects</div></div></article></div><section class="jsummary"><p>The federal disaster record for Cook County runs between 2004 and 2024, covering 15 declarations in completed fiscal years. Its most recent major disaster declaration was Hurricane Helene in 2024. The hazards behind these declarations were most often hurricane, tropical storm, and biological. Since 2000, FEMA has obligated about $9.5 million in Public Assistance funding to the jurisdiction, with the largest category being debris removal. FEMA Individual Assistance records show about $2.8 million approved through the Individuals and Households Program.</p></section></section><section class="major-section"><div class="section-head"><div><h2>Risk and vulnerability context</h2><p class="section-deck">Historical declarations describe what has happened here. CDC SVI and FEMA NRI add context about community vulnerability and underlying natural-hazard risk.</p></div><div class="section-meta">County FIPS 13075</div></div><div class="risk-grid"><article class="risk-card"><div class="risk-kicker">CDC / ATSDR</div><h3>Social Vulnerability Index</h3><div class="risk-version">2022 county-level SVI</div><div class="svi-lead"><div><div class="risk-score">0.9338</div><div class="risk-score-label">overall SVI score</div></div><span class="risk-rating">93.4th percentile</span></div><p class="risk-interpret">This places the jurisdiction at approximately the 93.4th percentile nationally for overall social vulnerability. Higher SVI percentiles indicate greater relative vulnerability.</p><div class="theme-list"><div class="theme-row"><div class="theme-head"><span>Socioeconomic status</span><b>97.4</b></div><div class="theme-track"><span style="width:97.4%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Household characteristics</span><b>82.3</b></div><div class="theme-track"><span style="width:82.3%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Racial &amp; ethnic minority status</span><b>75.2</b></div><div class="theme-track"><span style="width:75.2%"></span></div></div><div class="theme-row"><div class="theme-head"><span>Housing type &amp; transportation</span><b>76.9</b></div><div class="theme-track"><span style="width:76.9%"></span></div></div></div><p class="risk-source">CDC/ATSDR SVI is a percentile-based measure used to identify communities that may need additional support before, during, or after hazardous events.</p></article><article class="risk-card"><div class="risk-kicker">FEMA</div><h3>National Risk Index</h3><div class="risk-version">December 2025</div><div class="nri-lead"><div><div class="risk-score">34.8</div><div class="risk-score-label">overall risk score</div></div><span class="risk-rating">Very Low</span></div><div class="risk-mini-grid"><div class="risk-mini"><span>Expected annual loss</span><b>$8.6M</b><small>Score 29.4 · Very Low</small></div><div class="risk-mini"><span>NRI social vulnerability</span><b>69.3</b><small>Relatively High</small></div><div class="risk-mini"><span>Community resilience</span><b>20.8</b><small>Relatively Low</small></div></div><p class="risk-source">The FEMA National Risk Index describes relative natural-hazard risk using Expected Annual Loss, Social Vulnerability, and Community Resilience.</p></article></div><div class="risk-caution"><b>About these measures:</b> CDC/ATSDR Social Vulnerability Index and FEMA National Risk Index Social Vulnerability are separate measures built using different methods. They are shown together for context and should not be interpreted as equivalent scores.</div></section><section class="major-section"><div class="section-head"><div><h2>Disaster history</h2><p class="section-deck">See the jurisdiction in geographic context, then review the declaration hazards and complete federal record below.</p></div><a class="hero-link" href="../../map.html?county=13075">View on national map &rarr;</a></div><div class="map-shell"><div id="locmap" data-state-fips="13" data-target-fips="13075" data-name="Cook County" data-st="GA" data-kind="county"></div><p class="locmap-cap">Highlighted: <b>Cook County, GA</b></p></div></section><section class="major-section"><div class="section-head"><div><h2>Most common hazards</h2><p class="section-deck">Hazard categories are based on FEMA incident types in this jurisdiction's completed-fiscal-year declaration record.</p></div></div><ul class="haz"><li>Hurricane <b>8</b></li><li>Tropical Storm <b>3</b></li><li>Biological <b>2</b></li><li>Severe Storm <b>1</b></li><li>Tornado <b>1</b></li></ul></section><section class="major-section"><div class="section-head"><div><h2>Federal assistance and recovery</h2><p class="section-deck">Federal assistance records show how households, public facilities, and mitigation projects have been supported following disasters affecting this jurisdiction.</p></div></div><div class="assistance-stack"><section class="data-panel"><h3>Individual Assistance to households</h3><p class="pa-note">FEMA Individual Assistance records for households in this jurisdiction. IA exists only when a disaster receives an Individual Assistance designation, so many jurisdictions have no IA section. Registrations, approvals, and dollars reflect the underlying OpenFEMA/NEMIS records and may be revised.</p><div class="ia-stats"><div class="ia-stat"><div class="ia-n">3,756</div><div class="ia-l">valid registrations</div></div><div class="ia-stat"><div class="ia-n">1,229</div><div class="ia-l">households approved</div></div><div class="ia-stat"><div class="ia-n">$2,833,178</div><div class="ia-l">total IHP approved</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Assistance type</th><th>Approved amount</th></tr></thead><tbody><tr><td>Repair and replacement</td><td>$867,121</td></tr><tr><td>Rental assistance</td><td>$232,264</td></tr><tr><td>Other needs</td><td>$1,730,486</td></tr></tbody></table></div></section><section class="data-panel"><h3>Public Assistance by category</h3><p class="pa-note">Federal share obligated to this jurisdiction under FEMA Public Assistance since 2000, grouped by damage category. Obligations may change as projects are amended or closed.</p><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Category</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Debris removal<span class='catcode'> (A)</span></td><td>26</td><td>$6,314,027</td></tr><tr><td>Roads and bridges<span class='catcode'> (C)</span></td><td>39</td><td>$2,105,525</td></tr><tr><td>Emergency protective measures<span class='catcode'> (B)</span></td><td>19</td><td>$536,506</td></tr><tr><td>Utilities<span class='catcode'> (F)</span></td><td>7</td><td>$415,827</td></tr><tr><td>Buildings and equipment<span class='catcode'> (E)</span></td><td>5</td><td>$53,560</td></tr><tr><td>Management costs<span class='catcode'> (Z)</span></td><td>8</td><td>$48,968</td></tr><tr><td>Parks and recreation<span class='catcode'> (G)</span></td><td>1</td><td>$11,380</td></tr></tbody><tfoot><tr><td>All categories</td><td>105</td><td>$9,485,793</td></tr></tfoot></table></div></section><section class="data-panel"><h3>Recovery funding: how fast it came</h3><p class="pa-note">For each recent disaster, amber shows the wait from declaration to the first federal obligation and teal shows the obligation period after that. Typical wait to first obligation here was about 165 days. An obligation is the federal share committed to the recipient; it is not the same as a local cash disbursement.</p><div class="ft-list"><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Helene <span class="ft-date">2024</span></span><span class="ft-val">$6.7M</span></div><div class="ft-track"><span class="ft-gap" style="width:5.6%"></span><span class="ft-flow" style="left:5.6%;width:14.9%"></span></div><div class="ft-meta"><b>184 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Idalia <span class="ft-date">2023</span></span><span class="ft-val">$356K</span></div><div class="ft-track"><span class="ft-gap" style="width:5.9%"></span><span class="ft-flow" style="left:5.9%;width:6.8%"></span></div><div class="ft-meta"><b>195 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Michael <span class="ft-date">2018</span></span><span class="ft-val">$56K</span></div><div class="ft-track"><span class="ft-gap" style="width:12.8%"></span><span class="ft-flow" style="left:12.8%;width:0.0%"></span></div><div class="ft-meta"><b>422 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Hurricane Irma <span class="ft-date">2017</span></span><span class="ft-val">$410K</span></div><div class="ft-track"><span class="ft-gap" style="width:4.5%"></span><span class="ft-flow" style="left:4.5%;width:46.8%"></span></div><div class="ft-meta"><b>147 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Tornadoes, Straight-Line Winds, And Flooding <span class="ft-date">2017</span></span><span class="ft-val">$534K</span></div><div class="ft-track"><span class="ft-gap" style="width:3.8%"></span><span class="ft-flow" style="left:3.8%;width:87.6%"></span></div><div class="ft-meta"><b>125 days</b> to first federal obligation</div></div><div class="ft-row"><div class="ft-top"><span class="ft-name">Severe Storms, Flooding, Tornadoes, And Straight-Line Winds <span class="ft-date">2009</span></span><span class="ft-val">$1.4M</span></div><div class="ft-track"><span class="ft-gap" style="width:2.3%"></span><span class="ft-flow" style="left:2.3%;width:59.3%"></span></div><div class="ft-meta"><b>76 days</b> to first federal obligation</div></div></div><div class="ft-axis"><span style="left:0">Declared</span><span style="left:11.1%">1 yr</span><span style="left:22.2%">2 yr</span><span style="left:33.3%">3 yr</span><span style="left:44.4%">4 yr</span><span style="left:55.6%">5 yr</span><span style="left:66.7%">6 yr</span><span style="left:77.8%">7 yr</span><span style="left:88.9%">8 yr</span><span style="left:100.0%">9 yr</span></div></section><section class="data-panel"><h3>Hazard mitigation investment</h3><p class="pa-note">Federal Hazard Mitigation Assistance obligated to this jurisdiction to reduce future disaster losses. These figures represent federal mitigation investment and are separate from Public Assistance recovery funding.</p><div class="hm-stats"><div class="hm-stat"><div class="hm-n">$360,627</div><div class="hm-l">federal mitigation share</div></div><div class="hm-stat"><div class="hm-n">6</div><div class="hm-l">funded projects</div></div><div class="hm-stat"><div class="hm-n">—</div><div class="hm-l">properties reported</div></div></div><div class="tablewrap"><table class="pa-cat"><thead><tr><th>Program</th><th>Projects</th><th>Federal share obligated</th></tr></thead><tbody><tr><td>Hazard Mitigation Grant Program<span class='catcode'> (HMGP)</span></td><td>6</td><td>$360,627</td></tr></tbody></table></div></section></div></section><section class="major-section"><div class="section-head"><div><h2>Previous occurrences for mitigation planning</h2><p class="section-deck">A ready-to-use federal declaration history for documenting previous hazard occurrences in local hazard mitigation planning.</p></div></div><div class="hmp"><p>This table contains the completed-fiscal-year FEMA declaration record for Cook County. Copy the table or download the full declaration record below.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Hurricane</td><td>Sep 30, 2024</td><td>DR-4830-GA</td><td>DR</td></tr><tr><td>Tropical Storm</td><td>Sep 26, 2024</td><td>EM-3616-GA</td><td>EM</td></tr><tr><td>Tropical Storm</td><td>Sep 24, 2024</td><td>DR-4821-GA</td><td>DR</td></tr><tr><td>Tropical Storm</td><td>Aug 5, 2024</td><td>EM-3607-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Sep 7, 2023</td><td>DR-4738-GA</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 29, 2020</td><td>DR-4501-GA</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3464-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Oct 14, 2018</td><td>DR-4400-GA</td><td>DR</td></tr><tr><td>Hurricane</td><td>Oct 10, 2018</td><td>EM-3406-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Sep 15, 2017</td><td>DR-4338-GA</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 8, 2017</td><td>EM-3387-GA</td><td>EM</td></tr><tr><td>Tornado</td><td>Jan 26, 2017</td><td>DR-4297-GA</td><td>DR</td></tr><tr><td>Severe Storm</td><td>Apr 23, 2009</td><td>DR-1833-GA</td><td>DR</td></tr><tr><td>Hurricane</td><td>Sep 5, 2005</td><td>EM-3218-GA</td><td>EM</td></tr><tr><td>Hurricane</td><td>Sep 24, 2004</td><td>DR-1560-GA</td><td>DR</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Hurricane&quot;, &quot;Sep 30, 2024&quot;, &quot;DR-4830-GA&quot;, &quot;DR&quot;], [&quot;Tropical Storm&quot;, &quot;Sep 26, 2024&quot;, &quot;EM-3616-GA&quot;, &quot;EM&quot;], [&quot;Tropical Storm&quot;, &quot;Sep 24, 2024&quot;, &quot;DR-4821-GA&quot;, &quot;DR&quot;], [&quot;Tropical Storm&quot;, &quot;Aug 5, 2024&quot;, &quot;EM-3607-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Sep 7, 2023&quot;, &quot;DR-4738-GA&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 29, 2020&quot;, &quot;DR-4501-GA&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3464-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Oct 14, 2018&quot;, &quot;DR-4400-GA&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Oct 10, 2018&quot;, &quot;EM-3406-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Sep 15, 2017&quot;, &quot;DR-4338-GA&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 8, 2017&quot;, &quot;EM-3387-GA&quot;, &quot;EM&quot;], [&quot;Tornado&quot;, &quot;Jan 26, 2017&quot;, &quot;DR-4297-GA&quot;, &quot;DR&quot;], [&quot;Severe Storm&quot;, &quot;Apr 23, 2009&quot;, &quot;DR-1833-GA&quot;, &quot;DR&quot;], [&quot;Hurricane&quot;, &quot;Sep 5, 2005&quot;, &quot;EM-3218-GA&quot;, &quot;EM&quot;], [&quot;Hurricane&quot;, &quot;Sep 24, 2004&quot;, &quot;DR-1560-GA&quot;, &quot;DR&quot;]]">Copy table</button></div></section><section class="major-section"><div class="section-head"><div><h2>Every declaration on record</h2><p class="section-deck">Filter or sort the completed-fiscal-year declaration record, download it as CSV, or copy a citation for this jurisdiction page.</p></div></div><div id="declbox"><p style="font-size:.79rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster &middot; <b style="color:#004c53">EM</b> = Emergency &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">15</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">9</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">6</span></button><button type="button" class="decl-chip off" data-t="FM" aria-pressed="false">FM <span class="n">0</span></button></div><p class="decl-count" aria-live="polite">Showing 15 declarations</p><div class="tablewrap scroll"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="DR"><td data-s="2024-09-30">Sep 30, 2024</td><td data-s="4830">DR-4830-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Helene</td></tr><tr data-t="EM"><td data-s="2024-09-26">Sep 26, 2024</td><td data-s="3616">EM-3616-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Tropical Storm</td><td>Hurricane Helene</td></tr><tr data-t="DR"><td data-s="2024-09-24">Sep 24, 2024</td><td data-s="4821">DR-4821-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Tropical Storm</td><td>Tropical Storm Debby</td></tr><tr data-t="EM"><td data-s="2024-08-05">Aug 5, 2024</td><td data-s="3607">EM-3607-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Tropical Storm</td><td>Hurricane Debby</td></tr><tr data-t="DR"><td data-s="2023-09-07">Sep 7, 2023</td><td data-s="4738">DR-4738-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Idalia</td></tr><tr data-t="DR"><td data-s="2020-03-29">Mar 29, 2020</td><td data-s="4501">DR-4501-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3464">EM-3464-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr><tr data-t="DR"><td data-s="2018-10-14">Oct 14, 2018</td><td data-s="4400">DR-4400-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Michael</td></tr><tr data-t="EM"><td data-s="2018-10-10">Oct 10, 2018</td><td data-s="3406">EM-3406-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Michael</td></tr><tr data-t="DR"><td data-s="2017-09-15">Sep 15, 2017</td><td data-s="4338">DR-4338-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Hurricane Irma</td></tr><tr data-t="EM"><td data-s="2017-09-08">Sep 8, 2017</td><td data-s="3387">EM-3387-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Irma</td></tr><tr data-t="DR"><td data-s="2017-01-26">Jan 26, 2017</td><td data-s="4297">DR-4297-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Tornado</td><td>Severe Storms, Tornadoes, Straight-Line Winds, And Flooding</td></tr><tr data-t="DR"><td data-s="2009-04-23">Apr 23, 2009</td><td data-s="1833">DR-1833-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Severe Storm</td><td>Severe Storms, Flooding, Tornadoes, And Straight-Line Winds</td></tr><tr data-t="EM"><td data-s="2005-09-05">Sep 5, 2005</td><td data-s="3218">EM-3218-GA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Hurricane</td><td>Hurricane Katrina Evacuation</td></tr><tr data-t="DR"><td data-s="2004-09-24">Sep 24, 2004</td><td data-s="1560">DR-1560-GA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Hurricane</td><td>Tropical Storm Frances</td></tr></tbody></table></div><div style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button><button class="copybtn citebtn" type="button">Cite this page</button></div></div><script>
 (function(){
-  var box=document.getElementById('declbox'); if(!box) return;
+  var box=document.getElementById('declbox');
+  if(!box) return;
+
   var cap=box.querySelector('.decl-count');
   var chips=box.querySelectorAll('.decl-chip');
   var table=box.querySelector('table');
+
+  if(!table) return;
+
   var tbody=table.querySelector('tbody');
   var heads=table.querySelectorAll('thead th');
   var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
-  var label={ALL:'declarations',DR:'major disaster declarations',EM:'emergency declarations',FM:'fire-management declarations'};
+
+  var label={
+    ALL:'declarations',
+    DR:'major disaster declarations',
+    EM:'emergency declarations',
+    FM:'fire-management declarations'
+  };
 
   function filter(t){
     var shown=0,i;
+
     for(i=0;i<rows.length;i++){
       var m=(t==='ALL'||rows[i].getAttribute('data-t')===t);
       rows[i].classList.toggle('hide',!m);
       if(m) shown++;
     }
-    for(i=0;i<chips.length;i++) chips[i].setAttribute('aria-pressed', chips[i].getAttribute('data-t')===t?'true':'false');
-    if(cap) cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+
+    for(i=0;i<chips.length;i++){
+      chips[i].setAttribute(
+        'aria-pressed',
+        chips[i].getAttribute('data-t')===t?'true':'false'
+      );
+    }
+
+    if(cap){
+      cap.textContent='Showing '+shown+' '+(label[t]||'declarations');
+    }
   }
+
   box.addEventListener('click',function(ev){
-    var c=ev.target.closest('.decl-chip'); if(!c||c.classList.contains('off')) return;
+    var c=ev.target.closest('.decl-chip');
+
+    if(!c||c.classList.contains('off')) return;
+
     filter(c.getAttribute('data-t'));
   });
 
   function val(row,i,k){
     var td=row.children[i];
-    if(k==='num'){ var v=td.getAttribute('data-s'); return v==null?0:(parseFloat(v)||0); }
-    if(k==='date'){ return td.getAttribute('data-s')||''; }
+
+    if(k==='num'){
+      var v=td.getAttribute('data-s');
+      return v==null?0:(parseFloat(v)||0);
+    }
+
+    if(k==='date'){
+      return td.getAttribute('data-s')||'';
+    }
+
     return (td.textContent||'').trim().toLowerCase();
   }
+
   function sortCol(i,k,dir){
     var mul=dir==='descending'?-1:1;
+
     rows.sort(function(a,b){
-      var x=val(a,i,k), y=val(b,i,k);
-      if(k==='num') return (x-y)*mul;
+      var x=val(a,i,k);
+      var y=val(b,i,k);
+
+      if(k==='num'){
+        return (x-y)*mul;
+      }
+
       return (x<y?-1:x>y?1:0)*mul;
     });
-    for(var n=0;n<rows.length;n++) tbody.appendChild(rows[n]);
+
+    for(var n=0;n<rows.length;n++){
+      tbody.appendChild(rows[n]);
+    }
   }
-  for(var h=0;h<heads.length;h++){ (function(th,i){
-    if(!th.classList.contains('sortable')) return;
-    th.addEventListener('click',function(){
-      var dir=th.getAttribute('aria-sort')==='ascending'?'descending':'ascending';
-      for(var k=0;k<heads.length;k++) heads[k].removeAttribute('aria-sort');
-      th.setAttribute('aria-sort',dir);
-      sortCol(i, th.getAttribute('data-k')||'text', dir);
-    });
-  })(heads[h],h); }
+
+  for(var h=0;h<heads.length;h++){
+    (function(th,i){
+      if(!th.classList.contains('sortable')) return;
+
+      th.addEventListener('click',function(){
+        var dir=
+          th.getAttribute('aria-sort')==='ascending'
+          ?'descending'
+          :'ascending';
+
+        for(var k=0;k<heads.length;k++){
+          heads[k].removeAttribute('aria-sort');
+        }
+
+        th.setAttribute('aria-sort',dir);
+
+        sortCol(
+          i,
+          th.getAttribute('data-k')||'text',
+          dir
+        );
+      });
+    })(heads[h],h);
+  }
 
   filter('ALL');
 })();
-</script><div style="margin:2rem 0"><a href="../georgia.html">&larr; Georgia statewide overview</a> &middot; <a href="index.html">All Georgia jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, rebuilt each week. A declaration is counted here once for each designated area it names, so a single disaster covering many localities is counted in each one. For that reason these jurisdiction counts do not sum to Georgia's statewide total. This page counts declarations that named this jurisdiction as a designated area. Totals cover complete fiscal years (Oct 1 to Sep 30); the in-progress year may appear in the most-recent list but is not counted in the totals. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section><h2>Other Georgia jurisdictions</h2><nav class="jgrid"><a href="ware-county-ga.html">Ware County</a><a href="brantley-county-ga.html">Brantley County</a><a href="charlton-county-ga.html">Charlton County</a><a href="bulloch-county-ga.html">Bulloch County</a><a href="candler-county-ga.html">Candler County</a><a href="emanuel-county-ga.html">Emanuel County</a><a href="jenkins-county-ga.html">Jenkins County</a><a href="mcintosh-county-ga.html">McIntosh County</a><a href="tattnall-county-ga.html">Tattnall County</a><a href="appling-county-ga.html">Appling County</a><a href="atkinson-county-ga.html">Atkinson County</a><a href="burke-county-ga.html">Burke County</a><a href="camden-county-ga.html">Camden County</a><a href="coffee-county-ga.html">Coffee County</a><a href="colquitt-county-ga.html">Colquitt County</a><a href="echols-county-ga.html">Echols County</a><a href="jeff-davis-county-ga.html">Jeff Davis County</a><a href="pierce-county-ga.html">Pierce County</a><a href="screven-county-ga.html">Screven County</a><a href="toombs-county-ga.html">Toombs County</a><a href="upson-county-ga.html">Upson County</a><a href="wayne-county-ga.html">Wayne County</a><a href="bacon-county-ga.html">Bacon County</a><a href="berrien-county-ga.html">Berrien County</a><a href="brooks-county-ga.html">Brooks County</a><a href="clinch-county-ga.html">Clinch County</a><a href="glynn-county-ga.html">Glynn County</a><a href="lamar-county-ga.html">Lamar County</a><a href="long-county-ga.html">Long County</a><a href="pickens-county-ga.html">Pickens County</a><a href="thomas-county-ga.html">Thomas County</a><a href="tift-county-ga.html">Tift County</a><a href="treutlen-county-ga.html">Treutlen County</a><a href="turner-county-ga.html">Turner County</a><a href="white-county-ga.html">White County</a><a href="worth-county-ga.html">Worth County</a><a href="baker-county-ga.html">Baker County</a><a href="bryan-county-ga.html">Bryan County</a><a href="carroll-county-ga.html">Carroll County</a><a href="crawford-county-ga.html">Crawford County</a><a href="crisp-county-ga.html">Crisp County</a><a href="decatur-county-ga.html">Decatur County</a><a href="evans-county-ga.html">Evans County</a><a href="gilmer-county-ga.html">Gilmer County</a><a href="habersham-county-ga.html">Habersham County</a><a href="jasper-county-ga.html">Jasper County</a><a href="jefferson-county-ga.html">Jefferson County</a><a href="johnson-county-ga.html">Johnson County</a><a href="lowndes-county-ga.html">Lowndes County</a><a href="lumpkin-county-ga.html">Lumpkin County</a><a href="mitchell-county-ga.html">Mitchell County</a><a href="monroe-county-ga.html">Monroe County</a><a href="montgomery-county-ga.html">Montgomery County</a><a href="newton-county-ga.html">Newton County</a><a href="rabun-county-ga.html">Rabun County</a><a href="wilkes-county-ga.html">Wilkes County</a><a href="butts-county-ga.html">Butts County</a><a href="chatham-county-ga.html">Chatham County</a><a href="dawson-county-ga.html">Dawson County</a><a href="dougherty-county-ga.html">Dougherty County</a><a href="effingham-county-ga.html">Effingham County</a><a href="elbert-county-ga.html">Elbert County</a><a href="fannin-county-ga.html">Fannin County</a><a href="fulton-county-ga.html">Fulton County</a><a href="grady-county-ga.html">Grady County</a><a href="greene-county-ga.html">Greene County</a><a href="hancock-county-ga.html">Hancock County</a><a href="heard-county-ga.html">Heard County</a><a href="lanier-county-ga.html">Lanier County</a><a href="laurens-county-ga.html">Laurens County</a><a href="liberty-county-ga.html">Liberty County</a><a href="pike-county-ga.html">Pike County</a><a href="stephens-county-ga.html">Stephens County</a><a href="taliaferro-county-ga.html">Taliaferro County</a><a href="twiggs-county-ga.html">Twiggs County</a><a href="wilcox-county-ga.html">Wilcox County</a><a href="wilkinson-county-ga.html">Wilkinson County</a><a href="banks-county-ga.html">Banks County</a><a href="ben-hill-county-ga.html">Ben Hill County</a><a href="calhoun-county-ga.html">Calhoun County</a><a href="cherokee-county-ga.html">Cherokee County</a><a href="dade-county-ga.html">Dade County</a><a href="dodge-county-ga.html">Dodge County</a><a href="douglas-county-ga.html">Douglas County</a><a href="franklin-county-ga.html">Franklin County</a><a href="irwin-county-ga.html">Irwin County</a><a href="jones-county-ga.html">Jones County</a><a href="oglethorpe-county-ga.html">Oglethorpe County</a><a href="putnam-county-ga.html">Putnam County</a><a href="spalding-county-ga.html">Spalding County</a><a href="telfair-county-ga.html">Telfair County</a><a href="washington-county-ga.html">Washington County</a><a href="wheeler-county-ga.html">Wheeler County</a><a href="bartow-county-ga.html">Bartow County</a><a href="bleckley-county-ga.html">Bleckley County</a><a href="clay-county-ga.html">Clay County</a><a href="coweta-county-ga.html">Coweta County</a><a href="dekalb-county-ga.html">DeKalb County</a><a href="dooly-county-ga.html">Dooly County</a><a href="early-county-ga.html">Early County</a><a href="forsyth-county-ga.html">Forsyth County</a><a href="glascock-county-ga.html">Glascock County</a><a href="haralson-county-ga.html">Haralson County</a><a href="hart-county-ga.html">Hart County</a><a href="houston-county-ga.html">Houston County</a><a href="madison-county-ga.html">Madison County</a><a href="mcduffie-county-ga.html">McDuffie County</a><a href="meriwether-county-ga.html">Meriwether County</a><a href="miller-county-ga.html">Miller County</a><a href="morgan-county-ga.html">Morgan County</a><a href="paulding-county-ga.html">Paulding County</a><a href="peach-county-ga.html">Peach County</a><a href="pulaski-county-ga.html">Pulaski County</a><a href="richmond-county-ga.html">Richmond County</a><a href="taylor-county-ga.html">Taylor County</a><a href="union-county-ga.html">Union County</a><a href="walker-county-ga.html">Walker County</a><a href="warren-county-ga.html">Warren County</a><a href="webster-county-ga.html">Webster County</a><a href="baldwin-county-ga.html">Baldwin County</a><a href="bibb-county-ga.html">Bibb County</a><a href="catoosa-county-ga.html">Catoosa County</a><a href="cobb-county-ga.html">Cobb County</a><a href="columbia-county-ga.html">Columbia County</a><a href="floyd-county-ga.html">Floyd County</a><a href="gordon-county-ga.html">Gordon County</a><a href="hall-county-ga.html">Hall County</a><a href="harris-county-ga.html">Harris County</a><a href="jackson-county-ga.html">Jackson County</a><a href="macon-county-ga.html">Macon County</a><a href="stewart-county-ga.html">Stewart County</a><a href="sumter-county-ga.html">Sumter County</a><a href="towns-county-ga.html">Towns County</a><a href="troup-county-ga.html">Troup County</a><a href="barrow-county-ga.html">Barrow County</a><a href="chattahoochee-county-ga.html">Chattahoochee County</a><a href="chattooga-county-ga.html">Chattooga County</a><a href="clarke-county-ga.html">Clarke County</a><a href="fayette-county-ga.html">Fayette County</a><a href="gwinnett-county-ga.html">Gwinnett County</a><a href="henry-county-ga.html">Henry County</a><a href="lee-county-ga.html">Lee County</a><a href="lincoln-county-ga.html">Lincoln County</a><a href="marion-county-ga.html">Marion County</a><a href="muscogee-county-ga.html">Muscogee County</a><a href="oconee-county-ga.html">Oconee County</a><a href="polk-county-ga.html">Polk County</a><a href="randolph-county-ga.html">Randolph County</a><a href="rockdale-county-ga.html">Rockdale County</a><a href="schley-county-ga.html">Schley County</a><a href="seminole-county-ga.html">Seminole County</a><a href="talbot-county-ga.html">Talbot County</a><a href="clayton-county-ga.html">Clayton County</a><a href="georgetown-quitman-county-ga.html">Georgetown - Quitman County</a><a href="terrell-county-ga.html">Terrell County</a><a href="walton-county-ga.html">Walton County</a><a href="whitfield-county-ga.html">Whitfield County</a><a href="murray-county-ga.html">Murray County</a><a href="tama-indian-reservation-ga.html">Tama Indian Reservation</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2024-09-30", "DR-4830-GA", "DR", "Hurricane", "Hurricane Helene"], ["2024-09-26", "EM-3616-GA", "EM", "Tropical Storm", "Hurricane Helene"], ["2024-09-24", "DR-4821-GA", "DR", "Tropical Storm", "Tropical Storm Debby"], ["2024-08-05", "EM-3607-GA", "EM", "Tropical Storm", "Hurricane Debby"], ["2023-09-07", "DR-4738-GA", "DR", "Hurricane", "Hurricane Idalia"], ["2020-03-29", "DR-4501-GA", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3464-GA", "EM", "Biological", "Covid-19"], ["2018-10-14", "DR-4400-GA", "DR", "Hurricane", "Hurricane Michael"], ["2018-10-10", "EM-3406-GA", "EM", "Hurricane", "Hurricane Michael"], ["2017-09-15", "DR-4338-GA", "DR", "Hurricane", "Hurricane Irma"], ["2017-09-08", "EM-3387-GA", "EM", "Hurricane", "Hurricane Irma"], ["2017-01-26", "DR-4297-GA", "DR", "Tornado", "Severe Storms, Tornadoes, Straight-Line Winds, And Flooding"], ["2009-04-23", "DR-1833-GA", "DR", "Severe Storm", "Severe Storms, Flooding, Tornadoes, And Straight-Line Winds"], ["2005-09-05", "EM-3218-GA", "EM", "Hurricane", "Hurricane Katrina Evacuation"], ["2004-09-24", "DR-1560-GA", "DR", "Hurricane", "Tropical Storm Frances"]];var csv=d.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cook-county-ga-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citebtn')){var today=new Date().toISOString().slice(0,10);var cite='Disaster Data. "Cook County, Georgia: FEMA Disaster Declarations." DisasterData.io. Accessed '+today+'. https://disasterdata.io/states/georgia/cook-county-ga.html';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd);}else{window.prompt('Citation:',cite);}}});</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/topojson-client@3"></script><script src="../../county-names.js"></script><script src="../../locality-index.js"></script><script>(function(){var el=document.getElementById("locmap");if(!el)return;var sf=el.dataset.fips,sa=el.dataset.st,knd=(el.dataset.kind||"");var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];function norm(s){return String(s||"").replace(/\s*\([^)]*\)/g,"").trim().toLowerCase();}function base(v){var s=norm(String(v).split(",")[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(" "+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}var cnBase=base(el.dataset.name);function go(){if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}var ul={};window.LOCALITY_INDEX.forEach(function(r){if(r[1]!==sa)return;var full=r[0].replace(/ \(city\)$/i,"").toLowerCase();ul[base(r[0])]=r[3];ul[full]=r[3];});fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json()}).then(function(topo){var fc={type:"FeatureCollection",features:topojson.feature(topo,topo.objects.counties).features.filter(function(f){return String(f.id).padStart(5,"0").slice(0,2)===sf})};var matches=fc.features.filter(function(f){return base(window.COUNTY_NAMES[String(f.id).padStart(5,"0")]||"")===cnBase;});var collide=matches.length>1;function isTarget(f){var fp=String(f.id).padStart(5,"0");if(base(window.COUNTY_NAMES[fp]||"")!==cnBase)return false;if(collide){var city=(+fp.slice(2))>=500;return (knd==="city")===city;}return true;}var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:false});L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:13}).addTo(map);var targetLayer=null;var ly=L.geoJson(fc,{style:function(f){if(isTarget(f))return{fillColor:"#004c53",fillOpacity:.55,color:"#004c53",weight:2};return{fillColor:"#d7e9ea",fillOpacity:.35,color:"#938a78",weight:1};},onEachFeature:function(f,layer){var fp=String(f.id).padStart(5,"0"),lb=window.COUNTY_NAMES[fp]||"",nm=lb.split(",")[0].trim();var u=ul[base(nm)]||ul[nm.toLowerCase()];if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}else{layer.bindTooltip(nm,{sticky:true});}if(u){layer.on("click",function(){window.location.href="../../"+u});layer.on("mouseover",function(){this._path.style.cursor="pointer";this.setStyle({fillOpacity:.6})});layer.on("mouseout",function(){this.setStyle({fillOpacity:(this===targetLayer)?.55:.35})});}}}).addTo(map);map.fitBounds(ly.getBounds(),{padding:[15,15]});});}go();})();</script></body></html>
+</script></section><div style="margin:2rem 0"><a href="../georgia.html">&larr; Georgia statewide overview</a> &middot; <a href="index.html">All Georgia jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Declaration history comes from FEMA's OpenFEMA Disaster Declarations Summaries and is rebuilt with the site data pipeline. A declaration is counted once for each designated area it names, so a single disaster covering many localities is counted in each locality. For that reason, jurisdiction counts do not sum to Georgia's statewide total. This page counts declarations that named this jurisdiction as a designated area. Headline declaration totals cover completed federal fiscal years (Oct. 1 through Sept. 30). Activity from the current fiscal year may appear as the most recent event before it is included in those totals. Risk and vulnerability context is joined at the county-equivalent level using the five-digit Census/FIPS GEOID. CDC/ATSDR SVI and FEMA National Risk Index Social Vulnerability are different measures and are not treated as interchangeable. Public Assistance, Individual Assistance, and Hazard Mitigation figures reflect the underlying federal datasets and may change as records are updated or projects close out. DisasterData.IO uses federal source data but is not endorsed by or affiliated with FEMA, CDC, or ATSDR.</p></section><h2>Other Georgia jurisdictions</h2><nav class="jgrid"><a href="ware-county-ga.html">Ware County</a><a href="brantley-county-ga.html">Brantley County</a><a href="charlton-county-ga.html">Charlton County</a><a href="bulloch-county-ga.html">Bulloch County</a><a href="candler-county-ga.html">Candler County</a><a href="emanuel-county-ga.html">Emanuel County</a><a href="jenkins-county-ga.html">Jenkins County</a><a href="mcintosh-county-ga.html">McIntosh County</a><a href="tattnall-county-ga.html">Tattnall County</a><a href="appling-county-ga.html">Appling County</a><a href="atkinson-county-ga.html">Atkinson County</a><a href="burke-county-ga.html">Burke County</a><a href="camden-county-ga.html">Camden County</a><a href="coffee-county-ga.html">Coffee County</a><a href="colquitt-county-ga.html">Colquitt County</a><a href="echols-county-ga.html">Echols County</a><a href="jeff-davis-county-ga.html">Jeff Davis County</a><a href="pierce-county-ga.html">Pierce County</a><a href="screven-county-ga.html">Screven County</a><a href="toombs-county-ga.html">Toombs County</a><a href="upson-county-ga.html">Upson County</a><a href="wayne-county-ga.html">Wayne County</a><a href="bacon-county-ga.html">Bacon County</a><a href="berrien-county-ga.html">Berrien County</a><a href="brooks-county-ga.html">Brooks County</a><a href="clinch-county-ga.html">Clinch County</a><a href="glynn-county-ga.html">Glynn County</a><a href="lamar-county-ga.html">Lamar County</a><a href="long-county-ga.html">Long County</a><a href="pickens-county-ga.html">Pickens County</a><a href="thomas-county-ga.html">Thomas County</a><a href="tift-county-ga.html">Tift County</a><a href="treutlen-county-ga.html">Treutlen County</a><a href="turner-county-ga.html">Turner County</a><a href="white-county-ga.html">White County</a><a href="worth-county-ga.html">Worth County</a><a href="baker-county-ga.html">Baker County</a><a href="bryan-county-ga.html">Bryan County</a><a href="carroll-county-ga.html">Carroll County</a><a href="crawford-county-ga.html">Crawford County</a><a href="crisp-county-ga.html">Crisp County</a><a href="decatur-county-ga.html">Decatur County</a><a href="evans-county-ga.html">Evans County</a><a href="gilmer-county-ga.html">Gilmer County</a><a href="habersham-county-ga.html">Habersham County</a><a href="jasper-county-ga.html">Jasper County</a><a href="jefferson-county-ga.html">Jefferson County</a><a href="johnson-county-ga.html">Johnson County</a><a href="lowndes-county-ga.html">Lowndes County</a><a href="lumpkin-county-ga.html">Lumpkin County</a><a href="mitchell-county-ga.html">Mitchell County</a><a href="monroe-county-ga.html">Monroe County</a><a href="montgomery-county-ga.html">Montgomery County</a><a href="newton-county-ga.html">Newton County</a><a href="rabun-county-ga.html">Rabun County</a><a href="wilkes-county-ga.html">Wilkes County</a><a href="butts-county-ga.html">Butts County</a><a href="chatham-county-ga.html">Chatham County</a><a href="dawson-county-ga.html">Dawson County</a><a href="dougherty-county-ga.html">Dougherty County</a><a href="effingham-county-ga.html">Effingham County</a><a href="elbert-county-ga.html">Elbert County</a><a href="fannin-county-ga.html">Fannin County</a><a href="fulton-county-ga.html">Fulton County</a><a href="grady-county-ga.html">Grady County</a><a href="greene-county-ga.html">Greene County</a><a href="hancock-county-ga.html">Hancock County</a><a href="heard-county-ga.html">Heard County</a><a href="lanier-county-ga.html">Lanier County</a><a href="laurens-county-ga.html">Laurens County</a><a href="liberty-county-ga.html">Liberty County</a><a href="pike-county-ga.html">Pike County</a><a href="stephens-county-ga.html">Stephens County</a><a href="taliaferro-county-ga.html">Taliaferro County</a><a href="twiggs-county-ga.html">Twiggs County</a><a href="wilcox-county-ga.html">Wilcox County</a><a href="wilkinson-county-ga.html">Wilkinson County</a><a href="banks-county-ga.html">Banks County</a><a href="ben-hill-county-ga.html">Ben Hill County</a><a href="calhoun-county-ga.html">Calhoun County</a><a href="cherokee-county-ga.html">Cherokee County</a><a href="dade-county-ga.html">Dade County</a><a href="dodge-county-ga.html">Dodge County</a><a href="douglas-county-ga.html">Douglas County</a><a href="franklin-county-ga.html">Franklin County</a><a href="irwin-county-ga.html">Irwin County</a><a href="jones-county-ga.html">Jones County</a><a href="oglethorpe-county-ga.html">Oglethorpe County</a><a href="putnam-county-ga.html">Putnam County</a><a href="spalding-county-ga.html">Spalding County</a><a href="telfair-county-ga.html">Telfair County</a><a href="washington-county-ga.html">Washington County</a><a href="wheeler-county-ga.html">Wheeler County</a><a href="bartow-county-ga.html">Bartow County</a><a href="bleckley-county-ga.html">Bleckley County</a><a href="clay-county-ga.html">Clay County</a><a href="coweta-county-ga.html">Coweta County</a><a href="dekalb-county-ga.html">DeKalb County</a><a href="dooly-county-ga.html">Dooly County</a><a href="early-county-ga.html">Early County</a><a href="forsyth-county-ga.html">Forsyth County</a><a href="glascock-county-ga.html">Glascock County</a><a href="haralson-county-ga.html">Haralson County</a><a href="hart-county-ga.html">Hart County</a><a href="houston-county-ga.html">Houston County</a><a href="madison-county-ga.html">Madison County</a><a href="mcduffie-county-ga.html">McDuffie County</a><a href="meriwether-county-ga.html">Meriwether County</a><a href="miller-county-ga.html">Miller County</a><a href="morgan-county-ga.html">Morgan County</a><a href="paulding-county-ga.html">Paulding County</a><a href="peach-county-ga.html">Peach County</a><a href="pulaski-county-ga.html">Pulaski County</a><a href="richmond-county-ga.html">Richmond County</a><a href="taylor-county-ga.html">Taylor County</a><a href="union-county-ga.html">Union County</a><a href="walker-county-ga.html">Walker County</a><a href="warren-county-ga.html">Warren County</a><a href="webster-county-ga.html">Webster County</a><a href="baldwin-county-ga.html">Baldwin County</a><a href="bibb-county-ga.html">Bibb County</a><a href="catoosa-county-ga.html">Catoosa County</a><a href="cobb-county-ga.html">Cobb County</a><a href="columbia-county-ga.html">Columbia County</a><a href="floyd-county-ga.html">Floyd County</a><a href="gordon-county-ga.html">Gordon County</a><a href="hall-county-ga.html">Hall County</a><a href="harris-county-ga.html">Harris County</a><a href="jackson-county-ga.html">Jackson County</a><a href="macon-county-ga.html">Macon County</a><a href="stewart-county-ga.html">Stewart County</a><a href="sumter-county-ga.html">Sumter County</a><a href="towns-county-ga.html">Towns County</a><a href="troup-county-ga.html">Troup County</a><a href="barrow-county-ga.html">Barrow County</a><a href="chattahoochee-county-ga.html">Chattahoochee County</a><a href="chattooga-county-ga.html">Chattooga County</a><a href="clarke-county-ga.html">Clarke County</a><a href="fayette-county-ga.html">Fayette County</a><a href="gwinnett-county-ga.html">Gwinnett County</a><a href="henry-county-ga.html">Henry County</a><a href="lee-county-ga.html">Lee County</a><a href="lincoln-county-ga.html">Lincoln County</a><a href="marion-county-ga.html">Marion County</a><a href="muscogee-county-ga.html">Muscogee County</a><a href="oconee-county-ga.html">Oconee County</a><a href="polk-county-ga.html">Polk County</a><a href="randolph-county-ga.html">Randolph County</a><a href="rockdale-county-ga.html">Rockdale County</a><a href="schley-county-ga.html">Schley County</a><a href="seminole-county-ga.html">Seminole County</a><a href="talbot-county-ga.html">Talbot County</a><a href="clayton-county-ga.html">Clayton County</a><a href="georgetown-quitman-county-ga.html">Georgetown - Quitman County</a><a href="terrell-county-ga.html">Terrell County</a><a href="walton-county-ga.html">Walton County</a><a href="whitfield-county-ga.html">Whitfield County</a><a href="murray-county-ga.html">Murray County</a><a href="tama-indian-reservation-ga.html">Tama Indian Reservation</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, CDC/ATSDR SVI, and FEMA National Risk Index data &middot; refreshed as source data are updated &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2024-09-30", "DR-4830-GA", "DR", "Hurricane", "Hurricane Helene"], ["2024-09-26", "EM-3616-GA", "EM", "Tropical Storm", "Hurricane Helene"], ["2024-09-24", "DR-4821-GA", "DR", "Tropical Storm", "Tropical Storm Debby"], ["2024-08-05", "EM-3607-GA", "EM", "Tropical Storm", "Hurricane Debby"], ["2023-09-07", "DR-4738-GA", "DR", "Hurricane", "Hurricane Idalia"], ["2020-03-29", "DR-4501-GA", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3464-GA", "EM", "Biological", "Covid-19"], ["2018-10-14", "DR-4400-GA", "DR", "Hurricane", "Hurricane Michael"], ["2018-10-10", "EM-3406-GA", "EM", "Hurricane", "Hurricane Michael"], ["2017-09-15", "DR-4338-GA", "DR", "Hurricane", "Hurricane Irma"], ["2017-09-08", "EM-3387-GA", "EM", "Hurricane", "Hurricane Irma"], ["2017-01-26", "DR-4297-GA", "DR", "Tornado", "Severe Storms, Tornadoes, Straight-Line Winds, And Flooding"], ["2009-04-23", "DR-1833-GA", "DR", "Severe Storm", "Severe Storms, Flooding, Tornadoes, And Straight-Line Winds"], ["2005-09-05", "EM-3218-GA", "EM", "Hurricane", "Hurricane Katrina Evacuation"], ["2004-09-24", "DR-1560-GA", "DR", "Hurricane", "Tropical Storm Frances"]];var csv=d.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cook-county-ga-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citebtn')){var today=new Date().toISOString().slice(0,10);var cite='Disaster Data. \"Cook County, Georgia: Disaster History and Risk Context.\" DisasterData.io. Accessed '+today+'. https://disasterdata.io/states/georgia/cook-county-ga.html';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd);}else{window.prompt('Citation:',cite);}}});</script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/topojson-client@3"></script><script src="../../county-names.js"></script><script src="../../locality-index.js"></script><script>(function(){var el=document.getElementById("locmap");if(!el)return;var sf=el.dataset.stateFips||'';var tf=el.dataset.targetFips||'';var sa=el.dataset.st||'';var knd=el.dataset.kind||'';var SX=["county","parish","borough","census area","municipio","municipality","city and borough","island","district"];function norm(s){return String(s||'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase();}function base(v){var s=norm(String(v).split(',')[0]);for(var i=0;i<SX.length;i++){if(s.endsWith(' '+SX[i])){s=s.slice(0,-(SX[i].length+1)).trim();break;}}return s;}var cnBase=base(el.dataset.name);function go(){if(!window.COUNTY_NAMES||!window.LOCALITY_INDEX){setTimeout(go,100);return;}var ul={};window.LOCALITY_INDEX.forEach(function(r){if(r[1]!==sa)return;var full=r[0].replace(/ \(city\)$/i,'').toLowerCase();ul[base(r[0])]=r[3];ul[full]=r[3];});fetch("https://unpkg.com/us-atlas@3/counties-10m.json").then(function(r){return r.json();}).then(function(topo){var features=topojson.feature(topo,topo.objects.counties).features;var fc={type:"FeatureCollection",features:features.filter(function(f){return String(f.id).padStart(5,'0').slice(0,2)===sf;})};var matches=fc.features.filter(function(f){var fp=String(f.id).padStart(5,'0');return base(window.COUNTY_NAMES[fp]||'')===cnBase;});var collide=matches.length>1;function isTarget(f){var fp=String(f.id).padStart(5,'0');if(tf){return fp===tf;}if(base(window.COUNTY_NAMES[fp]||'')!==cnBase){return false;}if(collide){var city=(+fp.slice(2))>=500;return (knd==='city')===city;}return true;}var map=L.map("locmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:false});L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:13}).addTo(map);var targetLayer=null;var ly=L.geoJson(fc,{style:function(f){if(isTarget(f)){return{fillColor:"#004c53",fillOpacity:.58,color:"#004c53",weight:2};}return{fillColor:"#d7e9ea",fillOpacity:.34,color:"#938a78",weight:1};},onEachFeature:function(f,layer){var fp=String(f.id).padStart(5,'0');var lb=window.COUNTY_NAMES[fp]||'';var nm=lb.split(',')[0].trim();var u=ul[base(nm)]||ul[nm.toLowerCase()];if(isTarget(f)){targetLayer=layer;layer.bindTooltip(nm,{permanent:true,direction:"center",className:"loc-lbl",offset:[0,0]});}else{layer.bindTooltip(nm,{sticky:true});}if(u){layer.on('click',function(){window.location.href='../../'+u;});layer.on('mouseover',function(){if(this._path)this._path.style.cursor='pointer';this.setStyle({fillOpacity:.62});});layer.on('mouseout',function(){this.setStyle({fillOpacity:(this===targetLayer)?.58:.34});});}}}).addTo(map);map.fitBounds(ly.getBounds(),{padding:[15,15]});});}go();})();</script></body></html>

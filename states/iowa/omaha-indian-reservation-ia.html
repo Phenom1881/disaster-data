@@ -1,75 +1,924 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Disaster Data | Omaha Indian Reservation</title><meta name="description" content="Omaha Indian Reservation spans Iowa and Nebraska. Its full federal disaster and emergency declaration history and mitigation table are maintained on the Nebraska page."><link rel="canonical" href="https://disasterdata.io/states/nebraska/omaha-indian-reservation-ne.html"><meta property="og:title" content="Omaha Indian Reservation"><meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--teal:#004c53;--cream:#f6f1e7;--paper:#fffdf7;--ink:#2b2b2b;--ink3:#6b6357;--rule:#e4dccb}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Public Sans',system-ui,-apple-system,sans-serif;line-height:1.6}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Disaster Data | Omaha Indian Reservation</title><meta name="description" content="Omaha Indian Reservation spans Iowa and Nebraska. Its complete DisasterData.IO jurisdiction record is maintained on the Nebraska page."><link rel="canonical" href="https://disasterdata.io/states/nebraska/omaha-indian-reservation-ne.html"><meta property="og:title" content="Omaha Indian Reservation"><meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
+  --teal:#004c53;
+  --teal2:#0f6870;
+  --teal-soft:#d7e9ea;
+  --cream:#f6f1e7;
+  --paper:#fffdf7;
+  --ink:#2b2b2b;
+  --ink2:#4e493f;
+  --ink3:#6b6357;
+  --rule:#e4dccb;
+  --amber:#c85c2e;
+  --shadow:0 8px 28px rgba(47,40,27,.055);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+}
+
 a{color:var(--teal)}
-.wrap{max-width:980px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
-nav.ddnav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid #e0d8c5;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px}
-nav.ddnav .brand{display:flex;align-items:baseline;gap:10px}
-nav.ddnav .brand .mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;letter-spacing:-.4px;color:#1d1813;text-decoration:none}
-nav.ddnav .navlinks{display:flex;align-items:center;gap:4px}
-nav.ddnav .navlinks a{font-size:13px;font-weight:500;color:#5b5346;text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px}
-nav.ddnav .navlinks a:hover{color:#1d1813;background:#f1ead9}
-nav.ddnav .navlinks a.on{color:#004c53;background:#d7e9ea}
-nav.ddnav .navmeta{font-size:11px;color:#938a78;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.wrap{
+  max-width:1080px;
+  margin:0 auto;
+  padding:0 clamp(18px,4vw,44px);
+}
+
 main{padding:2rem 0 1rem}
-.crumb{font-size:.82rem;color:var(--ink3);margin:0 0 1rem}.crumb a{text-decoration:none}
-.badge{display:inline-block;font:600 .72rem 'Public Sans',sans-serif;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
-.badge.county{color:#004c53;background:#d7e9ea}.badge.city{color:#8a5a2b;background:#f3e4d2}.badge.tribal{color:#6a2f6a;background:#efddef}
-h1{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;margin:.2rem 0 .6rem}
-h2{font-family:'Fraunces',Georgia,serif;color:var(--teal);font-size:1.3rem;margin:2.2rem 0 .8rem}
-.lede{font-size:1.08rem;max-width:62ch}
-.jsummary{margin:1.1rem 0 .4rem}.jsummary p{margin:0;font-size:1rem;color:var(--ink);max-width:66ch}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:1.5rem 0}
-.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.85rem 1rem}
-.stat .n{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;color:var(--teal);font-weight:600;line-height:1}
-.stat .l{font-size:.78rem;color:var(--ink3);margin-top:.3rem}
-ul.haz{list-style:none;padding:0;margin:.5rem 0;display:flex;flex-wrap:wrap;gap:.5rem}
-ul.haz li{background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.3rem .8rem;font-size:.85rem}ul.haz b{color:var(--teal)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
-table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
-th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);background:#faf6ec}
-tr:last-child td{border-bottom:none}.tag{font-weight:700;color:var(--teal)}
-.hmp{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 0}
-.hmp p{margin:.2rem 0 .9rem;font-size:.92rem}
-.copybtn{font:600 .8rem 'Public Sans',sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .85rem;cursor:pointer;margin-top:.8rem}
-.decl-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
-.decl-chip{font:700 .82rem/1 'Public Sans',sans-serif;color:var(--teal);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.42rem .72rem;cursor:pointer;display:inline-flex;align-items:center;gap:.42rem}
-.decl-chip .n{background:#eef3f2;border-radius:999px;padding:.06rem .44rem;font-size:.76rem;font-weight:700}
-.decl-chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
-.decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
-.decl-chip.off{opacity:.42;cursor:default}
-.decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
-.tablewrap.scroll{max-height:430px;overflow-y:auto}
-.tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
-tr.hide{display:none}
-th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
-th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
-th.sortable:hover{color:var(--teal)}
-th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
-th[aria-sort="descending"]::after{content:"↓";opacity:.95}
-.method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}.method h2{margin-top:0;font-size:1.1rem}
-.pa-note{font-size:.9rem;color:var(--ink3);max-width:64ch;margin:.4rem 0 .8rem}
-table.pa-cat tfoot td{font-weight:700;color:var(--teal);border-top:2px solid var(--rule);background:#faf6ec}
-.pa-cat .catcode{color:var(--ink3);font-weight:400;font-size:.85em;margin-left:.15em}
-table.pa-cat td:nth-child(2),table.pa-cat th:nth-child(2),table.pa-cat td:nth-child(3),table.pa-cat th:nth-child(3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.jgrid{display:flex;flex-wrap:wrap;gap:.4rem .7rem;margin:.6rem 0}.jgrid a{font-size:.86rem;text-decoration:none}
-ol.rank{padding-left:0;list-style:none;counter-reset:r}
-ol.rank li{counter-increment:r;display:flex;align-items:baseline;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--rule)}
-ol.rank li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--ink3);min-width:2.6ch;text-align:right}
-ol.rank a{text-decoration:none;font-weight:600}ol.rank .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3)}
-ol.rank .c{color:var(--ink3);font-size:.9rem;margin-left:auto}
-footer.site{border-top:1px solid var(--rule);margin-top:2rem;padding:1.5rem 0;color:var(--ink3);font-size:.85rem}footer.site a{color:var(--ink3)}
-nav.ddnav .navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px}
-nav.ddnav .navburger span{display:block;height:2px;width:100%;background:#1d1813;border-radius:2px;transition:.2s}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){opacity:0}
-nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.mobilemenu{display:none}
-@media(max-width:720px){nav.ddnav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;padding-top:0;padding-bottom:0}nav.ddnav .navmeta{display:none}nav.ddnav .navlinks{display:none !important}nav.ddnav .navburger{display:flex}
-.mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:#f6f1e7;border-bottom:1px solid #e0d8c5;position:sticky;top:60px;z-index:49}
-.mobilemenu>a{font-size:15px;font-weight:500;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px}
-.mobilemenu>a.on{color:#004c53;background:#d7e9ea}
-.mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid #e0d8c5}
-.mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#938a78;padding:6px 12px 2px}
-.mm-section a{font-size:15px;font-weight:500;color:#5b5346;text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px}
-.mm-section a.on{color:#004c53;background:#d7e9ea}}#locmap{height:320px;border-radius:10px;border:1px solid #e4dccb;margin:1rem 0 .5rem;background:#f6f1e7}@media(max-width:600px){#locmap{height:240px}}.locmap-cap{font:600 .86rem/1.3 'Public Sans',sans-serif;color:#004c53;margin:0 0 1.5rem;text-align:center}.locmap-cap b{font-weight:700}.loc-lbl{background:transparent;border:none;box-shadow:none;color:#fff;font:700 12px/1 'Public Sans',sans-serif;padding:0;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.55)}.loc-lbl:before,.loc-lbl:after{display:none !important}</style></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../iowa.html">Iowa</a> / Omaha Indian Reservation</p><span class="badge tribal">Tribal nation</span><h1>Omaha Indian Reservation</h1><p class="lede">Omaha Indian Reservation spans Iowa and Nebraska. To keep its record whole rather than split across state lines, the full declaration history and previous-occurrences table live on one page.</p><p style="margin:1.5rem 0"><a class="copybtn" href="../nebraska/omaha-indian-reservation-ne.html">View the full Omaha Indian Reservation record on the Nebraska page &rarr;</a></p><div style="margin:2rem 0"><a href="index.html">&larr; All Iowa jurisdictions</a></div></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script></body></html>
+
+.crumb{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:0 0 1.2rem;
+}
+
+.crumb a{text-decoration:none}
+
+.badge{
+  display:inline-block;
+  font:700 .7rem 'Public Sans',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+  padding:.24rem .65rem;
+  border-radius:999px;
+}
+
+.badge.county{
+  color:#004c53;
+  background:#d7e9ea;
+}
+
+.badge.city{
+  color:#8a5a2b;
+  background:#f3e4d2;
+}
+
+.badge.tribal{
+  color:#6a2f6a;
+  background:#efddef;
+}
+
+.hero{
+  padding:.4rem 0 .7rem;
+}
+
+.hero-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:.5rem;
+}
+
+.hero-link{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  text-decoration:none;
+  font-size:.8rem;
+  font-weight:700;
+  border:1px solid #b7cfce;
+  background:#edf5f4;
+  color:var(--teal);
+  border-radius:999px;
+  padding:.42rem .75rem;
+  white-space:nowrap;
+}
+
+.hero-link:hover{
+  background:#dcebea;
+}
+
+h1{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:clamp(2rem,5vw,3.05rem);
+  line-height:1.04;
+  letter-spacing:-.035em;
+  margin:.42rem 0 .75rem;
+}
+
+h2{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.45rem;
+  line-height:1.2;
+  letter-spacing:-.015em;
+  margin:2.4rem 0 .7rem;
+}
+
+h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.16rem;
+  line-height:1.25;
+  margin:0 0 .35rem;
+}
+
+.lede{
+  margin:.25rem 0 0;
+  font-size:1.08rem;
+  max-width:72ch;
+  color:var(--ink2);
+}
+
+.current-note{
+  margin:.8rem 0 0;
+  max-width:72ch;
+  font-size:.79rem;
+  color:var(--ink3);
+}
+
+.overview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.8rem;
+  margin:1.55rem 0 1.2rem;
+}
+
+.overview-card{
+  min-height:122px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1rem 1.05rem;
+  box-shadow:var(--shadow);
+}
+
+.overview-kicker{
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.075em;
+  text-transform:uppercase;
+  color:var(--ink3);
+}
+
+.overview-value{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.85rem;
+  line-height:1;
+  letter-spacing:-.035em;
+  color:var(--teal);
+  margin:.35rem 0 .28rem;
+}
+
+.overview-label{
+  color:var(--ink3);
+  font-size:.78rem;
+  line-height:1.35;
+}
+
+.jsummary{
+  margin:1.15rem 0 .5rem;
+}
+
+.jsummary p{
+  margin:0;
+  font-size:1rem;
+  max-width:74ch;
+}
+
+.major-section{
+  margin:2.5rem 0;
+}
+
+.section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem;
+}
+
+.section-head h2{
+  margin:0 0 .25rem;
+}
+
+.section-deck{
+  max-width:72ch;
+  margin:0;
+  color:var(--ink3);
+  font-size:.9rem;
+}
+
+.section-meta{
+  flex:none;
+  font-size:.7rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+  color:var(--ink3);
+  white-space:nowrap;
+}
+
+.risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem;
+}
+
+.risk-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:18px;
+  padding:1.15rem 1.2rem 1.25rem;
+  box-shadow:var(--shadow);
+}
+
+.risk-kicker{
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.085em;
+  text-transform:uppercase;
+  color:var(--ink3);
+}
+
+.risk-version{
+  margin:.05rem 0 .95rem;
+  font-size:.75rem;
+  color:var(--ink3);
+}
+
+.svi-lead,
+.nri-lead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin:.65rem 0 .95rem;
+}
+
+.risk-score{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:2.15rem;
+  line-height:.95;
+  letter-spacing:-.04em;
+}
+
+.risk-score-label{
+  margin-top:.28rem;
+  font-size:.72rem;
+  color:var(--ink3);
+}
+
+.risk-rating{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  background:#edf5f4;
+  color:var(--teal);
+  border:1px solid #cfe0df;
+  font-size:.72rem;
+  font-weight:800;
+  padding:.3rem .6rem;
+  white-space:nowrap;
+}
+
+.risk-interpret{
+  font-size:.83rem;
+  color:var(--ink2);
+  margin:.3rem 0 .95rem;
+}
+
+.theme-list{
+  display:grid;
+  gap:.65rem;
+  margin-top:.9rem;
+}
+
+.theme-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.8rem;
+  font-size:.76rem;
+}
+
+.theme-head span{
+  color:var(--ink2);
+}
+
+.theme-head b{
+  color:var(--teal);
+  font-variant-numeric:tabular-nums;
+}
+
+.theme-track{
+  height:6px;
+  border-radius:999px;
+  background:#ebe5d8;
+  overflow:hidden;
+  margin-top:.25rem;
+}
+
+.theme-track span{
+  display:block;
+  height:100%;
+  background:#2d7d83;
+  border-radius:999px;
+}
+
+.risk-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.55rem;
+  margin-top:.8rem;
+}
+
+.risk-mini{
+  background:#faf7ef;
+  border:1px solid #ece5d7;
+  border-radius:11px;
+  padding:.7rem;
+}
+
+.risk-mini span{
+  display:block;
+  color:var(--ink3);
+  font-size:.67rem;
+  line-height:1.3;
+}
+
+.risk-mini b{
+  display:block;
+  margin-top:.2rem;
+  color:var(--teal);
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1rem;
+  line-height:1.15;
+}
+
+.risk-mini small{
+  display:block;
+  color:var(--ink3);
+  font-size:.63rem;
+  line-height:1.25;
+  margin-top:.12rem;
+}
+
+.risk-source{
+  margin:.9rem 0 0;
+  font-size:.74rem;
+  color:var(--ink3);
+}
+
+.risk-caution{
+  margin-top:.8rem;
+  padding:.72rem .85rem;
+  border:1px solid #d6dfdc;
+  border-radius:11px;
+  background:#f0f6f5;
+  font-size:.77rem;
+  color:#4b5b58;
+}
+
+.map-shell{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:18px;
+  padding:1rem;
+  box-shadow:var(--shadow);
+  margin:1rem 0;
+}
+
+#locmap{
+  height:330px;
+  border-radius:12px;
+  border:1px solid #e4dccb;
+  background:#f6f1e7;
+}
+
+.locmap-cap{
+  font:600 .8rem/1.3 'Public Sans',sans-serif;
+  color:#004c53;
+  margin:.65rem 0 .05rem;
+  text-align:center;
+}
+
+.locmap-cap b{
+  font-weight:700;
+}
+
+.loc-lbl{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  color:#fff;
+  font:700 12px/1 'Public Sans',sans-serif;
+  padding:0;
+  white-space:nowrap;
+  pointer-events:none;
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.6),
+    0 0 3px rgba(0,0,0,.55);
+}
+
+.loc-lbl:before,
+.loc-lbl:after{
+  display:none !important;
+}
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.65rem 0 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.32rem .78rem;
+  font-size:.82rem;
+}
+
+ul.haz b{
+  color:var(--teal);
+  margin-left:.15rem;
+}
+
+.assistance-stack{
+  display:grid;
+  gap:1rem;
+  margin-top:1rem;
+}
+
+.data-panel{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.05rem 1.1rem 1.15rem;
+  box-shadow:var(--shadow);
+}
+
+.data-panel h3{
+  margin-top:0;
+}
+
+.pa-note{
+  font-size:.86rem;
+  color:var(--ink3);
+  max-width:74ch;
+  margin:.3rem 0 .85rem;
+}
+
+.hm-stats,
+.ia-stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  background:#e2dccb;
+  border:1px solid #cec7b6;
+  border-radius:10px;
+  overflow:hidden;
+  margin:.65rem 0 .9rem;
+}
+
+.hm-stat,
+.ia-stat{
+  background:#faf7ef;
+  padding:.75rem .9rem;
+}
+
+.hm-n,
+.ia-n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.15rem;
+  color:#004c53;
+  letter-spacing:-.3px;
+}
+
+.hm-l,
+.ia-l{
+  font-size:.7rem;
+  color:#6b6357;
+  margin-top:.15rem;
+}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper);
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.84rem;
+  min-width:560px;
+}
+
+th,
+td{
+  text-align:left;
+  padding:.58rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top;
+}
+
+th{
+  font-size:.71rem;
+  text-transform:uppercase;
+  letter-spacing:.035em;
+  color:var(--ink3);
+  background:#faf6ec;
+}
+
+tr:last-child td{
+  border-bottom:none;
+}
+
+.tag{
+  font-weight:700;
+  color:var(--teal);
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec;
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em;
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.ft-list{
+  display:grid;
+  gap:1px;
+  background:#e2dccb;
+  border:1px solid #cec7b6;
+  border-radius:10px;
+  overflow:hidden;
+  margin:.6rem 0 .3rem;
+}
+
+.ft-row{
+  background:#faf7ef;
+  padding:.72rem .9rem;
+}
+
+.ft-top{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  align-items:baseline;
+}
+
+.ft-name{
+  font-size:.88rem;
+  color:#17211f;
+  font-weight:600;
+}
+
+.ft-date{
+  color:#6b6357;
+  font-weight:400;
+}
+
+.ft-val{
+  font-family:Fraunces,Georgia,serif;
+  font-size:1rem;
+  color:#004c53;
+}
+
+.ft-track{
+  position:relative;
+  height:11px;
+  margin:.5rem 0 .35rem;
+  background:#ece7d8;
+  border:1px solid #e2dccb;
+  border-radius:6px;
+  overflow:hidden;
+}
+
+.ft-gap{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background:#c85c2e;
+}
+
+.ft-flow{
+  position:absolute;
+  top:0;
+  height:100%;
+  background:#004c53;
+}
+
+.ft-meta{
+  font-size:.7rem;
+  color:#6b6357;
+}
+
+.ft-meta b{
+  color:#c85c2e;
+}
+
+.ft-axis{
+  position:relative;
+  height:1.1rem;
+  margin:.15rem .9rem 0;
+  font-size:.64rem;
+  color:#6b6357;
+}
+
+.ft-axis span{
+  position:absolute;
+  transform:translateX(-50%);
+}
+
+.ft-axis span:first-child{
+  transform:none;
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:14px;
+  padding:1.1rem 1.2rem;
+  margin:1rem 0;
+}
+
+.hmp p{
+  margin:.1rem 0 .9rem;
+  font-size:.88rem;
+}
+
+.copybtn{
+  display:inline-flex;
+  align-items:center;
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.42rem .8rem;
+  cursor:pointer;
+  margin-top:.8rem;
+  text-decoration:none;
+}
+
+.copybtn:hover{
+  background:#e6f0ef;
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem;
+}
+
+.decl-chip{
+  font:700 .78rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .7rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .42rem;
+  font-size:.73rem;
+  font-weight:700;
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal);
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff;
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default;
+}
+
+.decl-count{
+  font-size:.8rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem;
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto;
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+
+tr.hide{
+  display:none;
+}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap;
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400;
+}
+
+th.sortable:hover{
+  color:var(--teal);
+}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95;
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95;
+}
+
+.method{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:16px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0;
+  font-size:.86rem;
+}
+
+.method h2{
+  margin-top:0;
+  font-size:1.15rem;
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0;
+}
+
+.jgrid a{
+  font-size:.83rem;
+  text-decoration:none;
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r;
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule);
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right;
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600;
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3);
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.86rem;
+  margin-left:auto;
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.82rem;
+}
+
+footer.site a{
+  color:var(--ink3);
+}
+
+@media(max-width:860px){
+  .overview-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .risk-mini-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:720px){
+  .hero-top{
+    display:block;
+  }
+
+  .hero-actions{
+    justify-content:flex-start;
+    margin-top:.65rem;
+  }
+
+  .risk-grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-head{
+    display:block;
+  }
+
+  .section-meta{
+    margin-top:.45rem;
+  }
+}
+
+@media(max-width:600px){
+  .overview-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .overview-card{
+    min-height:112px;
+  }
+
+  #locmap{
+    height:245px;
+  }
+
+  .hm-stats,
+  .ia-stats{
+    grid-template-columns:1fr;
+  }
+}</style></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../iowa.html">Iowa</a> / Omaha Indian Reservation</p><span class="badge tribal">Tribal nation</span><h1>Omaha Indian Reservation</h1><p class="lede">Omaha Indian Reservation spans Iowa and Nebraska. To keep the federal record whole rather than split across state lines, the full declaration and mitigation history is maintained on one canonical jurisdiction page.</p><p style="margin:1.5rem 0"><a class="copybtn" href="../nebraska/omaha-indian-reservation-ne.html">View the full Omaha Indian Reservation record on the Nebraska page &rarr;</a></p><div style="margin:2rem 0"><a href="index.html">&larr; All Iowa jurisdictions</a></div></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, CDC/ATSDR SVI, and FEMA National Risk Index data &middot; refreshed as source data are updated &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --></body></html>
