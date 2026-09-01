@@ -677,8 +677,8 @@
             </p>
 
             <div class="map-guide-scale">
-              <span><strong>0–25th</strong> Lower</span>
-              <span><strong>75–100th</strong> Higher</span>
+              <span><strong>0-25th</strong> Lower</span>
+              <span><strong>75-100th</strong> Higher</span>
             </div>
           </div>
 
@@ -948,6 +948,23 @@
                                  '#e9e5da';
     }
 
+
+    /* Community Resilience is the one NRI metric where a HIGHER score is
+       better, so it is drawn inverted (low resilience = darker) to keep the
+       map's reading consistent: darker always means more concerning. A score
+       of 0 is FEMA's no-data placeholder, so it stays neutral gray like the
+       other metrics rather than reading as most alarming. */
+    function nriInvColor(value, max) {
+      if (!Number.isFinite(Number(value)) || Number(value) <= 0) return '#e9e5da';
+      const m = max > 0 ? max : 1;
+      const b = [m * 0.2, m * 0.4, m * 0.6, m * 0.8];
+      return value > b[3] ? '#f2d9a0' :
+             value > b[2] ? '#ecc278' :
+             value > b[1] ? '#e3a652' :
+             value > b[0] ? '#c96a2e' :
+                            '#7a2c14';
+    }
+
     let selectedCountyFips = null;
 
     function getTypeLongLabel(code) {
@@ -1065,8 +1082,8 @@
     legend.update = function () {
       const div=this._div; let html='';
       if(isFemaMode()){ html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">FEMA disaster activity</div>'; const maxK=Math.min(8,Math.max(1,overlayActive()?overlayMaxCount:Math.max(1,currentBreaks[currentBreaks.length-1]||1))); if(overlayActive()){ for(let k=1;k<=Math.min(8,overlayMaxCount);k++) html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(k,currentBreaks)+'"></i> '+(k===8&&overlayMaxCount>8?'8+':k)+'</div>'; } else { const labels=['Very low','Low','Moderate','Elevated','High','Very high','Severe','Extreme']; currentBreaks.slice(0,8).forEach((b,i)=>{ html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(b,currentBreaks)+'"></i> '+labels[i]+'</div>'; }); } }
-      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [['#f2d9a0','0–25th'],['#ecc278','25th–50th'],['#e3a652','50th–75th'],['#b35024','75th–100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+x[0]+'"></i> '+x[1]+' percentile</div>'); }
-      if(isNriMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=getColor((i+1)*.2,[.2,.4,.6,.8]); html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); }
+      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [[0.125,'0-25th'],[0.375,'25th-50th'],[0.625,'50th-75th'],[0.875,'75th-100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(x[0],[0,0.25,0.50,0.75])+'"></i> '+x[1]+' percentile</div>'); }
+      if(isNriMode()){ const invRes = !(nriHazardSelect && nriHazardSelect.value) && (nriMetricSelect ? nriMetricSelect.value : 'riskScore') === 'reslScore'; const ramp=['#f2d9a0','#ecc278','#e3a652','#c96a2e','#7a2c14']; html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=invRes?ramp[4-i]:ramp[i]; html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); if(invRes) html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;color:#7a6f5a;margin-top:5px;line-height:1.35;">Higher resilience is better, so lower resilience is shaded darker.</div>'; }
       if(!html) html='<div style="font-size:11px;">Select one or more layers.</div>'; div.innerHTML=html;
     };
 
@@ -1122,8 +1139,9 @@
       }).filter(Number.isFinite);
       const max = vals.length ? Math.max(...vals) : 1;
       const br = [max*.2,max*.4,max*.6,max*.8];
+      const invRes = !hazard && metric === 'reslScore';
       return {
-        fillColor: Number.isFinite(v) ? getColor(v, br) : '#ffffff',
+        fillColor: Number.isFinite(v) ? (invRes ? nriInvColor(v, max) : getColor(v, br)) : '#ffffff',
         fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.50 : 0,
         weight: isNriMode() && Number.isFinite(v) ? 0.7 : 0,
         color: '#004c53',
