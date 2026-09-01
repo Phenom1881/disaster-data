@@ -156,7 +156,7 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
   <p class="page-sub">Two ways in. Start from localities to see which declarations touched each one, or start from a disaster to list every county it designated. FEMA numbers a storm separately in each state, so declaration mode can group those pieces into one event. Both work across state lines.</p>
 
   <div class="notice" id="previewNotice" hidden>
-    Showing preview data. The live index did not load, so this page is running on a built in sample of 21 localities. Adding other states works once the index is reachable.
+    The live declaration index could not be loaded. No preview or sample data are being shown. Reload the page to try again.
     <div id="previewDiag" class="notice-diag"></div>
   </div>
 
@@ -263,50 +263,16 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
 "use strict";
 
 /* ------------------------------------------------------------------
-   Per state index files written by gen_decl_index.py live at
-   INDEX_DIR/{ST}.json, with a manifest.json listing available states.
-   Each declaration carries an eventId shared across the states hit by
-   the same storm, so declaration mode can collapse them into one event.
-   SAMPLE_INDEX keeps the layout previewable before deployment. Delete
-   the sample block and preview notice once the pipeline is live.
+   Live declaration indexes are written by gen_decl_index.py to
+   /data/decl-index. Production Compare uses only that live index:
+   no built-in sample/fallback dataset is used.
 ------------------------------------------------------------------- */
-/* Index location. The manifest is tried at each candidate in order, so the
-   page works from a custom domain root, from a project subpath, and from a
-   directory style URL without editing this file. The first candidate that
-   answers wins and is reused for the state files. */
-var INDEX_CANDIDATES = ["data/decl-index", "../data/decl-index", "/data/decl-index"];
-var INDEX_DIR = INDEX_CANDIDATES[0];
+var INDEX_DIR = "/data/decl-index";
+var MANIFEST_URL = INDEX_DIR + "/manifest.json";
 var loadDiag = [];
 var DEFAULT_STATES = ["VA"];
 var DEFAULT_DECL_TYPES = ["DR"];
-
-var ALL21 = ["51021","51520","51027","51035","51051","51063","51640","51071","51077","51105","51121","51720","51155","51750","51167","51169","51173","51185","51191","51195","51197"];
-
-var SAMPLE_INDEX = {
-  state:"VA", generated:"sample",
-  jurisdictions:[
-    {fips:"51021",name:"Bland",type:"County"},{fips:"51520",name:"Bristol",type:"City"},
-    {fips:"51027",name:"Buchanan",type:"County"},{fips:"51035",name:"Carroll",type:"County"},
-    {fips:"51051",name:"Dickenson",type:"County"},{fips:"51063",name:"Floyd",type:"County"},
-    {fips:"51640",name:"Galax",type:"City"},{fips:"51071",name:"Giles",type:"County"},
-    {fips:"51077",name:"Grayson",type:"County"},{fips:"51105",name:"Lee",type:"County"},
-    {fips:"51121",name:"Montgomery",type:"County"},{fips:"51720",name:"Norton",type:"City"},
-    {fips:"51155",name:"Pulaski",type:"County"},{fips:"51750",name:"Radford",type:"City"},
-    {fips:"51167",name:"Russell",type:"County"},{fips:"51169",name:"Scott",type:"County"},
-    {fips:"51173",name:"Smyth",type:"County"},{fips:"51185",name:"Tazewell",type:"County"},
-    {fips:"51191",name:"Washington",type:"County"},{fips:"51195",name:"Wise",type:"County"},
-    {fips:"51197",name:"Wythe",type:"County"}
-  ],
-  declarations:[
-    {id:"DR-4863",number:4863,type:"DR",title:"Winter Storm Jett",incidentType:"Severe Winter Storm",year:2025,statewide:false,eventId:"jett-2025",eventName:"Jett (2025)",eventStates:["VA"],
-     fips:["51021","51520","51027","51035","51051","51063","51071","51077","51105","51121","51155","51167","51169","51173","51185","51191","51195","51197"]},
-    {id:"DR-4831",number:4831,type:"DR",title:"Tropical Storm Helene",incidentType:"Tropical Storm",year:2024,statewide:false,eventId:"helene-2024",eventName:"Helene (2024)",eventStates:["VA"],fips:ALL21.slice()},
-    {id:"DR-4674",number:4674,type:"DR",title:"Virginia Flooding and Mudslides",incidentType:"Flood",year:2022,statewide:false,eventId:"flood-2022",eventName:"Flood (Aug 2022)",eventStates:["VA"],fips:["51027","51185"]},
-    {id:"DR-4512",number:4512,type:"DR",title:"COVID-19 Pandemic",incidentType:"Biological",year:2020,statewide:true,eventId:"biological-2020",eventName:"COVID-19 (2020)",eventStates:["VA"],fips:ALL21.slice()},
-    {id:"DR-4411",number:4411,type:"DR",title:"Hurricane Michael",incidentType:"Hurricane",year:2018,statewide:false,eventId:"michael-2018",eventName:"Michael (2018)",eventStates:["VA"],fips:["51063","51640","51077","51121"]},
-    {id:"DR-4401",number:4401,type:"DR",title:"Hurricane Florence",incidentType:"Hurricane",year:2018,statewide:false,eventId:"florence-2018",eventName:"Florence (2018)",eventStates:["VA"],fips:["51520","51063","51077","51155","51167"]}
-  ]
-};
+var manifestByState = {};
 
 var DECL_TYPE_LABEL = {DR:"Major disaster", EM:"Emergency", FM:"Fire management"};
 
@@ -318,7 +284,6 @@ function stName(st){ return ST_NAME[st] || st; }
 var loadedStates = {};
 var availableStates = [];
 var DATA = {jurisdictions:[], declarations:[]};
-var isSample = false;
 
 var mode = "loc";
 var selected = [];         // locality fips
@@ -390,40 +355,75 @@ function reconcileFilters(){
 }
 
 /* ---------------------------- LOADING -------------------------- */
-function resolveIndex(file){
-  try{ return new URL(INDEX_DIR+"/"+file, document.baseURI).href; }
-  catch(e){ return INDEX_DIR+"/"+file; }
+function loadManifest(){
+  return fetch(MANIFEST_URL,{cache:"no-store"})
+    .then(function(r){
+      if(!r.ok) throw new Error("Manifest HTTP "+r.status);
+      return r.json();
+    })
+    .then(function(m){
+      if(!m || !Array.isArray(m.states) || !m.states.length){
+        throw new Error("Manifest lists no states");
+      }
+      manifestByState={};
+      m.states.forEach(function(a){
+        if(a && a.state){
+          manifestByState[String(a.state).toUpperCase()] = a;
+        }
+      });
+      if(!Object.keys(manifestByState).length){
+        throw new Error("Manifest contains no usable state entries");
+      }
+      return m;
+    });
 }
 
-function tryManifest(i){
-  if(i>=INDEX_CANDIDATES.length) return Promise.reject(new Error("no manifest"));
-  var base=INDEX_CANDIDATES[i], url;
-  try{ url=new URL(base+"/manifest.json", document.baseURI).href; }
-  catch(e){ loadDiag.push(base+"/manifest.json  bad URL"); return tryManifest(i+1); }
-  return fetch(url,{cache:"no-cache"})
-    .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
-    .then(function(m){
-      if(!m || !(m.states||[]).length) throw new Error("manifest lists no states");
-      INDEX_DIR=base;
-      return m;
-    })
-    .catch(function(err){
-      loadDiag.push(url+"  "+((err && err.message) || "request failed"));
-      return tryManifest(i+1);
-    });
+function stateIndexUrl(st){
+  var meta=manifestByState[st];
+  var file=(meta && meta.file) ? meta.file : (st+".json");
+  return INDEX_DIR+"/"+file;
 }
 
 function fetchState(st){
   if(loadedStates[st]) return Promise.resolve(loadedStates[st]);
-  if(isSample) return Promise.reject(new Error("sample mode"));
   $("stateLoading").hidden=false;
-  return fetch(resolveIndex(st+".json"),{cache:"no-cache"})
-    .then(function(r){ if(!r.ok) throw new Error("no file for "+st); return r.json(); })
-    .then(function(idx){ loadedStates[st]=idx; return idx; })
+  var url=stateIndexUrl(st);
+  return fetch(url,{cache:"no-store"})
+    .then(function(r){
+      if(!r.ok) throw new Error(st+" index HTTP "+r.status);
+      return r.json();
+    })
+    .then(function(idx){
+      if(!idx || !Array.isArray(idx.jurisdictions) || !Array.isArray(idx.declarations)){
+        throw new Error(st+" index has an unexpected shape");
+      }
+      loadedStates[st]=idx;
+      return idx;
+    })
+    .catch(function(err){
+      loadDiag.push(url+"  "+((err && err.message) || "request failed"));
+      throw err;
+    })
     .finally(function(){ $("stateLoading").hidden=true; });
 }
-function loadStates(list){ return Promise.all(list.map(function(st){ return fetchState(st).catch(function(){ if(booted) toast("Could not load "+st); return null; }); })); }
-function addState(st){ if(loadedStates[st]) return; loadStates([st]).then(function(){ rebuildData(); renderAll(); }); }
+
+function loadStates(list){
+  return Promise.all(list.map(function(st){
+    return fetchState(st).catch(function(){
+      if(booted) toast("Could not load "+st);
+      return null;
+    });
+  }));
+}
+
+function addState(st){
+  if(loadedStates[st]) return;
+  loadStates([st]).then(function(){
+    rebuildData();
+    renderAll();
+  });
+}
+
 function removeState(st){
   delete loadedStates[st];
   rebuildData();
@@ -528,7 +528,7 @@ function renderStateChips(){
     .sort(function(a,b){ return stName(a.state).localeCompare(stName(b.state)); })
     .forEach(function(a){ opts.push('<option value="'+esc(a.state)+'">'+esc(stName(a.state))+'</option>'); });
   $("addState").innerHTML=opts.join("");
-  $("addState").disabled=availableStates.length===0||isSample;
+  $("addState").disabled=availableStates.length===0;
 }
 
 /* ---------------------------- RENDER: PICKER ------------------- */
@@ -1036,39 +1036,56 @@ function finishBoot(u){
   renderAll();
 }
 
-function bootSample(u){
-  isSample=true;
+function bootError(err){
   $("previewNotice").hidden=false;
   var diag=$("previewDiag");
   if(diag){
     var lines=loadDiag.slice();
-    if(location.protocol==="file:"){
-      lines.unshift("Page opened as a local file. Browsers block fetch on file URLs, so the index cannot load until the page is served over http.");
-    }
-    lines.unshift("Tried:");
+    if(err && err.message) lines.unshift(err.message);
+    lines.unshift("Live index load failed:");
     diag.textContent=lines.join("\n");
   }
-  loadedStates={VA:SAMPLE_INDEX};
-  availableStates=[{state:"VA",jurisdictions:SAMPLE_INDEX.jurisdictions.length,declarations:SAMPLE_INDEX.declarations.length}];
-  finishBoot(u);
+  loadedStates={};
+  availableStates=[];
+  rebuildData();
+  booted=true;
+  renderAll();
 }
 
 function init(){
   wireStatic();
   var u=parseUrl();
-  tryManifest(0)
+
+  loadManifest()
     .then(function(m){
       availableStates=(m.states||[]).filter(function(a){ return a && a.state; });
-      if(!availableStates.length) throw new Error("empty manifest");
+
       var want={};
       u.states.forEach(function(s){ want[s]=1; });
       statesFromFips(u.fips).forEach(function(s){ want[s]=1; });
-      var initial=Object.keys(want).filter(function(st){ return availableStates.some(function(a){ return a.state===st; }); });
-      if(!initial.length) initial=DEFAULT_STATES.filter(function(st){ return availableStates.some(function(a){ return a.state===st; }); });
-      if(!initial.length) initial=availableStates.some(function(a){ return a.state==="VA"; }) ? ["VA"] : [availableStates[0].state];
-      loadStates(initial).then(function(){ finishBoot(u); });
+
+      var initial=Object.keys(want).filter(function(st){
+        return !!manifestByState[st];
+      });
+
+      if(!initial.length){
+        initial=DEFAULT_STATES.filter(function(st){ return !!manifestByState[st]; });
+      }
+      if(!initial.length){
+        initial=manifestByState.VA ? ["VA"] : [availableStates[0].state];
+      }
+
+      return loadStates(initial);
     })
-    .catch(function(){ bootSample(u); });
+    .then(function(){
+      if(!loadedList().length){
+        throw new Error("No initial state index could be loaded");
+      }
+      finishBoot(u);
+    })
+    .catch(function(err){
+      bootError(err);
+    });
 }
 
 init();
