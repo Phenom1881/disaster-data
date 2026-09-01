@@ -13,6 +13,7 @@ import os
 import datetime
 import urllib.request
 import urllib.parse
+import re
 from collections import defaultdict
 
 # ── CONFIG ────────────────────────────────────────────────────────────────
@@ -164,8 +165,47 @@ def safe_int(v):
         return None
 
 
+def clean_designated_area(area):
+    """Return a stable locality name for FEMA designated-area records.
+
+    Some older FEMA records, especially Connecticut records, include historical
+    metropolitan-area annotations inside the designatedArea label, for example:
+
+        New Haven (MSA 1160,5480,8880) County
+
+    Those codes are metadata, not part of the jurisdiction name.  Strip only
+    MSA/PMSA/CMSA annotations so legitimate parenthetical text in other locality
+    names is left alone.  A second pattern also catches legacy malformed labels
+    where the opening parenthesis is missing but the trailing ')' remains.
+    """
+    s = str(area or "").strip()
+    if not s:
+        return ""
+
+    # Normal parenthetical historical metro annotation.
+    s = re.sub(
+        r"\s*\([^)]*\b(?:PMSA|MSA|CMSA)\b[^)]*\)\s*",
+        " ",
+        s,
+        flags=re.I,
+    )
+
+    # Defensive cleanup for malformed legacy text such as
+    # 'New Haven MSA 1160,5480,8880) County'.
+    s = re.sub(
+        r"\s*\b(?:PMSA|MSA|CMSA)\b[\s\d,./-]*\)\s*",
+        " ",
+        s,
+        flags=re.I,
+    )
+
+    return re.sub(r"\s+", " ", s).strip()
+
+
 print("Processing declarations...")
 dec_processed = []
+_designated_area_cleaned = 0
+_designated_area_examples = []
 for r in raw_dec:
     fy = safe_int(r.get("fyDeclared"))
     if not fy or fy < START_YEAR or fy > CURRENT_FY:
@@ -173,6 +213,14 @@ for r in raw_dec:
     dec_date    = parse_date(r.get("declarationDate"))
     begin_date  = parse_date(r.get("incidentBeginDate"))
     days_app    = days_between(begin_date, dec_date)
+
+    raw_area = str(r.get("designatedArea", "") or "").strip()
+    clean_area = clean_designated_area(raw_area)
+    if clean_area != raw_area:
+        _designated_area_cleaned += 1
+        if len(_designated_area_examples) < 5:
+            _designated_area_examples.append((raw_area, clean_area))
+
     dec_processed.append({
         "femaDeclarationString": r.get("femaDeclarationString", ""),
         "state":                 r.get("state", ""),
@@ -181,13 +229,18 @@ for r in raw_dec:
         "fyDeclared":            fy,
         "incidentType":          r.get("incidentType", ""),
         "declarationTitle":      r.get("declarationTitle", ""),
-        "designatedArea":        r.get("designatedArea", ""),
+        "designatedArea":        clean_area,
         "tribalRequest":         1 if r.get("tribalRequest") in (True, 1, "true", "True", "1") else 0,
         "region":                r.get("region"),
         "days_to_approve":       days_app if days_app is not None else -1,
     })
 
-print(f"  → {len(dec_processed)} processed\n")
+print(f"  → {len(dec_processed)} processed")
+if _designated_area_cleaned:
+    print(f"  → cleaned {_designated_area_cleaned:,} historical designated-area label(s)")
+    for before, after in _designated_area_examples:
+        print(f"     {before!r} -> {after!r}")
+print()
 
 print("Processing denials...")
 den_processed = []
@@ -1521,7 +1574,10 @@ print(f"  data.js written ({data_kb} KB)")
 # map refreshes on the same schedule as the home page. If anything here fails,
 # data.js is already written — the home page still refreshes; only the map lags.
 def _clean_area(area):
-    return re.sub(r"\s*\([^)]*\)\s*$", "", area or "").strip()
+    # Use the same metro-annotation cleanup as LOCALITY_DATA, then preserve the
+    # map's previous behavior of dropping any remaining trailing parenthetical.
+    s = clean_designated_area(area)
+    return re.sub(r"\s*\([^)]*\)\s*$", "", s).strip()
 
 def build_map_data(rows, start_year, current_fy):
     from collections import defaultdict
