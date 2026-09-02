@@ -1,0 +1,28 @@
+name: Test Event Clustering
+
+# Runs the event-clustering regression fixture. Manual any time from the
+# Actions tab, and automatically whenever the clustering logic or the fixture
+# changes. It does not touch FEMA or the network; it drives the real generators
+# on synthetic declarations, so it is fast and deterministic.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "test_event_clustering.py"
+      - "dd_events.py"
+      - "gen map events.py"
+      - "gen_map_events.py"
+      - "gen decl index.py"
+      - "gen_decl_index.py"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run event-clustering fixture
+        run: python test_event_clustering.py
