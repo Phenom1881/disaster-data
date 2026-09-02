@@ -342,7 +342,7 @@ renderRanked();
   }
 
   var map=L.map('denmap',{scrollWheelZoom:false,preferCanvas:true,zoomSnap:0.25}).setView([37.8,-96],3.6);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors &copy; CARTO'}).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_2n1q_1_ad4306e45519c0e62979dcd7',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors &copy; CARTO'}).addTo(map);
 
   fetch('https://unpkg.com/us-atlas@3/states-10m.json').then(function(r){ return r.json(); }).then(function(topology){
     var geo=topojson.feature(topology, topology.objects.states);
