@@ -176,7 +176,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         <p><strong>Source.</strong> Every figure is drawn from FEMA's OpenFEMA datasets: <em>Disaster Declarations Summaries</em> (v2) for declarations and <em>Declaration Denials</em> (v1) for turndowns. It is rebuilt automatically each week. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p>
         <p><strong>What counts as a &ldquo;declaration.&rdquo;</strong> FEMA's file lists one row per county per declaration. We collapse those to one row per <em>declaration</em>: a unique combination of declaration type (DR / EM / FM), disaster number, and state. A single disaster affecting five states therefore counts as five declarations. Counts reflect declaration records, not dollars, damage, or loss.</p>
         <p><strong>Years are federal fiscal years</strong> (Oct 1 to Sep 30), matching FEMA's own <code>fyDeclared</code> field. FY2000 begins October 1, 1999. The headline view shows complete fiscal years only; the current, in-progress year stays one slider-drag away.</p>
-        <p><strong>Denial rate.</strong> The share of requests turned down = turndowns &divide; (declarations + turndowns). Denials are tracked in a separate FEMA dataset from approved declarations, so this figure cannot be reproduced from the summaries file alone.</p>
+        <p><strong>Declaration-request denial rate.</strong> The share of declaration requests turned down = turndowns &divide; (declarations + turndowns). This is the rate at which a governor or tribal leader's <em>request for a federal declaration</em> was denied, not a rate of individual assistance denials. Denials are tracked in a separate FEMA dataset from approved declarations, so this figure cannot be reproduced from the summaries file alone.</p>
         <p><strong>Fire-management (FM)</strong> declarations fund wildfire suppression under a faster, lower-threshold program. They're counted as their own type. Toggle FM off anywhere on the site to see the disaster picture underneath.</p>
       </div>
     </section>
@@ -186,7 +186,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <h2>Declarations, not dollars.</h2>
       <div class="prose">
         <p>Every count on this site is a count of <strong>declaration records</strong>, how many times a federal declaration was issued, not a measure of damage, cost, or lives affected. A small county flood and a multi-state hurricane each register as one declaration; the dollars behind them can differ by orders of magnitude.</p>
-        <p>A few things worth knowing before you cite a figure. <strong>Fire</strong> is the largest category by far, but that's inflated by Fire Management Assistance declarations, which a single fast-moving wildfire can generate quickly. It doesn't mean fire is the most damaging hazard. The four biggest categories (Fire, Severe Storm, Hurricane, and Flood) make up roughly five of every six declarations. And a <strong>denial</strong> reflects an assistance request that was turned down, which is a measure of process and eligibility, not of how severe an event was.</p>
+        <p>A few things worth knowing before you cite a figure. <strong>Fire</strong> is the largest category by far, but that's inflated by Fire Management Assistance declarations, which a single fast-moving wildfire can generate quickly. It doesn't mean fire is the most damaging hazard. The four biggest categories (Fire, Severe Storm, Hurricane, and Flood) make up roughly five of every six declarations. And a <strong>denial</strong> reflects a governor or tribal leader's request for a federal declaration being turned down, not an individual being denied assistance under an approved declaration; it is a measure of process and eligibility at the declaration stage, not of how severe an event was.</p>
       </div>
     </section>
 
@@ -262,7 +262,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <h2>A few terms.</h2>
       <div class="defs">
         <div class="def"><div class="def-t">Fiscal year</div><div class="def-d">Declarations are grouped by federal fiscal year, which runs October through September. A declaration issued in October 2025 counts toward FY2026, so recent-year totals can look different from calendar-year ones.</div></div>
-        <div class="def"><div class="def-t">Denial rate</div><div class="def-d">The share of a state's assistance requests that were denied, out of all requests (approved plus denied). It reflects process and eligibility, not how severe an event was.</div></div>
+        <div class="def"><div class="def-t">Declaration-request denial rate</div><div class="def-d">The share of a state or tribe's <em>declaration</em> requests that were denied, out of all such requests (approved plus denied). This is the President denying a governor or tribal leader's request for a federal declaration, not an individual being denied assistance under an approved declaration. It reflects process and eligibility, not how severe an event was.</div></div>
         <div class="def"><div class="def-t">Days to approve</div><div class="def-d">The average time between a request and its decision, a rough read on how quickly assistance moved.</div></div>
       </div>
     </section>

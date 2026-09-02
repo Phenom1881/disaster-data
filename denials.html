@@ -155,8 +155,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <h1 class="headline reveal" style="animation-delay:.06s">Where FEMA said <em>no.</em></h1>
     <p class="standfirst reveal" style="animation-delay:.12s">Not every request for a major disaster or emergency declaration is approved. This tracks the ones that were not, since FY2000: who asked, for what hazard, and how often a state's requests get turned down relative to how many it files.</p>
     <div class="stats reveal" style="animation-delay:.18s">
-      <div class="stat"><div class="num" id="st-total-den">0</div><div class="lab">requests denied</div></div>
-      <div class="stat"><div class="num" id="st-rate">0<small>%</small></div><div class="lab">overall denial rate</div></div>
+      <div class="stat"><div class="num" id="st-total-den">0</div><div class="lab">declaration requests denied</div></div>
+      <div class="stat"><div class="num" id="st-rate">0<small>%</small></div><div class="lab">declaration-request denial rate</div></div>
       <div class="stat"><div class="num" id="st-states-den">0</div><div class="lab">states with a denial on record</div></div>
       <div class="stat"><div class="num" id="st-latest">&mdash;</div><div class="lab">most recent denial</div></div>
     </div>
@@ -183,8 +183,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <section id="map">
     <div class="shead">
       <div>
-        <h2>Denial rate by state</h2>
-        <p>Denied requests as a share of all requests filed (approved and denied). Darker means a state's requests are turned down more often, not that it files more requests.</p>
+        <h2>Declaration-request denial rate by state</h2>
+        <p>Denied declaration requests as a share of all declaration requests filed by a state or tribal government (approved and denied). This is not a measure of individual assistance denials. Darker means a state's requests are turned down more often, not that it files more requests.</p>
       </div>
     </div>
     <div class="mapcard">
@@ -197,7 +197,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     </div>
 
     <div class="tier">
-      <div class="tier-h"><span class="t">Ranked by denial rate</span><span class="c" id="rank-count">0 states shown</span></div>
+      <div class="tier-h"><span class="t">Ranked by declaration-request denial rate</span><span class="c" id="rank-count">0 states shown</span></div>
       <div id="rank-rows"></div>
     </div>
     <p class="terr-note" id="terr-note"></p>
@@ -209,7 +209,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 <footer>
   <div class="container">
     <div class="foot">
-      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries and Declaration Denials &mdash; uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Denial rate is denied requests divided by total requests (approved and denied) for that state.</div>
+      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries and Declaration Denials &mdash; uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Declaration-request denial rate is denied declaration requests divided by total declaration requests (approved and denied) for that state. This is a governor or tribal leader's request for a federal declaration, not an individual's request for assistance.</div>
       <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="index.html">Back to overview</a></div>
     </div>
   </div>
@@ -312,7 +312,7 @@ function renderRanked(){
   var terr=rows.filter(function(s){ return CONT_ABBR.indexOf(s.ab)===-1; });
   var terrEl=document.getElementById('terr-note');
   if(terr.length){
-    terrEl.innerHTML='<strong>Territories and tribal-only entries not shown on the map:</strong> '+terr.map(function(s){ return s.name+' ('+s.den+' of '+(s.decl+s.den)+' requests denied)'; }).join(', ')+'.';
+    terrEl.innerHTML='<strong>Territories and tribal-only entries not shown on the map:</strong> '+terr.map(function(s){ return s.name+' ('+s.den+' of '+(s.decl+s.den)+' declaration requests denied)'; }).join(', ')+'.';
   }
 }
 
@@ -366,7 +366,7 @@ renderRanked();
         var fips=String(feature.id).padStart(2,'0');
         var ab=FIPS_TO_AB[fips], s=ab?lookup[ab]:null;
         if(!s){ lyr.bindTooltip('No requests on record', {sticky:true, className:'den-tip'}); return; }
-        var html='<b>'+s.name+'</b><br>'+s.den+' of '+(s.decl+s.den)+' requests denied ('+s.rate.toFixed(1)+'%)';
+        var html='<b>'+s.name+'</b><br>'+s.den+' of '+(s.decl+s.den)+' declaration requests denied ('+s.rate.toFixed(1)+'%)';
         lyr.bindTooltip(html,{sticky:true, className:'den-tip'});
         lyr.on('mouseover',function(){ lyr.setStyle({weight:2,color:'#004c53'}); });
         lyr.on('mouseout',function(){ lyr.setStyle({weight:1,color:'#fcfaf3'}); });

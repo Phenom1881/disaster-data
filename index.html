@@ -284,8 +284,14 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <div class="stats reveal" style="animation-delay:.18s">
       <div class="stat"><div class="num" id="st-total">3,395</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num" id="st-states">57</div><div class="lab">states &amp; territories</div></div>
-      <div class="stat"><div class="num" id="st-denied">11.8<small>%</small></div><div class="lab">of requests denied</div></div>
+      <div class="stat"><div class="num" id="st-denied">11.8<small>%</small></div><div class="lab">of declaration requests denied</div></div>
       <div class="stat"><div class="num" id="st-haz">25</div><div class="lab">hazard types tracked</div></div>
+    </div>
+    <div class="reveal" id="prov-stamp" style="animation-delay:.2s;margin-top:.9rem;font:500 .8rem/1.5 'Public Sans',sans-serif;color:#6b6357;display:flex;flex-wrap:wrap;gap:.3rem .6rem;align-items:baseline">
+      <span id="prov-range">Totals: FY2000&ndash;FY2025</span>
+      <span aria-hidden="true">&middot;</span>
+      <span id="prov-asof">Latest declarations through &mdash;</span>
+      <button type="button" id="prov-toggle" style="background:none;border:none;padding:0;margin:0;font:600 .8rem 'Public Sans',sans-serif;color:var(--accent);text-decoration:underline;cursor:pointer">Include the current partial year</button>
     </div>
   </header>
 </div>
@@ -406,7 +412,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
       <div class="boardctl">
         <button class="cmpbtn" id="cmp-open" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v18M16 21V3"/><path d="M3 8h5M16 16h5"/></svg>Compare states</button>
-        <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By denial rate</button></div>
+        <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By request denial rate</button></div>
       </div>
     </div>
     <div id="scoreboard"></div>
@@ -480,8 +486,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     </div>
     <div class="m-stats">
       <div class="m-stat"><div class="mn" id="m-decl"></div><div class="ml">declarations</div></div>
-      <div class="m-stat"><div class="mn" id="m-den"></div><div class="ml">denied</div></div>
-      <div class="m-stat"><div class="mn" id="m-rate"></div><div class="ml">denial rate</div></div>
+      <div class="m-stat"><div class="mn" id="m-den"></div><div class="ml">requests denied</div></div>
+      <div class="m-stat"><div class="mn" id="m-rate"></div><div class="ml">request denial rate</div></div>
       <div class="m-stat"><div class="mn" id="m-days"></div><div class="ml">avg days</div></div>
     </div>
     <div class="m-sec"><div class="m-h">By declaration type</div><div id="m-types" class="mbars"></div></div>
@@ -758,6 +764,24 @@ svg.addEventListener('mouseover',e=>{ if(e.target.classList.contains('hit')) sho
 svg.addEventListener('mouseout',e=>{ if(e.target.classList.contains('hit')) hideTip(); });
 svg.addEventListener('click',e=>{ if(e.target.classList.contains('hit')) showTip(e.target); });
 
+function updateProvStamp(a,b){
+  var pr=document.getElementById('prov-range'), pt=document.getElementById('prov-toggle');
+  if(!pr) return;
+  var hasPartial = Y_MAX>Y_DEF_MAX;
+  var partialShown = hasPartial && b>=Y_MAX;
+  pr.textContent = 'Totals: FY'+a+'\u2013FY'+Math.min(b,Y_DEF_MAX) + (partialShown ? ' (FY'+Y_MAX+' still in progress, included below)' : '');
+  if(pt){
+    pt.style.display = hasPartial ? '' : 'none';
+    pt.textContent = partialShown ? 'Show completed years only' : 'Include the current partial year';
+    pt.setAttribute('aria-pressed', partialShown ? 'true' : 'false');
+  }
+}
+document.getElementById('prov-toggle').addEventListener('click',function(){
+  var rmax=document.getElementById('rmax'), atMax = (+rmax.value >= Y_MAX && Y_MAX>Y_DEF_MAX);
+  rmax.value = atMax ? Y_DEF_MAX : Y_MAX;
+  updateRange();
+});
+
 function updateRange(){
   const a0=+document.getElementById('rmin').value, b0=+document.getElementById('rmax').value;
   let a=Math.min(a0,b0), b=Math.max(a0,b0);
@@ -766,6 +790,7 @@ function updateRange(){
   document.getElementById('rfill').style.left=lo+'%';
   document.getElementById('rfill').style.width=(hi-lo)+'%';
   document.getElementById('yr-read').textContent=a+' to '+b;
+  updateProvStamp(a,b);
   const _series=(typeof FOCUS!=='undefined'&&FOCUS)?focusSeries(FOCUS.ab):YOY;
   const w=_series.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
   document.getElementById('st-total').textContent=w.toLocaleString();
@@ -864,8 +889,12 @@ function initBounds(){
   document.getElementById('yr-read').textContent=Y_MIN+' to '+Y_DEF_MAX;
   var fr=document.getElementById('foot-range'); if(fr) fr.textContent='FY'+Y_MIN+' to FY'+Y_MAX;
   var fa=document.getElementById('foot-asof');
-  if(fa){ var d=window.DATA_DATE, mm=d?/^(\d{4})-(\d{2})-(\d{2})/.exec(d):null;
-    fa.textContent = mm ? ' Data current through '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mm[2]-1]+' '+(+mm[3])+', '+mm[1]+'.' : ''; }
+  var asofText='';
+  if(window.DATA_DATE){ var mm=/^(\d{4})-(\d{2})-(\d{2})/.exec(window.DATA_DATE);
+    if(mm) asofText=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mm[2]-1]+' '+(+mm[3])+', '+mm[1]; }
+  if(fa) fa.textContent = asofText ? ' Data current through '+asofText+'.' : '';
+  var pa=document.getElementById('prov-asof'); if(pa && asofText) pa.textContent='Latest declarations through '+asofText;
+  updateProvStamp(Y_MIN, Y_DEF_MAX);
 }
 /* ── Linked state focus: tie the timeline + hazard chart to one state, dismissible via a chip.
    The scoreboard stays national (it's the picker) and highlights the focused row. ── */
