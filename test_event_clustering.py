@@ -226,21 +226,45 @@ CASES = [
                 D("GA", 4711, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2024, begin="2024-05-01", end="2024-05-05")],
          expect=[["DR-4710"], ["DR-4711"]]),
 
-    # ---- target: not built yet (unnamed same-incident clustering) ----
-    dict(name="tornado_super_outbreak_2011", tier="target",
-         note="one multi-state outbreak in a tight window should merge (Path B)",
+    dict(name="adjacent_same_type_weeks_apart", tier="guard",
+         note="Path B: adjacent states, same incident type, but too many days apart to link",
+         decls=[D("AL", 5001, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2020, begin="2020-04-01", end="2020-04-03"),
+                D("GA", 5002, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2020, begin="2020-04-20", end="2020-04-22")],
+         expect=[["DR-5001"], ["DR-5002"]]),
+
+    dict(name="storm_orphan_too_late", tier="guard",
+         note="Path B: adjacent to a named storm, but weeks after it ended, must not attach",
+         decls=[D("NC", 4830, "DR", "Hurricane Helene", "Hurricane", year=2024, begin="2024-09-25", end="2024-09-28"),
+                D("SC", 4899, "DR", "Severe Storms and Flooding", "Severe Storm", year=2024, begin="2024-10-20", end="2024-10-22")],
+         expect=[["DR-4830"], ["DR-4899"]]),
+
+    dict(name="span_cap_breaks_a_long_chain", tier="guard",
+         note="Path B: a 5-state adjacent chain, 4 days apart each hop, must not become one 26-day blob",
+         decls=[D("AL", 6001, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2019, begin="2019-05-01", end="2019-05-03"),
+                D("GA", 6002, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2019, begin="2019-05-07", end="2019-05-09"),
+                D("SC", 6003, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2019, begin="2019-05-13", end="2019-05-15"),
+                D("NC", 6004, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2019, begin="2019-05-19", end="2019-05-21"),
+                D("VA", 6005, "DR", "Severe Storms and Tornadoes", "Severe Storm", year=2019, begin="2019-05-25", end="2019-05-27")],
+         expect=[["DR-6001", "DR-6002", "DR-6003"], ["DR-6004", "DR-6005"]]),
+
+    # ---- regression: Path B (unnamed same-incident / storm-attach clustering) ----
+    dict(name="tornado_super_outbreak_2011", tier="regression",
+         note="one multi-state outbreak in a tight window merges (Path B)",
          decls=[D("AL", 1971, "DR", "Severe Storms, Tornadoes, Straight-line Winds, and Flooding", "Severe Storm", year=2011, begin="2011-04-25", end="2011-04-28"),
                 D("GA", 1973, "DR", "Severe Storms, Tornadoes, and Straight-line Winds", "Severe Storm", year=2011, begin="2011-04-27", end="2011-04-28"),
                 D("TN", 1974, "DR", "Severe Storms, Tornadoes, Straight-line Winds, and Flooding", "Severe Storm", year=2011, begin="2011-04-25", end="2011-04-28"),
                 D("MS", 1972, "DR", "Severe Storms, Tornadoes, Straight-line Winds, and Flooding", "Severe Storm", year=2011, begin="2011-04-25", end="2011-04-28")],
          expect=[["DR-1971", "DR-1973", "DR-1974", "DR-1972"]]),
 
-    dict(name="generic_titled_storm_sibling", tier="target",
-         note="a storm's own declaration titled generically should join it (Path B)",
+    dict(name="generic_titled_storm_sibling", tier="regression",
+         note="a storm's own declaration titled generically joins it (Path B)",
          decls=[D("NC", 4830, "DR", "Hurricane Helene", "Hurricane", year=2024, begin="2024-09-25", end="2024-09-28"),
                 D("SC", 4832, "DR", "Severe Storms and Flooding", "Severe Storm", year=2024, begin="2024-09-26", end="2024-09-28")],
          expect=[["DR-4830", "DR-4832"]]),
+
+    # ---- target: nothing currently unbuilt; kept as a slot for future rules ----
 ]
+
 
 
 # ----------------------------------------------------------------------

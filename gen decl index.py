@@ -59,7 +59,10 @@ from datetime import date, datetime
 # The path insert lets "import dd_events" resolve when this script is run from
 # any directory or loaded by the test fixture. See dd_events.py.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dd_events import storm_name, storm_event_id, is_covid, COVID_EVENT_ID, COVID_EVENT_NAME
+from dd_events import (
+    storm_name, storm_event_id, is_covid, COVID_EVENT_ID, COVID_EVENT_NAME,
+    merge_unnamed, unnamed_cluster_label,
+)
 
 API_BASE = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries"
 PAGE_SIZE = 10000          # OpenFEMA maximum per call
@@ -370,6 +373,80 @@ def build_indexes(records, decl_types=None, jurisdiction_override=None):
         entry = declarations[state][key]
         for fips in jurisdictions.get(state, {}):
             entry["_fips"].add(fips)
+
+    # Path B: fold unnamed events into a nearby named storm, or into each
+    # other, when time and geography say they are plausibly the same
+    # real-world event (see merge_unnamed in dd_events.py for the rules).
+    # Named storms and COVID are excluded from this pass by their "kind";
+    # this only ever touches declarations that are otherwise still 1:1.
+    all_entries = [(state, entry) for state, decls in declarations.items()
+                   for entry in decls.values()]
+
+    by_event = {}
+    for state, entry in all_entries:
+        by_event.setdefault(entry["eventId"], []).append((state, entry))
+
+    def parse_window(entries):
+        starts, ends = [], []
+        for _, e in entries:
+            b = e.get("begin") or e.get("date")
+            n = e.get("end") or e.get("date")
+            try:
+                if b:
+                    starts.append(date.fromisoformat(b[:10]))
+                if n:
+                    ends.append(date.fromisoformat(n[:10]))
+            except ValueError:
+                pass
+        return (min(starts), max(ends)) if starts and ends else (None, None)
+
+    groups = []
+    for event_id, entries in by_event.items():
+        begin, end = parse_window(entries)
+        if begin is None:
+            continue   # no usable date; leave this event out of Path B entirely
+        kind = "covid" if event_id == COVID_EVENT_ID else \
+               ("storm" if event_id.startswith("storm-") else "unnamed")
+        groups.append({
+            "key": event_id, "kind": kind,
+            "states": {state for state, _ in entries},
+            "begin": begin, "end": end,
+            "incident_types": {e["incidentType"] for _, e in entries},
+        })
+
+    remap = merge_unnamed(groups)
+    if remap:
+        # Only unnamed-unnamed merges (not attaches to a storm) need a fresh
+        # display name; a storm's own name already covers anything that
+        # attaches to it.
+        merged_sizes = {}
+        for old_key, new_key in remap.items():
+            merged_sizes[new_key] = merged_sizes.get(new_key, 0) + 1
+        new_names = {}
+        for new_key, count in merged_sizes.items():
+            if new_key.startswith("storm-") or new_key == COVID_EVENT_ID:
+                continue
+            member_entries = [e for _, e in by_event.get(new_key, [])]
+            for old_key, mapped in remap.items():
+                if mapped == new_key:
+                    member_entries.extend(e for _, e in by_event.get(old_key, []))
+            types = {e["incidentType"] for e in member_entries}
+            begin, _ = parse_window([(None, e) for e in member_entries])
+            if begin is not None:
+                new_names[new_key] = unnamed_cluster_label(types, begin)
+
+        for state, entry in all_entries:
+            new_key = remap.get(entry["eventId"], entry["eventId"])
+            if new_key != entry["eventId"]:
+                entry["eventId"] = new_key
+            elif new_key not in new_names and not new_key.startswith("storm-"):
+                continue   # untouched entry, nothing to relabel
+            if new_key in new_names:
+                entry["eventName"] = new_names[new_key]
+            elif new_key.startswith("storm-"):
+                storm_entries = by_event.get(new_key) or []
+                if storm_entries:
+                    entry["eventName"] = storm_entries[0][1]["eventName"]
 
     # Freeze into output shape
     today = date.today().isoformat()

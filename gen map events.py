@@ -42,13 +42,17 @@ import json
 import os
 import re
 import sys
+from datetime import date
 
 # The storm-identity rule is shared with gen_decl_index via dd_events so the
 # Compare index, Disaster page, and Map overlay never drift apart. The path
 # insert lets "import dd_events" resolve when this script is run from any
 # directory or loaded by the test fixture. See dd_events.py.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dd_events import storm_name, storm_event_id, is_covid, COVID_EVENT_ID, COVID_EVENT_NAME
+from dd_events import (
+    storm_name, storm_event_id, is_covid, COVID_EVENT_ID, COVID_EVENT_NAME,
+    merge_unnamed, unnamed_cluster_label,
+)
 
 
 def num_from_id(did):
@@ -138,6 +142,7 @@ def build_events(in_dir, types=None, since=0):
                     "types": set(),
                     "has_hurr": False, "has_typhoon": False, "has_ts": False,
                     "states": set(), "dns": set(), "fips": set(),
+                    "incident_types": set(), "begin": None, "end": None,
                 }
                 events[key] = ev
             else:
@@ -150,6 +155,20 @@ def build_events(in_dir, types=None, since=0):
                 ev["dns"].add(dn)
             if dtype:
                 ev["types"].add(dtype)
+            if d.get("incidentType"):
+                ev["incident_types"].add(d["incidentType"])
+            for field, key_ in (("begin", "begin"), ("end", "end")):
+                raw = d.get(field) or d.get("date")
+                if not raw:
+                    continue
+                try:
+                    parsed = date.fromisoformat(raw[:10])
+                except ValueError:
+                    continue
+                if field == "begin":
+                    ev["begin"] = parsed if ev["begin"] is None else min(ev["begin"], parsed)
+                else:
+                    ev["end"] = parsed if ev["end"] is None else max(ev["end"], parsed)
             if "hurricane" in tl:
                 ev["has_hurr"] = True
             if "typhoon" in tl:
@@ -160,6 +179,46 @@ def build_events(in_dir, types=None, since=0):
                 ev["sw"] = True
             ev["number"] = max(ev["number"], dn or 0)
             ev["year"] = max(ev["year"], year)
+
+    # Path B: fold unnamed events into a nearby named storm, or into each
+    # other, when time and geography say they are plausibly the same
+    # real-world event (see merge_unnamed in dd_events.py for the rules).
+    groups = []
+    for key, ev in events.items():
+        if ev["begin"] is None or ev["end"] is None:
+            continue   # no usable date; leave this event out of Path B entirely
+        kind = "covid" if key == COVID_EVENT_ID else \
+               ("storm" if key.startswith("storm-") else "unnamed")
+        groups.append({
+            "key": key, "kind": kind, "states": ev["states"],
+            "begin": ev["begin"], "end": ev["end"],
+            "incident_types": ev["incident_types"],
+        })
+    remap = merge_unnamed(groups)
+    for old_key, new_key in remap.items():
+        src, dst = events.pop(old_key), events[new_key]
+        dst["fips"] |= src["fips"]
+        dst["states"] |= src["states"]
+        dst["dns"] |= src["dns"]
+        dst["types"] |= src["types"]
+        dst["incident_types"] |= src["incident_types"]
+        dst["has_hurr"] = dst["has_hurr"] or src["has_hurr"]
+        dst["has_typhoon"] = dst["has_typhoon"] or src["has_typhoon"]
+        dst["has_ts"] = dst["has_ts"] or src["has_ts"]
+        dst["sw"] = dst["sw"] or src["sw"]
+        dst["number"] = max(dst["number"], src["number"])
+        dst["year"] = max(dst["year"], src["year"])
+        dst["begin"] = min(dst["begin"], src["begin"])
+        dst["end"] = max(dst["end"], src["end"])
+        n_merged += 1
+        # A new unnamed cluster (not an attach into a storm) needs a fresh
+        # display name and incident label; a storm's own name and type
+        # already cover anything folded into it.
+        if not (new_key.startswith("storm-") or new_key == COVID_EVENT_ID):
+            dst["name"] = unnamed_cluster_label(dst["incident_types"], dst["begin"])
+            types = {t for t in dst["incident_types"] if t}
+            dst["it"] = sorted(types)[0] if len(types) == 1 else "Severe Weather"
+
     return events, n_decls, n_merged
 
 
