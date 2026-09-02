@@ -977,20 +977,45 @@
     }
 
 
-    /* Community Resilience is the one NRI metric where a HIGHER score is
-       better, so it is drawn inverted (low resilience = darker) to keep the
-       map's reading consistent: darker always means more concerning. A score
-       of 0 is FEMA's no-data placeholder, so it stays neutral gray like the
-       other metrics rather than reading as most alarming. */
-    function nriInvColor(value, max) {
-      if (!Number.isFinite(Number(value)) || Number(value) <= 0) return '#e9e5da';
-      const m = max > 0 ? max : 1;
-      const b = [m * 0.2, m * 0.4, m * 0.6, m * 0.8];
-      return value > b[3] ? '#f2d9a0' :
-             value > b[2] ? '#ecc278' :
-             value > b[1] ? '#e3a652' :
-             value > b[0] ? '#c96a2e' :
-                            '#7a2c14';
+    /* Distinct hue per layer so stacked overlays stay legible. FEMA
+       declarations keep the warm amber ramp (getColor above); Social
+       Vulnerability draws in purple; National Risk Index in teal. */
+
+    /* SVI: four percentile classes, light to deep purple. */
+    function sviColor(value) {
+      if (!Number.isFinite(Number(value))) return '#e9e5da';
+      const b = [0, 0.25, 0.50, 0.75];
+      return value > b[3] ? '#5e3a8c' :
+             value > b[2] ? '#8657b5' :
+             value > b[1] ? '#a884cf' :
+             value > b[0] ? '#c9b3e0' :
+                            '#e4d7f0';
+    }
+
+    /* NRI colors by FEMA's own rating class, so a county's shade always
+       matches the rating shown in the readout (no more math-band vs rating
+       mismatch). Very Low to Very High maps light to deep teal. Community
+       Resilience is inverted, since higher resilience is better, so a
+       low-resilience county reads darker, keeping "darker means more
+       concerning" consistent. Not Applicable / Insufficient Data have no
+       rating class, so the county is left unfilled. */
+    const NRI_RATING_RAMP = ['#cfe3df', '#9fc7c0', '#5fa39a', '#2f7d75', '#004c53'];
+    const NRI_RATING_INDEX = {
+      'very low': 0,
+      'relatively low': 1,
+      'relatively moderate': 2,
+      'relatively high': 3,
+      'very high': 4
+    };
+    function nriRatingIndex(rating) {
+      if (rating == null) return -1;
+      const i = NRI_RATING_INDEX[String(rating).trim().toLowerCase()];
+      return i === undefined ? -1 : i;
+    }
+    function nriRatingColor(rating, invert) {
+      const i = nriRatingIndex(rating);
+      if (i < 0) return '#e9e5da';
+      return NRI_RATING_RAMP[invert ? 4 - i : i];
     }
 
     let selectedCountyFips = null;
@@ -1110,8 +1135,8 @@
     legend.update = function () {
       const div=this._div; let html='';
       if(isFemaMode()){ html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:8px;">FEMA disaster activity</div>'; const maxK=Math.min(8,Math.max(1,overlayActive()?overlayMaxCount:Math.max(1,currentBreaks[currentBreaks.length-1]||1))); if(overlayActive()){ for(let k=1;k<=Math.min(8,overlayMaxCount);k++) html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(k,currentBreaks)+'"></i> '+(k===8&&overlayMaxCount>8?'8+':k)+'</div>'; } else { const labels=['Very low','Low','Moderate','Elevated','High','Very high','Severe','Extreme']; currentBreaks.slice(0,8).forEach((b,i)=>{ html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(b,currentBreaks)+'"></i> '+labels[i]+'</div>'; }); } }
-      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b35024;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [[0.125,'0-25th'],[0.375,'25th-50th'],[0.625,'50th-75th'],[0.875,'75th-100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+getColor(x[0],[0,0.25,0.50,0.75])+'"></i> '+x[1]+' percentile</div>'); }
-      if(isNriMode()){ const invRes = !(nriHazardSelect && nriHazardSelect.value) && (nriMetricSelect ? nriMetricSelect.value : 'riskScore') === 'reslScore'; const ramp=['#f2d9a0','#ecc278','#e3a652','#c96a2e','#7a2c14']; html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=invRes?ramp[4-i]:ramp[i]; html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); if(invRes) html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;color:#7a6f5a;margin-top:5px;line-height:1.35;">Higher resilience is better, so lower resilience is shaded darker.</div>'; }
+      if(isSviMode()){ html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5e3a8c;margin-bottom:6px;">SVI · '+currentSviMetricLabel()+'</div>'; [[0.125,'0-25th'],[0.375,'25th-50th'],[0.625,'50th-75th'],[0.875,'75th-100th']].forEach(x=>html+='<div style="margin-bottom:3px;"><i style="background:'+sviColor(x[0])+'"></i> '+x[1]+' percentile</div>'); }
+      if(isNriMode()){ const invRes = !(nriHazardSelect && nriHazardSelect.value) && (nriMetricSelect ? nriMetricSelect.value : 'riskScore') === 'reslScore'; const ramp=NRI_RATING_RAMP; html+='<div style="margin-top:8px;font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#004c53;margin-bottom:6px;">NRI · '+currentNriMetricLabel()+'</div>'; ['Very Low','Relatively Low','Relatively Moderate','Relatively High','Very High'].forEach((lab,i)=>{const c=invRes?ramp[4-i]:ramp[i]; html+='<div style="margin-bottom:3px;"><i style="background:'+c+'"></i> '+lab+'</div>';}); if(invRes) html+='<div style="font-family:&quot;Public Sans&quot;,sans-serif;font-size:10px;color:#7a6f5a;margin-top:5px;line-height:1.35;">Higher resilience is better, so lower resilience is shaded darker.</div>'; }
       if(!html) html='<div style="font-size:11px;">Select one or more layers.</div>'; div.innerHTML=html;
     };
 
@@ -1144,10 +1169,10 @@
       const v = row && Number.isFinite(Number(row[metric])) ? Number(row[metric]) : null;
       const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
       return {
-        fillColor: Number.isFinite(v) ? getColor(v, [0,0.25,0.50,0.75]) : '#ffffff',
+        fillColor: Number.isFinite(v) ? sviColor(v) : '#ffffff',
         fillOpacity: isSviMode() && !dim && Number.isFinite(v) ? 0.55 : 0,
         weight: isSviMode() && Number.isFinite(v) ? 0.7 : 0,
-        color: '#b35024',
+        color: '#5e3a8c',
         opacity: isSviMode() && Number.isFinite(v) ? 0.75 : 0
       };
     }
@@ -1157,21 +1182,19 @@
       const row = COUNTY_NRI[fips];
       const hazard = nriHazardSelect && nriHazardSelect.value;
       const metric = nriMetricSelect ? nriMetricSelect.value : 'riskScore';
-      const raw = hazard
-        ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].score : null)
-        : (row ? row[metric] : null);
-      const v = Number.isFinite(Number(raw)) ? Number(raw) : null;
+      const rating = hazard
+        ? (row && row.hazards && row.hazards[hazard] ? row.hazards[hazard].rating : null)
+        : (row ? row[metric.replace('Score', 'Rating')] : null);
       const dim = focusStateFips && fips.slice(0,2) !== focusStateFips;
       const invRes = !hazard && metric === 'reslScore';
+      const hasData = nriRatingIndex(rating) >= 0;
 
       return {
-        fillColor: Number.isFinite(v)
-          ? (invRes ? nriInvColor(v, currentNriMax) : getColor(v, currentNriBreaks))
-          : '#ffffff',
-        fillOpacity: isNriMode() && !dim && Number.isFinite(v) ? 0.50 : 0,
-        weight: isNriMode() && Number.isFinite(v) ? 0.7 : 0,
+        fillColor: hasData ? nriRatingColor(rating, invRes) : '#ffffff',
+        fillOpacity: isNriMode() && !dim && hasData ? 0.50 : 0,
+        weight: isNriMode() && hasData ? 0.7 : 0,
         color: '#004c53',
-        opacity: isNriMode() && Number.isFinite(v) ? 0.8 : 0
+        opacity: isNriMode() && hasData ? 0.8 : 0
       };
     }
 
