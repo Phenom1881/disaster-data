@@ -270,7 +270,7 @@ table.matrix tr:last-child th, table.matrix tr:last-child td{border-bottom:none;
 var INDEX_DIR = "/data/decl-index";
 var MANIFEST_URL = INDEX_DIR + "/manifest.json";
 var loadDiag = [];
-var DEFAULT_STATES = ["VA"];
+var DEFAULT_STATES = [];
 var DEFAULT_DECL_TYPES = ["DR"];
 var manifestByState = {};
 
@@ -1055,6 +1055,7 @@ function bootError(err){
 function init(){
   wireStatic();
   var u=parseUrl();
+  var initialStates=[];
 
   loadManifest()
     .then(function(m){
@@ -1068,17 +1069,21 @@ function init(){
         return !!manifestByState[st];
       });
 
-      if(!initial.length){
+      // No default place. A cold start with no ?states / ?fips loads nothing and
+      // the page shows the "add a state to begin" prompt; the person picks from
+      // there. Permalinks that name states or localities still load exactly
+      // those. Set DEFAULT_STATES above if a default is ever wanted again.
+      if(!initial.length && DEFAULT_STATES.length){
         initial=DEFAULT_STATES.filter(function(st){ return !!manifestByState[st]; });
       }
-      if(!initial.length){
-        initial=manifestByState.VA ? ["VA"] : [availableStates[0].state];
-      }
 
+      initialStates=initial;
       return loadStates(initial);
     })
     .then(function(){
-      if(!loadedList().length){
+      // Only an error if we asked for states and none came back. An intentional
+      // empty start just shows the prompt rather than the failure notice.
+      if(initialStates.length && !loadedList().length){
         throw new Error("No initial state index could be loaded");
       }
       finishBoot(u);

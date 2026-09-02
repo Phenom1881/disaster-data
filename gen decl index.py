@@ -5,7 +5,8 @@ gen_decl_index.py
 Builds the per state declaration index that powers the Compare page on
 DisasterData.IO. One JSON file per state or territory, each listing the
 jurisdictions in that state and every declaration with the FIPS codes it
-designated.
+designated. Each declaration also carries an eventId so named storms that
+were declared separately per state group into one event downstream.
 
 Output schema, one file per state at OUT_DIR/{ST}.json:
 
@@ -16,13 +17,20 @@ Output schema, one file per state at OUT_DIR/{ST}.json:
       {"fips": "51021", "name": "Bland", "type": "County"}
     ],
     "declarations": [
-      {"id": "DR-4863", "number": 4863, "type": "DR",
+      {"id": "DR-4863", "eventId": "DR-4863", "eventName": "",
+       "number": 4863, "type": "DR",
        "title": "Winter Storm Jett", "incidentType": "Severe Winter Storm",
-       "date": "2025-02-24", "year": 2025, "statewide": false,
+       "date": "2025-02-24", "begin": "2025-02-15", "end": "2025-02-27",
+       "year": 2025, "statewide": false, "tribal": false,
        "programs": ["IA", "PA", "HM"],
        "fips": ["51021", "51520"]}
     ]
   }
+
+  Named tropical systems share one eventId across states, so their per
+  state declarations group into a single event, for example
+  "eventId": "storm-helene-2024", "eventName": "Helene". Every other
+  declaration keeps its own id as the eventId, staying one to one.
 
 Usage:
   python gen_decl_index.py --out data/decl-index
@@ -45,6 +53,13 @@ import urllib.parse
 import urllib.request
 from collections import OrderedDict
 from datetime import date, datetime
+
+# Event identity (storm grouping) lives in one shared module so the Compare
+# index, the Disaster page, and the Map overlay all agree on what one storm is.
+# The path insert lets "import dd_events" resolve when this script is run from
+# any directory or loaded by the test fixture. See dd_events.py.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from dd_events import storm_name, storm_event_id
 
 API_BASE = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries"
 PAGE_SIZE = 10000          # OpenFEMA maximum per call
@@ -303,11 +318,20 @@ def build_indexes(records, decl_types=None, jurisdiction_override=None):
                 year = 0
             if declared[:4].isdigit():
                 year = int(declared[:4])
+            title = (rec.get("declarationTitle") or "").strip()
+            did = "%s-%d" % (dtype, number)
+            sname = storm_name(title)
+            if sname:
+                event_id, event_name = storm_event_id(sname, year), sname.title()
+            else:
+                event_id, event_name = did, ""   # unnamed keeps its own id, 1:1
             entry = {
-                "id": "%s-%d" % (dtype, number),
+                "id": did,
+                "eventId": event_id,
+                "eventName": event_name,
                 "number": number,
                 "type": dtype,
-                "title": (rec.get("declarationTitle") or "").strip(),
+                "title": title,
                 "incidentType": (rec.get("incidentType") or "Other").strip(),
                 "date": declared,
                 "begin": iso_date(rec.get("incidentBeginDate")),

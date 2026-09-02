@@ -17,6 +17,11 @@ eventId (else its id) - the SAME key Compare uses - so unnamed events are left
 as they are. Two different storms that share a name in different years stay
 separate (the year is part of the key).
 
+The storm rule now lives in the shared dd_events module (imported below), the
+same rule gen_decl_index stamps onto every declaration as eventId, so the
+Compare page, the Disaster page, and the Map overlay all group storms
+identically. There is one rule to maintain.
+
 Outputs:
   map-events.js  window.MAP_EVENTS = [{id, n, y, t, it, sw, f:[...]}, ...]
                  events WITH a county footprint only (statewide-only dropped).
@@ -38,6 +43,13 @@ import os
 import re
 import sys
 
+# The storm-identity rule is shared with gen_decl_index via dd_events so the
+# Compare index, Disaster page, and Map overlay never drift apart. The path
+# insert lets "import dd_events" resolve when this script is run from any
+# directory or loaded by the test fixture. See dd_events.py.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from dd_events import storm_name, storm_event_id
+
 
 def num_from_id(did):
     digits = "".join(ch for ch in str(did or "") if ch.isdigit())
@@ -54,33 +66,6 @@ def type_from_id(did):
 
 def st_from_path(path):
     return os.path.splitext(os.path.basename(path))[0].upper()
-
-
-# Tropical prefixes ordered longest-first so the captured name is the storm, not a
-# fragment. The name is the word immediately after the prefix.
-_STORM_RE = re.compile(
-    r"\b(?:"
-    r"remnants of post-tropical cyclone|remnants of post-tropical storm|"
-    r"remnants of tropical storm|remnants of tropical depression|"
-    r"remnants of hurricane|remnants of typhoon|"
-    r"post-tropical cyclone|post-tropical storm|post tropical cyclone|post tropical storm|"
-    r"tropical storm|tropical depression|tropical cyclone|super typhoon|"
-    r"hurricane|typhoon"
-    r")\s+([a-z][a-z'\-]+)",
-    re.IGNORECASE,
-)
-_STORM_STOP = {"and", "of", "the", "from", "with", "system", "near", "in", "a"}
-
-
-def storm_name(title):
-    """Return the lowercased tropical-storm name in a FEMA declaration title
-    (e.g. 'Hurricane Helene' -> 'helene'), or None if it isn't a named system."""
-    t = " ".join(str(title or "").split())
-    for m in _STORM_RE.finditer(t):
-        nm = m.group(1).lower()
-        if nm not in _STORM_STOP:
-            return nm
-    return None
 
 
 def load_state_files(in_dir):
@@ -127,7 +112,7 @@ def build_events(in_dir, types=None, since=0):
             title = d.get("title") or d.get("eventName") or ""
             sname = storm_name(title)
             if sname:
-                key = "storm-%s-%s" % (sname, year)   # merge the storm across states
+                key = storm_event_id(sname, year)     # merge the storm across states
             else:
                 key = d.get("eventId") or d.get("id")
             if not key:
