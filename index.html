@@ -279,15 +279,54 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   <header class="masthead">
     <div class="kicker reveal">Twenty-five years of federal disaster declarations</div>
     <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes, <em>and how often.</em></h1>
-    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since FY2000: major disasters, emergencies, and fire-management programs. Mapped, ranked, and open to explore. Drag the years, choose a hazard, and watch the rankings reorder.</p>
-    <div class="hero-cta reveal" style="animation-delay:.16s"><a class="btn" href="explore.html">Replay 25 years <span aria-hidden="true">&rarr;</span></a><a class="btn" href="#board" style="background:none;color:var(--accent);margin-left:10px">See the rankings</a></div>
-    <div class="stats reveal" style="animation-delay:.18s">
+    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since FY2000: major disasters, emergencies, and fire-management programs. Start with your own community for a declaration history you can drop straight into a plan or report, then explore the national picture.</p>
+
+    <!-- Locality search: the primary action on the page -->
+    <section id="loc-search" class="reveal" style="animation-delay:.16s;max-width:980px;margin:1.2rem 0 0;padding:0">
+    <!-- Your locality (personalized, populated from localStorage or ?loc= by the script below) -->
+    <div id="your-locality" hidden style="background:#004c53;color:#fff;border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem;box-shadow:0 4px 14px rgba(0,76,83,.18)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.82" id="yl-kicker">Your saved locality</div>
+        <button id="yl-clear" type="button" aria-label="Clear your saved locality" style="background:rgba(255,255,255,.14);border:none;color:#fff;font:600 .72rem 'Public Sans',sans-serif;border-radius:6px;padding:.3rem .6rem;cursor:pointer">Clear</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
+        <div style="min-width:0">
+          <a id="yl-name" href="#" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.3rem,2.6vw,1.6rem);font-weight:600;color:#fff;text-decoration:none;line-height:1.1;display:inline-block"></a>
+          <div id="yl-sub" style="font-size:.9rem;opacity:.85;margin-top:.2rem"></div>
+        </div>
+        <div style="text-align:right;flex:none">
+          <div id="yl-count" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums"></div>
+          <div style="font-size:.66rem;letter-spacing:.5px;opacity:.8;text-transform:uppercase;margin-top:.15rem">FEMA declarations</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-top:.9rem">
+        <a id="yl-link" href="#" style="display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#004c53;font:600 .82rem 'Public Sans',sans-serif;text-decoration:none;border-radius:8px;padding:.45rem .85rem">View full history <span aria-hidden="true">&rarr;</span></a>
+        <button id="yl-share" type="button" style="display:inline-flex;align-items:center;gap:.35rem;background:none;border:1px solid rgba(255,255,255,.5);color:#fff;font:600 .82rem 'Public Sans',sans-serif;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Copy share link</button>
+      </div>
+    </div>
+    <div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;padding:1.6rem 1.8rem;box-shadow:0 2px 8px rgba(40,30,10,.04)">
+    <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .25rem">Find your community</h2>
+    <p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations. Each has its full FEMA declaration history, ready to cite or export for a hazard mitigation plan or grant application.</p>
+    <div id="lsBox" style="position:relative;max-width:520px">
+    <svg style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#938a78;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="lsQ" placeholder="Search counties, parishes, boroughs, tribes..." autocomplete="off" aria-label="Search localities" style="width:100%;font:400 1rem 'Public Sans',sans-serif;padding:.7rem 1rem .7rem 2.6rem;border:1px solid #e4dccb;border-radius:10px;background:#f6f1e7;color:#2b2b2b;outline:none;box-sizing:border-box">
+    <div id="lsR" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fffdf7;border:1px solid #e4dccb;border-radius:10px;box-shadow:0 8px 24px rgba(40,30,10,.12);max-height:340px;overflow-y:auto;z-index:100"></div>
+    </div>
+    </div>
+    </section>
+
+    <div class="hero-cta reveal" style="animation-delay:.2s;margin-top:1.1rem">
+      <a href="explore.html" style="color:var(--accent);font-weight:600;text-decoration:none">Replay 25 years of declarations <span aria-hidden="true">&rarr;</span></a>
+      <a href="public-assistance-projects.html" style="color:var(--accent);font-weight:600;text-decoration:none;margin-left:22px">Explore recovery funding <span aria-hidden="true">&rarr;</span></a>
+    </div>
+
+    <div class="stats reveal" style="animation-delay:.24s">
       <div class="stat"><div class="num" id="st-total">3,395</div><div class="lab">declarations in range</div></div>
       <div class="stat"><div class="num" id="st-states">57</div><div class="lab">states &amp; territories</div></div>
       <div class="stat"><div class="num" id="st-denied">11.8<small>%</small></div><div class="lab">of declaration requests denied</div></div>
       <div class="stat"><div class="num" id="st-haz">25</div><div class="lab">hazard types tracked</div></div>
     </div>
-    <div class="reveal" id="prov-stamp" style="animation-delay:.2s;margin-top:.9rem;font:500 .8rem/1.5 'Public Sans',sans-serif;color:#6b6357;display:flex;flex-wrap:wrap;gap:.3rem .6rem;align-items:baseline">
+    <div class="reveal" id="prov-stamp" style="animation-delay:.26s;margin-top:.9rem;font:500 .8rem/1.5 'Public Sans',sans-serif;color:#6b6357;display:flex;flex-wrap:wrap;gap:.3rem .6rem;align-items:baseline">
       <span id="prov-range">Totals: FY2000&ndash;FY2025</span>
       <span aria-hidden="true">&middot;</span>
       <span id="prov-asof">Latest declarations through &mdash;</span>
@@ -295,40 +334,6 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     </div>
   </header>
 </div>
-
-<!-- Locality search -->
-<section id="loc-search" style="max-width:980px;margin:2rem auto 2.5rem;padding:0 clamp(18px,4vw,40px)">
-<!-- Your locality (personalized, populated from localStorage or ?loc= by the script below) -->
-<div id="your-locality" hidden style="background:#004c53;color:#fff;border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem;box-shadow:0 4px 14px rgba(0,76,83,.18)">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">
-    <div style="font-size:.68rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.82" id="yl-kicker">Your saved locality</div>
-    <button id="yl-clear" type="button" aria-label="Clear your saved locality" style="background:rgba(255,255,255,.14);border:none;color:#fff;font:600 .72rem 'Public Sans',sans-serif;border-radius:6px;padding:.3rem .6rem;cursor:pointer">Clear</button>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
-    <div style="min-width:0">
-      <a id="yl-name" href="#" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.3rem,2.6vw,1.6rem);font-weight:600;color:#fff;text-decoration:none;line-height:1.1;display:inline-block"></a>
-      <div id="yl-sub" style="font-size:.9rem;opacity:.85;margin-top:.2rem"></div>
-    </div>
-    <div style="text-align:right;flex:none">
-      <div id="yl-count" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums"></div>
-      <div style="font-size:.66rem;letter-spacing:.5px;opacity:.8;text-transform:uppercase;margin-top:.15rem">FEMA declarations</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-top:.9rem">
-    <a id="yl-link" href="#" style="display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#004c53;font:600 .82rem 'Public Sans',sans-serif;text-decoration:none;border-radius:8px;padding:.45rem .85rem">View full history <span aria-hidden="true">&rarr;</span></a>
-    <button id="yl-share" type="button" style="display:inline-flex;align-items:center;gap:.35rem;background:none;border:1px solid rgba(255,255,255,.5);color:#fff;font:600 .82rem 'Public Sans',sans-serif;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Copy share link</button>
-  </div>
-</div>
-<div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;padding:1.6rem 1.8rem;box-shadow:0 2px 8px rgba(40,30,10,.04)">
-<h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .25rem">Find your locality</h2>
-<p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations, each with its full FEMA declaration history.</p>
-<div id="lsBox" style="position:relative;max-width:520px">
-<svg style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#938a78;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" id="lsQ" placeholder="Search counties, parishes, boroughs, tribes..." autocomplete="off" aria-label="Search localities" style="width:100%;font:400 1rem 'Public Sans',sans-serif;padding:.7rem 1rem .7rem 2.6rem;border:1px solid #e4dccb;border-radius:10px;background:#f6f1e7;color:#2b2b2b;outline:none;box-sizing:border-box">
-<div id="lsR" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fffdf7;border:1px solid #e4dccb;border-radius:10px;box-shadow:0 8px 24px rgba(40,30,10,.12);max-height:340px;overflow-y:auto;z-index:100"></div>
-</div>
-</div>
-</section>
 
 <!-- ===== Latest declarations ===== -->
 <div class="container">
