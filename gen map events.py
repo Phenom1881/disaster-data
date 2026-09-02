@@ -48,7 +48,7 @@ import sys
 # insert lets "import dd_events" resolve when this script is run from any
 # directory or loaded by the test fixture. See dd_events.py.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dd_events import storm_name, storm_event_id
+from dd_events import storm_name, storm_event_id, is_covid, COVID_EVENT_ID, COVID_EVENT_NAME
 
 
 def num_from_id(did):
@@ -111,7 +111,9 @@ def build_events(in_dir, types=None, since=0):
 
             title = d.get("title") or d.get("eventName") or ""
             sname = storm_name(title)
-            if sname:
+            if is_covid(d.get("incidentType")):
+                key = COVID_EVENT_ID                  # all COVID/Biological into one event
+            elif sname:
                 key = storm_event_id(sname, year)     # merge the storm across states
             else:
                 key = d.get("eventId") or d.get("id")
@@ -163,7 +165,9 @@ def build_events(in_dir, types=None, since=0):
 
 def finalize(ev):
     """Compute the display id/name/type/incident for an event after grouping."""
-    if ev.get("storm"):
+    if ev["id"] == COVID_EVENT_ID:
+        disp, it, eid = COVID_EVENT_NAME, ev["it"], ev["id"]
+    elif ev.get("storm"):
         nm = ev["storm"].title()
         if ev["has_hurr"]:
             disp, it = "Hurricane " + nm, "Hurricane"

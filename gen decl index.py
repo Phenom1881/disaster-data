@@ -59,7 +59,7 @@ from datetime import date, datetime
 # The path insert lets "import dd_events" resolve when this script is run from
 # any directory or loaded by the test fixture. See dd_events.py.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dd_events import storm_name, storm_event_id
+from dd_events import storm_name, storm_event_id, is_covid, COVID_EVENT_ID, COVID_EVENT_NAME
 
 API_BASE = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries"
 PAGE_SIZE = 10000          # OpenFEMA maximum per call
@@ -319,9 +319,12 @@ def build_indexes(records, decl_types=None, jurisdiction_override=None):
             if declared[:4].isdigit():
                 year = int(declared[:4])
             title = (rec.get("declarationTitle") or "").strip()
+            incident = (rec.get("incidentType") or "Other").strip()
             did = "%s-%d" % (dtype, number)
             sname = storm_name(title)
-            if sname:
+            if is_covid(incident):
+                event_id, event_name = COVID_EVENT_ID, COVID_EVENT_NAME
+            elif sname:
                 event_id, event_name = storm_event_id(sname, year), sname.title()
             else:
                 event_id, event_name = did, ""   # unnamed keeps its own id, 1:1
@@ -332,7 +335,7 @@ def build_indexes(records, decl_types=None, jurisdiction_override=None):
                 "number": number,
                 "type": dtype,
                 "title": title,
-                "incidentType": (rec.get("incidentType") or "Other").strip(),
+                "incidentType": incident,
                 "date": declared,
                 "begin": iso_date(rec.get("incidentBeginDate")),
                 "end": iso_date(rec.get("incidentEndDate")),

@@ -48,3 +48,19 @@ def storm_event_id(name, year):
     """The event id for a named storm: 'storm-<name>-<year>'. The year keeps
     two same-named storms in different years apart (2024 Helene vs 2000 Helene)."""
     return "storm-%s-%s" % (name, year)
+
+
+# COVID-19 is the whole of FEMA's "Biological" incident type in the OpenFEMA
+# dataset, so every COVID emergency and major disaster declaration (one per
+# state, plus the nationwide emergencies) groups into a single event across all
+# years, not one per state or per year.
+COVID_EVENT_ID = "covid-19"
+COVID_EVENT_NAME = "COVID-19 Pandemic"
+
+
+def is_covid(incident_type):
+    """True for COVID-19 declarations. FEMA classes them as 'Biological', and
+    nothing else in the dataset uses that incident type, so this collapses all
+    of COVID (2020 onward, every state, emergency and major-disaster alike)
+    into one event."""
+    return (incident_type or "").strip().lower() == "biological"
