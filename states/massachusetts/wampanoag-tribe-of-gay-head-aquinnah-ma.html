@@ -1,35 +1,92 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow"><title>Disaster Data | Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts Disaster History, Assistance, SVI and NRI</title><meta name="description" content="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts federal disaster history through FY2025, including FEMA declarations, Public Assistance, Individual Assistance where designated, mitigation investment, and county risk and vulnerability context where available."><link rel="canonical" href="https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html"><meta property="og:title" content="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts: Disaster History and Risk Context"><meta property="og:description" content="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts federal disaster history through FY2025, including FEMA declarations, Public Assistance, Individual Assistance where designated, mitigation investment, and county risk and vulnerability context where available."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><title>Disaster Data | Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts FEMA Disaster Declarations and Mitigation History</title><meta name="description" content="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts has had 2 federal disaster and emergency declarations since FY2000 (1 major disasters, 1 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available."><link rel="canonical" href="https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html"><meta property="og:title" content="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts: Federal Disaster Declarations"><meta property="og:description" content="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts has had 2 federal disaster and emergency declarations since FY2000 (1 major disasters, 1 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available."><meta property="og:type" content="website"><meta property="og:url" content="https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html"><meta name="twitter:card" content="summary"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{
   --teal:#004c53;
-  --teal2:#0f6870;
-  --teal-soft:#d7e9ea;
   --cream:#f6f1e7;
   --paper:#fffdf7;
   --ink:#2b2b2b;
-  --ink2:#4e493f;
   --ink3:#6b6357;
-  --rule:#e4dccb;
-  --amber:#c85c2e;
-  --shadow:0 8px 28px rgba(47,40,27,.055);
+  --rule:#e4dccb
 }
 
 *{box-sizing:border-box}
-
-html{scroll-behavior:smooth}
 
 body{
   margin:0;
   background:var(--cream);
   color:var(--ink);
   font-family:'Public Sans',system-ui,-apple-system,sans-serif;
-  line-height:1.6;
+  line-height:1.6
 }
 
 a{color:var(--teal)}
 
 .wrap{
-  max-width:1080px;
+  max-width:980px;
   margin:0 auto;
-  padding:0 clamp(18px,4vw,44px);
+  padding:0 clamp(18px,4vw,40px)
+}
+
+nav.ddnav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(246,241,231,.86);
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid #e0d8c5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(18px,4vw,48px);
+  height:60px
+}
+
+nav.ddnav .brand{
+  display:flex;
+  align-items:baseline;
+  gap:10px
+}
+
+nav.ddnav .brand .mark{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:19px;
+  letter-spacing:-.4px;
+  color:#1d1813;
+  text-decoration:none
+}
+
+nav.ddnav .navlinks{
+  display:flex;
+  align-items:center;
+  gap:4px
+}
+
+nav.ddnav .navlinks a{
+  font-size:13px;
+  font-weight:500;
+  color:#5b5346;
+  text-decoration:none;
+  padding:7px 12px;
+  border-radius:6px;
+  transition:.15s;
+  letter-spacing:.2px
+}
+
+nav.ddnav .navlinks a:hover{
+  color:#1d1813;
+  background:#f1ead9
+}
+
+nav.ddnav .navlinks a.on{
+  color:#004c53;
+  background:#d7e9ea
+}
+
+nav.ddnav .navmeta{
+  font-size:11px;
+  color:#938a78;
+  letter-spacing:.5px;
+  font-variant-numeric:tabular-nums
 }
 
 main{padding:2rem 0 1rem}
@@ -37,385 +94,760 @@ main{padding:2rem 0 1rem}
 .crumb{
   font-size:.82rem;
   color:var(--ink3);
-  margin:0 0 1.2rem;
+  margin:0 0 1rem
 }
 
 .crumb a{text-decoration:none}
 
 .badge{
   display:inline-block;
-  font:700 .7rem 'Public Sans',sans-serif;
+  font:600 .72rem 'Public Sans',sans-serif;
   text-transform:uppercase;
-  letter-spacing:.055em;
-  padding:.24rem .65rem;
+  letter-spacing:.04em;
+  padding:.2rem .6rem;
   border-radius:999px;
+  margin-bottom:.6rem
 }
 
 .badge.county{
   color:#004c53;
-  background:#d7e9ea;
+  background:#d7e9ea
 }
 
 .badge.city{
   color:#8a5a2b;
-  background:#f3e4d2;
+  background:#f3e4d2
 }
 
 .badge.tribal{
   color:#6a2f6a;
-  background:#efddef;
-}
-
-.hero{
-  padding:.4rem 0 .7rem;
-}
-
-.hero-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:1rem;
-}
-
-.hero-actions{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-  gap:.5rem;
-}
-
-.hero-link{
-  display:inline-flex;
-  align-items:center;
-  gap:.35rem;
-  text-decoration:none;
-  font-size:.8rem;
-  font-weight:700;
-  border:1px solid #b7cfce;
-  background:#edf5f4;
-  color:var(--teal);
-  border-radius:999px;
-  padding:.42rem .75rem;
-  white-space:nowrap;
-}
-
-.hero-link:hover{
-  background:#dcebea;
+  background:#efddef
 }
 
 h1{
   font-family:'Fraunces',Georgia,serif;
   color:var(--teal);
-  font-size:clamp(2rem,5vw,3.05rem);
-  line-height:1.04;
-  letter-spacing:-.035em;
-  margin:.42rem 0 .75rem;
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  line-height:1.1;
+  margin:.2rem 0 .6rem
 }
 
 h2{
   font-family:'Fraunces',Georgia,serif;
   color:var(--teal);
-  font-size:1.45rem;
-  line-height:1.2;
-  letter-spacing:-.015em;
-  margin:2.4rem 0 .7rem;
-}
-
-h3{
-  font-family:'Fraunces',Georgia,serif;
-  color:var(--teal);
-  font-size:1.16rem;
-  line-height:1.25;
-  margin:0 0 .35rem;
+  font-size:1.3rem;
+  margin:2.2rem 0 .8rem
 }
 
 .lede{
-  margin:.25rem 0 0;
   font-size:1.08rem;
-  max-width:72ch;
-  color:var(--ink2);
-}
-
-.current-note{
-  margin:.8rem 0 0;
-  max-width:72ch;
-  font-size:.79rem;
-  color:var(--ink3);
-}
-
-.overview-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:.8rem;
-  margin:1.55rem 0 1.2rem;
-}
-
-.overview-card{
-  min-height:122px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:16px;
-  padding:1rem 1.05rem;
-  box-shadow:var(--shadow);
-}
-
-.overview-kicker{
-  font-size:.68rem;
-  font-weight:800;
-  letter-spacing:.075em;
-  text-transform:uppercase;
-  color:var(--ink3);
-}
-
-.overview-value{
-  font-family:'Fraunces',Georgia,serif;
-  font-size:1.85rem;
-  line-height:1;
-  letter-spacing:-.035em;
-  color:var(--teal);
-  margin:.35rem 0 .28rem;
-}
-
-.overview-label{
-  color:var(--ink3);
-  font-size:.78rem;
-  line-height:1.35;
+  max-width:62ch
 }
 
 .jsummary{
-  margin:1.15rem 0 .5rem;
+  margin:1.1rem 0 .4rem
 }
 
 .jsummary p{
   margin:0;
   font-size:1rem;
-  max-width:74ch;
+  color:var(--ink);
+  max-width:66ch
 }
 
-.major-section{
-  margin:2.5rem 0;
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+  gap:.7rem;
+  margin:1.5rem 0
 }
 
-.section-head{
+.stat{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:.85rem 1rem
+}
+
+.stat .n{
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.7rem;
+  color:var(--teal);
+  font-weight:600;
+  line-height:1
+}
+
+.stat .l{
+  font-size:.78rem;
+  color:var(--ink3);
+  margin-top:.3rem
+}
+
+ul.haz{
+  list-style:none;
+  padding:0;
+  margin:.5rem 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem
+}
+
+ul.haz li{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.3rem .8rem;
+  font-size:.85rem
+}
+
+ul.haz b{color:var(--teal)}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--paper)
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:.86rem;
+  min-width:560px
+}
+
+th,td{
+  text-align:left;
+  padding:.55rem .8rem;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top
+}
+
+th{
+  font-size:.74rem;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  color:var(--ink3);
+  background:#faf6ec
+}
+
+tr:last-child td{border-bottom:none}
+
+.tag{
+  font-weight:700;
+  color:var(--teal)
+}
+
+.hmp{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:12px;
+  padding:1.1rem 1.3rem;
+  margin:1rem 0
+}
+
+.hmp p{
+  margin:.2rem 0 .9rem;
+  font-size:.92rem
+}
+
+.copybtn{
+  font:600 .8rem 'Public Sans',sans-serif;
+  color:#004c53;
+  background:none;
+  border:1px solid #004c53;
+  border-radius:8px;
+  padding:.4rem .85rem;
+  cursor:pointer;
+  margin-top:.8rem
+}
+
+.decl-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.2rem 0 .5rem
+}
+
+.decl-chip{
+  font:700 .82rem/1 'Public Sans',sans-serif;
+  color:var(--teal);
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:.42rem .72rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.42rem
+}
+
+.decl-chip .n{
+  background:#eef3f2;
+  border-radius:999px;
+  padding:.06rem .44rem;
+  font-size:.76rem;
+  font-weight:700
+}
+
+.decl-chip[aria-pressed="true"]{
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal)
+}
+
+.decl-chip[aria-pressed="true"] .n{
+  background:rgba(255,255,255,.22);
+  color:#fff
+}
+
+.decl-chip.off{
+  opacity:.42;
+  cursor:default
+}
+
+.decl-count{
+  font-size:.82rem;
+  color:var(--ink3);
+  margin:.05rem 0 .55rem
+}
+
+.tablewrap.scroll{
+  max-height:430px;
+  overflow-y:auto
+}
+
+.tablewrap.scroll thead th{
+  position:sticky;
+  top:0;
+  z-index:1
+}
+
+tr.hide{display:none}
+
+th.sortable{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  white-space:nowrap
+}
+
+th.sortable::after{
+  content:"↕";
+  opacity:.32;
+  margin-left:.35em;
+  font-weight:400
+}
+
+th.sortable:hover{color:var(--teal)}
+
+th[aria-sort="ascending"]::after{
+  content:"↑";
+  opacity:.95
+}
+
+th[aria-sort="descending"]::after{
+  content:"↓";
+  opacity:.95
+}
+
+.risk-section{margin:2.4rem 0}
+
+.section-heading-row{
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
   gap:1rem;
-  margin-bottom:1rem;
+  margin-bottom:1rem
 }
 
-.section-head h2{
-  margin:0 0 .25rem;
-}
+.section-heading-row h2{margin:0 0 .25rem}
 
 .section-deck{
-  max-width:72ch;
   margin:0;
   color:var(--ink3);
-  font-size:.9rem;
+  font-size:.92rem;
+  max-width:66ch
 }
 
-.section-meta{
-  flex:none;
-  font-size:.7rem;
-  font-weight:800;
+.risk-fips{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
   text-transform:uppercase;
-  letter-spacing:.055em;
   color:var(--ink3);
-  white-space:nowrap;
+  white-space:nowrap
 }
 
 .risk-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:1rem;
+  gap:1rem
 }
 
 .risk-card{
   background:var(--paper);
   border:1px solid var(--rule);
-  border-radius:18px;
-  padding:1.15rem 1.2rem 1.25rem;
-  box-shadow:var(--shadow);
+  border-radius:16px;
+  padding:1.15rem 1.2rem;
+  box-shadow:0 1px 0 rgba(43,43,43,.03)
+}
+
+.risk-card h3{
+  font-family:'Fraunces',Georgia,serif;
+  color:var(--teal);
+  font-size:1.18rem;
+  line-height:1.2;
+  margin:.15rem 0 0
 }
 
 .risk-kicker{
-  font-size:.68rem;
+  font-size:.69rem;
   font-weight:800;
-  letter-spacing:.085em;
+  letter-spacing:.09em;
   text-transform:uppercase;
-  color:var(--ink3);
+  color:#8a5a2b
 }
 
 .risk-version{
-  margin:.05rem 0 .95rem;
-  font-size:.75rem;
   color:var(--ink3);
-}
-
-.svi-lead,
-.nri-lead{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:1rem;
-  margin:.65rem 0 .95rem;
+  font-size:.78rem;
+  margin:.18rem 0 .9rem
 }
 
 .risk-score{
   font-family:'Fraunces',Georgia,serif;
   color:var(--teal);
   font-size:2.15rem;
-  line-height:.95;
-  letter-spacing:-.04em;
+  font-weight:600;
+  line-height:1
 }
+
+.risk-score.na{font-size:1.55rem}
 
 .risk-score-label{
-  margin-top:.28rem;
-  font-size:.72rem;
   color:var(--ink3);
-}
-
-.risk-rating{
-  display:inline-flex;
-  align-items:center;
-  border-radius:999px;
-  background:#edf5f4;
-  color:var(--teal);
-  border:1px solid #cfe0df;
-  font-size:.72rem;
-  font-weight:800;
-  padding:.3rem .6rem;
-  white-space:nowrap;
+  font-size:.76rem;
+  margin-top:.2rem
 }
 
 .risk-interpret{
+  color:var(--ink3);
   font-size:.83rem;
-  color:var(--ink2);
-  margin:.3rem 0 .95rem;
+  margin:.7rem 0
 }
 
-.theme-list{
-  display:grid;
-  gap:.65rem;
-  margin-top:.9rem;
-}
+.theme-list{margin-top:.9rem}
+
+.theme-row{margin:.58rem 0}
 
 .theme-head{
   display:flex;
   justify-content:space-between;
-  align-items:baseline;
   gap:.8rem;
-  font-size:.76rem;
-}
-
-.theme-head span{
-  color:var(--ink2);
+  font-size:.76rem
 }
 
 .theme-head b{
   color:var(--teal);
-  font-variant-numeric:tabular-nums;
+  font-variant-numeric:tabular-nums
 }
 
 .theme-track{
   height:6px;
-  border-radius:999px;
-  background:#ebe5d8;
   overflow:hidden;
-  margin-top:.25rem;
+  border-radius:999px;
+  background:#e8e0d0;
+  margin-top:.25rem
 }
 
 .theme-track span{
   display:block;
   height:100%;
-  background:#2d7d83;
+  border-radius:inherit;
+  background:#4c8b90
+}
+
+.nri-lead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem
+}
+
+.risk-rating{
+  display:inline-block;
   border-radius:999px;
+  background:#f3e4d2;
+  color:#7a4a20;
+  font-size:.72rem;
+  font-weight:700;
+  padding:.3rem .62rem;
+  text-align:center
 }
 
 .risk-mini-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:.55rem;
-  margin-top:.8rem;
+  margin-top:1rem
 }
 
 .risk-mini{
-  background:#faf7ef;
-  border:1px solid #ece5d7;
-  border-radius:11px;
-  padding:.7rem;
+  border-top:1px solid var(--rule);
+  padding-top:.55rem;
+  min-width:0
 }
 
-.risk-mini span{
+.risk-mini span,
+.risk-mini small{
   display:block;
   color:var(--ink3);
-  font-size:.67rem;
-  line-height:1.3;
+  font-size:.68rem;
+  line-height:1.35
 }
 
 .risk-mini b{
   display:block;
-  margin-top:.2rem;
   color:var(--teal);
-  font-family:'Fraunces',Georgia,serif;
-  font-size:1rem;
-  line-height:1.15;
-}
-
-.risk-mini small{
-  display:block;
-  color:var(--ink3);
-  font-size:.63rem;
-  line-height:1.25;
-  margin-top:.12rem;
+  font-size:.95rem;
+  margin:.18rem 0;
+  overflow-wrap:anywhere
 }
 
 .risk-source{
-  margin:.9rem 0 0;
-  font-size:.74rem;
   color:var(--ink3);
+  font-size:.78rem;
+  margin:.9rem 0 0
 }
+
+.risk-source a{font-weight:600}
 
 .risk-caution{
+  background:#eef4f4;
+  border:1px solid #cfe0e0;
+  border-radius:10px;
+  padding:.8rem .9rem;
   margin-top:.8rem;
-  padding:.72rem .85rem;
-  border:1px solid #d6dfdc;
-  border-radius:11px;
-  background:#f0f6f5;
-  font-size:.77rem;
-  color:#4b5b58;
+  color:#3f5557;
+  font-size:.8rem
 }
 
-.map-shell{
+.method{
   background:var(--paper);
   border:1px solid var(--rule);
-  border-radius:18px;
-  padding:1rem;
-  box-shadow:var(--shadow);
-  margin:1rem 0;
+  border-radius:12px;
+  padding:1.2rem 1.4rem;
+  margin:2rem 0;
+  font-size:.92rem
 }
 
+.method h2{
+  margin-top:0;
+  font-size:1.1rem
+}
+
+/* Citation block */
+.citation{
+  background:#153c40;
+  color:#eef9f8;
+  border-radius:14px;
+  padding:1.15rem 1.25rem;
+  margin:2rem 0
+}
+
+.citation h2{
+  color:#fff;
+  margin:0 0 .45rem;
+  font-size:1.2rem
+}
+
+.citation p{
+  font-size:.84rem;
+  color:#d6e9e7;
+  margin:.2rem 0 .85rem;
+  max-width:68ch
+}
+
+.cite-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:0 0 .7rem
+}
+
+.citefmt{
+  font:700 .78rem 'Public Sans',sans-serif;
+  color:#d6e9e7;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  padding:.38rem .72rem;
+  cursor:pointer
+}
+
+.citefmt:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.citefmt[aria-pressed="true"]{
+  background:#fff;
+  color:#153c40;
+  border-color:#fff
+}
+
+.cite-text{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:9px;
+  padding:.85rem;
+  font-size:.79rem;
+  line-height:1.6;
+  color:#fff
+}
+
+.citation .copybtn{
+  color:#fff;
+  border-color:#bcd8d5
+}
+
+.citation .copybtn:hover{
+  background:rgba(255,255,255,.08)
+}
+
+.pa-note{
+  font-size:.9rem;
+  color:var(--ink3);
+  max-width:64ch;
+  margin:.4rem 0 .8rem
+}
+
+table.pa-cat tfoot td{
+  font-weight:700;
+  color:var(--teal);
+  border-top:2px solid var(--rule);
+  background:#faf6ec
+}
+
+.pa-cat .catcode{
+  color:var(--ink3);
+  font-weight:400;
+  font-size:.85em;
+  margin-left:.15em
+}
+
+table.pa-cat td:nth-child(2),
+table.pa-cat th:nth-child(2),
+table.pa-cat td:nth-child(3),
+table.pa-cat th:nth-child(3){
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap
+}
+
+.jgrid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem .7rem;
+  margin:.6rem 0
+}
+
+.jgrid a{
+  font-size:.86rem;
+  text-decoration:none
+}
+
+ol.rank{
+  padding-left:0;
+  list-style:none;
+  counter-reset:r
+}
+
+ol.rank li{
+  counter-increment:r;
+  display:flex;
+  align-items:baseline;
+  gap:.7rem;
+  padding:.45rem 0;
+  border-bottom:1px solid var(--rule)
+}
+
+ol.rank li::before{
+  content:counter(r);
+  font-family:'Fraunces',serif;
+  color:var(--ink3);
+  min-width:2.6ch;
+  text-align:right
+}
+
+ol.rank a{
+  text-decoration:none;
+  font-weight:600
+}
+
+ol.rank .k{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink3)
+}
+
+ol.rank .c{
+  color:var(--ink3);
+  font-size:.9rem;
+  margin-left:auto
+}
+
+footer.site{
+  border-top:1px solid var(--rule);
+  margin-top:2rem;
+  padding:1.5rem 0;
+  color:var(--ink3);
+  font-size:.85rem
+}
+
+footer.site a{color:var(--ink3)}
+
+nav.ddnav .navburger{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  width:40px;
+  height:40px;
+  background:none;
+  border:0;
+  cursor:pointer;
+  padding:8px;
+  border-radius:8px
+}
+
+nav.ddnav .navburger span{
+  display:block;
+  height:2px;
+  width:100%;
+  background:#1d1813;
+  border-radius:2px;
+  transition:.2s
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(1){
+  transform:translateY(7px) rotate(45deg)
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(2){
+  opacity:0
+}
+
+nav.ddnav .navburger[aria-expanded="true"] span:nth-child(3){
+  transform:translateY(-7px) rotate(-45deg)
+}
+
+.mobilemenu{display:none}
+
+@media(max-width:720px){
+  .section-heading-row{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .risk-grid{grid-template-columns:1fr}
+
+  .risk-mini-grid{grid-template-columns:1fr}
+
+  nav.ddnav{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    height:60px;
+    padding-top:0;
+    padding-bottom:0
+  }
+
+  nav.ddnav .navmeta{display:none}
+  nav.ddnav .navlinks{display:none !important}
+  nav.ddnav .navburger{display:flex}
+
+  .mobilemenu:not([hidden]){
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:10px clamp(18px,4vw,48px) 18px;
+    background:#f6f1e7;
+    border-bottom:1px solid #e0d8c5;
+    position:sticky;
+    top:60px;
+    z-index:49
+  }
+
+  .mobilemenu>a{
+    font-size:15px;
+    font-weight:500;
+    color:#1d1813;
+    text-decoration:none;
+    padding:11px 12px;
+    border-radius:8px
+  }
+
+  .mobilemenu>a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+
+  .mm-section{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:6px 0;
+    margin:2px 0;
+    border-top:1px solid #e0d8c5
+  }
+
+  .mm-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:#938a78;
+    padding:6px 12px 2px
+  }
+
+  .mm-section a{
+    font-size:15px;
+    font-weight:500;
+    color:#5b5346;
+    text-decoration:none;
+    padding:10px 12px 10px 22px;
+    border-radius:8px
+  }
+
+  .mm-section a.on{
+    color:#004c53;
+    background:#d7e9ea
+  }
+}
 #locmap{
-  height:330px;
-  border-radius:12px;
+  height:320px;
+  border-radius:10px;
   border:1px solid #e4dccb;
-  background:#f6f1e7;
+  margin:1rem 0 .5rem;
+  background:#f6f1e7
+}
+
+@media(max-width:600px){
+  #locmap{height:240px}
 }
 
 .locmap-cap{
-  font:600 .8rem/1.3 'Public Sans',sans-serif;
+  font:600 .86rem/1.3 'Public Sans',sans-serif;
   color:#004c53;
-  margin:.65rem 0 .05rem;
-  text-align:center;
+  margin:0 0 1.5rem;
+  text-align:center
 }
 
-.locmap-cap b{
-  font-weight:700;
-}
+.locmap-cap b{font-weight:700}
 
 .loc-lbl{
   background:transparent;
@@ -428,500 +860,14 @@ h3{
   pointer-events:none;
   text-shadow:
     0 1px 2px rgba(0,0,0,.6),
-    0 0 3px rgba(0,0,0,.55);
+    0 0 3px rgba(0,0,0,.55)
 }
 
 .loc-lbl:before,
 .loc-lbl:after{
-  display:none !important;
+  display:none !important
 }
-
-ul.haz{
-  list-style:none;
-  padding:0;
-  margin:.65rem 0 0;
-  display:flex;
-  flex-wrap:wrap;
-  gap:.5rem;
-}
-
-ul.haz li{
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:999px;
-  padding:.32rem .78rem;
-  font-size:.82rem;
-}
-
-ul.haz b{
-  color:var(--teal);
-  margin-left:.15rem;
-}
-
-.assistance-stack{
-  display:grid;
-  gap:1rem;
-  margin-top:1rem;
-}
-
-.data-panel{
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:16px;
-  padding:1.05rem 1.1rem 1.15rem;
-  box-shadow:var(--shadow);
-}
-
-.data-panel h3{
-  margin-top:0;
-}
-
-.pa-note{
-  font-size:.86rem;
-  color:var(--ink3);
-  max-width:74ch;
-  margin:.3rem 0 .85rem;
-}
-
-.hm-stats,
-.ia-stats{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:1px;
-  background:#e2dccb;
-  border:1px solid #cec7b6;
-  border-radius:10px;
-  overflow:hidden;
-  margin:.65rem 0 .9rem;
-}
-
-.hm-stat,
-.ia-stat{
-  background:#faf7ef;
-  padding:.75rem .9rem;
-}
-
-.hm-n,
-.ia-n{
-  font-family:'Fraunces',Georgia,serif;
-  font-size:1.15rem;
-  color:#004c53;
-  letter-spacing:-.3px;
-}
-
-.hm-l,
-.ia-l{
-  font-size:.7rem;
-  color:#6b6357;
-  margin-top:.15rem;
-}
-
-.tablewrap{
-  overflow-x:auto;
-  border:1px solid var(--rule);
-  border-radius:12px;
-  background:var(--paper);
-}
-
-table{
-  border-collapse:collapse;
-  width:100%;
-  font-size:.84rem;
-  min-width:560px;
-}
-
-th,
-td{
-  text-align:left;
-  padding:.58rem .8rem;
-  border-bottom:1px solid var(--rule);
-  vertical-align:top;
-}
-
-th{
-  font-size:.71rem;
-  text-transform:uppercase;
-  letter-spacing:.035em;
-  color:var(--ink3);
-  background:#faf6ec;
-}
-
-tr:last-child td{
-  border-bottom:none;
-}
-
-.tag{
-  font-weight:700;
-  color:var(--teal);
-}
-
-table.pa-cat tfoot td{
-  font-weight:700;
-  color:var(--teal);
-  border-top:2px solid var(--rule);
-  background:#faf6ec;
-}
-
-.pa-cat .catcode{
-  color:var(--ink3);
-  font-weight:400;
-  font-size:.85em;
-  margin-left:.15em;
-}
-
-table.pa-cat td:nth-child(2),
-table.pa-cat th:nth-child(2),
-table.pa-cat td:nth-child(3),
-table.pa-cat th:nth-child(3){
-  text-align:right;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-}
-
-.ft-list{
-  display:grid;
-  gap:1px;
-  background:#e2dccb;
-  border:1px solid #cec7b6;
-  border-radius:10px;
-  overflow:hidden;
-  margin:.6rem 0 .3rem;
-}
-
-.ft-row{
-  background:#faf7ef;
-  padding:.72rem .9rem;
-}
-
-.ft-top{
-  display:flex;
-  justify-content:space-between;
-  gap:.8rem;
-  align-items:baseline;
-}
-
-.ft-name{
-  font-size:.88rem;
-  color:#17211f;
-  font-weight:600;
-}
-
-.ft-date{
-  color:#6b6357;
-  font-weight:400;
-}
-
-.ft-val{
-  font-family:Fraunces,Georgia,serif;
-  font-size:1rem;
-  color:#004c53;
-}
-
-.ft-track{
-  position:relative;
-  height:11px;
-  margin:.5rem 0 .35rem;
-  background:#ece7d8;
-  border:1px solid #e2dccb;
-  border-radius:6px;
-  overflow:hidden;
-}
-
-.ft-gap{
-  position:absolute;
-  top:0;
-  left:0;
-  height:100%;
-  background:#c85c2e;
-}
-
-.ft-flow{
-  position:absolute;
-  top:0;
-  height:100%;
-  background:#004c53;
-}
-
-.ft-meta{
-  font-size:.7rem;
-  color:#6b6357;
-}
-
-.ft-meta b{
-  color:#c85c2e;
-}
-
-.ft-axis{
-  position:relative;
-  height:1.1rem;
-  margin:.15rem .9rem 0;
-  font-size:.64rem;
-  color:#6b6357;
-}
-
-.ft-axis span{
-  position:absolute;
-  transform:translateX(-50%);
-}
-
-.ft-axis span:first-child{
-  transform:none;
-}
-
-.hmp{
-  background:#eef4f4;
-  border:1px solid #cfe0e0;
-  border-radius:14px;
-  padding:1.1rem 1.2rem;
-  margin:1rem 0;
-}
-
-.hmp p{
-  margin:.1rem 0 .9rem;
-  font-size:.88rem;
-}
-
-.copybtn{
-  display:inline-flex;
-  align-items:center;
-  font:700 .78rem 'Public Sans',sans-serif;
-  color:#004c53;
-  background:none;
-  border:1px solid #004c53;
-  border-radius:8px;
-  padding:.42rem .8rem;
-  cursor:pointer;
-  margin-top:.8rem;
-  text-decoration:none;
-}
-
-.copybtn:hover{
-  background:#e6f0ef;
-}
-
-.decl-filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.4rem;
-  margin:.2rem 0 .5rem;
-}
-
-.decl-chip{
-  font:700 .78rem/1 'Public Sans',sans-serif;
-  color:var(--teal);
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:999px;
-  padding:.42rem .7rem;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:.4rem;
-}
-
-.decl-chip .n{
-  background:#eef3f2;
-  border-radius:999px;
-  padding:.06rem .42rem;
-  font-size:.73rem;
-  font-weight:700;
-}
-
-.decl-chip[aria-pressed="true"]{
-  background:var(--teal);
-  color:#fff;
-  border-color:var(--teal);
-}
-
-.decl-chip[aria-pressed="true"] .n{
-  background:rgba(255,255,255,.22);
-  color:#fff;
-}
-
-.decl-chip.off{
-  opacity:.42;
-  cursor:default;
-}
-
-.decl-count{
-  font-size:.8rem;
-  color:var(--ink3);
-  margin:.05rem 0 .55rem;
-}
-
-.tablewrap.scroll{
-  max-height:430px;
-  overflow-y:auto;
-}
-
-.tablewrap.scroll thead th{
-  position:sticky;
-  top:0;
-  z-index:1;
-}
-
-tr.hide{
-  display:none;
-}
-
-th.sortable{
-  cursor:pointer;
-  user-select:none;
-  -webkit-user-select:none;
-  white-space:nowrap;
-}
-
-th.sortable::after{
-  content:"↕";
-  opacity:.32;
-  margin-left:.35em;
-  font-weight:400;
-}
-
-th.sortable:hover{
-  color:var(--teal);
-}
-
-th[aria-sort="ascending"]::after{
-  content:"↑";
-  opacity:.95;
-}
-
-th[aria-sort="descending"]::after{
-  content:"↓";
-  opacity:.95;
-}
-
-.method{
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:16px;
-  padding:1.15rem 1.25rem;
-  margin:2rem 0;
-  font-size:.86rem;
-}
-
-.method h2{
-  margin-top:0;
-  font-size:1.15rem;
-}
-
-.jgrid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.4rem .7rem;
-  margin:.6rem 0;
-}
-
-.jgrid a{
-  font-size:.83rem;
-  text-decoration:none;
-}
-
-ol.rank{
-  padding-left:0;
-  list-style:none;
-  counter-reset:r;
-}
-
-ol.rank li{
-  counter-increment:r;
-  display:flex;
-  align-items:baseline;
-  gap:.7rem;
-  padding:.45rem 0;
-  border-bottom:1px solid var(--rule);
-}
-
-ol.rank li::before{
-  content:counter(r);
-  font-family:'Fraunces',serif;
-  color:var(--ink3);
-  min-width:2.6ch;
-  text-align:right;
-}
-
-ol.rank a{
-  text-decoration:none;
-  font-weight:600;
-}
-
-ol.rank .k{
-  font-size:.7rem;
-  text-transform:uppercase;
-  letter-spacing:.04em;
-  color:var(--ink3);
-}
-
-ol.rank .c{
-  color:var(--ink3);
-  font-size:.86rem;
-  margin-left:auto;
-}
-
-footer.site{
-  border-top:1px solid var(--rule);
-  margin-top:2rem;
-  padding:1.5rem 0;
-  color:var(--ink3);
-  font-size:.82rem;
-}
-
-footer.site a{
-  color:var(--ink3);
-}
-
-@media(max-width:860px){
-  .overview-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-
-  .risk-mini-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:720px){
-  .hero-top{
-    display:block;
-  }
-
-  .hero-actions{
-    justify-content:flex-start;
-    margin-top:.65rem;
-  }
-
-  .risk-grid{
-    grid-template-columns:1fr;
-  }
-
-  .section-head{
-    display:block;
-  }
-
-  .section-meta{
-    margin-top:.45rem;
-  }
-}
-
-@media(max-width:600px){
-  .overview-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .overview-card{
-    min-height:112px;
-  }
-
-  #locmap{
-    height:245px;
-  }
-
-  .hm-stats,
-  .ia-stats{
-    grid-template-columns:1fr;
-  }
-}</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts disaster history and risk context", "description": "Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts federal disaster history through FY2025, including FEMA declarations, Public Assistance, Individual Assistance where designated, mitigation investment, and county risk and vulnerability context where available.", "url": "https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Wampanoag Tribe of Gay Head (Aquinnah)", "Massachusetts", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences", "Public Assistance", "Individual Assistance"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../massachusetts.html">Massachusetts</a> / Wampanoag Tribe of Gay Head (Aquinnah)</p><section class="hero"><div class="hero-top"><div><span class="badge tribal">Tribal nation</span><h1>Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts</h1></div></div><p class="lede">Wampanoag Tribe of Gay Head (Aquinnah) recorded <b>2</b> federal disaster and emergency declarations in completed fiscal years from FY2000 through FY2025: 1 major disasters, 1 emergencies, and 0 fire-management declarations. Its most frequently declared hazard is biological.</p><div class="overview-grid"><article class="overview-card"><div class="overview-kicker">Federal disaster history</div><div><div class="overview-value">2</div><div class="overview-label">Biological most common</div></div></article><article class="overview-card"><div class="overview-kicker">Most recent</div><div><div class="overview-value">Mar 27, 2020</div><div class="overview-label">Newest declaration activity</div></div></article><article class="overview-card"><div class="overview-kicker">Major disasters</div><div><div class="overview-value">1</div><div class="overview-label">Stafford Act DR declarations</div></div></article><article class="overview-card"><div class="overview-kicker">Emergencies</div><div><div class="overview-value">1</div><div class="overview-label">Federal EM declarations</div></div></article></div><section class="jsummary"><p>The federal disaster record for Wampanoag Tribe of Gay Head (Aquinnah) runs in 2020, covering 2 declarations in completed fiscal years. Its most recent major disaster declaration was Covid-19 Pandemic in 2020. Every declaration in the completed-year record was tied to biological.</p></section></section><section class="major-section"><div class="section-head"><div><h2>Most common hazards</h2><p class="section-deck">Hazard categories are based on FEMA incident types in this jurisdiction's completed-fiscal-year declaration record.</p></div></div><ul class="haz"><li>Biological <b>2</b></li></ul></section><section class="major-section"><div class="section-head"><div><h2>Previous occurrences for mitigation planning</h2><p class="section-deck">A ready-to-use federal declaration history for documenting previous hazard occurrences in local hazard mitigation planning.</p></div></div><div class="hmp"><p>This table contains the completed-fiscal-year FEMA declaration record for Wampanoag Tribe of Gay Head (Aquinnah). Copy the table or download the full declaration record below.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Biological</td><td>Mar 27, 2020</td><td>DR-4496-MA</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3497-MA</td><td>EM</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Biological&quot;, &quot;Mar 27, 2020&quot;, &quot;DR-4496-MA&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3497-MA&quot;, &quot;EM&quot;]]">Copy table</button></div></section><section class="major-section"><div class="section-head"><div><h2>Every declaration on record</h2><p class="section-deck">Filter or sort the completed-fiscal-year declaration record, download it as CSV, or copy a citation for this jurisdiction page.</p></div></div><div id="declbox"><p style="font-size:.79rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster &middot; <b style="color:#004c53">EM</b> = Emergency &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">2</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">1</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">1</span></button><button type="button" class="decl-chip off" data-t="FM" aria-pressed="false">FM <span class="n">0</span></button></div><p class="decl-count" aria-live="polite">Showing 2 declarations</p><div class="tablewrap"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="DR"><td data-s="2020-03-27">Mar 27, 2020</td><td data-s="4496">DR-4496-MA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3497">EM-3497-MA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr></tbody></table></div><div style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button><button class="copybtn citebtn" type="button">Cite this page</button></div></div><script>
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts FEMA disaster declarations", "description": "Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts has had 2 federal disaster and emergency declarations since FY2000 (1 major disasters, 1 emergencies, 0 fire-management). Full FEMA declaration history and a ready-to-use previous-occurrences table for hazard mitigation planning, with CDC SVI and FEMA NRI context where available.", "url": "https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html", "isAccessibleForFree": true, "creator": {"@type": "Organization", "name": "Disaster Data", "url": "https://disasterdata.io"}, "spatialCoverage": {"@type": "Place", "name": "Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts"}, "temporalCoverage": "2000/2025", "isBasedOn": "https://www.fema.gov/about/openfema", "keywords": ["Wampanoag Tribe of Gay Head (Aquinnah)", "Massachusetts", "FEMA", "disaster declarations", "hazard mitigation plan", "previous occurrences", "CDC Social Vulnerability Index", "FEMA National Risk Index"]}</script></head><body><script src="/nav.js"></script><main><div class="wrap"><p class="crumb"><a href="../../index.html">Disaster Data</a> / <a href="../../states/index.html">States</a> / <a href="../massachusetts.html">Massachusetts</a> / Wampanoag Tribe of Gay Head (Aquinnah)</p><span class="badge tribal">Tribal nation</span><h1>Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts</h1><p class="lede">Wampanoag Tribe of Gay Head (Aquinnah) recorded <b>2</b> federal disaster and emergency declarations since FY2000 (through FY2025): 1 major disasters, 1 emergencies, and 0 fire-management declarations. Its most common hazard is biological.</p><div class="stats"><div class="stat"><div class="n">2</div><div class="l">Declarations since FY2000</div></div><div class="stat"><div class="n">1</div><div class="l">Major disasters (DR)</div></div><div class="stat"><div class="n">1</div><div class="l">Emergencies (EM)</div></div><div class="stat"><div class="n">0</div><div class="l">Fire management (FM)</div></div><div class="stat"><div class="n">Mar&nbsp;2020</div><div class="l">Most recent</div></div></div><section class="jsummary"><p>The federal disaster record for Wampanoag Tribe of Gay Head (Aquinnah) runs in 2020, covering 2 declarations in all. Its most recent major disaster declaration was Covid-19 Pandemic in 2020. Every one was tied to biological.</p></section><h2>Most common hazards</h2><ul class="haz"><li>Biological <b>2</b></li></ul><section><h2>Previous occurrences, for your mitigation plan</h2><div class="hmp"><p>Every local hazard mitigation plan must document previous occurrences of each hazard. Here is that record for Wampanoag Tribe of Gay Head (Aquinnah), sourced to OpenFEMA and refreshed weekly. Copy it straight into your plan.</p><div class="tablewrap"><table><thead><tr><th>Hazard</th><th>Date</th><th>FEMA declaration</th><th>Type</th></tr></thead><tbody><tr><td>Biological</td><td>Mar 27, 2020</td><td>DR-4496-MA</td><td>DR</td></tr><tr><td>Biological</td><td>Mar 13, 2020</td><td>EM-3497-MA</td><td>EM</td></tr></tbody></table></div><button class="copybtn" type="button" data-hmp="[[&quot;Hazard&quot;, &quot;Date&quot;, &quot;FEMA declaration&quot;, &quot;Type&quot;], [&quot;Biological&quot;, &quot;Mar 27, 2020&quot;, &quot;DR-4496-MA&quot;, &quot;DR&quot;], [&quot;Biological&quot;, &quot;Mar 13, 2020&quot;, &quot;EM-3497-MA&quot;, &quot;EM&quot;]]">Copy table</button></div></section><h2>Every declaration on record</h2><div id="declbox"><p class="legend" style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem"><b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; <b style="color:#004c53">EM</b> = Emergency declaration &middot; <b style="color:#004c53">FM</b> = Fire management assistance</p><div class="decl-filters" role="group" aria-label="Filter declarations by type"><button type="button" class="decl-chip" data-t="ALL" aria-pressed="true">All <span class="n">2</span></button><button type="button" class="decl-chip" data-t="DR" aria-pressed="false">DR <span class="n">1</span></button><button type="button" class="decl-chip" data-t="EM" aria-pressed="false">EM <span class="n">1</span></button><button type="button" class="decl-chip off" data-t="FM" aria-pressed="false">FM <span class="n">0</span></button></div><p class="decl-count" aria-live="polite">Showing 2 declarations</p><div class="tablewrap"><table><thead><tr><th class="sortable" data-k="date">Date</th><th class="sortable" data-k="num">Number</th><th class="sortable" data-k="text">Type</th><th class="sortable" data-k="text">Hazard</th><th class="sortable" data-k="text">Title</th></tr></thead><tbody><tr data-t="DR"><td data-s="2020-03-27">Mar 27, 2020</td><td data-s="4496">DR-4496-MA</td><td><span class='tag' title='Major disaster'>DR</span></td><td>Biological</td><td>Covid-19 Pandemic</td></tr><tr data-t="EM"><td data-s="2020-03-13">Mar 13, 2020</td><td data-s="3497">EM-3497-MA</td><td><span class='tag' title='Emergency'>EM</span></td><td>Biological</td><td>Covid-19</td></tr></tbody></table></div><div class="export-bar" style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0"><button class="copybtn csvbtn" type="button">Download CSV</button></div></div><script>
 (function(){
   var box=document.getElementById('declbox');
   if(!box) return;
@@ -929,9 +875,6 @@ footer.site a{
   var cap=box.querySelector('.decl-count');
   var chips=box.querySelectorAll('.decl-chip');
   var table=box.querySelector('table');
-
-  if(!table) return;
-
   var tbody=table.querySelector('tbody');
   var heads=table.querySelectorAll('thead th');
   var rows=Array.prototype.slice.call(tbody.querySelectorAll('tr'));
@@ -966,9 +909,7 @@ footer.site a{
 
   box.addEventListener('click',function(ev){
     var c=ev.target.closest('.decl-chip');
-
     if(!c||c.classList.contains('off')) return;
-
     filter(c.getAttribute('data-t'));
   });
 
@@ -991,8 +932,7 @@ footer.site a{
     var mul=dir==='descending'?-1:1;
 
     rows.sort(function(a,b){
-      var x=val(a,i,k);
-      var y=val(b,i,k);
+      var x=val(a,i,k), y=val(b,i,k);
 
       if(k==='num'){
         return (x-y)*mul;
@@ -1021,17 +961,11 @@ footer.site a{
         }
 
         th.setAttribute('aria-sort',dir);
-
-        sortCol(
-          i,
-          th.getAttribute('data-k')||'text',
-          dir
-        );
+        sortCol(i,th.getAttribute('data-k')||'text',dir);
       });
-
     })(heads[h],h);
   }
 
   filter('ALL');
 })();
-</script></section><div style="margin:2rem 0"><a href="../massachusetts.html">&larr; Massachusetts statewide overview</a> &middot; <a href="index.html">All Massachusetts jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Declaration history comes from FEMA's OpenFEMA Disaster Declarations Summaries. A declaration is counted once for each designated area it names, so a single disaster covering many localities is counted in each locality. For that reason, jurisdiction counts do not sum to Massachusetts's statewide total. Tribal areas are counted as their own jurisdictions, separate from counties. Headline declaration totals cover completed federal fiscal years (Oct. 1 through Sept. 30). Activity from the current fiscal year may appear as the most recent event before it is included in those totals. Public Assistance, Individual Assistance, and Hazard Mitigation figures reflect the underlying federal datasets and may change as records are updated or projects close out. DisasterData.IO uses federal source data but is not endorsed by or affiliated with FEMA, CDC, or ATSDR.</p></section><h2>Other Massachusetts jurisdictions</h2><nav class="jgrid"><a href="essex-county-ma.html">Essex County</a><a href="middlesex-county-ma.html">Middlesex County</a><a href="norfolk-county-ma.html">Norfolk County</a><a href="worcester-county-ma.html">Worcester County</a><a href="suffolk-county-ma.html">Suffolk County</a><a href="bristol-county-ma.html">Bristol County</a><a href="plymouth-county-ma.html">Plymouth County</a><a href="berkshire-county-ma.html">Berkshire County</a><a href="hampden-county-ma.html">Hampden County</a><a href="hampshire-county-ma.html">Hampshire County</a><a href="franklin-county-ma.html">Franklin County</a><a href="barnstable-county-ma.html">Barnstable County</a><a href="dukes-county-ma.html">Dukes County</a><a href="nantucket-county-ma.html">Nantucket County</a><a href="mashpee-wampanoag-tribe-ma.html">Mashpee Wampanoag Tribe</a><a href="hassanamisco-indian-reservation-ma.html">Hassanamisco Indian Reservation</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, CDC/ATSDR SVI, and FEMA National Risk Index data &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2020-03-27", "DR-4496-MA", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3497-MA", "EM", "Biological", "Covid-19"]];var csv=d.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='wampanoag-tribe-of-gay-head-aquinnah-ma-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citebtn')){var today=new Date().toISOString().slice(0,10);var cite='Disaster Data. \"Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts: Disaster History and Risk Context.\" DisasterData.io. Accessed '+today+'. https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd);}else{window.prompt('Citation:',cite);}}});</script></body></html>
+</script><div style="margin:2rem 0"><a href="../massachusetts.html">&larr; Massachusetts statewide overview</a> &middot; <a href="index.html">All Massachusetts jurisdictions</a></div><section class="method"><h2>How these numbers are built</h2><p>Drawn from FEMA's OpenFEMA Disaster Declarations Summaries, rebuilt each week. A declaration is counted here once for each designated area it names, so a single disaster covering many localities is counted in each one. For that reason these jurisdiction counts do not sum to Massachusetts's statewide total. Tribal areas are counted as their own jurisdictions, separate from the counties they sit within. Totals cover complete fiscal years (Oct 1 to Sep 30); the in-progress year may appear in the most-recent list but is not counted in the totals. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section><section class="citation" id="cite" data-cite-title="Wampanoag Tribe of Gay Head (Aquinnah), Massachusetts: Disaster Declarations, Federal Assistance, and Mitigation History" data-cite-url="https://disasterdata.io/states/massachusetts/wampanoag-tribe-of-gay-head-aquinnah-ma.html" data-cite-key="disasterdata_wampanoag_tribe_of_gay_head_aquinnah_ma"><h2>Cite this profile</h2><p>Choose a citation style, then copy the formatted citation. This profile is derived from FEMA OpenFEMA data and is updated as the underlying Disaster Data build is refreshed.</p><div class="cite-tabs" role="group" aria-label="Citation format"><button class="citefmt" type="button" data-fmt="apa" aria-pressed="true">APA</button><button class="citefmt" type="button" data-fmt="chicago" aria-pressed="false">Chicago</button><button class="citefmt" type="button" data-fmt="plain" aria-pressed="false">Plain text</button><button class="citefmt" type="button" data-fmt="bibtex" aria-pressed="false">BibTeX</button></div><div class="cite-text" id="citationText" aria-live="polite"></div><button class="copybtn citecopy" type="button">Copy citation</button></section><h2>Other Massachusetts jurisdictions</h2><nav class="jgrid"><a href="essex-county-ma.html">Essex County</a><a href="middlesex-county-ma.html">Middlesex County</a><a href="norfolk-county-ma.html">Norfolk County</a><a href="worcester-county-ma.html">Worcester County</a><a href="suffolk-county-ma.html">Suffolk County</a><a href="bristol-county-ma.html">Bristol County</a><a href="plymouth-county-ma.html">Plymouth County</a><a href="berkshire-county-ma.html">Berkshire County</a><a href="hampden-county-ma.html">Hampden County</a><a href="hampshire-county-ma.html">Hampshire County</a><a href="franklin-county-ma.html">Franklin County</a><a href="barnstable-county-ma.html">Barnstable County</a><a href="dukes-county-ma.html">Dukes County</a><a href="nantucket-county-ma.html">Nantucket County</a><a href="mashpee-wampanoag-tribe-ma.html">Mashpee Wampanoag Tribe</a><a href="hassanamisco-indian-reservation-ma.html">Hassanamisco Indian Reservation</a></nav></div></main><footer class="site"><div class="wrap">Disaster Data &middot; built from FEMA OpenFEMA, refreshed weekly &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a> &middot; <a href="../../about.html">About and contact</a></div></footer><!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics --><script>(function(){var b=document.querySelector(".navburger"),m=document.querySelector(".mobilemenu");if(b&&m){b.addEventListener("click",function(){var o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!o));if(o){m.setAttribute("hidden","");}else{m.removeAttribute("hidden");}});}})();</script><script>document.addEventListener('click',function(ev){var b=ev.target.closest('.copybtn');if(!b)return;if(b.getAttribute('data-hmp')){var rows=JSON.parse(b.getAttribute('data-hmp'));var t=rows.map(function(r){return r.join('\t');}).join('\n');function done(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){window.prompt('Copy:',t);});}else{window.prompt('Copy:',t);}return;}if(b.classList.contains('csvbtn')){var d=[["Date", "Declaration", "Type", "Hazard", "Title"], ["2020-03-27", "DR-4496-MA", "DR", "Biological", "Covid-19 Pandemic"], ["2020-03-13", "EM-3497-MA", "EM", "Biological", "Covid-19"]];var csv=d.map(function(r){return r.map(function(c){return '\"'+String(c).replace(/\"/g,'\"\"')+'\"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='wampanoag-tribe-of-gay-head-aquinnah-ma-declarations.csv';a.click();URL.revokeObjectURL(a.href);return;}if(b.classList.contains('citecopy')){var out=document.getElementById('citationText');var cite=out?out.textContent:'';function cd(){var p=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=p;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cite).then(cd,function(){window.prompt('Citation:',cite);});}else{window.prompt('Citation:',cite);}return;}});(function(){var box=document.querySelector('.citation'),out=document.getElementById('citationText');if(!box||!out)return;var title=box.getAttribute('data-cite-title')||'',url=box.getAttribute('data-cite-url')||'',key=box.getAttribute('data-cite-key')||'disasterdata_profile';function pad(n){return String(n).padStart(2,'0');}function dates(){var d=new Date();return{iso:d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),long:d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};}function text(fmt){var d=dates();if(fmt==='chicago')return 'Disaster Data. "'+title+'" DisasterData.IO. Accessed '+d.long+'. '+url+'.';if(fmt==='plain')return 'Disaster Data. '+title+'. DisasterData.IO. Derived from FEMA OpenFEMA. Accessed '+d.long+'. '+url;if(fmt==='bibtex')return '@misc{'+key+',\n  author = {{Disaster Data}},\n  title = {'+title+'},\n  howpublished = {DisasterData.IO},\n  url = {'+url+'},\n  urldate = {'+d.iso+'},\n  note = {Derived from FEMA OpenFEMA}\n}';return 'Disaster Data. (n.d.). '+title+'. Retrieved '+d.long+', from '+url;}function render(fmt){out.textContent=text(fmt);var bs=box.querySelectorAll('.citefmt');for(var i=0;i<bs.length;i++){bs[i].setAttribute('aria-pressed',bs[i].getAttribute('data-fmt')===fmt?'true':'false');}}box.addEventListener('click',function(ev){var c=ev.target.closest('.citefmt');if(c){render(c.getAttribute('data-fmt'));}});render('apa');})();</script></body></html>
