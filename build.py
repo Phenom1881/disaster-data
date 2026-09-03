@@ -704,7 +704,7 @@ else:
 HMA_BASE   = "https://www.fema.gov/api/open/v4"
 HMA_FIELDS = [
     "programArea", "federalShareObligated", "county", "countyCode",
-    "stateNumberCode", "numberOfFinalProperties",
+    "stateNumberCode", "numberOfFinalProperties", "disasterNumber",
 ]
 
 # 2-digit state/territory FIPS -> USPS abbreviation (reverse of the generator's map).
@@ -803,6 +803,12 @@ except Exception as e:
 if raw_hma:
     _hma_acc = {}   # st -> {name -> {"fed":float,"n":int,"prog":{p:[fed,n]},"props":int}}
     _hma_skipped = 0
+    # Per-disaster cut for the disaster.html profile page (Pass 2), keyed like
+    # pa-timing.json: {ST: {rawCounty: {disasterNumber: [fed, n]}}}. Limited to
+    # the HMGP family (HMGP and HMGP Post Fire), the only HMA programs actually
+    # tied to a specific disaster declaration; BRIC, FMA, and PDM are
+    # competitive/pre-disaster programs and generally carry no disasterNumber.
+    _hm_timing_acc = {}   # (st, cty_raw, dn) -> {"fed":float,"n":int}
     for r in raw_hma:
         try:
             fed = float(r.get("federalShareObligated") or 0)
@@ -845,6 +851,16 @@ if raw_hma:
             pr[0] += fed
             pr[1] += 1
 
+        if prog.startswith("HMGP"):
+            dn = str(r.get("disasterNumber") or "").strip()
+            if dn:
+                trec = _hm_timing_acc.get((abbr, name, dn))
+                if trec is None:
+                    trec = {"fed": 0.0, "n": 0}
+                    _hm_timing_acc[(abbr, name, dn)] = trec
+                trec["fed"] += fed
+                trec["n"]   += 1
+
     hma_out = {}
     for st, names in _hma_acc.items():
         _co = {}
@@ -867,6 +883,24 @@ if raw_hma:
     print(f"  hma.json: {_hm_names:,} jurisdictions across {_hm_states} states, "
           f"{_hm_proj:,} funded projects, ${_hm_fed:,.0f} federal share "
           f"(skipped {_hma_skipped:,} rows with no usable county)\n")
+
+    # ---- hm-timing.json: per-disaster HMGP cut for the disaster.html profile page
+    hm_timing_out = {}
+    for (abbr, name, dn), rec in _hm_timing_acc.items():
+        if rec["fed"] <= 0:
+            continue
+        hm_timing_out.setdefault(abbr, {}).setdefault(name, {})[dn] = [
+            round(rec["fed"]), rec["n"],
+        ]
+
+    if hm_timing_out:
+        with open("hm-timing.json", "w", encoding="utf-8") as _f:
+            json.dump(hm_timing_out, _f, separators=(",", ":"))
+        _hmt_pairs = sum(len(d) for v in hm_timing_out.values() for d in v.values())
+        print(f"  hm-timing.json: {_hmt_pairs:,} county-disaster pairs (HMGP only), "
+              f"powers the per-event Hazard Mitigation section on disaster.html\n")
+    else:
+        print("  Skipping hm-timing.json (no per-disaster HMGP data).\n")
 else:
     print("  Skipping hma.json (no HMA data).\n")
 
@@ -886,9 +920,9 @@ else:
 
 IA_BASE = "https://www.fema.gov/api/open/v2"
 # Owners carry repairReplaceAmount; Renters do not (renters do not own the structure).
-IA_OWN_FIELDS  = ["state", "county", "validRegistrations", "approvedForFemaAssistance",
+IA_OWN_FIELDS  = ["state", "county", "disasterNumber", "validRegistrations", "approvedForFemaAssistance",
                   "totalApprovedIhpAmount", "repairReplaceAmount", "rentalAmount", "otherNeedsAmount"]
-IA_RENT_FIELDS = ["state", "county", "validRegistrations", "approvedForFemaAssistance",
+IA_RENT_FIELDS = ["state", "county", "disasterNumber", "validRegistrations", "approvedForFemaAssistance",
                   "totalApprovedIhpAmount", "rentalAmount", "otherNeedsAmount"]
 
 def _ia_match_name(county):
@@ -974,6 +1008,12 @@ print()
 if _ia_rows:
     _ia_acc = {}   # st -> {name -> {"reg","app","ihp","rr","rent","ona"}}
     _ia_skipped = 0
+    # Per-disaster cut for the disaster.html profile page (Pass 2), keyed
+    # exactly like pa-timing.json: {ST: {rawCounty: {disasterNumber: [...]}}}.
+    # Uses the SAME raw "county" string pa-timing.json uses (not the
+    # pa_base_kind-friendly key above), so disaster.html's existing
+    # countyLink()/_base() matching works on it unchanged.
+    _ia_timing_acc = {}   # (st, cty_raw, dn) -> {reg,app,ihp,rr,rent,ona}
     for r in _ia_rows:
         st  = (r.get("state") or "").strip().upper()
         key = _ia_match_name(r.get("county"))
@@ -991,6 +1031,20 @@ if _ia_rows:
         rec["rr"]   += _num(r.get("repairReplaceAmount"))
         rec["rent"] += _num(r.get("rentalAmount"))
         rec["ona"]  += _num(r.get("otherNeedsAmount"))
+
+        dn = str(r.get("disasterNumber") or "").strip()
+        cty_raw = (r.get("county") or "").strip()
+        if dn and cty_raw:
+            trec = _ia_timing_acc.get((st, cty_raw, dn))
+            if trec is None:
+                trec = {"reg": 0, "app": 0, "ihp": 0.0, "rr": 0.0, "rent": 0.0, "ona": 0.0}
+                _ia_timing_acc[(st, cty_raw, dn)] = trec
+            trec["reg"]  += int(_num(r.get("validRegistrations")))
+            trec["app"]  += int(_num(r.get("approvedForFemaAssistance")))
+            trec["ihp"]  += _num(r.get("totalApprovedIhpAmount"))
+            trec["rr"]   += _num(r.get("repairReplaceAmount"))
+            trec["rent"] += _num(r.get("rentalAmount"))
+            trec["ona"]  += _num(r.get("otherNeedsAmount"))
 
     ia_out = {}
     for st, names in _ia_acc.items():
@@ -1014,6 +1068,25 @@ if _ia_rows:
     print(f"  ia.json: {_ia_names:,} jurisdictions across {_ia_states} states, "
           f"{_ia_app:,} households approved, ${_ia_ihp:,.0f} IHP approved "
           f"(skipped {_ia_skipped:,} rows with no usable county)\n")
+
+    # ---- ia-timing.json: per-disaster cut for the disaster.html profile page
+    ia_timing_out = {}
+    for (st, cty_raw, dn), rec in _ia_timing_acc.items():
+        if rec["reg"] <= 0 and rec["ihp"] <= 0:
+            continue
+        ia_timing_out.setdefault(st, {}).setdefault(cty_raw, {})[dn] = [
+            rec["reg"], rec["app"], round(rec["ihp"]),
+            round(rec["rr"]), round(rec["rent"]), round(rec["ona"]),
+        ]
+
+    if ia_timing_out:
+        with open("ia-timing.json", "w", encoding="utf-8") as _f:
+            json.dump(ia_timing_out, _f, separators=(",", ":"))
+        _iat_pairs = sum(len(d) for v in ia_timing_out.values() for d in v.values())
+        print(f"  ia-timing.json: {_iat_pairs:,} county-disaster pairs, "
+              f"powers the per-event Individual Assistance section on disaster.html\n")
+    else:
+        print("  Skipping ia-timing.json (no per-disaster Individual Assistance data).\n")
 else:
     print("  Skipping ia.json (no Individual Assistance data).\n")
 

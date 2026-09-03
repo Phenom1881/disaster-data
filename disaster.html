@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Disaster Data | Disaster Profile</title>
-<meta name="description" content="Profile a single FEMA disaster: the states and counties it was declared in, its declaration numbers, and its Public Assistance funding.">
+<meta name="description" content="Profile a single FEMA disaster: the states and counties it was declared in, its declaration numbers, and its Public Assistance, Individual Assistance, and Hazard Mitigation funding.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -123,6 +123,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   var STATES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia",PR:"Puerto Rico",VI:"U.S. Virgin Islands",GU:"Guam",AS:"American Samoa",MP:"N. Mariana Islands"};
   var TYPE_LONG = {DR:"Major disaster",EM:"Emergency",FM:"Fire management"};
   var PT_OBL = 3; // pa-timing entry = [declDate, firstObl, lastObl, obligated, topCategory]
+  var IA_REG=0, IA_APP=1, IA_IHP=2, IA_RR=3, IA_RENT=4, IA_ONA=5; // ia-timing entry
+  var HM_FED=0, HM_N=1; // hm-timing entry (HMGP only)
 
   function money(n){ n=+n||0;
     if(n>=1e9) return "$"+(n/1e9).toFixed(1).replace(/\.0$/,"")+"B";
@@ -151,11 +153,13 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   function countyLink(st,county){ var m=_ul()[st]; if(!m) return null; var u=m[_base(county)]||m[String(county).toLowerCase()]; return u ? "/"+u : null; }
   function aWrap(href,text){ return href ? '<a href="'+href+'" style="color:var(--accent);text-decoration:none">'+text+'</a>' : text; }
 
-  var EVENTS = [], PT = null;
+  var EVENTS = [], PT = null, IAT = null, HMT = null;
   Promise.all([
     fetch("events.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():[];}).catch(function(){return [];}),
-    fetch("pa-timing.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
-  ]).then(function(res){ EVENTS = res[0]||[]; PT = res[1]; route(); });
+    fetch("pa-timing.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+    fetch("ia-timing.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+    fetch("hm-timing.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+  ]).then(function(res){ EVENTS = res[0]||[]; PT = res[1]; IAT = res[2]; HMT = res[3]; route(); });
 
   function findEvent(id){ for(var i=0;i<EVENTS.length;i++){ if(String(EVENTS[i].id)===String(id)) return EVENTS[i]; } return null; }
   function route(){ var id=qp("event"); var ev=id?findEvent(id):null; if(ev) renderProfile(ev); else renderPicker(!!id); }
@@ -176,6 +180,47 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       });
     });
     return hitAny ? {total:total,perState:perState,perCounty:perCounty} : {total:0,perState:{},perCounty:[]};
+  }
+
+  function computeIA(ev){
+    if(!IAT) return null;
+    var dnset={}; (ev.dns||[]).forEach(function(d){ dnset[String(d)]=1; });
+    var perState={}, totals={reg:0,app:0,ihp:0}, hitAny=false;
+    Object.keys(IAT).forEach(function(st){
+      var counties=IAT[st]||{};
+      Object.keys(counties).forEach(function(cty){
+        var byDn=counties[cty]||{}, creg=0, capp=0, cihp=0, hit=false;
+        Object.keys(byDn).forEach(function(dn){
+          if(dnset[dn]){
+            var a=byDn[dn]||[];
+            creg+=Number(a[IA_REG]||0); capp+=Number(a[IA_APP]||0); cihp+=Number(a[IA_IHP]||0);
+            if(creg>0||capp>0||cihp>0) hit=true;
+          }
+        });
+        if(hit){ hitAny=true; totals.reg+=creg; totals.app+=capp; totals.ihp+=cihp;
+          var ps=perState[st]||(perState[st]={reg:0,app:0,ihp:0,counties:0});
+          ps.reg+=creg; ps.app+=capp; ps.ihp+=cihp; ps.counties+=1; }
+      });
+    });
+    return hitAny ? {totals:totals,perState:perState} : null;
+  }
+
+  function computeHM(ev){
+    if(!HMT) return null;
+    var dnset={}; (ev.dns||[]).forEach(function(d){ dnset[String(d)]=1; });
+    var perState={}, total=0, projects=0, hitAny=false;
+    Object.keys(HMT).forEach(function(st){
+      var counties=HMT[st]||{};
+      Object.keys(counties).forEach(function(cty){
+        var byDn=counties[cty]||{}, cfed=0, cn=0, hit=false;
+        Object.keys(byDn).forEach(function(dn){
+          if(dnset[dn]){ var a=byDn[dn]||[]; var fed=Number(a[HM_FED]||0); if(fed>0){ cfed+=fed; cn+=Number(a[HM_N]||0); hit=true; } }
+        });
+        if(hit){ hitAny=true; total+=cfed; projects+=cn;
+          var ps=perState[st]||(perState[st]={fed:0,n:0}); ps.fed+=cfed; ps.n+=cn; }
+      });
+    });
+    return hitAny ? {total:total,projects:projects,perState:perState} : null;
   }
 
   function renderProfile(ev){
@@ -234,6 +279,65 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       }
     }
 
+    // Individual Assistance to households
+    var iaSec = "";
+    var ia = computeIA(ev);
+    if(ia){
+      var iaTiles = [
+        [num(ia.totals.reg), "valid registration"+(ia.totals.reg===1?"":"s")],
+        [num(ia.totals.app), "household"+(ia.totals.app===1?"":"s")+" approved"],
+        [moneyStat(ia.totals.ihp), "total IHP approved"]
+      ];
+      var iaStatHtml = iaTiles.map(function(t){ return '<div class="stat"><div class="num">'+t[0]+'</div><div class="lab">'+t[1]+'</div></div>'; }).join("");
+      var iaRows = Object.keys(ia.perState).map(function(s){ var p=ia.perState[s]; return {s:s,ihp:p.ihp,c:p.counties}; })
+                          .sort(function(a,b){ return b.ihp-a.ihp; });
+      var iaRanking = "";
+      if(iaRows.length>1){
+        var iaMax = Math.max(iaRows[0].ihp,1);
+        var iaBody = iaRows.map(function(r,i){
+          var w=Math.max(2,Math.round(r.ihp/iaMax*100));
+          return '<div class="row"><div class="rank">'+(i+1)+'</div>'+
+            '<div class="sname"><div class="n">'+aWrap(stateLink(r.s),esc(STATES[r.s]||r.s))+'</div><div class="meta">'+num(r.c)+' '+(r.c===1?'county':'counties')+' with IA</div></div>'+
+            '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+w+'%"></div></div></div>'+
+            '<div class="barnum">'+money(r.ihp)+'</div></div>';
+        }).join("");
+        iaRanking = '<div class="tier-h"><span class="t">States</span><span class="c">by IHP approved</span></div>'+iaBody;
+      }
+      iaSec = '<section class="sec"><div class="shead"><div class="k">Individual Assistance</div>'+
+        '<h2>Aid that reached households</h2>'+
+        '<p class="lead">FEMA Individual Assistance to households under this event, combined across the Housing Assistance owner and renter programs. Valid registrations are households that applied within a designated IA area; approved figures are those FEMA found eligible under the Individuals and Households Program.</p></div>'+
+        '<div class="stats">'+iaStatHtml+'</div>'+iaRanking+'</section>';
+    }
+
+    // Hazard Mitigation (HMGP, the program tied to a specific disaster)
+    var hmSec = "";
+    var hm = computeHM(ev);
+    if(hm){
+      var hmTiles = [
+        [moneyStat(hm.total), "HMGP federal share obligated"],
+        [num(hm.projects), "funded project"+(hm.projects===1?"":"s")]
+      ];
+      var hmStatHtml = hmTiles.map(function(t){ return '<div class="stat"><div class="num">'+t[0]+'</div><div class="lab">'+t[1]+'</div></div>'; }).join("");
+      var hmRows = Object.keys(hm.perState).map(function(s){ var p=hm.perState[s]; return {s:s,fed:p.fed,n:p.n}; })
+                          .sort(function(a,b){ return b.fed-a.fed; });
+      var hmRanking = "";
+      if(hmRows.length>1){
+        var hmMax = Math.max(hmRows[0].fed,1);
+        var hmBody = hmRows.map(function(r,i){
+          var w=Math.max(2,Math.round(r.fed/hmMax*100));
+          return '<div class="row"><div class="rank">'+(i+1)+'</div>'+
+            '<div class="sname"><div class="n">'+aWrap(stateLink(r.s),esc(STATES[r.s]||r.s))+'</div><div class="meta">'+num(r.n)+' funded project'+(r.n===1?'':'s')+'</div></div>'+
+            '<div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:'+w+'%"></div></div></div>'+
+            '<div class="barnum">'+money(r.fed)+'</div></div>';
+        }).join("");
+        hmRanking = '<div class="tier-h"><span class="t">States</span><span class="c">by HMGP federal share</span></div>'+hmBody;
+      }
+      hmSec = '<section class="sec"><div class="shead"><div class="k">Hazard Mitigation</div>'+
+        '<h2>Reducing the next one</h2>'+
+        '<p class="lead">Hazard Mitigation Grant Program funding tied directly to this event\u2019s declarations. Other HMA programs, such as BRIC, Flood Mitigation Assistance, and Pre-Disaster Mitigation, are competitive and not tied to a specific disaster, so they are not counted here; they appear on the Mitigation page and on individual Local pages.</p></div>'+
+        '<div class="stats">'+hmStatHtml+'</div>'+hmRanking+'</section>';
+    }
+
     // declarations
     var declSec = '<section class="sec"><div class="shead"><div class="k">Declarations</div>'+
       '<h2>The declarations grouped here</h2>'+
@@ -242,7 +346,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       '<a class="maplink" href="/map.html">See this footprint on the county map \u2192</a></section>';
 
     var methodSec = '<section class="sec"><div class="shead"><div class="k">Method</div><h2>About this data</h2>'+
-      '<p class="lead">An event groups every FEMA declaration that shares one incident, by the same key the Compare tool uses. States and counties come from the declaration footprint; Public Assistance is the federal share obligated across the event\u2019s declaration numbers, from OpenFEMA. Committed funding, not final spending, and separate from Individual Assistance and Hazard Mitigation, which are shown per place on the Local pages.</p></div></section>';
+      '<p class="lead">An event groups every FEMA declaration that shares one incident, by the same key the Compare tool uses. States and counties come from the declaration footprint. Public Assistance is the federal share obligated across the event\u2019s declaration numbers; committed funding, not final spending. Individual Assistance combines the Housing Assistance owner and renter programs. Hazard Mitigation here is limited to HMGP, the only HMA program tied to a specific disaster; competitive programs like BRIC are not counted per event. All figures are self-reported to FEMA via OpenFEMA and appear only where that assistance type was designated for this event.</p></div></section>';
 
     app.innerHTML =
       '<a class="d-back" href="/map.html">\u2190 Back to the map</a>'+
@@ -250,7 +354,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       '<h1 class="headline">'+esc(ev.n||("Event "+ev.id))+'</h1>'+
       '<p class="standfirst">Where this disaster was declared, which communities it reached, and the federal recovery funding that followed.</p>'+
       '<div class="stats">'+statHtml+'</div></header>'+
-      stateSec+locSec+declSec+methodSec;
+      stateSec+locSec+iaSec+hmSec+declSec+methodSec;
 
     var t=document.getElementById("locToggle");
     if(t){ t.addEventListener("click", function(){ var m=document.getElementById("locMore");
