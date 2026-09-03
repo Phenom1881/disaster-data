@@ -1,0 +1,18 @@
+from __future__ import annotations
+
+import argparse
+
+from .api import serve
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run the DisasterData Weather API")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", default=8080, type=int)
+    args = parser.parse_args()
+    serve(args.host, args.port)
+
+
+if __name__ == "__main__":
+    main()
+

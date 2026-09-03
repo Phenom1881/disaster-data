@@ -1,1 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore certified NOAA storm events and local climate observations by U.S. city or county.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Weather history | Disaster Data</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17232e;
+      --muted: #63717c;
+      --paper: #f4f6f4;
+      --panel: #ffffff;
+      --navy: #102b3b;
+      --navy-2: #173f54;
+      --cyan: #70d5df;
+      --amber: #f2b84b;
+      --orange: #e87845;
+      --line: #dbe2e3;
+      --soft: #eaf0ef;
+      --danger: #a73b31;
+      --shadow: 0 18px 42px rgb(16 43 59 / 10%);
+      --radius: 16px;
+    }
 
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, var(--navy) 0 255px, transparent 255px),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+    .site-header {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 760; letter-spacing: -.02em; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgb(255 255 255 / 24%);
+      border-radius: 12px;
+      background: rgb(255 255 255 / 8%);
+      color: var(--cyan);
+      font-size: 21px;
+    }
+    .brand span { color: var(--cyan); }
+    .section-label { color: rgb(255 255 255 / 70%); font-size: .9rem; }
+
+    .search-panel {
+      position: relative;
+      z-index: 2;
+      padding: 24px;
+      border: 1px solid rgb(255 255 255 / 13%);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .search-heading { margin: 0 0 4px; font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -.035em; }
+    .search-copy { margin: 0 0 20px; color: var(--muted); }
+    .search-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.6fr) minmax(150px, .65fr) minmax(150px, .65fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+    label { display: grid; gap: 7px; color: #3c4b56; font-size: .88rem; font-weight: 700; }
+    input {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 13px;
+      border: 1px solid #bfcacc;
+      border-radius: 11px;
+      color: var(--ink);
+      background: white;
+      outline: none;
+    }
+    input:focus { border-color: #26899b; box-shadow: 0 0 0 3px rgb(38 137 155 / 14%); }
+    .primary-button {
+      min-height: 48px;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--navy);
+      color: white;
+      font-weight: 760;
+    }
+    .primary-button:hover { background: var(--navy-2); }
+    .primary-button:disabled { cursor: wait; opacity: .62; }
+    .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; color: var(--muted); font-size: .86rem; }
+    .chip {
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f8faf9;
+      color: #344651;
+      font-size: .83rem;
+    }
+    .chip:hover { border-color: #8a9ba0; }
+
+    .choices {
+      display: none;
+      margin: 14px 0 0;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 12px 28px rgb(16 43 59 / 12%);
+    }
+    .choices.visible { display: grid; }
+    .choice {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 12px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      text-align: left;
+    }
+    .choice:hover, .choice:focus { background: var(--soft); outline: none; }
+    .choice small { color: var(--muted); }
+
+    main { padding: 28px 0 72px; }
+    .status { display: none; padding: 32px 18px; color: var(--muted); text-align: center; }
+    .status.visible { display: block; }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 12px;
+      border: 3px solid #ccd9da;
+      border-top-color: #16839a;
+      border-radius: 50%;
+      animation: spin .85s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error { color: var(--danger); }
+    .results { display: none; }
+    .results.visible { display: block; }
+
+    .result-header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin: 4px 0 18px; }
+    .eyebrow { color: #287486; font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 3px; font-size: clamp(1.7rem, 4vw, 2.6rem); letter-spacing: -.045em; }
+    h2 { margin-bottom: 14px; font-size: 1.15rem; letter-spacing: -.02em; }
+    h3 { margin-bottom: 5px; font-size: 1rem; }
+    .subdued { color: var(--muted); }
+    .coverage-pill {
+      flex: 0 0 auto;
+      padding: 7px 11px;
+      border: 1px solid #b9dadd;
+      border-radius: 999px;
+      background: #e8f7f7;
+      color: #176270;
+      font-size: .78rem;
+      font-weight: 780;
+    }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+    .metric {
+      min-height: 132px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .metric-label { color: var(--muted); font-size: .78rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .metric-value { margin-top: 9px; font-size: clamp(1.45rem, 3vw, 2.15rem); font-weight: 790; letter-spacing: -.045em; line-height: 1.05; }
+    .metric-detail { margin-top: 8px; color: var(--muted); font-size: .8rem; }
+
+    .dashboard-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 18px; }
+    .panel { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+    .hazard-list { display: grid; gap: 13px; }
+    .hazard-row { display: grid; grid-template-columns: minmax(110px, 1fr) 2fr auto; gap: 10px; align-items: center; }
+    .hazard-name { overflow: hidden; font-size: .88rem; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-track { height: 8px; overflow: hidden; border-radius: 999px; background: var(--soft); }
+    .bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2a8ca0, var(--cyan)); }
+    .hazard-count { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .8rem; }
+
+    .reports-panel { margin-top: 18px; }
+    .reports-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .reports-heading input { min-height: 40px; width: min(280px, 48%); }
+    .report-list { display: grid; gap: 9px; }
+    details { border: 1px solid var(--line); border-radius: 12px; background: #fbfcfb; }
+    summary {
+      display: grid;
+      grid-template-columns: 105px minmax(150px, .65fr) 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 15px;
+      cursor: pointer;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--muted); font-size: 1.2rem; }
+    details[open] summary::after { content: "−"; }
+    .event-date { color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+    .event-type { font-weight: 760; }
+    .event-area { color: var(--muted); font-size: .84rem; }
+    .report-body { padding: 0 46px 16px 132px; color: #354650; font-size: .9rem; }
+    .report-meta { display: flex; flex-wrap: wrap; gap: 7px 16px; margin: 12px 0; color: var(--muted); font-size: .8rem; }
+    .empty { padding: 22px; color: var(--muted); text-align: center; }
+
+    .data-note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--amber);
+      border-radius: 8px;
+      background: #fff9eb;
+      color: #5e523c;
+      font-size: .86rem;
+    }
+    footer { padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+
+    @media (max-width: 860px) {
+      .search-grid { grid-template-columns: 1fr 1fr; }
+      .location-field { grid-column: 1 / -1; }
+      .primary-button { width: 100%; }
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 580px) {
+      body { background: linear-gradient(180deg, var(--navy) 0 220px, transparent 220px), var(--paper); }
+      .shell { width: min(100% - 20px, 1180px); }
+      .site-header { min-height: 70px; }
+      .section-label { display: none; }
+      .search-panel { padding: 18px; border-radius: 17px; }
+      .search-grid, .metric-grid { grid-template-columns: 1fr; }
+      .location-field { grid-column: auto; }
+      .result-header { display: block; }
+      .coverage-pill { display: inline-block; margin-top: 10px; }
+      .reports-heading { display: block; }
+      .reports-heading input { width: 100%; margin: 4px 0 14px; }
+      summary { grid-template-columns: 84px 1fr auto; }
+      .event-area { grid-column: 2; }
+      summary::after { grid-column: 3; grid-row: 1 / 3; }
+      .report-body { padding: 0 15px 15px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .spinner { animation: none; }
+    }
+  </style>
+  <style>
+    :root {
+      --paper: #f6f1e7;
+      --paper-2: #fcfaf3;
+      --paper-3: #f1ead9;
+      --ink: #1d1813;
+      --muted: #5b5346;
+      --ink-3: #938a78;
+      --line: #e0d8c5;
+      --line-2: #cfc6b0;
+      --accent: #004c53;
+      --accent-2: #0a6b73;
+      --accent-soft: #d7e9ea;
+      --amber: #c98a27;
+      --ember: #c85c2e;
+      --panel: var(--paper-2);
+      --soft: var(--paper-3);
+      --danger: #9f352c;
+      --shadow: 0 18px 45px rgb(55 41 20 / 8%);
+      --radius: 12px;
+      --serif: "Fraunces", Georgia, serif;
+      --sans: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 9%, rgb(255 255 255 / 58%) 0 2px, transparent 3px),
+        radial-gradient(circle at 79% 31%, rgb(98 73 33 / 3%) 0 1px, transparent 2px),
+        var(--paper);
+      background-size: 37px 37px, 23px 23px, auto;
+      font-family: var(--sans);
+    }
+
+    .shell { width: min(1080px, calc(100% - 40px)); }
+    .masthead { padding: 62px 0 0; }
+    .kicker, .eyebrow {
+      color: var(--accent-2);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .headline {
+      max-width: 850px;
+      margin: 12px 0 16px;
+      font-family: var(--serif);
+      font-size: clamp(2.7rem, 7vw, 5.8rem);
+      font-weight: 700;
+      letter-spacing: -.055em;
+      line-height: .98;
+    }
+    .standfirst {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-family: var(--serif);
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      line-height: 1.55;
+    }
+    .headline em { color: var(--accent); font-style: normal; }
+
+    .search-panel {
+      margin-top: 34px;
+      padding: 26px;
+      border-color: var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+      box-shadow: var(--shadow);
+    }
+    .search-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3vw, 2.05rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+    }
+    .search-copy { max-width: 720px; }
+    label { color: var(--ink); font-size: .78rem; letter-spacing: .025em; }
+    input {
+      border-color: var(--line-2);
+      border-radius: 7px;
+      background: #fffefa;
+    }
+    input:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px rgb(10 107 115 / 13%); }
+    .primary-button { border-radius: 7px; background: var(--accent); }
+    .primary-button:hover { background: var(--accent-2); }
+    .chip { border-color: var(--line); background: var(--paper-3); color: var(--accent); }
+    .chip:hover { border-color: var(--accent-2); }
+    .choices { border-color: var(--line); border-radius: 8px; background: #fffefa; }
+    .choice:hover, .choice:focus { background: var(--accent-soft); }
+
+    main { padding: 42px 0 78px; }
+    .result-header { margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .result-title {
+      margin: 7px 0 4px;
+      font-family: var(--serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -.045em;
+      line-height: 1.05;
+    }
+    .coverage-pill { border-color: #a9ced0; border-radius: 4px; background: var(--accent-soft); color: var(--accent); }
+    .metric-grid {
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--line);
+    }
+    .metric { border: 0; border-radius: 0; background: var(--paper-2); }
+    .metric-label { color: var(--ink-3); }
+    .metric-value { font-family: var(--serif); font-weight: 700; }
+    .panel { border-color: var(--line); background: var(--paper-2); box-shadow: 0 8px 25px rgb(55 41 20 / 4%); }
+    .panel h2 { font-family: var(--serif); font-size: 1.35rem; font-weight: 700; }
+    .bar-track { background: var(--paper-3); }
+    .bar { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+    details { border-color: var(--line); border-radius: 7px; background: #fffefa; }
+    details[open] { border-color: var(--line-2); }
+    .event-type { color: var(--accent); }
+    .data-note { border-left-color: var(--amber); background: #f7edcf; color: #5f4d2b; }
+    footer { border-top-color: var(--line); background: var(--paper-3); color: var(--muted); }
+    .footer-inner { display: flex; justify-content: space-between; gap: 24px; }
+    .footer-mark { color: var(--accent); font-family: var(--serif); font-weight: 700; }
+
+    @media (max-width: 580px) {
+      body { background: var(--paper); }
+      .shell { width: min(100% - 24px, 1080px); }
+      .masthead { padding-top: 40px; }
+      .headline { font-size: clamp(2.55rem, 14vw, 4rem); }
+      .search-panel { padding: 18px; }
+      .footer-inner { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <script src="/nav.js"></script>
+
+  <header class="shell masthead">
+    <div class="kicker">National Weather Service · Local climate context</div>
+    <h1 class="headline">Weather history,<br><em>in local context.</em></h1>
+    <p class="standfirst">Build credible planning scenarios from storms that were reported and conditions that were actually observed—whether or not an emergency was ever declared.</p>
+
+    <section class="search-panel" aria-labelledby="search-title">
+      <h2 class="search-heading" id="search-title">Search a community</h2>
+      <p class="search-copy">Choose any U.S. city or county, then compare NOAA Storm Events reports with nearby climate-station extremes.</p>
+      <form id="search-form" class="search-grid">
+        <label class="location-field">City or county
+          <input id="location" name="location" autocomplete="off" placeholder="Charlotte, NC" required>
+        </label>
+        <label>From
+          <input id="from-date" name="from" type="date" required>
+        </label>
+        <label>To
+          <input id="to-date" name="to" type="date" required>
+        </label>
+        <button class="primary-button" id="search-button" type="submit">Search weather</button>
+      </form>
+      <div class="examples"><span>Try</span><button class="chip" data-example="Charlotte, NC">Charlotte, NC</button><button class="chip" data-example="Montgomery County, VA">Montgomery County, VA</button><button class="chip" data-example="Buffalo, NY">Buffalo, NY</button></div>
+      <div class="choices" id="choices" role="listbox" aria-label="Matching places"></div>
+    </section>
+  </header>
+
+  <main class="shell">
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+
+    <section class="results" id="results" aria-live="polite">
+      <div class="result-header">
+        <div>
+          <div class="eyebrow">Local hazard profile</div>
+          <h2 class="result-title" id="place-name"></h2>
+          <div class="subdued" id="place-context"></div>
+        </div>
+        <div class="coverage-pill" id="coverage-pill">NOAA certified reports</div>
+      </div>
+
+      <div class="metric-grid" id="metrics"></div>
+
+      <div class="dashboard-grid">
+        <section class="panel" aria-labelledby="hazards-title">
+          <h2 id="hazards-title">Reported hazards</h2>
+          <div class="hazard-list" id="hazards"></div>
+        </section>
+        <section class="panel" aria-labelledby="extremes-title">
+          <h2 id="extremes-title">Observed climate extremes</h2>
+          <div class="hazard-list" id="extremes"></div>
+        </section>
+      </div>
+
+      <section class="panel reports-panel" aria-labelledby="reports-title">
+        <div class="reports-heading">
+          <h2 id="reports-title">Storm reports</h2>
+          <input id="report-filter" type="search" placeholder="Filter reports" aria-label="Filter storm reports">
+        </div>
+        <div class="report-list" id="reports"></div>
+      </section>
+
+      <aside class="data-note" id="data-note"></aside>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner"><span>Weather records: NOAA National Centers for Environmental Information. Place geography: U.S. Census Bureau. Reported events are not a complete record of every weather occurrence.</span><span class="footer-mark">Disaster Data</span></div>
+  </footer>
+
+  <script>
+    const API_BASE = window.DISASTERDATA_WEATHER_API_BASE || "";
+    const $ = (selector) => document.querySelector(selector);
+    const state = { profile: null, controller: null };
+
+    const now = new Date();
+    const previousYear = now.getFullYear() - 1;
+    $("#from-date").value = `${previousYear - 4}-01-01`;
+    $("#to-date").value = `${previousYear}-12-31`;
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>'"]/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+      })[char]);
+    }
+
+    function formatNumber(value, digits = 0) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "—";
+      return Number(value).toLocaleString(undefined, { maximumFractionDigits: digits });
+    }
+
+    function shortDate(value) {
+      if (!value) return "Unknown date";
+      const match = String(value).match(/^(\d{2})-([A-Z]{3})-(\d{2,4})/i);
+      if (!match) return String(value).slice(0, 10);
+      const year = match[3].length === 2 ? `20${match[3]}` : match[3];
+      return `${match[2].toUpperCase()} ${Number(match[1])}, ${year}`;
+    }
+
+    async function getJSON(path, signal) {
+      const response = await fetch(`${API_BASE}${path}`, { signal });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.message || `Request failed (${response.status})`);
+      return payload;
+    }
+
+    function showStatus(message, kind = "loading") {
+      $("#results").classList.remove("visible");
+      $("#status").className = `status visible ${kind === "error" ? "error" : ""}`;
+      $("#status").innerHTML = kind === "loading"
+        ? `<div class="spinner" aria-hidden="true"></div>${escapeHTML(message)}`
+        : escapeHTML(message);
+    }
+
+    function hideStatus() {
+      $("#status").className = "status";
+      $("#status").textContent = "";
+    }
+
+    async function searchPlaces(query) {
+      showStatus("Finding matching places…");
+      const payload = await getJSON(`/v1/places/search?q=${encodeURIComponent(query)}&limit=8`);
+      hideStatus();
+      const choices = $("#choices");
+      if (!payload.results?.length) {
+        showStatus("No matching U.S. city or county was found. Try including the state abbreviation.", "error");
+        return;
+      }
+      choices.innerHTML = payload.results.map(place => `
+        <button class="choice" type="button" role="option" data-place-id="${escapeHTML(place.id)}" data-state="${escapeHTML(place.state)}">
+          <span><strong>${escapeHTML(place.name)}</strong><br><small>${place.kind === "county" ? "County or county equivalent" : "City or Census place"}</small></span>
+          <small>${escapeHTML(place.state)}</small>
+        </button>`).join("");
+      choices.classList.add("visible");
+      choices.querySelector("button")?.focus();
+    }
+
+    async function loadProfile(placeId) {
+      state.controller?.abort();
+      state.controller = new AbortController();
+      $("#choices").classList.remove("visible");
+      showStatus("Building the local profile from NOAA records. The first request can take a minute…");
+      const from = $("#from-date").value;
+      const to = $("#to-date").value;
+      try {
+        const profile = await getJSON(
+          `/v1/weather/profile?place_id=${encodeURIComponent(placeId)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&radius_km=40`,
+          state.controller.signal
+        );
+        state.profile = profile;
+        renderProfile(profile);
+        const url = new URL(window.location.href);
+        url.searchParams.set("place_id", placeId);
+        url.searchParams.set("from", from);
+        url.searchParams.set("to", to);
+        history.replaceState(null, "", url);
+      } catch (error) {
+        if (error.name !== "AbortError") showStatus(error.message || "The weather profile could not be loaded.", "error");
+      }
+    }
+
+    function renderProfile(profile) {
+      hideStatus();
+      $("#results").classList.add("visible");
+      const place = profile.place;
+      const events = profile.storm_events?.events || [];
+      const summary = profile.storm_events?.summary || {};
+      const climate = profile.climatology?.metrics || {};
+      const county = place.county_names?.join(", ") || "County not resolved";
+      const zone = place.forecast_zone_ids?.join(", ") || "No forecast zone";
+
+      $("#place-name").textContent = `${place.name}, ${place.state}`;
+      $("#place-context").textContent = `${county} · NWS ${zone} · ${profile.period.from} through ${profile.period.to}`;
+
+      const counts = Object.entries(summary.by_event_type || {}).sort((a, b) => b[1] - a[1]);
+      const topHazard = counts[0]?.[0] || "No reports";
+      const wind = climate.fastest_5_second_wind?.maximum;
+      const snow = climate.snowfall?.maximum;
+      $("#metrics").innerHTML = [
+        [formatNumber(summary.event_count), "Certified reports", `${counts.length} reported hazard types`],
+        [topHazard, "Most reported", counts[0] ? `${counts[0][1]} records in this period` : "No matching records"],
+        [wind ? `${formatNumber(wind.value, 1)} mph` : "—", "Highest 5-second wind", wind ? `${wind.date} · ${wind.station}` : "No station measurement"],
+        [snow ? `${formatNumber(snow.value, 1)} in` : "—", "Highest daily snowfall", snow ? `${snow.date} · ${snow.station}` : "No station measurement"]
+      ].map(([value, label, detail]) => `<article class="metric"><div class="metric-label">${escapeHTML(label)}</div><div class="metric-value">${escapeHTML(value)}</div><div class="metric-detail">${escapeHTML(detail)}</div></article>`).join("");
+
+      renderHazards(counts);
+      renderExtremes(climate);
+      renderReports(events, "");
+      const eventCoverage = profile.storm_events?.coverage || {};
+      const climateCoverage = profile.climatology?.coverage || {};
+      $("#coverage-pill").textContent = `${events.length} reports · ${climateCoverage.station_count || 0} climate station${climateCoverage.station_count === 1 ? "" : "s"}`;
+      $("#data-note").textContent = `${eventCoverage.warning || ""} ${climateCoverage.warning || ""}`.trim();
+      $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderHazards(counts) {
+      const maximum = counts[0]?.[1] || 1;
+      $("#hazards").innerHTML = counts.length ? counts.map(([name, count]) => `
+        <div class="hazard-row">
+          <div class="hazard-name" title="${escapeHTML(name)}">${escapeHTML(name)}</div>
+          <div class="bar-track" aria-hidden="true"><div class="bar" style="width:${Math.max(4, count / maximum * 100)}%"></div></div>
+          <div class="hazard-count">${count}</div>
+        </div>`).join("") : `<div class="empty">No certified reports in this period.</div>`;
+    }
+
+    function renderExtremes(climate) {
+      const definitions = [
+        ["Daily snowfall", climate.snowfall],
+        ["Snow depth", climate.snow_depth],
+        ["Daily precipitation", climate.precipitation],
+        ["5-second wind", climate.fastest_5_second_wind],
+        ["2-minute wind", climate.fastest_2_minute_wind],
+        ["Maximum temperature", climate.maximum_temperature],
+        ["Minimum temperature", climate.minimum_temperature]
+      ].filter(([, metric]) => metric?.maximum);
+      $("#extremes").innerHTML = definitions.length ? definitions.map(([label, metric]) => {
+        const extreme = label === "Minimum temperature" ? metric.minimum : metric.maximum;
+        return `<div class="hazard-row"><div class="hazard-name">${escapeHTML(label)}</div><div class="bar-track"><div class="bar" style="width:${Math.max(5, Math.min(100, 55 + (metric.p99 ? 20 : 0)))}%"></div></div><div class="hazard-count">${formatNumber(extreme.value, 1)} ${escapeHTML(metric.unit)} · ${escapeHTML(extreme.date)}</div></div>`;
+      }).join("") : `<div class="empty">No station observations were returned.</div>`;
+    }
+
+    function renderReports(events, filter) {
+      const needle = filter.trim().toLowerCase();
+      const filtered = [...events].reverse().filter(event => !needle || [event.event_type, event.area_name, event.event_narrative, event.episode_narrative].some(value => String(value || "").toLowerCase().includes(needle)));
+      $("#reports").innerHTML = filtered.length ? filtered.map(event => {
+        const narrative = event.event_narrative || event.episode_narrative || "No narrative was provided.";
+        const impact = [event.deaths_direct ? `${event.deaths_direct} direct deaths` : "", event.injuries_direct ? `${event.injuries_direct} direct injuries` : "", event.damage_property && event.damage_property !== "0.00K" ? `${event.damage_property} property damage` : ""].filter(Boolean).join(" · ") || "No reported deaths, injuries, or property damage";
+        return `<details>
+          <summary><span class="event-date">${escapeHTML(shortDate(event.begin))}</span><span class="event-type">${escapeHTML(event.event_type)}</span><span class="event-area">${escapeHTML(event.area_name)} · ${escapeHTML(event.geography_match.replaceAll("_", " "))}</span></summary>
+          <div class="report-body"><p>${escapeHTML(narrative)}</p><div class="report-meta"><span>${escapeHTML(impact)}</span><span>Source: ${escapeHTML(event.source || "Not provided")}</span><span>WFO: ${escapeHTML(event.wfo || "—")}</span></div></div>
+        </details>`;
+      }).join("") : `<div class="empty">No reports match this filter.</div>`;
+    }
+
+    $("#search-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      try { await searchPlaces($("#location").value); }
+      catch (error) { showStatus(error.message || "Place search failed.", "error"); }
+    });
+
+    $("#choices").addEventListener("click", event => {
+      const button = event.target.closest("[data-place-id]");
+      if (!button) return;
+      const label = button.querySelector("strong")?.textContent || "Selected place";
+      $("#location").value = `${label}, ${button.dataset.state || ""}`;
+      loadProfile(button.dataset.placeId);
+    });
+
+    document.querySelectorAll("[data-example]").forEach(button => button.addEventListener("click", () => {
+      $("#location").value = button.dataset.example;
+      $("#search-form").requestSubmit();
+    }));
+
+    $("#report-filter").addEventListener("input", event => {
+      if (state.profile) renderReports(state.profile.storm_events?.events || [], event.target.value);
+    });
+
+    const initial = new URLSearchParams(window.location.search);
+    if (initial.get("from")) $("#from-date").value = initial.get("from");
+    if (initial.get("to")) $("#to-date").value = initial.get("to");
+    if (initial.get("place_id")) loadProfile(initial.get("place_id"));
+  </script>
+</body>
+</html>
