@@ -1,0 +1,83 @@
+"""
+resolve_zones_to_counties.py
+
+Add a resolved_counties column to eo_storm_join.py output, translating NWS
+forecast zone names (used for zone-based event types like Winter Storm and
+Extreme Cold/Wind Chill) into the underlying county/city names. County-
+based event types already use a real county name in CZ_NAME and pass
+through unchanged.
+
+Source: NWS County-Public Forecast Zone Correlation file
+https://www.weather.gov/gis/ZoneCounty
+Pipe-delimited, fields (per NWS documentation):
+STATE|ZONE|CWA|NAME|STATE_ZONE|COUNTY|FIPS|TIME_ZONE|FE_AREA|LAT|LON
+
+Download the current file first (check the page above for the latest
+filename, NWS updates this periodically):
+https://www.weather.gov/source/gis/Shapefiles/County/bp16ap26.dbx
+
+A single zone can span multiple counties, so one zone name can resolve to
+more than one county; those are joined with a semicolon.
+
+Usage:
+    python resolve_zones_to_counties.py --input eo_storm_severity_summary.csv --zone-file bp16ap26.dbx --out eo_storm_severity_summary_resolved.csv
+
+Requires: pip install pandas --break-system-packages
+"""
+
+import argparse
+
+import pandas as pd
+
+ZONE_COLUMNS = [
+    "STATE", "ZONE", "CWA", "NAME", "STATE_ZONE", "COUNTY",
+    "FIPS", "TIME_ZONE", "FE_AREA", "LAT", "LON",
+]
+
+
+def load_zone_crosswalk(zone_file, state="VA"):
+    df = pd.read_csv(zone_file, sep="|", names=ZONE_COLUMNS, header=None, dtype=str)
+    # Defensive: if the file actually shipped with a header row, drop it
+    # rather than treating "STATE" as a literal state abbreviation.
+    if len(df) and str(df.iloc[0]["STATE"]).strip().upper() == "STATE":
+        df = df.iloc[1:]
+    df = df[df["STATE"].str.upper() == state.upper()]
+
+    crosswalk = {}
+    for _, row in df.iterrows():
+        zone_name = str(row["NAME"]).strip().upper()
+        county = str(row["COUNTY"]).strip()
+        crosswalk.setdefault(zone_name, set()).add(county)
+    return crosswalk
+
+
+def resolve(cz_name, crosswalk):
+    key = str(cz_name).strip().upper()
+    if key in crosswalk:
+        return "; ".join(sorted(crosswalk[key]))
+    return cz_name  # already a county name, or not found; pass through as-is
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Resolve NWS zone names to counties")
+    parser.add_argument("--input", required=True, help="CSV with a CZ_NAME column")
+    parser.add_argument("--zone-file", required=True, help="Downloaded bp*.dbx file")
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--state", default="VA", help="Two-letter state abbreviation")
+    args = parser.parse_args()
+
+    crosswalk = load_zone_crosswalk(args.zone_file, args.state)
+    df = pd.read_csv(args.input)
+    df["resolved_counties"] = df["CZ_NAME"].apply(lambda z: resolve(z, crosswalk))
+    df.to_csv(args.out, index=False)
+    print(f"Wrote {len(df)} rows with resolved_counties to {args.out}")
+
+    unresolved = sorted(set(df.loc[df["resolved_counties"] == df["CZ_NAME"], "CZ_NAME"]))
+    print(f"\n{len(unresolved)} CZ_NAME values passed through unchanged "
+          f"(already a county name, or not found in the zone file):")
+    for z in unresolved:
+        print(f"  {z}")
+
+
+if __name__ == "__main__":
+    main()

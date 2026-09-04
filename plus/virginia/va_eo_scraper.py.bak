@@ -1,0 +1,246 @@
+"""
+va_eo_scraper.py
+
+Pull Virginia gubernatorial executive orders from the Governor's website,
+identify emergency declarations, and get each declaration's full
+description (with cause) so weather-relatedness can be determined, then
+write a CSV that feeds straight into eo_storm_join.py.
+
+Key finding from testing against the live site: each order links directly
+to its own PDF (not an HTML detail page), and the PDF FILENAME itself
+carries the full description, e.g.:
+    EO-11-Declaring-State-of-Emergency---2026-January-Winter-Weather.pdf
+The listing page's own text only shows an abbreviated label ("Declaring
+State of Emergency", no cause), so that text alone can't be used to
+classify weather-relatedness. The PDF filename can, without needing to
+download or parse the PDF itself.
+
+Two independent parses of the same listing page, merged by EO number:
+  1. Whole-page text regex for "EO-## <short title> ~ Month DD, YYYY",
+     which reliably captures the number, short title, and date.
+  2. Anchor tags matching "EO-##"/"ED-##" at the start of their link text,
+     to get each order's PDF (or page) URL.
+
+Coverage note: after the January 2026 governor transition, the site was
+restructured so the live page only carries the CURRENT administration
+(Spanberger, January 2026-present) at the URL below. The prior
+administration's orders (Youngkin, 2022-January 2026) were moved off the
+live site entirely and now exist only as scanned PDF images in the Library
+of Virginia digital archive (Virginia State Archives Collections >
+Executive Orders and Directives), which would need a separate OCR-based
+approach. This script only covers January 2026 forward.
+
+Outputs:
+    va_all_orders_raw.csv       - every parsed order, unfiltered, for
+                                   diagnosing future misses
+    va_emergency_declarations_all.csv - every declaration found, with a
+                                   weather_related flag (audit trail)
+    declarations_for_join.csv   - weather declarations only, columns
+                                   eo_number/event_description/date_signed,
+                                   ready for eo_storm_join.py
+
+Usage:
+    python va_eo_scraper.py
+    python va_eo_scraper.py --urls "https://www.governor.virginia.gov/executive-actions/"
+
+Requires: pip install requests beautifulsoup4 pandas --break-system-packages
+"""
+
+import argparse
+import re
+import sys
+from urllib.parse import urljoin
+
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+DEFAULT_URLS = [
+    "https://www.governor.virginia.gov/executive-actions/",
+]
+
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; EM-research-script/1.0)"}
+
+MONTHS = (
+    "January|February|March|April|May|June|July|"
+    "August|September|October|November|December"
+)
+
+# Matches whole entries in the page's flattened text, e.g.
+# "EO-11 Declaring State of Emergency ~ January 22, 2026"
+ENTRY_TEXT_PATTERN = re.compile(
+    rf"(EO|ED)-(\d+)\s+(.*?)\s*~\s*({MONTHS})\s+(\d{{1,2}}),\s+(\d{{4}})"
+)
+
+# Matches an anchor's own link text, e.g. "EO-11 Declaring State of Emergency"
+LINK_TEXT_PATTERN = re.compile(r"^(EO|ED)-(\d+)\b")
+
+MONTH_TO_NUM = {
+    m: f"{i + 1:02d}"
+    for i, m in enumerate(
+        [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December",
+        ]
+    )
+}
+
+WEATHER_KEYWORDS = [
+    "hurricane", "tropical storm", "tropical depression", "storm",
+    "winter weather", "severe weather", "flooding", "flood",
+    "snow", "ice", "blizzard", "tornado", "wind",
+]
+
+PROCEDURAL_MARKERS = ["delegat", "authority to declare", "succession"]
+
+
+def fetch_soup(url):
+    resp = requests.get(url, headers=HEADERS, timeout=30)
+    resp.raise_for_status()
+    return BeautifulSoup(resp.text, "html.parser")
+
+
+def parse_listing(url):
+    soup = fetch_soup(url)
+
+    # Pass 1: number, short title, date from the flattened page text
+    text = soup.get_text(separator="\n")
+    entries = {}
+    for match in ENTRY_TEXT_PATTERN.finditer(text):
+        kind, number, short_title, month, day, year = match.groups()
+        key = f"{kind}-{number}"
+        entries[key] = {
+            "short_title": short_title.strip(),
+            "date_signed": f"{year}-{MONTH_TO_NUM[month]}-{int(day):02d}",
+        }
+
+    # Pass 2: detail/PDF url per order, from anchor tags
+    links = {}
+    for a in soup.find_all("a"):
+        link_text = a.get_text(strip=True)
+        match = LINK_TEXT_PATTERN.match(link_text)
+        href = a.get("href")
+        if match and href:
+            key = f"{match.group(1)}-{match.group(2)}"
+            links.setdefault(key, urljoin(url, href))
+
+    rows = []
+    for key, info in entries.items():
+        rows.append(
+            {
+                "eo_number": key,
+                "short_title": info["short_title"],
+                "date_signed": info["date_signed"],
+                "detail_url": links.get(key),
+            }
+        )
+    return rows
+
+
+def is_declaration_candidate(short_title):
+    tl = short_title.lower()
+    if "state of emergency" not in tl:
+        return False
+    return not any(marker in tl for marker in PROCEDURAL_MARKERS)
+
+
+def description_from_pdf_filename(url):
+    filename = url.rsplit("/", 1)[-1]
+    if filename.lower().endswith(".pdf"):
+        filename = filename[:-4]
+    return filename.replace("---", " - ").replace("-", " ").strip()
+
+
+def fetch_full_title_from_html(url):
+    try:
+        soup = fetch_soup(url)
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}", file=sys.stderr)
+        return None
+    if soup.title and soup.title.string:
+        raw = soup.title.string.strip()
+        raw = re.sub(r"\s*\|\s*Governor\.Virginia\.gov\s*$", "", raw, flags=re.I)
+        raw = re.sub(r"^Executive Orders/Directives-\s*", "", raw, flags=re.I)
+        return raw.strip()
+    h1 = soup.find(["h1", "h2"])
+    return h1.get_text(strip=True) if h1 else None
+
+
+def get_full_description(detail_url, short_title):
+    if not detail_url or (isinstance(detail_url, float)):
+        return short_title
+    if detail_url.lower().endswith(".pdf"):
+        return description_from_pdf_filename(detail_url)
+    full = fetch_full_title_from_html(detail_url)
+    return full if full else short_title
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Scrape VA gubernatorial emergency declarations"
+    )
+    parser.add_argument(
+        "--urls",
+        default=",".join(DEFAULT_URLS),
+        help="Comma-separated listing page URL(s)",
+    )
+    parser.add_argument("--all-out", default="va_emergency_declarations_all.csv")
+    parser.add_argument("--join-out", default="declarations_for_join.csv")
+    args = parser.parse_args()
+
+    all_rows = []
+    for url in [u.strip() for u in args.urls.split(",") if u.strip()]:
+        try:
+            parsed = parse_listing(url)
+        except requests.RequestException as e:
+            print(f"Failed to fetch {url}: {e}", file=sys.stderr)
+            continue
+        print(f"{url}: parsed {len(parsed)} orders")
+        all_rows.extend(parsed)
+
+    if not all_rows:
+        print("No orders parsed. The page may have changed structure or "
+              "blocked the request. Check the URL in a browser.", file=sys.stderr)
+        return
+
+    df = pd.DataFrame(all_rows).drop_duplicates(subset=["eo_number"])
+    df.to_csv("va_all_orders_raw.csv", index=False)
+    print(f"Wrote {len(df)} total parsed orders to va_all_orders_raw.csv (diagnostic, unfiltered)")
+
+    candidates = df[df["short_title"].apply(is_declaration_candidate)].copy()
+    print(f"Found {len(candidates)} declaration candidates")
+
+    candidates["event_description"] = candidates.apply(
+        lambda r: get_full_description(r["detail_url"], r["short_title"]), axis=1
+    )
+    candidates["weather_related"] = candidates["event_description"].str.lower().apply(
+        lambda t: any(kw in t for kw in WEATHER_KEYWORDS)
+    )
+
+    candidates.to_csv(args.all_out, index=False)
+    print(f"\nWrote {len(candidates)} emergency declarations to {args.all_out}")
+
+    missing_dates = candidates[candidates["date_signed"].isna()]
+    if not missing_dates.empty:
+        print(f"\nWarning: {len(missing_dates)} declarations have no parsed date "
+              f"and will be dropped from the join file:", file=sys.stderr)
+        for _, r in missing_dates.iterrows():
+            print(f"  {r['eo_number']}: {r['event_description']}", file=sys.stderr)
+
+    weather = candidates[candidates["weather_related"] & candidates["date_signed"].notna()]
+    weather[["eo_number", "event_description", "date_signed"]].to_csv(
+        args.join_out, index=False
+    )
+    print(f"Wrote {len(weather)} weather declarations to {args.join_out} "
+          f"(ready for eo_storm_join.py)")
+
+    non_weather = candidates[~candidates["weather_related"]]
+    if not non_weather.empty:
+        print("\nDeclarations NOT flagged as weather (verify these are "
+              "correctly excluded):")
+        for _, r in non_weather.iterrows():
+            print(f"  {r['eo_number']}: {r['event_description']}")
+
+
+if __name__ == "__main__":
+    main()

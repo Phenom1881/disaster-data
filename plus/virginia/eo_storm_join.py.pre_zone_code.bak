@@ -1,0 +1,261 @@
+"""Cross-reference Virginia emergency declarations with NCEI Storm Events.
+
+For each declaration, this script finds Virginia events whose begin date falls
+within a configurable window around the signing date.  NCEI can report an event
+against a county/county-equivalent (CZ_TYPE=C), an NWS public forecast zone
+(CZ_TYPE=Z), or a marine zone (CZ_TYPE=M).  The output preserves that distinction
+so a forecast zone is not silently presented as a legal locality.
+
+Input columns:
+  eo_number,event_description,date_signed
+
+Usage:
+  python eo_storm_join.py --declarations declarations_for_join.csv --out matches.csv
+"""
+
+import argparse
+import gzip
+import io
+import re
+import sys
+from datetime import timedelta
+
+import pandas as pd
+import requests
+
+
+INDEX_URL = "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/"
+FILE_PATTERN = re.compile(
+    r"StormEvents_details-ftp_v1\.0_d(\d{4})_c(\d{8})\.csv\.gz"
+)
+DEFAULT_WINDOW_DAYS = 3
+
+AREA_TYPE_LABELS = {
+    "C": "county/county-equivalent",
+    "Z": "NWS forecast zone",
+    "M": "marine zone",
+}
+
+OUTPUT_COLUMNS = [
+    "eo_number",
+    "event_description",
+    "date_signed",
+    "BEGIN_DATE_TIME",
+    "END_DATE_TIME",
+    "CZ_TYPE",
+    "area_type",
+    "CZ_FIPS",
+    "CZ_NAME",
+    "EVENT_TYPE",
+    "MAGNITUDE",
+    "MAGNITUDE_TYPE",
+    "DEATHS_DIRECT",
+    "INJURIES_DIRECT",
+    "DAMAGE_PROPERTY",
+    "DAMAGE_CROPS",
+    "SOURCE",
+    "EPISODE_NARRATIVE",
+    "EVENT_NARRATIVE",
+]
+
+_year_cache = {}
+
+
+def get_latest_filenames_by_year():
+    """Return the most recently certified details filename for each year."""
+    response = requests.get(INDEX_URL, timeout=30)
+    response.raise_for_status()
+    latest = {}
+    for match in FILE_PATTERN.finditer(response.text):
+        year, certification_date = match.group(1), match.group(2)
+        filename = match.group(0)
+        if year not in latest or certification_date > latest[year][1]:
+            latest[year] = (filename, certification_date)
+    return {year: filename for year, (filename, _) in latest.items()}
+
+
+def download_year_details(filename):
+    response = requests.get(INDEX_URL + filename, timeout=60)
+    response.raise_for_status()
+    with gzip.GzipFile(fileobj=io.BytesIO(response.content)) as archive:
+        frame = pd.read_csv(archive, low_memory=False)
+    # NCEI stores values such as "24-JAN-26 21:00:00".
+    frame["BEGIN_DATE_TIME"] = pd.to_datetime(
+        frame["BEGIN_DATE_TIME"], format="%d-%b-%y %H:%M:%S", errors="coerce"
+    )
+    frame["END_DATE_TIME"] = pd.to_datetime(
+        frame["END_DATE_TIME"], format="%d-%b-%y %H:%M:%S", errors="coerce"
+    )
+    return frame
+
+
+def get_year_events(year, filenames):
+    year_text = str(year)
+    if year_text in _year_cache:
+        return _year_cache[year_text]
+    if year_text not in filenames:
+        print(f"No NCEI file published yet for {year_text}.", file=sys.stderr)
+        _year_cache[year_text] = pd.DataFrame()
+        return _year_cache[year_text]
+    _year_cache[year_text] = download_year_details(filenames[year_text])
+    return _year_cache[year_text]
+
+
+def events_near_date(state, center_date, window_days, filenames):
+    start = center_date - timedelta(days=window_days)
+    end = center_date + timedelta(days=window_days)
+    frames = [get_year_events(year, filenames) for year in range(start.year, end.year + 1)]
+    frames = [frame for frame in frames if not frame.empty]
+    if not frames:
+        return pd.DataFrame()
+    events = pd.concat(frames, ignore_index=True)
+    mask = (
+        (events["STATE"].fillna("").str.upper() == state.upper())
+        & (events["BEGIN_DATE_TIME"].dt.date >= start)
+        & (events["BEGIN_DATE_TIME"].dt.date <= end)
+    )
+    return events.loc[mask]
+
+
+def parse_damage(value):
+    """Convert NCEI damage values such as 200K or 1.5M to dollars."""
+    if pd.isna(value):
+        return 0.0
+    text = str(value).strip().upper()
+    if not text:
+        return 0.0
+    multipliers = {"K": 1_000.0, "M": 1_000_000.0, "B": 1_000_000_000.0}
+    multiplier = multipliers.get(text[-1], 1.0)
+    if text[-1] in multipliers:
+        text = text[:-1]
+    try:
+        return float(text) * multiplier
+    except ValueError:
+        return 0.0
+
+
+def build_severity_summary(result):
+    """Aggregate reported human and monetary impacts by NCEI area."""
+    frame = result.copy()
+    frame["damage_property_usd"] = frame["DAMAGE_PROPERTY"].apply(parse_damage)
+    frame["damage_crops_usd"] = frame["DAMAGE_CROPS"].apply(parse_damage)
+    summary = (
+        frame.groupby(
+            ["eo_number", "event_description", "area_type", "CZ_NAME"],
+            dropna=False,
+        )
+        .agg(
+            deaths_direct=("DEATHS_DIRECT", "sum"),
+            injuries_direct=("INJURIES_DIRECT", "sum"),
+            damage_property_usd=("damage_property_usd", "sum"),
+            damage_crops_usd=("damage_crops_usd", "sum"),
+            event_types=("EVENT_TYPE", lambda values: ", ".join(sorted(set(values)))),
+            event_count=("EVENT_TYPE", "count"),
+        )
+        .reset_index()
+    )
+    summary["total_damage_usd"] = (
+        summary["damage_property_usd"] + summary["damage_crops_usd"]
+    )
+    return summary.sort_values(
+        ["eo_number", "deaths_direct", "injuries_direct", "total_damage_usd"],
+        ascending=[True, False, False, False],
+    )
+
+
+def validate_declarations(frame):
+    required = {"eo_number", "event_description", "date_signed"}
+    missing = sorted(required.difference(frame.columns))
+    if missing:
+        raise ValueError("Declaration CSV is missing: " + ", ".join(missing))
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Match Virginia declarations to NCEI Storm Events"
+    )
+    parser.add_argument("--declarations", required=True)
+    parser.add_argument("--state", default="VIRGINIA")
+    parser.add_argument("--window-days", type=int, default=DEFAULT_WINDOW_DAYS)
+    parser.add_argument("--out", default="eo_storm_matches.csv")
+    parser.add_argument("--severity-out", default="eo_storm_severity_summary.csv")
+    args = parser.parse_args()
+
+    declarations = pd.read_csv(args.declarations)
+    validate_declarations(declarations)
+    declarations["date_signed"] = pd.to_datetime(
+        declarations["date_signed"], format="%Y-%m-%d", errors="raise"
+    ).dt.date
+
+    filenames = get_latest_filenames_by_year()
+    all_matches = []
+    for _, declaration in declarations.iterrows():
+        matches = events_near_date(
+            args.state,
+            declaration["date_signed"],
+            args.window_days,
+            filenames,
+        )
+        if matches.empty:
+            print(
+                f"{declaration['eo_number']}: no matching storm events found "
+                "in the date window."
+            )
+            continue
+
+        matches = matches.copy()
+        matches["eo_number"] = declaration["eo_number"]
+        matches["event_description"] = declaration["event_description"]
+        matches["date_signed"] = declaration["date_signed"]
+        matches["area_type"] = matches["CZ_TYPE"].map(AREA_TYPE_LABELS).fillna(
+            "unknown NCEI area type"
+        )
+        all_matches.append(matches.reindex(columns=OUTPUT_COLUMNS))
+
+    if not all_matches:
+        print("No matches found for any declaration.")
+        return
+
+    result = pd.concat(all_matches, ignore_index=True).sort_values(
+        ["eo_number", "CZ_TYPE", "CZ_NAME", "BEGIN_DATE_TIME"]
+    )
+    result.to_csv(args.out, index=False)
+    print(f"Wrote {len(result)} matched NCEI event rows to {args.out}")
+
+    severity = build_severity_summary(result)
+    severity.to_csv(args.severity_out, index=False)
+    print(
+        f"Wrote severity summary ({len(severity)} reported areas) "
+        f"to {args.severity_out}"
+    )
+
+    notable = severity[
+        (severity["deaths_direct"] > 0)
+        | (severity["injuries_direct"] > 0)
+        | (severity["total_damage_usd"] > 0)
+    ]
+    print("\nAreas with reported deaths, injuries, or damage:")
+    if notable.empty:
+        print("  None in the matched NCEI records.")
+    else:
+        for _, area in notable.iterrows():
+            print(
+                f"  {area['eo_number']} {area['CZ_NAME']} "
+                f"[{area['area_type']}]: deaths={int(area['deaths_direct'])}, "
+                f"injuries={int(area['injuries_direct'])}, "
+                f"damage=${area['total_damage_usd']:,.0f} "
+                f"({area['event_types']})"
+            )
+
+    print("\nNCEI-reported areas per declaration:")
+    for (eo_number, description), group in result.groupby(
+        ["eo_number", "event_description"], sort=False
+    ):
+        print(f"  {eo_number} ({description})")
+        for area_type, area_group in group.groupby("area_type", sort=False):
+            areas = sorted(set(area_group["CZ_NAME"].dropna()))
+            print(f"    {area_type}: {', '.join(areas)}")
+
+
+if __name__ == "__main__":
+    main()

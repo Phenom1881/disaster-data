@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "state": "VA",
+  "notes": [
+    "This file is the ONLY place a state-action-to-FEMA-declaration link becomes",
+    "publishable. build_state_evidence.py reads this file but never writes it.",
+    "A link candidate generated automatically (same state, compatible hazard,",
+    "date window, similar storm name) stays unpublished until a human adds it",
+    "here with status 'accepted'. 'rejected' entries are kept, not deleted, so",
+    "the builder does not re-propose the same wrong candidate on the next run.",
+    "declaration_id format: VA-<GOVERNOR>-<EO NUMBER>-<YEAR>, matching the",
+    "format va_historical_eo_scraper.py / va_eo_scraper.py already produce."
+  ],
+  "links": [
+    {
+      "event_id": "VA-2026-EO11-WINTER-STORM",
+      "state_actions": ["VA-SPANBERGER-EO-11-2026"],
+      "fema_declarations": ["EM-3631-VA"],
+      "status": "accepted",
+      "reviewed_by": "Joseph Moore",
+      "reviewed_at": "2026-09-03",
+      "notes": "Golden regression case. EO-11 signed 2026-01-22 (winter weather); FEMA's EM-3631-VA initial declaration is 2026-01-23. This linkage must never silently disappear; see the golden test planned for step 6."
+    },
+    {
+      "event_id": "VA-2024-HELENE",
+      "state_actions": ["VA-YOUNGKIN-EO-37-2024"],
+      "fema_declarations": ["EM-3621-VA", "DR-4831-VA"],
+      "status": "accepted",
+      "reviewed_by": "Joseph Moore",
+      "reviewed_at": "2026-09-03",
+      "notes": "Virginia proof slice. EO-37 signed 2024-09-25 (Hurricane Helene); FEMA EM-3621-VA and the follow-on major disaster DR-4831-VA (declared 2024-10-01) both trace to the same storm. Chosen as the proof slice because all three layers (state, federal, NOAA) exist for it."
+    }
+  ],
+  "rejected_candidates": []
+}

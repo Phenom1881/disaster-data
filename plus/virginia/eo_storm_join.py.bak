@@ -1,0 +1,165 @@
+"""
+eo_storm_join.py
+
+Match Virginia gubernatorial emergency declarations to NCEI Storm Events
+records by date, to infer which localities were actually impacted around
+each declaration. Built for the common case where the executive order
+itself does not name specific localities (typical for state-only
+declarations with no FEMA disaster attached).
+
+Input CSV (--declarations) needs these columns:
+    eo_number, event_description, date_signed   (date_signed as YYYY-MM-DD)
+
+For each declaration, this script pulls every Virginia storm event from
+NCEI within plus or minus WINDOW_DAYS of date_signed and reports which
+counties/cities show up, with event type and severity, so you get an
+evidence-based impact list instead of a guess.
+
+Data source: NCEI Storm Events Database bulk CSV files
+https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/
+
+Note: NCEI publishes a data month roughly 75 to 90 days after it ends, so
+this only works for declarations old enough to be in the published data.
+For very recent declarations, check SPC's daily storm reports by hand at
+https://www.spc.noaa.gov/climo/reports/ instead.
+
+Requires: pip install requests pandas --break-system-packages
+"""
+
+import argparse
+import gzip
+import io
+import re
+import sys
+from datetime import timedelta
+
+import pandas as pd
+import requests
+
+INDEX_URL = "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/"
+FILE_PATTERN = re.compile(r"StormEvents_details-ftp_v1\.0_d(\d{4})_c(\d{8})\.csv\.gz")
+DEFAULT_WINDOW_DAYS = 3
+
+OUTPUT_COLUMNS = [
+    "eo_number",
+    "event_description",
+    "date_signed",
+    "BEGIN_DATE_TIME",
+    "END_DATE_TIME",
+    "CZ_NAME",
+    "EVENT_TYPE",
+    "MAGNITUDE",
+    "MAGNITUDE_TYPE",
+    "DEATHS_DIRECT",
+    "INJURIES_DIRECT",
+    "DAMAGE_PROPERTY",
+    "DAMAGE_CROPS",
+]
+
+_year_cache = {}
+
+
+def get_latest_filenames_by_year():
+    """Scrape the NCEI index page and return {year: filename} using the
+    most recently certified 'details' file available for each year."""
+    resp = requests.get(INDEX_URL, timeout=30)
+    resp.raise_for_status()
+    latest = {}
+    for match in FILE_PATTERN.finditer(resp.text):
+        year, cert_date = match.group(1), match.group(2)
+        fname = match.group(0)
+        if year not in latest or cert_date > latest[year][1]:
+            latest[year] = (fname, cert_date)
+    return {year: fname for year, (fname, _) in latest.items()}
+
+
+def download_year_details(filename):
+    url = INDEX_URL + filename
+    resp = requests.get(url, timeout=60)
+    resp.raise_for_status()
+    with gzip.GzipFile(fileobj=io.BytesIO(resp.content)) as f:
+        df = pd.read_csv(f, low_memory=False)
+    df["BEGIN_DATE_TIME"] = pd.to_datetime(df["BEGIN_DATE_TIME"], errors="coerce")
+    return df
+
+
+def get_year_events(year, filenames):
+    year_str = str(year)
+    if year_str in _year_cache:
+        return _year_cache[year_str]
+    if year_str not in filenames:
+        print(f"No NCEI file published yet for {year_str}.", file=sys.stderr)
+        _year_cache[year_str] = pd.DataFrame()
+        return _year_cache[year_str]
+    df = download_year_details(filenames[year_str])
+    _year_cache[year_str] = df
+    return df
+
+
+def events_near_date(state, center_date, window_days, filenames):
+    start = center_date - timedelta(days=window_days)
+    end = center_date + timedelta(days=window_days)
+    frames = [get_year_events(y, filenames) for y in range(start.year, end.year + 1)]
+    frames = [f for f in frames if not f.empty]
+    if not frames:
+        return pd.DataFrame()
+    events = pd.concat(frames, ignore_index=True)
+    mask = (
+        (events["STATE"].str.upper() == state.upper())
+        & (events["BEGIN_DATE_TIME"].dt.date >= start)
+        & (events["BEGIN_DATE_TIME"].dt.date <= end)
+    )
+    return events.loc[mask]
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Match VA emergency declarations to NCEI storm events by date window"
+    )
+    parser.add_argument(
+        "--declarations", required=True,
+        help="CSV with columns eo_number, event_description, date_signed",
+    )
+    parser.add_argument("--state", default="VIRGINIA")
+    parser.add_argument("--window-days", type=int, default=DEFAULT_WINDOW_DAYS)
+    parser.add_argument("--out", default="eo_storm_matches.csv")
+    args = parser.parse_args()
+
+    declarations = pd.read_csv(args.declarations)
+    declarations["date_signed"] = pd.to_datetime(declarations["date_signed"]).dt.date
+
+    filenames = get_latest_filenames_by_year()
+
+    all_matches = []
+    for _, row in declarations.iterrows():
+        matches = events_near_date(args.state, row["date_signed"], args.window_days, filenames)
+        if matches.empty:
+            print(f"{row['eo_number']}: no matching storm events found in window.")
+            continue
+        matches = matches.copy()
+        matches["eo_number"] = row["eo_number"]
+        matches["event_description"] = row["event_description"]
+        matches["date_signed"] = row["date_signed"]
+        all_matches.append(matches[OUTPUT_COLUMNS])
+
+    if not all_matches:
+        print("No matches found for any declaration.")
+        return
+
+    result = pd.concat(all_matches, ignore_index=True).sort_values(["eo_number", "CZ_NAME"])
+    result.to_csv(args.out, index=False)
+    print(f"Wrote {len(result)} matched rows to {args.out}")
+
+    summary = (
+        result.groupby(["eo_number", "event_description"])["CZ_NAME"]
+        .apply(lambda names: sorted(set(names)))
+        .reset_index()
+        .rename(columns={"CZ_NAME": "localities_impacted"})
+    )
+    print("\nLocalities impacted per declaration:")
+    for _, r in summary.iterrows():
+        print(f"  {r['eo_number']} ({r['event_description']}): {', '.join(r['localities_impacted'])}")
+
+
+if __name__ == "__main__":
+    main()
