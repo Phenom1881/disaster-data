@@ -14,10 +14,9 @@ repository. It works with the existing `plus/virginia/` folder in place.
 - Writes `/plus/coverage.json` and a `state-summary.json` inside each rebuilt
   state directory.
 
-Only Virginia is marked as an implemented source adapter in this first release.
-New York, New Jersey, and Pennsylvania are marked as planned. The remaining
-states receive transparent placeholder pages until their source adapters are
-implemented.
+Virginia, New Jersey, New York, North Carolina, and Pennsylvania are marked as
+implemented source adapters. The remaining states receive transparent
+placeholder pages until their source adapters are implemented.
 
 ## Install
 
@@ -42,7 +41,7 @@ present and creates coverage-labeled pages for states without data.
 ## Rebuild selected states
 
 ```bash
-python scripts/plus/build-plus.py --states VA,NY,NJ,PA
+python scripts/plus/build-plus.py --states VA,NY,NJ,PA,NC
 ```
 
 Names and slugs also work:
@@ -51,7 +50,7 @@ Names and slugs also work:
 python scripts/plus/build-plus.py --states Virginia,new-york
 ```
 
-## Refresh Virginia before building
+## Refresh implemented states before building
 
 The existing Virginia folder should contain:
 
@@ -63,6 +62,14 @@ Then run:
 
 ```bash
 python scripts/plus/build-plus.py --states VA --collect
+```
+
+Each additional implemented state folder follows the same pattern: its adapter
+and scraper live together under ``plus/<state-slug>/``. To collect and rebuild
+the five implemented states together:
+
+```bash
+python scripts/plus/build-plus.py --states VA,NJ,NY,PA,NC --collect
 ```
 
 The builder calls `collect(workdir=plus/virginia,
