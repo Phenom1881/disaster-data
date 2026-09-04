@@ -38,6 +38,11 @@ re-validated against the live site: dedup-by-administration-code and the
 broadened relationship regexes. structured_archive_coverage_start below has
 been corrected to 1990-01-18, confirmed directly from Florio EO 1's own
 text ("the 18th day of January", 1990) rather than assumed.
+
+Round 3 also handles shifted table cells (including Christie EO 109) and can
+recover a missing table date from an order's signed GIVEN clause (including
+Whitman EO 46). Whitman EOs 23 and 26 remain blank-dated because their own
+official document signature fields are blank; no date is inferred.
 """
 
 from __future__ import annotations
@@ -79,6 +84,9 @@ CAPABILITIES = {
         "be treated as authoritative over the surrounding table row when "
         "they conflict. This adapter does not currently perform that "
         "cross-check automatically - see notes.",
+        "Whitman Executive Orders 23 and 26 have blank dates in both the "
+        "archive table and the official document signature fields. They are "
+        "retained without dates and excluded from date-window joins.",
         "Order relationships (terminates/extends/amends/etc.) are "
         "extracted with a best-effort regex pass over table descriptions "
         "and document text; NOT all relationships will be caught, "

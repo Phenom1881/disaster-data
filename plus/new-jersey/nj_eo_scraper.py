@@ -82,6 +82,10 @@ after round 1 and were fixed here:
     "rescinds" into "terminates" at extraction time and (b) adding a
     dedupe_relationships() pass that runs once on the FULL combined list
     in main(), not per-order.
+  - Malformed rows can shift a date into the description cell (Christie EO
+    109) or put relationship notes where the date normally belongs (Whitman
+    EO 46). Dates are now detected across all non-number cells, and a missing
+    table date can be recovered from a document's signed "GIVEN" clause.
 Not yet re-validated against the live site after this round of fixes.
 
 Design choices, matching the existing codebase conventions:
@@ -342,7 +346,31 @@ def _extract_order_rows(soup: BeautifulSoup, base_url: str):
             if len(cells) < 2:
                 continue
             first_cell_text = cells[0].get_text(strip=True)
-            description = cells[1].get_text(" ", strip=True) if len(cells) > 1 else ""
+            non_number_cells = [cell.get_text(" ", strip=True) for cell in cells[1:]]
+            parsed_dates = [
+                parsed for parsed in (_normalize_date(text) for text in non_number_cells)
+                if parsed
+            ]
+            date_issued = parsed_dates[0] if parsed_dates else None
+
+            # A few malformed archive rows shift the date into column two
+            # (Christie EO 109) or place relationship annotations in column
+            # three (Whitman EO 46). Keep the first substantive non-date cell
+            # as the description and detect the date independently.
+            description = ""
+            for text in non_number_cells:
+                if _normalize_date(text):
+                    continue
+                if re.fullmatch(
+                    r"(?:terminat(?:es|ed)?|rescind(?:s|ed)?|amend(?:s|ed)?|"
+                    r"modif(?:y|ies|ied)|supersed(?:es|ed)?|continu(?:es|ed)?)?"
+                    r"\s*(?:EO|Executive Order)?\s*#?\s*\d+\s*[A-Za-z .]*",
+                    text,
+                    re.I,
+                ):
+                    continue
+                description = text
+                break
 
             link_tag = cells[0].find("a", href=True) or (
                 cells[1].find("a", href=True) if len(cells) > 1 else None
@@ -363,9 +391,6 @@ def _extract_order_rows(soup: BeautifulSoup, base_url: str):
             if not link_tag:
                 continue
             doc_url = requests.compat.urljoin(base_url, link_href)
-
-            date_cell_text = cells[2].get_text(strip=True) if len(cells) > 2 else None
-            date_issued = _normalize_date(date_cell_text) if date_cell_text else None
 
             results.append((order_number, description, date_issued, doc_url))
     return results
@@ -403,6 +428,61 @@ def _normalize_date(raw: str) -> Optional[str]:
     # date_signed as "exclude from NOAA date-window matching", which is
     # safer than a silently wrong date.
     return None
+
+
+_NUMBER_WORDS = {
+    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4,
+    "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
+    "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
+    "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17,
+    "eighteen": 18, "nineteen": 19, "twenty": 20, "thirty": 30,
+    "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70,
+    "eighty": 80, "ninety": 90,
+}
+
+
+def _number_from_words(raw: str) -> Optional[int]:
+    """Convert the conventional number words used in NJ signature years."""
+    tokens = re.findall(r"[A-Za-z]+", raw.lower())
+    total = 0
+    current = 0
+    used = False
+    for token in tokens:
+        if token == "and":
+            continue
+        if token in _NUMBER_WORDS:
+            current += _NUMBER_WORDS[token]
+            used = True
+        elif token == "hundred":
+            current = max(current, 1) * 100
+            used = True
+        elif token == "thousand":
+            total += max(current, 1) * 1000
+            current = 0
+            used = True
+    return total + current if used else None
+
+
+def recover_signature_date(text: str) -> Optional[str]:
+    """Recover a date only from the signed GIVEN clause, never a recital.
+
+    This intentionally leaves Whitman EOs 23 and 26 undated: their official
+    documents contain blank signature-date fields, so assigning a neighboring
+    order's date would be an unsupported guess.
+    """
+    match = re.search(
+        r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+([A-Za-z]+)"
+        r"\s+in\s+the\s+Year\s+of\s+Our\s+Lord,?\s+(.{3,90}?)"
+        r"(?:,?\s+and\s+of\s+the\s+Independence|[.;])",
+        text,
+        re.I | re.S,
+    )
+    if not match:
+        return None
+    year = _number_from_words(match.group(3))
+    if year is None:
+        return None
+    return _normalize_date(f"{match.group(2)} {match.group(1)}, {year}")
 
 
 def fetch_document_text(order: NJOrder) -> str:
@@ -476,23 +556,22 @@ def extract_relationships(order: NJOrder) -> list[dict]:
         if not text:
             continue
 
-        for target_number in re.findall(r"\d+", "".join(
-            m.group(1) for m in TERMINATED_BY_PATTERN.finditer(text)
-        )):
-            src_id = f"NJ-{_gov_code(order)}-EO-{target_number}"
-            tgt_id = order.stable_id
-            key = (src_id, tgt_id, "terminates")
-            if key in seen or src_id == tgt_id:
-                continue
-            seen.add(key)
-            relationships.append({
-                "source_order_id": src_id,
-                "target_order_id": tgt_id,
-                "relationship_type": "terminates",
-                "relationship_text": "(terminated-by reference)",
-                "relationship_source": source_field,
-                "confidence": "medium",
-            })
+        for terminated_by_match in TERMINATED_BY_PATTERN.finditer(text):
+            for target_number in re.findall(r"\d+", terminated_by_match.group(1)):
+                src_id = f"NJ-{_gov_code(order)}-EO-{target_number}"
+                tgt_id = order.stable_id
+                key = (src_id, tgt_id, "terminates")
+                if key in seen or src_id == tgt_id:
+                    continue
+                seen.add(key)
+                relationships.append({
+                    "source_order_id": src_id,
+                    "target_order_id": tgt_id,
+                    "relationship_type": "terminates",
+                    "relationship_text": terminated_by_match.group(0).strip(),
+                    "relationship_source": source_field,
+                    "confidence": "medium",
+                })
 
         for rel_type, pattern in RELATIONSHIP_PATTERNS:
             for match in pattern.finditer(text):
@@ -671,6 +750,8 @@ def main() -> None:
         low_yield_count = 0
         for order in all_orders:
             order.document_text = fetch_document_text(order)
+            if not order.date_issued:
+                order.date_issued = recover_signature_date(order.document_text)
             if order.document_format == "pdf" and len(order.document_text.strip()) < 250:
                 low_yield_count += 1
         if low_yield_count:
