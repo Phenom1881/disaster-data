@@ -1,57 +1,206 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wyoming State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="State emergency actions and matched weather-event evidence for Wyoming.">
+<title>Disaster Data | Wyoming Weather Emergency Declarations</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for Wyoming.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    :root { --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
-      --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }
+    :root {
+      --paper:#f6f1e7; --paper-2:#fcfaf3; --paper-3:#f1ead9;
+      --accent:#004c53; --accent-2:#0a6b73; --ember:#c85c2e;
+      --ink:#1d1813; --muted:#6b6255; --line:#e1d8c6;
+    }
     * { box-sizing:border-box; }
-    body { margin:0; color:var(--ink); font:16px/1.55 -apple-system,BlinkMacSystemFont,
-      "Segoe UI",sans-serif; background:#f6f8fa; }
-    header { background:var(--navy); color:white; padding:1rem 1.25rem; }
-    header a { color:white; text-decoration:none; font-weight:700; }
+    body { margin:0; color:var(--ink); background:var(--paper);
+      font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:16px; line-height:1.55; }
+    h1,h2,h3,.eyebrow { font-family:"Fraunces","Georgia",serif; }
+    a { color:var(--accent-2); }
+    .dd-breadcrumb { background:var(--accent); color:var(--paper-2); padding:.85rem 1.25rem;
+      font-size:.9rem; }
+    .dd-breadcrumb a { color:var(--paper-2); text-decoration:none; font-weight:600; }
+    .dd-breadcrumb a:hover { text-decoration:underline; }
     main { max-width:1120px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-    h1 { line-height:1.15; margin:.25rem 0 .75rem; }
-    h2 { margin-top:2rem; }
-    .eyebrow { color:var(--blue); font-weight:800; letter-spacing:.05em;
+    h1 { line-height:1.15; margin:.25rem 0 .75rem; font-weight:600; }
+    h2 { margin-top:2rem; font-weight:600; }
+    .eyebrow { color:var(--ember); font-weight:700; letter-spacing:.05em;
       text-transform:uppercase; font-size:.8rem; }
     .lede,.note { color:var(--muted); max-width:820px; }
-    .notice { background:#fff4cc; border-left:5px solid #c49300; padding:1rem;
+    .notice { background:var(--paper-3); border-left:5px solid var(--ember); padding:1rem;
       margin:1.25rem 0; }
     .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
       gap:1rem; margin:1.5rem 0; }
-    .metric,.state-card { background:white; border:1px solid var(--line);
+    .metric,.state-card { background:var(--paper-2); border:1px solid var(--line);
       border-radius:10px; padding:1rem; }
-    .metric strong { display:block; font-size:1.8rem; color:var(--navy); }
+    .metric strong { display:block; font-family:"Fraunces",serif; font-size:1.8rem;
+      color:var(--accent); }
     .states { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
       gap:.8rem; }
-    .state-card a { color:var(--navy); font-weight:800; text-decoration:none; }
+    .state-card a { color:var(--accent); font-weight:700; text-decoration:none; }
     .status { display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
-      border-radius:99px; background:var(--pale); color:var(--navy); font-size:.78rem; }
-    table { width:100%; border-collapse:collapse; background:white; font-size:.9rem; }
+      border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }
+    table { width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }
     th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }
-    th { background:var(--blue); color:white; }
-    td a { color:#175c9c; } .empty { color:var(--muted); font-style:italic; }
+    th { background:var(--accent); color:var(--paper-2); font-weight:600; }
+    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:600; text-align:left; cursor:pointer; }
+    td a { color:var(--accent-2); } .empty { color:var(--muted); font-style:italic; }
     .actions { overflow-x:auto; }
+    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
+    .layer h2 { margin-top:.5rem; }
+    .primary { background:var(--paper-2); border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }
+    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }
+    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:600; }
+    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid var(--line);
+      border-radius:7px; font:inherit; background:var(--paper-2); color:var(--ink); }
+    details.layer { background:var(--paper-2); border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }
+    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--accent); font-weight:700; }
+    details.layer[open] > summary { border-bottom:1px solid var(--line); }
+    details.layer > .details-body { padding:0 1rem 1rem; }
+    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      main { padding:1.25rem .75rem 3rem; }
+      .table-tools { display:block; }
+      .table-tools label { display:block; margin-bottom:.25rem; }
+      .table-search { width:100%; }
+    }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }
     </style></head>
-<body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / Wyoming</header>
+<body><script src="/nav.js"></script><nav class="dd-breadcrumb"><a href="/">DisasterData.IO</a> / <a href="/plus/">Plus</a> / Wyoming</nav>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>Wyoming: State Emergency Actions</h1>
-<p class="lede">State-issued emergency actions and weather-event evidence supplementing the federal FEMA declaration record.</p>
+<h1>Wyoming: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
 <div class="notice"><strong>Coverage:</strong> State-source adapter not yet implemented. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>0</strong>state-action records loaded</div>
-  <div class="metric"><strong>0</strong>NOAA event-match rows</div>
-  <div class="metric"><strong>0</strong>severity-area rows</div>
+  <div class="metric"><strong>45</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>0</strong>original state weather declarations</div>
+  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/wyoming.html">Federal declaration overview</a> · Official source to be identified</p>
-<h2>State-action inventory</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
+<p><a href="/states/wyoming.html">Federal declaration overview</a> &middot; Official source to be identified</p>
+
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td colspan="5" class="empty">No verified state-action records have been loaded for this state yet.</td></tr></tbody></table></div>
-<p class="note">The inventory is limited by the coverage statement above. NOAA proximity matches identify potentially related observed events; they do not independently prove operational impacts or legal causation.</p>
-<footer>Generated 2026-09-03 · DisasterData.IO · State records remain subject to source verification.</footer>
-</main></body></html>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="4" class="empty">No state actions are loaded to cross-reference yet.</td></tr></tbody></table></div>
+</div>
+
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">45 records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for Wyoming from the site's national FEMA dataset.</p>
+<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2025-08-15</td><td>5608</td><td>FM</td><td>RED CANYON FIRE</td><td>Fire</td><td>2025-08-15 to </td></tr>
+<tr><td>2024-11-13</td><td>4845</td><td>DR</td><td>WILDFIRES</td><td>Fire</td><td>2024-08-21 to 2024-08-31</td></tr>
+<tr><td>2024-09-30</td><td>5539</td><td>FM</td><td>ELK FIRE</td><td>Fire</td><td>2024-09-28 to 2024-10-22</td></tr>
+<tr><td>2024-08-22</td><td>5531</td><td>FM</td><td>HOUSE DRAW FIRE</td><td>Fire</td><td>2024-08-22 to 2024-08-31</td></tr>
+<tr><td>2024-07-30</td><td>5523</td><td>FM</td><td>PLEASANT VALLEY FIRE</td><td>Fire</td><td>2024-07-30 to 2024-08-04</td></tr>
+<tr><td>2024-03-01</td><td>5490</td><td>FM</td><td>HAPPY JACK FIRE</td><td>Fire</td><td>2024-03-01 to 2024-03-04</td></tr>
+<tr><td>2023-09-11</td><td>4739</td><td>DR</td><td>FLOODING</td><td>Flood</td><td>2023-06-15 to 2023-06-15</td></tr>
+<tr><td>2020-09-26</td><td>5375</td><td>FM</td><td>MULLEN FIRE</td><td>Fire</td><td>2020-09-25 to 2020-10-19</td></tr>
+<tr><td>2020-09-05</td><td>5347</td><td>FM</td><td>316 FIRE</td><td>Fire</td><td>2020-09-05 to 2020-09-06</td></tr>
+<tr><td>2020-04-11</td><td>4535</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3479</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2018-09-18</td><td>5276</td><td>FM</td><td>ROOSEVELT FIRE</td><td>Fire</td><td>2018-09-18 to 2018-10-06</td></tr>
+<tr><td>2018-06-11</td><td>5241</td><td>FM</td><td>BADGER CREEK FIRE</td><td>Fire</td><td>2018-06-11 to </td></tr>
+<tr><td>2017-08-05</td><td>4327</td><td>DR</td><td>FLOODING</td><td>Flood</td><td>2017-06-07 to 2017-06-22</td></tr>
+<tr><td>2017-03-21</td><td>4306</td><td>DR</td><td>SEVERE WINTER STORM AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2017-02-06 to 2017-02-07</td></tr>
+<tr><td>2016-07-29</td><td>5139</td><td>FM</td><td>TOKAWANA FIRE</td><td>Fire</td><td>2016-07-28 to 2016-08-04</td></tr>
+<tr><td>2016-07-25</td><td>5136</td><td>FM</td><td>LAVA MOUNTAIN FIRE</td><td>Fire</td><td>2016-07-25 to </td></tr>
+<tr><td>2015-10-11</td><td>5115</td><td>FM</td><td>STATION FIRE</td><td>Fire</td><td>2015-10-11 to </td></tr>
+<tr><td>2015-07-07</td><td>4227</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2015-05-24 to 2015-06-06</td></tr>
+<tr><td>2012-09-09</td><td>5014</td><td>FM</td><td>SHEEP HERDER HILL FIRE COMPLEX</td><td>Fire</td><td>2012-09-09 to 2012-09-16</td></tr>
+<tr><td>2012-07-03</td><td>2995</td><td>FM</td><td>OIL CREEK FIRE</td><td>Fire</td><td>2012-07-01 to 2012-07-07</td></tr>
+<tr><td>2012-07-02</td><td>2993</td><td>FM</td><td>SQUIRREL CREEK FIRE</td><td>Fire</td><td>2012-07-01 to 2012-07-07</td></tr>
+<tr><td>2012-06-29</td><td>2992</td><td>FM</td><td>ARAPAHOE FIRE</td><td>Fire</td><td>2012-06-29 to 2012-07-09</td></tr>
+<tr><td>2011-07-22</td><td>4007</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND LANDSLIDES</td><td>Severe Storm</td><td>2011-05-18 to 2011-07-08</td></tr>
+<tr><td>2010-07-14</td><td>1923</td><td>DR</td><td>FLOODING</td><td>Flood</td><td>2010-06-04 to 2010-06-18</td></tr>
+<tr><td>2007-08-12</td><td>2719</td><td>FM</td><td>LITTLE GOOSE FIRE</td><td>Fire</td><td>2007-08-12 to 2007-08-21</td></tr>
+<tr><td>2006-08-14</td><td>2665</td><td>FM</td><td>JACKSON CANYON FIRE</td><td>Fire</td><td>2006-08-14 to 2006-08-25</td></tr>
+<tr><td>2006-07-14</td><td>2654</td><td>FM</td><td>THORN DIVIDE FIRE COMPLEX</td><td>Fire</td><td>2006-07-13 to 2006-07-24</td></tr>
+<tr><td>2005-08-22</td><td>1599</td><td>DR</td><td>TORNADO</td><td>Tornado</td><td>2005-08-12 to 2005-08-12</td></tr>
+<tr><td>2003-11-20</td><td>2512</td><td>FM</td><td>WY - TONGUE RIVER WILDFIRE - 11/19/2003</td><td>Fire</td><td>2003-11-19 to 2003-11-20</td></tr>
+<tr><td>2002-08-31</td><td>2460</td><td>FM</td><td>WY - COMMISSARY RIDGE FIRE - 08/31/02</td><td>Fire</td><td>2002-08-29 to 2002-09-15</td></tr>
+<tr><td>2002-07-01</td><td>2436</td><td>FM</td><td>WY - REESE MOUNTAIN FIRE - 07/01/02</td><td>Fire</td><td>2002-06-29 to 2002-07-12</td></tr>
+<tr><td>2002-06-18</td><td>2427</td><td>FM</td><td>WY-HENSEL FIRE-06/07/02</td><td>Fire</td><td>2002-06-18 to 2002-07-07</td></tr>
+<tr><td>2001-09-06</td><td>2382</td><td>FM</td><td>WY - MCFARLAND DIVIDE FIRE - 09/06/01</td><td>Fire</td><td>2001-09-05 to 2001-09-08</td></tr>
+<tr><td>2001-08-01</td><td>2370</td><td>FM</td><td>WY- ELK MOUNTAIN FIRE COMPLEX - 08/01/01</td><td>Fire</td><td>2001-07-31 to 2001-08-08</td></tr>
+<tr><td>2001-07-26</td><td>2367</td><td>FM</td><td>WY WILDFIRE -GREEN KNOLL- JULY 23, 2001</td><td>Fire</td><td>2001-07-26 to 2001-08-08</td></tr>
+<tr><td>2000-12-13</td><td>1351</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Severe Storm</td><td>2000-10-31 to 2000-11-20</td></tr>
+<tr><td>2000-07-31</td><td>2315</td><td>FM</td><td>WY - DEAD HORSE FIRE</td><td>Fire</td><td>2000-07-30 to 2000-08-03</td></tr>
+<tr><td>1999-02-17</td><td>1268</td><td>DR</td><td>WY - WINTER STORM  10/5/98</td><td>Severe Ice Storm</td><td>1998-10-05 to 1998-10-09</td></tr>
+<tr><td>1987-09-04</td><td>3092</td><td>EM</td><td>METHANE GAS SEEPAGE</td><td>Toxic Substances</td><td>1987-02-10 to 1987-02-10</td></tr>
+<tr><td>1985-08-07</td><td>740</td><td>DR</td><td>SEVERE STORMS, HAIL &amp; FLOODING</td><td>Flood</td><td>1985-08-07 to 1985-08-07</td></tr>
+<tr><td>1979-07-19</td><td>591</td><td>DR</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1979-07-19 to 1979-07-19</td></tr>
+<tr><td>1978-05-29</td><td>557</td><td>DR</td><td>SEVERE STORMS, FLOODING &amp; MUDSLIDES</td><td>Flood</td><td>1978-05-29 to 1978-05-29</td></tr>
+<tr><td>1977-06-15</td><td>3043</td><td>EM</td><td>DROUGHT</td><td>Drought</td><td>1977-06-15 to 1977-06-15</td></tr>
+<tr><td>1963-07-04</td><td>155</td><td>DR</td><td>HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1963-07-04 to 1963-07-04</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
+<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+</main>
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script></body></html>

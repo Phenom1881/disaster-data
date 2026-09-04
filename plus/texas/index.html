@@ -1,57 +1,361 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Texas State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="State emergency actions and matched weather-event evidence for Texas.">
+<title>Disaster Data | Texas Weather Emergency Declarations</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for Texas.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    :root { --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
-      --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }
+    :root {
+      --paper:#f6f1e7; --paper-2:#fcfaf3; --paper-3:#f1ead9;
+      --accent:#004c53; --accent-2:#0a6b73; --ember:#c85c2e;
+      --ink:#1d1813; --muted:#6b6255; --line:#e1d8c6;
+    }
     * { box-sizing:border-box; }
-    body { margin:0; color:var(--ink); font:16px/1.55 -apple-system,BlinkMacSystemFont,
-      "Segoe UI",sans-serif; background:#f6f8fa; }
-    header { background:var(--navy); color:white; padding:1rem 1.25rem; }
-    header a { color:white; text-decoration:none; font-weight:700; }
+    body { margin:0; color:var(--ink); background:var(--paper);
+      font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:16px; line-height:1.55; }
+    h1,h2,h3,.eyebrow { font-family:"Fraunces","Georgia",serif; }
+    a { color:var(--accent-2); }
+    .dd-breadcrumb { background:var(--accent); color:var(--paper-2); padding:.85rem 1.25rem;
+      font-size:.9rem; }
+    .dd-breadcrumb a { color:var(--paper-2); text-decoration:none; font-weight:600; }
+    .dd-breadcrumb a:hover { text-decoration:underline; }
     main { max-width:1120px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-    h1 { line-height:1.15; margin:.25rem 0 .75rem; }
-    h2 { margin-top:2rem; }
-    .eyebrow { color:var(--blue); font-weight:800; letter-spacing:.05em;
+    h1 { line-height:1.15; margin:.25rem 0 .75rem; font-weight:600; }
+    h2 { margin-top:2rem; font-weight:600; }
+    .eyebrow { color:var(--ember); font-weight:700; letter-spacing:.05em;
       text-transform:uppercase; font-size:.8rem; }
     .lede,.note { color:var(--muted); max-width:820px; }
-    .notice { background:#fff4cc; border-left:5px solid #c49300; padding:1rem;
+    .notice { background:var(--paper-3); border-left:5px solid var(--ember); padding:1rem;
       margin:1.25rem 0; }
     .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
       gap:1rem; margin:1.5rem 0; }
-    .metric,.state-card { background:white; border:1px solid var(--line);
+    .metric,.state-card { background:var(--paper-2); border:1px solid var(--line);
       border-radius:10px; padding:1rem; }
-    .metric strong { display:block; font-size:1.8rem; color:var(--navy); }
+    .metric strong { display:block; font-family:"Fraunces",serif; font-size:1.8rem;
+      color:var(--accent); }
     .states { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
       gap:.8rem; }
-    .state-card a { color:var(--navy); font-weight:800; text-decoration:none; }
+    .state-card a { color:var(--accent); font-weight:700; text-decoration:none; }
     .status { display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
-      border-radius:99px; background:var(--pale); color:var(--navy); font-size:.78rem; }
-    table { width:100%; border-collapse:collapse; background:white; font-size:.9rem; }
+      border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }
+    table { width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }
     th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }
-    th { background:var(--blue); color:white; }
-    td a { color:#175c9c; } .empty { color:var(--muted); font-style:italic; }
+    th { background:var(--accent); color:var(--paper-2); font-weight:600; }
+    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:600; text-align:left; cursor:pointer; }
+    td a { color:var(--accent-2); } .empty { color:var(--muted); font-style:italic; }
     .actions { overflow-x:auto; }
+    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
+    .layer h2 { margin-top:.5rem; }
+    .primary { background:var(--paper-2); border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }
+    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }
+    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:600; }
+    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid var(--line);
+      border-radius:7px; font:inherit; background:var(--paper-2); color:var(--ink); }
+    details.layer { background:var(--paper-2); border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }
+    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--accent); font-weight:700; }
+    details.layer[open] > summary { border-bottom:1px solid var(--line); }
+    details.layer > .details-body { padding:0 1rem 1rem; }
+    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      main { padding:1.25rem .75rem 3rem; }
+      .table-tools { display:block; }
+      .table-tools label { display:block; margin-bottom:.25rem; }
+      .table-search { width:100%; }
+    }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }
     </style></head>
-<body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / Texas</header>
+<body><script src="/nav.js"></script><nav class="dd-breadcrumb"><a href="/">DisasterData.IO</a> / <a href="/plus/">Plus</a> / Texas</nav>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>Texas: State Emergency Actions</h1>
-<p class="lede">State-issued emergency actions and weather-event evidence supplementing the federal FEMA declaration record.</p>
+<h1>Texas: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
 <div class="notice"><strong>Coverage:</strong> State-source adapter not yet implemented. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>0</strong>state-action records loaded</div>
-  <div class="metric"><strong>0</strong>NOAA event-match rows</div>
-  <div class="metric"><strong>0</strong>severity-area rows</div>
+  <div class="metric"><strong>390</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>0</strong>original state weather declarations</div>
+  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/texas.html">Federal declaration overview</a> · Official source to be identified</p>
-<h2>State-action inventory</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
+<p><a href="/states/texas.html">Federal declaration overview</a> &middot; Official source to be identified</p>
+
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td colspan="5" class="empty">No verified state-action records have been loaded for this state yet.</td></tr></tbody></table></div>
-<p class="note">The inventory is limited by the coverage statement above. NOAA proximity matches identify potentially related observed events; they do not independently prove operational impacts or legal causation.</p>
-<footer>Generated 2026-09-03 · DisasterData.IO · State records remain subject to source verification.</footer>
-</main></body></html>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="4" class="empty">No state actions are loaded to cross-reference yet.</td></tr></tbody></table></div>
+</div>
+
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">390 records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for Texas from the site's national FEMA dataset.</p>
+<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-08-25</td><td>5675</td><td>FM</td><td>ROSS FIRE</td><td>Fire</td><td>2026-08-24 to </td></tr>
+<tr><td>2026-07-18</td><td>3649</td><td>EM</td><td>FLOODING</td><td>Flood</td><td>2026-07-12 to 2026-08-04</td></tr>
+<tr><td>2026-05-18</td><td>5634</td><td>FM</td><td>STINKY FIRE</td><td>Fire</td><td>2026-05-18 to 2026-05-21</td></tr>
+<tr><td>2026-05-14</td><td>5633</td><td>FM</td><td>HUNGGATE FIRE</td><td>Fire</td><td>2026-05-14 to 2026-05-19</td></tr>
+<tr><td>2026-03-15</td><td>5625</td><td>FM</td><td>CORNER POCKET FIRE</td><td>Fire</td><td>2026-03-15 to </td></tr>
+<tr><td>2026-02-18</td><td>5619</td><td>FM</td><td>8 BALL FIRE</td><td>Fire</td><td>2026-02-17 to </td></tr>
+<tr><td>2025-07-06</td><td>4879</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Flood</td><td>2025-07-02 to 2025-07-18</td></tr>
+<tr><td>2025-05-21</td><td>4871</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2025-03-26 to 2025-03-28</td></tr>
+<tr><td>2025-03-20</td><td>5573</td><td>FM</td><td>PAULINE ROAD FIRE</td><td>Fire</td><td>2025-03-19 to 2025-03-26</td></tr>
+<tr><td>2025-03-18</td><td>5571</td><td>FM</td><td>DOUBLE S FIRE</td><td>Fire</td><td>2025-03-18 to 2025-03-21</td></tr>
+<tr><td>2025-03-15</td><td>5570</td><td>FM</td><td>CRABAPPLE FIRE</td><td>Fire</td><td>2025-03-15 to 2025-03-21</td></tr>
+<tr><td>2025-03-14</td><td>5555</td><td>FM</td><td>REST AREA FIRE</td><td>Fire</td><td>2025-03-14 to 2025-03-16</td></tr>
+<tr><td>2025-03-05</td><td>5553</td><td>FM</td><td>DUKE FIRE</td><td>Fire</td><td>2025-03-04 to 2025-03-05</td></tr>
+<tr><td>2025-03-04</td><td>5552</td><td>FM</td><td>WELDER FIRE</td><td>Fire</td><td>2025-03-04 to 2025-03-09</td></tr>
+<tr><td>2024-07-09</td><td>4798</td><td>DR</td><td>HURRICANE BERYL</td><td>Hurricane</td><td>2024-07-05 to 2024-07-09</td></tr>
+<tr><td>2024-05-17</td><td>4781</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING</td><td>Flood</td><td>2024-04-26 to 2024-06-05</td></tr>
+<tr><td>2024-02-27</td><td>5488</td><td>FM</td><td>SMOKEHOUSE CREEK FIRE</td><td>Fire</td><td>2024-02-27 to 2024-03-16</td></tr>
+<tr><td>2024-02-27</td><td>5487</td><td>FM</td><td>WINDY DEUCE FIRE</td><td>Fire</td><td>2024-02-27 to 2024-03-16</td></tr>
+<tr><td>2023-04-21</td><td>4705</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Winter Storm</td><td>2023-01-30 to 2023-02-02</td></tr>
+<tr><td>2022-07-19</td><td>5444</td><td>FM</td><td>CHALK MOUNTAIN FIRE</td><td>Fire</td><td>2022-07-18 to 2022-08-06</td></tr>
+<tr><td>2022-07-07</td><td>5443</td><td>FM</td><td>HARD CASTLE FIRE</td><td>Fire</td><td>2022-07-07 to 2022-07-16</td></tr>
+<tr><td>2022-05-18</td><td>5440</td><td>FM</td><td>MESQUITE HEAT FIRE</td><td>Fire</td><td>2022-05-18 to 2022-05-29</td></tr>
+<tr><td>2022-03-20</td><td>5429</td><td>FM</td><td>BIG L FIRE</td><td>Fire</td><td>2022-03-20 to 2022-03-30</td></tr>
+<tr><td>2022-03-18</td><td>5428</td><td>FM</td><td>WHEAT FIELD FIRE</td><td>Fire</td><td>2022-03-17 to 2022-03-30</td></tr>
+<tr><td>2022-03-17</td><td>5427</td><td>FM</td><td>KIDD FIRE</td><td>Fire</td><td>2022-03-17 to 2022-03-30</td></tr>
+<tr><td>2021-12-15</td><td>5422</td><td>FM</td><td>NORTH 207 FIRE</td><td>Fire</td><td>2021-12-15 to 2021-12-19</td></tr>
+<tr><td>2021-12-10</td><td>5420</td><td>FM</td><td>COUNTY LINE FIRE</td><td>Fire</td><td>2021-12-10 to 2021-12-12</td></tr>
+<tr><td>2021-02-19</td><td>4586</td><td>DR</td><td>SEVERE WINTER STORMS</td><td>Severe Ice Storm</td><td>2021-02-11 to 2021-02-21</td></tr>
+<tr><td>2021-02-14</td><td>3554</td><td>EM</td><td>SEVERE WINTER STORM</td><td>Severe Ice Storm</td><td>2021-02-11 to 2021-02-21</td></tr>
+<tr><td>2020-12-09</td><td>4572</td><td>DR</td><td>HURRICANE LAURA</td><td>Hurricane</td><td>2020-08-23 to 2020-08-27</td></tr>
+<tr><td>2020-08-24</td><td>3540</td><td>EM</td><td>TROPICAL STORMS MARCO AND LAURA</td><td>Hurricane</td><td>2020-08-23 to 2020-08-27</td></tr>
+<tr><td>2020-07-26</td><td>3530</td><td>EM</td><td>HURRICANE HANNA</td><td>Hurricane</td><td>2020-07-25 to 2020-07-31</td></tr>
+<tr><td>2020-03-25</td><td>4485</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3501</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3458</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2019-10-04</td><td>4466</td><td>DR</td><td>TROPICAL STORM IMELDA</td><td>Flood</td><td>2019-09-17 to 2019-09-23</td></tr>
+<tr><td>2019-08-18</td><td>5288</td><td>FM</td><td>COPPER BREAKS FIRE</td><td>Fire</td><td>2019-08-16 to 2019-09-04</td></tr>
+<tr><td>2019-07-17</td><td>4454</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2019-06-24 to 2019-06-25</td></tr>
+<tr><td>2019-02-25</td><td>4416</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2018-09-10 to 2018-11-02</td></tr>
+<tr><td>2018-07-29</td><td>5264</td><td>FM</td><td>PARK ROAD FIRE</td><td>Fire</td><td>2018-07-29 to </td></tr>
+<tr><td>2018-07-23</td><td>5258</td><td>FM</td><td>259 FIRE</td><td>Fire</td><td>2018-07-23 to </td></tr>
+<tr><td>2018-07-06</td><td>4377</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2018-06-19 to 2018-07-13</td></tr>
+<tr><td>2018-05-02</td><td>5237</td><td>FM</td><td>MCDANNALD FIRE</td><td>Fire</td><td>2018-05-02 to 2018-05-14</td></tr>
+<tr><td>2018-04-18</td><td>5235</td><td>FM</td><td>MCCLELLAN FIRE</td><td>Fire</td><td>2018-04-17 to 2018-04-22</td></tr>
+<tr><td>2018-04-14</td><td>5234</td><td>FM</td><td>335 FIRE</td><td>Fire</td><td>2018-04-13 to 2018-04-15</td></tr>
+<tr><td>2018-04-13</td><td>5233</td><td>FM</td><td>HARBOR BAY FIRE</td><td>Fire</td><td>2018-04-13 to 2018-04-20</td></tr>
+<tr><td>2017-08-25</td><td>4332</td><td>DR</td><td>HURRICANE HARVEY</td><td>Hurricane</td><td>2017-08-23 to 2017-09-15</td></tr>
+<tr><td>2016-06-11</td><td>4272</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2016-05-22 to 2016-06-24</td></tr>
+<tr><td>2016-04-25</td><td>4269</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2016-04-17 to 2016-04-30</td></tr>
+<tr><td>2016-03-19</td><td>4266</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Flood</td><td>2016-03-07 to 2016-03-29</td></tr>
+<tr><td>2016-02-09</td><td>4255</td><td>DR</td><td>SEVERE WINTER STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2015-12-26 to 2016-01-21</td></tr>
+<tr><td>2015-11-25</td><td>4245</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2015-10-22 to 2015-10-31</td></tr>
+<tr><td>2015-10-14</td><td>5116</td><td>FM</td><td>HIDDEN PINES FIRE</td><td>Fire</td><td>2015-10-13 to 2015-10-28</td></tr>
+<tr><td>2015-05-29</td><td>4223</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS AND FLOODING</td><td>Severe Storm</td><td>2015-05-04 to 2015-06-22</td></tr>
+<tr><td>2014-05-12</td><td>5053</td><td>FM</td><td>DOUBLE DIAMOND FIRE</td><td>Fire</td><td>2014-05-11 to </td></tr>
+<tr><td>2013-12-20</td><td>4159</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2013-10-30 to 2013-10-31</td></tr>
+<tr><td>2013-08-02</td><td>4136</td><td>DR</td><td>EXPLOSION</td><td>Other</td><td>2013-04-17 to 2013-04-20</td></tr>
+<tr><td>2013-04-19</td><td>3363</td><td>EM</td><td>EXPLOSION</td><td>Other</td><td>2013-04-17 to 2013-04-20</td></tr>
+<tr><td>2012-04-30</td><td>2976</td><td>FM</td><td>LIVERMORE RANCH FIRE COMPLEX</td><td>Fire</td><td>2012-04-24 to 2012-05-11</td></tr>
+<tr><td>2011-09-09</td><td>4029</td><td>DR</td><td>WILDFIRES</td><td>Fire</td><td>2011-08-30 to 2011-12-31</td></tr>
+<tr><td>2011-09-09</td><td>2968</td><td>FM</td><td>PAT GROSS FIRE</td><td>Fire</td><td>2011-09-09 to </td></tr>
+<tr><td>2011-09-08</td><td>2967</td><td>FM</td><td>BIG OAK FIRE</td><td>Fire</td><td>2011-09-08 to </td></tr>
+<tr><td>2011-09-06</td><td>2965</td><td>FM</td><td>BEAR CREEK FIRE</td><td>Fire</td><td>2011-09-04 to 2011-10-24</td></tr>
+<tr><td>2011-09-06</td><td>2964</td><td>FM</td><td>RILEY ROAD FIRE</td><td>Fire</td><td>2011-09-05 to 2011-10-02</td></tr>
+<tr><td>2011-09-06</td><td>2963</td><td>FM</td><td>MOONGLOW FIRE</td><td>Fire</td><td>2011-09-05 to </td></tr>
+<tr><td>2011-09-06</td><td>2962</td><td>FM</td><td>TAMINA FIRE</td><td>Fire</td><td>2011-09-05 to 2011-09-08</td></tr>
+<tr><td>2011-09-05</td><td>2960</td><td>FM</td><td>STEINER RANCH FIRE</td><td>Fire</td><td>2011-09-04 to 2011-09-09</td></tr>
+<tr><td>2011-09-05</td><td>2959</td><td>FM</td><td>PEDERNALES BEND FIRE</td><td>Fire</td><td>2011-09-04 to 2011-09-12</td></tr>
+<tr><td>2011-09-04</td><td>2958</td><td>FM</td><td>BASTROP COUNTY FIRE COMPLEX</td><td>Fire</td><td>2011-09-04 to 2011-10-11</td></tr>
+<tr><td>2011-09-04</td><td>2957</td><td>FM</td><td>HODDE FIRE</td><td>Fire</td><td>2011-09-04 to </td></tr>
+<tr><td>2011-08-30</td><td>2952</td><td>FM</td><td>101 RANCH FIRE</td><td>Fire</td><td>2011-08-30 to 2011-10-01</td></tr>
+<tr><td>2011-08-15</td><td>2949</td><td>FM</td><td>HORSESHOE FIRE</td><td>Fire</td><td>2011-08-15 to </td></tr>
+<tr><td>2011-07-11</td><td>2937</td><td>FM</td><td>NOLAN COUNTY FIRE COMPLEX</td><td>Fire</td><td>2011-07-11 to 2011-07-20</td></tr>
+<tr><td>2011-07-01</td><td>1999</td><td>DR</td><td>WILDFIRES</td><td>Fire</td><td>2011-04-06 to 2011-08-29</td></tr>
+<tr><td>2011-06-21</td><td>2931</td><td>FM</td><td>WHITE HAT FIRE</td><td>Fire</td><td>2011-06-20 to 2011-07-01</td></tr>
+<tr><td>2011-06-21</td><td>2930</td><td>FM</td><td>BOYKEN ROAD FIRE</td><td>Fire</td><td>2011-06-20 to 2011-06-28</td></tr>
+<tr><td>2011-06-20</td><td>2929</td><td>FM</td><td>COWBOY CHURCH FIRE</td><td>Fire</td><td>2011-06-19 to 2011-06-25</td></tr>
+<tr><td>2011-06-20</td><td>2928</td><td>FM</td><td>MCDONALD 2 FIRE</td><td>Fire</td><td>2011-06-19 to 2011-06-30</td></tr>
+<tr><td>2011-06-20</td><td>2927</td><td>FM</td><td>DYER MILL FIRE</td><td>Fire</td><td>2011-06-19 to 2011-07-06</td></tr>
+<tr><td>2011-06-18</td><td>2926</td><td>FM</td><td>POWERLINE FIRE</td><td>Fire</td><td>2011-06-18 to 2011-06-26</td></tr>
+<tr><td>2011-06-18</td><td>2925</td><td>FM</td><td>COUNTY LINE FIRE</td><td>Fire</td><td>2011-06-18 to 2011-06-20</td></tr>
+<tr><td>2011-06-17</td><td>2924</td><td>FM</td><td>FOREST BROOK FIRE</td><td>Fire</td><td>2011-06-17 to 2011-06-20</td></tr>
+<tr><td>2011-06-16</td><td>2922</td><td>FM</td><td>GRAND MESA FIRE</td><td>Fire</td><td>2011-06-16 to 2011-06-19</td></tr>
+<tr><td>2011-06-03</td><td>2916</td><td>FM</td><td>SNYDER FIRE</td><td>Fire</td><td>2011-06-03 to 2011-06-11</td></tr>
+<tr><td>2011-06-02</td><td>2914</td><td>FM</td><td>TEJANO CANYON FIRE</td><td>Fire</td><td>2011-06-02 to 2011-06-12</td></tr>
+<tr><td>2011-05-29</td><td>2913</td><td>FM</td><td>STONE RIDGE FIRE</td><td>Fire</td><td>2011-05-29 to 2011-06-01</td></tr>
+<tr><td>2011-05-29</td><td>2912</td><td>FM</td><td>PITT ROAD FIRE</td><td>Fire</td><td>2011-05-29 to 2011-06-01</td></tr>
+<tr><td>2011-05-29</td><td>2911</td><td>FM</td><td>REIMER FIRE</td><td>Fire</td><td>2011-05-29 to 2011-05-31</td></tr>
+<tr><td>2011-05-24</td><td>2910</td><td>FM</td><td>CEED FIRE</td><td>Fire</td><td>2011-05-24 to 2011-05-31</td></tr>
+<tr><td>2011-05-09</td><td>2908</td><td>FM</td><td>MATT LOOP FIRE</td><td>Fire</td><td>2011-05-09 to 2011-05-14</td></tr>
+<tr><td>2011-05-08</td><td>2906</td><td>FM</td><td>GAGE HOLLAND FIRE</td><td>Fire</td><td>2011-05-08 to 2011-05-19</td></tr>
+<tr><td>2011-04-30</td><td>2905</td><td>FM</td><td>SISK ROAD FIRE</td><td>Fire</td><td>2011-04-29 to 2011-05-01</td></tr>
+<tr><td>2011-04-30</td><td>2904</td><td>FM</td><td>WAGGONER RANCH FIRE</td><td>Fire</td><td>2011-04-29 to 2011-05-01</td></tr>
+<tr><td>2011-04-29</td><td>2903</td><td>FM</td><td>OASIS PIPELINE FIRE</td><td>Fire</td><td>2011-04-26 to 2011-05-14</td></tr>
+<tr><td>2011-04-27</td><td>2901</td><td>FM</td><td>PLEASANT FARMS FIRE</td><td>Fire</td><td>2011-04-26 to 2011-05-04</td></tr>
+<tr><td>2011-04-21</td><td>2899</td><td>FM</td><td>148/2332 FIRE</td><td>Fire</td><td>2011-04-14 to 2011-04-17</td></tr>
+<tr><td>2011-04-17</td><td>2898</td><td>FM</td><td>PINNACLE FIRE</td><td>Fire</td><td>2011-04-17 to 2011-04-19</td></tr>
+<tr><td>2011-04-17</td><td>2896</td><td>FM</td><td>BRYSON FIRE COMPLEX</td><td>Fire</td><td>2011-04-15 to 2011-04-22</td></tr>
+<tr><td>2011-04-16</td><td>2895</td><td>FM</td><td>PK EAST FIRE</td><td>Fire</td><td>2011-04-16 to 2011-05-04</td></tr>
+<tr><td>2011-04-16</td><td>2894</td><td>FM</td><td>EAST SIDWYNICKS FIRE</td><td>Fire</td><td>2011-04-15 to 2011-04-18</td></tr>
+<tr><td>2011-04-16</td><td>2893</td><td>FM</td><td>HOHERTZ FIRE</td><td>Fire</td><td>2011-04-09 to 2011-05-12</td></tr>
+<tr><td>2011-04-15</td><td>2892</td><td>FM</td><td>WILDCAT FIRE</td><td>Fire</td><td>2011-04-11 to 2011-05-04</td></tr>
+<tr><td>2011-04-15</td><td>2891</td><td>FM</td><td>WICHITA FIRE COMPLEX</td><td>Fire</td><td>2011-04-15 to 2011-04-20</td></tr>
+<tr><td>2011-04-15</td><td>2889</td><td>FM</td><td>COOPER MOUNTAIN RANCH FIRE</td><td>Fire</td><td>2011-04-11 to 2011-04-23</td></tr>
+<tr><td>2011-04-15</td><td>2888</td><td>FM</td><td>PK WEST FIRE</td><td>Fire</td><td>2011-04-13 to 2011-05-12</td></tr>
+<tr><td>2011-04-09</td><td>2886</td><td>FM</td><td>HICKMAN FIRE</td><td>Fire</td><td>2011-04-09 to 2011-04-20</td></tr>
+<tr><td>2011-04-09</td><td>2885</td><td>FM</td><td>ROCKHOUSE FIRE</td><td>Fire</td><td>2011-04-09 to 2011-05-15</td></tr>
+<tr><td>2011-04-09</td><td>2884</td><td>FM</td><td>SWENSON FIRE</td><td>Fire</td><td>2011-04-06 to 2011-04-23</td></tr>
+<tr><td>2011-04-05</td><td>2882</td><td>FM</td><td>EL CENIZO FIRE</td><td>Fire</td><td>2011-04-04 to 2011-04-08</td></tr>
+<tr><td>2011-04-03</td><td>2881</td><td>FM</td><td>BATES FIELD FIRE</td><td>Fire</td><td>2011-04-03 to 2011-04-06</td></tr>
+<tr><td>2011-03-12</td><td>2870</td><td>FM</td><td>BIG TRICKLE RANCH FIRE</td><td>Fire</td><td>2011-03-11 to 2011-03-17</td></tr>
+<tr><td>2011-03-11</td><td>2867</td><td>FM</td><td>ENMIN FIRE</td><td>Fire</td><td>2011-03-11 to 2011-03-17</td></tr>
+<tr><td>2011-02-28</td><td>2865</td><td>FM</td><td>MITCHELL FIRE COMPLEX</td><td>Fire</td><td>2011-02-27 to </td></tr>
+<tr><td>2011-02-27</td><td>2864</td><td>FM</td><td>TANGLEWOOD FIRE COMPLEX</td><td>Fire</td><td>2011-02-27 to </td></tr>
+<tr><td>2011-02-27</td><td>2863</td><td>FM</td><td>MATADOR FIRE</td><td>Fire</td><td>2011-02-27 to </td></tr>
+<tr><td>2011-02-27</td><td>2862</td><td>FM</td><td>WILLOW CREEK SOUTH FIRE COMPLEX</td><td>Fire</td><td>2011-02-27 to </td></tr>
+<tr><td>2010-08-03</td><td>1931</td><td>DR</td><td>HURRICANE ALEX</td><td>Hurricane</td><td>2010-06-30 to 2010-08-14</td></tr>
+<tr><td>2010-06-29</td><td>3313</td><td>EM</td><td>TROPICAL STORM ALEX</td><td>Hurricane</td><td>2010-06-27 to 2010-08-14</td></tr>
+<tr><td>2009-04-10</td><td>2815</td><td>FM</td><td>617 FIRE</td><td>Fire</td><td>2009-04-09 to 2009-04-11</td></tr>
+<tr><td>2009-04-10</td><td>2814</td><td>FM</td><td>1148 FIRE</td><td>Fire</td><td>2009-04-09 to 2009-04-16</td></tr>
+<tr><td>2009-04-10</td><td>2810</td><td>FM</td><td>BRECKENRIDGE FIRE</td><td>Fire</td><td>2009-04-09 to 2009-04-16</td></tr>
+<tr><td>2009-04-10</td><td>2807</td><td>FM</td><td>CEMENT MOUNTAIN FIRE</td><td>Fire</td><td>2009-04-09 to 2009-04-16</td></tr>
+<tr><td>2009-04-10</td><td>2806</td><td>FM</td><td>MONTAGUE FIRE COMPLEX</td><td>Fire</td><td>2009-04-09 to 2009-04-16</td></tr>
+<tr><td>2009-04-10</td><td>2805</td><td>FM</td><td>ELECTRA WEST FIRE</td><td>Fire</td><td>2009-04-09 to 2009-04-14</td></tr>
+<tr><td>2009-04-07</td><td>2804</td><td>FM</td><td>STEEL FIRE</td><td>Fire</td><td>2009-04-07 to 2009-04-12</td></tr>
+<tr><td>2009-04-05</td><td>2803</td><td>FM</td><td>HOLIDAY BEACH FIRE</td><td>Fire</td><td>2009-04-05 to 2009-04-07</td></tr>
+<tr><td>2009-04-04</td><td>2802</td><td>FM</td><td>MAGIC CITY FIRE</td><td>Fire</td><td>2009-04-04 to 2009-04-12</td></tr>
+<tr><td>2009-04-03</td><td>2801</td><td>FM</td><td>LAGARTO FIRE</td><td>Fire</td><td>2009-04-02 to 2009-04-05</td></tr>
+<tr><td>2009-03-20</td><td>2800</td><td>FM</td><td>GREENWOOD FIRE</td><td>Fire</td><td>2009-03-20 to 2009-03-22</td></tr>
+<tr><td>2009-03-05</td><td>2798</td><td>FM</td><td>TUSCOLA FIRE</td><td>Fire</td><td>2009-03-05 to 2009-03-10</td></tr>
+<tr><td>2009-03-03</td><td>2797</td><td>FM</td><td>LOMA DEL NORTE FIRE</td><td>Fire</td><td>2009-03-03 to 2009-03-18</td></tr>
+<tr><td>2009-02-28</td><td>2796</td><td>FM</td><td>WILDERNESS RIDGE FIRE</td><td>Fire</td><td>2009-02-28 to 2009-03-12</td></tr>
+<tr><td>2009-02-27</td><td>2795</td><td>FM</td><td>RHODES RANCH FIRE</td><td>Fire</td><td>2009-02-27 to 2009-03-08</td></tr>
+<tr><td>2009-02-25</td><td>2794</td><td>FM</td><td>CLYDE FIRE</td><td>Fire</td><td>2009-02-25 to 2009-03-04</td></tr>
+<tr><td>2008-09-13</td><td>1791</td><td>DR</td><td>HURRICANE IKE</td><td>Hurricane</td><td>2008-09-07 to 2008-10-02</td></tr>
+<tr><td>2008-09-10</td><td>3294</td><td>EM</td><td>HURRICANE IKE</td><td>Hurricane</td><td>2008-09-07 to 2008-09-26</td></tr>
+<tr><td>2008-08-29</td><td>3290</td><td>EM</td><td>HURRICANE GUSTAV</td><td>Hurricane</td><td>2008-08-27 to 2008-09-07</td></tr>
+<tr><td>2008-08-07</td><td>2785</td><td>FM</td><td>FLORENCE FIRE</td><td>Fire</td><td>2008-08-07 to 2008-08-14</td></tr>
+<tr><td>2008-07-24</td><td>1780</td><td>DR</td><td>HURRICANE DOLLY</td><td>Hurricane</td><td>2008-07-22 to 2008-08-01</td></tr>
+<tr><td>2008-06-16</td><td>2774</td><td>FM</td><td>CAMP BOWIE FIRE</td><td>Fire</td><td>2008-06-16 to 2008-06-19</td></tr>
+<tr><td>2008-06-04</td><td>2768</td><td>FM</td><td>HUGHES RANCH FIRE</td><td>Fire</td><td>2008-06-04 to 2008-06-04</td></tr>
+<tr><td>2008-06-03</td><td>2767</td><td>FM</td><td>REIN STREET FIRE</td><td>Fire</td><td>2008-06-03 to 2008-06-03</td></tr>
+<tr><td>2008-05-01</td><td>2764</td><td>FM</td><td>PRICE FIRE</td><td>Fire</td><td>2008-05-01 to 2008-05-04</td></tr>
+<tr><td>2008-04-16</td><td>2761</td><td>FM</td><td>HEBBRONVILLE FIRE</td><td>Fire</td><td>2008-04-16 to 2008-04-18</td></tr>
+<tr><td>2008-04-10</td><td>2759</td><td>FM</td><td>PARKER FIRE</td><td>Fire</td><td>2008-04-10 to 2008-04-14</td></tr>
+<tr><td>2008-03-31</td><td>2758</td><td>FM</td><td>KENTWOOD FIRE</td><td>Fire</td><td>2008-03-31 to 2008-04-04</td></tr>
+<tr><td>2008-03-27</td><td>2757</td><td>FM</td><td>SILVER HEELS FIRE</td><td>Fire</td><td>2008-03-27 to 2008-03-31</td></tr>
+<tr><td>2008-03-19</td><td>2755</td><td>FM</td><td>ENCINO FIRE</td><td>Fire</td><td>2008-03-19 to 2008-03-23</td></tr>
+<tr><td>2008-03-19</td><td>2754</td><td>FM</td><td>BURNS RANCH FIRE</td><td>Fire</td><td>2008-03-18 to 2008-03-23</td></tr>
+<tr><td>2008-03-15</td><td>2753</td><td>FM</td><td>322 FIRE</td><td>Fire</td><td>2008-03-15 to 2008-03-18</td></tr>
+<tr><td>2008-03-14</td><td>3284</td><td>EM</td><td>WILDFIRES</td><td>Fire</td><td>2008-03-14 to 2008-09-01</td></tr>
+<tr><td>2008-03-14</td><td>2752</td><td>FM</td><td>EIGHTY-TWO FIRE</td><td>Fire</td><td>2008-03-14 to 2008-03-21</td></tr>
+<tr><td>2008-03-14</td><td>2751</td><td>FM</td><td>OLD BASTROP HIGHWAY FIRE COMPLEX</td><td>Fire</td><td>2008-03-14 to 2008-03-16</td></tr>
+<tr><td>2008-03-12</td><td>2750</td><td>FM</td><td>ARABELLA FIRE</td><td>Fire</td><td>2008-03-11 to 2008-03-15</td></tr>
+<tr><td>2008-03-04</td><td>2749</td><td>FM</td><td>LA PERLA FIRE</td><td>Fire</td><td>2008-03-03 to 2008-03-05</td></tr>
+<tr><td>2008-02-28</td><td>2748</td><td>FM</td><td>NEW ARCHER FIRE</td><td>Fire</td><td>2008-02-25 to 2008-03-02</td></tr>
+<tr><td>2008-02-25</td><td>2747</td><td>FM</td><td>SILVER FIRE</td><td>Fire</td><td>2008-02-25 to 2008-03-02</td></tr>
+<tr><td>2008-02-25</td><td>2745</td><td>FM</td><td>SOUTH ODESSA FIRE</td><td>Fire</td><td>2008-02-25 to 2008-02-29</td></tr>
+<tr><td>2008-02-23</td><td>2744</td><td>FM</td><td>SCURRY FIRE COMPLEX</td><td>Fire</td><td>2008-02-23 to 2008-02-29</td></tr>
+<tr><td>2008-02-13</td><td>2743</td><td>FM</td><td>BROADWAY FIRE</td><td>Fire</td><td>2008-02-13 to 2008-02-16</td></tr>
+<tr><td>2008-02-08</td><td>2742</td><td>FM</td><td>CHEVRON FIRE</td><td>Fire</td><td>2008-02-08 to 2008-02-14</td></tr>
+<tr><td>2007-10-02</td><td>1730</td><td>DR</td><td>TROPICAL STORM ERIN</td><td>Severe Storm</td><td>2007-08-14 to 2007-08-20</td></tr>
+<tr><td>2007-08-18</td><td>3277</td><td>EM</td><td>HURRICANE DEAN</td><td>Hurricane</td><td>2007-08-17 to 2007-09-05</td></tr>
+<tr><td>2007-06-29</td><td>1709</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2007-06-16 to 2007-08-03</td></tr>
+<tr><td>2007-05-01</td><td>1697</td><td>DR</td><td>SEVERE STORMS AND TORNADOES</td><td>Severe Storm</td><td>2007-04-21 to 2007-04-24</td></tr>
+<tr><td>2006-11-15</td><td>2680</td><td>FM</td><td>RIM ROCK FIRE</td><td>Fire</td><td>2006-11-15 to </td></tr>
+<tr><td>2006-09-14</td><td>2675</td><td>FM</td><td>MOORE ROAD FIRE</td><td>Fire</td><td>2006-09-14 to </td></tr>
+<tr><td>2006-08-19</td><td>2667</td><td>FM</td><td>CADDO II FIRE COMPLEX</td><td>Fire</td><td>2006-08-18 to </td></tr>
+<tr><td>2006-08-16</td><td>2666</td><td>FM</td><td>PURGATORY ROAD FIRE</td><td>Fire</td><td>2006-08-16 to </td></tr>
+<tr><td>2006-08-15</td><td>1658</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2006-07-27 to 2006-08-25</td></tr>
+<tr><td>2006-06-27</td><td>2651</td><td>FM</td><td>NORTH TRINITY FIRE</td><td>Fire</td><td>2006-06-27 to </td></tr>
+<tr><td>2006-05-26</td><td>2639</td><td>FM</td><td>LAKE OLYMPIA FIRE</td><td>Fire</td><td>2006-05-26 to </td></tr>
+<tr><td>2006-02-05</td><td>2629</td><td>FM</td><td>VENUS FIRE COMPLEX</td><td>Fire</td><td>2006-02-05 to </td></tr>
+<tr><td>2006-01-19</td><td>2622</td><td>FM</td><td>ORCHARD FIRE</td><td>Fire</td><td>2006-01-19 to </td></tr>
+<tr><td>2006-01-19</td><td>2621</td><td>FM</td><td>HUNTINGTON BROOK FIRE</td><td>Fire</td><td>2006-01-17 to </td></tr>
+<tr><td>2006-01-15</td><td>2620</td><td>FM</td><td>CADDO FIRE</td><td>Fire</td><td>2006-01-14 to </td></tr>
+<tr><td>2006-01-13</td><td>2619</td><td>FM</td><td>LOCKHART FIRE</td><td>Fire</td><td>2006-01-13 to </td></tr>
+<tr><td>2006-01-11</td><td>2617</td><td>FM</td><td>NIEDERWALD FIRE</td><td>Fire</td><td>2006-01-11 to </td></tr>
+<tr><td>2006-01-11</td><td>1624</td><td>DR</td><td>EXTREME WILDFIRE THREAT</td><td>Fire</td><td>2005-11-27 to 2006-05-14</td></tr>
+<tr><td>2006-01-08</td><td>2614</td><td>FM</td><td>HAWKINS FIRE</td><td>Fire</td><td>2006-01-08 to </td></tr>
+<tr><td>2006-01-07</td><td>2612</td><td>FM</td><td>CEDAR CREEK FIRE</td><td>Fire</td><td>2006-01-07 to </td></tr>
+<tr><td>2006-01-05</td><td>2611</td><td>FM</td><td>MILL CREEK FIRE</td><td>Fire</td><td>2006-01-05 to </td></tr>
+<tr><td>2006-01-05</td><td>2610</td><td>FM</td><td>ROSEWOOD FIRE</td><td>Fire</td><td>2006-01-05 to </td></tr>
+<tr><td>2006-01-05</td><td>2609</td><td>FM</td><td>BULVERDE FIRE</td><td>Fire</td><td>2006-01-05 to </td></tr>
+<tr><td>2006-01-01</td><td>2598</td><td>FM</td><td>RINGGOLD FIRE</td><td>Fire</td><td>2006-01-01 to </td></tr>
+<tr><td>2006-01-01</td><td>2596</td><td>FM</td><td>CARBON FIRE</td><td>Fire</td><td>2006-01-01 to </td></tr>
+<tr><td>2005-12-28</td><td>2593</td><td>FM</td><td>KENNEDALE FIRE</td><td>Fire</td><td>2005-12-27 to </td></tr>
+<tr><td>2005-12-28</td><td>2591</td><td>FM</td><td>CALLAHAN COUNTY FIRE</td><td>Fire</td><td>2005-12-27 to </td></tr>
+<tr><td>2005-09-24</td><td>1606</td><td>DR</td><td>HURRICANE RITA</td><td>Hurricane</td><td>2005-09-23 to 2005-10-14</td></tr>
+<tr><td>2005-09-21</td><td>3261</td><td>EM</td><td>HURRICANE RITA</td><td>Hurricane</td><td>2005-09-20 to 2005-10-14</td></tr>
+<tr><td>2005-09-02</td><td>3216</td><td>EM</td><td>HURRICANE KATRINA EVACUATION</td><td>Hurricane</td><td>2005-08-29 to 2005-10-01</td></tr>
+<tr><td>2003-07-17</td><td>1479</td><td>DR</td><td>HURRICANE CLAUDETTE</td><td>Hurricane</td><td>2003-07-15 to 2003-07-28</td></tr>
+<tr><td>2003-02-01</td><td>3171</td><td>EM</td><td>LOSS OF THE SPACE SHUTTLE COLUMBIA</td><td>Other</td><td>2003-02-01 to 2003-02-01</td></tr>
+<tr><td>2002-11-05</td><td>1439</td><td>DR</td><td>SEVERE STORMS, TORNADOES AND FLOODING</td><td>Severe Storm</td><td>2002-10-24 to 2002-11-15</td></tr>
+<tr><td>2002-09-26</td><td>1434</td><td>DR</td><td>TROPICAL STORM FAY</td><td>Coastal Storm</td><td>2002-09-06 to 2002-09-30</td></tr>
+<tr><td>2002-07-04</td><td>1425</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2002-06-29 to 2002-07-31</td></tr>
+<tr><td>2001-06-09</td><td>1379</td><td>DR</td><td>TX-TROPICAL STORM ALLISON-06-06-2001</td><td>Coastal Storm</td><td>2001-06-05 to 2001-06-20</td></tr>
+<tr><td>2001-01-08</td><td>1356</td><td>DR</td><td>SEVERE WINTER ICE STORM</td><td>Severe Ice Storm</td><td>2000-12-12 to 2001-01-15</td></tr>
+<tr><td>2001-01-05</td><td>2352</td><td>FM</td><td>TX - AMHURST STREET FIRE - 09/04/00</td><td>Fire</td><td>2000-09-04 to 2000-09-05</td></tr>
+<tr><td>2001-01-05</td><td>2351</td><td>FM</td><td>TX - ALSBURY FIRE - 08/29/00</td><td>Fire</td><td>2000-08-28 to 2000-09-13</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
+<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+</main>
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script></body></html>
