@@ -130,26 +130,63 @@ REQUEST_HEADERS = {
     )
 }
 
-# Weather/emergency keywords used to decide whether an order is in scope.
-# Broad on purpose: false positives get filtered later by a human reviewing
-# nj_emergency_actions_all.csv; false negatives (missing a real weather EO)
-# are the worse failure mode, so this list errs wide.
-WEATHER_KEYWORDS = [
-    "emergency", "disaster", "storm", "winter", "snow", "ice", "flood",
-    "flooding", "hurricane", "tropical", "wind", "tornado", "drought",
-    "wildfire", "fire danger", "extreme cold", "extreme heat", "heat",
-    "coastal", "nor'easter", "noreaster", "state of emergency",
-]
+# Hazard-specific phrases used to decide whether an order is weather related.
+# Generic legal terms such as "emergency" and "disaster" are intentionally
+# absent: they occur in public-health and administrative orders as well as in
+# boilerplate citations to emergency-management authority.  Every pattern is
+# word/phrase bounded so a weather term such as "ice" cannot match inside
+# unrelated words such as "practice", "service", "office", or "justice".
+WEATHER_PATTERNS = tuple(
+    re.compile(pattern, re.I)
+    for pattern in (
+        r"\b(?:severe|extreme|inclement|hazardous)\s+weather\b",
+        r"\bweather\s+(?:event|emergency|conditions?)\b",
+        r"\b(?:winter|coastal|tropical|ice|snow|wind|thunder)\s*storms?\b",
+        r"\b(?:major|severe)\s+storms?\b",
+        r"\bnor(?:['\N{RIGHT SINGLE QUOTATION MARK}])?easters?\b",
+        r"\bhurricanes?\b",
+        r"\btropical\s+(?:storms?|cyclones?|depressions?)\b",
+        r"\btornado(?:es|s)?\b",
+        r"\bblizzards?\b",
+        r"\bflood(?:s|ed|ing)?\b",
+        r"\bflash\s+flood(?:s|ing)?\b",
+        r"\bsnow(?:fall|storms?)?\b",
+        r"\b(?:snow\s+(?:and|or)\s+ice|ice\s+(?:and|or)\s+snow|"
+        r"ice\s+(?:accumulation|conditions?|hazards?))\b",
+        r"\bsleet\b",
+        r"\bfreezing\s+rain\b",
+        r"\bdroughts?\b",
+        r"\bwildfires?\b",
+        r"\b(?:forest|brush)\s+fires?\b",
+        r"\bfire\s+danger\b",
+        r"\bextreme\s+(?:cold|heat)\b",
+        r"\bheat\s+waves?\b",
+        r"\bcoastal\s+flood(?:s|ing)?\b",
+        r"\bhigh\s+winds?\b",
+        r"\bwindstorms?\b",
+    )
+)
 
 # Matches "Executive Order", "E.O.", or bare "Order", each optionally
 # followed by "No./Nos./Number", then one or more comma/and-separated
-# numbers. Fix #5: earlier version required "executive order" + "no." both
+# numbers. The separator is mandatory after the first number. An earlier
+# form nested optional whitespace and optional separators inside a repeated
+# group; on a long document that could trigger catastrophic backtracking and
+# hold one CPU core indefinitely.
+#
+# Fix #5: an earlier version required "executive order" + "no." both
 # present in a fairly rigid order, which missed real phrasings like
 # "Order No. 44" (no "executive") and "Executive Order Number 37" (spelled
 # out "Number", not "No."). This fragment is reused for both the active
 # ("X terminates ORDER_REF") and passive ("ORDER_REF is/are terminated")
 # directions below.
-ORDER_REF = r"(?:executive\s+order|e\.?o\.?|order)s?\s*(?:nos?\.?|number)?\s*#?\s*((?:\d+\s*(?:,|&|and)?\s*)+)"
+ORDER_NUMBER_LIST = (
+    r"(\d+(?:(?:\s*,\s*(?:and\s+)?|\s*(?:&|and)\s*)\d+)*)"
+)
+ORDER_REF = (
+    r"(?:executive\s+order|e\.?o\.?|order)s?\s*"
+    r"(?:nos?\.?|number)?\s*#?\s*" + ORDER_NUMBER_LIST
+)
 
 # verb -> relationship_type
 _VERB_TO_TYPE = {
@@ -204,9 +241,19 @@ class NJOrder:
 
 
 def fetch(url: str) -> Optional[requests.Response]:
+    """Fetch a URL, forcing UTF-8 decoding.
+
+    nj.gov's older pages often omit a charset in their Content-Type header.
+    requests then guesses Latin-1 by default, which silently mangles UTF-8
+    curly quotes and apostrophes into garbage bytes (e.g. "children's"
+    rendering as "childrenâ\x80\x99s" downstream). Every page sampled during
+    validation was genuinely UTF-8, so force it explicitly rather than
+    trusting requests' guess.
+    """
     try:
         resp = requests.get(url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
+        resp.encoding = "utf-8"
         return resp
     except requests.RequestException as exc:
         print(f"  WARNING: failed to fetch {url}: {exc}", file=sys.stderr)
@@ -421,9 +468,30 @@ def _normalize_date(raw: str) -> Optional[str]:
         "%m/%d/%Y", "%m/%d/%y", "%Y/%m/%d", "%Y-%m-%d",
     ):
         try:
-            return datetime.strptime(candidate, fmt).strftime("%Y-%m-%d")
+            parsed = datetime.strptime(candidate, fmt)
         except ValueError:
             continue
+
+        if fmt == "%m/%d/%y":
+            # Python's default two-digit-year pivot assumes 00-68 means
+            # 2000-2068, which is wrong for this archive: NJ's site covers
+            # 1962-present, so a 2-digit year here almost always means the
+            # 1900s, not the 2000s. Without this correction, a genuine
+            # Hughes-era date like "6/25/65" (1965) parses as 2065 and gets
+            # published on a live page with an impossible date.
+            if parsed.year > datetime.now().year:
+                parsed = parsed.replace(year=parsed.year - 100)
+
+        # General plausibility guard regardless of which format matched:
+        # reject anything outside NJ's actual archive range rather than
+        # publish a date nobody could have verified. A bad date is worse
+        # than no date, since downstream code already treats "no date" as
+        # "exclude from matching" - safe by design.
+        if not (1900 <= parsed.year <= datetime.now().year + 1):
+            return None
+
+        return parsed.strftime("%Y-%m-%d")
+
     # Leave unparsed rather than guessing; downstream code treats a missing
     # date_signed as "exclude from NOAA date-window matching", which is
     # safer than a silently wrong date.
@@ -522,16 +590,16 @@ def classify_action_type(order: NJOrder) -> str:
     text = order.description.lower()
     if re.search(r"terminat|rescind", text):
         return "termination"
-    if re.search(r"extend", text):
+    if re.search(r"\b(?:extend|continu|renew)", text):
         return "extension"
-    if re.search(r"amend", text):
+    if re.search(r"\b(?:amend|modify|modifies|modified)", text):
         return "amendment"
     return "declaration"
 
 
 def is_weather_related(order: NJOrder) -> bool:
-    text = f"{order.description} {order.document_text}".lower()
-    return any(kw in text for kw in WEATHER_KEYWORDS)
+    text = f"{order.description} {order.document_text}"
+    return any(pattern.search(text) for pattern in WEATHER_PATTERNS)
 
 
 def extract_relationships(order: NJOrder) -> list[dict]:
@@ -669,9 +737,9 @@ def write_relationships_csv(relationships: list[dict], path: str) -> None:
 def write_join_csv(orders: list[NJOrder], path: str) -> None:
     """Virginia-compatible join file: eo_number, event_description,
     date_signed (+ declaration_id/governor/archive_record_url), limited to
-    weather-related, non-termination orders with a parsed date, since a
-    termination has no storm to match against and an undated row can't be
-    windowed."""
+    original weather declarations with a parsed date. Extensions,
+    amendments, continuations, and terminations remain in the complete action
+    archive but are not treated as new weather incidents for NOAA matching."""
     fieldnames = [
         "declaration_id", "governor", "eo_number", "event_description",
         "date_signed", "archive_record_url",
@@ -680,7 +748,7 @@ def write_join_csv(orders: list[NJOrder], path: str) -> None:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for order in orders:
-            if order.action_type == "termination":
+            if order.action_type != "declaration":
                 continue
             if not order.weather_related:
                 continue
@@ -779,11 +847,12 @@ def main() -> None:
     weather_count = sum(1 for o in all_orders if o.weather_related)
     join_count = sum(
         1 for o in all_orders
-        if o.weather_related and o.action_type != "termination" and o.date_issued
+        if o.weather_related and o.action_type == "declaration" and o.date_issued
     )
     print(
         f"\nDone. {len(all_orders)} total order(s), {weather_count} weather-related, "
-        f"{join_count} written to the join file (excludes terminations and undated rows)."
+        f"{join_count} original declarations written to the join file "
+        "(excludes extensions, amendments, terminations, and undated rows)."
     )
 
 

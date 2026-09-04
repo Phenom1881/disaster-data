@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>New Jersey State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="State emergency actions and matched weather-event evidence for New Jersey.">
+<title>New Jersey Weather Emergency Declarations | DisasterData Plus</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for New Jersey.">
 <style>
     :root { --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
       --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }
@@ -33,25 +33,480 @@
     th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }
     th { background:var(--blue); color:white; }
+    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:700; text-align:left; cursor:pointer; }
     td a { color:#175c9c; } .empty { color:var(--muted); font-style:italic; }
     .actions { overflow-x:auto; }
+    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
+    .layer h2 { margin-top:.5rem; }
+    .primary { background:white; border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }
+    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }
+    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:700; }
+    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid #aebbc6;
+      border-radius:7px; font:inherit; }
+    details.layer { background:white; border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }
+    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--navy); font-weight:800; }
+    details.layer[open] > summary { border-bottom:1px solid var(--line); }
+    details.layer > .details-body { padding:0 1rem 1rem; }
+    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      main { padding:1.25rem .75rem 3rem; }
+      .table-tools { display:block; }
+      .table-tools label { display:block; margin-bottom:.25rem; }
+      .table-search { width:100%; }
+    }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }
     </style></head>
 <body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / New Jersey</header>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>New Jersey: State Emergency Actions</h1>
-<p class="lede">State-issued emergency actions and weather-event evidence supplementing the federal FEMA declaration record.</p>
-<div class="notice"><strong>Coverage:</strong> State-source adapter planned; state-action coverage not yet available. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<h1>New Jersey: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
+<div class="notice"><strong>Coverage:</strong> 1990-present provisional structured coverage; 1962-1989 selectively represented. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>0</strong>state-action records loaded</div>
-  <div class="metric"><strong>0</strong>NOAA event-match rows</div>
-  <div class="metric"><strong>0</strong>severity-area rows</div>
+  <div class="metric"><strong>59</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>152</strong>original state weather declarations</div>
+  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/new-jersey.html">Federal declaration overview</a> · <a href="https://www.nj.gov/infobank/eo/">Official state source</a></p>
-<h2>State-action inventory</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
-<tbody><tr><td colspan="5" class="empty">No verified state-action records have been loaded for this state yet.</td></tr></tbody></table></div>
-<p class="note">The inventory is limited by the coverage statement above. NOAA proximity matches identify potentially related observed events; they do not independently prove operational impacts or legal causation.</p>
-<footer>Generated 2026-09-03 · DisasterData.IO · State records remain subject to source verification.</footer>
-</main></body></html>
+<p><a href="../../states/new-jersey.html">Federal declaration overview</a> &middot; <a href="https://www.nj.gov/infobank/eo/">Official state source</a></p>
+
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-02-25</td><td>15</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-15.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
+<tr><td>2026-02-22</td><td>14</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-14.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
+<tr><td>2026-01-26</td><td>9</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-9.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
+<tr><td>2026-01-24</td><td>8</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-8.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
+<tr><td>2026-01-16</td><td>415</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-415.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-12-30</td><td>410</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-410.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-12-26</td><td>409</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-409.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-12-09</td><td>407</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-407.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-12-01</td><td>406</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-406.pdf">State of Emergency Declared Across Hunterdon, Morris, Passaic, Sussex, and Warren Counties</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-10-16</td><td>400</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-400.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-10-11</td><td>399</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-399.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-08-27</td><td>397</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-397.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-08-21</td><td>396</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-396.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-08-08</td><td>395</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-395.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-07-31</td><td>394</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-394.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-07-14</td><td>392</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-392.pdf">Declares a State of Emergency across all 21 counties in New Jersey due to flash flooding and severe thunderstorms statewide</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-05-13</td><td>388</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-388.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-04-23</td><td>387</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-387.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-01-27</td><td>380</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-380.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-01-18</td><td>378</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-378.pdf">Declares that New Jersey will enter a State of Emergency effective at 8:00 a.m. on Sunday, January 19 in anticipation of significant winter weather.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2025-01-05</td><td>374</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-374.pdf">The Governor has declared State of Emergency  to allocate more resources in preparation of  winter storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2024-08-12</td><td>365</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-365.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2024-08-09</td><td>364</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-364.pdf">Lt. Governor Way announced a State of Emergency effective at 6:00pm on Friday, August 9 in anticipation of severe storms causing hazardous weather conditions including heavy rain, high winds, and flash flooding.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2024-01-08</td><td>350</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-350.pdf">Governor Murphy Declares State of Emergency in Preparation for Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-10-01</td><td>343</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-343.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-09-29</td><td>342</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-342.pdf">Governor Murphy Declares State of Emergency Due to Severe Weather</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-07-16</td><td>336</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-336.pdf">Governor Murphy Declares State of Emergency Due to Severe Storms</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-03-16</td><td>322</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-322.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-03-13</td><td>320</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-320.pdf">Governor Murphy Declares State of Emergency for Five New Jersey Counties in Preparation for Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-02-15</td><td>317</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-317.pdf">Governor Murphy Sign Executive Order Initiating a Process In Partnership With The State’S Hometown Utilities, Key Stakeholders Including Organized Labor, And The New Jersey Board Of Public Utilities (BPU) To Plan For The Future Of The Natural Gas Utility In New Jersey</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-02-15</td><td>316</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-316.pdf">Governor Murphy Signs Executive Order to Target To Install Zero-Carbon-Emission Space Heating And Cooling Systems In 400,000 Homes And 20,000 Commercial Properties And Make 10% Of All Low-To-Moderate Income (LMI) Properties Electrification-Ready By 2030</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2023-02-15</td><td>315</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-315.pdf">Governor Murphy Signs Executive Order to Accelerate Target Of 100% Clean Energy By 2035, Defined As 100% Of The Electricity Sold In The State To Come From Clean Sources Of Electricity By January 1, 2035 Through Clean Energy Market Mechanisms, Paired With Support For A Clean Energy Standard In New Jersey</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2022-02-04</td><td>286</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-286.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2022-01-28</td><td>285</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-285.pdf">Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2022-01-13</td><td>282</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-282.pdf">Governor Murphy Lifts Storm-Related States of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2022-01-06</td><td>279</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-279.pdf">Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2022-01-02</td><td>278</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-278.pdf">Governor Murphy Declares State of Emergency in Atlantic, Burlington, Cape May, Cumberland, and Ocean Counties in Preparation for Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-11-10</td><td>274</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-274.pdf">Governor Murphy Advances Climate Action to Secure New Jersey’s Clean Energy Future</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-11-01</td><td>273</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-273.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-10-25</td><td>272</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-272.pdf">Declares State of Emergency in Preparation for Nor’easter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-09-20</td><td>264</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-264.pdf">Governor Murphy Signs Executive Order Instituting Vaccination or Testing Requirement for All Child Care Center Personnel</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-09-07</td><td>260</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-260.pdf">Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff to Honor Those Who Lost Their Lives to Tropical Storm Ida</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-09-01</td><td>259</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-259.pdf">Governor Murphy Declares State of Emergency in Response to Tropical Storm Ida</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-09-01</td><td>258</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-258.pdf">Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Berkeley Township Beach Patrol Lifeguard Keith Pinto</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-08-06</td><td>251</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-251.pdf">Governor Murphy Announces Indoor Mask Requirement for Beginning of 2021-2022 School Year</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-02-23</td><td>226</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-226.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2021-01-31</td><td>218</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-218.pdf">Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-12-18</td><td>209</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-209.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-12-16</td><td>208</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-208.pdf">Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-08-13</td><td>176</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-176.pdf">Governor Murphy Lifts State of Emergency Declared in Response to Hurricane Isaias</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-08-13</td><td>175</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-175.pdf">Murphy Administration to Open New Jersey’s Schools For In-Person Instruction Subject to Critical Health and Safety Protocols</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-08-03</td><td>174</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-174.pdf">Governor Murphy Declares State of Emergency in Response to Hurricane Isaias</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-07-17</td><td>166</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-166.pdf">Governor Murphy Signs Executive Order Creating Greater Oversight and Accountability for Federal COVID-19 Resources</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2020-01-27</td><td>100</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-100.pdf">Governor Murphy Unveils Energy Master Plan and Signs Executive Order Directing Sweeping Regulatory Reform to Reduce Emissions and Adapt to Climate Change</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-12-04</td><td>94</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-94.pdf">Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Monsignor Philip Lowery</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-10-29</td><td>89</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-89.pdf">Governor Murphy Signs Executive Order to Establish Statewide Climate Change Resilience Strategy</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-06-24</td><td>71</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-71.pdf">Governor Murphy Lifts State of Emergency in Burlington, Camden, and Gloucester Counties</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-06-20</td><td>70</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-70.pdf">Governor Murphy Declares a State of Emergency in Burlington, Camden, and Gloucester Counties.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-03-04</td><td>60</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-60.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-03-03</td><td>59</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-59.pdf">Declares a state of emergency across all 21 counties in New Jersey, allowing resources to be deployed throughout the state during the duration of the storm.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-02-20</td><td>58</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-58.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-02-20</td><td>57</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-57.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-02-13</td><td>56</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-56.pdf">Governor Murphy Lifts State of Emergency Effective at 8:00 a.m.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-02-11</td><td>55</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-55.pdf">Gov. Phil Murphy declares state of emergency for NJ for Tuesday February 12.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2019-01-18</td><td>50</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-50.pdf">Declares a State of Emergency beginning at noon on Saturday ahead of Winter Storm Harper</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-12-02</td><td>47</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-47.pdf">Governor Murphy Directs the Lowering of U.S. and New Jersey Flags in Honor of President George H.W. Bush</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-09-04</td><td>37</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-37.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-08-14</td><td>33</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-33.pdf">Governor Murphy Signs Executive Order Declaring State of Emergency in Flood-Impacted Counties</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-03-20</td><td>18</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-18.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-03-20</td><td>17</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-17.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-03-13</td><td>15</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-15.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-02-12</td><td>10</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-10.pdf">Established the Commission on Puerto Rico Relief.</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-01-29</td><td>7</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-7.pdf">Directs New Jersey to Reenter the Regional Greenhouse Gas Initiative</a></td><td>declaration</td><td>Murphy</td></tr>
+<tr><td>2018-01-16</td><td>222</td><td><a href="https://www.nj.gov/infobank/circular/eocc221.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2018-01-04</td><td>238</td><td><a href="https://www.nj.gov/infobank/circular/eocc238.pdf">Authorizes and empowers the State Authorities to implement the State Emergency Operations Plan and to direct the activation of county and municipal emergency operations plans as necessary. [pdf 22kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2017-09-29</td><td>233</td><td><a href="https://www.nj.gov/infobank/circular/eocc233.pdf">Executive Order No. 233 to designate municipal and county law enforcement and emergency responders as State Emergency Forces, which will be under the control and direction of the State Director of Emergency Management.  These local officials will compliment forces from the New Jersey National Guard, State Police and the State Office of Emergency Management in the safe deployment of critical emergency response resources. [pdf 21kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2017-03-13</td><td>221</td><td><a href="https://www.nj.gov/infobank/circular/eocc222.pdf">Governor Chris Christie declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies in preparation for Winter Storm Stella [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2016-09-03</td><td>214</td><td><a href="https://www.nj.gov/infobank/circular/eocc214.pdf">Governor Chris Christie Declares A State of Emergency For Ocean, Atlantic and Cape May Counties In Preparation For Tropical Storm Hermine [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2016-01-22</td><td>202</td><td><a href="https://www.nj.gov/infobank/circular/eocc202.pdf">Governor Christie Declares State Of Emergency Ahead Of Arrival Of Winter Storm [pdf 17kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2016-01-02</td><td>200</td><td><a href="https://www.nj.gov/infobank/circular/eocc200.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2015-10-01</td><td>186</td><td><a href="https://www.nj.gov/infobank/circular/eocc186.pdf">Governor Chris Christie today declared a state of emergency throughout the state as a result of severe weather conditions expected in the coming days. [pdf 20kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2015-03-04</td><td>175</td><td><a href="https://www.nj.gov/infobank/circular/eocc175.pdf">Authorizes the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2015-01-26</td><td>172</td><td><a href="https://www.nj.gov/infobank/circular/eocc172.pdf">Declares and proclaims that a State of Emergency exists [pdf 18kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2014-11-26</td><td>167</td><td><a href="https://www.nj.gov/infobank/circular/eocc167.pdf">Governor Chris Christie today declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Commuters are asked to use extreme caution while traveling across the state. [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2014-03-02</td><td>153</td><td><a href="https://www.nj.gov/infobank/circular/eocc153.pdf">Governor Chris Christie Declares State of Emergency In Preparation For Monday Morning’s Severe Winter Weather. [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2014-02-12</td><td>150</td><td><a href="https://www.nj.gov/infobank/circular/eocc150.pdf">Governor Chris Christie Declares State of Emergency In Preparation For Wednesday Night’s Severe Winter Weather. [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2014-02-04</td><td>149</td><td><a href="https://www.nj.gov/infobank/circular/eocc149.pdf">Governor Chris Christie Declares State of Emergency In Preparation For Tuesday Night’s Severe Winter Weather. [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2014-02-03</td><td>148</td><td><a href="https://www.nj.gov/infobank/circular/eocc148.pdf">Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies.</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2014-01-02</td><td>146</td><td><a href="https://www.nj.gov/infobank/circular/eocc146.pdf">Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Governor Christie also authorized the closing of state offices on Friday, January 3rd for all non-essential employees. [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2013-09-25</td><td>140</td><td><a href="https://www.nj.gov/infobank/circular/eocc140.pdf">Orders and directs Attorney General To Coordinate Acquisition Of Easements, Creates Office Of Flood Hazard Risk Reduction Measures To Lead Effort [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2013-05-22</td><td>132</td><td><a href="https://www.nj.gov/infobank/circular/eocc132.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2013-02-28</td><td>126</td><td><a href="https://www.nj.gov/infobank/circular/eocc126.pdf">Allows the seasonal alcoholic beverage licensees to begin serving alcohol on March 1, two months ahead of the traditional allowance of May 1. [pdf 18kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2013-02-08</td><td>125</td><td><a href="https://www.nj.gov/infobank/circular/eocc125.pdf">Orders and directs the Office of the State Comptroller to conduct independent review of contracts, transparency measures over expenditures [pdf 20kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-19</td><td>116</td><td><a href="https://www.nj.gov/infobank/circular/eocc116.pdf">The Director of the Division of Taxation, in the Department of the Treasury, is directed to take all appropriate actions to effectuate the fuel agreement between FEMA and the State. [pdf 20kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-16</td><td>113</td><td><a href="https://www.nj.gov/infobank/circular/eocc113.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-05</td><td>105</td><td><a href="https://www.nj.gov/infobank/circular/eocc105.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-05</td><td>111</td><td><a href="https://www.nj.gov/infobank/circular/eocc111.pdf">A local Government Unit has established a snow removal fund [pdf 55kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-03</td><td>109</td><td><a href="https://www.nj.gov/infobank/circular/eocc109.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-03</td><td>110</td><td><a href="https://www.nj.gov/infobank/circular/eocc110.pdf">Suspends restrictions in state law that place limitations on the source of fuel particular and branded fuel retailers are allowed to sell. [pdf 10kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-03</td><td>117</td><td><a href="https://www.nj.gov/infobank/circular/eocc117.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-02</td><td>107</td><td><a href="https://www.nj.gov/infobank/circular/eocc107.pdf">Protect Storm-Impacted New Jersey Homeowners from Higher Insurance Deductiblese [pdf 12kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-02</td><td>108</td><td><a href="https://www.nj.gov/infobank/circular/eocc108.pdf">Declares a limited state of energy emergency with regard to the supply of motor fuel and implementing odd-even rationing for gasoline purchases in 12 New Jersey counties.  [pdf 10kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-02</td><td>114</td><td><a href="https://www.nj.gov/infobank/circular/eocc114.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-11-01</td><td>106</td><td><a href="https://www.nj.gov/infobank/circular/eocc106.pdf">Declares State of Water Emergency, Authorizes DEP to Take Steps to Prevent Water Shortage [pdf 12kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-10-31</td><td>120</td><td><a href="https://www.nj.gov/infobank/circular/eocc120.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-10-27</td><td>104</td><td><a href="https://www.nj.gov/infobank/circular/eocc104.pdf">PROCLAIM that a State of Emergency exists in the State of New Jersey [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2012-08-30</td><td>101</td><td><a href="https://www.nj.gov/infobank/circular/eocc101.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2011-10-30</td><td>80</td><td><a href="https://www.nj.gov/infobank/circular/eocc80.pdf">Declare and proclaim that a State of Emergency exists in the State on New Jersey. [pdf 22kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2011-03-09</td><td>57</td><td><a href="https://www.nj.gov/infobank/circular/eocc57.pdf">Declares a Weather Related State of Emergency [pdf 22kB]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2010-04-23</td><td>23</td><td><a href="https://www.nj.gov/infobank/circular/eocc23.pdf">Orders and directs creation of the Governor’s Passaic River Basin Flood Advisory Commission (“Advisory Commission”). [pdf 23k]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2010-03-14</td><td>18</td><td><a href="https://www.nj.gov/infobank/circular/eocc18.pdf">Declares and proclaims that a State of Emergency exists [pdf 21k]</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2010-02-05</td><td>13</td><td><a href="https://www.nj.gov/infobank/circular/eocc13.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
+<tr><td>2009-11-12</td><td>160</td><td><a href="https://www.nj.gov/infobank/circular/eojsc160.htm">Declares a State of Emergency for the counties of Cape May, Atlantic, Cumberland, Burlington, Ocean and Monmouth.</a></td><td>declaration</td><td>Corzine</td></tr>
+<tr><td>2009-03-04</td><td>132</td><td><a href="https://www.nj.gov/infobank/circular/eojsc132.htm">Untitled action</a></td><td>declaration</td><td>Corzine</td></tr>
+<tr><td>2008-08-31</td><td>111</td><td><a href="https://www.nj.gov/infobank/circular/eojsc_codey111.htm">Declares a State of Emergency exists for the specific purpose of activating the Emergency Management Assistance Compact to coordinate multi-state mutual aid to the states of Louisiana and Mississippi</a></td><td>declaration</td><td>Corzine</td></tr>
+<tr><td>2007-04-16</td><td>64</td><td><a href="https://www.nj.gov/infobank/circular/eojsc_codey64.htm">Declares a State of Emergency presently exists throughout the State of New Jersey.</a></td><td>declaration</td><td>Corzine</td></tr>
+<tr><td>2006-06-28</td><td>16</td><td><a href="https://www.nj.gov/infobank/circular/eojsc16.htm">Declares a State of Emergency presently exists throughout the State of New Jersey.</a></td><td>declaration</td><td>Corzine</td></tr>
+<tr><td>2004-09-18</td><td>131</td><td><a href="https://www.nj.gov/infobank/circular/eom131.htm">Declares and proclaims that a State of Emergency exists in the northwestern area of the State of New Jersey and in the counties of Sussex, Warren, Hunterdon and Mercer, and may come to exist in other areas of the State.</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2004-07-13</td><td>121</td><td><a href="https://www.nj.gov/infobank/circular/eom121.htm">Declares that a State of Emergency presently exists in Burlington and Camden Counties.</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2004-02-27</td><td>97</td><td><a href="https://www.nj.gov/infobank/circular/eom97.htm">Establishes a New Jersey Invasive Species Council</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2003-09-18</td><td>68</td><td><a href="https://www.nj.gov/infobank/circular/eom68.htm">Declares a State of Emergency</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2003-02-16</td><td>48</td><td><a href="https://www.nj.gov/infobank/circular/eom48.htm">Declares State of Emergency</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2002-08-14</td><td>27</td><td><a href="https://www.nj.gov/infobank/circular/eom27.htm">Declares a state of emergency in the County of Monmouth</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2002-03-04</td><td>11</td><td><a href="https://www.nj.gov/infobank/circular/eom11.htm">Declares Water Emergency</a></td><td>declaration</td><td>Mcgreevey</td></tr>
+<tr><td>2001-03-04</td><td>124</td><td><a href="https://www.nj.gov/infobank/circular/eod124.htm">Declares State of Emergency Exists in New Jersey</a></td><td>declaration</td><td>Difrancesco</td></tr>
+<tr><td>2000-12-30</td><td>120</td><td><a href="https://www.nj.gov/infobank/circular/eow120.htm">Declares state of emergency exists in New Jersey due to severe weather conditions caused by snow and blizzard conditions, including hazardous road conditions, high tides and coastal flooding.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>2000-08-14</td><td>117</td><td><a href="https://www.nj.gov/infobank/circular/eow117.htm">Declares State of Emergency exists in Morris and Sussex Counties.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1999-09-27</td><td>102</td><td><a href="https://www.nj.gov/infobank/circular/eow102.htm">A state of water emergency, as declared by Executive Order No. 98, due to the drought no longer exists anywhere within the State.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1999-09-15</td><td>101</td><td><a href="https://www.nj.gov/infobank/circular/eow101.htm">Declares a State of Emergency in the State of New Jersey due to flooding from Hurricane Floyd.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1999-08-05</td><td>98</td><td><a href="https://www.nj.gov/infobank/circular/eow98.htm">Declares state of water emergency exists throughout New Jersey</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1998-02-06</td><td>78</td><td><a href="https://www.nj.gov/infobank/circular/eow78.htm">Declares state of emergency existed and presently exists in Atlantic, Cape May, Monmouth and Ocean Counties.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1997-08-22</td><td>73</td><td><a href="https://www.nj.gov/infobank/circular/eow73.htm">Declares State of Emergency due to torrential rainfall and resultant flooding and damages, etc., in counties of Atlantic, Burlington, Cape May, Cumberland and Ocean</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1996-10-18</td><td>61</td><td><a href="https://www.nj.gov/infobank/circular/eow61.htm">Untitled action</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1996-06-28</td><td>53</td><td><a href="https://www.nj.gov/infobank/circular/eow53.htm">Declares state of emergency in Mercer and Burlington counties and calls NJ National Guard to active duty to provide aid and recovery assistance.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1996-01-13</td><td>46</td><td><a href="https://www.nj.gov/infobank/circular/eow46.htm">Untitled action</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1996-01-07</td><td>45</td><td><a href="https://www.nj.gov/infobank/circular/eow45.htm">Untitled action</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1995-09-13</td><td>41</td><td><a href="https://www.nj.gov/infobank/circular/eow41.htm">Declares state of water emergency for counties in northeastern New Jersey. Directs Commissioner of DEP, the Water Emergency Task Force and the Drought Coordinator to take steps necessary to alleviate the water emergency.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1994-01-19</td><td>4</td><td><a href="https://www.nj.gov/infobank/circular/eow4.htm">Declares state of energy emergency for all heat and electrical utilities throughout the state.</a></td><td>declaration</td><td>Whitman</td></tr>
+<tr><td>1994-01-11</td><td>115</td><td><a href="https://www.nj.gov/infobank/circular/eof115.htm">Establishes an interagency State Hazard Mitigation Team whose participants will evaluate hazard mitigation initiatives based on current agency policies and programs.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1993-05-03</td><td>91</td><td><a href="https://www.nj.gov/infobank/circular/eof91.htm">Orders and Directs each State agency and instrumentality shall appoint within 30 days of effective date of this Order, a coordinator from the agency procurement staff who will be responsible for coordinating with the Division of Purchase and Property and the Division of Solid Waste Management, the procurement of recycled products by the agency or instrumentality. The coordinator&#x27;s responsibility is to assure agency compliance with the purchasing goals of this Order, etc.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1993-03-13</td><td>85</td><td><a href="https://www.nj.gov/infobank/circular/eof85.htm">Untitled action</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1992-12-22</td><td>76</td><td><a href="https://www.nj.gov/infobank/circular/eof76.htm">Untitled action</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1992-12-11</td><td>73</td><td><a href="https://www.nj.gov/infobank/circular/eof73.htm">Declares and proclaims a limited State of Emergency presently exists in Atlantic, Burlington, Cape May, Cumberland, Middlesex, Monmouth and Ocean Counties. Orders the New Jersey National Guard to active duty, such members of the National Guard that in the Adjutant General&#x27;s judgment are necessary to provide aid to the above communities. The Superintendent of the Division of State Police is hereby authorized to order evacuations of persons, except for emergency and governmental personnel, etc.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1992-12-11</td><td>75</td><td><a href="https://www.nj.gov/infobank/circular/eof75.htm">Declares an additional State of Emergency in the counties of Camden, Essex, Gloucester, Hunterdon, Mercer, Morris, Passaic, Somerset, Sussex, Union and Warren Counties. See Executive Order No. 73.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1992-10-19</td><td>66</td><td><a href="https://www.nj.gov/infobank/circular/eof66.htm">Creates Chief of Economic Recovery position.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1992-01-04</td><td>50</td><td><a href="https://www.nj.gov/infobank/circular/eof50.htm">Declares State of Emergency due to weather conditions.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1991-12-11</td><td>74</td><td><a href="https://www.nj.gov/infobank/circular/eof73.htm">Declares an additional State of Emergency in the counties of Bergen, Hudson, and Salem. See Executive Order No. 73.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1991-10-31</td><td>46</td><td><a href="https://www.nj.gov/infobank/circular/eof46.htm">Limited State of Emergency in Atlantic, Cape May, Monmouth, and Ocean Counties.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1991-07-19</td><td>37</td><td><a href="https://www.nj.gov/infobank/circular/eof37.htm">Declares State of Emergency in Lacey Township.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1991-06-07</td><td>33</td><td><a href="https://www.nj.gov/infobank/circular/eof33.htm">Gives Department of Treasury title to all State-owned vehicles.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1991-01-10</td><td>23</td><td><a href="https://www.nj.gov/infobank/circular/eof23.htm">Ratifies verbal declaration by Acting Governor John Lynch of a limited State of Emergency.</a></td><td>declaration</td><td>Florio</td></tr>
+<tr><td>1989-10-23</td><td>219</td><td><a href="https://www.nj.gov/infobank/circular/eok219.htm">Order and direct State entities to take steps to reduce emissions of climate-affecting gases</a></td><td>declaration</td><td>Kean</td></tr></tbody></table></div>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-02-25 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-02-22 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-01-26 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-01-24 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-01-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-12-30 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-12-26 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-12-09 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-12-01 &middot; State of Emergency Declared Across Hunterdon, Morris, Passaic, Sussex, and Warren Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-10-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-10-11 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-08-27 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-08-21 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-08-08 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-07-31 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-07-14 &middot; Declares a State of Emergency across all 21 counties in New Jersey due to flash flooding and severe thunderstorms statewide</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-05-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>5581</td></tr>
+<tr><td>2025-04-23 &middot; Untitled action</td><td>0</td><td>None matched</td><td>5581</td></tr>
+<tr><td>2025-01-27 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-01-18 &middot; Declares that New Jersey will enter a State of Emergency effective at 8:00 a.m. on Sunday, January 19 in anticipation of significant winter weather.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-01-05 &middot; The Governor has declared State of Emergency  to allocate more resources in preparation of  winter storm</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-08-12 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-08-09 &middot; Lt. Governor Way announced a State of Emergency effective at 6:00pm on Friday, August 9 in anticipation of severe storms causing hazardous weather conditions including heavy rain, high winds, and flash flooding.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-01-08 &middot; Governor Murphy Declares State of Emergency in Preparation for Winter Storm</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-10-01 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-09-29 &middot; Governor Murphy Declares State of Emergency Due to Severe Weather</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-07-16 &middot; Governor Murphy Declares State of Emergency Due to Severe Storms</td><td>0</td><td>None matched</td><td>4725</td></tr>
+<tr><td>2023-03-16 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2023-03-13 &middot; Governor Murphy Declares State of Emergency for Five New Jersey Counties in Preparation for Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2023-02-15 &middot; Governor Murphy Sign Executive Order Initiating a Process In Partnership With The State’S Hometown Utilities, Key Stakeholders Including Organized Labor, And The New Jersey Board Of Public Utilities (BPU) To Plan For The Future Of The Natural Gas Utility In New Jersey</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2023-02-15 &middot; Governor Murphy Signs Executive Order to Target To Install Zero-Carbon-Emission Space Heating And Cooling Systems In 400,000 Homes And 20,000 Commercial Properties And Make 10% Of All Low-To-Moderate Income (LMI) Properties Electrification-Ready By 2030</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2023-02-15 &middot; Governor Murphy Signs Executive Order to Accelerate Target Of 100% Clean Energy By 2035, Defined As 100% Of The Electricity Sold In The State To Come From Clean Sources Of Electricity By January 1, 2035 Through Clean Energy Market Mechanisms, Paired With Support For A Clean Energy Standard In New Jersey</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2022-02-04 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2022-01-28 &middot; Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2022-01-13 &middot; Governor Murphy Lifts Storm-Related States of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2022-01-06 &middot; Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2022-01-02 &middot; Governor Murphy Declares State of Emergency in Atlantic, Burlington, Cape May, Cumberland, and Ocean Counties in Preparation for Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2021-11-10 &middot; Governor Murphy Advances Climate Action to Secure New Jersey’s Clean Energy Future</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2021-11-01 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2021-10-25 &middot; Declares State of Emergency in Preparation for Nor’easter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2021-09-20 &middot; Governor Murphy Signs Executive Order Instituting Vaccination or Testing Requirement for All Child Care Center Personnel</td><td>0</td><td>None matched</td><td>4614</td></tr>
+<tr><td>2021-09-07 &middot; Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff to Honor Those Who Lost Their Lives to Tropical Storm Ida</td><td>0</td><td>None matched</td><td>4614</td></tr>
+<tr><td>2021-09-01 &middot; Governor Murphy Declares State of Emergency in Response to Tropical Storm Ida</td><td>0</td><td>None matched</td><td>4614</td></tr>
+<tr><td>2021-09-01 &middot; Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Berkeley Township Beach Patrol Lifeguard Keith Pinto</td><td>0</td><td>None matched</td><td>4614</td></tr>
+<tr><td>2021-08-06 &middot; Governor Murphy Announces Indoor Mask Requirement for Beginning of 2021-2022 School Year</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2021-02-23 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4597</td></tr>
+<tr><td>2021-01-31 &middot; Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</td><td>0</td><td>None matched</td><td>4597</td></tr>
+<tr><td>2020-12-18 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2020-12-16 &middot; Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2020-08-13 &middot; Governor Murphy Lifts State of Emergency Declared in Response to Hurricane Isaias</td><td>0</td><td>None matched</td><td>4574</td></tr>
+<tr><td>2020-08-13 &middot; Murphy Administration to Open New Jersey’s Schools For In-Person Instruction Subject to Critical Health and Safety Protocols</td><td>0</td><td>None matched</td><td>4574</td></tr>
+<tr><td>2020-08-03 &middot; Governor Murphy Declares State of Emergency in Response to Hurricane Isaias</td><td>0</td><td>None matched</td><td>4574</td></tr>
+<tr><td>2020-07-17 &middot; Governor Murphy Signs Executive Order Creating Greater Oversight and Accountability for Federal COVID-19 Resources</td><td>0</td><td>None matched</td><td>4574</td></tr>
+<tr><td>2020-01-27 &middot; Governor Murphy Unveils Energy Master Plan and Signs Executive Order Directing Sweeping Regulatory Reform to Reduce Emissions and Adapt to Climate Change</td><td>0</td><td>None matched</td><td>4488</td></tr>
+<tr><td>2019-12-04 &middot; Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Monsignor Philip Lowery</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-10-29 &middot; Governor Murphy Signs Executive Order to Establish Statewide Climate Change Resilience Strategy</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-06-24 &middot; Governor Murphy Lifts State of Emergency in Burlington, Camden, and Gloucester Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-06-20 &middot; Governor Murphy Declares a State of Emergency in Burlington, Camden, and Gloucester Counties.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-03-04 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-03-03 &middot; Declares a state of emergency across all 21 counties in New Jersey, allowing resources to be deployed throughout the state during the duration of the storm.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-02-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-02-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-02-13 &middot; Governor Murphy Lifts State of Emergency Effective at 8:00 a.m.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-02-11 &middot; Gov. Phil Murphy declares state of emergency for NJ for Tuesday February 12.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-01-18 &middot; Declares a State of Emergency beginning at noon on Saturday ahead of Winter Storm Harper</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-12-02 &middot; Governor Murphy Directs the Lowering of U.S. and New Jersey Flags in Honor of President George H.W. Bush</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-09-04 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-08-14 &middot; Governor Murphy Signs Executive Order Declaring State of Emergency in Flood-Impacted Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-03-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4368</td></tr>
+<tr><td>2018-03-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4368</td></tr>
+<tr><td>2018-03-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4368</td></tr>
+<tr><td>2018-02-12 &middot; Established the Commission on Puerto Rico Relief.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-01-29 &middot; Directs New Jersey to Reenter the Regional Greenhouse Gas Initiative</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-01-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-01-04 &middot; Authorizes and empowers the State Authorities to implement the State Emergency Operations Plan and to direct the activation of county and municipal emergency operations plans as necessary. [pdf 22kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-09-29 &middot; Executive Order No. 233 to designate municipal and county law enforcement and emergency responders as State Emergency Forces, which will be under the control and direction of the State Director of Emergency Management.  These local officials will compliment forces from the New Jersey National Guard, State Police and the State Office of Emergency Management in the safe deployment of critical emergency response resources. [pdf 21kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-03-13 &middot; Governor Chris Christie declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies in preparation for Winter Storm Stella [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2016-09-03 &middot; Governor Chris Christie Declares A State of Emergency For Ocean, Atlantic and Cape May Counties In Preparation For Tropical Storm Hermine [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2016-01-22 &middot; Governor Christie Declares State Of Emergency Ahead Of Arrival Of Winter Storm [pdf 17kB]</td><td>0</td><td>None matched</td><td>4264</td></tr>
+<tr><td>2016-01-02 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4264</td></tr>
+<tr><td>2015-10-01 &middot; Governor Chris Christie today declared a state of emergency throughout the state as a result of severe weather conditions expected in the coming days. [pdf 20kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2015-03-04 &middot; Authorizes the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2015-01-26 &middot; Declares and proclaims that a State of Emergency exists [pdf 18kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-11-26 &middot; Governor Chris Christie today declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Commuters are asked to use extreme caution while traveling across the state. [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-03-02 &middot; Governor Chris Christie Declares State of Emergency In Preparation For Monday Morning’s Severe Winter Weather. [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-02-12 &middot; Governor Chris Christie Declares State of Emergency In Preparation For Wednesday Night’s Severe Winter Weather. [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-02-04 &middot; Governor Chris Christie Declares State of Emergency In Preparation For Tuesday Night’s Severe Winter Weather. [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-02-03 &middot; Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-01-02 &middot; Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Governor Christie also authorized the closing of state offices on Friday, January 3rd for all non-essential employees. [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2013-09-25 &middot; Orders and directs Attorney General To Coordinate Acquisition Of Easements, Creates Office Of Flood Hazard Risk Reduction Measures To Lead Effort [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2013-05-22 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2013-02-28 &middot; Allows the seasonal alcoholic beverage licensees to begin serving alcohol on March 1, two months ahead of the traditional allowance of May 1. [pdf 18kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2013-02-08 &middot; Orders and directs the Office of the State Comptroller to conduct independent review of contracts, transparency measures over expenditures [pdf 20kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2012-11-19 &middot; The Director of the Division of Taxation, in the Department of the Treasury, is directed to take all appropriate actions to effectuate the fuel agreement between FEMA and the State. [pdf 20kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-05 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-05 &middot; A local Government Unit has established a snow removal fund [pdf 55kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-03 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-03 &middot; Suspends restrictions in state law that place limitations on the source of fuel particular and branded fuel retailers are allowed to sell. [pdf 10kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-03 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-02 &middot; Protect Storm-Impacted New Jersey Homeowners from Higher Insurance Deductiblese [pdf 12kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-02 &middot; Declares a limited state of energy emergency with regard to the supply of motor fuel and implementing odd-even rationing for gasoline purchases in 12 New Jersey counties.  [pdf 10kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-02 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-11-01 &middot; Declares State of Water Emergency, Authorizes DEP to Take Steps to Prevent Water Shortage [pdf 12kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-10-31 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-10-27 &middot; PROCLAIM that a State of Emergency exists in the State of New Jersey [pdf 15kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
+<tr><td>2012-08-30 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2011-10-30 &middot; Declare and proclaim that a State of Emergency exists in the State on New Jersey. [pdf 22kB]</td><td>0</td><td>None matched</td><td>4048</td></tr>
+<tr><td>2011-03-09 &middot; Declares a Weather Related State of Emergency [pdf 22kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2010-04-23 &middot; Orders and directs creation of the Governor’s Passaic River Basin Flood Advisory Commission (“Advisory Commission”). [pdf 23k]</td><td>0</td><td>None matched</td><td>1897</td></tr>
+<tr><td>2010-03-14 &middot; Declares and proclaims that a State of Emergency exists [pdf 21k]</td><td>0</td><td>None matched</td><td>1897</td></tr>
+<tr><td>2010-02-05 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1889</td></tr>
+<tr><td>2009-11-12 &middot; Declares a State of Emergency for the counties of Cape May, Atlantic, Cumberland, Burlington, Ocean and Monmouth.</td><td>0</td><td>None matched</td><td>1867</td></tr>
+<tr><td>2009-03-04 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2008-08-31 &middot; Declares a State of Emergency exists for the specific purpose of activating the Emergency Management Assistance Compact to coordinate multi-state mutual aid to the states of Louisiana and Mississippi</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2007-04-16 &middot; Declares a State of Emergency presently exists throughout the State of New Jersey.</td><td>0</td><td>None matched</td><td>1694</td></tr>
+<tr><td>2006-06-28 &middot; Declares a State of Emergency presently exists throughout the State of New Jersey.</td><td>0</td><td>None matched</td><td>1653</td></tr>
+<tr><td>2004-09-18 &middot; Declares and proclaims that a State of Emergency exists in the northwestern area of the State of New Jersey and in the counties of Sussex, Warren, Hunterdon and Mercer, and may come to exist in other areas of the State.</td><td>0</td><td>None matched</td><td>1563</td></tr>
+<tr><td>2004-07-13 &middot; Declares that a State of Emergency presently exists in Burlington and Camden Counties.</td><td>0</td><td>None matched</td><td>1530</td></tr>
+<tr><td>2004-02-27 &middot; Establishes a New Jersey Invasive Species Council</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2003-09-18 &middot; Declares a State of Emergency</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2003-02-16 &middot; Declares State of Emergency</td><td>0</td><td>None matched</td><td>3181</td></tr>
+<tr><td>2002-08-14 &middot; Declares a state of emergency in the County of Monmouth</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2002-03-04 &middot; Declares Water Emergency</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2001-03-04 &middot; Declares State of Emergency Exists in New Jersey</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2000-12-30 &middot; Declares state of emergency exists in New Jersey due to severe weather conditions caused by snow and blizzard conditions, including hazardous road conditions, high tides and coastal flooding.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2000-08-14 &middot; Declares State of Emergency exists in Morris and Sussex Counties.</td><td>0</td><td>None matched</td><td>1337</td></tr>
+<tr><td>1999-09-27 &middot; A state of water emergency, as declared by Executive Order No. 98, due to the drought no longer exists anywhere within the State.</td><td>0</td><td>None matched</td><td>1295</td></tr>
+<tr><td>1999-09-15 &middot; Declares a State of Emergency in the State of New Jersey due to flooding from Hurricane Floyd.</td><td>0</td><td>None matched</td><td>1295</td></tr>
+<tr><td>1999-08-05 &middot; Declares state of water emergency exists throughout New Jersey</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1998-02-06 &middot; Declares state of emergency existed and presently exists in Atlantic, Cape May, Monmouth and Ocean Counties.</td><td>0</td><td>None matched</td><td>1206</td></tr>
+<tr><td>1997-08-22 &middot; Declares State of Emergency due to torrential rainfall and resultant flooding and damages, etc., in counties of Atlantic, Burlington, Cape May, Cumberland and Ocean</td><td>0</td><td>None matched</td><td>1189</td></tr>
+<tr><td>1996-10-18 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1145</td></tr>
+<tr><td>1996-06-28 &middot; Declares state of emergency in Mercer and Burlington counties and calls NJ National Guard to active duty to provide aid and recovery assistance.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1996-01-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1088</td></tr>
+<tr><td>1996-01-07 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1088</td></tr>
+<tr><td>1995-09-13 &middot; Declares state of water emergency for counties in northeastern New Jersey. Directs Commissioner of DEP, the Water Emergency Task Force and the Drought Coordinator to take steps necessary to alleviate the water emergency.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1994-01-19 &middot; Declares state of energy emergency for all heat and electrical utilities throughout the state.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1994-01-11 &middot; Establishes an interagency State Hazard Mitigation Team whose participants will evaluate hazard mitigation initiatives based on current agency policies and programs.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1993-05-03 &middot; Orders and Directs each State agency and instrumentality shall appoint within 30 days of effective date of this Order, a coordinator from the agency procurement staff who will be responsible for coordinating with the Division of Purchase and Property and the Division of Solid Waste Management, the procurement of recycled products by the agency or instrumentality. The coordinator&#x27;s responsibility is to assure agency compliance with the purchasing goals of this Order, etc.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1993-03-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>3106</td></tr>
+<tr><td>1992-12-22 &middot; Untitled action</td><td>0</td><td>None matched</td><td>973</td></tr>
+<tr><td>1992-12-11 &middot; Declares and proclaims a limited State of Emergency presently exists in Atlantic, Burlington, Cape May, Cumberland, Middlesex, Monmouth and Ocean Counties. Orders the New Jersey National Guard to active duty, such members of the National Guard that in the Adjutant General&#x27;s judgment are necessary to provide aid to the above communities. The Superintendent of the Division of State Police is hereby authorized to order evacuations of persons, except for emergency and governmental personnel, etc.</td><td>0</td><td>None matched</td><td>973</td></tr>
+<tr><td>1992-12-11 &middot; Declares an additional State of Emergency in the counties of Camden, Essex, Gloucester, Hunterdon, Mercer, Morris, Passaic, Somerset, Sussex, Union and Warren Counties. See Executive Order No. 73.</td><td>0</td><td>None matched</td><td>973</td></tr>
+<tr><td>1992-10-19 &middot; Creates Chief of Economic Recovery position.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1992-01-04 &middot; Declares State of Emergency due to weather conditions.</td><td>0</td><td>None matched</td><td>936</td></tr>
+<tr><td>1991-12-11 &middot; Declares an additional State of Emergency in the counties of Bergen, Hudson, and Salem. See Executive Order No. 73.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1991-10-31 &middot; Limited State of Emergency in Atlantic, Cape May, Monmouth, and Ocean Counties.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1991-07-19 &middot; Declares State of Emergency in Lacey Township.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1991-06-07 &middot; Gives Department of Treasury title to all State-owned vehicles.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1991-01-10 &middot; Ratifies verbal declaration by Acting Governor John Lynch of a limited State of Emergency.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>1989-10-23 &middot; Order and direct State entities to take steps to reduce emissions of climate-affecting gases</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr></tbody></table></div>
+</div>
+
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">59 records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for New Jersey from the site's national FEMA dataset.</p>
+<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2025-04-24</td><td>5581</td><td>FM</td><td>JONES ROAD FIRE</td><td>Fire</td><td>2025-04-22 to </td></tr>
+<tr><td>2023-08-11</td><td>4725</td><td>DR</td><td>SEVERE STORM AND FLOODING</td><td>Severe Storm</td><td>2023-07-14 to 2023-07-15</td></tr>
+<tr><td>2021-09-05</td><td>4614</td><td>DR</td><td>REMNANTS OF HURRICANE IDA</td><td>Hurricane</td><td>2021-09-01 to 2021-09-03</td></tr>
+<tr><td>2021-09-02</td><td>3573</td><td>EM</td><td>REMNANTS OF HURRICANE IDA</td><td>Hurricane</td><td>2021-09-01 to 2021-09-03</td></tr>
+<tr><td>2021-04-28</td><td>4597</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2021-01-31 to 2021-02-02</td></tr>
+<tr><td>2020-12-11</td><td>4574</td><td>DR</td><td>TROPICAL STORM ISAIAS</td><td>Hurricane</td><td>2020-08-04 to 2020-08-04</td></tr>
+<tr><td>2020-03-25</td><td>4488</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3451</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2018-06-08</td><td>4368</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Severe Storm</td><td>2018-03-06 to 2018-03-07</td></tr>
+<tr><td>2016-03-14</td><td>4264</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Severe Storm</td><td>2016-01-22 to 2016-01-24</td></tr>
+<tr><td>2015-07-22</td><td>4231</td><td>DR</td><td>SEVERE STORM</td><td>Severe Storm</td><td>2015-06-23 to 2015-06-23</td></tr>
+<tr><td>2012-10-30</td><td>4086</td><td>DR</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
+<tr><td>2012-10-28</td><td>3354</td><td>EM</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
+<tr><td>2012-07-19</td><td>4070</td><td>DR</td><td>SEVERE STORMS AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2012-06-30 to 2012-06-30</td></tr>
+<tr><td>2011-11-30</td><td>4048</td><td>DR</td><td>SEVERE STORM</td><td>Severe Storm</td><td>2011-10-29 to 2011-10-30</td></tr>
+<tr><td>2011-10-14</td><td>4039</td><td>DR</td><td>REMNANTS OF TROPICAL STORM LEE</td><td>Severe Storm</td><td>2011-09-28 to 2011-10-06</td></tr>
+<tr><td>2011-09-15</td><td>4033</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2011-08-13 to 2011-08-15</td></tr>
+<tr><td>2011-08-31</td><td>4021</td><td>DR</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-27 to 2011-09-05</td></tr>
+<tr><td>2011-08-27</td><td>3332</td><td>EM</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-26 to 2011-09-05</td></tr>
+<tr><td>2011-02-04</td><td>1954</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2010-12-26 to 2010-12-27</td></tr>
+<tr><td>2010-04-02</td><td>1897</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2010-03-12 to 2010-04-15</td></tr>
+<tr><td>2010-03-23</td><td>1889</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2010-02-05 to 2010-02-06</td></tr>
+<tr><td>2010-02-05</td><td>1873</td><td>DR</td><td>SNOWSTORM</td><td>Snowstorm</td><td>2009-12-19 to 2009-12-20</td></tr>
+<tr><td>2009-12-22</td><td>1867</td><td>DR</td><td>SEVERE STORMS AND FLOODING ASSOCIATED WITH TROPICAL DEPRESSION IDA AND A NOR&#x27;EAS</td><td>Severe Storm</td><td>2009-11-11 to 2009-11-15</td></tr>
+<tr><td>2007-05-16</td><td>2695</td><td>FM</td><td>WARREN GROVE FIRE</td><td>Fire</td><td>2007-05-15 to </td></tr>
+<tr><td>2007-04-26</td><td>1694</td><td>DR</td><td>SEVERE STORMS AND INLAND AND COASTAL FLOODING</td><td>Severe Storm</td><td>2007-04-14 to 2007-04-20</td></tr>
+<tr><td>2006-07-07</td><td>1653</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2006-06-23 to 2006-07-10</td></tr>
+<tr><td>2005-09-19</td><td>3257</td><td>EM</td><td>HURRICANE KATRINA EVACUATION</td><td>Hurricane</td><td>2005-08-29 to 2005-10-01</td></tr>
+<tr><td>2005-04-19</td><td>1588</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2005-04-01 to 2005-04-03</td></tr>
+<tr><td>2004-10-01</td><td>1563</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2004-09-18 to 2004-10-01</td></tr>
+<tr><td>2004-07-16</td><td>1530</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2004-07-12 to 2004-07-23</td></tr>
+<tr><td>2003-09-23</td><td>3188</td><td>EM</td><td>POWER OUTAGE</td><td>Other</td><td>2003-08-14 to 2003-08-16</td></tr>
+<tr><td>2003-03-20</td><td>3181</td><td>EM</td><td>SNOW</td><td>Snowstorm</td><td>2003-02-16 to 2003-02-17</td></tr>
+<tr><td>2002-06-02</td><td>2411</td><td>FM</td><td>NJ - DOUBLE TROUBLE WILDFIRE - 6/02/02</td><td>Fire</td><td>2002-06-02 to 2002-06-02</td></tr>
+<tr><td>2001-09-19</td><td>3169</td><td>EM</td><td>FIRES AND EXPLOSIONS</td><td>Fire</td><td>2001-09-11 to 2001-09-11</td></tr>
+<tr><td>2000-11-01</td><td>3156</td><td>EM</td><td>WEST NILE VIRUS</td><td>Other</td><td>2000-05-30 to 2000-11-01</td></tr>
+<tr><td>2000-08-17</td><td>1337</td><td>DR</td><td>SEVERE STORMS, FLOODING AND MUDSLIDES</td><td>Severe Storm</td><td>2000-08-12 to 2000-08-21</td></tr>
+<tr><td>1999-09-18</td><td>1295</td><td>DR</td><td>HURRICANE FLOYD MAJOR DISASTER DECLARATIONS</td><td>Hurricane</td><td>1999-09-16 to 1999-09-18</td></tr>
+<tr><td>1999-09-17</td><td>3148</td><td>EM</td><td>HURRICANE FLOYD EMERGENCY DECLARATIONS</td><td>Hurricane</td><td>1999-09-16 to 1999-09-18</td></tr>
+<tr><td>1998-03-03</td><td>1206</td><td>DR</td><td>SEVERE WINTER COASTAL STORM, HIGH WINDS, FLOODING</td><td>Coastal Storm</td><td>1998-02-04 to 1998-02-08</td></tr>
+<tr><td>1997-09-23</td><td>1189</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1997-08-20 to 1997-08-21</td></tr>
+<tr><td>1996-11-19</td><td>1145</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1996-10-18 to 1996-10-23</td></tr>
+<tr><td>1996-01-13</td><td>1088</td><td>DR</td><td>BLIZZARD OF 96 (SEVERE SNOW STORM)</td><td>Snowstorm</td><td>1996-01-07 to 1996-01-12</td></tr>
+<tr><td>1993-03-17</td><td>3106</td><td>EM</td><td>SEVERE BLIZZARD</td><td>Snowstorm</td><td>1993-03-13 to 1993-03-17</td></tr>
+<tr><td>1992-12-18</td><td>973</td><td>DR</td><td>COASTAL STORM, HIGH TIDES, HEAVY RAIN, &amp; FLOODING</td><td>Flood</td><td>1992-12-10 to 1992-12-17</td></tr>
+<tr><td>1992-03-03</td><td>936</td><td>DR</td><td>SEVERE COASTAL STORM</td><td>Severe Storm</td><td>1992-01-04 to 1992-01-04</td></tr>
+<tr><td>1985-10-15</td><td>749</td><td>DR</td><td>HURRICANE GLORIA</td><td>Hurricane</td><td>1985-09-27 to 1985-09-27</td></tr>
+<tr><td>1984-04-12</td><td>701</td><td>DR</td><td>COASTAL STORMS &amp; FLOODING</td><td>Flood</td><td>1984-03-28 to 1984-04-08</td></tr>
+<tr><td>1980-10-19</td><td>3083</td><td>EM</td><td>WATER SHORTAGE</td><td>Drought</td><td>1980-10-19 to 1980-10-19</td></tr>
+<tr><td>1977-02-08</td><td>528</td><td>DR</td><td>ICE CONDITIONS</td><td>Severe Ice Storm</td><td>1977-02-08 to 1977-02-08</td></tr>
+<tr><td>1976-08-21</td><td>519</td><td>DR</td><td>SEVERE STORMS, HIGH WINDS &amp; FLOODING</td><td>Flood</td><td>1976-08-21 to 1976-08-21</td></tr>
+<tr><td>1975-07-23</td><td>477</td><td>DR</td><td>HEAVY RAINS, HIGH WINDS, HAIL &amp; TORNADOES</td><td>Flood</td><td>1975-07-23 to 1975-07-23</td></tr>
+<tr><td>1974-12-24</td><td>3005</td><td>EM</td><td>SEVERE STORMS, HIGH WINDS &amp; HIGH TIDES</td><td>Coastal Storm</td><td>1974-12-24 to 1974-12-24</td></tr>
+<tr><td>1973-08-07</td><td>402</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1973-08-07 to 1973-08-07</td></tr>
+<tr><td>1971-09-04</td><td>310</td><td>DR</td><td>HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1971-09-04 to 1971-09-04</td></tr>
+<tr><td>1968-06-18</td><td>245</td><td>DR</td><td>HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1968-06-18 to 1968-06-18</td></tr>
+<tr><td>1965-08-18</td><td>205</td><td>DR</td><td>WATER SHORTAGE</td><td>Drought</td><td>1965-08-18 to 1965-08-18</td></tr>
+<tr><td>1962-03-09</td><td>124</td><td>DR</td><td>SEVERE STORM, HIGH TIDES &amp; FLOODING</td><td>Flood</td><td>1962-03-09 to 1962-03-09</td></tr>
+<tr><td>1955-08-20</td><td>41</td><td>DR</td><td>HURRICANE &amp; FLOODS</td><td>Hurricane</td><td>1955-08-20 to 1955-08-20</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
+<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+</main>
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script></body></html>

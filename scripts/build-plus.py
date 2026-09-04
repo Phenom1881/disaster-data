@@ -28,9 +28,9 @@ publishing every automated candidate as-is.
 
 Examples (run from the repository root):
 
-    python scripts/plus/build-plus.py --states all
-    python scripts/plus/build-plus.py --states VA,NY,NJ,PA
-    python scripts/plus/build-plus.py --states VA --collect --join-storms
+    python scripts/build-plus.py --states all
+    python scripts/build-plus.py --states VA,NY,NJ,PA
+    python scripts/build-plus.py --states VA --collect --join-storms
 
 An optional state adapter lives in the corresponding state directory and must
 expose ``collect(workdir, scripts_dir) -> (csv_path, coverage_note)``. Virginia's
@@ -51,7 +51,7 @@ from pathlib import Path
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-DEFAULT_MANIFEST = SCRIPT_DIR / "state-manifest.json"
+DEFAULT_MANIFEST = SCRIPT_DIR / "plus" / "state-manifest.json"
 
 # How far a state action's signing date may sit from a federal declaration's
 # incident window and still be offered as a candidate match. Wider than
@@ -433,7 +433,7 @@ def action_rows(actions: list[dict]) -> str:
             "have been loaded for this state yet.</td></tr>"
         )
     output = []
-    for action in actions[:100]:
+    for action in actions:
         source = esc(action["source_url"])
         title = esc(action["title"] or "Untitled action")
         title_cell = f'<a href="{source}">{title}</a>' if source else title
@@ -520,6 +520,66 @@ def crosswalk_rows(crosswalk: list[dict]) -> str:
     return "\n".join(output)
 
 
+def sortable_header(label: str, column: int) -> str:
+    return (
+        f'<th><button class="sort-button" type="button" data-column="{column}" '
+        f'aria-label="Sort by {esc(label)}">{esc(label)} <span aria-hidden="true">↕</span>'
+        "</button></th>"
+    )
+
+
+def table_filter(table_id: str, label: str) -> str:
+    return (
+        '<div class="table-tools">'
+        f'<label for="filter-{esc(table_id)}">Filter {esc(label)}</label>'
+        f'<input id="filter-{esc(table_id)}" class="table-search" '
+        f'data-table="{esc(table_id)}" type="search" placeholder="Search this table…">'
+        "</div>"
+    )
+
+
+def table_script() -> str:
+    return """
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script>"""
+
+
 def shared_css(prefix: str = "") -> str:
     return f"""
     :root {{ --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
@@ -551,10 +611,33 @@ def shared_css(prefix: str = "") -> str:
     th,td {{ padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }}
     th {{ background:var(--blue); color:white; }}
+    .sort-button {{ width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:700; text-align:left; cursor:pointer; }}
     td a {{ color:#175c9c; }} .empty {{ color:var(--muted); font-style:italic; }}
     .actions {{ overflow-x:auto; }}
     .layer {{ margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }}
     .layer h2 {{ margin-top:.5rem; }}
+    .primary {{ background:white; border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }}
+    .table-tools {{ display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }}
+    .table-tools label {{ color:var(--muted); font-size:.85rem; font-weight:700; }}
+    .table-search {{ width:min(100%,320px); padding:.55rem .7rem; border:1px solid #aebbc6;
+      border-radius:7px; font:inherit; }}
+    details.layer {{ background:white; border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }}
+    details.layer > summary {{ display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--navy); font-weight:800; }}
+    details.layer[open] > summary {{ border-bottom:1px solid var(--line); }}
+    details.layer > .details-body {{ padding:0 1rem 1rem; }}
+    .count-badge {{ color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }}
+    [hidden] {{ display:none !important; }}
+    @media (max-width:640px) {{
+      main {{ padding:1.25rem .75rem 3rem; }}
+      .table-tools {{ display:block; }}
+      .table-tools label {{ display:block; margin-bottom:.25rem; }}
+      .table-search {{ width:100%; }}
+    }}
     footer {{ margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }}
     """
@@ -579,52 +662,58 @@ def render_state_page(
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{name} State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="Federal declarations, state emergency actions, and matched weather-event evidence for {name}.">
+<title>{name} Weather Emergency Declarations | DisasterData Plus</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for {name}.">
 <style>{shared_css()}</style></head>
 <body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / {name}</header>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>{name}: Emergency Action Overview</h1>
-<p class="lede">Federal FEMA declarations, state-issued emergency actions, and NOAA/NWS weather evidence, presented separately and cross-referenced where a connection can be shown.</p>
+<h1>{name}: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
 <div class="notice"><strong>Coverage:</strong> {esc(coverage)}. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>{metrics['federal_declaration_count']:,}</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>{metrics['action_count']:,}</strong>state-action records loaded</div>
+  <div class="metric"><strong>{metrics['action_count']:,}</strong>original state weather declarations</div>
   <div class="metric"><strong>{metrics['storm_match_rows']:,}</strong>matched NOAA event rows</div>
 </section>
 <p><a href="../../states/{esc(state['slug'])}.html">Federal declaration overview</a> &middot; {source_link}</p>
 
-<div class="layer">
-<h2>Federal FEMA declarations</h2>
-<p class="note">DR, EM, and FM declarations for {name} from the site's national FEMA dataset.</p>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Type</th><th>Title</th><th>Incident type</th><th>Incident period</th></tr></thead>
-<tbody>{federal_declaration_rows(federal_declarations)}</tbody></table></div>
-</div>
-
-<div class="layer">
-<h2>{name} state actions</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+{table_filter('state-weather-table', 'state declarations')}
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}</tr></thead>
 <tbody>{action_rows(actions)}</tbody></table></div>
-</div>
-
-<div class="layer">
-<h2>NOAA/NWS weather evidence</h2>
-<p class="note">Storm Events matched within the configured date window of a state action's signing date. This is temporal and geographic evidence of nearby observed weather, not proof of causation or operational impact.</p>
-<div class="actions"><table><thead><tr><th>Date</th><th>Area</th><th>Area type</th><th>Hazard</th><th>Deaths / injuries</th><th>Property damage</th></tr></thead>
-<tbody>{noaa_event_rows(storm_rows)}</tbody></table></div>
 </div>
 
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within {FEDERAL_MATCH_WINDOW_DAYS} days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<div class="actions"><table><thead><tr><th>State action</th><th>NOAA matches</th><th>Matched areas</th><th>Federal declaration</th></tr></thead>
+{table_filter('crosswalk-table', 'crosswalk')}
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr>{sortable_header('State action', 0)}{sortable_header('NOAA matches', 1)}{sortable_header('Matched areas', 2)}{sortable_header('Federal declaration', 3)}</tr></thead>
 <tbody>{crosswalk_rows(crosswalk)}</tbody></table></div>
 </div>
 
-<h2>Methodology and coverage</h2>
-<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State actions are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state action's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider {FEDERAL_MATCH_WINDOW_DAYS} day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">{metrics['federal_declaration_count']:,} records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for {name} from the site's national FEMA dataset.</p>
+{table_filter('federal-table', 'federal declarations')}
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Type', 2)}{sortable_header('Title', 3)}{sortable_header('Incident type', 4)}{sortable_header('Incident period', 5)}</tr></thead>
+<tbody>{federal_declaration_rows(federal_declarations)}</tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">{metrics['storm_match_rows']:,} rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+{table_filter('noaa-table', 'NOAA events')}
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Area', 1)}{sortable_header('Area type', 2)}{sortable_header('Hazard', 3)}{sortable_header('Deaths / injuries', 4)}{sortable_header('Property damage', 5)}</tr></thead>
+<tbody>{noaa_event_rows(storm_rows)}</tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider {FEDERAL_MATCH_WINDOW_DAYS} day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
 <footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
-</main></body></html>"""
+</main>{table_script()}</body></html>"""
 
 
 def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
@@ -637,7 +726,7 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
         cards.append(
             '<article class="state-card">'
             f'<a href="{esc(state["slug"])}/">{esc(state["name"])}</a>'
-            f'<div>{count:,} loaded state-action records</div>'
+            f'<div>{count:,} original weather declarations</div>'
             f'<span class="status">{esc(coverage)}</span>'
             "</article>"
         )
@@ -744,7 +833,7 @@ def main() -> int:
     parser.add_argument(
         "--repo-root",
         type=Path,
-        default=Path(__file__).resolve().parents[2],
+        default=Path(__file__).resolve().parents[1],
         help="repository root; normally detected automatically",
     )
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)

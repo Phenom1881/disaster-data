@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Virginia State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="State emergency actions and matched weather-event evidence for Virginia.">
+<title>Virginia Weather Emergency Declarations | DisasterData Plus</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for Virginia.">
 <style>
     :root { --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
       --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }
@@ -33,24 +33,53 @@
     th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }
     th { background:var(--blue); color:white; }
+    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:700; text-align:left; cursor:pointer; }
     td a { color:#175c9c; } .empty { color:var(--muted); font-style:italic; }
     .actions { overflow-x:auto; }
+    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
+    .layer h2 { margin-top:.5rem; }
+    .primary { background:white; border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }
+    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }
+    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:700; }
+    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid #aebbc6;
+      border-radius:7px; font:inherit; }
+    details.layer { background:white; border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }
+    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--navy); font-weight:800; }
+    details.layer[open] > summary { border-bottom:1px solid var(--line); }
+    details.layer > .details-body { padding:0 1rem 1rem; }
+    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      main { padding:1.25rem .75rem 3rem; }
+      .table-tools { display:block; }
+      .table-tools label { display:block; margin-bottom:.25rem; }
+      .table-search { width:100%; }
+    }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }
     </style></head>
 <body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / Virginia</header>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>Virginia: State Emergency Actions</h1>
-<p class="lede">State-issued emergency actions and weather-event evidence supplementing the federal FEMA declaration record.</p>
+<h1>Virginia: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
 <div class="notice"><strong>Coverage:</strong> Virginia structured archive coverage begins in 2002; the current administration is collected separately. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>75</strong>state-action records loaded</div>
-  <div class="metric"><strong>4,517</strong>NOAA event-match rows</div>
-  <div class="metric"><strong>3,290</strong>severity-area rows</div>
+  <div class="metric"><strong>77</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>75</strong>original state weather declarations</div>
+  <div class="metric"><strong>4,517</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/virginia.html">Federal declaration overview</a> · <a href="https://www.governor.virginia.gov/executive-actions/">Official state source</a></p>
-<h2>State-action inventory</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
+<p><a href="../../states/virginia.html">Federal declaration overview</a> &middot; <a href="https://www.governor.virginia.gov/executive-actions/">Official state source</a></p>
+
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-01-22</td><td>EO-11</td><td>Declaring State of Emergency Due to Winter Weather</td><td>declaration</td><td>Abigail D. Spanberger</td></tr>
 <tr><td>2025-02-10</td><td>EO-45</td><td><a href="https://lva.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma9918188487505756&amp;context=L&amp;vid=01LVA_INST%3A01LVA&amp;lang=en">Executive Order 45 (2025) Declaration of a State of Emergency Due to Severe Winter Weather Systems</a></td><td>declaration</td><td>Glenn Youngkin</td></tr>
 <tr><td>2025-01-03</td><td>EO-44</td><td><a href="https://lva.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma9918188487605756&amp;context=L&amp;vid=01LVA_INST%3A01LVA&amp;lang=en">Executive Order 44 (2025) Declaration of a State of Emergency Due to Severe Winter Weather</a></td><td>declaration</td><td>Glenn Youngkin</td></tr>
@@ -126,6 +155,521 @@
 <tr><td>2002-08-30</td><td>EO-33</td><td><a href="https://lva.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma9917827953605756&amp;context=L&amp;vid=01LVA_INST%3A01LVA&amp;lang=en">Executive Order 33 (2002) Declaration of a State of Emergency Due to Extreme Drought Conditions Throughout the Commonwealth.</a></td><td>declaration</td><td>Mark R. Warner</td></tr>
 <tr><td>2002-07-31</td><td>EO-31</td><td><a href="https://lva.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma9917827938105756&amp;context=L&amp;vid=01LVA_INST%3A01LVA&amp;lang=en">Executive Order 31 (2002) Declaration of a State of Emergency Due to Extreme Drought Conditions Throughout the Commonwealth.</a></td><td>declaration</td><td>Mark R. Warner</td></tr>
 <tr><td>2002-03-21</td><td>EO-10</td><td><a href="https://lva.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma9917827956005756&amp;context=L&amp;vid=01LVA_INST%3A01LVA&amp;lang=en">Executive Order 10 (2002) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Significant Rainfall and Flooding Throughout Southwest Virginia.</a></td><td>declaration</td><td>Mark R. Warner</td></tr></tbody></table></div>
-<p class="note">The inventory is limited by the coverage statement above. NOAA proximity matches identify potentially related observed events; they do not independently prove operational impacts or legal causation.</p>
-<footer>Generated 2026-09-03 · DisasterData.IO · State records remain subject to source verification.</footer>
-</main></body></html>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-01-22 &middot; Declaring State of Emergency Due to Winter Weather</td><td>96</td><td>ALBEMARLE, ALLEGHANY, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BATH, BEDFORD</td><td>3631</td></tr>
+<tr><td>2025-02-10 &middot; Executive Order 45 (2025) Declaration of a State of Emergency Due to Severe Winter Weather Systems</td><td>132</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td>4863</td></tr>
+<tr><td>2025-01-03 &middot; Executive Order 44 (2025) Declaration of a State of Emergency Due to Severe Winter Weather</td><td>100</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-09-25 &middot; Executive Order 37 (2024) Declaration of a State of Emergency Due to Hurricane Helen</td><td>129</td><td>ALBEMARLE, ALLEGHANY, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BATH, BEDFORD</td><td>4831</td></tr>
+<tr><td>2024-08-06 &middot; Executive Order 34 (2024) Declaration of a State of Emergency Due to Hurricane/Tropical Storm Debby</td><td>180</td><td>ALBEMARLE, AMHERST, APPOMATTOX, ARLINGTON, BEDFORD, BRUNSWICK, CAMPBELL, CAROLINE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-11-06 &middot; Executive Order 29 (2023) Declaration of a State of Emergency Due to Wildfires, or the Potential thereof, Throughout the Commonwealth of Virginia</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-09-22 &middot; Executive Order 27 (2023) Declaration of a State of Emergency Due to Severe Flooding and Tropical Storm Impacts Across the Commonwealth</td><td>62</td><td>ACCOMACK, ARLINGTON, BRUNSWICK, CAROLINE, CHESAPEAKE, CHESAPEAKE (C), CHESTERFIELD, DINWIDDIE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2022-09-28 &middot; Executive Order 22 (2022) Declaration of a State of Emergency Due to Hurricane Ian</td><td>46</td><td>ACCOMACK, APPOMATTOX, BEDFORD, BOTETOURT, CAMPBELL, CARROLL, CHARLOTTE, CHESAPEAKE</td><td>4512</td></tr>
+<tr><td>2022-07-28 &middot; Executive Order 21 (2022) Declaration of a State of Emergency Due to Severe Flooding in Southwest Virginia</td><td>16</td><td>BUCHANAN, CAMPBELL, DICKENSON, WISE</td><td>4674</td></tr>
+<tr><td>2022-07-13 &middot; Executive Order 20 (2022) Declaration of a State of Emergency Due to Severe Flooding in Buchanan County</td><td>41</td><td>ALEXANDRIA (C), APPOMATTOX, BUCHANAN, GLOUCESTER, JAMES CITY, LANCASTER, MATHEWS, MIDDLESEX</td><td>4674</td></tr>
+<tr><td>2022-01-27 &middot; Executive Order 15 (2022) Declaration of a State of Emergency Due to Severe Winter Weather</td><td>60</td><td>ACCOMACK, ALBEMARLE, ARLINGTON, AUGUSTA, CAROLINE, CENTRAL VIRGINIA BLUE RIDGE, CHARLES CITY, CHESAPEAKE</td><td>4512</td></tr>
+<tr><td>2022-01-20 &middot; Executive Order 12 (2022) Declaration of a State of Emergency Due to Severe Winter Weather</td><td>28</td><td>ACCOMACK, BRUNSWICK, CARROLL, CHARLES CITY, CHESAPEAKE, DINWIDDIE, FLOYD, GLOUCESTER</td><td>4644</td></tr>
+<tr><td>2022-01-05 &middot; Executive Order 83 (2022) Declaration of a State of Emergency Due to Severe Winter Weather</td><td>135</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td>4644</td></tr>
+<tr><td>2021-02-11 &middot; Executive Order 76 (2021) Declaration of a State of Emergency Due to Anticipated Winter Weather</td><td>140</td><td>ACCOMACK, ALBEMARLE, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BEDFORD</td><td>4602</td></tr>
+<tr><td>2020-12-15 &middot; Executive Order 73 (2020) Declaration of a State Of Emergency Due to Winter Weather</td><td>42</td><td>ALBEMARLE, ALLEGHANY, AUGUSTA, BATH, BEDFORD, BOTETOURT, CARROLL, CENTRAL VIRGINIA BLUE RIDGE</td><td>4512</td></tr>
+<tr><td>2020-07-31 &middot; Executive Order 69 (2020) Declaration of a State of Emergency Due to Hurricane Isaias</td><td>112</td><td>ACCOMACK, AMELIA, APPOMATTOX, BOTETOURT, BRUNSWICK, BUCKINGHAM, CAROLINE, CHARLES CITY (C)</td><td>4512</td></tr>
+<tr><td>2020-02-02 &middot; Executive Order 50 (2020) Declaration of a State of Emergency Due to Extreme Flooding</td><td>9</td><td>CAMPBELL, CHARLOTTE, MARTINSVILLE (C), PATRICK, PITTSYLVANIA, PULASKI, SMYTH, TAZEWELL</td><td>4512</td></tr>
+<tr><td>2019-12-06 &middot; Executive Order 46 (2019) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Highway Damages From Flooding</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-09-03 &middot; Executive Order 40 (2019) Declaration of a State of Emergency Due to Hurricane Dorian</td><td>41</td><td>ACCOMACK, AUGUSTA, CHESAPEAKE, CHESAPEAKE (C), FAIRFAX, FAUQUIER, FREDERICK, GLOUCESTER</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-06-27 &middot; Executive Order 34 (2019) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Highway Damages From Flooding</td><td>1</td><td>FAIRFAX</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-01-12 &middot; Executive Order 28 (2019) Declaration Of A State Of Emergency for The Commonwealth Of Virginia Due To Winter Weather</td><td>84</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-12-08 &middot; Executive Order 26 (2018) Declaration Of A State Of Emergency for The Commonwealth Of Virginia Due To Winter Weather</td><td>121</td><td>ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, AUGUSTA, BATH, BEDFORD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-10-11 &middot; Executive Order 23 (2018) Declaration Of A State Of Emergency For The Commonwealth Of Virginia Due To Hurricane Michael And In Support Of States Affected By The Storm</td><td>226</td><td>ACCOMACK, ALBEMARLE, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, BEDFORD, BOTETOURT</td><td>4411</td></tr>
+<tr><td>2018-09-10 &middot; Executive Order 17 (2018) Declaration Of A State Of Emergency For The Commonwealth Of Virginia Due To Potential Impacts From Hurricane Florence</td><td>42</td><td>ARLINGTON, AUGUSTA, CARROLL, CLARKE, FAIRFAX, FREDERICK, GALAX (C), HAMPTON (C)</td><td>4401</td></tr>
+<tr><td>2018-06-08 &middot; Executive Order 10 (2018) Declaration Of A State Of Emergency For The Commonwealth Of Virginia Due To Severe Weather And Flooding</td><td>46</td><td>ALBEMARLE, AMHERST, AUGUSTA, CARROLL, DINWIDDIE, ESSEX, FLOYD, FLUVANNA</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-01-03 &middot; Executive Order 76 (2018) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Severe Winter Weather</td><td>93</td><td>ACCOMACK, AMELIA, ARLINGTON, AUGUSTA, BATH, BRUNSWICK, CAROLINE, CENTRAL VIRGINIA BLUE RIDGE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-09-07 &middot; Executive Order 72 (2017) Declaration of a State of Emergency for the Commonwealth of Virginia Due To Hurricane Irma and in Support of States Affected by Hurricane Irma</td><td>10</td><td>ALBEMARLE, BOTETOURT, FREDERICK, LOUDOUN, NELSON, ROCKBRIDGE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-03-13 &middot; Executive Order 63 (2017) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Weather Event</td><td>34</td><td>ALBEMARLE, ARLINGTON, CAROLINE, CENTRAL VIRGINIA BLUE RIDGE, CLARKE, CULPEPER, EASTERN CHESTERFIELD, EASTERN HIGHLAND</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-01-06 &middot; Executive Order 62 (2017) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Weather Event</td><td>94</td><td>ACCOMACK, ALBEMARLE, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BEDFORD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2016-10-06 &middot; Executive Order 60 (2016) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Hurricane Matthew and in Support of States Affected by Hurricane Matthew (Updated October 17, 2016)</td><td>100</td><td>ACCOMACK, AMELIA, BRUNSWICK, CAROLINE, CHARLES CITY (C), CHESAPEAKE, CHESAPEAKE (C), CHESTERFIELD</td><td>4291</td></tr>
+<tr><td>2016-09-02 &middot; Executive Order 58 (2016) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Hurricane Hermine</td><td>23</td><td>ACCOMACK, AUGUSTA, CHESAPEAKE, FRANKLIN, GLOUCESTER, HAMPTON/POQUOSON, ISLE OF WIGHT, JAMES CITY</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2016-06-24 &middot; Executive Order 56 (2016) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Severe Flooding</td><td>23</td><td>ALLEGHANY, AUGUSTA, BATH, BLAND, BOTETOURT, CAMPBELL, COVINGTON (C), FAIRFAX</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2016-02-29 &middot; Executive Order 53 (2016) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Severe Storms and Tornadoes</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2016-01-21 &middot; Executive Order 51 (2016) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Storm Event</td><td>138</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td>4262</td></tr>
+<tr><td>2015-09-30 &middot; Executive Order 48 (2015) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Severe Weather and the Threat of Hurricane Joaquin Impacting Virginia</td><td>66</td><td>ACCOMACK, ALBEMARLE, AUGUSTA, BOTETOURT, BUCKINGHAM, CAMPBELL, CHARLES CITY, CHESAPEAKE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2015-02-16 &middot; Executive Order 38 (2015) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Major Winter Storm (Updated February 24, 2015)</td><td>161</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-03-03 &middot; Executive Order 9 (2014) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Major Winter Storm</td><td>83</td><td>ACCOMACK, ALBEMARLE, AMELIA, AMHERST, ARLINGTON, AUGUSTA, BATH, BRUNSWICK</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-02-11 &middot; Executive Order 7 (2014) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Major Winter Storm Event</td><td>117</td><td>ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BATH</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-02-03 &middot; Executive Order 6 (2014) Declaration of a State of Emergency for the Commonwealth of Virginia in Support of Emergency Relief Supplies Due to Severe Winter Weather</td><td>31</td><td>ALBEMARLE, ARLINGTON, AUGUSTA, CLARKE, CULPEPER, EASTERN HIGHLAND, FAIRFAX, FREDERICK</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2013-03-07 &middot; Executive Order 61 (2013) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Winter Storm Event</td><td>54</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, AUGUSTA, BATH</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2012-10-30 &middot; Executive Order 53 (2012) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Hurricane Sandy Impacting Virginia</td><td>99</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, ARLINGTON, BATH, BEDFORD, BLAND, BOTETOURT</td><td>3359</td></tr>
+<tr><td>2012-07-03 &middot; Executive Order 49 (2012) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Storm Event throughout the Commnwealth</td><td>191</td><td>ALBEMARLE, ALLEGHANY, APPOMATTOX, AUGUSTA, BEDFORD, BLAND, BUCHANAN, CAMPBELL</td><td>4072</td></tr>
+<tr><td>2011-09-28 &middot; Executive Order 40 (2011) Declaration of a State of Emergency for the Commonwealth of Virginia due to the Threat of Significant Flooding, Heavy Rains, and Wind Damage caused by Hurricane Irene</td><td>14</td><td>BEDFORD, CHARLOTTE, FRANKLIN, KING GEORGE, NORFOLK (C), RICHMOND, VIRGINIA BEACH (C)</td><td>4045</td></tr>
+<tr><td>2011-05-18 &middot; Executive Order 33 (2011) Declaration of a State of Emergency for Pulaski County and the Commonwealth of Virginia due to Significant Damage and Flooding caused by Tornadoes and Severe Thunderstorms with Damaging Winds and Heavy Rains</td><td>65</td><td>ACCOMACK, ALBEMARLE, ARLINGTON, CAROLINE, CHESAPEAKE (C), CULPEPER, FAUQUIER, FREDERICK</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2010-12-28 &middot; Executive Order 30 (2010) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Snow Accumulations, Transportation Difficulties, and Power Outages Caused by a Winter Storm</td><td>69</td><td>ACCOMACK, ALLEGHANY, AMELIA, BEDFORD, BLAND, BRUNSWICK, BUCHANAN, CAROLINE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2010-09-01 &middot; Executive Order 23 (2010) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Flooding and Wind Damaged Caused by Hurricane Earl</td><td>2</td><td>NORFOLK, VIRGINIA BEACH</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2010-03-01 &middot; Executive Order 8 (2010) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Storm Event throughout the Western and Southwestern Portion of the Commonwealth</td><td>37</td><td>AMHERST, BEDFORD, BLAND, BOTETOURT, CARROLL, CHESAPEAKE, CRAIG, DINWIDDIE</td><td>1905</td></tr>
+<tr><td>2010-02-10 &middot; Executive Order 7 (2010) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Severe Winter Storm Events throughout the Comonwealth.</td><td>110</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td>1905</td></tr>
+<tr><td>2010-01-29 &middot; Executive Order 5 (2010) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Storm Event throughout the Commonwealth.</td><td>101</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA</td><td>1905</td></tr>
+<tr><td>2009-12-18 &middot; Executive Order 105 (2009) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Weather Event throughout the Commonwealth.</td><td>85</td><td>ALBEMARLE, ALLEGHANY, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BATH</td><td>1874</td></tr>
+<tr><td>2009-03-04 &middot; Executive Order 81 (2009) Declaration of a State of Emergency for the Commonwealth of Virginia Due to a Severe Winter Weather Event throughout the Commonwealth.</td><td>78</td><td>ACCOMACK, ALBEMARLE, AMELIA, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BEDFORD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2008-09-04 &middot; Executive Order 76 (2008) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Flooding and Wind Damage Caused by Hurricane Hanna.</td><td>109</td><td>ACCOMACK, ALBEMARLE, AMELIA, APPOMATTOX, ARLINGTON, BRUNSWICK, BUCKINGHAM, CAMPBELL</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2008-03-31 &middot; Executive Order 64 (2008) Declaration of a State of Emergency Arising from Heavy Winds and Severe Storms Throughout the Commonwealth of Virginia.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2008-02-15 &middot; Executive Order 63 (2008) Declaration of a State of Emergency Arising from Heavy Winds and Brush Fires or the Potential thereof Throughout the Commonwealth of Virginia.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2007-10-18 &middot; Executive Order 57 (2007) Declaration of a State of Emergency Arising from Drought and Forest Fire or the Potential thereof throughout the Commonwealth of Virginia.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2007-02-14 &middot; Executive Order 46 (2007) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Potential for Significant Ice, Snow and Wind Damage Caused by Severe Weather Beginning on February 13, 2007.</td><td>65</td><td>ALBEMARLE, ALLEGHANY, AMHERST, APPOMATTOX, ARLINGTON, AUGUSTA, BATH, BEDFORD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2006-10-13 &middot; Executive Order 39 (2006) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Significant Flooding and Wind Damage Caused by Severe Weather on October 6 Through October 8, 2006.</td><td>4</td><td>GRAYSON, LEE, TAZEWELL</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2006-09-15 &middot; Executive Order 34 (2006) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Flooding and Wind Damage Caused by Tropical Storm Ernesto.</td><td>1</td><td>HALIFAX</td><td>1661</td></tr>
+<tr><td>2006-06-30 &middot; Executive Order 27 (2006) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Significant Flooding, Transportation Impacts, Mudslides, and Continued Flash Flood Warnings Due to Extensive Rainfall Beginning June 23, 2006 from a Severe Tropical Weather System.</td><td>58</td><td>ACCOMACK, ALBEMARLE, ALEXANDRIA (C), ALLEGHANY, AMELIA, AMHERST, ARLINGTON, AUGUSTA</td><td>1655</td></tr>
+<tr><td>2005-09-12 &middot; Executive Order 98 (2005) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Flooding and Wind Damage Caused by Tropical Storm/Hurricane Ophelia.</td><td>0</td><td>None matched</td><td>3240</td></tr>
+<tr><td>2004-09-29 &middot; Executive Order 82 (2004) Declaration of a State of Emergency for the Commonwealth Due to Significant Flooding and Tornadoes Caused by Hurricane Jeanne.</td><td>47</td><td>ALBEMARLE, ALLEGHANY / CLIFTON FORGE / COVINGTON, AMHERST, APPOMATTOX, AUGUSTA, BEDFORD, BOTETOURT, BUCKINGHAM</td><td>1570</td></tr>
+<tr><td>2004-09-17 &middot; Executive Order 81 (2004) Declaration of a State of Emergency for the Entire Commonwealth Due to the Threat of Significant Flooding and Tornadoes Caused by Hurricane Ivan.</td><td>72</td><td>ALBEMARLE, AMELIA, APPOMATTOX, BEDFORD, CAMPBELL, CAROLINE, CHESTERFIELD, CULPEPER</td><td>1544</td></tr>
+<tr><td>2004-09-08 &middot; Executive Order 80 (2004) Declaration of a State of Emergency for the Commonwwealth of Virginia Due to Significant Rains and Threat of Tornadoes and Damaging Flash Flooding.</td><td>40</td><td>ALBEMARLE, AMELIA, AUGUSTA, BEDFORD, BUCKINGHAM, CAMPBELL, CAROLINE, CHARLOTTESVILLE (C)</td><td>1544</td></tr>
+<tr><td>2004-08-31 &middot; Executive Order 79 (2004) Declaration of a State of Emergency for Central Virginia Due to Significant Flooding Caused by Tropical Depression Gaston.</td><td>30</td><td>AMELIA, CHARLES CITY (C), CHESTERFIELD, DINWIDDIE, HAMPTON (C), HANOVER, HENRICO, HOPEWELL (C)</td><td>1544</td></tr>
+<tr><td>2004-08-16 &middot; Executive Order 77 (2004) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Flooding and Wind Damage from Hurricane Charley.</td><td>8</td><td>CHESAPEAKE (C), CULPEPER, HENRY, NORFOLK / HAMPTON / PORTSMOUTH, NORTHAMPTON, PAGE, SOUTHAMPTON, VIRGINIA BEACH</td><td>1544</td></tr>
+<tr><td>2004-06-03 &middot; Executive Order 74 (2004) Inclusion of Lee County in the Declaration of a State of Emergency for the Counties of Tazewell and Russell Due to the Effects of Signficant Flooding.</td><td>0</td><td>None matched</td><td>1525</td></tr>
+<tr><td>2004-05-25 &middot; Executive Order 73 (2004) Declaration of a State of Emergency for the Counties of Tazewell and Russell Due to the Effects of Significant Flooding.</td><td>3</td><td>HENRY, NEWPORT NEWS (C), TAZEWELL</td><td>1525</td></tr>
+<tr><td>2003-11-20 &middot; Executive Order 59 (2003) Declaration of a State of Emergency for Localities n Southwest Virginia Due to the Affects of Significant Flooding.</td><td>33</td><td>ALBEMARLE, ALLEGHANY, AUGUSTA, BATH, BLAND, BOTETOURT, BUCHANAN, BUCKINGHAM</td><td>1502</td></tr>
+<tr><td>2003-09-16 &middot; Executive Order 56 (2003) Declaration of a State of Emergency for the Commonwealth of Virginia Due to the Threat of Significant Flooding and Wind Damage Caused by Hurricane Isabel.</td><td>117</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY, ALLEGHANY / CLIFTON FORGE / COVINGTON, AMELIA, AMHERST, APPOMATTOX, ARLINGTON / ALEXANDRIA / FALLS CHURCH</td><td>1491</td></tr>
+<tr><td>2003-05-28 &middot; Executive Order 48 (2003) Declaration of a State of Emergency Due to Tornado and Severe Storm Damage Across the Commonwealth.</td><td>31</td><td>AMELIA, BEDFORD, BEDFORD (C), BRUNSWICK, CHESAPEAKE (C), CHESTERFIELD, COLONIAL HEIGHTS (C), DANVILLE (C)</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2003-02-17 &middot; Executive Order 43 (2003) Declaration of a State of Emergency Throughout the Commonwealth Due to a Severe Winter Storm and Declaration of a Postponement of an Election in Greene County.</td><td>81</td><td>ACCOMACK, ALBEMARLE, ALLEGHANY / CLIFTON FORGE / COVINGTON, AMELIA, APPOMATTOX, ARLINGTON, AUGUSTA, BATH</td><td>1458</td></tr>
+<tr><td>2002-12-11 &middot; Executive Order 38 (2002) Declaration of a State of Emergency in the Commonwealth of Virginia Due to Severe Ice Conditions.</td><td>44</td><td>ALBEMARLE / CHARLOTTTESVILLE, AMHERST, APPOMATTOX, AUGUSTA / STAUNTON / WAYNESBORRO, BATH, BEDFORD / BEDFORD, BOTETOURT, BUCKINGHAM</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2002-08-30 &middot; Executive Order 33 (2002) Declaration of a State of Emergency Due to Extreme Drought Conditions Throughout the Commonwealth.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2002-07-31 &middot; Executive Order 31 (2002) Declaration of a State of Emergency Due to Extreme Drought Conditions Throughout the Commonwealth.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2002-03-21 &middot; Executive Order 10 (2002) Declaration of a State of Emergency for the Commonwealth of Virginia Due to Significant Rainfall and Flooding Throughout Southwest Virginia.</td><td>7</td><td>PULASKI, SMYTH, TAZEWELL, WYTHE</td><td>1406</td></tr></tbody></table></div>
+</div>
+
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">77 records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for Virginia from the site's national FEMA dataset.</p>
+<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-01-23</td><td>3631</td><td>EM</td><td>SEVERE WINTER STORM</td><td>Winter Storm</td><td>2026-01-22 to 2026-01-27</td></tr>
+<tr><td>2025-04-04</td><td>4863</td><td>DR</td><td>SEVERE WINTER STORMS AND FLOODING</td><td>Severe Storm</td><td>2025-02-10 to 2025-02-18</td></tr>
+<tr><td>2024-10-01</td><td>4831</td><td>DR</td><td>TROPICAL STORM HELENE</td><td>Tropical Storm</td><td>2024-09-25 to 2024-10-03</td></tr>
+<tr><td>2024-09-29</td><td>3621</td><td>EM</td><td>POST-TROPICAL CYCLONE HELENE</td><td>Tropical Storm</td><td>2024-09-25 to 2024-10-03</td></tr>
+<tr><td>2022-09-30</td><td>4674</td><td>DR</td><td>FLOODING AND MUDSLIDES</td><td>Severe Storm</td><td>2022-07-13 to 2022-07-14</td></tr>
+<tr><td>2022-03-11</td><td>4644</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Severe Storm</td><td>2022-01-02 to 2022-01-03</td></tr>
+<tr><td>2021-10-26</td><td>4628</td><td>DR</td><td>FLOODING, LANDSLIDES, AND MUDSLIDES</td><td>Flood</td><td>2021-08-30 to 2021-08-31</td></tr>
+<tr><td>2021-05-10</td><td>4602</td><td>DR</td><td>SEVERE WINTER STORMS</td><td>Severe Ice Storm</td><td>2021-02-11 to 2021-02-13</td></tr>
+<tr><td>2020-04-02</td><td>4512</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3448</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2018-12-18</td><td>4411</td><td>DR</td><td>TROPICAL STORM MICHAEL</td><td>Hurricane</td><td>2018-10-09 to 2018-10-16</td></tr>
+<tr><td>2018-10-15</td><td>4401</td><td>DR</td><td>HURRICANE FLORENCE</td><td>Hurricane</td><td>2018-09-08 to 2018-09-21</td></tr>
+<tr><td>2018-09-11</td><td>3403</td><td>EM</td><td>HURRICANE FLORENCE</td><td>Hurricane</td><td>2018-09-13 to 2018-09-21</td></tr>
+<tr><td>2016-11-02</td><td>4291</td><td>DR</td><td>HURRICANE MATTHEW</td><td>Hurricane</td><td>2016-10-07 to 2016-10-15</td></tr>
+<tr><td>2016-03-07</td><td>4262</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2016-01-22 to 2016-01-23</td></tr>
+<tr><td>2012-11-26</td><td>4092</td><td>DR</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
+<tr><td>2012-10-29</td><td>3359</td><td>EM</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-01</td></tr>
+<tr><td>2012-07-27</td><td>4072</td><td>DR</td><td>SEVERE STORMS AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2012-06-29 to 2012-07-01</td></tr>
+<tr><td>2011-11-17</td><td>4045</td><td>DR</td><td>THE REMNANTS OF TROPICAL STORM LEE</td><td>Severe Storm</td><td>2011-09-08 to 2011-09-09</td></tr>
+<tr><td>2011-11-04</td><td>4042</td><td>DR</td><td>EARTHQUAKE</td><td>Earthquake</td><td>2011-08-23 to 2011-10-25</td></tr>
+<tr><td>2011-09-03</td><td>4024</td><td>DR</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-26 to 2011-08-28</td></tr>
+<tr><td>2011-08-26</td><td>3329</td><td>EM</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-26 to 2011-09-04</td></tr>
+<tr><td>2011-02-20</td><td>2861</td><td>FM</td><td>COFFMAN FIRE</td><td>Fire</td><td>2011-02-19 to </td></tr>
+<tr><td>2011-02-20</td><td>2860</td><td>FM</td><td>SMITH FIRE</td><td>Fire</td><td>2011-02-19 to </td></tr>
+<tr><td>2010-04-27</td><td>1905</td><td>DR</td><td>SEVERE WINTER STORMS AND SNOWSTORMS</td><td>Snowstorm</td><td>2010-02-05 to 2010-02-11</td></tr>
+<tr><td>2010-02-16</td><td>1874</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2009-12-18 to 2009-12-20</td></tr>
+<tr><td>2009-12-09</td><td>1862</td><td>DR</td><td>SEVERE STORMS AND FLOODING ASSOCIATED WITH TROPICAL DEPRESSION IDA AND A NOR&#x27;EAST</td><td>Severe Storm</td><td>2009-11-11 to 2009-11-16</td></tr>
+<tr><td>2006-09-22</td><td>1661</td><td>DR</td><td>TROPICAL DEPRESSION ERNESTO, SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2006-08-29 to 2006-09-07</td></tr>
+<tr><td>2006-07-13</td><td>1655</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2006-06-23 to 2006-07-06</td></tr>
+<tr><td>2006-04-15</td><td>2637</td><td>FM</td><td>BULL MOUNTAIN FIRE</td><td>Fire</td><td>2006-04-15 to </td></tr>
+<tr><td>2005-09-12</td><td>3240</td><td>EM</td><td>HURRICANE KATRINA EVACUATION</td><td>Hurricane</td><td>2005-08-29 to 2005-10-01</td></tr>
+<tr><td>2004-10-18</td><td>1570</td><td>DR</td><td>SEVERE STORMS AND FLOODING FROM THE REMANANTS OF HURRICANE JEANNE</td><td>Severe Storm</td><td>2004-09-27 to 2004-09-30</td></tr>
+<tr><td>2004-09-03</td><td>1544</td><td>DR</td><td>SEVERE STORMS, FLOODING AND TORNADOES ASSOCIATED W TD GASTON</td><td>Severe Storm</td><td>2004-08-30 to 2004-09-08</td></tr>
+<tr><td>2004-06-15</td><td>1525</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2004-05-24 to 2004-06-26</td></tr>
+<tr><td>2003-12-09</td><td>1502</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2003-11-18 to 2003-11-19</td></tr>
+<tr><td>2003-09-18</td><td>1491</td><td>DR</td><td>HURRICANE ISABEL</td><td>Hurricane</td><td>2003-09-18 to 2003-10-01</td></tr>
+<tr><td>2003-03-27</td><td>1458</td><td>DR</td><td>SEVERE WINTER STORM, RECORD/NEAR RECORD SNOWFALL, HEAVY RAIN,FLOODIND, AND MUDSLIDE</td><td>Severe Storm</td><td>2003-02-15 to 2003-02-28</td></tr>
+<tr><td>2002-05-05</td><td>1411</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2002-04-28 to 2002-05-03</td></tr>
+<tr><td>2002-04-02</td><td>1406</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2002-03-17 to 2002-03-20</td></tr>
+<tr><td>2002-02-28</td><td>2397</td><td>FM</td><td>VA - FULTZ RUN FIRE - 02-28-2002</td><td>Fire</td><td>2002-02-27 to 2002-03-02</td></tr>
+<tr><td>2001-11-20</td><td>2394</td><td>FM</td><td>VA - HEARD MOUNTAIN FIRE COMPLEX - 11/20/2001</td><td>Fire</td><td>2001-11-19 to 2001-12-09</td></tr>
+<tr><td>2001-11-20</td><td>2393</td><td>FM</td><td>VA - SHENANDOAH GAP FIRE COMPLEX - 11/20/01</td><td>Fire</td><td>2001-11-19 to 2001-12-09</td></tr>
+<tr><td>2001-11-16</td><td>2390</td><td>FM</td><td>VA - FAR SOUTHWEST FIRE COMPLEX - 11/16/2001</td><td>Fire</td><td>2001-11-14 to 2001-12-09</td></tr>
+<tr><td>2001-09-21</td><td>1392</td><td>DR</td><td>FIRES AND EXPLOSIONS</td><td>Terrorist</td><td>2001-09-11 to 2001-09-11</td></tr>
+<tr><td>2001-09-12</td><td>3168</td><td>EM</td><td>FIRES AND EXPLOSIONS</td><td>Fire</td><td>2001-09-11 to 2001-09-11</td></tr>
+<tr><td>2001-07-12</td><td>1386</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2001-07-08 to 2001-08-27</td></tr>
+<tr><td>2000-02-28</td><td>1318</td><td>DR</td><td>SEVERE WINTER STORMS</td><td>Severe Storm</td><td>2000-01-25 to 2000-01-30</td></tr>
+<tr><td>1999-09-18</td><td>1293</td><td>DR</td><td>HURRICANE FLOYD MAJOR DISASTER DECLARATIONS</td><td>Hurricane</td><td>1999-09-13 to 1999-09-26</td></tr>
+<tr><td>1999-09-16</td><td>3147</td><td>EM</td><td>HURRICANE FLOYD EMERGENCY DECLARATIONS</td><td>Hurricane</td><td>1999-09-13 to 1999-09-26</td></tr>
+<tr><td>1999-09-06</td><td>1290</td><td>DR</td><td>VIRGINIA TROPICAL STORM DENNIS 08/27/99</td><td>Hurricane</td><td>1999-08-27 to 1999-09-13</td></tr>
+<tr><td>1998-09-04</td><td>1242</td><td>DR</td><td>HURRICANE BONNIE</td><td>Hurricane</td><td>1998-08-25 to 1998-09-01</td></tr>
+<tr><td>1996-09-06</td><td>1135</td><td>DR</td><td>HURRICANE FRAN AND ASSOCIATED SEVERE STORM COND</td><td>Hurricane</td><td>1996-09-05 to 1996-09-23</td></tr>
+<tr><td>1996-01-27</td><td>1098</td><td>DR</td><td>FLOODING, HIGH WINDS, AND WIND DRIVEN RAIN</td><td>Flood</td><td>1996-01-19 to 1996-02-01</td></tr>
+<tr><td>1996-01-13</td><td>1086</td><td>DR</td><td>BLIZZARD OF 96 (SEVERE SNOW STORM)</td><td>Snowstorm</td><td>1996-01-06 to 1996-01-12</td></tr>
+<tr><td>1995-07-01</td><td>1059</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1995-06-22 to 1995-07-07</td></tr>
+<tr><td>1994-04-11</td><td>1021</td><td>DR</td><td>SEVERE WINTER ICE STORM</td><td>Severe Storm</td><td>1994-03-01 to 1994-03-05</td></tr>
+<tr><td>1994-03-10</td><td>1014</td><td>DR</td><td>SEVERE ICE STORMS, FLOODING</td><td>Snowstorm</td><td>1994-02-08 to 1994-02-12</td></tr>
+<tr><td>1993-12-22</td><td>1007</td><td>DR</td><td>SEVERE STORMS AND TORNADOES</td><td>Severe Storm</td><td>1993-08-06 to 1993-08-06</td></tr>
+<tr><td>1993-03-25</td><td>3112</td><td>EM</td><td>SEVERE WINTER STORM</td><td>Snowstorm</td><td>1993-03-13 to 1993-03-14</td></tr>
+<tr><td>1992-05-19</td><td>944</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1992-04-21 to 1992-04-22</td></tr>
+<tr><td>1989-11-08</td><td>847</td><td>DR</td><td>SEVERE STORMS, MUDSLIDES &amp; FLOODING</td><td>Flood</td><td>1989-10-16 to 1989-10-17</td></tr>
+<tr><td>1985-11-09</td><td>755</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1985-11-09 to 1985-11-09</td></tr>
+<tr><td>1984-05-23</td><td>707</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1984-05-23 to 1984-05-23</td></tr>
+<tr><td>1979-09-29</td><td>606</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1979-09-29 to 1979-09-29</td></tr>
+<tr><td>1979-07-20</td><td>593</td><td>DR</td><td>STORMS &amp; FLASH FLOODS</td><td>Flood</td><td>1979-07-20 to 1979-07-20</td></tr>
+<tr><td>1977-11-12</td><td>543</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1977-11-12 to 1977-11-12</td></tr>
+<tr><td>1977-07-23</td><td>3046</td><td>EM</td><td>DROUGHT</td><td>Drought</td><td>1977-07-23 to 1977-07-23</td></tr>
+<tr><td>1977-04-07</td><td>530</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1977-04-07 to 1977-04-07</td></tr>
+<tr><td>1977-01-26</td><td>525</td><td>DR</td><td>ICE CONDITIONS</td><td>Freezing</td><td>1977-01-26 to 1977-01-26</td></tr>
+<tr><td>1976-10-15</td><td>3018</td><td>EM</td><td>DROUGHT</td><td>Drought</td><td>1976-10-15 to 1976-10-15</td></tr>
+<tr><td>1972-10-10</td><td>359</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1972-10-10 to 1972-10-10</td></tr>
+<tr><td>1972-10-07</td><td>358</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1972-10-07 to 1972-10-07</td></tr>
+<tr><td>1972-06-23</td><td>339</td><td>DR</td><td>TROPICAL STORM AGNES</td><td>Flood</td><td>1972-06-23 to 1972-06-23</td></tr>
+<tr><td>1969-08-23</td><td>274</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Hurricane</td><td>1969-08-23 to 1969-08-23</td></tr>
+<tr><td>1963-03-21</td><td>149</td><td>DR</td><td>FLOODS</td><td>Flood</td><td>1963-03-21 to 1963-03-21</td></tr>
+<tr><td>1962-03-09</td><td>123</td><td>DR</td><td>SEVERE STORMS, HIGH TIDES &amp; FLOODING</td><td>Flood</td><td>1962-03-09 to 1962-03-09</td></tr>
+<tr><td>1957-02-01</td><td>68</td><td>DR</td><td>FLOODS</td><td>Flood</td><td>1957-02-01 to 1957-02-01</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">4,517 rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2002-03-18 09:00:00</td><td>PULASKI</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2002-03-18 00:15:00</td><td>SMYTH</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>100K</td></tr>
+<tr><td>2002-03-18 06:00:00</td><td>SMYTH</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-03-18 01:45:00</td><td>TAZEWELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.5M</td></tr>
+<tr><td>2002-03-18 08:30:00</td><td>TAZEWELL</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-03-18 00:30:00</td><td>WYTHE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2002-03-18 08:00:00</td><td>WYTHE</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>ALBEMARLE / CHARLOTTTESVILLE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>AMHERST</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>APPOMATTOX</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>AUGUSTA / STAUNTON / WAYNESBORRO</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>BATH</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>BEDFORD / BEDFORD</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-13 12:15:00</td><td>BEDFORD / BEDFORD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>BOTETOURT</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>BUCKINGHAM</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>CAMPBELL / LYNCHBURG</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>CAROLINE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>CARROLL / GALAX</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-13 12:15:00</td><td>CARROLL / GALAX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>CHARLOTTE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>CULPEPER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>CUMBERLAND</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>FAIRFAX</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>FAUQUIER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-13 12:15:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>FLUVANNA</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-14 11:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>3K</td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>FREDERICK / WINCHESTER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>GOOCHLAND</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>GREENE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>HANOVER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>HIGHLAND</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>LOUDOUN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>LOUISA</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>NELSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>ORANGE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>PAGE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-13 12:15:00</td><td>PATRICK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>POWHATAN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 03:00:00</td><td>PRINCE EDWARD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>PRINCE WILLIAM / MANASSAS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>RAPPAHANNOCK</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 01:30:00</td><td>ROCKBRIDGE / BUENA VISTA / LEXINGTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>ROCKINGHAM / HARRISONBURG</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>SHENANDOAH</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>SPOTSYLVANIA / FREDERICKSBURG</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>STAFFORD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2002-12-11 00:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>ACCOMACK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>ALBEMARLE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>ALLEGHANY / CLIFTON FORGE / COVINGTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>AMELIA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>APPOMATTOX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>ARLINGTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>400K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>AUGUSTA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>1.5M</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>BATH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>BEDFORD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>BOTETOURT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>BRUNSWICK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>BUCKINGHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>CAMPBELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>CAROLINE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>CHARLES CITY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>CHESTERFIELD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>40K</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>CRAIG</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>CULPEPER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>2.1M</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>CUMBERLAND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>DINWIDDIE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>ESSEX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>FAIRFAX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>FAUQUIER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>FLUVANNA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>FREDERICK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>1 / 0</td><td>1.4M</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>GILES</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>GLOUCESTER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>GOOCHLAND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>GRAYSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>GREENE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>GREENSVILLE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>HALIFAX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>HANOVER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>HENRICO</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>HENRY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>HIGHLAND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>ISLE OF WIGHT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>JAMES CITY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>KING AND QUEEN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>KING GEORGE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>KING WILLIAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>LANCASTER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>LOUDOUN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>LOUISA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>LUNENBURG</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>MATHEWS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>MECKLENBURG</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>MIDDLESEX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>NELSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>NEW KENT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>NEWPORT NEWS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>NORTHAMPTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>NORTHUMBERLAND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>NOTTOWAY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>ORANGE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>200K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>PAGE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>PATRICK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>PITTSYLVANIA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>POWHATAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>PRINCE EDWARD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>PRINCE GEORGE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>PRINCE WILLIAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>PULASKI</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>RAPPAHANNOCK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>ROANOKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>ROCKINGHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>350K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>SHENANDOAH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>1.5M</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>SPOTSYLVANIA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>75K</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>STAFFORD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>SURRY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>SUSSEX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-02-15 22:00:00</td><td>TAZEWELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0</td></tr>
+<tr><td>2003-02-14 08:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>1.3M</td></tr>
+<tr><td>2003-02-15 16:00:00</td><td>WESTMORELAND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 13:45:00</td><td>AMELIA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 14:50:00</td><td>BEDFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-05-31 14:45:00</td><td>BEDFORD (C)</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-05-31 16:57:00</td><td>BRUNSWICK</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 17:30:00</td><td>BRUNSWICK</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2K</td></tr>
+<tr><td>2003-05-31 17:44:00</td><td>BRUNSWICK</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2K</td></tr>
+<tr><td>2003-05-29 14:30:00</td><td>CHESAPEAKE (C)</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-29 15:00:00</td><td>CHESAPEAKE (C)</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-26 01:00:00</td><td>CHESTERFIELD</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 13:48:00</td><td>CHESTERFIELD</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-26 08:30:00</td><td>COLONIAL HEIGHTS (C)</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-25 22:55:00</td><td>DANVILLE (C)</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-26 01:00:00</td><td>DINWIDDIE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 14:20:00</td><td>DINWIDDIE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-29 14:55:00</td><td>FRANKLIN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-25 23:50:00</td><td>HALIFAX</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 15:45:00</td><td>HALIFAX</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-29 15:35:00</td><td>HAMPTON (C)</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>5K</td></tr>
+<tr><td>2003-05-31 14:00:00</td><td>HENRICO</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-25 21:15:00</td><td>LUNENBURG</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-26 01:00:00</td><td>LUNENBURG</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-25 20:30:00</td><td>MECKLENBURG</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-26 01:00:00</td><td>MECKLENBURG</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 16:50:00</td><td>MECKLENBURG</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2K</td></tr>
+<tr><td>2003-05-26 01:00:00</td><td>NOTTOWAY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>1 / 0</td><td></td></tr>
+<tr><td>2003-05-29 15:00:00</td><td>PORTSMOUTH (C)</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 14:28:00</td><td>PRINCE GEORGE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 14:28:00</td><td>PRINCE GEORGE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2K</td></tr>
+<tr><td>2003-05-31 13:56:00</td><td>RICHMOND (C)</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 14:20:00</td><td>ROANOKE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-05-31 14:41:00</td><td>ROANOKE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>ALBEMARLE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>100K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>AUGUSTA</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.5M</td></tr>
+<tr><td>2003-09-18 20:30:00</td><td>CULPEPER</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>10K</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>FAUQUIER</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>10K</td></tr>
+<tr><td>2003-09-18 22:45:00</td><td>FREDERICK</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>10K</td></tr>
+<tr><td>2003-09-18 20:00:00</td><td>GREENE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>20K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>HIGHLAND</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>MADISON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>30K</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>NELSON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>70K</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>NORFOLK (C)</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 20:30:00</td><td>ORANGE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>100K</td></tr>
+<tr><td>2003-09-18 22:00:00</td><td>PAGE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>2M</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>RAPPAHANNOCK</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>5K</td></tr>
+<tr><td>2003-09-18 20:00:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1M</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>SHENANDOAH</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>300K</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>SPOTSYLVANIA</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2003-09-18 22:00:00</td><td>WARREN</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>ACCOMACK</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>1 / 0</td><td></td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>ALBEMARLE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 65</td><td>2M</td></tr>
+<tr><td>2003-09-18 22:00:00</td><td>ALLEGHANY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-19 21:30:00</td><td>ALLEGHANY / CLIFTON FORGE / COVINGTON</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>2K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>AMELIA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5M</td></tr>
+<tr><td>2003-09-18 15:30:00</td><td>AMHERST</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>29K</td></tr>
+<tr><td>2003-09-18 23:00:00</td><td>AMHERST</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 14:30:00</td><td>APPOMATTOX</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75K</td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>ARLINGTON / ALEXANDRIA / FALLS CHURCH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 26</td><td>4.5M</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>AUGUSTA</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>700K</td></tr>
+<tr><td>2003-09-18 21:30:00</td><td>AUGUSTA</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>1.5M</td></tr>
+<tr><td>2003-09-18 19:00:00</td><td>BATH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-19 14:00:00</td><td>BATH</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>.5K</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>BOTETOURT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>BRUNSWICK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 14:45:00</td><td>BUCKINGHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-19 05:30:00</td><td>BUCKINGHAM</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 14:30:00</td><td>CAMPBELL / LYNCHBURG</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>CAROLINE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>CHARLES CITY</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 14:00:00</td><td>CHARLOTTE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>975K</td></tr>
+<tr><td>2003-09-19 13:15:00</td><td>CHARLOTTE</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>CHESAPEAKE</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>28M</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>CHESTERFIELD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>1 / 0</td><td>18M</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 2</td><td>100K</td></tr>
+<tr><td>2003-09-19 10:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>5K</td></tr>
+<tr><td>2003-09-18 21:15:00</td><td>CRAIG</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>CULPEPER</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 2</td><td>1.2M</td></tr>
+<tr><td>2003-09-19 04:30:00</td><td>CULPEPER</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>CUMBERLAND</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>36K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>DINWIDDIE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5M</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>ESSEX</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>20M</td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>FAIRFAX</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>18M</td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>FAUQUIER</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>1.5M</td></tr>
+<tr><td>2003-09-19 13:00:00</td><td>FAUQUIER</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>150K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>FLUVANNA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>36K</td></tr>
+<tr><td>2003-09-18 16:50:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>FREDERICK</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>GLOUCESTER</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>8M</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>GOOCHLAND</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>GREENE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>GREENSVILLE</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 13:30:00</td><td>HALIFAX</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-19 13:15:00</td><td>HALIFAX</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>HANOVER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>HENRICO</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>2 / 0</td><td>9M</td></tr>
+<tr><td>2003-09-18 14:30:00</td><td>HENRY / MARTINSVILLE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>HIGHLAND</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>ISLE OF WIGHT</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>1 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>JAMES CITY</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>45M</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>KING AND QUEEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 13:00:00</td><td>KING GEORGE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 2</td><td>4M</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>KING WILLIAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>LANCASTER</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 16:00:00</td><td>LOUDOUN</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>LOUISA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>LUNENBURG</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>250K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>MATHEWS</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>21M</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>MECKLENBURG</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>4M</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>MIDDLESEX</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>14M</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 22:30:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>NELSON</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>100K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>NEW KENT</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>1 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>NEWPORT NEWS</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>157M</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>NORFOLK</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>10M</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>NORTHAMPTON</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>NORTHUMBERLAND</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>NOTTOWAY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 15:00:00</td><td>ORANGE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 1</td><td>1M</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>PAGE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>PAGE</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>2M</td></tr>
+<tr><td>2003-09-18 21:07:00</td><td>PATRICK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 13:30:00</td><td>PITTSYLVANIA / DANVILLE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>143K</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>POWHATAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>4M</td></tr>
+<tr><td>2003-09-18 09:00:00</td><td>PRINCE EDWARD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>PRINCE GEORGE</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>1 / 0</td><td>6M</td></tr>
+<tr><td>2003-09-18 14:00:00</td><td>PRINCE WILLIAM / MANASSAS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>14.5M</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>PULASKI</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 16:00:00</td><td>RAPPAHANNOCK</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>50K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>ROANOKE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 20:00:00</td><td>ROCKBRIDGE</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>650K</td></tr>
+<tr><td>2003-09-18 21:00:00</td><td>ROCKBRIDGE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0K</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>ROCKINGHAM</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>ROCKINGHAM</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 17:00:00</td><td>SHENANDOAH</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>300K</td></tr>
+<tr><td>2003-09-18 18:00:00</td><td>SHENANDOAH</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>500K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>SOUTHAMPTON</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 14:00:00</td><td>SPOTSYLVANIA</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>7M</td></tr>
+<tr><td>2003-09-18 14:00:00</td><td>STAFFORD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 1</td><td>14.1M</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>SUFFOLK</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>31M</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>SURRY</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>SUSSEX</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>VIRGINIA BEACH</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>39M</td></tr>
+<tr><td>2003-09-18 16:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>120K</td></tr>
+<tr><td>2003-09-19 09:30:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Flood</td><td>0 / 0</td><td>150K</td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>WESTMORELAND</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-09-18 08:00:00</td><td>YORK</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td>133M</td></tr>
+<tr><td>2003-11-19 12:00:00</td><td>ALBEMARLE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 09:45:00</td><td>ALLEGHANY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 11:00:00</td><td>AUGUSTA</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 11:00:00</td><td>AUGUSTA</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 09:55:00</td><td>BATH</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 09:30:00</td><td>BLAND</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>350K</td></tr>
+<tr><td>2003-11-19 09:00:00</td><td>CARROLL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>250K</td></tr>
+<tr><td>2003-11-19 12:00:00</td><td>CHARLOTTESVILLE (C)</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 18:00:00</td><td>FAIRFAX</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 09:00:00</td><td>GILES</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>700K</td></tr>
+<tr><td>2003-11-19 15:30:00</td><td>GREENE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 12:10:00</td><td>HIGHLAND</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 16:30:00</td><td>LOUDOUN</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 12:00:00</td><td>NELSON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 18:40:00</td><td>PRINCE WILLIAM</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 12:30:00</td><td>ROANOKE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 11:35:00</td><td>ROCKBRIDGE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>250K</td></tr>
+<tr><td>2003-11-19 12:00:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td></td></tr>
+<tr><td>2003-11-19 07:35:00</td><td>SMYTH</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>375K</td></tr>
+<tr><td>2003-11-19 06:35:00</td><td>TAZEWELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.6M</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
+<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+</main>
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script></body></html>

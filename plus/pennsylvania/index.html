@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pennsylvania State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="State emergency actions and matched weather-event evidence for Pennsylvania.">
+<title>Pennsylvania Weather Emergency Declarations | DisasterData Plus</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for Pennsylvania.">
 <style>
     :root { --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
       --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }
@@ -33,25 +33,193 @@
     th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }
     th { background:var(--blue); color:white; }
+    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:700; text-align:left; cursor:pointer; }
     td a { color:#175c9c; } .empty { color:var(--muted); font-style:italic; }
     .actions { overflow-x:auto; }
+    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
+    .layer h2 { margin-top:.5rem; }
+    .primary { background:white; border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }
+    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }
+    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:700; }
+    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid #aebbc6;
+      border-radius:7px; font:inherit; }
+    details.layer { background:white; border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }
+    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--navy); font-weight:800; }
+    details.layer[open] > summary { border-bottom:1px solid var(--line); }
+    details.layer > .details-body { padding:0 1rem 1rem; }
+    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      main { padding:1.25rem .75rem 3rem; }
+      .table-tools { display:block; }
+      .table-tools label { display:block; margin-bottom:.25rem; }
+      .table-search { width:100%; }
+    }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }
     </style></head>
 <body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / Pennsylvania</header>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>Pennsylvania: State Emergency Actions</h1>
-<p class="lede">State-issued emergency actions and weather-event evidence supplementing the federal FEMA declaration record.</p>
-<div class="notice"><strong>Coverage:</strong> State-source adapter planned; state-action coverage not yet available. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<h1>Pennsylvania: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
+<div class="notice"><strong>Coverage:</strong> 2018-present linked PEMA proclamation history; older Pennsylvania Bulletin backfill pending. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>0</strong>state-action records loaded</div>
-  <div class="metric"><strong>0</strong>NOAA event-match rows</div>
-  <div class="metric"><strong>0</strong>severity-area rows</div>
+  <div class="metric"><strong>64</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>6</strong>original state weather declarations</div>
+  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/pennsylvania.html">Federal declaration overview</a> · <a href="https://www.pa.gov/agencies/pema/resources/emergency-proclamations">Official state source</a></p>
-<h2>State-action inventory</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
-<tbody><tr><td colspan="5" class="empty">No verified state-action records have been loaded for this state yet.</td></tr></tbody></table></div>
-<p class="note">The inventory is limited by the coverage statement above. NOAA proximity matches identify potentially related observed events; they do not independently prove operational impacts or legal causation.</p>
-<footer>Generated 2026-09-03 · DisasterData.IO · State records remain subject to source verification.</footer>
-</main></body></html>
+<p><a href="../../states/pennsylvania.html">Federal declaration overview</a> &middot; <a href="https://www.pa.gov/agencies/pema/resources/emergency-proclamations">Official state source</a></p>
+
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-02-22</td><td></td><td><a href="https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/2026.2.22%20disaster%20emergency%20proclamation%20winter%20weather.pdf">A complex winter storm system is expected to impact multiple counties with dangerous weather, including heavy snow and strong winds.</a></td><td>declaration</td><td>Josh Shapiro</td></tr>
+<tr><td>2026-01-23</td><td></td><td><a href="https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/2026.1.23%20proclamation%20of%20disaster%20emergency%20january%202026%20winter%20storm.pdf">A severe winter storm is forecasted to impact the entire Commonwealth of Pennsylvania, causing dangerous weather conditions.</a></td><td>declaration</td><td>Josh Shapiro</td></tr>
+<tr><td>2024-11-30</td><td></td><td><a href="https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/2024.11.30%20disaster%20emergency%20proclamation%20erie%20winter%20storm.pdf">Severe winter event brings dangerous conditions, including heavy snowfall and high winds, to Erie County.</a></td><td>declaration</td><td>Josh Shapiro</td></tr>
+<tr><td>2024-08-09</td><td></td><td><a href="https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/2024.8.9%20disaster%20emergency%20proclamation%20tropical%20storm%20debby%20pdf.pdf">Remnants of Tropical Storm Debby bring dangerous conditions, including flash and rivervine flooding.</a></td><td>declaration</td><td>Josh Shapiro</td></tr>
+<tr><td>2021-08-31</td><td></td><td><a href="https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/hurricane-ida-proclamation-of-disaster-emergency-08312021.pdf">Hurricane Ida after-effects bring heavy rains and a serious threat of flash and riverine flooding to Pennsylvania.</a></td><td>declaration</td><td>Tom Wolf</td></tr>
+<tr><td>2018-06-04</td><td></td><td><a href="https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/severe-weather-060418.pdf">Nearly continuous storms for the first four months of 2018 caused a rapid buildup of water.</a></td><td>declaration</td><td>Tom Wolf</td></tr></tbody></table></div>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-02-22 &middot; A complex winter storm system is expected to impact multiple counties with dangerous weather, including heavy snow and strong winds.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-01-23 &middot; A severe winter storm is forecasted to impact the entire Commonwealth of Pennsylvania, causing dangerous weather conditions.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-11-30 &middot; Severe winter event brings dangerous conditions, including heavy snowfall and high winds, to Erie County.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-08-09 &middot; Remnants of Tropical Storm Debby bring dangerous conditions, including flash and rivervine flooding.</td><td>0</td><td>None matched</td><td>4815</td></tr>
+<tr><td>2021-08-31 &middot; Hurricane Ida after-effects bring heavy rains and a serious threat of flash and riverine flooding to Pennsylvania.</td><td>0</td><td>None matched</td><td>4618</td></tr>
+<tr><td>2018-06-04 &middot; Nearly continuous storms for the first four months of 2018 caused a rapid buildup of water.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr></tbody></table></div>
+</div>
+
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">64 records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for Pennsylvania from the site's national FEMA dataset.</p>
+<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2024-09-11</td><td>4815</td><td>DR</td><td>TROPICAL STORM DEBBY</td><td>Tropical Storm</td><td>2024-08-09 to 2024-08-10</td></tr>
+<tr><td>2021-09-10</td><td>4618</td><td>DR</td><td>REMNANTS OF HURRICANE IDA</td><td>Hurricane</td><td>2021-08-31 to 2021-09-05</td></tr>
+<tr><td>2020-03-30</td><td>4506</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3441</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2018-11-27</td><td>4408</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2018-08-10 to 2018-08-15</td></tr>
+<tr><td>2016-12-02</td><td>4292</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>2016-10-20 to 2016-10-21</td></tr>
+<tr><td>2016-03-23</td><td>4267</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2016-01-22 to 2016-01-23</td></tr>
+<tr><td>2014-02-06</td><td>3367</td><td>EM</td><td>SEVERE WINTER STORM</td><td>Severe Ice Storm</td><td>2014-02-04 to 2014-02-20</td></tr>
+<tr><td>2013-10-01</td><td>4149</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2013-06-26 to 2013-07-11</td></tr>
+<tr><td>2013-01-10</td><td>4099</td><td>DR</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
+<tr><td>2012-10-29</td><td>3356</td><td>EM</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
+<tr><td>2011-09-12</td><td>4030</td><td>DR</td><td>TROPICAL STORM LEE</td><td>Flood</td><td>2011-09-03 to 2011-10-15</td></tr>
+<tr><td>2011-09-08</td><td>3340</td><td>EM</td><td>REMNANTS OF TROPICAL STORM LEE</td><td>Flood</td><td>2011-09-03 to 2011-10-15</td></tr>
+<tr><td>2011-09-03</td><td>4025</td><td>DR</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-26 to 2011-08-30</td></tr>
+<tr><td>2011-08-29</td><td>3339</td><td>EM</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-26 to 2011-09-14</td></tr>
+<tr><td>2011-07-13</td><td>4003</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2011-04-25 to 2011-04-28</td></tr>
+<tr><td>2010-04-16</td><td>1898</td><td>DR</td><td>SEVERE WINTER STORMS AND SNOWSTORMS</td><td>Snowstorm</td><td>2010-02-05 to 2010-02-11</td></tr>
+<tr><td>2007-02-23</td><td>1684</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2006-11-16 to 2006-11-17</td></tr>
+<tr><td>2006-06-30</td><td>1649</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND MUDSLIDES</td><td>Severe Storm</td><td>2006-06-23 to 2006-07-10</td></tr>
+<tr><td>2005-09-10</td><td>3235</td><td>EM</td><td>HURRICANE KATRINA</td><td>Hurricane</td><td>2005-08-29 to 2005-10-01</td></tr>
+<tr><td>2005-04-14</td><td>1587</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2005-04-02 to 2005-04-23</td></tr>
+<tr><td>2004-09-19</td><td>1557</td><td>DR</td><td>TROPICAL DEPRESSION IVAN</td><td>Hurricane</td><td>2004-09-17 to 2004-10-01</td></tr>
+<tr><td>2004-09-19</td><td>1555</td><td>DR</td><td>SEVERE STORMS AND FLOODING ASSOCIATED WITH TROPICAL DEPRESSION FRANCES</td><td>Severe Storm</td><td>2004-09-08 to 2004-09-09</td></tr>
+<tr><td>2004-08-06</td><td>1538</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2004-07-27 to 2004-08-25</td></tr>
+<tr><td>2003-09-26</td><td>1497</td><td>DR</td><td>TROPICAL STORMS HENRI AND ISABEL AND RELATED SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2003-09-15 to 2003-09-23</td></tr>
+<tr><td>2003-08-23</td><td>1485</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2003-07-21 to 2003-09-12</td></tr>
+<tr><td>2003-03-14</td><td>3180</td><td>EM</td><td>SNOW</td><td>Severe Storm</td><td>2003-02-14 to 2003-02-19</td></tr>
+<tr><td>2001-06-21</td><td>1383</td><td>DR</td><td>TROPICAL STORM ALLISON</td><td>Severe Storm</td><td>2001-06-15 to 2001-06-23</td></tr>
+<tr><td>1999-09-22</td><td>1298</td><td>DR</td><td>TROPICAL DEPRESSION DENNIS PA</td><td>Flood</td><td>1999-09-06 to 1999-09-07</td></tr>
+<tr><td>1999-09-18</td><td>1294</td><td>DR</td><td>HURRICANE FLOYD MAJOR DISASTER DECLARATIONS</td><td>Hurricane</td><td>1999-09-16 to 1999-09-29</td></tr>
+<tr><td>1999-09-01</td><td>1289</td><td>DR</td><td>PA - FLOODING 8/20/99</td><td>Severe Storm</td><td>1999-08-20 to 1999-08-21</td></tr>
+<tr><td>1998-06-08</td><td>1219</td><td>DR</td><td>SEVERE STORMS, TORNADOES,AND FLOODING</td><td>Severe Storm</td><td>1998-05-31 to 1998-06-02</td></tr>
+<tr><td>1996-12-23</td><td>1150</td><td>DR</td><td>SEVERE THUNDERSTORMS, HIGH WINDS,RAIN, FLOODING</td><td>Flood</td><td>1996-11-08 to 1996-11-15</td></tr>
+<tr><td>1996-09-13</td><td>1138</td><td>DR</td><td>FLOODING ASSOCIATED WITH TROPICAL DEPRESSION FRAN</td><td>Flood</td><td>1996-09-06 to 1996-09-08</td></tr>
+<tr><td>1996-07-26</td><td>1130</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND TORNADOES</td><td>Flood</td><td>1996-07-19 to 1996-07-19</td></tr>
+<tr><td>1996-06-18</td><td>1120</td><td>DR</td><td>FLOODING, SEVERE STORMS</td><td>Flood</td><td>1996-06-12 to 1996-06-19</td></tr>
+<tr><td>1996-01-21</td><td>1093</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>1996-01-19 to 1996-02-01</td></tr>
+<tr><td>1996-01-13</td><td>1085</td><td>DR</td><td>BLIZZARD OF 96</td><td>Snowstorm</td><td>1996-01-06 to 1996-01-12</td></tr>
+<tr><td>1994-03-10</td><td>1015</td><td>DR</td><td>SEVERE WINTER STORMS</td><td>Severe Storm</td><td>1994-01-04 to 1994-02-25</td></tr>
+<tr><td>1993-03-16</td><td>3105</td><td>EM</td><td>SEVERE SNOWFALL &amp; WINTER STORM</td><td>Snowstorm</td><td>1993-03-13 to 1993-03-17</td></tr>
+<tr><td>1986-06-05</td><td>766</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1986-05-30 to 1986-05-31</td></tr>
+<tr><td>1985-11-09</td><td>754</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1985-11-03 to 1985-11-06</td></tr>
+<tr><td>1985-10-08</td><td>745</td><td>DR</td><td>HURRICANE GLORIA</td><td>Hurricane</td><td>1985-09-27 to 1985-09-27</td></tr>
+<tr><td>1985-06-03</td><td>737</td><td>DR</td><td>SEVERE STORMS, HIGH WINDS &amp; TORNADOES</td><td>Tornado</td><td>1985-05-31 to 1985-06-01</td></tr>
+<tr><td>1984-08-27</td><td>721</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1984-08-27 to 1984-08-27</td></tr>
+<tr><td>1981-06-15</td><td>641</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1981-06-15 to 1981-06-15</td></tr>
+<tr><td>1980-08-19</td><td>629</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1980-08-19 to 1980-08-19</td></tr>
+<tr><td>1980-06-13</td><td>3081</td><td>EM</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1980-06-13 to 1980-06-13</td></tr>
+<tr><td>1977-07-21</td><td>537</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1977-07-21 to 1977-07-21</td></tr>
+<tr><td>1977-01-29</td><td>3026</td><td>EM</td><td>SNOWSTORMS</td><td>Snowstorm</td><td>1977-01-29 to 1977-01-29</td></tr>
+<tr><td>1976-10-20</td><td>523</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1976-10-20 to 1976-10-20</td></tr>
+<tr><td>1976-07-07</td><td>513</td><td>DR</td><td>HIGH WINDS, FLASH FLOODS</td><td>Flood</td><td>1976-07-07 to 1976-07-07</td></tr>
+<tr><td>1975-09-26</td><td>485</td><td>DR</td><td>SEVERE STORMS, HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1975-09-26 to 1975-09-26</td></tr>
+<tr><td>1973-07-17</td><td>400</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1973-07-17 to 1973-07-17</td></tr>
+<tr><td>1972-09-28</td><td>355</td><td>DR</td><td>HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1972-09-28 to 1972-09-28</td></tr>
+<tr><td>1972-06-23</td><td>340</td><td>DR</td><td>TROPICAL STORM AGNES</td><td>Flood</td><td>1972-06-23 to 1972-06-23</td></tr>
+<tr><td>1971-09-18</td><td>312</td><td>DR</td><td>FLOODS</td><td>Flood</td><td>1971-09-18 to 1971-09-18</td></tr>
+<tr><td>1969-08-19</td><td>273</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1969-08-19 to 1969-08-19</td></tr>
+<tr><td>1965-08-18</td><td>206</td><td>DR</td><td>WATER SHORTAGE</td><td>Drought</td><td>1965-08-18 to 1965-08-18</td></tr>
+<tr><td>1959-01-23</td><td>89</td><td>DR</td><td>FLOODS</td><td>Flood</td><td>1959-01-23 to 1959-01-23</td></tr>
+<tr><td>1956-08-09</td><td>61</td><td>DR</td><td>STORM</td><td>Severe Storm</td><td>1956-08-09 to 1956-08-09</td></tr>
+<tr><td>1956-05-21</td><td>58</td><td>DR</td><td>SEVERE STORM</td><td>Severe Storm</td><td>1956-05-21 to 1956-05-21</td></tr>
+<tr><td>1956-03-15</td><td>51</td><td>DR</td><td>FLOOD</td><td>Flood</td><td>1956-03-15 to 1956-03-15</td></tr>
+<tr><td>1955-08-20</td><td>40</td><td>DR</td><td>FLOODS &amp; RAINS</td><td>Flood</td><td>1955-08-20 to 1955-08-20</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
+<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+</main>
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script></body></html>

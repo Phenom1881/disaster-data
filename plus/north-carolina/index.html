@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>North Carolina State Emergency Actions | DisasterData Plus</title>
-<meta name="description" content="State emergency actions and matched weather-event evidence for North Carolina.">
+<title>North Carolina Weather Emergency Declarations | DisasterData Plus</title>
+<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for North Carolina.">
 <style>
     :root { --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
       --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }
@@ -33,25 +33,232 @@
     th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }
     th { background:var(--blue); color:white; }
+    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
+      font:inherit; font-weight:700; text-align:left; cursor:pointer; }
     td a { color:#175c9c; } .empty { color:var(--muted); font-style:italic; }
     .actions { overflow-x:auto; }
+    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
+    .layer h2 { margin-top:.5rem; }
+    .primary { background:white; border:1px solid var(--line); border-radius:12px;
+      padding:1rem; }
+    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
+      margin:.5rem 0; }
+    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:700; }
+    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid #aebbc6;
+      border-radius:7px; font:inherit; }
+    details.layer { background:white; border:1px solid var(--line); border-radius:10px;
+      padding:0; overflow:hidden; }
+    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
+      padding:1rem; cursor:pointer; color:var(--navy); font-weight:800; }
+    details.layer[open] > summary { border-bottom:1px solid var(--line); }
+    details.layer > .details-body { padding:0 1rem 1rem; }
+    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      main { padding:1.25rem .75rem 3rem; }
+      .table-tools { display:block; }
+      .table-tools label { display:block; margin-bottom:.25rem; }
+      .table-search { width:100%; }
+    }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }
     </style></head>
 <body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / North Carolina</header>
 <main><div class="eyebrow">DisasterData Plus</div>
-<h1>North Carolina: State Emergency Actions</h1>
-<p class="lede">State-issued emergency actions and weather-event evidence supplementing the federal FEMA declaration record.</p>
-<div class="notice"><strong>Coverage:</strong> State-source adapter not yet implemented. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<h1>North Carolina: Weather Emergency Declarations</h1>
+<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
+<div class="notice"><strong>Coverage:</strong> 2017-01-06-present structured Governor archive; North Carolina Register backfill pending. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>0</strong>state-action records loaded</div>
-  <div class="metric"><strong>0</strong>NOAA event-match rows</div>
-  <div class="metric"><strong>0</strong>severity-area rows</div>
+  <div class="metric"><strong>85</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>15</strong>original state weather declarations</div>
+  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/north-carolina.html">Federal declaration overview</a> · Official source to be identified</p>
-<h2>State-action inventory</h2>
-<div class="actions"><table><thead><tr><th>Date</th><th>Number</th><th>Action</th><th>Type</th><th>Governor</th></tr></thead>
-<tbody><tr><td colspan="5" class="empty">No verified state-action records have been loaded for this state yet.</td></tr></tbody></table></div>
-<p class="note">The inventory is limited by the coverage statement above. NOAA proximity matches identify potentially related observed events; they do not independently prove operational impacts or legal causation.</p>
-<footer>Generated 2026-09-03 · DisasterData.IO · State records remain subject to source verification.</footer>
-</main></body></html>
+<p><a href="../../states/north-carolina.html">Federal declaration overview</a> &middot; <a href="https://governor.nc.gov/news/executive-orders">Official state source</a></p>
+
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-01-29</td><td>32</td><td><a href="https://governor.nc.gov/documents/executive-order-no-32-declaration-state-emergency/open">Declaration of a State of Emergency</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2026-01-21</td><td>31</td><td><a href="https://governor.nc.gov/executive-order-no-31-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-09-27</td><td>26</td><td><a href="https://governor.nc.gov/executive-order-26-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-08-19</td><td>20</td><td><a href="https://governor.nc.gov/executive-order-no-20-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-08-05</td><td>19</td><td><a href="https://governor.nc.gov/executive-order-19-disaster-declaration-individual-assistance-durham-orange-and-surrounding-counties/open">Disaster Declaration for Individual Assistance for Durham, Orange, and Surrounding Counties</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-07-16</td><td>18</td><td><a href="https://governor.nc.gov/executive-order-18-declaration-state-emergency/open">Declaration of a State of Emergency</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-03-26</td><td>12</td><td><a href="https://governor.nc.gov/executive-order-no-12-declaration-state-emergency-0/open">Declaration Of A State Of Emergency</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-02-18</td><td>9</td><td><a href="https://governor.nc.gov/executive-order-9-declaration-state-emergency-and-temporary-suspension-motor-vehicle-regulations/open">Declaration Of A State Of Emergency And Temporary Suspension Of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2025-01-09</td><td>7</td><td><a href="https://governor.nc.gov/gov-stein-executive-order-7/open">EO7-WinterStorm-StateofEmergency_0.pdf PDF • 3.41 MB - January 09, 2025 Executive Order January 9, 2025 Executive Order No. 7 Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
+<tr><td>2024-06-18</td><td>309</td><td><a href="https://governor.nc.gov/executive-order-no-309/open">EO309-DisasterDeclarationWestJefferson.pdf PDF • 603.12 KB - June 18, 2024 Executive Order June 18, 2024 EXECUTIVE ORDER NO. 309 DISASTER DECLARATION FOR THE TOWN OF WEST JEFFERSON IN ASHE COUNTY NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td></tr>
+<tr><td>2019-08-31</td><td>101</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-101-declaration-state-emergency/open">Executive Order No. 101: Declaration of State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td></tr>
+<tr><td>2018-12-07</td><td>83</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-83-declaration-state-emergency/open">EXECUTIVE ORDER NO. 83: DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
+<tr><td>2018-10-10</td><td>74</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-74-declaration-state-emergency/open">Executive Order No. 74: Declaration of a State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td></tr>
+<tr><td>2017-08-31</td><td>19</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-19-declaration-state-emergency-order-suspend-motor-vehicle-regulations-ensure-0/open">Executive Order No. 19: Declaration of State of Emergency In Order to Suspend Motor Vehicle Regulations to Ensure Adequate Fuel Supplies in the State of North Carolina and to Support Relief Efforts for Hurricane Harvey</a></td><td>declaration</td><td>Roy Cooper</td></tr>
+<tr><td>2017-01-06</td><td>1</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-1-governor-cooper-declares-state-emergency-due-winter-storm/open">Executive Order No. 1:  Governor Cooper Declares State of Emergency Due to Winter Storm</a></td><td>declaration</td><td>Roy Cooper</td></tr></tbody></table></div>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-01-29 &middot; Declaration of a State of Emergency</td><td>0</td><td>None matched</td><td>3637</td></tr>
+<tr><td>2026-01-21 &middot; Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</td><td>0</td><td>None matched</td><td>3637</td></tr>
+<tr><td>2025-09-27 &middot; Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-08-19 &middot; Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-08-05 &middot; Disaster Declaration for Individual Assistance for Durham, Orange, and Surrounding Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-07-16 &middot; Declaration of a State of Emergency</td><td>0</td><td>None matched</td><td>4889</td></tr>
+<tr><td>2025-03-26 &middot; Declaration Of A State Of Emergency</td><td>0</td><td>None matched</td><td>5578</td></tr>
+<tr><td>2025-02-18 &middot; Declaration Of A State Of Emergency And Temporary Suspension Of Motor Vehicle Regulations</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2025-01-09 &middot; EO7-WinterStorm-StateofEmergency_0.pdf PDF • 3.41 MB - January 09, 2025 Executive Order January 9, 2025 Executive Order No. 7 Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-06-18 &middot; EO309-DisasterDeclarationWestJefferson.pdf PDF • 603.12 KB - June 18, 2024 Executive Order June 18, 2024 EXECUTIVE ORDER NO. 309 DISASTER DECLARATION FOR THE TOWN OF WEST JEFFERSON IN ASHE COUNTY NORTH CAROLINA</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-08-31 &middot; Executive Order No. 101: Declaration of State of Emergency</td><td>0</td><td>None matched</td><td>4465</td></tr>
+<tr><td>2018-12-07 &middot; EXECUTIVE ORDER NO. 83: DECLARATION OF A STATE OF EMERGENCY</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-10-10 &middot; Executive Order No. 74: Declaration of a State of Emergency</td><td>0</td><td>None matched</td><td>4412</td></tr>
+<tr><td>2017-08-31 &middot; Executive Order No. 19: Declaration of State of Emergency In Order to Suspend Motor Vehicle Regulations to Ensure Adequate Fuel Supplies in the State of North Carolina and to Support Relief Efforts for Hurricane Harvey</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-01-06 &middot; Executive Order No. 1:  Governor Cooper Declares State of Emergency Due to Winter Storm</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr></tbody></table></div>
+</div>
+
+<details class="layer">
+<summary><span>Federal FEMA declarations</span><span class="count-badge">85 records</span></summary>
+<div class="details-body"><p class="note">DR, EM, and FM declarations for North Carolina from the site's national FEMA dataset.</p>
+<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-01-24</td><td>3637</td><td>EM</td><td>SEVERE WINTER STORM</td><td>Winter Storm</td><td>2026-01-21 to 2026-01-27</td></tr>
+<tr><td>2025-09-11</td><td>4889</td><td>DR</td><td>TROPICAL DEPRESSION CHANTAL</td><td>Tropical Depression</td><td>2025-07-06 to 2025-07-07</td></tr>
+<tr><td>2025-05-03</td><td>5582</td><td>FM</td><td>SUNSET DRIVE FIRE</td><td>Fire</td><td>2025-05-02 to </td></tr>
+<tr><td>2025-04-20</td><td>5580</td><td>FM</td><td>SAM DAVIS ROAD FIRE</td><td>Fire</td><td>2025-04-18 to </td></tr>
+<tr><td>2025-03-27</td><td>5578</td><td>FM</td><td>TABLE ROCK FIRE</td><td>Fire</td><td>2025-03-26 to </td></tr>
+<tr><td>2025-03-26</td><td>5577</td><td>FM</td><td>ALARKA FIRE</td><td>Fire</td><td>2025-03-25 to </td></tr>
+<tr><td>2025-03-22</td><td>5574</td><td>FM</td><td>BLACK COVE FIRE COMPLEX</td><td>Fire</td><td>2025-03-19 to </td></tr>
+<tr><td>2024-10-19</td><td>4837</td><td>DR</td><td>POTENTIAL TROPICAL CYCLONE EIGHT</td><td>Tropical Storm</td><td>2024-09-16 to 2024-09-20</td></tr>
+<tr><td>2024-09-28</td><td>4827</td><td>DR</td><td>TROPICAL STORM HELENE</td><td>Tropical Storm</td><td>2024-09-25 to 2024-12-18</td></tr>
+<tr><td>2024-09-26</td><td>3617</td><td>EM</td><td>HURRICANE HELENE</td><td>Tropical Storm</td><td>2024-09-25 to 2024-12-18</td></tr>
+<tr><td>2024-08-06</td><td>3608</td><td>EM</td><td>TROPICAL STORM DEBBY</td><td>Tropical Storm</td><td>2024-08-05 to 2024-08-19</td></tr>
+<tr><td>2022-10-01</td><td>3586</td><td>EM</td><td>HURRICANE IAN</td><td>Hurricane</td><td>2022-09-28 to 2022-10-04</td></tr>
+<tr><td>2021-09-08</td><td>4617</td><td>DR</td><td>REMNANTS OF TROPICAL STORM FRED</td><td>Hurricane</td><td>2021-08-16 to 2021-08-18</td></tr>
+<tr><td>2021-03-03</td><td>4588</td><td>DR</td><td>TROPICAL STORM ETA</td><td>Severe Storm</td><td>2020-11-12 to 2020-11-15</td></tr>
+<tr><td>2020-10-14</td><td>4568</td><td>DR</td><td>HURRICANE ISAIAS</td><td>Hurricane</td><td>2020-07-31 to 2020-08-04</td></tr>
+<tr><td>2020-08-02</td><td>3534</td><td>EM</td><td>HURRICANE ISAIAS</td><td>Hurricane</td><td>2020-07-31 to 2020-08-04</td></tr>
+<tr><td>2020-05-08</td><td>4543</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2020-02-06 to 2020-02-19</td></tr>
+<tr><td>2020-03-25</td><td>4487</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2020-03-13</td><td>3471</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
+<tr><td>2019-10-04</td><td>4465</td><td>DR</td><td>HURRICANE DORIAN</td><td>Hurricane</td><td>2019-09-01 to 2019-09-09</td></tr>
+<tr><td>2019-09-03</td><td>3423</td><td>EM</td><td>HURRICANE DORIAN</td><td>Hurricane</td><td>2019-09-01 to 2019-09-09</td></tr>
+<tr><td>2019-01-31</td><td>4412</td><td>DR</td><td>TROPICAL STORM MICHAEL</td><td>Hurricane</td><td>2018-10-10 to 2018-10-12</td></tr>
+<tr><td>2018-09-14</td><td>4393</td><td>DR</td><td>HURRICANE FLORENCE</td><td>Hurricane</td><td>2018-09-07 to 2018-09-29</td></tr>
+<tr><td>2018-09-10</td><td>3401</td><td>EM</td><td>HURRICANE FLORENCE</td><td>Hurricane</td><td>2018-09-07 to 2018-09-29</td></tr>
+<tr><td>2018-05-08</td><td>4364</td><td>DR</td><td>TORNADO AND SEVERE STORMS</td><td>Severe Storm</td><td>2018-04-15 to 2018-04-15</td></tr>
+<tr><td>2016-11-19</td><td>5164</td><td>FM</td><td>CHESTNUT KNOB FIRE</td><td>Fire</td><td>2016-11-19 to 2016-12-04</td></tr>
+<tr><td>2016-11-11</td><td>5161</td><td>FM</td><td>PARTY ROCK FIRE</td><td>Fire</td><td>2016-11-11 to 2016-11-29</td></tr>
+<tr><td>2016-10-10</td><td>4285</td><td>DR</td><td>HURRICANE MATTHEW</td><td>Hurricane</td><td>2016-10-04 to 2016-10-24</td></tr>
+<tr><td>2016-10-07</td><td>3380</td><td>EM</td><td>HURRICANE MATTHEW</td><td>Hurricane</td><td>2016-10-04 to 2016-10-24</td></tr>
+<tr><td>2014-03-31</td><td>4167</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Severe Ice Storm</td><td>2014-03-06 to 2014-03-07</td></tr>
+<tr><td>2013-10-29</td><td>4153</td><td>DR</td><td>SEVERE STORMS, FLOODING, LANDSLIDES, MUDSLIDES</td><td>Flood</td><td>2013-07-27 to 2013-07-27</td></tr>
+<tr><td>2013-09-25</td><td>4146</td><td>DR</td><td>SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDES</td><td>Flood</td><td>2013-07-03 to 2013-07-13</td></tr>
+<tr><td>2013-03-01</td><td>4103</td><td>DR</td><td>SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDES</td><td>Mud/Landslide</td><td>2013-01-14 to 2013-01-17</td></tr>
+<tr><td>2011-08-31</td><td>4019</td><td>DR</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-25 to 2011-09-01</td></tr>
+<tr><td>2011-08-25</td><td>3327</td><td>EM</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-25 to 2011-09-01</td></tr>
+<tr><td>2011-07-04</td><td>2936</td><td>FM</td><td>SIMMONS ROAD FIRE</td><td>Fire</td><td>2011-07-04 to </td></tr>
+<tr><td>2011-04-19</td><td>1969</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2011-04-16 to 2011-04-16</td></tr>
+<tr><td>2010-10-14</td><td>1942</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2010-09-27 to 2010-10-01</td></tr>
+<tr><td>2010-09-01</td><td>3314</td><td>EM</td><td>HURRICANE EARL</td><td>Hurricane</td><td>2010-09-01 to 2010-09-04</td></tr>
+<tr><td>2010-02-02</td><td>1871</td><td>DR</td><td>SEVERE WINTER STORMS AND FLOODING</td><td>Severe Storm</td><td>2009-12-18 to 2009-12-25</td></tr>
+<tr><td>2008-10-08</td><td>1801</td><td>DR</td><td>TROPICAL STORM HANNA</td><td>Severe Storm</td><td>2008-09-04 to 2008-09-15</td></tr>
+<tr><td>2008-06-13</td><td>2773</td><td>FM</td><td>EVANS ROAD FIRE</td><td>Fire</td><td>2008-06-13 to </td></tr>
+<tr><td>2005-10-07</td><td>1608</td><td>DR</td><td>HURRICANE OPHELIA</td><td>Hurricane</td><td>2005-09-11 to 2005-09-17</td></tr>
+<tr><td>2005-09-14</td><td>3254</td><td>EM</td><td>HURRICANE OPHELIA</td><td>Hurricane</td><td>2005-09-11 to 2005-09-17</td></tr>
+<tr><td>2005-09-05</td><td>3222</td><td>EM</td><td>HURRICANE KATRINA EVACUATION</td><td>Hurricane</td><td>2005-08-29 to 2005-10-01</td></tr>
+<tr><td>2004-09-18</td><td>1553</td><td>DR</td><td>HURRICANE IVAN</td><td>Hurricane</td><td>2004-09-16 to 2004-09-23</td></tr>
+<tr><td>2004-09-10</td><td>1546</td><td>DR</td><td>TROPICAL STORM FRANCES</td><td>Hurricane</td><td>2004-09-07 to 2004-09-12</td></tr>
+<tr><td>2003-09-18</td><td>1490</td><td>DR</td><td>HURRICANE ISABEL</td><td>Hurricane</td><td>2003-09-18 to 2003-09-26</td></tr>
+<tr><td>2003-03-27</td><td>1457</td><td>DR</td><td>ICE STORM</td><td>Severe Ice Storm</td><td>2003-02-27 to 2003-02-28</td></tr>
+<tr><td>2002-12-12</td><td>1448</td><td>DR</td><td>SEVERE ICE STORM</td><td>Severe Ice Storm</td><td>2002-12-04 to 2002-12-06</td></tr>
+<tr><td>2000-01-31</td><td>1312</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Severe Storm</td><td>2000-01-24 to 2000-02-01</td></tr>
+<tr><td>1999-09-16</td><td>1292</td><td>DR</td><td>HURRICANE FLOYD MAJOR DISASTER DECLARATIONS</td><td>Hurricane</td><td>1999-09-15 to 1999-11-02</td></tr>
+<tr><td>1999-09-15</td><td>3146</td><td>EM</td><td>HURRICANE FLOYD EMERGENCY DECLARATIONS</td><td>Hurricane</td><td>1999-09-15 to 1999-10-04</td></tr>
+<tr><td>1999-09-09</td><td>1291</td><td>DR</td><td>HURRICANE DENNIS</td><td>Hurricane</td><td>1999-08-29 to 1999-09-11</td></tr>
+<tr><td>1999-09-01</td><td>3141</td><td>EM</td><td>HURRICANE DENNIS</td><td>Hurricane</td><td>1999-08-29 to 1999-09-11</td></tr>
+<tr><td>1998-08-27</td><td>1240</td><td>DR</td><td>HURRICANE BONNIE</td><td>Hurricane</td><td>1998-08-20 to 1998-09-01</td></tr>
+<tr><td>1998-03-22</td><td>1211</td><td>DR</td><td>SEVERE STORMS TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>1998-03-20 to 1998-04-01</td></tr>
+<tr><td>1998-01-15</td><td>1200</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1998-01-07 to 1998-02-12</td></tr>
+<tr><td>1996-09-06</td><td>1134</td><td>DR</td><td>HURRICANE FRAN</td><td>Hurricane</td><td>1996-09-05 to 1996-10-21</td></tr>
+<tr><td>1996-07-18</td><td>1127</td><td>DR</td><td>HURRICANE BERTHA</td><td>Hurricane</td><td>1996-07-10 to 1996-07-13</td></tr>
+<tr><td>1996-02-23</td><td>1103</td><td>DR</td><td>WINTER STORM</td><td>Snowstorm</td><td>1996-02-02 to 1996-02-09</td></tr>
+<tr><td>1996-01-13</td><td>1087</td><td>DR</td><td>BLIZZARD OF 96</td><td>Snowstorm</td><td>1996-01-06 to 1996-01-12</td></tr>
+<tr><td>1995-10-23</td><td>1073</td><td>DR</td><td>SEVERE STORMS, FLOODING, HIGH WINDS</td><td>Flood</td><td>1995-10-04 to 1995-10-06</td></tr>
+<tr><td>1993-09-10</td><td>1003</td><td>DR</td><td>HURRICANE EMILY</td><td>Hurricane</td><td>1993-08-31 to 1993-08-31</td></tr>
+<tr><td>1993-03-17</td><td>3110</td><td>EM</td><td>SEVERE SNOWFALL &amp; WINTER STORM</td><td>Snowstorm</td><td>1993-03-13 to 1993-03-17</td></tr>
+<tr><td>1989-09-25</td><td>844</td><td>DR</td><td>HURRICANE HUGO</td><td>Hurricane</td><td>1989-09-21 to 1989-09-22</td></tr>
+<tr><td>1989-05-17</td><td>827</td><td>DR</td><td>TORNADOES</td><td>Tornado</td><td>1989-05-05 to 1989-05-06</td></tr>
+<tr><td>1988-12-02</td><td>818</td><td>DR</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1988-11-28 to 1988-11-28</td></tr>
+<tr><td>1986-05-10</td><td>2059</td><td>FM</td><td>TOPSAIL FIRE</td><td>Fire</td><td>1986-05-10 to 1986-05-10</td></tr>
+<tr><td>1984-09-21</td><td>724</td><td>DR</td><td>HURRICANE DIANA</td><td>Hurricane</td><td>1984-09-11 to 1984-09-11</td></tr>
+<tr><td>1984-03-30</td><td>699</td><td>DR</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1984-03-28 to 1984-03-29</td></tr>
+<tr><td>1979-09-29</td><td>605</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1979-09-29 to 1979-09-29</td></tr>
+<tr><td>1977-11-09</td><td>542</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1977-11-09 to 1977-11-09</td></tr>
+<tr><td>1977-08-11</td><td>3049</td><td>EM</td><td>DROUGHT</td><td>Drought</td><td>1977-08-11 to 1977-08-11</td></tr>
+<tr><td>1977-03-02</td><td>3033</td><td>EM</td><td>DROUGHT &amp; FREEZING</td><td>Snowstorm</td><td>1977-03-02 to 1977-03-02</td></tr>
+<tr><td>1974-04-12</td><td>428</td><td>DR</td><td>TORNADOES</td><td>Tornado</td><td>1974-04-12 to 1974-04-12</td></tr>
+<tr><td>1973-06-25</td><td>394</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1973-06-25 to 1973-06-25</td></tr>
+<tr><td>1968-02-10</td><td>234</td><td>DR</td><td>SEVERE ICE STORM</td><td>Severe Ice Storm</td><td>1968-02-10 to 1968-02-10</td></tr>
+<tr><td>1964-10-13</td><td>179</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1964-10-13 to 1964-10-13</td></tr>
+<tr><td>1962-03-16</td><td>130</td><td>DR</td><td>SEVERE STORM, HIGH TIDES &amp; FLOODING</td><td>Flood</td><td>1962-03-16 to 1962-03-16</td></tr>
+<tr><td>1960-09-16</td><td>107</td><td>DR</td><td>HURRICANE DONNA</td><td>Hurricane</td><td>1960-09-16 to 1960-09-16</td></tr>
+<tr><td>1958-10-01</td><td>87</td><td>DR</td><td>HURRICANE &amp; SEVERE STORM</td><td>Hurricane</td><td>1958-10-01 to 1958-10-01</td></tr>
+<tr><td>1956-04-24</td><td>56</td><td>DR</td><td>SEVERE STORM</td><td>Severe Storm</td><td>1956-04-24 to 1956-04-24</td></tr>
+<tr><td>1955-08-13</td><td>37</td><td>DR</td><td>HURRICANES</td><td>Hurricane</td><td>1955-08-13 to 1955-08-13</td></tr>
+<tr><td>1954-10-17</td><td>28</td><td>DR</td><td>HURRICANE</td><td>Hurricane</td><td>1954-10-17 to 1954-10-17</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer">
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
+<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
+<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
+<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
+</details>
+
+<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+</div></details>
+<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+</main>
+<script>
+document.querySelectorAll('.table-search').forEach((input) => {
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    const table = document.getElementById(input.dataset.table);
+    if (!table) return;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+});
+
+document.querySelectorAll('table.sortable').forEach((table) => {
+  table.querySelectorAll('.sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const column = Number(button.dataset.column);
+      const ascending = button.dataset.direction !== 'asc';
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      rows.sort((left, right) => {
+        const a = left.cells[column]?.textContent.trim() || '';
+        const b = right.cells[column]?.textContent.trim() || '';
+        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+      });
+      if (!ascending) rows.reverse();
+      rows.forEach((row) => body.appendChild(row));
+      table.querySelectorAll('.sort-button').forEach((other) => {
+        delete other.dataset.direction;
+        other.closest('th').removeAttribute('aria-sort');
+        other.querySelector('span').textContent = '↕';
+      });
+      button.dataset.direction = ascending ? 'asc' : 'desc';
+      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+      button.querySelector('span').textContent = ascending ? '↑' : '↓';
+    });
+  });
+});
+</script></body></html>
