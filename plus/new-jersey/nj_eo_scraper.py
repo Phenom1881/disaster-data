@@ -63,10 +63,26 @@ were found and patched here:
   - structured_archive_coverage_start corrected to 1990-01-18 (Florio EO 1's
     own text: "the 18th day of January", 1990), not 1990-01-16.
 
-These fixes have not yet been re-run against the live site by anyone in
-this thread. Re-validate against the same known cases (Florio EO 44
-terminates EO 37; EO 48 terminates EO 46; EO 76 terminates EOs 73/74/75)
-before trusting this version's output.
+ROUND 2 PATCH (2026-09-04, second live-validation pass): two bugs remained
+after round 1 and were fixed here:
+  - The appendix filter checked the DESCRIPTION for the word "appendix",
+    which incorrectly dropped real orders that merely mention an appendix
+    in their substantive text (Murphy EO 159/170/178/275, Christie EO 47),
+    while genuine attachment rows (Sherrill "EO 3 Appendix A", Murphy "2A")
+    still got captured under the base order's number and silently replaced
+    its real link. Fixed by checking only the first-cell label and the
+    linked document URL, and by skipping a detected attachment entirely
+    rather than adding it to seen_numbers.
+  - Relationship deduplication only ran WITHIN a single order's extraction
+    call, so the same pair found from two different orders' text (EO 46's
+    "terminated by EO 48" banner and EO 48's own "terminates EO 46"/
+    "rescinds EO 46" text) still produced duplicate rows - and "rescinds"
+    vs "terminates" as different relationship_type values meant even a
+    single-order dedup pass couldn't catch it. Fixed by (a) normalizing
+    "rescinds" into "terminates" at extraction time and (b) adding a
+    dedupe_relationships() pass that runs once on the FULL combined list
+    in main(), not per-order.
+Not yet re-validated against the live site after this round of fixes.
 
 Design choices, matching the existing codebase conventions:
   - Runs standalone or via new_jersey.py's collect(), same pattern as
@@ -307,10 +323,17 @@ def _extract_order_rows(soup: BeautifulSoup, base_url: str):
     across 60+ years of administrations, so this walks table rows
     generically rather than assuming a fixed column count or table id.
 
-    Fix #4: skip appendix rows and dedupe by order_number within this
-    page/table. Earlier this counted "EO 3 Appendix A" as its own order and
-    let a duplicated EO 282 row through, inflating administration counts
-    above their real order totals."""
+    Fix #4 (round 2): the first patch's `re.search(r"appendix", ...)`
+    against the DESCRIPTION was overbroad - it dropped real orders whose
+    substantive text merely mentions an appendix (Murphy EO 159/170/178/275,
+    Christie EO 47), while an attachment whose label IS an appendix
+    (Sherrill "EO 3 Appendix A", Murphy "2A") still got captured under the
+    base order's number, silently replacing the real order's link with the
+    attachment's. Now only the first-cell label and the linked document
+    URL are checked for "appendix" - never the description - and a
+    detected attachment row is skipped entirely rather than added to
+    seen_numbers, so the base order (parsed later or earlier in table
+    order) is retained rather than crowded out."""
     results = []
     seen_numbers: set[str] = set()
     for table in soup.find_all("table"):
@@ -321,7 +344,12 @@ def _extract_order_rows(soup: BeautifulSoup, base_url: str):
             first_cell_text = cells[0].get_text(strip=True)
             description = cells[1].get_text(" ", strip=True) if len(cells) > 1 else ""
 
-            if re.search(r"appendix", first_cell_text, re.I) or re.search(r"appendix", description, re.I):
+            link_tag = cells[0].find("a", href=True) or (
+                cells[1].find("a", href=True) if len(cells) > 1 else None
+            )
+            link_href = link_tag["href"] if link_tag else ""
+
+            if re.search(r"appendix", first_cell_text, re.I) or re.search(r"appendix", link_href, re.I):
                 continue
 
             number_match = re.search(r"\d+[A-Za-z]?", first_cell_text)
@@ -332,12 +360,9 @@ def _extract_order_rows(soup: BeautifulSoup, base_url: str):
                 continue
             seen_numbers.add(order_number)
 
-            link_tag = cells[0].find("a", href=True) or (
-                cells[1].find("a", href=True) if len(cells) > 1 else None
-            )
             if not link_tag:
                 continue
-            doc_url = requests.compat.urljoin(base_url, link_tag["href"])
+            doc_url = requests.compat.urljoin(base_url, link_href)
 
             date_cell_text = cells[2].get_text(strip=True) if len(cells) > 2 else None
             date_issued = _normalize_date(date_cell_text) if date_cell_text else None
@@ -475,21 +500,50 @@ def extract_relationships(order: NJOrder) -> list[dict]:
                 for target_number in numbers:
                     if target_number == order.order_number:
                         continue
+                    # Fix (round 2, part b): normalize "rescinds" into
+                    # "terminates" at creation time. Rescind and terminate
+                    # both end an emergency; keeping them as separate
+                    # relationship_type values was why EO 48 -> EO 46
+                    # survived local dedup as two rows (one "terminates"
+                    # from the archive banner, one "rescinds" from EO 48's
+                    # own body) even though they describe the same fact.
+                    # The original wording is preserved in relationship_text
+                    # for anyone reviewing the extraction later.
+                    stored_type = "terminates" if rel_type == "rescinds" else rel_type
                     src_id = order.stable_id
                     tgt_id = f"NJ-{_gov_code(order)}-EO-{target_number}"
-                    key = (src_id, tgt_id, rel_type)
+                    key = (src_id, tgt_id, stored_type)
                     if key in seen:
                         continue
                     seen.add(key)
                     relationships.append({
                         "source_order_id": src_id,
                         "target_order_id": tgt_id,
-                        "relationship_type": rel_type,
+                        "relationship_type": stored_type,
                         "relationship_text": match.group(0).strip(),
                         "relationship_source": source_field,
                         "confidence": "medium",
                     })
     return relationships
+
+
+def dedupe_relationships(rows):
+    """Global dedup across every order's extracted relationships, keyed by
+    (source, target, type). Fix (round 2): the first patch only deduped
+    WITHIN a single call to extract_relationships(), so the same pair
+    extracted from two different orders' text (e.g. EO 46's "terminated by
+    EO 48" banner AND EO 48's own "terminates EO 46" description) still
+    produced two rows. This must run once, after combining every order's
+    relationships, not per-order."""
+    seen: set[tuple[str, str, str]] = set()
+    result = []
+    for row in rows:
+        key = (row["source_order_id"], row["target_order_id"], row["relationship_type"])
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(row)
+    return result
 
 
 def _gov_code(order: NJOrder) -> str:
@@ -564,6 +618,10 @@ def write_join_csv(orders: list[NJOrder], path: str) -> None:
 
 
 def apply_termination_end_dates(orders: list[NJOrder], relationships: list[dict]) -> None:
+    # "rescinds" is normalized to "terminates" at extraction time (see
+    # extract_relationships), so checking only "terminates" here is
+    # sufficient - this is not a remaining gap, just a note for anyone
+    # reading this function in isolation.
     by_id = {o.stable_id: o for o in orders}
     for rel in relationships:
         if rel["relationship_type"] != "terminates":
@@ -628,7 +686,8 @@ def main() -> None:
     all_relationships: list[dict] = []
     for order in all_orders:
         all_relationships.extend(extract_relationships(order))
-    print(f"  {len(all_relationships)} relationship(s) extracted")
+    all_relationships = dedupe_relationships(all_relationships)
+    print(f"  {len(all_relationships)} relationship(s) extracted (after global dedup)")
 
     apply_termination_end_dates(all_orders, all_relationships)
 
