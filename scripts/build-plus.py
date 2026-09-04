@@ -581,53 +581,70 @@ document.querySelectorAll('table.sortable').forEach((table) => {
 
 
 def shared_css(prefix: str = "") -> str:
+    """DisasterData.IO's site-wide design tokens, applied to the Plus pages.
+
+    NOTE: these color/type tokens (--paper/--accent/--ember/--ink, Fraunces +
+    Public Sans) were carried over from the live main site. If the main site
+    keeps a single shared stylesheet (e.g. /styles.css) rather than repeating
+    an inline block per generator, point this at that file instead so the
+    Plus pages can never drift from the rest of DisasterData.IO again.
+    """
     return f"""
-    :root {{ --navy:#17365d; --blue:#2f75b5; --pale:#edf4fa;
-      --ink:#17212b; --muted:#5b6773; --line:#d8e1e8; --green:#39734d; }}
+    :root {{
+      --paper:#f6f1e7; --paper-2:#fcfaf3; --paper-3:#f1ead9;
+      --accent:#004c53; --accent-2:#0a6b73; --ember:#c85c2e;
+      --ink:#1d1813; --muted:#6b6255; --line:#e1d8c6;
+    }}
     * {{ box-sizing:border-box; }}
-    body {{ margin:0; color:var(--ink); font:16px/1.55 -apple-system,BlinkMacSystemFont,
-      "Segoe UI",sans-serif; background:#f6f8fa; }}
-    header {{ background:var(--navy); color:white; padding:1rem 1.25rem; }}
-    header a {{ color:white; text-decoration:none; font-weight:700; }}
+    body {{ margin:0; color:var(--ink); background:var(--paper);
+      font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:16px; line-height:1.55; }}
+    h1,h2,h3,.eyebrow {{ font-family:"Fraunces","Georgia",serif; }}
+    a {{ color:var(--accent-2); }}
+    .dd-breadcrumb {{ background:var(--accent); color:var(--paper-2); padding:.85rem 1.25rem;
+      font-size:.9rem; }}
+    .dd-breadcrumb a {{ color:var(--paper-2); text-decoration:none; font-weight:600; }}
+    .dd-breadcrumb a:hover {{ text-decoration:underline; }}
     main {{ max-width:1120px; margin:0 auto; padding:2rem 1.25rem 4rem; }}
-    h1 {{ line-height:1.15; margin:.25rem 0 .75rem; }}
-    h2 {{ margin-top:2rem; }}
-    .eyebrow {{ color:var(--blue); font-weight:800; letter-spacing:.05em;
+    h1 {{ line-height:1.15; margin:.25rem 0 .75rem; font-weight:600; }}
+    h2 {{ margin-top:2rem; font-weight:600; }}
+    .eyebrow {{ color:var(--ember); font-weight:700; letter-spacing:.05em;
       text-transform:uppercase; font-size:.8rem; }}
     .lede,.note {{ color:var(--muted); max-width:820px; }}
-    .notice {{ background:#fff4cc; border-left:5px solid #c49300; padding:1rem;
+    .notice {{ background:var(--paper-3); border-left:5px solid var(--ember); padding:1rem;
       margin:1.25rem 0; }}
     .metrics {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
       gap:1rem; margin:1.5rem 0; }}
-    .metric,.state-card {{ background:white; border:1px solid var(--line);
+    .metric,.state-card {{ background:var(--paper-2); border:1px solid var(--line);
       border-radius:10px; padding:1rem; }}
-    .metric strong {{ display:block; font-size:1.8rem; color:var(--navy); }}
+    .metric strong {{ display:block; font-family:"Fraunces",serif; font-size:1.8rem;
+      color:var(--accent); }}
     .states {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
       gap:.8rem; }}
-    .state-card a {{ color:var(--navy); font-weight:800; text-decoration:none; }}
+    .state-card a {{ color:var(--accent); font-weight:700; text-decoration:none; }}
     .status {{ display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
-      border-radius:99px; background:var(--pale); color:var(--navy); font-size:.78rem; }}
-    table {{ width:100%; border-collapse:collapse; background:white; font-size:.9rem; }}
+      border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }}
+    table {{ width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }}
     th,td {{ padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
       vertical-align:top; }}
-    th {{ background:var(--blue); color:white; }}
+    th {{ background:var(--accent); color:var(--paper-2); font-weight:600; }}
     .sort-button {{ width:100%; border:0; padding:0; color:inherit; background:none;
-      font:inherit; font-weight:700; text-align:left; cursor:pointer; }}
-    td a {{ color:#175c9c; }} .empty {{ color:var(--muted); font-style:italic; }}
+      font:inherit; font-weight:600; text-align:left; cursor:pointer; }}
+    td a {{ color:var(--accent-2); }} .empty {{ color:var(--muted); font-style:italic; }}
     .actions {{ overflow-x:auto; }}
     .layer {{ margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }}
     .layer h2 {{ margin-top:.5rem; }}
-    .primary {{ background:white; border:1px solid var(--line); border-radius:12px;
+    .primary {{ background:var(--paper-2); border:1px solid var(--line); border-radius:12px;
       padding:1rem; }}
     .table-tools {{ display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
       margin:.5rem 0; }}
-    .table-tools label {{ color:var(--muted); font-size:.85rem; font-weight:700; }}
-    .table-search {{ width:min(100%,320px); padding:.55rem .7rem; border:1px solid #aebbc6;
-      border-radius:7px; font:inherit; }}
-    details.layer {{ background:white; border:1px solid var(--line); border-radius:10px;
+    .table-tools label {{ color:var(--muted); font-size:.85rem; font-weight:600; }}
+    .table-search {{ width:min(100%,320px); padding:.55rem .7rem; border:1px solid var(--line);
+      border-radius:7px; font:inherit; background:var(--paper-2); color:var(--ink); }}
+    details.layer {{ background:var(--paper-2); border:1px solid var(--line); border-radius:10px;
       padding:0; overflow:hidden; }}
     details.layer > summary {{ display:flex; justify-content:space-between; gap:1rem;
-      padding:1rem; cursor:pointer; color:var(--navy); font-weight:800; }}
+      padding:1rem; cursor:pointer; color:var(--accent); font-weight:700; }}
     details.layer[open] > summary {{ border-bottom:1px solid var(--line); }}
     details.layer > .details-body {{ padding:0 1rem 1rem; }}
     .count-badge {{ color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }}
@@ -641,6 +658,31 @@ def shared_css(prefix: str = "") -> str:
     footer {{ margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }}
     """
+
+
+def brand_fonts() -> str:
+    """Fraunces + Public Sans, matching the main site's typography.
+
+    Swap this block for the exact font-loading snippet used elsewhere on
+    DisasterData.IO (e.g. a self-hosted @font-face block) if the main site
+    does not load these from Google Fonts, so every page requests fonts the
+    same way.
+    """
+    return (
+        '<link rel="preconnect" href="https://fonts.googleapis.com">'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+        '<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;'
+        '9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" '
+        'rel="stylesheet">'
+    )
+
+
+def brand_header(breadcrumb: str) -> str:
+    """The site's one shared nav (served from /nav.js at the root) plus a
+    Plus-specific breadcrumb underneath it, matching how the rest of the
+    site carries only <script src="/nav.js"></script> and defines no nav of
+    its own."""
+    return f'<script src="/nav.js"></script><nav class="dd-breadcrumb">{breadcrumb}</nav>'
 
 
 def render_state_page(
@@ -659,13 +701,17 @@ def render_state_page(
         if source
         else "Official source to be identified"
     )
+    breadcrumb = (
+        f'<a href="/">DisasterData.IO</a> / <a href="/plus/">Plus</a> / {name}'
+    )
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{name} Weather Emergency Declarations | DisasterData Plus</title>
+<title>Disaster Data | {name} Weather Emergency Declarations</title>
 <meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for {name}.">
+{brand_fonts()}
 <style>{shared_css()}</style></head>
-<body><header><a href="../../">DisasterData.IO</a> / <a href="../">Plus</a> / {name}</header>
+<body>{brand_header(breadcrumb)}
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>{name}: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
@@ -675,7 +721,7 @@ def render_state_page(
   <div class="metric"><strong>{metrics['action_count']:,}</strong>original state weather declarations</div>
   <div class="metric"><strong>{metrics['storm_match_rows']:,}</strong>matched NOAA event rows</div>
 </section>
-<p><a href="../../states/{esc(state['slug'])}.html">Federal declaration overview</a> &middot; {source_link}</p>
+<p><a href="/states/{esc(state['slug'])}.html">Federal declaration overview</a> &middot; {source_link}</p>
 
 <div class="layer primary">
 <h2>State weather declarations</h2>
@@ -725,20 +771,22 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
         coverage = summary["coverage"] if summary else "Not rebuilt in this run"
         cards.append(
             '<article class="state-card">'
-            f'<a href="{esc(state["slug"])}/">{esc(state["name"])}</a>'
+            f'<a href="/plus/{esc(state["slug"])}/">{esc(state["name"])}</a>'
             f'<div>{count:,} original weather declarations</div>'
             f'<span class="status">{esc(coverage)}</span>'
             "</article>"
         )
     loaded = sum(1 for item in summaries if item["metrics"]["action_count"] > 0)
     implemented = sum(1 for state in all_states if state["adapter_status"] == "implemented")
+    breadcrumb = '<a href="/">DisasterData.IO</a> / Plus'
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>State Emergency Evidence | DisasterData Plus</title>
+<title>Disaster Data | State Emergency Evidence</title>
 <meta name="description" content="State emergency actions and observed hazard evidence across the United States.">
+{brand_fonts()}
 <style>{shared_css()}</style></head>
-<body><header><a href="../">DisasterData.IO</a> / Plus</header>
+<body>{brand_header(breadcrumb)}
 <main><div class="eyebrow">DisasterData Plus</div><h1>State emergency evidence</h1>
 <p class="lede">State declarations, executive actions, proclamations, and observed weather evidence supplementing the federal disaster record.</p>
 <div class="notice">Coverage varies by state. A generated page is not evidence that its state-action archive is complete.</div>
