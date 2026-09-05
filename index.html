@@ -1,522 +1,1361 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Disaster Data | New Jersey Weather Emergency Declarations</title>
-<meta name="description" content="Weather emergency declarations, federal disaster records, and matched NOAA/NWS evidence for New Jersey.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Disaster Data | FEMA Disaster Declarations</title>
+<meta name="description" content="Explore every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.">
+<meta property="og:title" content="Disaster Data: FEMA disaster data made navigable, from the national picture to your jurisdiction">
+<meta property="og:description" content="Every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://www.disasterdata.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Disaster Data: federal disaster declarations since FY2000, charted by fiscal year">
+<meta name="twitter:image" content="https://www.disasterdata.io/og-image.png">
+<link rel="canonical" href="https://www.disasterdata.io/">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#f6f1e7">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","@id":"https://www.disasterdata.io/#website","url":"https://www.disasterdata.io/","name":"Disaster Data","alternateName":"DisasterData.IO","description":"Explore every US federal disaster and emergency declaration since FY2000, mapped and ranked by state, hazard, and declaration type. Built from FEMA OpenFEMA data.","publisher":{"@type":"Organization","name":"Disaster Data","url":"https://www.disasterdata.io/"}},{"@context":"https://schema.org","@type":"Dataset","@id":"https://www.disasterdata.io/#dataset","name":"US Federal Disaster and Emergency Declarations, FY2000 to present","description":"Every US federal disaster and emergency declaration since FY2000, one record per unique combination of declaration type (DR, EM, FM), disaster number, and state, with denial records tracked separately. Derived from FEMA OpenFEMA and rebuilt weekly.","url":"https://www.disasterdata.io/","creator":{"@type":"Organization","name":"Disaster Data","url":"https://www.disasterdata.io/"},"isBasedOn":["https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2"],"isAccessibleForFree":true,"temporalCoverage":"1999-10-01/..","spatialCoverage":{"@type":"Place","name":"United States"},"keywords":["FEMA","disaster declarations","emergency management","OpenFEMA","major disaster","fire management assistance","hazard mitigation"]}]</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    :root {
-      --paper:#f6f1e7; --paper-2:#fcfaf3; --paper-3:#f1ead9;
-      --accent:#004c53; --accent-2:#0a6b73; --ember:#c85c2e;
-      --ink:#1d1813; --muted:#6b6255; --line:#e1d8c6;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; color:var(--ink); background:var(--paper);
-      font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      font-size:16px; line-height:1.55; }
-    h1,h2,h3,.eyebrow { font-family:"Fraunces","Georgia",serif; }
-    a { color:var(--accent-2); }
-    .dd-breadcrumb { background:var(--accent); color:var(--paper-2); padding:.85rem 1.25rem;
-      font-size:.9rem; }
-    .dd-breadcrumb a { color:var(--paper-2); text-decoration:none; font-weight:600; }
-    .dd-breadcrumb a:hover { text-decoration:underline; }
-    main { max-width:1120px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-    h1 { line-height:1.15; margin:.25rem 0 .75rem; font-weight:600; }
-    h2 { margin-top:2rem; font-weight:600; }
-    .eyebrow { color:var(--ember); font-weight:700; letter-spacing:.05em;
-      text-transform:uppercase; font-size:.8rem; }
-    .lede,.note { color:var(--muted); max-width:820px; }
-    .notice { background:var(--paper-3); border-left:5px solid var(--ember); padding:1rem;
-      margin:1.25rem 0; }
-    .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:1rem; margin:1.5rem 0; }
-    .metric,.state-card { background:var(--paper-2); border:1px solid var(--line);
-      border-radius:10px; padding:1rem; }
-    .metric strong { display:block; font-family:"Fraunces",serif; font-size:1.8rem;
-      color:var(--accent); }
-    .states { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
-      gap:.8rem; }
-    .state-card a { color:var(--accent); font-weight:700; text-decoration:none; }
-    .status { display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
-      border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }
-    table { width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }
-    th,td { padding:.65rem; border-bottom:1px solid var(--line); text-align:left;
-      vertical-align:top; }
-    th { background:var(--accent); color:var(--paper-2); font-weight:600; }
-    .sort-button { width:100%; border:0; padding:0; color:inherit; background:none;
-      font:inherit; font-weight:600; text-align:left; cursor:pointer; }
-    td a { color:var(--accent-2); } .empty { color:var(--muted); font-style:italic; }
-    .actions { overflow-x:auto; }
-    .layer { margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }
-    .layer h2 { margin-top:.5rem; }
-    .primary { background:var(--paper-2); border:1px solid var(--line); border-radius:12px;
-      padding:1rem; }
-    .table-tools { display:flex; gap:.75rem; align-items:center; justify-content:flex-end;
-      margin:.5rem 0; }
-    .table-tools label { color:var(--muted); font-size:.85rem; font-weight:600; }
-    .table-search { width:min(100%,320px); padding:.55rem .7rem; border:1px solid var(--line);
-      border-radius:7px; font:inherit; background:var(--paper-2); color:var(--ink); }
-    details.layer { background:var(--paper-2); border:1px solid var(--line); border-radius:10px;
-      padding:0; overflow:hidden; }
-    details.layer > summary { display:flex; justify-content:space-between; gap:1rem;
-      padding:1rem; cursor:pointer; color:var(--accent); font-weight:700; }
-    details.layer[open] > summary { border-bottom:1px solid var(--line); }
-    details.layer > .details-body { padding:0 1rem 1rem; }
-    .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
-    [hidden] { display:none !important; }
-    @media (max-width:640px) {
-      main { padding:1.25rem .75rem 3rem; }
-      .table-tools { display:block; }
-      .table-tools label { display:block; margin-bottom:.25rem; }
-      .table-search { width:100%; }
-    }
-    footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
-      color:var(--muted); font-size:.85rem; }
-    </style></head>
-<body><script src="/nav.js"></script><nav class="dd-breadcrumb"><a href="/">DisasterData.IO</a> / <a href="/plus/">Plus</a> / New Jersey</nav>
-<main><div class="eyebrow">DisasterData Plus</div>
-<h1>New Jersey: Weather Emergency Declarations</h1>
-<p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> 1990-present provisional structured coverage; 1962-1989 selectively represented. Absence from this page must not be interpreted as absence of a state emergency.</div>
-<section class="metrics">
-  <div class="metric"><strong>59</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>152</strong>original state weather declarations</div>
-  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
-</section>
-<p><a href="/states/new-jersey.html">Federal declaration overview</a> &middot; <a href="https://www.nj.gov/infobank/eo/">Official state source</a></p>
+:root{
+  color-scheme:light;            /* render in the intended light theme even on dark-mode devices */
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
 
-<div class="layer primary">
-<h2>State weather declarations</h2>
-<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
-<div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-02-25</td><td>15</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-15.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
-<tr><td>2026-02-22</td><td>14</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-14.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
-<tr><td>2026-01-26</td><td>9</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-9.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
-<tr><td>2026-01-24</td><td>8</td><td><a href="https://www.nj.gov/infobank/eo/057sherrill/pdf/EO-8.pdf">Untitled action</a></td><td>declaration</td><td>Sherrill</td></tr>
-<tr><td>2026-01-16</td><td>415</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-415.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-12-30</td><td>410</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-410.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-12-26</td><td>409</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-409.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-12-09</td><td>407</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-407.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-12-01</td><td>406</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-406.pdf">State of Emergency Declared Across Hunterdon, Morris, Passaic, Sussex, and Warren Counties</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-10-16</td><td>400</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-400.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-10-11</td><td>399</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-399.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-08-27</td><td>397</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-397.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-08-21</td><td>396</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-396.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-08-08</td><td>395</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-395.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-07-31</td><td>394</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-394.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-07-14</td><td>392</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-392.pdf">Declares a State of Emergency across all 21 counties in New Jersey due to flash flooding and severe thunderstorms statewide</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-05-13</td><td>388</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-388.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-04-23</td><td>387</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-387.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-01-27</td><td>380</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-380.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-01-18</td><td>378</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-378.pdf">Declares that New Jersey will enter a State of Emergency effective at 8:00 a.m. on Sunday, January 19 in anticipation of significant winter weather.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2025-01-05</td><td>374</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-374.pdf">The Governor has declared State of Emergency  to allocate more resources in preparation of  winter storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2024-08-12</td><td>365</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-365.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2024-08-09</td><td>364</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-364.pdf">Lt. Governor Way announced a State of Emergency effective at 6:00pm on Friday, August 9 in anticipation of severe storms causing hazardous weather conditions including heavy rain, high winds, and flash flooding.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2024-01-08</td><td>350</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-350.pdf">Governor Murphy Declares State of Emergency in Preparation for Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-10-01</td><td>343</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-343.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-09-29</td><td>342</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-342.pdf">Governor Murphy Declares State of Emergency Due to Severe Weather</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-07-16</td><td>336</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-336.pdf">Governor Murphy Declares State of Emergency Due to Severe Storms</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-03-16</td><td>322</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-322.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-03-13</td><td>320</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-320.pdf">Governor Murphy Declares State of Emergency for Five New Jersey Counties in Preparation for Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-02-15</td><td>317</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-317.pdf">Governor Murphy Sign Executive Order Initiating a Process In Partnership With The State’S Hometown Utilities, Key Stakeholders Including Organized Labor, And The New Jersey Board Of Public Utilities (BPU) To Plan For The Future Of The Natural Gas Utility In New Jersey</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-02-15</td><td>316</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-316.pdf">Governor Murphy Signs Executive Order to Target To Install Zero-Carbon-Emission Space Heating And Cooling Systems In 400,000 Homes And 20,000 Commercial Properties And Make 10% Of All Low-To-Moderate Income (LMI) Properties Electrification-Ready By 2030</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2023-02-15</td><td>315</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-315.pdf">Governor Murphy Signs Executive Order to Accelerate Target Of 100% Clean Energy By 2035, Defined As 100% Of The Electricity Sold In The State To Come From Clean Sources Of Electricity By January 1, 2035 Through Clean Energy Market Mechanisms, Paired With Support For A Clean Energy Standard In New Jersey</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2022-02-04</td><td>286</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-286.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2022-01-28</td><td>285</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-285.pdf">Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2022-01-13</td><td>282</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-282.pdf">Governor Murphy Lifts Storm-Related States of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2022-01-06</td><td>279</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-279.pdf">Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2022-01-02</td><td>278</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-278.pdf">Governor Murphy Declares State of Emergency in Atlantic, Burlington, Cape May, Cumberland, and Ocean Counties in Preparation for Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-11-10</td><td>274</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-274.pdf">Governor Murphy Advances Climate Action to Secure New Jersey’s Clean Energy Future</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-11-01</td><td>273</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-273.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-10-25</td><td>272</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-272.pdf">Declares State of Emergency in Preparation for Nor’easter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-09-20</td><td>264</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-264.pdf">Governor Murphy Signs Executive Order Instituting Vaccination or Testing Requirement for All Child Care Center Personnel</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-09-07</td><td>260</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-260.pdf">Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff to Honor Those Who Lost Their Lives to Tropical Storm Ida</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-09-01</td><td>259</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-259.pdf">Governor Murphy Declares State of Emergency in Response to Tropical Storm Ida</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-09-01</td><td>258</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-258.pdf">Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Berkeley Township Beach Patrol Lifeguard Keith Pinto</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-08-06</td><td>251</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-251.pdf">Governor Murphy Announces Indoor Mask Requirement for Beginning of 2021-2022 School Year</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-02-23</td><td>226</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-226.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2021-01-31</td><td>218</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-218.pdf">Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-12-18</td><td>209</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-209.pdf">Governor Murphy Lifts Storm-Related State of Emergency</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-12-16</td><td>208</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-208.pdf">Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-08-13</td><td>176</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-176.pdf">Governor Murphy Lifts State of Emergency Declared in Response to Hurricane Isaias</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-08-13</td><td>175</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-175.pdf">Murphy Administration to Open New Jersey’s Schools For In-Person Instruction Subject to Critical Health and Safety Protocols</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-08-03</td><td>174</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-174.pdf">Governor Murphy Declares State of Emergency in Response to Hurricane Isaias</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-07-17</td><td>166</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-166.pdf">Governor Murphy Signs Executive Order Creating Greater Oversight and Accountability for Federal COVID-19 Resources</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2020-01-27</td><td>100</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-100.pdf">Governor Murphy Unveils Energy Master Plan and Signs Executive Order Directing Sweeping Regulatory Reform to Reduce Emissions and Adapt to Climate Change</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-12-04</td><td>94</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-94.pdf">Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Monsignor Philip Lowery</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-10-29</td><td>89</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-89.pdf">Governor Murphy Signs Executive Order to Establish Statewide Climate Change Resilience Strategy</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-06-24</td><td>71</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-71.pdf">Governor Murphy Lifts State of Emergency in Burlington, Camden, and Gloucester Counties</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-06-20</td><td>70</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-70.pdf">Governor Murphy Declares a State of Emergency in Burlington, Camden, and Gloucester Counties.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-03-04</td><td>60</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-60.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-03-03</td><td>59</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-59.pdf">Declares a state of emergency across all 21 counties in New Jersey, allowing resources to be deployed throughout the state during the duration of the storm.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-02-20</td><td>58</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-58.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-02-20</td><td>57</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-57.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-02-13</td><td>56</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-56.pdf">Governor Murphy Lifts State of Emergency Effective at 8:00 a.m.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-02-11</td><td>55</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-55.pdf">Gov. Phil Murphy declares state of emergency for NJ for Tuesday February 12.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2019-01-18</td><td>50</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-50.pdf">Declares a State of Emergency beginning at noon on Saturday ahead of Winter Storm Harper</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-12-02</td><td>47</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-47.pdf">Governor Murphy Directs the Lowering of U.S. and New Jersey Flags in Honor of President George H.W. Bush</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-09-04</td><td>37</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-37.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-08-14</td><td>33</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-33.pdf">Governor Murphy Signs Executive Order Declaring State of Emergency in Flood-Impacted Counties</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-03-20</td><td>18</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-18.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-03-20</td><td>17</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-17.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-03-13</td><td>15</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-15.pdf">Untitled action</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-02-12</td><td>10</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-10.pdf">Established the Commission on Puerto Rico Relief.</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-01-29</td><td>7</td><td><a href="https://www.nj.gov/infobank/eo/056murphy/pdf/EO-7.pdf">Directs New Jersey to Reenter the Regional Greenhouse Gas Initiative</a></td><td>declaration</td><td>Murphy</td></tr>
-<tr><td>2018-01-16</td><td>222</td><td><a href="https://www.nj.gov/infobank/circular/eocc221.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2018-01-04</td><td>238</td><td><a href="https://www.nj.gov/infobank/circular/eocc238.pdf">Authorizes and empowers the State Authorities to implement the State Emergency Operations Plan and to direct the activation of county and municipal emergency operations plans as necessary. [pdf 22kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2017-09-29</td><td>233</td><td><a href="https://www.nj.gov/infobank/circular/eocc233.pdf">Executive Order No. 233 to designate municipal and county law enforcement and emergency responders as State Emergency Forces, which will be under the control and direction of the State Director of Emergency Management.  These local officials will compliment forces from the New Jersey National Guard, State Police and the State Office of Emergency Management in the safe deployment of critical emergency response resources. [pdf 21kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2017-03-13</td><td>221</td><td><a href="https://www.nj.gov/infobank/circular/eocc222.pdf">Governor Chris Christie declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies in preparation for Winter Storm Stella [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2016-09-03</td><td>214</td><td><a href="https://www.nj.gov/infobank/circular/eocc214.pdf">Governor Chris Christie Declares A State of Emergency For Ocean, Atlantic and Cape May Counties In Preparation For Tropical Storm Hermine [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2016-01-22</td><td>202</td><td><a href="https://www.nj.gov/infobank/circular/eocc202.pdf">Governor Christie Declares State Of Emergency Ahead Of Arrival Of Winter Storm [pdf 17kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2016-01-02</td><td>200</td><td><a href="https://www.nj.gov/infobank/circular/eocc200.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2015-10-01</td><td>186</td><td><a href="https://www.nj.gov/infobank/circular/eocc186.pdf">Governor Chris Christie today declared a state of emergency throughout the state as a result of severe weather conditions expected in the coming days. [pdf 20kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2015-03-04</td><td>175</td><td><a href="https://www.nj.gov/infobank/circular/eocc175.pdf">Authorizes the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2015-01-26</td><td>172</td><td><a href="https://www.nj.gov/infobank/circular/eocc172.pdf">Declares and proclaims that a State of Emergency exists [pdf 18kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2014-11-26</td><td>167</td><td><a href="https://www.nj.gov/infobank/circular/eocc167.pdf">Governor Chris Christie today declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Commuters are asked to use extreme caution while traveling across the state. [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2014-03-02</td><td>153</td><td><a href="https://www.nj.gov/infobank/circular/eocc153.pdf">Governor Chris Christie Declares State of Emergency In Preparation For Monday Morning’s Severe Winter Weather. [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2014-02-12</td><td>150</td><td><a href="https://www.nj.gov/infobank/circular/eocc150.pdf">Governor Chris Christie Declares State of Emergency In Preparation For Wednesday Night’s Severe Winter Weather. [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2014-02-04</td><td>149</td><td><a href="https://www.nj.gov/infobank/circular/eocc149.pdf">Governor Chris Christie Declares State of Emergency In Preparation For Tuesday Night’s Severe Winter Weather. [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2014-02-03</td><td>148</td><td><a href="https://www.nj.gov/infobank/circular/eocc148.pdf">Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies.</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2014-01-02</td><td>146</td><td><a href="https://www.nj.gov/infobank/circular/eocc146.pdf">Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Governor Christie also authorized the closing of state offices on Friday, January 3rd for all non-essential employees. [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2013-09-25</td><td>140</td><td><a href="https://www.nj.gov/infobank/circular/eocc140.pdf">Orders and directs Attorney General To Coordinate Acquisition Of Easements, Creates Office Of Flood Hazard Risk Reduction Measures To Lead Effort [pdf 14kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2013-05-22</td><td>132</td><td><a href="https://www.nj.gov/infobank/circular/eocc132.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2013-02-28</td><td>126</td><td><a href="https://www.nj.gov/infobank/circular/eocc126.pdf">Allows the seasonal alcoholic beverage licensees to begin serving alcohol on March 1, two months ahead of the traditional allowance of May 1. [pdf 18kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2013-02-08</td><td>125</td><td><a href="https://www.nj.gov/infobank/circular/eocc125.pdf">Orders and directs the Office of the State Comptroller to conduct independent review of contracts, transparency measures over expenditures [pdf 20kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-19</td><td>116</td><td><a href="https://www.nj.gov/infobank/circular/eocc116.pdf">The Director of the Division of Taxation, in the Department of the Treasury, is directed to take all appropriate actions to effectuate the fuel agreement between FEMA and the State. [pdf 20kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-16</td><td>113</td><td><a href="https://www.nj.gov/infobank/circular/eocc113.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-05</td><td>105</td><td><a href="https://www.nj.gov/infobank/circular/eocc105.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-05</td><td>111</td><td><a href="https://www.nj.gov/infobank/circular/eocc111.pdf">A local Government Unit has established a snow removal fund [pdf 55kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-03</td><td>109</td><td><a href="https://www.nj.gov/infobank/circular/eocc109.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-03</td><td>110</td><td><a href="https://www.nj.gov/infobank/circular/eocc110.pdf">Suspends restrictions in state law that place limitations on the source of fuel particular and branded fuel retailers are allowed to sell. [pdf 10kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-03</td><td>117</td><td><a href="https://www.nj.gov/infobank/circular/eocc117.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-02</td><td>107</td><td><a href="https://www.nj.gov/infobank/circular/eocc107.pdf">Protect Storm-Impacted New Jersey Homeowners from Higher Insurance Deductiblese [pdf 12kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-02</td><td>108</td><td><a href="https://www.nj.gov/infobank/circular/eocc108.pdf">Declares a limited state of energy emergency with regard to the supply of motor fuel and implementing odd-even rationing for gasoline purchases in 12 New Jersey counties.  [pdf 10kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-02</td><td>114</td><td><a href="https://www.nj.gov/infobank/circular/eocc114.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-11-01</td><td>106</td><td><a href="https://www.nj.gov/infobank/circular/eocc106.pdf">Declares State of Water Emergency, Authorizes DEP to Take Steps to Prevent Water Shortage [pdf 12kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-10-31</td><td>120</td><td><a href="https://www.nj.gov/infobank/circular/eocc120.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-10-27</td><td>104</td><td><a href="https://www.nj.gov/infobank/circular/eocc104.pdf">PROCLAIM that a State of Emergency exists in the State of New Jersey [pdf 15kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2012-08-30</td><td>101</td><td><a href="https://www.nj.gov/infobank/circular/eocc101.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2011-10-30</td><td>80</td><td><a href="https://www.nj.gov/infobank/circular/eocc80.pdf">Declare and proclaim that a State of Emergency exists in the State on New Jersey. [pdf 22kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2011-03-09</td><td>57</td><td><a href="https://www.nj.gov/infobank/circular/eocc57.pdf">Declares a Weather Related State of Emergency [pdf 22kB]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2010-04-23</td><td>23</td><td><a href="https://www.nj.gov/infobank/circular/eocc23.pdf">Orders and directs creation of the Governor’s Passaic River Basin Flood Advisory Commission (“Advisory Commission”). [pdf 23k]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2010-03-14</td><td>18</td><td><a href="https://www.nj.gov/infobank/circular/eocc18.pdf">Declares and proclaims that a State of Emergency exists [pdf 21k]</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2010-02-05</td><td>13</td><td><a href="https://www.nj.gov/infobank/circular/eocc13.pdf">Untitled action</a></td><td>declaration</td><td>Christie</td></tr>
-<tr><td>2009-11-12</td><td>160</td><td><a href="https://www.nj.gov/infobank/circular/eojsc160.htm">Declares a State of Emergency for the counties of Cape May, Atlantic, Cumberland, Burlington, Ocean and Monmouth.</a></td><td>declaration</td><td>Corzine</td></tr>
-<tr><td>2009-03-04</td><td>132</td><td><a href="https://www.nj.gov/infobank/circular/eojsc132.htm">Untitled action</a></td><td>declaration</td><td>Corzine</td></tr>
-<tr><td>2008-08-31</td><td>111</td><td><a href="https://www.nj.gov/infobank/circular/eojsc_codey111.htm">Declares a State of Emergency exists for the specific purpose of activating the Emergency Management Assistance Compact to coordinate multi-state mutual aid to the states of Louisiana and Mississippi</a></td><td>declaration</td><td>Corzine</td></tr>
-<tr><td>2007-04-16</td><td>64</td><td><a href="https://www.nj.gov/infobank/circular/eojsc_codey64.htm">Declares a State of Emergency presently exists throughout the State of New Jersey.</a></td><td>declaration</td><td>Corzine</td></tr>
-<tr><td>2006-06-28</td><td>16</td><td><a href="https://www.nj.gov/infobank/circular/eojsc16.htm">Declares a State of Emergency presently exists throughout the State of New Jersey.</a></td><td>declaration</td><td>Corzine</td></tr>
-<tr><td>2004-09-18</td><td>131</td><td><a href="https://www.nj.gov/infobank/circular/eom131.htm">Declares and proclaims that a State of Emergency exists in the northwestern area of the State of New Jersey and in the counties of Sussex, Warren, Hunterdon and Mercer, and may come to exist in other areas of the State.</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2004-07-13</td><td>121</td><td><a href="https://www.nj.gov/infobank/circular/eom121.htm">Declares that a State of Emergency presently exists in Burlington and Camden Counties.</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2004-02-27</td><td>97</td><td><a href="https://www.nj.gov/infobank/circular/eom97.htm">Establishes a New Jersey Invasive Species Council</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2003-09-18</td><td>68</td><td><a href="https://www.nj.gov/infobank/circular/eom68.htm">Declares a State of Emergency</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2003-02-16</td><td>48</td><td><a href="https://www.nj.gov/infobank/circular/eom48.htm">Declares State of Emergency</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2002-08-14</td><td>27</td><td><a href="https://www.nj.gov/infobank/circular/eom27.htm">Declares a state of emergency in the County of Monmouth</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2002-03-04</td><td>11</td><td><a href="https://www.nj.gov/infobank/circular/eom11.htm">Declares Water Emergency</a></td><td>declaration</td><td>Mcgreevey</td></tr>
-<tr><td>2001-03-04</td><td>124</td><td><a href="https://www.nj.gov/infobank/circular/eod124.htm">Declares State of Emergency Exists in New Jersey</a></td><td>declaration</td><td>Difrancesco</td></tr>
-<tr><td>2000-12-30</td><td>120</td><td><a href="https://www.nj.gov/infobank/circular/eow120.htm">Declares state of emergency exists in New Jersey due to severe weather conditions caused by snow and blizzard conditions, including hazardous road conditions, high tides and coastal flooding.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>2000-08-14</td><td>117</td><td><a href="https://www.nj.gov/infobank/circular/eow117.htm">Declares State of Emergency exists in Morris and Sussex Counties.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1999-09-27</td><td>102</td><td><a href="https://www.nj.gov/infobank/circular/eow102.htm">A state of water emergency, as declared by Executive Order No. 98, due to the drought no longer exists anywhere within the State.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1999-09-15</td><td>101</td><td><a href="https://www.nj.gov/infobank/circular/eow101.htm">Declares a State of Emergency in the State of New Jersey due to flooding from Hurricane Floyd.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1999-08-05</td><td>98</td><td><a href="https://www.nj.gov/infobank/circular/eow98.htm">Declares state of water emergency exists throughout New Jersey</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1998-02-06</td><td>78</td><td><a href="https://www.nj.gov/infobank/circular/eow78.htm">Declares state of emergency existed and presently exists in Atlantic, Cape May, Monmouth and Ocean Counties.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1997-08-22</td><td>73</td><td><a href="https://www.nj.gov/infobank/circular/eow73.htm">Declares State of Emergency due to torrential rainfall and resultant flooding and damages, etc., in counties of Atlantic, Burlington, Cape May, Cumberland and Ocean</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1996-10-18</td><td>61</td><td><a href="https://www.nj.gov/infobank/circular/eow61.htm">Untitled action</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1996-06-28</td><td>53</td><td><a href="https://www.nj.gov/infobank/circular/eow53.htm">Declares state of emergency in Mercer and Burlington counties and calls NJ National Guard to active duty to provide aid and recovery assistance.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1996-01-13</td><td>46</td><td><a href="https://www.nj.gov/infobank/circular/eow46.htm">Untitled action</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1996-01-07</td><td>45</td><td><a href="https://www.nj.gov/infobank/circular/eow45.htm">Untitled action</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1995-09-13</td><td>41</td><td><a href="https://www.nj.gov/infobank/circular/eow41.htm">Declares state of water emergency for counties in northeastern New Jersey. Directs Commissioner of DEP, the Water Emergency Task Force and the Drought Coordinator to take steps necessary to alleviate the water emergency.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1994-01-19</td><td>4</td><td><a href="https://www.nj.gov/infobank/circular/eow4.htm">Declares state of energy emergency for all heat and electrical utilities throughout the state.</a></td><td>declaration</td><td>Whitman</td></tr>
-<tr><td>1994-01-11</td><td>115</td><td><a href="https://www.nj.gov/infobank/circular/eof115.htm">Establishes an interagency State Hazard Mitigation Team whose participants will evaluate hazard mitigation initiatives based on current agency policies and programs.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1993-05-03</td><td>91</td><td><a href="https://www.nj.gov/infobank/circular/eof91.htm">Orders and Directs each State agency and instrumentality shall appoint within 30 days of effective date of this Order, a coordinator from the agency procurement staff who will be responsible for coordinating with the Division of Purchase and Property and the Division of Solid Waste Management, the procurement of recycled products by the agency or instrumentality. The coordinator&#x27;s responsibility is to assure agency compliance with the purchasing goals of this Order, etc.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1993-03-13</td><td>85</td><td><a href="https://www.nj.gov/infobank/circular/eof85.htm">Untitled action</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1992-12-22</td><td>76</td><td><a href="https://www.nj.gov/infobank/circular/eof76.htm">Untitled action</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1992-12-11</td><td>73</td><td><a href="https://www.nj.gov/infobank/circular/eof73.htm">Declares and proclaims a limited State of Emergency presently exists in Atlantic, Burlington, Cape May, Cumberland, Middlesex, Monmouth and Ocean Counties. Orders the New Jersey National Guard to active duty, such members of the National Guard that in the Adjutant General&#x27;s judgment are necessary to provide aid to the above communities. The Superintendent of the Division of State Police is hereby authorized to order evacuations of persons, except for emergency and governmental personnel, etc.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1992-12-11</td><td>75</td><td><a href="https://www.nj.gov/infobank/circular/eof75.htm">Declares an additional State of Emergency in the counties of Camden, Essex, Gloucester, Hunterdon, Mercer, Morris, Passaic, Somerset, Sussex, Union and Warren Counties. See Executive Order No. 73.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1992-10-19</td><td>66</td><td><a href="https://www.nj.gov/infobank/circular/eof66.htm">Creates Chief of Economic Recovery position.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1992-01-04</td><td>50</td><td><a href="https://www.nj.gov/infobank/circular/eof50.htm">Declares State of Emergency due to weather conditions.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1991-12-11</td><td>74</td><td><a href="https://www.nj.gov/infobank/circular/eof73.htm">Declares an additional State of Emergency in the counties of Bergen, Hudson, and Salem. See Executive Order No. 73.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1991-10-31</td><td>46</td><td><a href="https://www.nj.gov/infobank/circular/eof46.htm">Limited State of Emergency in Atlantic, Cape May, Monmouth, and Ocean Counties.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1991-07-19</td><td>37</td><td><a href="https://www.nj.gov/infobank/circular/eof37.htm">Declares State of Emergency in Lacey Township.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1991-06-07</td><td>33</td><td><a href="https://www.nj.gov/infobank/circular/eof33.htm">Gives Department of Treasury title to all State-owned vehicles.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1991-01-10</td><td>23</td><td><a href="https://www.nj.gov/infobank/circular/eof23.htm">Ratifies verbal declaration by Acting Governor John Lynch of a limited State of Emergency.</a></td><td>declaration</td><td>Florio</td></tr>
-<tr><td>1989-10-23</td><td>219</td><td><a href="https://www.nj.gov/infobank/circular/eok219.htm">Order and direct State entities to take steps to reduce emissions of climate-affecting gases</a></td><td>declaration</td><td>Kean</td></tr></tbody></table></div>
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
+.brand{display:flex;align-items:baseline;gap:10px;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);}
+.brand .beta{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;text-transform:uppercase;transform:translateY(-1px);}
+.navlinks{display:flex;align-items:center;gap:4px;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+.navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+@media(max-width:720px){nav{height:auto;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:9px;padding-top:11px;padding-bottom:11px;}.navmeta{display:none;}.navlinks{flex-wrap:wrap;gap:4px;}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,44px);}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:14px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:12px 22px;text-decoration:none;transition:.15s;}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2);}
+.hero-cta{margin-top:clamp(20px,3vw,28px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,68px);line-height:1.02;letter-spacing:-1.5px;max-width:17ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:56ch;margin-top:24px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+.deck-shell{position:sticky;top:60px;z-index:40;background:var(--paper);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+.deck{display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(18px,3vw,36px);padding:16px 0;}
+.fgroup{display:flex;flex-direction:column;gap:9px;}
+.flabel{font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-3);}
+.flabel .v{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:700;}
+.range{position:relative;width:clamp(180px,22vw,240px);height:24px;display:flex;align-items:center;}
+.range .track{position:absolute;left:0;right:0;height:4px;background:var(--rule-2);border-radius:4px;}
+.range .fill{position:absolute;height:4px;background:var(--accent);border-radius:4px;}
+.range input{position:absolute;left:0;width:100%;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none;height:24px;}
+.range input::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:17px;height:17px;border-radius:50%;background:var(--paper-2);border:2px solid var(--accent);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .12s;}
+.range input::-webkit-slider-thumb:active{transform:scale(1.12);}
+.range input::-moz-range-thumb{pointer-events:auto;width:17px;height:17px;border-radius:50%;background:var(--paper-2);border:2px solid var(--accent);cursor:pointer;}
+.pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:20px;padding:5px 12px;cursor:pointer;transition:.13s;white-space:nowrap;}
+.pill:hover{border-color:var(--accent);color:var(--ink);}
+.pill.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.seg{display:inline-flex;align-self:flex-start;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden;background:var(--paper-2);}
+.seg button{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);background:none;border:none;border-right:1px solid var(--rule-2);padding:6px 13px;cursor:pointer;transition:.12s;}
+.seg button:last-child{border-right:none;}
+.seg button.on{background:var(--accent);color:#fff;}
+.seg button:hover:not(.on){background:var(--paper-3);}
+.reset{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-2);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;padding:6px 4px;transition:.12s;}
+.reset:hover{color:var(--accent);}
+.reset svg{width:13px;height:13px;}
+
+section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(24px,3vw,38px);}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
+.shead p{font-size:14px;color:var(--ink-2);max-width:52ch;margin-top:8px;}
+.sortseg,.toggseg{display:inline-flex;border:1px solid var(--rule-2);border-radius:8px;overflow:hidden;background:var(--paper-2);}
+.sortseg button,.toggseg button{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--ink-2);background:none;border:none;border-right:1px solid var(--rule-2);padding:9px 16px;cursor:pointer;transition:.12s;white-space:nowrap;}
+.sortseg button:last-child,.toggseg button:last-child{border-right:none;}
+.sortseg button.on,.toggseg button.on{background:var(--ink);color:var(--paper);}
+.sortseg button:hover:not(.on),.toggseg button:hover:not(.on){background:var(--paper-3);}
+
+.chartcard{position:relative;background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:clamp(18px,3vw,30px);}
+#timeline{width:100%;height:auto;display:block;}
+.hit{cursor:pointer;}
+.tl-cap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12.5px;color:var(--ink-2);}
+.tl-cap b{font-family:var(--serif);font-weight:600;color:var(--ink);font-size:15px;font-variant-numeric:tabular-nums;}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-130%);background:var(--ink);color:var(--paper);font-size:12px;font-weight:500;padding:7px 11px;border-radius:7px;white-space:nowrap;transition:opacity .12s;z-index:5;line-height:1.3;}
+.tip b{font-family:var(--serif);font-weight:600;font-size:14px;}
+.tip::after{content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--ink);}
+
+.tier{margin-bottom:30px;}
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
+.row{display:grid;grid-template-columns:34px 1.6fr 2.4fr auto;align-items:center;gap:16px;padding:11px 10px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .12s,transform .12s;border-radius:6px;}
+.row:hover{background:var(--paper-2);transform:translateX(3px);}
+.rank{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;}
+.sname{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.sname .n{font-weight:600;font-size:15px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sname .meta{font-size:11.5px;color:var(--ink-3);}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:38px;text-align:right;}
+.right{display:flex;align-items:center;gap:14px;}
+.deny{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:54px;}
+.deny .d{font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums;}
+.deny .dl{font-size:9.5px;color:var(--ink-3);letter-spacing:.6px;text-transform:uppercase;}
+.chev{color:var(--rule-2);transition:.13s;}
+.row:hover .chev{color:var(--accent);transform:translateX(2px);}
+@media(max-width:720px){.row{grid-template-columns:26px 1fr;gap:8px 10px;}.bar-wrap{grid-column:1/-1;}.right{grid-column:1/-1;justify-content:space-between;}}
+
+.haz{display:flex;flex-direction:column;gap:11px;}
+.hrow{display:grid;grid-template-columns:130px 1fr 52px;align-items:center;gap:14px;}
+.hrow .hn{font-size:13.5px;font-weight:500;text-align:right;}
+.hrow .ht{height:22px;background:var(--paper-3);border-radius:4px;overflow:hidden;}
+.hrow .hb{height:100%;border-radius:4px;background:var(--accent);transition:width .6s cubic-bezier(.22,1,.36,1);}
+.hrow.fire .hb{background:var(--ember);}
+.hrow .hv{font-family:var(--serif);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;}
+.hnote{margin-top:22px;font-size:13.5px;color:var(--ink-2);max-width:64ch;line-height:1.6;border-left:3px solid var(--ember);padding-left:14px;border-radius:0;}
+.hazmore{margin-top:16px;background:none;border:none;color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;padding:3px 0;border-bottom:1px solid transparent;transition:border-color .15s;}
+.hazmore:hover{border-bottom-color:var(--accent);}
+@media(max-width:720px){.hrow{grid-template-columns:96px 1fr 44px;gap:10px;}.hrow .hn{font-size:12px;}}
+
+.types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,28px);}
+.tcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:22px 24px;}
+.tcode{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.5px;line-height:1;}
+.tname{font-family:var(--serif);font-weight:500;font-size:18px;margin-top:3px;letter-spacing:-.2px;}
+.tstat{font-size:11px;font-weight:600;letter-spacing:.4px;color:var(--ink-3);margin-top:9px;font-variant-numeric:tabular-nums;text-transform:uppercase;}
+.tdesc{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-top:12px;}
+@media(max-width:720px){.types-grid{grid-template-columns:1fr;}}
+.whatlink{font-size:10px;font-weight:600;letter-spacing:.3px;color:var(--accent);text-decoration:none;text-transform:none;border-bottom:1px solid transparent;margin-left:5px;}
+.whatlink:hover{border-bottom-color:var(--accent);}
+.modal-back{position:fixed;inset:0;z-index:100;background:rgba(29,24,19,.42);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-back[hidden]{display:none;}
+.modal{background:var(--paper);border:1px solid var(--rule-2);border-radius:16px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;padding:clamp(24px,4vw,36px);position:relative;box-shadow:0 24px 60px rgba(29,24,19,.22);}
+.m-close{position:absolute;top:18px;right:18px;background:none;border:none;color:var(--ink-3);cursor:pointer;padding:6px;border-radius:6px;transition:.12s;}
+.m-close:hover{color:var(--ink);background:var(--paper-3);}
+.m-rank{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);}
+.m-name{font-family:var(--serif);font-weight:500;font-size:32px;letter-spacing:-.6px;margin-top:6px;line-height:1;}
+.m-sub{font-size:13px;color:var(--ink-3);margin-top:8px;}
+.m-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:22px;}
+.m-stat{background:var(--paper-2);padding:14px 10px;text-align:center;}
+.m-stat .mn{font-family:var(--serif);font-weight:600;font-size:22px;font-variant-numeric:tabular-nums;line-height:1;}
+.m-stat .ml{font-size:10px;color:var(--ink-3);margin-top:6px;letter-spacing:.3px;}
+.m-sec{margin-top:24px;}
+.m-h{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px;}
+.mbars{display:flex;flex-direction:column;gap:9px;}
+.mbar{display:grid;grid-template-columns:118px 1fr 34px;align-items:center;gap:12px;}
+.mbar .mbl{font-size:13px;font-weight:500;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mbar .mbl span{color:var(--ink-3);font-weight:400;font-size:11px;}
+.mbar .mbt{height:14px;background:var(--paper-3);border-radius:3px;overflow:hidden;}
+.mbar .mbf{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.mbar .mbv{font-family:var(--serif);font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;}
+.m-note{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:22px;border-left:3px solid var(--ember);padding-left:13px;}
+@media(max-width:560px){.m-stats{grid-template-columns:repeat(2,1fr);}.mbar{grid-template-columns:84px 1fr 30px;}}
+.m-recs-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.recseg{display:inline-flex;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden;background:var(--paper-2);}
+.recseg button{font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--ink-2);background:none;border:none;border-right:1px solid var(--rule-2);padding:6px 11px;cursor:pointer;transition:.12s;}
+.recseg button:last-child{border-right:none;}
+.recseg button.on{background:var(--ink);color:var(--paper);}
+.recseg button b{font-weight:700;opacity:.7;margin-left:3px;font-variant-numeric:tabular-nums;}
+.m-reclist{max-height:300px;overflow-y:auto;border:1px solid var(--rule);border-radius:8px;background:var(--paper-2);}
+.rec{padding:10px 14px;border-bottom:1px solid var(--rule);}
+.rec:last-child{border-bottom:none;}
+.rec-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+.rec-id{font-family:var(--serif);font-weight:600;font-size:14px;letter-spacing:-.2px;}
+.rec-date{font-size:11px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.rec-deny{display:inline-block;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#9e3a1e;border:1px solid #d98c4e;border-radius:3px;padding:1px 5px;margin-left:6px;}
+.rec-sub{font-size:11.5px;color:var(--ink-2);margin-top:3px;}
+.rec-title{color:var(--ink-3);text-transform:capitalize;}
+.rec-idwrap{display:inline-flex;align-items:baseline;min-width:0;flex-wrap:wrap;}
+.rec-tribal{display:inline-block;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#7a4a1e;background:#f0e2c8;border-radius:3px;padding:1px 6px;margin-left:8px;white-space:nowrap;}
+.rec-area{color:#7a4a1e;font-weight:600;}
+.tribal-note{margin-top:24px;padding:16px 18px;background:var(--paper-3);border-left:3px solid #c89a5e;border-radius:0 6px 6px 0;font-family:var(--sans);font-size:13.5px;line-height:1.62;color:var(--ink-2);}
+.tribal-note strong{color:var(--ink);font-weight:600;}
+#tribal-fgroup[hidden]{display:none;}
+.rec-empty{padding:18px;text-align:center;color:var(--ink-3);font-size:13px;}
+.m-map{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--rule-2);border-radius:7px;padding:7px 13px;transition:.12s;}
+.m-map:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.m-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.m-links .m-map{margin-top:0;}
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
+/* ===== Latest declarations (homepage teaser) ===== */
+#latest{padding-top:clamp(30px,4vw,48px);}
+.ll-all{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap;align-self:flex-end;}
+.ll-all:hover{text-decoration:underline;}
+.ll-updated{font-size:12px;color:var(--ink-3);letter-spacing:.3px;margin:0 0 14px;font-variant-numeric:tabular-nums;}
+.ll-placeholder{color:var(--ink-3);font-size:14px;}
+.ll-grid{display:flex;flex-direction:column;gap:10px;}
+.ll-card{display:flex;align-items:center;gap:14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:11px;padding:13px 16px;transition:border-color .13s;}
+.ll-card:hover{border-color:var(--rule-2);}
+.ll-badge{flex:none;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.6px;color:#fff;padding:3px 8px;border-radius:5px;line-height:1.4;}
+.ll-badge.DR{background:var(--accent);}
+.ll-badge.EM{background:#9c6a00;}
+.ll-badge.FM{background:var(--ember);}
+.ll-body{flex:1;min-width:0;}
+.ll-title{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--ink);line-height:1.25;}
+.ll-title a{color:var(--accent);text-decoration:none;}
+.ll-title a:hover{text-decoration:underline;}
+.ll-meta{font-size:12.5px;color:var(--ink-2);margin-top:3px;display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;}
+.ll-meta a{color:var(--accent);text-decoration:none;font-weight:600;}
+.ll-meta a:hover{text-decoration:underline;}
+.ll-num{font-variant-numeric:tabular-nums;}
+.ll-date{flex:none;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;}
+@media(max-width:560px){
+  .ll-card{flex-wrap:wrap;gap:6px 12px;}
+  .ll-date{order:3;width:100%;text-align:left;}
+  .ll-body{flex-basis:100%;order:2;}
+}
+.statelinks{font-size:13.5px;line-height:2.15;color:var(--ink-3);margin:0;}
+.statelinks a{color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap;}
+.statelinks a:hover{text-decoration:underline;}
+.statelinks .sep{color:var(--rule-2);margin:0 .5em;}
+/* linked state focus */
+.row.rowfocused{background:#fbeee2;box-shadow:inset 3px 0 0 var(--ember);}
+#focus-chip:hover{background:#9e3a1e !important;border-color:#9e3a1e !important;}
+/* state compare */
+.cmpbtn{font-family:var(--sans);font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:9px 15px;cursor:pointer;transition:.12s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+.cmpbtn:hover{background:var(--accent-2);border-color:var(--accent-2);}
+.boardctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.cmp-pick{display:flex;align-items:center;gap:12px;margin:22px 0 6px;flex-wrap:wrap;}
+.cmp-pick select{font:600 14px 'Public Sans',sans-serif;color:var(--ink);background:var(--paper-2);border:1px solid var(--rule-2);border-radius:8px;padding:9px 12px;cursor:pointer;flex:1;min-width:150px;}
+.cmp-pick .vs{font-family:var(--serif);font-style:italic;color:var(--ink-3);font-size:15px;}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.cmp-col{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:18px;}
+.cmp-col h4{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.3px;margin-bottom:2px;}
+.cmp-col .ab{font-size:11.5px;color:var(--ink-3);margin-bottom:12px;}
+.cmp-m{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--rule);font-size:12.5px;color:var(--ink-2);}
+.cmp-m b{font-family:var(--serif);font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums;}
+.cmp-m.win b{color:var(--ember);}
+.cmp-spark{margin-top:14px;}
+.cmp-h{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-3);margin:14px 0 8px;}
+@media(max-width:560px){.cmp-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<div class="wrap">
+
+<div class="container">
+  <header class="masthead">
+    <div class="kicker reveal">Twenty-five years of federal disaster declarations</div>
+    <h1 class="headline reveal" style="animation-delay:.06s">Where disaster strikes, <em>and how often.</em></h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">Every federally declared disaster and emergency since FY2000: major disasters, emergencies, and fire-management programs. Start with your own community for a declaration history you can drop straight into a plan or report, then explore the national picture.</p>
+
+    <!-- Locality search: the primary action on the page -->
+    <section id="loc-search" class="reveal" style="animation-delay:.16s;max-width:980px;margin:1.2rem 0 0;padding:0">
+    <!-- Your locality (personalized, populated from localStorage or ?loc= by the script below) -->
+    <div id="your-locality" hidden style="background:#004c53;color:#fff;border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem;box-shadow:0 4px 14px rgba(0,76,83,.18)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;opacity:.82" id="yl-kicker">Your saved locality</div>
+        <button id="yl-clear" type="button" aria-label="Clear your saved locality" style="background:rgba(255,255,255,.14);border:none;color:#fff;font:600 .72rem 'Public Sans',sans-serif;border-radius:6px;padding:.3rem .6rem;cursor:pointer">Clear</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
+        <div style="min-width:0">
+          <a id="yl-name" href="#" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.3rem,2.6vw,1.6rem);font-weight:600;color:#fff;text-decoration:none;line-height:1.1;display:inline-block"></a>
+          <div id="yl-sub" style="font-size:.9rem;opacity:.85;margin-top:.2rem"></div>
+        </div>
+        <div style="text-align:right;flex:none">
+          <div id="yl-count" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums"></div>
+          <div style="font-size:.66rem;letter-spacing:.5px;opacity:.8;text-transform:uppercase;margin-top:.15rem">FEMA declarations</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-top:.9rem">
+        <a id="yl-link" href="#" style="display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#004c53;font:600 .82rem 'Public Sans',sans-serif;text-decoration:none;border-radius:8px;padding:.45rem .85rem">View full history <span aria-hidden="true">&rarr;</span></a>
+        <button id="yl-share" type="button" style="display:inline-flex;align-items:center;gap:.35rem;background:none;border:1px solid rgba(255,255,255,.5);color:#fff;font:600 .82rem 'Public Sans',sans-serif;border-radius:8px;padding:.45rem .85rem;cursor:pointer">Copy share link</button>
+      </div>
+    </div>
+    <div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:14px;padding:1.6rem 1.8rem;box-shadow:0 2px 8px rgba(40,30,10,.04)">
+    <h2 style="font-family:'Fraunces',Georgia,serif;color:#004c53;font-size:1.3rem;margin:0 0 .25rem">Find your community</h2>
+    <p style="margin:0 0 .8rem;color:#6b6357;font-size:.9rem;line-height:1.5">Search 3,600+ counties, parishes, boroughs, and tribal nations. Each has its full FEMA declaration history, ready to cite or export for a hazard mitigation plan or grant application.</p>
+    <div id="lsBox" style="position:relative;max-width:520px">
+    <svg style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#938a78;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="lsQ" placeholder="Search counties, parishes, boroughs, tribes..." autocomplete="off" aria-label="Search localities" style="width:100%;font:400 1rem 'Public Sans',sans-serif;padding:.7rem 1rem .7rem 2.6rem;border:1px solid #e4dccb;border-radius:10px;background:#f6f1e7;color:#2b2b2b;outline:none;box-sizing:border-box">
+    <div id="lsR" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fffdf7;border:1px solid #e4dccb;border-radius:10px;box-shadow:0 8px 24px rgba(40,30,10,.12);max-height:340px;overflow-y:auto;z-index:100"></div>
+    </div>
+    </div>
+    </section>
+
+    <div class="hero-cta reveal" style="animation-delay:.2s;margin-top:1.1rem">
+      <a href="explore.html" style="color:var(--accent);font-weight:600;text-decoration:none">Replay 25 years of declarations <span aria-hidden="true">&rarr;</span></a>
+      <a href="public-assistance-projects.html" style="color:var(--accent);font-weight:600;text-decoration:none;margin-left:22px">Explore recovery funding <span aria-hidden="true">&rarr;</span></a>
+    </div>
+
+    <div class="stats reveal" style="animation-delay:.24s">
+      <div class="stat"><div class="num" id="st-total">3,395</div><div class="lab">declarations in range</div></div>
+      <div class="stat"><div class="num" id="st-states">57</div><div class="lab">states &amp; territories</div></div>
+      <div class="stat"><div class="num" id="st-denied">11.8<small>%</small></div><div class="lab">of declaration requests denied</div></div>
+      <div class="stat"><div class="num" id="st-haz">25</div><div class="lab">hazard types tracked</div></div>
+    </div>
+    <div class="reveal" id="prov-stamp" style="animation-delay:.26s;margin-top:.9rem;font:500 .8rem/1.5 'Public Sans',sans-serif;color:#6b6357;display:flex;flex-wrap:wrap;gap:.3rem .6rem;align-items:baseline">
+      <span id="prov-range">Totals: FY2000&ndash;FY2025</span>
+      <span aria-hidden="true">&middot;</span>
+      <span id="prov-asof">Latest declarations through &mdash;</span>
+      <button type="button" id="prov-toggle" style="background:none;border:none;padding:0;margin:0;font:600 .8rem 'Public Sans',sans-serif;color:var(--accent);text-decoration:underline;cursor:pointer">Include the current partial year</button>
+    </div>
+  </header>
 </div>
 
-<div class="layer">
-<h2>Combined event crosswalk</h2>
-<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-02-25 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2026-02-22 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2026-01-26 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2026-01-24 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2026-01-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-12-30 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-12-26 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-12-09 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-12-01 &middot; State of Emergency Declared Across Hunterdon, Morris, Passaic, Sussex, and Warren Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-10-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-10-11 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-08-27 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-08-21 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-08-08 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-07-31 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-07-14 &middot; Declares a State of Emergency across all 21 counties in New Jersey due to flash flooding and severe thunderstorms statewide</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-05-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>5581</td></tr>
-<tr><td>2025-04-23 &middot; Untitled action</td><td>0</td><td>None matched</td><td>5581</td></tr>
-<tr><td>2025-01-27 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-01-18 &middot; Declares that New Jersey will enter a State of Emergency effective at 8:00 a.m. on Sunday, January 19 in anticipation of significant winter weather.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2025-01-05 &middot; The Governor has declared State of Emergency  to allocate more resources in preparation of  winter storm</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2024-08-12 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2024-08-09 &middot; Lt. Governor Way announced a State of Emergency effective at 6:00pm on Friday, August 9 in anticipation of severe storms causing hazardous weather conditions including heavy rain, high winds, and flash flooding.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2024-01-08 &middot; Governor Murphy Declares State of Emergency in Preparation for Winter Storm</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2023-10-01 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2023-09-29 &middot; Governor Murphy Declares State of Emergency Due to Severe Weather</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2023-07-16 &middot; Governor Murphy Declares State of Emergency Due to Severe Storms</td><td>0</td><td>None matched</td><td>4725</td></tr>
-<tr><td>2023-03-16 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2023-03-13 &middot; Governor Murphy Declares State of Emergency for Five New Jersey Counties in Preparation for Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2023-02-15 &middot; Governor Murphy Sign Executive Order Initiating a Process In Partnership With The State’S Hometown Utilities, Key Stakeholders Including Organized Labor, And The New Jersey Board Of Public Utilities (BPU) To Plan For The Future Of The Natural Gas Utility In New Jersey</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2023-02-15 &middot; Governor Murphy Signs Executive Order to Target To Install Zero-Carbon-Emission Space Heating And Cooling Systems In 400,000 Homes And 20,000 Commercial Properties And Make 10% Of All Low-To-Moderate Income (LMI) Properties Electrification-Ready By 2030</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2023-02-15 &middot; Governor Murphy Signs Executive Order to Accelerate Target Of 100% Clean Energy By 2035, Defined As 100% Of The Electricity Sold In The State To Come From Clean Sources Of Electricity By January 1, 2035 Through Clean Energy Market Mechanisms, Paired With Support For A Clean Energy Standard In New Jersey</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2022-02-04 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2022-01-28 &middot; Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2022-01-13 &middot; Governor Murphy Lifts Storm-Related States of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2022-01-06 &middot; Governor Murphy Declares Statewide State of Emergency in Preparation for Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2022-01-02 &middot; Governor Murphy Declares State of Emergency in Atlantic, Burlington, Cape May, Cumberland, and Ocean Counties in Preparation for Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2021-11-10 &middot; Governor Murphy Advances Climate Action to Secure New Jersey’s Clean Energy Future</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2021-11-01 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2021-10-25 &middot; Declares State of Emergency in Preparation for Nor’easter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2021-09-20 &middot; Governor Murphy Signs Executive Order Instituting Vaccination or Testing Requirement for All Child Care Center Personnel</td><td>0</td><td>None matched</td><td>4614</td></tr>
-<tr><td>2021-09-07 &middot; Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff to Honor Those Who Lost Their Lives to Tropical Storm Ida</td><td>0</td><td>None matched</td><td>4614</td></tr>
-<tr><td>2021-09-01 &middot; Governor Murphy Declares State of Emergency in Response to Tropical Storm Ida</td><td>0</td><td>None matched</td><td>4614</td></tr>
-<tr><td>2021-09-01 &middot; Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Berkeley Township Beach Patrol Lifeguard Keith Pinto</td><td>0</td><td>None matched</td><td>4614</td></tr>
-<tr><td>2021-08-06 &middot; Governor Murphy Announces Indoor Mask Requirement for Beginning of 2021-2022 School Year</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2021-02-23 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4597</td></tr>
-<tr><td>2021-01-31 &middot; Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</td><td>0</td><td>None matched</td><td>4597</td></tr>
-<tr><td>2020-12-18 &middot; Governor Murphy Lifts Storm-Related State of Emergency</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2020-12-16 &middot; Governor Murphy Declares State of Emergency In Response to Expected Winter Storm</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2020-08-13 &middot; Governor Murphy Lifts State of Emergency Declared in Response to Hurricane Isaias</td><td>0</td><td>None matched</td><td>4574</td></tr>
-<tr><td>2020-08-13 &middot; Murphy Administration to Open New Jersey’s Schools For In-Person Instruction Subject to Critical Health and Safety Protocols</td><td>0</td><td>None matched</td><td>4574</td></tr>
-<tr><td>2020-08-03 &middot; Governor Murphy Declares State of Emergency in Response to Hurricane Isaias</td><td>0</td><td>None matched</td><td>4574</td></tr>
-<tr><td>2020-07-17 &middot; Governor Murphy Signs Executive Order Creating Greater Oversight and Accountability for Federal COVID-19 Resources</td><td>0</td><td>None matched</td><td>4574</td></tr>
-<tr><td>2020-01-27 &middot; Governor Murphy Unveils Energy Master Plan and Signs Executive Order Directing Sweeping Regulatory Reform to Reduce Emissions and Adapt to Climate Change</td><td>0</td><td>None matched</td><td>4488</td></tr>
-<tr><td>2019-12-04 &middot; Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff in Honor of Monsignor Philip Lowery</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-10-29 &middot; Governor Murphy Signs Executive Order to Establish Statewide Climate Change Resilience Strategy</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-06-24 &middot; Governor Murphy Lifts State of Emergency in Burlington, Camden, and Gloucester Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-06-20 &middot; Governor Murphy Declares a State of Emergency in Burlington, Camden, and Gloucester Counties.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-03-04 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-03-03 &middot; Declares a state of emergency across all 21 counties in New Jersey, allowing resources to be deployed throughout the state during the duration of the storm.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-02-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-02-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-02-13 &middot; Governor Murphy Lifts State of Emergency Effective at 8:00 a.m.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-02-11 &middot; Gov. Phil Murphy declares state of emergency for NJ for Tuesday February 12.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2019-01-18 &middot; Declares a State of Emergency beginning at noon on Saturday ahead of Winter Storm Harper</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-12-02 &middot; Governor Murphy Directs the Lowering of U.S. and New Jersey Flags in Honor of President George H.W. Bush</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-09-04 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-08-14 &middot; Governor Murphy Signs Executive Order Declaring State of Emergency in Flood-Impacted Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-03-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4368</td></tr>
-<tr><td>2018-03-20 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4368</td></tr>
-<tr><td>2018-03-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4368</td></tr>
-<tr><td>2018-02-12 &middot; Established the Commission on Puerto Rico Relief.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-01-29 &middot; Directs New Jersey to Reenter the Regional Greenhouse Gas Initiative</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-01-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2018-01-04 &middot; Authorizes and empowers the State Authorities to implement the State Emergency Operations Plan and to direct the activation of county and municipal emergency operations plans as necessary. [pdf 22kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2017-09-29 &middot; Executive Order No. 233 to designate municipal and county law enforcement and emergency responders as State Emergency Forces, which will be under the control and direction of the State Director of Emergency Management.  These local officials will compliment forces from the New Jersey National Guard, State Police and the State Office of Emergency Management in the safe deployment of critical emergency response resources. [pdf 21kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2017-03-13 &middot; Governor Chris Christie declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies in preparation for Winter Storm Stella [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2016-09-03 &middot; Governor Chris Christie Declares A State of Emergency For Ocean, Atlantic and Cape May Counties In Preparation For Tropical Storm Hermine [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2016-01-22 &middot; Governor Christie Declares State Of Emergency Ahead Of Arrival Of Winter Storm [pdf 17kB]</td><td>0</td><td>None matched</td><td>4264</td></tr>
-<tr><td>2016-01-02 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4264</td></tr>
-<tr><td>2015-10-01 &middot; Governor Chris Christie today declared a state of emergency throughout the state as a result of severe weather conditions expected in the coming days. [pdf 20kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2015-03-04 &middot; Authorizes the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2015-01-26 &middot; Declares and proclaims that a State of Emergency exists [pdf 18kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-11-26 &middot; Governor Chris Christie today declared a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Commuters are asked to use extreme caution while traveling across the state. [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-03-02 &middot; Governor Chris Christie Declares State of Emergency In Preparation For Monday Morning’s Severe Winter Weather. [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-02-12 &middot; Governor Chris Christie Declares State of Emergency In Preparation For Wednesday Night’s Severe Winter Weather. [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-02-04 &middot; Governor Chris Christie Declares State of Emergency In Preparation For Tuesday Night’s Severe Winter Weather. [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-02-03 &middot; Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-01-02 &middot; Declares a State of Emergency, authorizing the State Director of Emergency Management to activate and coordinate the preparation, response and recovery efforts for the storm with all county and municipal emergency operations and governmental agencies. Governor Christie also authorized the closing of state offices on Friday, January 3rd for all non-essential employees. [pdf 15kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2013-09-25 &middot; Orders and directs Attorney General To Coordinate Acquisition Of Easements, Creates Office Of Flood Hazard Risk Reduction Measures To Lead Effort [pdf 14kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2013-05-22 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2013-02-28 &middot; Allows the seasonal alcoholic beverage licensees to begin serving alcohol on March 1, two months ahead of the traditional allowance of May 1. [pdf 18kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2013-02-08 &middot; Orders and directs the Office of the State Comptroller to conduct independent review of contracts, transparency measures over expenditures [pdf 20kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2012-11-19 &middot; The Director of the Division of Taxation, in the Department of the Treasury, is directed to take all appropriate actions to effectuate the fuel agreement between FEMA and the State. [pdf 20kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-16 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-05 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-05 &middot; A local Government Unit has established a snow removal fund [pdf 55kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-03 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-03 &middot; Suspends restrictions in state law that place limitations on the source of fuel particular and branded fuel retailers are allowed to sell. [pdf 10kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-03 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-02 &middot; Protect Storm-Impacted New Jersey Homeowners from Higher Insurance Deductiblese [pdf 12kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-02 &middot; Declares a limited state of energy emergency with regard to the supply of motor fuel and implementing odd-even rationing for gasoline purchases in 12 New Jersey counties.  [pdf 10kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-02 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-11-01 &middot; Declares State of Water Emergency, Authorizes DEP to Take Steps to Prevent Water Shortage [pdf 12kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-10-31 &middot; Untitled action</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-10-27 &middot; PROCLAIM that a State of Emergency exists in the State of New Jersey [pdf 15kB]</td><td>0</td><td>None matched</td><td>4086</td></tr>
-<tr><td>2012-08-30 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2011-10-30 &middot; Declare and proclaim that a State of Emergency exists in the State on New Jersey. [pdf 22kB]</td><td>0</td><td>None matched</td><td>4048</td></tr>
-<tr><td>2011-03-09 &middot; Declares a Weather Related State of Emergency [pdf 22kB]</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2010-04-23 &middot; Orders and directs creation of the Governor’s Passaic River Basin Flood Advisory Commission (“Advisory Commission”). [pdf 23k]</td><td>0</td><td>None matched</td><td>1897</td></tr>
-<tr><td>2010-03-14 &middot; Declares and proclaims that a State of Emergency exists [pdf 21k]</td><td>0</td><td>None matched</td><td>1897</td></tr>
-<tr><td>2010-02-05 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1889</td></tr>
-<tr><td>2009-11-12 &middot; Declares a State of Emergency for the counties of Cape May, Atlantic, Cumberland, Burlington, Ocean and Monmouth.</td><td>0</td><td>None matched</td><td>1867</td></tr>
-<tr><td>2009-03-04 &middot; Untitled action</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2008-08-31 &middot; Declares a State of Emergency exists for the specific purpose of activating the Emergency Management Assistance Compact to coordinate multi-state mutual aid to the states of Louisiana and Mississippi</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2007-04-16 &middot; Declares a State of Emergency presently exists throughout the State of New Jersey.</td><td>0</td><td>None matched</td><td>1694</td></tr>
-<tr><td>2006-06-28 &middot; Declares a State of Emergency presently exists throughout the State of New Jersey.</td><td>0</td><td>None matched</td><td>1653</td></tr>
-<tr><td>2004-09-18 &middot; Declares and proclaims that a State of Emergency exists in the northwestern area of the State of New Jersey and in the counties of Sussex, Warren, Hunterdon and Mercer, and may come to exist in other areas of the State.</td><td>0</td><td>None matched</td><td>1563</td></tr>
-<tr><td>2004-07-13 &middot; Declares that a State of Emergency presently exists in Burlington and Camden Counties.</td><td>0</td><td>None matched</td><td>1530</td></tr>
-<tr><td>2004-02-27 &middot; Establishes a New Jersey Invasive Species Council</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2003-09-18 &middot; Declares a State of Emergency</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2003-02-16 &middot; Declares State of Emergency</td><td>0</td><td>None matched</td><td>3181</td></tr>
-<tr><td>2002-08-14 &middot; Declares a state of emergency in the County of Monmouth</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2002-03-04 &middot; Declares Water Emergency</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2001-03-04 &middot; Declares State of Emergency Exists in New Jersey</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2000-12-30 &middot; Declares state of emergency exists in New Jersey due to severe weather conditions caused by snow and blizzard conditions, including hazardous road conditions, high tides and coastal flooding.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2000-08-14 &middot; Declares State of Emergency exists in Morris and Sussex Counties.</td><td>0</td><td>None matched</td><td>1337</td></tr>
-<tr><td>1999-09-27 &middot; A state of water emergency, as declared by Executive Order No. 98, due to the drought no longer exists anywhere within the State.</td><td>0</td><td>None matched</td><td>1295</td></tr>
-<tr><td>1999-09-15 &middot; Declares a State of Emergency in the State of New Jersey due to flooding from Hurricane Floyd.</td><td>0</td><td>None matched</td><td>1295</td></tr>
-<tr><td>1999-08-05 &middot; Declares state of water emergency exists throughout New Jersey</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1998-02-06 &middot; Declares state of emergency existed and presently exists in Atlantic, Cape May, Monmouth and Ocean Counties.</td><td>0</td><td>None matched</td><td>1206</td></tr>
-<tr><td>1997-08-22 &middot; Declares State of Emergency due to torrential rainfall and resultant flooding and damages, etc., in counties of Atlantic, Burlington, Cape May, Cumberland and Ocean</td><td>0</td><td>None matched</td><td>1189</td></tr>
-<tr><td>1996-10-18 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1145</td></tr>
-<tr><td>1996-06-28 &middot; Declares state of emergency in Mercer and Burlington counties and calls NJ National Guard to active duty to provide aid and recovery assistance.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1996-01-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1088</td></tr>
-<tr><td>1996-01-07 &middot; Untitled action</td><td>0</td><td>None matched</td><td>1088</td></tr>
-<tr><td>1995-09-13 &middot; Declares state of water emergency for counties in northeastern New Jersey. Directs Commissioner of DEP, the Water Emergency Task Force and the Drought Coordinator to take steps necessary to alleviate the water emergency.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1994-01-19 &middot; Declares state of energy emergency for all heat and electrical utilities throughout the state.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1994-01-11 &middot; Establishes an interagency State Hazard Mitigation Team whose participants will evaluate hazard mitigation initiatives based on current agency policies and programs.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1993-05-03 &middot; Orders and Directs each State agency and instrumentality shall appoint within 30 days of effective date of this Order, a coordinator from the agency procurement staff who will be responsible for coordinating with the Division of Purchase and Property and the Division of Solid Waste Management, the procurement of recycled products by the agency or instrumentality. The coordinator&#x27;s responsibility is to assure agency compliance with the purchasing goals of this Order, etc.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1993-03-13 &middot; Untitled action</td><td>0</td><td>None matched</td><td>3106</td></tr>
-<tr><td>1992-12-22 &middot; Untitled action</td><td>0</td><td>None matched</td><td>973</td></tr>
-<tr><td>1992-12-11 &middot; Declares and proclaims a limited State of Emergency presently exists in Atlantic, Burlington, Cape May, Cumberland, Middlesex, Monmouth and Ocean Counties. Orders the New Jersey National Guard to active duty, such members of the National Guard that in the Adjutant General&#x27;s judgment are necessary to provide aid to the above communities. The Superintendent of the Division of State Police is hereby authorized to order evacuations of persons, except for emergency and governmental personnel, etc.</td><td>0</td><td>None matched</td><td>973</td></tr>
-<tr><td>1992-12-11 &middot; Declares an additional State of Emergency in the counties of Camden, Essex, Gloucester, Hunterdon, Mercer, Morris, Passaic, Somerset, Sussex, Union and Warren Counties. See Executive Order No. 73.</td><td>0</td><td>None matched</td><td>973</td></tr>
-<tr><td>1992-10-19 &middot; Creates Chief of Economic Recovery position.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1992-01-04 &middot; Declares State of Emergency due to weather conditions.</td><td>0</td><td>None matched</td><td>936</td></tr>
-<tr><td>1991-12-11 &middot; Declares an additional State of Emergency in the counties of Bergen, Hudson, and Salem. See Executive Order No. 73.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1991-10-31 &middot; Limited State of Emergency in Atlantic, Cape May, Monmouth, and Ocean Counties.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1991-07-19 &middot; Declares State of Emergency in Lacey Township.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1991-06-07 &middot; Gives Department of Treasury title to all State-owned vehicles.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1991-01-10 &middot; Ratifies verbal declaration by Acting Governor John Lynch of a limited State of Emergency.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>1989-10-23 &middot; Order and direct State entities to take steps to reduce emissions of climate-affecting gases</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr></tbody></table></div>
+<!-- ===== Latest declarations ===== -->
+<div class="container">
+  <section id="latest">
+    <div class="shead">
+      <div>
+        <h2>Latest declarations</h2>
+        <p>The most recent federal disaster and emergency declarations, straight from OpenFEMA and refreshed each week.</p>
+      </div>
+    </div>
+    <!-- LATEST:START -->
+<p class="ll-updated">Data current through Sep 1, 2026</p>
+<div class="ll-grid">
+<div class="ll-card" title="SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Kansas</div><div class="ll-meta"><span class="ll-num">DR-4943</span><span>Severe Storm</span><span>21 areas</span><a href="https://www.fema.gov/disaster/4943" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Sep 1, 2026</div></div>
+<div class="ll-card" title="SEVERE STORMS AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Iowa</div><div class="ll-meta"><span class="ll-num">DR-4942</span><span>Severe Storm</span><span>4 areas</span><a href="https://www.fema.gov/disaster/4942" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Sep 1, 2026</div></div>
+<div class="ll-card" title="SEVERE STORMS, STRAIGHT-LINE WINDS, AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">South Dakota</div><div class="ll-meta"><span class="ll-num">DR-4941</span><span>Severe Storm</span><span>1 area</span><a href="https://www.fema.gov/disaster/4941" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Sep 1, 2026</div></div>
+<div class="ll-card" title="SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Kansas</div><div class="ll-meta"><span class="ll-num">DR-4940</span><span>Severe Storm</span><span>32 areas</span><a href="https://www.fema.gov/disaster/4940" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Sep 1, 2026</div></div>
+<div class="ll-card" title="SEVERE STORMS, STRAIGHT-LINE WINDS, AND FLOODING"><span class="ll-badge DR">DR</span><div class="ll-body"><div class="ll-title">Missouri</div><div class="ll-meta"><span class="ll-num">DR-4939</span><span>Severe Storm</span><span>9 areas</span><a href="https://www.fema.gov/disaster/4939" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">Sep 1, 2026</div></div>
+</div>
+    <!-- LATEST:END -->
+  </section>
 </div>
 
-<details class="layer">
-<summary><span>Federal FEMA declarations</span><span class="count-badge">59 records</span></summary>
-<div class="details-body"><p class="note">DR, EM, and FM declarations for New Jersey from the site's national FEMA dataset.</p>
-<div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2025-04-24</td><td>5581</td><td>FM</td><td>JONES ROAD FIRE</td><td>Fire</td><td>2025-04-22 to </td></tr>
-<tr><td>2023-08-11</td><td>4725</td><td>DR</td><td>SEVERE STORM AND FLOODING</td><td>Severe Storm</td><td>2023-07-14 to 2023-07-15</td></tr>
-<tr><td>2021-09-05</td><td>4614</td><td>DR</td><td>REMNANTS OF HURRICANE IDA</td><td>Hurricane</td><td>2021-09-01 to 2021-09-03</td></tr>
-<tr><td>2021-09-02</td><td>3573</td><td>EM</td><td>REMNANTS OF HURRICANE IDA</td><td>Hurricane</td><td>2021-09-01 to 2021-09-03</td></tr>
-<tr><td>2021-04-28</td><td>4597</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2021-01-31 to 2021-02-02</td></tr>
-<tr><td>2020-12-11</td><td>4574</td><td>DR</td><td>TROPICAL STORM ISAIAS</td><td>Hurricane</td><td>2020-08-04 to 2020-08-04</td></tr>
-<tr><td>2020-03-25</td><td>4488</td><td>DR</td><td>COVID-19 PANDEMIC</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
-<tr><td>2020-03-13</td><td>3451</td><td>EM</td><td>COVID-19</td><td>Biological</td><td>2020-01-20 to 2023-05-11</td></tr>
-<tr><td>2018-06-08</td><td>4368</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Severe Storm</td><td>2018-03-06 to 2018-03-07</td></tr>
-<tr><td>2016-03-14</td><td>4264</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Severe Storm</td><td>2016-01-22 to 2016-01-24</td></tr>
-<tr><td>2015-07-22</td><td>4231</td><td>DR</td><td>SEVERE STORM</td><td>Severe Storm</td><td>2015-06-23 to 2015-06-23</td></tr>
-<tr><td>2012-10-30</td><td>4086</td><td>DR</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
-<tr><td>2012-10-28</td><td>3354</td><td>EM</td><td>HURRICANE SANDY</td><td>Hurricane</td><td>2012-10-26 to 2012-11-08</td></tr>
-<tr><td>2012-07-19</td><td>4070</td><td>DR</td><td>SEVERE STORMS AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2012-06-30 to 2012-06-30</td></tr>
-<tr><td>2011-11-30</td><td>4048</td><td>DR</td><td>SEVERE STORM</td><td>Severe Storm</td><td>2011-10-29 to 2011-10-30</td></tr>
-<tr><td>2011-10-14</td><td>4039</td><td>DR</td><td>REMNANTS OF TROPICAL STORM LEE</td><td>Severe Storm</td><td>2011-09-28 to 2011-10-06</td></tr>
-<tr><td>2011-09-15</td><td>4033</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2011-08-13 to 2011-08-15</td></tr>
-<tr><td>2011-08-31</td><td>4021</td><td>DR</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-27 to 2011-09-05</td></tr>
-<tr><td>2011-08-27</td><td>3332</td><td>EM</td><td>HURRICANE IRENE</td><td>Hurricane</td><td>2011-08-26 to 2011-09-05</td></tr>
-<tr><td>2011-02-04</td><td>1954</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2010-12-26 to 2010-12-27</td></tr>
-<tr><td>2010-04-02</td><td>1897</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2010-03-12 to 2010-04-15</td></tr>
-<tr><td>2010-03-23</td><td>1889</td><td>DR</td><td>SEVERE WINTER STORM AND SNOWSTORM</td><td>Snowstorm</td><td>2010-02-05 to 2010-02-06</td></tr>
-<tr><td>2010-02-05</td><td>1873</td><td>DR</td><td>SNOWSTORM</td><td>Snowstorm</td><td>2009-12-19 to 2009-12-20</td></tr>
-<tr><td>2009-12-22</td><td>1867</td><td>DR</td><td>SEVERE STORMS AND FLOODING ASSOCIATED WITH TROPICAL DEPRESSION IDA AND A NOR&#x27;EAS</td><td>Severe Storm</td><td>2009-11-11 to 2009-11-15</td></tr>
-<tr><td>2007-05-16</td><td>2695</td><td>FM</td><td>WARREN GROVE FIRE</td><td>Fire</td><td>2007-05-15 to </td></tr>
-<tr><td>2007-04-26</td><td>1694</td><td>DR</td><td>SEVERE STORMS AND INLAND AND COASTAL FLOODING</td><td>Severe Storm</td><td>2007-04-14 to 2007-04-20</td></tr>
-<tr><td>2006-07-07</td><td>1653</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2006-06-23 to 2006-07-10</td></tr>
-<tr><td>2005-09-19</td><td>3257</td><td>EM</td><td>HURRICANE KATRINA EVACUATION</td><td>Hurricane</td><td>2005-08-29 to 2005-10-01</td></tr>
-<tr><td>2005-04-19</td><td>1588</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2005-04-01 to 2005-04-03</td></tr>
-<tr><td>2004-10-01</td><td>1563</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2004-09-18 to 2004-10-01</td></tr>
-<tr><td>2004-07-16</td><td>1530</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2004-07-12 to 2004-07-23</td></tr>
-<tr><td>2003-09-23</td><td>3188</td><td>EM</td><td>POWER OUTAGE</td><td>Other</td><td>2003-08-14 to 2003-08-16</td></tr>
-<tr><td>2003-03-20</td><td>3181</td><td>EM</td><td>SNOW</td><td>Snowstorm</td><td>2003-02-16 to 2003-02-17</td></tr>
-<tr><td>2002-06-02</td><td>2411</td><td>FM</td><td>NJ - DOUBLE TROUBLE WILDFIRE - 6/02/02</td><td>Fire</td><td>2002-06-02 to 2002-06-02</td></tr>
-<tr><td>2001-09-19</td><td>3169</td><td>EM</td><td>FIRES AND EXPLOSIONS</td><td>Fire</td><td>2001-09-11 to 2001-09-11</td></tr>
-<tr><td>2000-11-01</td><td>3156</td><td>EM</td><td>WEST NILE VIRUS</td><td>Other</td><td>2000-05-30 to 2000-11-01</td></tr>
-<tr><td>2000-08-17</td><td>1337</td><td>DR</td><td>SEVERE STORMS, FLOODING AND MUDSLIDES</td><td>Severe Storm</td><td>2000-08-12 to 2000-08-21</td></tr>
-<tr><td>1999-09-18</td><td>1295</td><td>DR</td><td>HURRICANE FLOYD MAJOR DISASTER DECLARATIONS</td><td>Hurricane</td><td>1999-09-16 to 1999-09-18</td></tr>
-<tr><td>1999-09-17</td><td>3148</td><td>EM</td><td>HURRICANE FLOYD EMERGENCY DECLARATIONS</td><td>Hurricane</td><td>1999-09-16 to 1999-09-18</td></tr>
-<tr><td>1998-03-03</td><td>1206</td><td>DR</td><td>SEVERE WINTER COASTAL STORM, HIGH WINDS, FLOODING</td><td>Coastal Storm</td><td>1998-02-04 to 1998-02-08</td></tr>
-<tr><td>1997-09-23</td><td>1189</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1997-08-20 to 1997-08-21</td></tr>
-<tr><td>1996-11-19</td><td>1145</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1996-10-18 to 1996-10-23</td></tr>
-<tr><td>1996-01-13</td><td>1088</td><td>DR</td><td>BLIZZARD OF 96 (SEVERE SNOW STORM)</td><td>Snowstorm</td><td>1996-01-07 to 1996-01-12</td></tr>
-<tr><td>1993-03-17</td><td>3106</td><td>EM</td><td>SEVERE BLIZZARD</td><td>Snowstorm</td><td>1993-03-13 to 1993-03-17</td></tr>
-<tr><td>1992-12-18</td><td>973</td><td>DR</td><td>COASTAL STORM, HIGH TIDES, HEAVY RAIN, &amp; FLOODING</td><td>Flood</td><td>1992-12-10 to 1992-12-17</td></tr>
-<tr><td>1992-03-03</td><td>936</td><td>DR</td><td>SEVERE COASTAL STORM</td><td>Severe Storm</td><td>1992-01-04 to 1992-01-04</td></tr>
-<tr><td>1985-10-15</td><td>749</td><td>DR</td><td>HURRICANE GLORIA</td><td>Hurricane</td><td>1985-09-27 to 1985-09-27</td></tr>
-<tr><td>1984-04-12</td><td>701</td><td>DR</td><td>COASTAL STORMS &amp; FLOODING</td><td>Flood</td><td>1984-03-28 to 1984-04-08</td></tr>
-<tr><td>1980-10-19</td><td>3083</td><td>EM</td><td>WATER SHORTAGE</td><td>Drought</td><td>1980-10-19 to 1980-10-19</td></tr>
-<tr><td>1977-02-08</td><td>528</td><td>DR</td><td>ICE CONDITIONS</td><td>Severe Ice Storm</td><td>1977-02-08 to 1977-02-08</td></tr>
-<tr><td>1976-08-21</td><td>519</td><td>DR</td><td>SEVERE STORMS, HIGH WINDS &amp; FLOODING</td><td>Flood</td><td>1976-08-21 to 1976-08-21</td></tr>
-<tr><td>1975-07-23</td><td>477</td><td>DR</td><td>HEAVY RAINS, HIGH WINDS, HAIL &amp; TORNADOES</td><td>Flood</td><td>1975-07-23 to 1975-07-23</td></tr>
-<tr><td>1974-12-24</td><td>3005</td><td>EM</td><td>SEVERE STORMS, HIGH WINDS &amp; HIGH TIDES</td><td>Coastal Storm</td><td>1974-12-24 to 1974-12-24</td></tr>
-<tr><td>1973-08-07</td><td>402</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1973-08-07 to 1973-08-07</td></tr>
-<tr><td>1971-09-04</td><td>310</td><td>DR</td><td>HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1971-09-04 to 1971-09-04</td></tr>
-<tr><td>1968-06-18</td><td>245</td><td>DR</td><td>HEAVY RAINS &amp; FLOODING</td><td>Flood</td><td>1968-06-18 to 1968-06-18</td></tr>
-<tr><td>1965-08-18</td><td>205</td><td>DR</td><td>WATER SHORTAGE</td><td>Drought</td><td>1965-08-18 to 1965-08-18</td></tr>
-<tr><td>1962-03-09</td><td>124</td><td>DR</td><td>SEVERE STORM, HIGH TIDES &amp; FLOODING</td><td>Flood</td><td>1962-03-09 to 1962-03-09</td></tr>
-<tr><td>1955-08-20</td><td>41</td><td>DR</td><td>HURRICANE &amp; FLOODS</td><td>Hurricane</td><td>1955-08-20 to 1955-08-20</td></tr></tbody></table></div></div>
-</details>
+<div class="deck-shell">
+  <div class="container">
+    <div class="deck">
+      <div class="fgroup">
+        <div class="flabel">Years <span class="v" id="yr-read">2000 to 2025</span></div>
+        <div class="range" id="range">
+          <div class="track"></div><div class="fill" id="rfill"></div>
+          <input type="range" id="rmin" min="2000" max="2026" value="2000" step="1" aria-label="Start year">
+          <input type="range" id="rmax" min="2000" max="2026" value="2026" step="1" aria-label="End year">
+        </div>
+      </div>
+      <div class="fgroup">
+        <div class="flabel">Incident type</div>
+        <div class="pills" id="pills">
+          <button class="pill on" data-inc="All">All</button>
+          <button class="pill" data-inc="Severe Storm">Severe storm</button>
+          <button class="pill" data-inc="Hurricane">Hurricane</button>
+          <button class="pill" data-inc="Flood">Flood</button>
+          <button class="pill" data-inc="Typhoon">Typhoon</button>
+          <button class="pill" data-inc="Fire">Fire</button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <div class="flabel">Declaration type <a href="#types" class="whatlink">what's this?</a></div>
+        <div class="seg" id="dtype">
+          <button class="on" data-d="DR">DR</button>
+          <button data-d="EM">EM</button>
+          <button data-d="FM">FM</button>
+        </div>
+      </div>
+      <div class="fgroup" id="tribal-fgroup" hidden>
+        <div class="flabel">Tribal declarations <a href="#types" class="whatlink">what's this?</a></div>
+        <div class="seg" id="tribalseg">
+          <button class="on" data-t="inc">Counted</button>
+          <button data-t="exc">Set aside</button>
+        </div>
+      </div>
+      <button class="reset" id="reset" aria-label="Reset filters">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset
+      </button>
+    </div>
+  </div>
+</div>
 
-<details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
-<div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
-<div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
-</details>
+<div class="container">
 
-<details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
-<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
-</div></details>
-<footer>Generated 2026-09-04 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
-</main>
+  <section style="border-top:none;padding-top:clamp(40px,5vw,64px)">
+    <div class="shead"><div><h2>The shape of a quarter-century</h2><p>Declarations spike with the country's worst years: record tornado outbreaks in 2011, the pandemic in 2020. Hover any year for its count.</p></div></div>
+    <div class="chartcard">
+      <svg id="timeline" viewBox="0 0 1000 330" role="img" aria-label="Area chart of FEMA disaster declarations by fiscal year, 2000 to 2025"></svg>
+      <div class="tip" id="tip"></div>
+      <div class="tl-cap"><span>Federal disaster &amp; emergency declarations, by fiscal year</span><span><b id="tl-sum">3,395</b> declarations across the selected window</span></div>
+    </div>
+  </section>
+
+  <section id="board">
+    <div class="shead">
+      <div><h2>The states, ranked</h2><p>Ranked by federal declarations since FY2000. Toggle off <strong>FM</strong> above to set fire-management aside and see the disaster picture underneath.</p></div>
+      <div class="boardctl">
+        <button class="cmpbtn" id="cmp-open" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v18M16 21V3"/><path d="M3 8h5M16 16h5"/></svg>Compare states</button>
+        <div class="sortseg" id="sortseg"><button class="on" data-sort="decl">By declarations</button><button data-sort="rate">By request denial rate</button></div>
+      </div>
+    </div>
+    <div id="scoreboard"></div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <div><h2>What kind of disaster?</h2><p>Wildfire looks like the nation's top hazard, until you separate out fire-management declarations, a faster, lower-threshold program of its own.</p></div>
+      <div class="toggseg" id="haztog"><button class="on" data-h="all">All declarations</button><button data-h="nofm">Disasters only</button></div>
+    </div>
+    <div class="haz" id="hazbars"></div>
+    <button class="hazmore" id="hazmore" hidden>Show all 25 hazard types &darr;</button>
+    <p class="hnote" id="haznote"></p>
+  </section>
+
+  <section id="types">
+    <div class="shead"><div><h2>The three kinds of declaration</h2><p>Not every federal declaration means the same thing. The type sets what aid is unlocked, how high the bar is, and how fast it moves.</p></div></div>
+    <div class="types-grid">
+      <div class="tcard">
+        <div class="tcode" style="color:var(--ink)">DR</div>
+        <div class="tname">Major Disaster</div>
+        <div class="tstat">1,588 declarations · ~45 days to a decision</div>
+        <p class="tdesc">The broadest declaration. A governor requests one when an event overwhelms state and local resources, and it can unlock FEMA's full toolkit: individual assistance, public assistance, and hazard-mitigation funding. Reserved for the most serious disasters, and the slowest to approve.</p>
+      </div>
+      <div class="tcard">
+        <div class="tcode" style="color:var(--accent)">EM</div>
+        <div class="tname">Emergency</div>
+        <div class="tstat">479 declarations · ~22 days to a decision</div>
+        <p class="tdesc">A narrower, often faster form of help to protect lives, property, and public health, sometimes declared before an event even arrives. More limited in scope and funding than a major disaster. The nationwide COVID-19 response in 2020 came as emergency declarations.</p>
+      </div>
+      <div class="tcard">
+        <div class="tcode" style="color:var(--ember)">FM</div>
+        <div class="tname">Fire Management Assistance</div>
+        <div class="tstat">1,328 declarations · approved within a day</div>
+        <p class="tdesc">Funds the fighting of wildfires that threaten to become major disasters. Approved fast, often within hours, with a narrow scope and a lower bar than a major disaster. Its sheer volume is why fire tops the raw declaration counts.</p>
+      </div>
+    </div>
+    <div class="tribal-note">
+      <strong>A note on tribal nations.</strong> Since 2013, a federally recognized tribal nation can request a declaration directly from the President &mdash; as a sovereign government &mdash; rather than through the state it sits within. Many did during the COVID-19 pandemic. Because a tribe's declaration is its own, it is recorded under the state where the tribe is located, and Oklahoma alone is home to nearly 40 tribal nations. That is why one event can appear as many separate declarations. In the state view, these carry a <span class="rec-tribal" style="margin-left:0">Tribal Nation</span> tag.
+    </div>
+  </section>
+
+  <section id="statepages">
+    <div class="shead"><div><h2>Browse by state</h2><p>Every state and territory has its own page: the full declaration record since FY2000, denial history, and a page for each county or equivalent with a ready-to-use table for local mitigation plans.</p></div></div>
+    <p class="statelinks"><a href="states/alabama.html">Alabama</a><span class="sep">&middot;</span> <a href="states/alaska.html">Alaska</a><span class="sep">&middot;</span> <a href="states/american-samoa.html">American Samoa</a><span class="sep">&middot;</span> <a href="states/arizona.html">Arizona</a><span class="sep">&middot;</span> <a href="states/arkansas.html">Arkansas</a><span class="sep">&middot;</span> <a href="states/california.html">California</a><span class="sep">&middot;</span> <a href="states/colorado.html">Colorado</a><span class="sep">&middot;</span> <a href="states/connecticut.html">Connecticut</a><span class="sep">&middot;</span> <a href="states/delaware.html">Delaware</a><span class="sep">&middot;</span> <a href="states/fed-states-of-micronesia.html">Fed. States of Micronesia</a><span class="sep">&middot;</span> <a href="states/florida.html">Florida</a><span class="sep">&middot;</span> <a href="states/georgia.html">Georgia</a><span class="sep">&middot;</span> <a href="states/guam.html">Guam</a><span class="sep">&middot;</span> <a href="states/hawaii.html">Hawaii</a><span class="sep">&middot;</span> <a href="states/idaho.html">Idaho</a><span class="sep">&middot;</span> <a href="states/illinois.html">Illinois</a><span class="sep">&middot;</span> <a href="states/indiana.html">Indiana</a><span class="sep">&middot;</span> <a href="states/iowa.html">Iowa</a><span class="sep">&middot;</span> <a href="states/kansas.html">Kansas</a><span class="sep">&middot;</span> <a href="states/kentucky.html">Kentucky</a><span class="sep">&middot;</span> <a href="states/louisiana.html">Louisiana</a><span class="sep">&middot;</span> <a href="states/maine.html">Maine</a><span class="sep">&middot;</span> <a href="states/maryland.html">Maryland</a><span class="sep">&middot;</span> <a href="states/massachusetts.html">Massachusetts</a><span class="sep">&middot;</span> <a href="states/michigan.html">Michigan</a><span class="sep">&middot;</span> <a href="states/minnesota.html">Minnesota</a><span class="sep">&middot;</span> <a href="states/mississippi.html">Mississippi</a><span class="sep">&middot;</span> <a href="states/missouri.html">Missouri</a><span class="sep">&middot;</span> <a href="states/montana.html">Montana</a><span class="sep">&middot;</span> <a href="states/n-mariana-islands.html">N. Mariana Islands</a><span class="sep">&middot;</span> <a href="states/nebraska.html">Nebraska</a><span class="sep">&middot;</span> <a href="states/nevada.html">Nevada</a><span class="sep">&middot;</span> <a href="states/new-hampshire.html">New Hampshire</a><span class="sep">&middot;</span> <a href="states/new-jersey.html">New Jersey</a><span class="sep">&middot;</span> <a href="states/new-mexico.html">New Mexico</a><span class="sep">&middot;</span> <a href="states/new-york.html">New York</a><span class="sep">&middot;</span> <a href="states/north-carolina.html">North Carolina</a><span class="sep">&middot;</span> <a href="states/north-dakota.html">North Dakota</a><span class="sep">&middot;</span> <a href="states/ohio.html">Ohio</a><span class="sep">&middot;</span> <a href="states/oklahoma.html">Oklahoma</a><span class="sep">&middot;</span> <a href="states/oregon.html">Oregon</a><span class="sep">&middot;</span> <a href="states/pennsylvania.html">Pennsylvania</a><span class="sep">&middot;</span> <a href="states/puerto-rico.html">Puerto Rico</a><span class="sep">&middot;</span> <a href="states/rhode-island.html">Rhode Island</a><span class="sep">&middot;</span> <a href="states/south-carolina.html">South Carolina</a><span class="sep">&middot;</span> <a href="states/south-dakota.html">South Dakota</a><span class="sep">&middot;</span> <a href="states/tennessee.html">Tennessee</a><span class="sep">&middot;</span> <a href="states/texas.html">Texas</a><span class="sep">&middot;</span> <a href="states/us-virgin-islands.html">U.S. Virgin Islands</a><span class="sep">&middot;</span> <a href="states/utah.html">Utah</a><span class="sep">&middot;</span> <a href="states/vermont.html">Vermont</a><span class="sep">&middot;</span> <a href="states/virginia.html">Virginia</a><span class="sep">&middot;</span> <a href="states/washington.html">Washington</a><span class="sep">&middot;</span> <a href="states/washington-dc.html">Washington D.C.</a><span class="sep">&middot;</span> <a href="states/west-virginia.html">West Virginia</a><span class="sep">&middot;</span> <a href="states/wisconsin.html">Wisconsin</a><span class="sep">&middot;</span> <a href="states/wyoming.html">Wyoming</a></p>
+  </section>
+
+</div>
+
+<footer id="about">
+  <div class="container">
+    <div class="foot">
+      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries (<span id="foot-range">FY2000 to FY2026</span>) — uses OpenFEMA data but is not endorsed by or affiliated with FEMA. Counts reflect declaration records, not official financial or loss reporting.<span id="foot-asof"></span></div>
+      <div style="text-align:right;">Source: <a href="https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2" target="_blank" rel="noopener">OpenFEMA</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="states/index.html">Disaster declarations by state</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-back" id="mback" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-name">
+    <button class="m-close" id="mclose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="m-rank" id="m-rank"></div>
+    <h3 class="m-name" id="m-name"></h3>
+    <div class="m-sub" id="m-sub"></div>
+    <div class="m-links">
+      <a class="m-map" id="m-map" href="#">View on map <span aria-hidden="true">&rarr;</span></a>
+      <a class="m-map" id="m-fund" href="public-assistance-projects.html">View funding <span aria-hidden="true">&rarr;</span></a>
+      <a class="m-map" id="m-page" href="states/index.html">Full state page <span aria-hidden="true">&rarr;</span></a>
+      <button class="m-map" id="m-focus" type="button">Focus charts on this state <span aria-hidden="true">&uarr;</span></button>
+      <button class="m-map" id="m-compare" type="button">Compare with another state <span aria-hidden="true">&rarr;</span></button>
+    </div>
+    <div class="m-stats">
+      <div class="m-stat"><div class="mn" id="m-decl"></div><div class="ml">declarations</div></div>
+      <div class="m-stat"><div class="mn" id="m-den"></div><div class="ml">requests denied</div></div>
+      <div class="m-stat"><div class="mn" id="m-rate"></div><div class="ml">request denial rate</div></div>
+      <div class="m-stat"><div class="mn" id="m-days"></div><div class="ml">avg days</div></div>
+    </div>
+    <div class="m-sec"><div class="m-h">By declaration type</div><div id="m-types" class="mbars"></div></div>
+    <div class="m-sec"><div class="m-h">Most common hazards</div><div id="m-haz" class="mbars"></div></div>
+    <div class="m-sec"><div class="m-recs-head"><div class="m-h" style="margin:0">Records</div><div class="recseg" id="recseg"><button class="on" data-r="decl">Declarations <b id="rc-d">0</b></button><button data-r="den">Denials <b id="rc-n">0</b></button></div></div><div class="m-reclist" id="m-reclist"></div></div>
+    <p class="m-note" id="m-note"></p>
+  </div>
+</div>
+
+<div class="modal-back" id="cmpback" hidden>
+  <div class="modal" style="max-width:780px" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
+    <button class="m-close" id="cmpclose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="m-rank">Compare</div>
+    <h3 class="m-name" id="cmp-title" style="font-size:30px">State vs. state</h3>
+    <div class="m-sub" id="cmp-sub"></div>
+    <div class="cmp-pick"><select id="cmp-a" aria-label="First state to compare"></select><span class="vs">vs</span><select id="cmp-b" aria-label="Second state to compare"></select></div>
+    <div class="cmp-grid" id="cmp-grid"></div>
+  </div>
+</div>
+
+</div>
+
+<!-- Live data from build.py (OpenFEMA pipeline). Loads if present; the file falls back to baked-in data when it is absent. -->
+<script src="data.js"></script>
+<!-- Baked-in fallback dataset, split into its own cacheable file. Loads after data.js; the inline script below overrides it with live data when data.js is present. -->
+<script src="decls.js"></script>
 <script>
-document.querySelectorAll('.table-search').forEach((input) => {
-  input.addEventListener('input', () => {
-    const query = input.value.trim().toLocaleLowerCase();
-    const table = document.getElementById(input.dataset.table);
-    if (!table) return;
-    table.querySelectorAll('tbody tr').forEach((row) => {
-      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+/* ── live data: when data.js (build.py output) is present, rebuild the model from it ── */
+var RAW_BROWSE=null, RAW_NAMES={}, DEN_MAP={}, HAS_TRIBAL=false, excludeTribal=false;
+(function(){
+  if(!window.BROWSE || !window.STATE_SUMMARY) return;            /* standalone file: keep baked-in data */
+  try{
+    var B=window.BROWSE, NM=window.STATE_NAMES||{}, DN=window.DENIALS||[];
+    RAW_BROWSE=B; RAW_NAMES=NM;
+    /* records list (every declaration, with tribal tag) — independent of the count filter */
+    var byState={}; B.forEach(function(r){ (byState[r.state]=byState[r.state]||[]).push(r); });
+    var decls={};
+    Object.keys(byState).forEach(function(st){
+      decls[st]=byState[st].map(function(r){ return [r.femaDeclarationString,r.declarationType,r.incidentType,(r.declarationDate||'').slice(0,10),r.declarationTitle,(r.tribal?1:0),(r.area||'')]; });
     });
+    DECLS=decls;
+    /* denials: newest-first list + per-state count */
+    var dens={}, dm={};
+    DN.forEach(function(r){ var st=r.stateAbbreviation; if(!st) return;
+      (dens[st]=dens[st]||[]).push([String(r.declarationRequestNumber),r.declarationRequestType,r.requestedIncidentTypes,(r.declarationRequestDate||'').slice(0,10)]);
+      dm[st]=(dm[st]||0)+1; });
+    Object.keys(dens).forEach(function(st){ dens[st].sort(function(a,b){ return (b[3]||'').localeCompare(a[3]||''); }); });
+    DENS=dens; DEN_MAP=dm;
+    HAS_TRIBAL = B.some(function(r){ return r.tribal; });
+    if(HAS_TRIBAL){ var tf=document.getElementById('tribal-fgroup'); if(tf) tf.hidden=false; }
+    buildFromBrowse();   /* initial counts, tribal included */
+    console.log('Disaster Data: live data.js loaded \u2014 '+B.length+' declarations'+(HAS_TRIBAL?', tribal-aware':'')+', as of '+(window.DATA_DATE||'unknown')+'.');
+  }catch(e){ console.warn('Disaster Data: data.js present but could not be parsed; using baked-in data.', e); }
+})();
+
+/* Derive declaration counts from the deduped BROWSE list (single source). When excludeTribal is on, tribal-requested declarations are set aside. Denials come from the denial dataset and are unaffected. */
+function buildFromBrowse(){
+  if(!RAW_BROWSE) return;
+  var B = excludeTribal ? RAW_BROWSE.filter(function(r){ return !r.tribal; }) : RAW_BROWSE;
+  var byState={};
+  B.forEach(function(r){ (byState[r.state]=byState[r.state]||[]).push(r); });
+  var states=[];
+  Object.keys(byState).forEach(function(st){
+    var rows=byState[st], c={DR:0,EM:0,FM:0}, incC={}, dsum=0, dn=0;
+    rows.forEach(function(r){
+      if(c[r.declarationType]!=null) c[r.declarationType]++;
+      var it=r.incidentType||'Unknown'; incC[it]=(incC[it]||0)+1;
+      if(typeof r.days_to_approve==='number' && r.days_to_approve>=0){ dsum+=r.days_to_approve; dn++; }
+    });
+    var inc=Object.keys(incC).map(function(it){ return [it,incC[it]]; }).sort(function(a,b){ return b[1]-a[1]; });
+    var decl=rows.length, den=DEN_MAP[st]||0;
+    states.push({ab:st,name:RAW_NAMES[st]||st,decl:decl,dr:c.DR,em:c.EM,fm:c.FM,den:den,
+      rate:(decl+den)?+(den/(decl+den)*100).toFixed(2):0, days:dn?+(dsum/dn).toFixed(1):0, inc:inc});
   });
+  STATES=states;
+  var yc={}; B.forEach(function(r){ var y=r.fyDeclared; if(y) yc[y]=(yc[y]||0)+1; });
+  YOY=Object.keys(yc).map(function(y){ return [+y,yc[y]]; }).sort(function(a,b){ return a[0]-b[0]; });
+  var allC={}, nofmC={}, typeSet={};
+  B.forEach(function(r){ var it=r.incidentType||'Unknown'; typeSet[it]=1; allC[it]=(allC[it]||0)+1; if(r.declarationType!=='FM') nofmC[it]=(nofmC[it]||0)+1; });
+  HAZ=Object.keys(allC).map(function(it){ return {n:it,all:allC[it],nofm:nofmC[it]||0,fire:it==='Fire'}; }).sort(function(a,b){ return b.all-a.all; }).slice(0,8);
+  var totD=0,totN=0; states.forEach(function(x){ totD+=x.decl; totN+=x.den; });
+  var ss=document.getElementById('st-states'); if(ss) ss.textContent=states.length;
+  var sd=document.getElementById('st-denied'); if(sd) sd.innerHTML=(totN/((totD+totN)||1)*100).toFixed(1)+'<small>%</small>';
+  var sh=document.getElementById('st-haz');    if(sh) sh.textContent=Object.keys(typeSet).length;
+}
+
+/* Re-aggregate the per-state board for a fiscal-year window [a,b].
+   Declarations come from RAW_BROWSE, denials from DENS, both filtered by fiscal year.
+   Leaves YOY (timeline) and the hazard chart untouched — they window themselves. */
+function buildStatesForWindow(a,b){
+  if(!RAW_BROWSE){ return; }
+  function _fy(iso){ var p=(iso||'').split('-'); return (+p[0])+((+p[1])>=10?1:0); }
+  var B = excludeTribal ? RAW_BROWSE.filter(function(r){ return !r.tribal; }) : RAW_BROWSE;
+  B = B.filter(function(r){ return r.fyDeclared>=a && r.fyDeclared<=b; });
+  var byState={}; B.forEach(function(r){ (byState[r.state]=byState[r.state]||[]).push(r); });
+  var denW={};
+  Object.keys(DENS).forEach(function(st){ var A=DENS[st], n=0; for(var i=0;i<A.length;i++){ var f=_fy(A[i][3]); if(f>=a&&f<=b) n++; } if(n) denW[st]=n; });
+  var states=[], typeSet={}, totD=0, totN=0;
+  Object.keys(byState).forEach(function(st){
+    var rows=byState[st], c={DR:0,EM:0,FM:0}, incC={}, dsum=0, dn=0;
+    rows.forEach(function(r){
+      if(c[r.declarationType]!=null) c[r.declarationType]++;
+      var it=r.incidentType||'Unknown'; incC[it]=(incC[it]||0)+1; typeSet[it]=1;
+      if(typeof r.days_to_approve==='number' && r.days_to_approve>=0){ dsum+=r.days_to_approve; dn++; }
+    });
+    var inc=Object.keys(incC).map(function(it){ return [it,incC[it]]; }).sort(function(x,y){ return y[1]-x[1]; });
+    var decl=rows.length, den=denW[st]||0; totD+=decl; totN+=den;
+    states.push({ab:st,name:RAW_NAMES[st]||st,decl:decl,dr:c.DR,em:c.EM,fm:c.FM,den:den,
+      rate:(decl+den)?+(den/(decl+den)*100).toFixed(2):0, days:dn?+(dsum/dn).toFixed(1):0, inc:inc});
+  });
+  STATES=states;
+  var ss=document.getElementById('st-states'); if(ss) ss.textContent=states.length;
+  var sd=document.getElementById('st-denied'); if(sd) sd.innerHTML=(totN/((totD+totN)||1)*100).toFixed(1)+'<small>%</small>';
+  var sh=document.getElementById('st-haz');    if(sh) sh.textContent=Object.keys(typeSet).length;
+}
+
+let sortMode='decl', incFilter='All', yrMin=2000, yrMax=2026, hazMode='all', Y_MIN=2000, Y_MAX=2026;
+Y_MIN = (YOY[0]?YOY[0][0]:2000); Y_MAX = (YOY.length?YOY[YOY.length-1][0]:2026);
+/* default the view to the last COMPLETE fiscal year (FY runs Oct 1 to Sep 30), so the
+   headline never includes an in-progress year; the partial year stays one slider-drag away */
+var Y_DEF_MAX = (function(){ var n=new Date(), curFY=(n.getMonth()>=9?n.getFullYear()+1:n.getFullYear()), d=Math.min(Y_MAX,curFY-1); return (d>=Y_MIN)?d:Y_MAX; })();
+const heat=['#efddb9','#e6c089','#d98c4e','#c85c2e','#9e3a1e'];
+function heatFor(v){ if(v>=200)return heat[4]; if(v>=100)return heat[3]; if(v>=50)return heat[2]; if(v>=20)return heat[1]; return heat[0]; }
+function rateColor(r){ if(r>=25)return '#9e3a1e'; if(r>=15)return '#c85c2e'; if(r>=8)return '#d98c4e'; if(r>0)return '#5b5346'; return '#1d9e75'; }
+let maxRate=Math.max(...STATES.map(s=>s.rate));
+const TIERS=[{t:"Most disaster-prone",sub:"100+ declarations",min:100},{t:"Frequently declared",sub:"50 to 99",min:50},{t:"Periodically hit",sub:"20 to 49",min:20},{t:"Rarely declared",sub:"fewer than 20",min:0}];
+
+function activeTypes(){ return [...document.querySelectorAll('#dtype button.on')].map(b=>b.dataset.d); }
+function cntFor(s,t){ return t.reduce((n,x)=> n + (x==='DR'?s.dr:x==='EM'?s.em:s.fm),0); }
+function hazardsFor(s,fmOff){ let l=s.inc.map(x=>x[0]); if(fmOff) l=l.filter(h=>h!=='Fire'); return l.slice(0,2); }
+function chev(){return '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';}
+
+function rowHTML(s,rank,metric,curMax,fmOff){
+  const isRate=metric==='rate';
+  const barVal=isRate?s.rate:s.cnt, barMax=isRate?maxRate:curMax;
+  const pct=Math.max(3,(barVal/barMax)*100);
+  const barCol=isRate?rateColor(s.rate):heatFor(s.cnt);
+  const haz=hazardsFor(s,fmOff).join(' · ')||'None';
+  const bignum=isRate?s.rate.toFixed(1)+'%':s.cnt;
+  const _foc=(typeof FOCUS!=='undefined'&&FOCUS&&FOCUS.ab===s.ab)?' rowfocused':'';
+  return `<div class="row${_foc}" data-ab="${s.ab}">
+    <div class="rank">${rank}</div>
+    <div class="sname"><div class="n">${s.name}</div><div class="meta">${s.ab} · ${haz}</div></div>
+    <div class="bar-wrap"><div class="bar-track"><div class="bar" style="width:${pct}%;background:${barCol}"></div></div><div class="barnum">${bignum}</div></div>
+    <div class="right">${ isRate ? `<div class="deny"><div class="d" style="color:${heatFor(s.cnt)}">${s.cnt}</div><div class="dl">declared</div></div>` : `<div class="deny"><div class="d" style="color:${rateColor(s.rate)}">${s.rate.toFixed(1)}%</div><div class="dl">denied</div></div>` }${chev()}</div>
+  </div>`;
+}
+
+function render(){
+  const types=activeTypes(), fmOff=!types.includes('FM'), board=document.getElementById('scoreboard');
+  let data=STATES.map(s=>Object.assign({},s,{cnt:cntFor(s,types)})).filter(s=>s.cnt>0);
+  data=data.filter(s=> incFilter==='All' || hazardsFor(s,false).includes(incFilter));
+  if(!data.length){ board.innerHTML='<p style="color:var(--ink-3);padding:20px 0">No states match these filters.</p>'; return; }
+  const curMax=Math.max(...data.map(s=>s.cnt));
+  maxRate=Math.max(...data.map(s=>s.rate),0.01); /* scale rate bars to the current window */
+
+  if(sortMode==='rate'){
+    data.sort((a,b)=> b.rate-a.rate || b.cnt-a.cnt);
+    let h='<div class="tier"><div class="tier-h"><span class="t">Ranked by denial rate</span><span class="c">denial rate, highest first · '+data.length+' shown</span></div>';
+    data.forEach((s,i)=> h+=rowHTML(s,i+1,'rate',curMax,fmOff));
+    board.innerHTML=h+'</div>';
+  } else {
+    data.sort((a,b)=> b.cnt-a.cnt);
+    data.forEach((s,i)=> s._r=i+1);
+    let h='';
+    TIERS.forEach((tier,ti)=>{
+      const upper= ti===0?Infinity:TIERS[ti-1].min;
+      const inT=data.filter(s=> s.cnt>=tier.min && s.cnt<upper);
+      if(!inT.length) return;
+      h+='<div class="tier"><div class="tier-h"><span class="t">'+tier.t+'</span><span class="c">'+tier.sub+' · '+inT.length+(inT.length===1?' state':' states')+'</span></div>';
+      inT.forEach(s=> h+=rowHTML(s,s._r,'decl',curMax,fmOff));
+      h+='</div>';
+    });
+    board.innerHTML=h;
+  }
+}
+
+/* ── hazard breakdown ── */
+let hazExpanded=false, HAZ_TYPES=null;
+function renderHaz(){
+  const box=document.getElementById('hazbars'), key=hazMode;
+  if(!HAZ_TYPES){ const set={}; for(const st in DECLS){ const A=DECLS[st]; for(let i=0;i<A.length;i++) set[A[i][2]||'Unknown']=1; } HAZ_TYPES=Object.keys(set); }
+  /* hazard counts within the selected year range, honoring the tribal filter (fiscal year from each record's date) */
+  const allC={}, nofmC={};
+  const _scope=(typeof FOCUS!=='undefined'&&FOCUS)?[FOCUS.ab]:Object.keys(DECLS);
+  for(const st of _scope){ const A=DECLS[st]||[]; for(let i=0;i<A.length;i++){ const r=A[i]; if(excludeTribal&&r[5]) continue; const p=(r[3]||'').split('-'), fy=(+p[0])+((+p[1])>=10?1:0); if(fy<yrMin||fy>yrMax) continue; const it=r[2]||'Unknown'; allC[it]=(allC[it]||0)+1; if(r[1]!=='FM') nofmC[it]=(nofmC[it]||0)+1; } }
+  if(!box.dataset.built){
+    box.innerHTML=HAZ_TYPES.map(n=>`<div class="hrow${n==='Fire'?' fire':''}" data-n="${n}"><div class="hn">${n}</div><div class="ht"><div class="hb"></div></div><div class="hv"></div></div>`).join('');
+    box.dataset.built='1';
+  }
+  const present=HAZ_TYPES.map(n=>({n:n,v:(key==='all'?(allC[n]||0):(nofmC[n]||0))})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  const max=present.length?present[0].v:1;
+  const rankOf={}; present.forEach((x,i)=>rankOf[x.n]=i);
+  HAZ_TYPES.forEach(n=>{
+    const row=box.querySelector('[data-n="'+n+'"]'); if(!row) return;
+    const rank=rankOf[n];
+    if(rank===undefined || (rank>=8 && !hazExpanded)){ row.style.display='none'; return; }
+    const v=(key==='all'?(allC[n]||0):(nofmC[n]||0));
+    row.style.display=''; row.style.order=rank;
+    row.querySelector('.hb').style.width=Math.max(2,(v/max)*100)+'%';
+    row.querySelector('.hv').textContent=v.toLocaleString();
+  });
+  const btn=document.getElementById('hazmore');
+  if(btn){ if(present.length>8){ btn.hidden=false; btn.textContent=hazExpanded?'Show top 8 \u2191':('Show all '+present.length+' hazard types \u2193'); } else { btn.hidden=true; } }
+  /* narrative note, range-aware */
+  const fa=allC['Fire']||0, fn=nofmC['Fire']||0;
+  const topAll=present[0];
+  const topNofm=HAZ_TYPES.map(n=>({n:n,v:nofmC[n]||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v)[0];
+  let note='';
+  if(key==='all'){
+    if(topAll && topAll.n==='Fire')
+      note=`Counting every declaration, <strong style="color:var(--ink)">fire ranks first at ${fa.toLocaleString()}</strong>, but most of those are fire-management (FM) declarations, a separate program with a lower threshold and faster turnaround.`;
+    else if(topAll)
+      note=`In the selected window, <strong style="color:var(--ink)">${topAll.n.toLowerCase()} leads at ${topAll.v.toLocaleString()}</strong> declarations.`;
+  } else {
+    if(topNofm)
+      note=`Set fire-management aside and the picture flips: <strong style="color:var(--ink)">${topNofm.n.toLowerCase()} leads at ${topNofm.v.toLocaleString()}</strong>${fa>0?`. Fire as a major-disaster or emergency falls to just ${fn.toLocaleString()}`:''}.`;
+  }
+  document.getElementById('haznote').innerHTML=note;
+}
+
+/* ── timeline ── */
+function niceMax(v){ v=Math.max(6,v); var mag=Math.pow(10,Math.floor(Math.log10(v))); var n=Math.ceil(v/mag)*mag; if(n<v*1.08)n+=mag; return n; }
+function drawTimeline(){
+  const svg=document.getElementById('timeline');
+  const FOC=(typeof FOCUS!=='undefined')?FOCUS:null;
+  const SERIES = FOC ? focusSeries(FOC.ab) : YOY;   /* focus: one state's per-year curve; else national */
+  const W=1000,H=330,padL=46,padR=24,padT=58,padB=44;
+  const smax = SERIES.reduce((m,d)=>Math.max(m,d[1]),0);
+  const yMax = FOC ? niceMax(smax) : 360;
+  const grid = FOC ? [0,Math.round(yMax/3),Math.round(2*yMax/3),yMax] : [0,100,200,300];
+  const xs=i=> padL + i*((W-padL-padR)/(SERIES.length-1));
+  const ys=v=> H-padB - (v/yMax)*(H-padT-padB);
+  let g='';
+  grid.forEach(v=>{const y=ys(v);g+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e0d8c5" stroke-width="1"/><text x="${padL-10}" y="${y+4}" text-anchor="end" font-family="Public Sans" font-size="11" fill="#938a78">${v}</text>`;});
+  const pts=SERIES.map((d,i)=>[xs(i),ys(d[1]),d[0],d[1]]);
+  const area=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+` L ${xs(SERIES.length-1).toFixed(1)} ${H-padB} L ${padL} ${H-padB} Z`;
+  g+=`<path d="${area}" fill="#d98c4e" fill-opacity="0.16"/>`;
+  g+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="#c85c2e" stroke-width="2.4" stroke-linejoin="round"/>`;
+  let lo=0; SERIES.forEach((d,i)=>{ if(d[0]<yrMin) lo=i+1; });
+  let hi=SERIES.length-1; for(let i=SERIES.length-1;i>=0;i--){ if(SERIES[i][0]>yrMax) hi=i-1; }
+  const x0=xs(Math.min(lo,SERIES.length-1)), x1=xs(Math.max(hi,0));
+  if(yrMin>Y_MIN) g+=`<rect x="${padL}" y="${padT}" width="${Math.max(0,x0-padL)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.64"/>`;
+  if(yrMax<Y_MAX) g+=`<rect x="${x1}" y="${padT}" width="${Math.max(0,W-padR-x1)}" height="${H-padT-padB}" fill="#f6f1e7" fill-opacity="0.64"/>`;
+  pts.forEach(p=>{
+    const inr=p[2]>=yrMin&&p[2]<=yrMax;
+    if(!FOC && ANNOT[p[2]]){                          /* national-event annotations only in the national view */
+      g+=`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#9e3a1e"/>`;
+      g+=`<text x="${p[0]}" y="${p[1]-30}" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="15" fill="#1d1813">${p[2]}</text>`;
+      ANNOT[p[2]].forEach((ln,li)=> g+=`<text x="${p[0]}" y="${p[1]-16+li*12}" text-anchor="middle" font-family="Public Sans" font-size="10.5" fill="#5b5346">${ln}</text>`);
+    } else if(inr){ g+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="#c85c2e"/>`; }
+  });
+  SERIES.forEach((d,i)=>{ if((d[0]%5===0&&(SERIES.length-1-i)>1)||i===SERIES.length-1) g+=`<text x="${xs(i)}" y="${H-padB+22}" text-anchor="middle" font-family="Public Sans" font-size="11" fill="#938a78">${d[0]}</text>`; });
+  g+=`<circle id="tl-dot" r="5.5" fill="none" stroke="#1d1813" stroke-width="2" opacity="0"/>`;
+  pts.forEach(p=> g+=`<circle class="hit" cx="${p[0]}" cy="${p[1]}" r="16" fill="transparent" data-y="${p[2]}" data-c="${p[3]}"/>`);
+  svg.innerHTML=g;
+  var capEl=document.querySelector('.tl-cap span:first-child');
+  if(capEl) capEl.textContent = FOC ? (FOC.name+' — declarations by fiscal year') : 'Federal disaster & emergency declarations, by fiscal year';
+}
+
+const tip=document.getElementById('tip');
+function showTip(c){
+  const card=document.querySelector('.chartcard').getBoundingClientRect(), r=c.getBoundingClientRect();
+  tip.innerHTML='<b>'+c.dataset.c+'</b> declarations<br>fiscal year '+c.dataset.y;
+  tip.style.left=(r.left+r.width/2-card.left)+'px';
+  tip.style.top=(r.top+r.height/2-card.top)+'px';
+  tip.style.opacity='1';
+  const dot=document.getElementById('tl-dot');
+  if(dot){ dot.setAttribute('cx',c.getAttribute('cx')); dot.setAttribute('cy',c.getAttribute('cy')); dot.setAttribute('opacity','1'); }
+}
+function hideTip(){ tip.style.opacity='0'; const d=document.getElementById('tl-dot'); if(d) d.setAttribute('opacity','0'); }
+const svg=document.getElementById('timeline');
+svg.addEventListener('mouseover',e=>{ if(e.target.classList.contains('hit')) showTip(e.target); });
+svg.addEventListener('mouseout',e=>{ if(e.target.classList.contains('hit')) hideTip(); });
+svg.addEventListener('click',e=>{ if(e.target.classList.contains('hit')) showTip(e.target); });
+
+function updateProvStamp(a,b){
+  var pr=document.getElementById('prov-range'), pt=document.getElementById('prov-toggle');
+  if(!pr) return;
+  var hasPartial = Y_MAX>Y_DEF_MAX;
+  var partialShown = hasPartial && b>=Y_MAX;
+  pr.textContent = 'Totals: FY'+a+'\u2013FY'+Math.min(b,Y_DEF_MAX) + (partialShown ? ' (FY'+Y_MAX+' still in progress, included below)' : '');
+  if(pt){
+    pt.style.display = hasPartial ? '' : 'none';
+    pt.textContent = partialShown ? 'Show completed years only' : 'Include the current partial year';
+    pt.setAttribute('aria-pressed', partialShown ? 'true' : 'false');
+  }
+}
+document.getElementById('prov-toggle').addEventListener('click',function(){
+  var rmax=document.getElementById('rmax'), atMax = (+rmax.value >= Y_MAX && Y_MAX>Y_DEF_MAX);
+  rmax.value = atMax ? Y_DEF_MAX : Y_MAX;
+  updateRange();
 });
 
-document.querySelectorAll('table.sortable').forEach((table) => {
-  table.querySelectorAll('.sort-button').forEach((button) => {
-    button.addEventListener('click', () => {
-      const column = Number(button.dataset.column);
-      const ascending = button.dataset.direction !== 'asc';
-      const body = table.tBodies[0];
-      const rows = Array.from(body.rows);
-      rows.sort((left, right) => {
-        const a = left.cells[column]?.textContent.trim() || '';
-        const b = right.cells[column]?.textContent.trim() || '';
-        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
-      });
-      if (!ascending) rows.reverse();
-      rows.forEach((row) => body.appendChild(row));
-      table.querySelectorAll('.sort-button').forEach((other) => {
-        delete other.dataset.direction;
-        other.closest('th').removeAttribute('aria-sort');
-        other.querySelector('span').textContent = '↕';
-      });
-      button.dataset.direction = ascending ? 'asc' : 'desc';
-      button.closest('th').setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
-      button.querySelector('span').textContent = ascending ? '↑' : '↓';
-    });
-  });
+function updateRange(){
+  const a0=+document.getElementById('rmin').value, b0=+document.getElementById('rmax').value;
+  let a=Math.min(a0,b0), b=Math.max(a0,b0);
+  yrMin=a; yrMax=b;
+  const sp=(Y_MAX-Y_MIN)||1; const lo=(a-Y_MIN)/sp*100, hi=(b-Y_MIN)/sp*100;
+  document.getElementById('rfill').style.left=lo+'%';
+  document.getElementById('rfill').style.width=(hi-lo)+'%';
+  document.getElementById('yr-read').textContent=a+' to '+b;
+  updateProvStamp(a,b);
+  const _series=(typeof FOCUS!=='undefined'&&FOCUS)?focusSeries(FOCUS.ab):YOY;
+  const w=_series.filter(d=>d[0]>=a&&d[0]<=b).reduce((s,d)=>s+d[1],0);
+  document.getElementById('st-total').textContent=w.toLocaleString();
+  document.getElementById('tl-sum').textContent=w.toLocaleString();
+  /* re-aggregate the per-state board + headline stats for the selected window, then redraw it */
+  buildStatesForWindow(a,b);
+  render();
+  drawTimeline();
+  renderHaz();
+}
+
+document.getElementById('rmin').addEventListener('input',updateRange);
+document.getElementById('rmax').addEventListener('input',updateRange);
+document.getElementById('sortseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#sortseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');sortMode=b.dataset.sort;render();});
+document.getElementById('pills').addEventListener('click',e=>{const b=e.target.closest('.pill');if(!b)return;document.querySelectorAll('#pills .pill').forEach(x=>x.classList.remove('on'));b.classList.add('on');incFilter=b.dataset.inc;render();});
+document.getElementById('dtype').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.classList.contains('on')&&activeTypes().length===1)return;b.classList.toggle('on');render();});
+document.getElementById('tribalseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#tribalseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');excludeTribal=b.dataset.t==='exc';buildFromBrowse();render();renderHaz();updateRange();if(!document.getElementById('mback').hidden&&recState)openState(recState.ab);});
+document.getElementById('haztog').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#haztog button').forEach(x=>x.classList.remove('on'));b.classList.add('on');hazMode=b.dataset.h;renderHaz();});
+document.getElementById('hazmore').addEventListener('click',()=>{hazExpanded=!hazExpanded;renderHaz();});
+document.getElementById('reset').addEventListener('click',()=>{
+  if(typeof clearFocus==='function') clearFocus(true);   /* drop any state focus, no re-render (reset re-renders below) */
+  sortMode='decl'; incFilter='All';
+  document.getElementById('rmin').value=Y_MIN; document.getElementById('rmax').value=Y_DEF_MAX;
+  document.querySelectorAll('#sortseg button').forEach((x,i)=>x.classList.toggle('on',i===0));
+  document.querySelectorAll('#pills .pill').forEach(x=>x.classList.toggle('on',x.dataset.inc==='All'));
+  document.querySelectorAll('#dtype button').forEach(x=>x.classList.toggle('on',x.dataset.d==='DR'));
+  excludeTribal=false;
+  document.querySelectorAll('#tribalseg button').forEach(x=>x.classList.toggle('on',x.dataset.t==='inc'));
+  if(RAW_BROWSE) buildFromBrowse();
+  updateRange(); render(); renderHaz();
 });
-</script></body></html>
+
+const rankByDecl=STATES.slice().sort((a,b)=>b.decl-a.decl);
+function mbars(arr,max){ return arr.map(x=>`<div class="mbar"><div class="mbl">${x.l}${x.s?` <span>${x.s}</span>`:''}</div><div class="mbt"><div class="mbf" style="width:${Math.max(2,x.v/max*100)}%;background:${x.c}"></div></div><div class="mbv">${x.v}</div></div>`).join(''); }
+function openState(ab){
+  const s=STATES.find(x=>x.ab===ab); if(!s) return;
+  document.getElementById('m-rank').textContent='#'+(STATES.slice().sort(function(x,y){return y.decl-x.decl;}).indexOf(s)+1)+' by declarations';
+  document.getElementById('m-name').textContent=s.name;
+  document.getElementById('m-sub').textContent=s.ab+' · '+s.inc.slice(0,2).map(x=>x[0]).join(' · ');
+  document.getElementById('m-decl').textContent=s.decl;
+  document.getElementById('m-den').textContent=s.den;
+  document.getElementById('m-rate').textContent=s.rate.toFixed(1)+'%';
+  document.getElementById('m-days').textContent=s.days.toFixed(1);
+  const tmax=Math.max(s.dr,s.em,s.fm,1);
+  document.getElementById('m-types').innerHTML=mbars([{l:'DR',s:'Major Disaster',v:s.dr,c:'#1d1813'},{l:'EM',s:'Emergency',v:s.em,c:'#004c53'},{l:'FM',s:'Fire Mgmt',v:s.fm,c:'#c85c2e'}],tmax);
+  const hmax=s.inc.length?s.inc[0][1]:1;
+  document.getElementById('m-haz').innerHTML=mbars(s.inc.map(h=>({l:h[0],v:h[1],c:heatFor(h[1])})),hmax);
+  const nf=s.inc.find(h=>h[0]!=='Fire');
+  const trbN=(DECLS[ab]||[]).filter(r=>r[5]&&inWin(r)).length;
+  let _note = nf ? `Set fire-management aside, and ${s.name}'s leading disaster is ${nf[0].toLowerCase()} (${nf[1]} declarations).` : '';
+  if(trbN) _note += (_note?' ':'')+`${trbN} of these ${trbN===1?'was':'were'} requested directly by a federally recognized tribal nation \u2014 a sovereign government's own declaration, counted separately.`;
+  document.getElementById('m-note').textContent = _note;
+  document.getElementById('m-map').href='map.html?state='+ab;
+  document.getElementById('m-fund').href='public-assistance-projects.html?state='+ab;
+  document.getElementById('m-page').href='states/'+s.name.toLowerCase().replace(/\./g,'').replace(/ /g,'-')+'.html';
+  recState=s; recMode='decl';
+  document.getElementById('rc-d').textContent=(DECLS[ab]||[]).filter(inWin).length;
+  document.getElementById('rc-n').textContent=(DENS[ab]||[]).filter(inWin).length;
+  document.querySelectorAll('#recseg button').forEach((x,i)=>x.classList.toggle('on',i===0));
+  renderRecs();
+  document.getElementById('mback').hidden=false; document.getElementById('mclose').focus();
+}
+function closeModal(){ document.getElementById('mback').hidden=true; }
+document.getElementById('scoreboard').addEventListener('click',e=>{ const r=e.target.closest('.row'); if(r&&r.dataset.ab) openState(r.dataset.ab); });
+document.getElementById('mclose').addEventListener('click',closeModal);
+document.getElementById('mback').addEventListener('click',e=>{ if(e.target.id==='mback') closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !document.getElementById('mback').hidden) closeModal(); });
+
+let recState=null, recMode='decl';
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fdate(iso){ const p=(iso||'').split('-'); return p.length>=2 ? MON[+p[1]-1]+' '+p[0] : (iso||''); }
+/* is a DECLS/DENS record (date at index 3) inside the currently selected fiscal-year window? */
+function inWin(rec){ const p=(rec[3]||'').split('-'); const f=(+p[0])+((+p[1])>=10?1:0); return f>=yrMin && f<=yrMax; }
+const TCOL={DR:'#1d1813',EM:'#004c53',FM:'#c85c2e'};
+function renderRecs(){
+  if(!recState) return;
+  const ab=recState.ab, box=document.getElementById('m-reclist');
+  if(recMode==='decl'){
+    const list=(DECLS[ab]||[]).filter(inWin);
+    box.innerHTML = list.length ? list.map(r=>{
+      const trb=r[5]?'<span class="rec-tribal">Tribal Nation</span>':'';
+      const area=(r[5]&&r[6])?` &middot; <span class="rec-area">${r[6]}</span>`:'';
+      return `<div class="rec"><div class="rec-top"><span class="rec-idwrap"><span class="rec-id" style="color:${TCOL[r[1]]||'#1d1813'}">${r[0]}</span>${trb}</span><span class="rec-date">${fdate(r[3])}</span></div><div class="rec-sub">${r[2]} &middot; <span class="rec-title">${r[4]}</span>${area}</div></div>`;
+    }).join('') : '<div class="rec-empty">No declarations in the dataset.</div>';
+  } else {
+    const list=(DENS[ab]||[]).filter(inWin);
+    box.innerHTML = list.length ? list.map(r=>`<div class="rec"><div class="rec-top"><span class="rec-id">Request #${r[0]}</span><span class="rec-date">${fdate(r[3])}<span class="rec-deny">Denied</span></span></div><div class="rec-sub">${r[1]} &middot; ${r[2]}</div></div>`).join('') : '<div class="rec-empty">No denied requests on record.</div>';
+  }
+}
+document.getElementById('recseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#recseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');recMode=b.dataset.r;renderRecs();});
+
+function initBounds(){
+  const rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
+  rmin.min=rmax.min=Y_MIN; rmin.max=rmax.max=Y_MAX;
+  rmin.value=Y_MIN; rmax.value=Y_DEF_MAX;
+  document.getElementById('yr-read').textContent=Y_MIN+' to '+Y_DEF_MAX;
+  var fr=document.getElementById('foot-range'); if(fr) fr.textContent='FY'+Y_MIN+' to FY'+Y_MAX;
+  var fa=document.getElementById('foot-asof');
+  var asofText='';
+  if(window.DATA_DATE){ var mm=/^(\d{4})-(\d{2})-(\d{2})/.exec(window.DATA_DATE);
+    if(mm) asofText=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mm[2]-1]+' '+(+mm[3])+', '+mm[1]; }
+  if(fa) fa.textContent = asofText ? ' Data current through '+asofText+'.' : '';
+  var pa=document.getElementById('prov-asof'); if(pa && asofText) pa.textContent='Latest declarations through '+asofText;
+  updateProvStamp(Y_MIN, Y_DEF_MAX);
+}
+/* ── Linked state focus: tie the timeline + hazard chart to one state, dismissible via a chip.
+   The scoreboard stays national (it's the picker) and highlights the focused row. ── */
+var FOCUS=null;
+function _reduceMotion(){ return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+function focusSeries(ab){
+  var counts={}, y; for(y=Y_MIN;y<=Y_MAX;y++) counts[y]=0;
+  var A=DECLS[ab]||[];
+  for(var i=0;i<A.length;i++){ var r=A[i]; if(excludeTribal&&r[5]) continue; var p=(r[3]||'').split('-'); var fy=(+p[0])+((+p[1])>=10?1:0); if(fy>=Y_MIN&&fy<=Y_MAX) counts[fy]++; }
+  var out=[]; for(y=Y_MIN;y<=Y_MAX;y++) out.push([y,counts[y]]); return out;
+}
+function _focusChip(){
+  var chip=document.getElementById('focus-chip');
+  if(!chip){
+    var deck=document.querySelector('.deck'); if(!deck) return null;
+    chip=document.createElement('button');
+    chip.id='focus-chip'; chip.type='button'; chip.hidden=true;
+    chip.setAttribute('style',"align-self:center;align-items:center;gap:8px;font:600 12px 'Public Sans',system-ui,sans-serif;color:#fff;background:var(--ember);border:1px solid var(--ember);border-radius:20px;padding:6px 12px;cursor:pointer;white-space:nowrap;transition:background .12s;display:none");
+    chip.addEventListener('click',function(){ clearFocus(); });
+    deck.appendChild(chip);
+  }
+  return chip;
+}
+function setFocus(ab){
+  var s=STATES.find(function(x){return x.ab===ab;});
+  FOCUS={ab:ab, name:(s?s.name:ab)};
+  var chip=_focusChip();
+  if(chip){ chip.innerHTML='Focused on '+FOCUS.name+' <span aria-hidden="true" style="font-size:15px;line-height:1">×</span>'; chip.hidden=false; chip.style.display='inline-flex'; }
+  updateRange();   /* fans out to buildStatesForWindow → render → drawTimeline → renderHaz */
+  var tl=document.getElementById('timeline');
+  if(tl&&tl.scrollIntoView) tl.scrollIntoView({behavior:_reduceMotion()?'auto':'smooth',block:'center'});
+}
+function clearFocus(skipRender){
+  FOCUS=null;
+  var chip=document.getElementById('focus-chip'); if(chip){ chip.hidden=true; chip.style.display='none'; }
+  if(!skipRender){ updateRange(); }
+}
+var _mfocus=document.getElementById('m-focus');
+if(_mfocus) _mfocus.addEventListener('click',function(){ if(recState){ setFocus(recState.ab); closeModal(); } });
+
+initBounds(); updateRange(); render(); renderHaz();
+</script>
+<script>
+/* Disaster Data — chart export, citation, and shareable filtered views (vanilla, all client-side) */
+(function () {
+  function exportSvgToPng(svgEl, filename, scale) {
+    if (!svgEl) return;
+    filename = filename || 'disaster-data'; scale = scale || 2;
+    var r = svgEl.getBoundingClientRect();
+    var w = Math.ceil(r.width) || 1000, h = Math.ceil(r.height) || 330;
+    var SVGNS = 'http://www.w3.org/2000/svg';
+    var clone = svgEl.cloneNode(true);
+    clone.setAttribute('xmlns', SVGNS);
+    clone.setAttribute('width', w); clone.setAttribute('height', h);
+    var style = document.createElementNS(SVGNS, 'style');
+    style.textContent = "text{font-family:'Public Sans',system-ui,sans-serif}";
+    clone.insertBefore(style, clone.firstChild);
+    var bg = document.createElementNS(SVGNS, 'rect');
+    bg.setAttribute('width', '100%'); bg.setAttribute('height', '100%'); bg.setAttribute('fill', '#f6f1e7');
+    clone.insertBefore(bg, style.nextSibling);
+    var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone));
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement('canvas');
+      c.width = w * scale; c.height = h * scale;
+      var ctx = c.getContext('2d'); ctx.scale(scale, scale); ctx.drawImage(img, 0, 0);
+      c.toBlob(function (b) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(b); a.download = filename + '.png'; a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    };
+    img.src = url;
+  }
+
+  /* describe / link / cite the CURRENT filtered view (reads the page's own filter state) */
+  function viewLabel() {
+    var bits = ['FY' + yrMin + ' to FY' + yrMax];
+    if (typeof incFilter === 'string' && incFilter !== 'All') bits.unshift(incFilter + ' declarations');
+    return bits.join(', ');
+  }
+  function viewLink() {
+    var base = location.origin + location.pathname, p = new URLSearchParams();
+    if (!(yrMin === Y_MIN && yrMax === Y_DEF_MAX)) p.set('y', yrMin + '-' + yrMax);
+    if (typeof incFilter === 'string' && incFilter !== 'All') p.set('h', incFilter);
+    var types = activeTypes();
+    if (!(types.length === 1 && types[0] === 'DR')) p.set('t', types.join('.'));
+    var q = p.toString();
+    return q ? base + '?' + q : base;
+  }
+  function citation() {
+    var d = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return 'Disaster Data (' + viewLabel() + '). Derived from FEMA OpenFEMA Disaster Declarations Summaries. Accessed ' + d + '. ' + viewLink();
+  }
+
+  /* apply ?y / ?h / ?t from a shared link onto the controls; returns true if anything changed */
+  function applyURLState() {
+    var changed = false;
+    try {
+      var p = new URLSearchParams(location.search);
+      var y = p.get('y');
+      if (y) { var mm = y.split('-');
+        if (mm.length === 2) { var a = +mm[0], b = +mm[1];
+          if (!isNaN(a) && !isNaN(b)) {
+            a = Math.max(Y_MIN, Math.min(Y_MAX, a)); b = Math.max(Y_MIN, Math.min(Y_MAX, b));
+            if (a > b) { var sw = a; a = b; b = sw; }
+            document.getElementById('rmin').value = a; document.getElementById('rmax').value = b; changed = true;
+          }
+        }
+      }
+      var h = p.get('h');
+      if (h) { var pills = document.querySelectorAll('#pills .pill'), found = null;
+        pills.forEach(function (x) { if (x.dataset.inc === h) found = x; });
+        if (found) { pills.forEach(function (x) { x.classList.remove('on'); }); found.classList.add('on'); incFilter = h; changed = true; }
+      }
+      var tt = p.get('t');
+      if (tt) { var want = tt.split('.').filter(Boolean), btns = document.querySelectorAll('#dtype button'), any = false;
+        btns.forEach(function (b) { var on = want.indexOf(b.dataset.d) >= 0; b.classList.toggle('on', on); if (on) any = true; });
+        if (!any) btns.forEach(function (b) { b.classList.toggle('on', b.dataset.d === 'DR'); });
+        else changed = true;
+      }
+    } catch (e) {}
+    return changed;
+  }
+
+  /* inject "Download chart (PNG)" under the timeline */
+  var tl = document.getElementById('timeline');
+  var card = tl && tl.closest ? tl.closest('.chartcard') : null;
+  if (card) {
+    var dl = document.createElement('button');
+    dl.type = 'button'; dl.textContent = '\u2193 Download chart (PNG)';
+    dl.setAttribute('style', "display:inline-block;margin-top:.6rem;font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.4rem .8rem;cursor:pointer");
+    dl.addEventListener('click', function () { exportSvgToPng(tl, 'disaster-data-timeline'); });
+    card.appendChild(dl);
+  }
+
+  /* wire the "Cite this view" button */
+  var ci = document.getElementById('dd-cite-btn');
+  if (ci) {
+    ci.addEventListener('click', function () {
+      var txt = citation();
+      var done = function () { var prev = ci.textContent; ci.textContent = 'Copied to clipboard'; setTimeout(function () { ci.textContent = prev; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, function () { window.prompt('Copy citation:', txt); });
+      } else { window.prompt('Copy citation:', txt); }
+    });
+  }
+
+  /* ---- download the current ranking as CSV / JSON (reuses the page's own render pipeline) ---- */
+  function currentRanking() {
+    var types = activeTypes();
+    var fmOff = types.indexOf('FM') === -1;
+    var rows = STATES.map(function (s) { return Object.assign({}, s, { cnt: cntFor(s, types) }); })
+                     .filter(function (s) { return s.cnt > 0; })
+                     .filter(function (s) { return incFilter === 'All' || hazardsFor(s, false).indexOf(incFilter) >= 0; });
+    rows.sort(sortMode === 'rate'
+      ? function (a, b) { return b.rate - a.rate || b.cnt - a.cnt; }
+      : function (a, b) { return b.cnt - a.cnt; });
+    return { rows: rows, types: types, fmOff: fmOff };
+  }
+  function csvCell(v) { v = (v == null) ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function downloadBlob(text, mime, filename) {
+    var blob = new Blob([text], { type: mime }), a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+  }
+  function fileStub() {
+    var bits = ['disaster-data', 'FY' + yrMin + '-' + yrMax];
+    if (typeof incFilter === 'string' && incFilter !== 'All') bits.push(incFilter.replace(/\s+/g, '-'));
+    return bits.join('_');
+  }
+  function exportCSV() {
+    var r = currentRanking();
+    var head = ['Rank', 'State', 'Abbr', 'DR (major disaster)', 'EM (emergency)', 'FM (fire mgmt)', 'Total declarations', 'Denials', 'Denial rate (%)', 'Avg days to a decision', 'Top hazards'];
+    var lines = [head.map(csvCell).join(',')];
+    r.rows.forEach(function (s, i) {
+      lines.push([i + 1, s.name, s.ab, s.dr, s.em, s.fm, s.decl, s.den,
+        (typeof s.rate === 'number' ? s.rate.toFixed(2) : ''),
+        (typeof s.days === 'number' ? s.days.toFixed(1) : ''),
+        hazardsFor(s, r.fmOff).join('; ')].map(csvCell).join(','));
+    });
+    downloadBlob(lines.join('\r\n'), 'text/csv;charset=utf-8', fileStub() + '.csv');
+  }
+  function exportJSON() {
+    var r = currentRanking();
+    var payload = {
+      source: 'FEMA OpenFEMA Disaster Declarations Summaries and Declaration Denials',
+      generated: new Date().toISOString().slice(0, 10),
+      view: { fiscalYears: 'FY' + yrMin + ' to FY' + yrMax, hazardFilter: incFilter, declarationTypes: r.types, sortedBy: sortMode === 'rate' ? 'denial rate' : 'declarations' },
+      url: viewLink(),
+      states: r.rows.map(function (s, i) {
+        return { rank: i + 1, state: s.name, abbr: s.ab, dr: s.dr, em: s.em, fm: s.fm, totalDeclarations: s.decl, denials: s.den, denialRatePct: s.rate, avgDaysToDecision: s.days, topHazards: hazardsFor(s, r.fmOff) };
+      })
+    };
+    downloadBlob(JSON.stringify(payload, null, 2), 'application/json', fileStub() + '.json');
+  }
+  /* inject the download control just above the ranking */
+  var sb = document.getElementById('scoreboard');
+  if (sb && sb.parentNode) {
+    var bar = document.createElement('div');
+    bar.setAttribute('style', 'display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:0 0 1rem');
+    var lbl = document.createElement('span');
+    lbl.textContent = 'Download this view:';
+    lbl.setAttribute('style', "font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#5b5347");
+    bar.appendChild(lbl);
+    [['CSV', exportCSV], ['JSON', exportJSON]].forEach(function (pair) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = pair[0];
+      b.setAttribute('style', "font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#004c53;background:none;border:1px solid #004c53;border-radius:8px;padding:.35rem .75rem;cursor:pointer");
+      b.addEventListener('click', pair[1]);
+      bar.appendChild(b);
+    });
+    sb.parentNode.insertBefore(bar, sb);
+  }
+
+  /* if opened from a shared link, restore that exact view */
+  if (applyURLState() && typeof updateRange === 'function') { updateRange(); }
+})();
+</script>
+<script>
+/* Timeline "Play": step the year window forward one fiscal year at a time so declarations
+   visibly accumulate. Pure add-on — reuses the rmin/rmax sliders + updateRange(); the chart's
+   existing "future" shading recedes as the window grows, so no drawing changes are needed. */
+(function(){
+  var tl=document.getElementById('timeline');
+  var card=tl&&tl.closest?tl.closest('.chartcard'):null;
+  if(!card||typeof updateRange!=='function'||typeof Y_MIN==='undefined'||typeof Y_MAX==='undefined')return;
+  var rmin=document.getElementById('rmin'), rmax=document.getElementById('rmax');
+  if(!rmin||!rmax)return;
+  var reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  function icon(on){
+    return on
+      ? '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>Pause'
+      : '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 7 5.5z"/></svg>'+(reduce?'Show all years':'Play');
+  }
+  var btn=document.createElement('button');
+  btn.type='button';
+  btn.setAttribute('aria-label','Play the timeline: watch declarations accumulate year by year');
+  btn.setAttribute('style',"position:absolute;top:14px;right:14px;z-index:6;display:inline-flex;align-items:center;gap:6px;font:600 .8rem 'Public Sans',system-ui,sans-serif;color:#fff;background:#004c53;border:1px solid #004c53;border-radius:8px;padding:.42rem .8rem;cursor:pointer;transition:background .12s");
+  btn.innerHTML=icon(false);
+  btn.addEventListener('mouseenter',function(){btn.style.background='#0a6b73';});
+  btn.addEventListener('mouseleave',function(){btn.style.background='#004c53';});
+  card.appendChild(btn);
+
+  var playing=false, timer=null, holdMin=Y_MIN, curY=Y_MIN, STEP_MS=380;
+
+  function setWindow(a,b){ rmin.value=a; rmax.value=b; updateRange(); }
+  function stop(){ playing=false; if(timer){clearInterval(timer);timer=null;} btn.innerHTML=icon(false); }
+  function step(){
+    curY++;
+    if(curY>=Y_MAX){ setWindow(holdMin,Y_MAX); stop(); return; }
+    setWindow(holdMin,curY);
+  }
+  function play(){
+    holdMin=Math.min(+rmin.value,+rmax.value);
+    if(holdMin>=Y_MAX) holdMin=Y_MIN;          /* already at the end: replay from the start */
+    curY=holdMin;
+    playing=true; btn.innerHTML=icon(true);
+    if(reduce){ setWindow(holdMin,Y_MAX); stop(); return; }   /* honor reduced-motion: jump, don't animate */
+    setWindow(holdMin,curY);
+    timer=setInterval(step,STEP_MS);
+  }
+  btn.addEventListener('click',function(){ playing?stop():play(); });
+})();
+</script>
+<script src="locality-index.js"></script>
+<script>
+(function(){
+  var input=document.getElementById('lsQ'),box=document.getElementById('lsR'),wrap=document.getElementById('lsBox');
+  if(!input||!window.LOCALITY_INDEX)return;
+  var IDX=window.LOCALITY_INDEX,aidx=-1;
+  function norm(s){return s.toLowerCase().replace(/[^a-z0-9 ]/g,'');}
+  function find(q){
+    if(!q||q.length<2)return[];
+    var nq=norm(q),parts=nq.split(/\s+/),out=[];
+    for(var i=0;i<IDX.length;i++){
+      var r=IDX[i],nn=norm(r[0]+' '+r[1]+' '+r[2]);
+      var ok=true;for(var p=0;p<parts.length;p++){if(nn.indexOf(parts[p])<0){ok=false;break;}}
+      if(!ok)continue;
+      var ns=norm(r[0]),sc=r[4];
+      if(ns.indexOf(parts[0])===0)sc+=10000;
+      if(ns===nq)sc+=50000;
+      out.push([sc,r]);
+    }
+    out.sort(function(a,b){return b[0]-a[0];});
+    return out.slice(0,12).map(function(s){return s[1];});
+  }
+  function render(hits){
+    if(!hits.length){box.innerHTML='<div style="padding:.8rem 1rem;color:#6b6357;font-size:.9rem">No matching localities found.</div>';box.style.display='block';return;}
+    box.innerHTML=hits.map(function(r,i){
+      return '<a href="'+r[3]+'" data-i="'+i+'" style="display:flex;align-items:baseline;gap:.5rem;padding:.55rem 1rem;text-decoration:none;color:#2b2b2b;border-bottom:1px solid #f0ebe0">'
+        +'<span style="font-weight:600;color:#004c53">'+r[0]+'</span>'
+        +'<span style="color:#6b6357;font-size:.85rem">'+r[1]+'</span>'
+        +'<span style="margin-left:auto;color:#6b6357;font-size:.82rem;white-space:nowrap">'+r[4]+' decl.</span></a>';
+    }).join('');
+    box.style.display='block';aidx=-1;
+  }
+  input.addEventListener('input',function(){var q=this.value.trim();if(q.length<2){box.style.display='none';return;}render(find(q));});
+  input.addEventListener('keydown',function(e){
+    var links=box.querySelectorAll('a');if(!links.length)return;
+    if(e.key==='ArrowDown'){e.preventDefault();aidx=Math.min(aidx+1,links.length-1);links.forEach(function(a,i){a.style.background=i===aidx?'#d7e9ea':'';});}
+    else if(e.key==='ArrowUp'){e.preventDefault();aidx=Math.max(aidx-1,0);links.forEach(function(a,i){a.style.background=i===aidx?'#d7e9ea':'';});}
+    else if(e.key==='Enter'&&aidx>=0){e.preventDefault();links[aidx].click();}
+    else if(e.key==='Escape'){box.style.display='none';}
+  });
+  document.addEventListener('click',function(e){if(!wrap.contains(e.target))box.style.display='none';});
+  input.addEventListener('focus',function(){if(this.value.trim().length>=2){var h=find(this.value.trim());if(h.length)render(h);}});
+})();
+</script>
+<script>
+/* "Your locality": remember the locality a visitor picks (localStorage) and surface it up top
+   on return visits; also honor a shareable ?loc=<slug> link. Pure add-on over LOCALITY_INDEX. */
+(function(){
+  if(!window.LOCALITY_INDEX) return;
+  var IDX=window.LOCALITY_INDEX, KEY='dd.locality';
+  var card=document.getElementById('your-locality');
+  if(!card) return;
+  function slug(url){ return (url||'').split('/').pop().replace(/\.html$/,''); }
+  function byUrl(u){ for(var i=0;i<IDX.length;i++){ if(IDX[i][3]===u) return IDX[i]; } return null; }
+  function bySlug(s){ for(var i=0;i<IDX.length;i++){ if(slug(IDX[i][3])===s) return IDX[i]; } return null; }
+  function save(u){ try{ localStorage.setItem(KEY,u); }catch(e){} }
+  function load(){ try{ return localStorage.getItem(KEY); }catch(e){ return null; } }
+
+  function show(r, fromShare){
+    var name=document.getElementById('yl-name'), sub=document.getElementById('yl-sub'),
+        cnt=document.getElementById('yl-count'), link=document.getElementById('yl-link'),
+        kick=document.getElementById('yl-kicker');
+    name.textContent=r[0]; name.href=r[3];
+    var type=(r[6]||'').toString();
+    sub.textContent=[type, r[2]].filter(Boolean).join(' · ');
+    cnt.textContent=(typeof r[4]==='number'?r[4]:0).toLocaleString();
+    link.href=r[3];
+    kick.textContent=fromShare?'Shared locality':'Your saved locality';
+    card.hidden=false;
+  }
+  function hide(){ card.hidden=true; try{ localStorage.removeItem(KEY); }catch(e){} }
+
+  /* remember a pick: the search results are anchors to the jurisdiction pages */
+  var results=document.getElementById('lsR');
+  if(results) results.addEventListener('click',function(e){
+    var a=e.target.closest('a'); if(!a) return;
+    var r=byUrl(a.getAttribute('href')); if(r) save(r[3]);
+  }, true);
+
+  document.getElementById('yl-clear').addEventListener('click',hide);
+  document.getElementById('yl-share').addEventListener('click',function(){
+    var r=card._rec; if(!r) return;
+    var url=location.origin+location.pathname+'?loc='+encodeURIComponent(slug(r[3]));
+    var btn=this, done=function(){ var t=btn.textContent; btn.textContent='Link copied'; setTimeout(function(){ btn.textContent=t; },1500); };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,function(){ window.prompt('Copy link:',url); });
+    else window.prompt('Copy link:',url);
+  });
+
+  /* on load: ?loc= (shareable) wins, else the saved locality */
+  var locp=null; try{ locp=new URLSearchParams(location.search).get('loc'); }catch(e){}
+  var rec = locp ? bySlug(locp) : (function(){ var u=load(); return u?byUrl(u):null; })();
+  if(rec){ card._rec=rec; if(locp) save(rec[3]); show(rec, !!locp); }
+})();
+</script>
+<script>
+/* State-vs-state compare: two-column side-by-side over the current year window.
+   Reuses STATES (windowed), focusSeries() for sparklines, and mbars()/heatFor() for bars. */
+(function(){
+  var back=document.getElementById('cmpback'), grid=document.getElementById('cmp-grid'),
+      selA=document.getElementById('cmp-a'), selB=document.getElementById('cmp-b'),
+      sub=document.getElementById('cmp-sub');
+  if(!back||typeof STATES==='undefined'||typeof focusSeries!=='function') return;
+
+  function winSeries(ab){ return focusSeries(ab).filter(function(d){ return d[0]>=yrMin&&d[0]<=yrMax; }); }
+  function options(sel,current){
+    var list=STATES.slice().sort(function(a,b){ return a.name<b.name?-1:(a.name>b.name?1:0); });
+    sel.innerHTML=list.map(function(s){ return '<option value="'+s.ab+'">'+s.name+'</option>'; }).join('');
+    if(current && list.some(function(s){ return s.ab===current; })) sel.value=current;
+  }
+  function spark(ab,gmax){
+    var S=winSeries(ab); if(S.length<2){ return '<div style="height:46px"></div>'; }
+    var W=240,H=46,pad=2, span=(H-2*pad-6);
+    var xs=function(i){ return pad+i*((W-2*pad)/(S.length-1)); };
+    var ys=function(v){ return H-pad-(v/(gmax||1))*span; };
+    var line=S.map(function(d,i){ return (i?'L':'M')+xs(i).toFixed(1)+' '+ys(d[1]).toFixed(1); }).join(' ');
+    var area=line+' L '+xs(S.length-1).toFixed(1)+' '+(H-pad)+' L '+pad+' '+(H-pad)+' Z';
+    return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="46" preserveAspectRatio="none" role="img" aria-label="Declarations by fiscal year">'
+      +'<path d="'+area+'" fill="#d98c4e" fill-opacity="0.16"/><path d="'+line+'" fill="none" stroke="#c85c2e" stroke-width="1.6"/></svg>';
+  }
+  function col(s,other,gmax){
+    function win(a,b){ return a>=b?' win':''; }
+    var types=mbars([{l:'DR',s:'Major',v:s.dr,c:'#1d1813'},{l:'EM',s:'Emergency',v:s.em,c:'#004c53'},{l:'FM',s:'Fire Mgmt',v:s.fm,c:'#c85c2e'}],Math.max(s.dr,s.em,s.fm,1));
+    var hmax=s.inc.length?s.inc[0][1]:1;
+    var haz=mbars(s.inc.slice(0,5).map(function(h){ return {l:h[0],v:h[1],c:heatFor(h[1])}; }),hmax);
+    return '<div class="cmp-col"><h4>'+s.name+'</h4><div class="ab">'+s.ab+'</div>'
+      +'<div class="cmp-m'+win(s.decl,other.decl)+'"><span>Declarations</span><b>'+s.decl+'</b></div>'
+      +'<div class="cmp-m'+win(s.den,other.den)+'"><span>Denials</span><b>'+s.den+'</b></div>'
+      +'<div class="cmp-m'+win(s.rate,other.rate)+'"><span>Denial rate</span><b>'+s.rate.toFixed(1)+'%</b></div>'
+      +'<div class="cmp-m'+(s.days<=other.days?' win':'')+'"><span>Avg days to decision</span><b>'+s.days.toFixed(1)+'</b></div>'
+      +'<div class="cmp-spark">'+spark(s.ab,gmax)+'</div>'
+      +'<div class="cmp-h">By declaration type</div><div class="mbars">'+types+'</div>'
+      +'<div class="cmp-h">Top hazards</div><div class="mbars">'+haz+'</div></div>';
+  }
+  function draw(){
+    var a=STATES.find(function(s){ return s.ab===selA.value; }), b=STATES.find(function(s){ return s.ab===selB.value; });
+    if(!a||!b){ grid.innerHTML=''; return; }
+    function smax(ab){ return winSeries(ab).reduce(function(m,d){ return Math.max(m,d[1]); },0); }
+    var gmax=Math.max(smax(a.ab),smax(b.ab),1);   /* shared sparkline scale for a fair comparison */
+    sub.innerHTML='Within FY'+yrMin+' to FY'+yrMax+'. Leading value in each row is <span style="color:var(--ember);font-weight:600">amber</span>; spark lines share one scale.';
+    grid.innerHTML=col(a,b,gmax)+col(b,a,gmax);
+  }
+  function open(preA){
+    var top=STATES.slice().sort(function(a,b){ return b.decl-a.decl; });
+    var curA=preA||selA.value||(top[0]&&top[0].ab);
+    options(selA,curA);
+    var curB=selB.value||(top[1]&&top[1].ab);
+    if(curB===selA.value){ var alt=top.find(function(s){ return s.ab!==selA.value; }); curB=alt&&alt.ab; }
+    options(selB,curB);
+    draw();
+    back.hidden=false; document.getElementById('cmpclose').focus();
+  }
+  function close(){ back.hidden=true; }
+  selA.addEventListener('change',draw); selB.addEventListener('change',draw);
+  document.getElementById('cmpclose').addEventListener('click',close);
+  back.addEventListener('click',function(e){ if(e.target===back) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!back.hidden) close(); });
+  var ob=document.getElementById('cmp-open'); if(ob) ob.addEventListener('click',function(){ open(); });
+  var mc=document.getElementById('m-compare');
+  if(mc) mc.addEventListener('click',function(){ var ab=(typeof recState!=='undefined'&&recState)?recState.ab:null; if(typeof closeModal==='function') closeModal(); open(ab); });
+})();
+</script>
+<script src="latest-data.js"></script>
+<script>
+/* Homepage "Latest declarations": build.py bakes these cards into the LATEST markers at build
+   time. When the page ships un-built (the placeholder is still present), render the same cards
+   client-side from latest-data.js so the teaser is never empty. Markup mirrors build.py's
+   render_latest_cards_html(); a real build replaces the placeholder, so this then no-ops. */
+(function(){
+  var ph=document.querySelector('#latest .ll-placeholder');
+  if(!ph || !window.LATEST_DECLARATIONS || !window.LATEST_DECLARATIONS.length) return;
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var NAMES=window.STATE_NAMES||{};
+  function esc(s){ s=(s==null)?'':String(s); return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function fdate(iso){ if(!iso) return ''; var p=String(iso).slice(0,10).split('-'); if(p.length<3) return String(iso).slice(0,10); var m=+p[1]; if(!m) return String(iso).slice(0,10); return MON[m-1]+' '+(+p[2])+', '+p[0]; }
+  var items=window.LATEST_DECLARATIONS.slice(0,5);
+  var html='';
+  var newest=items[0]&&items[0].declarationDate;
+  if(newest) html+='<p class="ll-updated">Data current through '+fdate(newest)+'</p>';
+  html+='<div class="ll-grid">';
+  items.forEach(function(d){
+    var t=esc(d.declarationType||''), num=esc(d.disasterNumber||''), abbr=d.state||'';
+    var sname=esc(NAMES[abbr]||abbr);
+    var cnt=d.areaCount||1, areas=(cnt>1?(cnt+' areas'):'1 area');
+    var incC=d.incidentType?('<span>'+esc(d.incidentType)+'</span>'):'';
+    var full=esc(d.declarationTitle||'');
+    html+='<div class="ll-card" title="'+full+'"><span class="ll-badge '+t+'">'+t+'</span><div class="ll-body"><div class="ll-title">'+sname+'</div><div class="ll-meta"><span class="ll-num">'+t+'-'+num+'</span>'+incC+'<span>'+areas+'</span><a href="https://www.fema.gov/disaster/'+num+'" target="_blank" rel="noopener">FEMA &#8599;</a></div></div><div class="ll-date">'+fdate(d.declarationDate)+'</div></div>';
+  });
+  html+='</div>';
+  ph.outerHTML=html;
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ceea2416f66a424981ba37fcb9440d68"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
