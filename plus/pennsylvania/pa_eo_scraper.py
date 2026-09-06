@@ -115,16 +115,36 @@ def normalize_date(raw: str) -> Optional[str]:
 def date_from_url(url: str) -> Optional[str]:
     name = urlsplit(url).path.rsplit("/", 1)[-1]
     patterns = (
-        r"(?<!\d)(20\d{2})[._-](\d{1,2})[._-](\d{1,2})(?!\d)",
-        r"(?<!\d)(\d{2})(\d{2})(20\d{2})(?!\d)",
-        r"(?<!\d)(20\d{2})(\d{2})(\d{2})(?!\d)",
+        r"(?<!\d)(20\d{2})[._-](\d{1,2})[._-](\d{1,2})(?!\d)",  # YYYY-M-D / YYYY.M.D
+        r"(?<!\d)(\d{1,2})-(\d{1,2})-(20\d{2})(?!\d)",  # M-D-YYYY, hyphenated, year last -
+        # e.g. "...proclamation-1-18-2019.pdf" (PEMA's January 2019 winter
+        # storm proclamation). Checked before the no-separator patterns below
+        # so a hyphenated date is never mistaken for a run of bare digits.
+        r"(?<!\d)(\d{2})(\d{2})(20\d{2})(?!\d)",  # MMDDYYYY (no separator, 4-digit year)
+        r"(?<!\d)(20\d{2})(\d{2})(\d{2})(?!\d)",  # YYYYMMDD (no separator)
+        r"(?<!\d)(\d{2})(\d{2})(\d{2})(?!\d)",  # MMDDYY, no separator, 2-digit year -
+        # e.g. "...proclamation-020121.pdf" (Feb 1, 2021) and
+        # "...proclamation-121520.pdf" (Dec 15, 2020). Checked last, since a
+        # bare 6-digit run is the most ambiguous pattern here - by this point
+        # every more specific, less ambiguous pattern has already had a
+        # chance to match first.
     )
     for index, pattern in enumerate(patterns):
         match = re.search(pattern, name)
         if not match:
             continue
         parts = [int(value) for value in match.groups()]
-        year, month, day = parts if index != 1 else (parts[2], parts[0], parts[1])
+        if index == 0:
+            year, month, day = parts
+        elif index == 1:
+            month, day, year = parts
+        elif index == 2:
+            month, day, year = parts
+        elif index == 3:
+            year, month, day = parts
+        else:
+            month, day, year_2digit = parts
+            year = 2000 + year_2digit
         try:
             return date(year, month, day).isoformat()
         except ValueError:

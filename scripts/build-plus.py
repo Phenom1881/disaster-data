@@ -353,12 +353,117 @@ def build_crosswalk(
     return rows
 
 
-def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> str:
+def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
+    """Move each (tmp_path, final_path) into place, with rollback if any
+    individual move fails partway through the set.
+
+    Each single tmp -> final move is atomic (Path.replace()), but the set of
+    moves together is not one atomic transaction - if a later move in the
+    list raises after an earlier one already succeeded, the final files
+    could briefly disagree with each other (e.g. a new eo_storm_matches.csv
+    paired with an old severity_resolved.csv). To bound that risk, every
+    final file that currently exists is first backed up to a sibling .bak
+    path; if any replace() call raises, everything already promoted this
+    call is reverted and every backup is restored, so the on-disk state
+    returns to exactly what it was before this call rather than being left
+    half-updated. Returns (True, "") on full success, or (False, message)
+    after a full rollback.
+    """
+    backups: list[tuple[Path, Path]] = []
+    promoted: list[Path] = []
+    try:
+        for _, final_path in pairs:
+            if final_path.exists():
+                backup_path = final_path.with_name(final_path.name + ".bak")
+                final_path.replace(backup_path)
+                backups.append((backup_path, final_path))
+        for tmp_path, final_path in pairs:
+            tmp_path.replace(final_path)
+            promoted.append(final_path)
+    except OSError as exc:
+        for final_path in promoted:
+            final_path.unlink(missing_ok=True)
+        for backup_path, original_path in backups:
+            if backup_path.exists():
+                backup_path.replace(original_path)
+        for tmp_path, _ in pairs:
+            tmp_path.unlink(missing_ok=True)
+        return (
+            False,
+            "Storm join succeeded but promoting its output files failed "
+            f"partway through ({exc}); previous outputs were restored",
+        )
+    for backup_path, _ in backups:
+        backup_path.unlink(missing_ok=True)
+    return (True, "")
+
+
+def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool, bool]:
+    """Run eo_storm_join.py for one state, applying its reviewed sidecar
+    overrides automatically when present.
+
+    Returns (note, failed, ran).
+
+    ran is True ONLY when a join subprocess actually executed this call AND
+    its output was successfully promoted to the real eo_storm_matches.csv /
+    eo_storm_severity_summary.csv paths - a genuine, trustworthy success.
+    It is False for every other outcome: the script being missing, a failed
+    subprocess, a failed zone-resolution step, or a failed promotion. A
+    caller uses this (not merely `not failed`) to decide whether this call's
+    own output is fresh enough to read directly, bypassing the legacy
+    filtered-file preference - failed=False can also mean "skipped", which
+    must never be mistaken for "ran and produced trustworthy output."
+
+    failed is True whenever this should count as a hard failure that blocks
+    the state's page/summary rebuild, blocks the aggregate coverage/landing
+    rebuild, and forces a nonzero process exit code - a malformed
+    hazard_category_override (inline or in hazard_overrides.csv), a failed
+    subprocess, or a failed promotion. A missing eo_storm_join.py is ALSO a
+    hard failure when state["adapter_status"] == "implemented": every
+    implemented state is expected to have this file installed, so its
+    absence there means something broke, not that storm-join support hasn't
+    been built yet. For a state that is not yet "implemented" (e.g.
+    "planned"), a missing script is treated as a benign, expected skip
+    during incremental rollout - failed=False, ran=False.
+
+    eo_storm_join.py and resolve_zones_to_counties.py write to *.tmp paths
+    here, never directly to eo_storm_matches.csv / eo_storm_severity_summary.csv
+    / severity_resolved.csv. Those real paths are only overwritten once
+    every step that was going to run has actually succeeded AND actually
+    produced its expected file - a subprocess exiting 0 without producing
+    its promised output is treated as a failure too, not silently promoted
+    as empty/missing. Stale *.tmp files from a previous crashed run are
+    deleted at the very start of this function, before anything runs, so a
+    leftover file from an earlier attempt can never be mistaken for this
+    run's output if a later step exits 0 without writing anything.
+    """
     join_script = state_dir / "eo_storm_join.py"
     if not join_script.exists():
-        return "Storm join skipped: eo_storm_join.py is not installed in the state folder"
+        if state["adapter_status"] == "implemented":
+            return (
+                "Storm join failed: eo_storm_join.py is not installed in the state folder",
+                True,
+                False,
+            )
+        return (
+            "Storm join skipped: eo_storm_join.py is not installed in the state folder",
+            False,
+            False,
+        )
+
+    # All final and temporary paths are defined together, up front,
+    # including the zone-resolution outputs (used only conditionally below)
+    # so every one of them can be cleared before this run starts.
     matches = state_dir / "eo_storm_matches.csv"
     severity = state_dir / "eo_storm_severity_summary.csv"
+    resolved = state_dir / "severity_resolved.csv"
+    matches_tmp = state_dir / "eo_storm_matches.csv.tmp"
+    severity_tmp = state_dir / "eo_storm_severity_summary.csv.tmp"
+    resolved_tmp = state_dir / "severity_resolved.csv.tmp"
+
+    for temporary_path in (matches_tmp, severity_tmp, resolved_tmp):
+        temporary_path.unlink(missing_ok=True)
+
     cmd = [
         sys.executable,
         str(join_script),
@@ -367,31 +472,55 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> str:
         "--state",
         state["name"].upper(),
         "--out",
-        str(matches),
+        str(matches_tmp),
         "--severity-out",
-        str(severity),
+        str(severity_tmp),
     ]
+    # Apply a state's durable, human-reviewed hazard overrides automatically
+    # when present, so a rebuild can never silently run without them. This
+    # file is the reviewed source of truth (see eo_storm_join.py's
+    # load_overrides/apply_overrides) and is intentionally never generated
+    # by collection - only added here when a reviewer has created it.
+    # --unmatched-hazard-policy all is deliberately never added here or
+    # anywhere else in this builder: that flag is global per run, not
+    # per-declaration, and would reintroduce the original over-match risk
+    # for every declaration in the state, not just the reviewed ones.
+    overrides_path = state_dir / "hazard_overrides.csv"
+    if overrides_path.exists():
+        cmd.extend(["--overrides", str(overrides_path.resolve())])
     result = subprocess.run(cmd, cwd=str(state_dir), capture_output=True, text=True)
     if result.stdout:
         print(result.stdout)
     if result.returncode != 0:
         if result.stderr:
             print(result.stderr, file=sys.stderr)
-        return f"Storm join failed with exit code {result.returncode}"
+        matches_tmp.unlink(missing_ok=True)
+        severity_tmp.unlink(missing_ok=True)
+        return (f"Storm join failed with exit code {result.returncode}", True, False)
+
+    if not matches_tmp.exists() or not severity_tmp.exists():
+        matches_tmp.unlink(missing_ok=True)
+        severity_tmp.unlink(missing_ok=True)
+        return (
+            "Storm join reported success (exit code 0) but did not produce "
+            f"its expected output files ({matches_tmp.name}, "
+            f"{severity_tmp.name}) - treated as a failure",
+            True,
+            False,
+        )
 
     resolver = state_dir / "resolve_zones_to_counties.py"
     zone_files = sorted(state_dir.glob("bp*.dbx"))
-    if resolver.exists() and zone_files and severity.exists():
-        resolved = state_dir / "severity_resolved.csv"
+    if resolver.exists() and zone_files and severity_tmp.exists():
         resolve_cmd = [
             sys.executable,
             str(resolver),
             "--input",
-            str(severity),
+            str(severity_tmp),
             "--zone-file",
             str(zone_files[-1]),
             "--out",
-            str(resolved),
+            str(resolved_tmp),
             "--state",
             state["abbreviation"],
         ]
@@ -403,9 +532,41 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> str:
         if resolve_result.returncode != 0:
             if resolve_result.stderr:
                 print(resolve_result.stderr, file=sys.stderr)
-            return f"Storm join completed; zone resolution failed with exit code {resolve_result.returncode}"
-        return "Storm join and forecast-zone resolution completed"
-    return "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+            matches_tmp.unlink(missing_ok=True)
+            severity_tmp.unlink(missing_ok=True)
+            resolved_tmp.unlink(missing_ok=True)
+            return (
+                f"Storm join completed; zone resolution failed with exit code {resolve_result.returncode}",
+                True,
+                False,
+            )
+        if not resolved_tmp.exists():
+            matches_tmp.unlink(missing_ok=True)
+            severity_tmp.unlink(missing_ok=True)
+            return (
+                "Zone resolution reported success (exit code 0) but did not "
+                f"produce its expected output file ({resolved_tmp.name}) - "
+                "treated as a failure",
+                True,
+                False,
+            )
+        ok, message = _promote_outputs(
+            [(matches_tmp, matches), (severity_tmp, severity), (resolved_tmp, resolved)]
+        )
+        if not ok:
+            return (message, True, False)
+        return ("Storm join and forecast-zone resolution completed", False, True)
+
+    # No zone resolution was attempted - the join itself is the last step,
+    # so its outputs move into place now.
+    ok, message = _promote_outputs([(matches_tmp, matches), (severity_tmp, severity)])
+    if not ok:
+        return (message, True, False)
+    return (
+        "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+        False,
+        True,
+    )
 
 
 def coverage_label(state: dict, actions: list[dict], collection_note: str) -> str:
@@ -834,16 +995,51 @@ def process_state(
 
     actions, action_path = load_state_actions(state, state_dir)
     storm_note = ""
+    storm_failed = False
+    storm_pipeline_ran = False
     if join_storms:
-        if action_path:
+        if dry_run:
+            # --dry-run promises to validate and report without writing, but
+            # the storm join always runs a real external subprocess (network
+            # requests, its own temp files) and, on success, promotes real
+            # output files - main() also rejects this combination up front,
+            # but that check is guarded here too in case process_state() is
+            # ever called directly rather than through main().
+            storm_note = "Storm join skipped: --dry-run and --join-storms cannot be combined"
+        elif action_path:
             storm_join_path = ensure_declaration_id_column(action_path, state["abbreviation"])
-            storm_note = run_storm_pipeline(state, state_dir, storm_join_path)
+            storm_note, storm_failed, storm_pipeline_ran = run_storm_pipeline(
+                state, state_dir, storm_join_path
+            )
+        elif state["adapter_status"] == "implemented":
+            # An implemented state is expected to have a state-action CSV by
+            # now; its absence means something broke upstream (collection
+            # failed silently, a file got deleted, a path changed), not that
+            # this state hasn't been built out yet. storm_pipeline_ran stays
+            # False - nothing ran, so there is no fresh output to trust.
+            storm_note = "Storm join failed: no state-action CSV is available"
+            storm_failed = True
         else:
             storm_note = "Storm join skipped: no state-action CSV is available"
 
     federal_declarations = load_federal_declarations(repo_root, state["abbreviation"])
-    storm_rows, _ = load_storm_match_rows(state_dir)
-    severity_rows, _ = load_severity_rows(state_dir)
+    if storm_pipeline_ran:
+        # Read this run's own freshly-generated, verified outputs directly,
+        # bypassing load_storm_match_rows()/load_severity_rows()'s
+        # preference for a *_filtered.csv variant. Those loaders exist for a
+        # manually curated filtered dataset that predates this pipeline and
+        # that nothing here regenerates - but that means a successful
+        # --join-storms run could produce correct fresh data and then
+        # immediately render the page from an old filtered file instead,
+        # making a real fix look like it had no effect. When this call
+        # itself just produced fresh, verified output, use it, full stop.
+        matches_path = state_dir / "eo_storm_matches.csv"
+        severity_path = state_dir / "eo_storm_severity_summary.csv"
+        storm_rows = read_csv_rows(matches_path if matches_path.exists() else None)
+        severity_rows = read_csv_rows(severity_path if severity_path.exists() else None)
+    else:
+        storm_rows, _ = load_storm_match_rows(state_dir)
+        severity_rows, _ = load_severity_rows(state_dir)
     storm_rows_by_declaration = group_by_declaration(storm_rows)
     crosswalk = build_crosswalk(actions, federal_declarations, storm_rows_by_declaration)
 
@@ -861,17 +1057,27 @@ def process_state(
         "action_file": action_path.name if action_path else "",
         "metrics": metrics,
         "storm_pipeline_note": storm_note,
+        "storm_pipeline_failed": storm_failed,
         "generated_on": date.today().isoformat(),
     }
     if not dry_run:
-        state_dir.mkdir(parents=True, exist_ok=True)
-        (state_dir / "index.html").write_text(
-            render_state_page(
-                state, actions, federal_declarations, storm_rows, crosswalk, metrics, coverage
-            ),
-            encoding="utf-8",
-        )
-        write_json(state_dir / "state-summary.json", summary)
+        if storm_failed:
+            print(
+                f"Skipping page/summary rebuild for {state['abbreviation']}: "
+                "storm pipeline failed, refusing to render a page from stale "
+                "or partial data. The previous successful run's files (if "
+                "any) under plus/" + state["slug"] + "/ are left untouched.",
+                file=sys.stderr,
+            )
+        else:
+            state_dir.mkdir(parents=True, exist_ok=True)
+            (state_dir / "index.html").write_text(
+                render_state_page(
+                    state, actions, federal_declarations, storm_rows, crosswalk, metrics, coverage
+                ),
+                encoding="utf-8",
+            )
+            write_json(state_dir / "state-summary.json", summary)
     return summary
 
 
@@ -902,6 +1108,15 @@ def main() -> int:
         help="return an error when a selected state has neither an adapter nor cached actions",
     )
     args = parser.parse_args()
+    if args.dry_run and args.join_storms:
+        parser.error(
+            "--dry-run and --join-storms cannot be combined: --dry-run "
+            "promises to validate and report without writing, but the "
+            "storm join always executes an external subprocess with real "
+            "side effects (network requests, its own temp files) when it "
+            "runs, and a successful run promotes real output files. Run "
+            "--join-storms on its own, without --dry-run, instead."
+        )
 
     all_states = load_manifest(args.manifest)
     selected = select_states(all_states, args.states)
@@ -911,6 +1126,7 @@ def main() -> int:
 
     summaries = []
     incomplete = []
+    storm_failures = []
     for state in selected:
         summary = process_state(
             state, repo_root, args.collect, args.join_storms, args.dry_run
@@ -918,13 +1134,15 @@ def main() -> int:
         summaries.append(summary)
         if summary["metrics"]["action_count"] == 0 and state["adapter_status"] != "implemented":
             incomplete.append(state["abbreviation"])
+        if summary.get("storm_pipeline_failed"):
+            storm_failures.append(state["abbreviation"])
         print(
             f"{state['abbreviation']}: {summary['metrics']['action_count']} actions, "
             f"{summary['metrics']['federal_declaration_count']} federal declarations; "
             f"{summary['coverage']}"
         )
 
-    if not args.dry_run:
+    if not args.dry_run and not storm_failures:
         plus_dir = repo_root / "plus"
         plus_dir.mkdir(parents=True, exist_ok=True)
         summary_path = plus_dir / "coverage.json"
@@ -944,13 +1162,33 @@ def main() -> int:
         (plus_dir / "index.html").write_text(
             render_landing(ordered, all_states), encoding="utf-8"
         )
+    elif not args.dry_run and storm_failures:
+        print(
+            "Skipping coverage.json and plus/index.html rebuild: storm join "
+            "failed for " + ", ".join(storm_failures) + ". The previous "
+            "successful run's landing page and coverage summary are left "
+            "untouched rather than being rebuilt from a run that had a "
+            "failure in it.",
+            file=sys.stderr,
+        )
 
     if incomplete:
         print(
             "Coverage pending for: " + ", ".join(incomplete)
             + ". Pages were generated with explicit incomplete-coverage notices."
         )
-    return 1 if args.strict and incomplete else 0
+
+    if storm_failures:
+        print(
+            "Storm join failed for: " + ", ".join(storm_failures)
+            + ". Treated as a build failure regardless of --strict - a "
+            "malformed hazard_category_override (inline or in a state's "
+            "hazard_overrides.csv sidecar) must not be allowed to leave a "
+            "build looking successful.",
+            file=sys.stderr,
+        )
+
+    return 1 if (storm_failures or (args.strict and incomplete)) else 0
 
 
 if __name__ == "__main__":

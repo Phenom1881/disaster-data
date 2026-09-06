@@ -102,6 +102,72 @@ class PennsylvaniaScraperTests(unittest.TestCase):
         }
         self.assertEqual(len(pa.dedupe_relationships([row, dict(row)])), 1)
 
+    def test_date_from_url_handles_older_pema_filename_conventions(self):
+        # PEMA's older proclamation PDFs use date encodings that
+        # date_from_url() previously did not recognize, silently dropping
+        # 4 real weather proclamations from declarations_for_join.csv (via
+        # write_join()'s `not action.date_issued` check) even though they
+        # were correctly identified as weather-related. Confirmed against
+        # the actual filenames on pa.gov as of 2026-09-05.
+        cases = [
+            # MMDDYY, no separator, 2-digit year
+            ("winter-storm-disaster-emergency-proclamation-020121.pdf", "2021-02-01"),
+            ("proclamation-terminating-winter-storm-disaster-emergency-020121.pdf", "2021-02-01"),
+            ("winter-storm-disaster-emergency-proclamation-121520.pdf", "2020-12-15"),
+            # M-D-YYYY, hyphenated, year last
+            ("winter-storm-disaster-emergency-proclamation-1-18-2019.pdf", "2019-01-18"),
+        ]
+        for filename, expected in cases:
+            url = f"https://www.pa.gov/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/{filename}"
+            self.assertEqual(pa.date_from_url(url), expected, msg=filename)
+
+    def test_missing_proclamations_now_reach_the_join_file(self):
+        # End-to-end regression for the same bug: all 4 previously-dropped
+        # proclamations must now appear in write_join()'s output, using the
+        # real PEMA page structure and real (confirmed) description text.
+        fixture = """
+        <div class="cmp-teaser">
+          <div class="cmp-teaser__eyebrow">Feb. 1. 2021</div>
+          <div class="cmp-teaser__title"><h2>Winter Weather</h2></div>
+          <div class="cmp-teaser__text"><p>A winter event including snow, ice, and high winds with potential for significant adverse impacts through Pennsylvania.</p></div>
+          <div class="cmp-teaser__actions">
+            <a href="/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/winter-storm-disaster-emergency-proclamation-020121.pdf">2021 Winter Weather Proclamation (PDF)</a>
+            <a href="/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/proclamation-terminating-winter-storm-disaster-emergency-020121.pdf">2021 Winter Weather Termination (PDF)</a>
+          </div>
+        </div>
+        <div class="cmp-teaser">
+          <div class="cmp-teaser__eyebrow">Dec. 15, 2020</div>
+          <div class="cmp-teaser__title"><h2>Winter Event</h2></div>
+          <div class="cmp-teaser__text"><p>Severe winter event expected to bring dangerous conditions including snow, ice, and flooding.</p></div>
+          <div class="cmp-teaser__actions">
+            <a href="/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/winter-storm-disaster-emergency-proclamation-121520.pdf">2020 Winter Event Proclamation (PDF)</a>
+          </div>
+        </div>
+        <div class="cmp-teaser">
+          <div class="cmp-teaser__eyebrow">Jan. 18, 2019</div>
+          <div class="cmp-teaser__title"><h2>Severe Winter Event</h2></div>
+          <div class="cmp-teaser__text"><p>A severe winter event is expected to cause dangerous winter weather conditions, including snow, ice, and flooding.</p></div>
+          <div class="cmp-teaser__actions">
+            <a href="/content/dam/copapwp-pagov/en/pema/documents/governor-proclamations/winter-storm-disaster-emergency-proclamation-1-18-2019.pdf">January 2019 Winter Event Proclamation (PDF)</a>
+          </div>
+        </div>
+        """
+        actions = pa.parse_pema_page(fixture)
+        for action in actions:
+            action.weather_related = pa.is_weather_related(action)
+        import io as _io
+        import csv as _csv
+        buffer_path = "/tmp/_pa_join_regression_test.csv"
+        pa.write_join(actions, buffer_path)
+        with open(buffer_path) as handle:
+            rows = list(_csv.DictReader(handle))
+        dates_in_output = {row["date_signed"] for row in rows}
+        self.assertIn("2021-02-01", dates_in_output)
+        self.assertIn("2020-12-15", dates_in_output)
+        self.assertIn("2019-01-18", dates_in_output)
+        # the termination record must still be excluded, same as before
+        self.assertEqual(len(rows), 3)
+
 
 if __name__ == "__main__":
     unittest.main()

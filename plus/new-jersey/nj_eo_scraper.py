@@ -553,6 +553,81 @@ def recover_signature_date(text: str) -> Optional[str]:
     return _normalize_date(f"{match.group(2)} {match.group(1)}, {year}")
 
 
+# Recovers a blank archive-table description from the order's own document
+# text, the same "pull it from the document since the table doesn't have it"
+# approach as recover_signature_date() above. This exists because a lot of
+# NJ's archive tables - old /infobank/circular/ index pages especially, but
+# also some modern ones - only carry Number and Date columns, with NO
+# Subject/Description column at all. When that's the case,
+# _extract_order_rows() correctly finds no description cell to use (there
+# isn't one), and the row is published downstream as "Untitled action"
+# rather than a fabricated guess. Most NJ orders state their own subject
+# plainly right after the "EXECUTIVE ORDER No. X" heading and before the
+# first "WHEREAS," recital, so that span is a reasonable place to recover it
+# from instead of leaving every such row unlabeled.
+#
+# LIVE-VALIDATION FIX (2026-09-04): the first draft of this used a single
+# regex with a `(.{10,300}?)` capture group ending in a `(?=WHEREAS\b)`
+# lookahead. Live testing against real NJ documents found that when an
+# order's heading goes straight into its first recital with no title at all
+# (true for many memorial/flag-lowering orders, e.g. "EXECUTIVE ORDER No.
+# 21\nWHEREAS, Robert W. Reider, age 23, ... was a Volunteer Firefighter"),
+# the too-short capture at the nearest WHEREAS caused the regex to backtrack
+# PAST that first WHEREAS looking for a later one satisfying the length
+# minimum - capturing an entire unrelated recital (a person's biography) as
+# if it were the order's title. Worse, the same backtracking let the
+# "EXECUTIVE ORDER ... \d+" half of the pattern anchor to a citation to a
+# DIFFERENT order buried inside a WHEREAS clause (e.g. EO 9's own text
+# citing "Executive Order No. 8"), producing a mid-sentence fragment.
+# Fixed by splitting into two bounded, non-backtracking steps: find the
+# heading only within the first _HEADING_SEARCH_WINDOW characters (the
+# document's own heading always appears at the very top, well before any
+# citation to another order could appear), then take the span up to the
+# FIRST subsequent "WHEREAS" - never a later one. If that span is empty or
+# too short, the order genuinely has no title (goes straight into recitals),
+# and this correctly returns None rather than guessing.
+_HEADING_RE = re.compile(
+    r"EXECUTIVE\s+ORDER\s*(?:NOS?\.?|NUMBER)?\s*#?\s*\d+[A-Za-z]?\s*[:\-]?\s*",
+    re.I,
+)
+_WHEREAS_RE = re.compile(r"\bWHEREAS\b", re.I)
+_HEADING_SEARCH_WINDOW = 600
+
+
+def recover_title_from_document(text: str) -> Optional[str]:
+    """Best-effort recovery of a subject/title from an order's own document
+    text, for use only when the archive table itself has no description.
+
+    HONEST CAVEAT: this has now been checked against the specific failure
+    modes live testing surfaced (a title-less order, and a citation to a
+    different order's number), but it still has NOT been re-validated
+    against a fresh live nj.gov run after this fix, since nj.gov is outside
+    this sandbox's network allowlist. Re-run the collection and spot-check
+    the "Recovered N..." rows again before treating this as final.
+    """
+    if not text or len(text.strip()) < 250:
+        # Mirrors the low-yield PDF threshold used elsewhere in main(): a
+        # document that barely extracted any text at all isn't a reliable
+        # place to recover a title from either.
+        return None
+    heading_match = _HEADING_RE.search(text[:_HEADING_SEARCH_WINDOW])
+    if not heading_match:
+        return None
+    start = heading_match.end()
+    whereas_match = _WHEREAS_RE.search(text, start)
+    if not whereas_match:
+        return None
+    candidate = re.sub(r"\s+", " ", text[start:whereas_match.start()]).strip(" .:-,;")
+    if not (10 <= len(candidate) <= 300):
+        # Either the order goes straight from its heading into "WHEREAS,"
+        # recitals with no title at all (true for many memorial/tribute
+        # orders), or something implausible was captured. Either way, do
+        # not guess - leave the description blank for build-plus.py's
+        # existing "Untitled action" fallback to handle honestly.
+        return None
+    return candidate
+
+
 def fetch_document_text(order: NJOrder) -> str:
     resp = fetch(order.document_url)
     if resp is None:
@@ -816,12 +891,21 @@ def main() -> None:
         # characters from headers/metadata alone, so 50 was too loose to
         # reliably catch a bad extraction.
         low_yield_count = 0
+        recovered_title_count = 0
         for order in all_orders:
             order.document_text = fetch_document_text(order)
             if not order.date_issued:
                 order.date_issued = recover_signature_date(order.document_text)
+            if not order.description.strip():
+                recovered = recover_title_from_document(order.document_text)
+                if recovered:
+                    order.description = recovered
+                    recovered_title_count += 1
             if order.document_format == "pdf" and len(order.document_text.strip()) < 250:
                 low_yield_count += 1
+        if recovered_title_count:
+            print(f"  Recovered {recovered_title_count} blank archive-table "
+                  "description(s) from each order's own document text.")
         if low_yield_count:
             print(f"  WARNING: {low_yield_count} PDF(s) yielded little/no text; "
                   "these likely need OCR or manual review, not automated "

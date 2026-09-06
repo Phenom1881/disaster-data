@@ -3,14 +3,15 @@
   "action_file": "declarations_for_join.csv",
   "adapter_status": "implemented",
   "coverage": "2017-01-06-present structured Governor archive; North Carolina Register backfill pending",
-  "generated_on": "2026-09-04",
+  "generated_on": "2026-09-06",
   "metrics": {
     "action_count": 15,
     "federal_declaration_count": 85,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 620,
+    "storm_match_rows": 853
   },
   "name": "North Carolina",
   "slug": "north-carolina",
-  "storm_pipeline_note": ""
+  "storm_pipeline_failed": false,
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }

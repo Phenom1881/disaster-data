@@ -3,14 +3,15 @@
   "action_file": "declarations_for_join.csv",
   "adapter_status": "implemented",
   "coverage": "2018-present linked PEMA proclamation history; older Pennsylvania Bulletin backfill pending",
-  "generated_on": "2026-09-04",
+  "generated_on": "2026-09-06",
   "metrics": {
-    "action_count": 6,
+    "action_count": 10,
     "federal_declaration_count": 64,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 352,
+    "storm_match_rows": 641
   },
   "name": "Pennsylvania",
   "slug": "pennsylvania",
-  "storm_pipeline_note": ""
+  "storm_pipeline_failed": false,
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }
