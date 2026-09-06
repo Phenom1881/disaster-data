@@ -29,42 +29,20 @@ jobs:
         run: python -u build.py
 
       - name: Generate state SEO pages
-        run: |
-          if [ -f gen_state_pages.py ]; then
-            python -u gen_state_pages.py
-          else
-            python -u "gen state pages.py"
-          fi
+        run: python -u gen_state_pages.py
 
       - name: Generate jurisdiction pages
-        run: |
-          if [ -f gen_jurisdiction_pages.py ]; then
-            python -u gen_jurisdiction_pages.py
-          else
-            python -u "gen jurisdiction pages.py"
-          fi
+        run: python -u gen-jurisdiction-pages.py
 
       - name: Build compare index
-        run: |
-          if [ -f gen_decl_index.py ]; then
-            python -u gen_decl_index.py --out data/decl-index
-          else
-            python -u "gen decl index.py" --out data/decl-index
-          fi
+        run: python -u "gen decl index.py" --out data/decl-index
 
       - name: Build event indexes
         run: |
-          if [ -f gen_map_events.py ]; then
-            python -u gen_map_events.py \
-              --in data/decl-index \
-              --out map-events.js \
-              --events-out events.json
-          else
-            python -u "gen map events.py" \
-              --in data/decl-index \
-              --out map-events.js \
-              --events-out events.json
-          fi
+          python -u "gen map events.py" \
+            --in data/decl-index \
+            --out map-events.js \
+            --events-out events.json
 
       - name: Commit and push if changed
         run: |
