@@ -1,0 +1,122 @@
+name: Refresh Plus State Data
+
+on:
+  schedule:
+    # Weekly, Sunday 06:00 UTC - after the main "Refresh FEMA Data" run
+    # (04:00 UTC) so Plus's federal cross-references see fresh data too.
+    - cron: '0 6 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  refresh-plus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pandas requests beautifulsoup4 lxml pdfplumber
+
+      # --- Confirmed working commands (verified live 2026-09-06) ---
+
+      - name: Scrape Pennsylvania
+        run: |
+          python plus/pennsylvania/pa_eo_scraper.py \
+            --actions-out plus/pennsylvania/pa_emergency_actions_all.csv \
+            --relationships-out plus/pennsylvania/pa_order_relationships.csv \
+            --join-out plus/pennsylvania/declarations_for_join.csv
+
+      - name: Scrape New Jersey
+        run: |
+          python plus/new-jersey/nj_eo_scraper.py \
+            --actions-out plus/new-jersey/nj_emergency_actions_all.csv \
+            --relationships-out plus/new-jersey/nj_order_relationships.csv \
+            --join-out plus/new-jersey/declarations_for_join.csv
+
+      # --- NOT YET CONFIRMED: fill in the real scraper filename and
+      # argument names for each of these three states before enabling.
+      # Uncomment and correct once verified - a wrong guess here would
+      # either break the whole run (visible) or silently no-op (invisible,
+      # worse) depending on how the individual scraper handles bad args. ---
+
+      # - name: Scrape Virginia
+      #   run: |
+      #     python plus/virginia/<SCRAPER_FILENAME>.py \
+      #       --actions-out plus/virginia/<...>.csv \
+      #       --relationships-out plus/virginia/<...>.csv \
+      #       --join-out plus/virginia/declarations_for_join.csv
+
+      # - name: Scrape New York
+      #   run: |
+      #     python plus/new-york/<SCRAPER_FILENAME>.py \
+      #       --actions-out plus/new-york/<...>.csv \
+      #       --relationships-out plus/new-york/<...>.csv \
+      #       --join-out plus/new-york/declarations_for_join.csv
+
+      # - name: Scrape North Carolina
+      #   run: |
+      #     python plus/north-carolina/<SCRAPER_FILENAME>.py \
+      #       --actions-out plus/north-carolina/<...>.csv \
+      #       --relationships-out plus/north-carolina/<...>.csv \
+      #       --join-out plus/north-carolina/declarations_for_join.csv
+
+      - name: Run storm join for all Plus states
+        id: join
+        run: |
+          set -o pipefail
+          python scripts/build-plus.py --states all --join-storms 2>&1 | tee plus_build.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Check for newly-ambiguous declarations
+        id: ambiguous_check
+        run: |
+          if grep -q "had no recognized hazard keyword" plus_build.log; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            grep -B1 "had no recognized hazard keyword" plus_build.log > ambiguous_summary.txt
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open an issue for new ambiguous declarations
+        if: steps.ambiguous_check.outputs.found == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('ambiguous_summary.txt', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Plus refresh: new ambiguous declaration(s) need a hazard_overrides.csv review - ${new Date().toISOString().slice(0,10)}`,
+              body: "The weekly Plus refresh found declaration(s) that didn't match any hazard keyword and were skipped (not a bug - this is the intended fail-closed behavior). Each one below likely needs a manual review and a row added to that state's `hazard_overrides.csv`, the same way NC/NJ/NY's earlier gaps were resolved.\n\n```\n" + summary + "\n```\n\nSee the run log for full detail: " + `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            });
+
+      - name: Fail the run if any state's storm join failed
+        if: steps.join.outputs.exit_code != '0'
+        run: |
+          echo "One or more Plus states failed their storm join - see the log above. Not committing partial/stale results."
+          exit 1
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A -- plus/
+          if git diff --staged --quiet; then
+            echo "No changes to commit, Plus data is already up to date."
+          else
+            git commit -m "Auto-refresh Plus state data $(date -u '+%Y-%m-%d')"
+            git pull --rebase origin main
+            git push
+          fi
