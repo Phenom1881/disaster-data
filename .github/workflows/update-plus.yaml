@@ -12,9 +12,48 @@ permissions:
   issues: write
 
 jobs:
-  refresh-plus:
+  # ------------------------------------------------------------------
+  # One job per state. max-parallel: 1 means they run one after another,
+  # not simultaneously - this is deliberate, not a performance limitation:
+  # each job commits its own state's scraped files directly to main, and
+  # running them sequentially avoids every job racing to push at once
+  # (the exact kind of git conflict hit manually earlier this project).
+  # fail-fast: false means one state's scraper failing does NOT cancel
+  # the remaining states - each is fully isolated from the others, which
+  # is the actual goal here, achieved without needing separate files.
+  #
+  # To add a new state later: add one entry to the matrix list below.
+  # No new workflow file, no duplicated boilerplate to keep in sync.
+  # ------------------------------------------------------------------
+  scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        state:
+          - name: pennsylvania
+            prefix: pa
+            script: pa_eo_scraper.py
+          - name: new-jersey
+            prefix: nj
+            script: nj_eo_scraper.py
+          # NOT YET CONFIRMED - fill in the real script filename and
+          # prefix for each of these, then uncomment. A wrong guess here
+          # would fail this one state's job (visibly, in its own isolated
+          # log) without affecting the other four - that isolation is
+          # exactly why it's safe to add these incrementally rather than
+          # needing all 5 confirmed before this workflow can be used.
+          # - name: virginia
+          #   prefix: va
+          #   script: <SCRAPER_FILENAME>.py
+          # - name: new-york
+          #   prefix: ny
+          #   script: <SCRAPER_FILENAME>.py
+          # - name: north-carolina
+          #   prefix: nc
+          #   script: <SCRAPER_FILENAME>.py
 
     steps:
       - name: Check out repo
@@ -28,48 +67,52 @@ jobs:
       - name: Install dependencies
         run: pip install pandas requests beautifulsoup4 lxml pdfplumber
 
-      # --- Confirmed working commands (verified live 2026-09-06) ---
-
-      - name: Scrape Pennsylvania
+      - name: Scrape ${{ matrix.state.name }}
         run: |
-          python plus/pennsylvania/pa_eo_scraper.py \
-            --actions-out plus/pennsylvania/pa_emergency_actions_all.csv \
-            --relationships-out plus/pennsylvania/pa_order_relationships.csv \
-            --join-out plus/pennsylvania/declarations_for_join.csv
+          python plus/${{ matrix.state.name }}/${{ matrix.state.script }} \
+            --actions-out plus/${{ matrix.state.name }}/${{ matrix.state.prefix }}_emergency_actions_all.csv \
+            --relationships-out plus/${{ matrix.state.name }}/${{ matrix.state.prefix }}_order_relationships.csv \
+            --join-out plus/${{ matrix.state.name }}/declarations_for_join.csv
 
-      - name: Scrape New Jersey
+      - name: Commit ${{ matrix.state.name }}'s scraped data if changed
         run: |
-          python plus/new-jersey/nj_eo_scraper.py \
-            --actions-out plus/new-jersey/nj_emergency_actions_all.csv \
-            --relationships-out plus/new-jersey/nj_order_relationships.csv \
-            --join-out plus/new-jersey/declarations_for_join.csv
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -- "plus/${{ matrix.state.name }}/"
+          if git diff --staged --quiet; then
+            echo "No changes for ${{ matrix.state.name }}."
+          else
+            git commit -m "Auto-refresh ${{ matrix.state.name }} scraped data $(date -u '+%Y-%m-%d')"
+            git pull --rebase origin main
+            git push
+          fi
 
-      # --- NOT YET CONFIRMED: fill in the real scraper filename and
-      # argument names for each of these three states before enabling.
-      # Uncomment and correct once verified - a wrong guess here would
-      # either break the whole run (visible) or silently no-op (invisible,
-      # worse) depending on how the individual scraper handles bad args. ---
+  # ------------------------------------------------------------------
+  # Runs once, after every state's scrape job has finished (successfully
+  # or not - "if: always()" ensures a single state's scraper failure
+  # doesn't skip building/publishing the states that did succeed). Pulls
+  # whatever's on main at this point (each state's own commit, if it
+  # made one) and runs the actual cross-state join/match/page build.
+  # ------------------------------------------------------------------
+  join-and-build:
+    needs: scrape
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
-      # - name: Scrape Virginia
-      #   run: |
-      #     python plus/virginia/<SCRAPER_FILENAME>.py \
-      #       --actions-out plus/virginia/<...>.csv \
-      #       --relationships-out plus/virginia/<...>.csv \
-      #       --join-out plus/virginia/declarations_for_join.csv
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
 
-      # - name: Scrape New York
-      #   run: |
-      #     python plus/new-york/<SCRAPER_FILENAME>.py \
-      #       --actions-out plus/new-york/<...>.csv \
-      #       --relationships-out plus/new-york/<...>.csv \
-      #       --join-out plus/new-york/declarations_for_join.csv
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      # - name: Scrape North Carolina
-      #   run: |
-      #     python plus/north-carolina/<SCRAPER_FILENAME>.py \
-      #       --actions-out plus/north-carolina/<...>.csv \
-      #       --relationships-out plus/north-carolina/<...>.csv \
-      #       --join-out plus/north-carolina/declarations_for_join.csv
+      - name: Install dependencies
+        run: pip install pandas requests
 
       - name: Run storm join for all Plus states
         id: join
@@ -99,7 +142,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Plus refresh: new ambiguous declaration(s) need a hazard_overrides.csv review - ${new Date().toISOString().slice(0,10)}`,
-              body: "The weekly Plus refresh found declaration(s) that didn't match any hazard keyword and were skipped (not a bug - this is the intended fail-closed behavior). Each one below likely needs a manual review and a row added to that state's `hazard_overrides.csv`, the same way NC/NJ/NY's earlier gaps were resolved.\n\n```\n" + summary + "\n```\n\nSee the run log for full detail: " + `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+              body: "The weekly Plus refresh found declaration(s) that didn't match any hazard keyword and were skipped (not a bug - this is the intended fail-closed behavior). Each one below likely needs a manual review and a row added to that state's `hazard_overrides.csv`.\n\n```\n" + summary + "\n```\n\nSee the run log for full detail: " + `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             });
 
       - name: Fail the run if any state's storm join failed
@@ -108,15 +151,15 @@ jobs:
           echo "One or more Plus states failed their storm join - see the log above. Not committing partial/stale results."
           exit 1
 
-      - name: Commit and push if changed
+      - name: Commit built pages and matches if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A -- plus/
           if git diff --staged --quiet; then
-            echo "No changes to commit, Plus data is already up to date."
+            echo "No changes to commit from the join/build step."
           else
-            git commit -m "Auto-refresh Plus state data $(date -u '+%Y-%m-%d')"
+            git commit -m "Auto-refresh Plus matches and pages $(date -u '+%Y-%m-%d')"
             git pull --rebase origin main
             git push
           fi
