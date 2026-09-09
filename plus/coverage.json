@@ -309,20 +309,20 @@
     },
     {
       "abbreviation": "ME",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending",
       "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 2,
         "federal_declaration_count": 71,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 57,
+        "storm_match_rows": 73
       },
       "name": "Maine",
       "slug": "maine",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "MD",
@@ -479,20 +479,20 @@
     },
     {
       "abbreviation": "NH",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR",
       "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 6,
         "federal_declaration_count": 63,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 58,
+        "storm_match_rows": 72
       },
       "name": "New Hampshire",
       "slug": "new-hampshire",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "NJ",
@@ -751,20 +751,20 @@
     },
     {
       "abbreviation": "VT",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending",
       "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 1,
         "federal_declaration_count": 62,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 9,
+        "storm_match_rows": 34
       },
       "name": "Vermont",
       "slug": "vermont",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "VA",
