@@ -8,7 +8,7 @@
     {"abbreviation":"CA","name":"California","slug":"california","adapter_status":"pending"},
     {"abbreviation":"CO","name":"Colorado","slug":"colorado","adapter_status":"pending"},
     {"abbreviation":"CT","name":"Connecticut","slug":"connecticut","adapter_status":"implemented","adapter_file":"connecticut.py","coverage_note":"1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table","official_source_url":"https://portal.ct.gov/governor/governors-actions/executive-orders","action_files":["declarations_for_join.csv","ct_emergency_actions_all.csv"]},
-    {"abbreviation":"DE","name":"Delaware","slug":"delaware","adapter_status":"pending"},
+    {"abbreviation":"DE","name":"Delaware","slug":"delaware","adapter_status":"implemented","adapter_file":"delaware.py","coverage_note":"October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending","official_source_url":"https://governor.delaware.gov/state-of-emergency/","action_files":["declarations_for_join.csv","de_emergency_actions_all.csv"]},
     {"abbreviation":"FL","name":"Florida","slug":"florida","adapter_status":"pending"},
     {"abbreviation":"GA","name":"Georgia","slug":"georgia","adapter_status":"pending"},
     {"abbreviation":"HI","name":"Hawaii","slug":"hawaii","adapter_status":"pending"},
@@ -20,7 +20,7 @@
     {"abbreviation":"KY","name":"Kentucky","slug":"kentucky","adapter_status":"pending"},
     {"abbreviation":"LA","name":"Louisiana","slug":"louisiana","adapter_status":"pending"},
     {"abbreviation":"ME","name":"Maine","slug":"maine","adapter_status":"implemented","adapter_file":"maine.py","coverage_note":"2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending","official_source_url":"https://www.maine.gov/governor/mills/official_documents","action_files":["declarations_for_join.csv","me_emergency_actions_all.csv"]},
-    {"abbreviation":"MD","name":"Maryland","slug":"maryland","adapter_status":"pending"},
+    {"abbreviation":"MD","name":"Maryland","slug":"maryland","adapter_status":"implemented","adapter_file":"maryland.py","coverage_note":"2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage","official_source_url":"https://governor.maryland.gov/official-actions/executive-orders","action_files":["declarations_for_join.csv","md_emergency_actions_all.csv"]},
     {"abbreviation":"MA","name":"Massachusetts","slug":"massachusetts","adapter_status":"implemented","adapter_file":"massachusetts.py","coverage_note":"1941-present official State Library executive-order collection; unnumbered proclamation backfill pending","official_source_url":"https://archives.lib.state.ma.us/entities/aggregation/db64a731-fbc5-4ed7-ac61-5330b8b8e5ae","action_files":["declarations_for_join.csv","ma_emergency_actions_all.csv"]},
     {"abbreviation":"MI","name":"Michigan","slug":"michigan","adapter_status":"pending"},
     {"abbreviation":"MN","name":"Minnesota","slug":"minnesota","adapter_status":"pending"},
@@ -48,8 +48,9 @@
     {"abbreviation":"VT","name":"Vermont","slug":"vermont","adapter_status":"implemented","adapter_file":"vermont.py","coverage_note":"2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending","official_source_url":"https://governor.vermont.gov/document-types/executive-orders","action_files":["declarations_for_join.csv","vt_emergency_actions_all.csv"]},
     {"abbreviation":"VA","name":"Virginia","slug":"virginia","adapter_status":"implemented","adapter_file":"virginia.py","coverage_note":"Virginia structured archive coverage begins in 2002; the current administration is collected separately","official_source_url":"https://www.governor.virginia.gov/executive-actions/","action_files":["declarations_for_join_2002_present.csv","declarations_for_join.csv","va_weather_emergency_actions_2002_2026.csv"]},
     {"abbreviation":"WA","name":"Washington","slug":"washington","adapter_status":"pending"},
-    {"abbreviation":"WV","name":"West Virginia","slug":"west-virginia","adapter_status":"pending"},
+    {"abbreviation":"WV","name":"West Virginia","slug":"west-virginia","adapter_status":"implemented","adapter_file":"west_virginia.py","coverage_note":"2025-present Governor news archive; pre-2025 emergency proclamations backfill pending","official_source_url":"https://governor.wv.gov/allnews/all","action_files":["declarations_for_join.csv","wv_emergency_actions_all.csv"]},
     {"abbreviation":"WI","name":"Wisconsin","slug":"wisconsin","adapter_status":"pending"},
     {"abbreviation":"WY","name":"Wyoming","slug":"wyoming","adapter_status":"pending"}
   ]
 }
+

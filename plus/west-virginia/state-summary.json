@@ -1,17 +1,17 @@
 {
   "abbreviation": "WV",
-  "action_file": "",
-  "adapter_status": "pending",
-  "coverage": "State-source adapter not yet implemented",
+  "action_file": "declarations_for_join.csv",
+  "adapter_status": "implemented",
+  "coverage": "2025-present Governor news archive; pre-2025 emergency proclamations backfill pending",
   "generated_on": "2026-09-09",
   "metrics": {
-    "action_count": 0,
+    "action_count": 16,
     "federal_declaration_count": 85,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 418,
+    "storm_match_rows": 928
   },
   "name": "West Virginia",
   "slug": "west-virginia",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }

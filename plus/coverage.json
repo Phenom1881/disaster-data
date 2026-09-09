@@ -122,20 +122,20 @@
     },
     {
       "abbreviation": "DE",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
       "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 2,
         "federal_declaration_count": 26,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 8,
+        "storm_match_rows": 8
       },
       "name": "Delaware",
       "slug": "delaware",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "FL",
@@ -326,20 +326,20 @@
     },
     {
       "abbreviation": "MD",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage",
       "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 11,
         "federal_declaration_count": 38,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 248,
+        "storm_match_rows": 526
       },
       "name": "Maryland",
       "slug": "maryland",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "MA",
@@ -802,20 +802,20 @@
     },
     {
       "abbreviation": "WV",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "2025-present Governor news archive; pre-2025 emergency proclamations backfill pending",
       "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 16,
         "federal_declaration_count": 85,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 418,
+        "storm_match_rows": 928
       },
       "name": "West Virginia",
       "slug": "west-virginia",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "WI",
