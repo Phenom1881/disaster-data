@@ -1,17 +1,17 @@
 {
   "abbreviation": "GA",
-  "action_file": "",
-  "adapter_status": "pending",
-  "coverage": "State-source adapter not yet implemented",
+  "action_file": "declarations_for_join.csv",
+  "adapter_status": "implemented",
+  "coverage": "2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill",
   "generated_on": "2026-09-09",
   "metrics": {
-    "action_count": 0,
+    "action_count": 32,
     "federal_declaration_count": 81,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 1421,
+    "storm_match_rows": 2226
   },
   "name": "Georgia",
   "slug": "georgia",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }
