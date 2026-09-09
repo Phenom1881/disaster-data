@@ -5,7 +5,14 @@
       "abbreviation": "AL",
       "name": "Alabama",
       "slug": "alabama",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "alabama.py",
+      "coverage_note": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed",
+      "official_source_url": "https://governor.alabama.gov/newsroom/category/state-of-emergency/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "al_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "AK",
@@ -111,7 +118,14 @@
       "abbreviation": "IN",
       "name": "Indiana",
       "slug": "indiana",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "indiana.py",
+      "coverage_note": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified",
+      "official_source_url": "https://www.in.gov/gov/newsroom/executive-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "in_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "IA",
@@ -129,7 +143,14 @@
       "abbreviation": "KY",
       "name": "Kentucky",
       "slug": "kentucky",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "kentucky.py",
+      "coverage_note": "manual_only - Beshear-era (Dec 2019-present) newsroom feed proxy only. Authoritative SOS Executive Journal (apps.sos.ky.gov/executive/journal/) blocks automated requests; pre-2019 coverage is an open gap.",
+      "official_source_url": "https://governor.ky.gov/attachments/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ky_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "LA",
@@ -192,7 +213,14 @@
       "abbreviation": "MS",
       "name": "Mississippi",
       "slug": "mississippi",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "mississippi.py",
+      "coverage_note": "January 2020-present structured Governor archive; 2000-2019 gap disclosed",
+      "official_source_url": "https://governorreeves.ms.gov/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ms_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "MO",
@@ -286,7 +314,14 @@
       "abbreviation": "OH",
       "name": "Ohio",
       "slug": "ohio",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "ohio.py",
+      "coverage_note": "manual_only - GovDelivery bulletin feed proxy (Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs; the numbered EO archive is JS-rendered and has no working static index). No structured filed-order archive found; needs a follow-up round.",
+      "official_source_url": "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss",
+      "action_files": [
+        "declarations_for_join.csv",
+        "oh_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "OK",
@@ -349,7 +384,14 @@
       "abbreviation": "TN",
       "name": "Tennessee",
       "slug": "tennessee",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "tennessee.py",
+      "coverage_note": "2000-present SOS catalog via state-university mirror; legacy exact-date review pending",
+      "official_source_url": "https://sos.tn.gov/products/division-publications/executive-orders",
+      "action_files": [
+        "declarations_for_join.csv",
+        "tn_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "TX",

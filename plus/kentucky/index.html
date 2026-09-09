@@ -77,20 +77,23 @@
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>Kentucky: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> State-source adapter not yet implemented. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<div class="notice"><strong>Coverage:</strong> manual_only - Beshear-era (Dec 2019-present) newsroom feed proxy only. Authoritative SOS Executive Journal (apps.sos.ky.gov/executive/journal/) blocks automated requests; pre-2019 coverage is an open gap.. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>99</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>0</strong>original state weather declarations</div>
-  <div class="metric"><strong>0</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>4</strong>original state weather declarations</div>
+  <div class="metric"><strong>362</strong>matched NOAA event rows</div>
 </section>
-<p><a href="/states/kentucky.html">Federal declaration overview</a> &middot; Official source to be identified</p>
+<p><a href="/states/kentucky.html">Federal declaration overview</a> &middot; <a href="https://governor.ky.gov/attachments/">Official state source</a></p>
 
 <div class="layer primary">
 <h2>State weather declarations</h2>
 <p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
 <div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td colspan="5" class="empty">No verified state-action records have been loaded for this state yet.</td></tr></tbody></table></div>
+<tbody><tr><td>2026-06-27</td><td>2026-400</td><td><a href="https://governor.ky.gov/attachments/20260627_Executive-Order_2026-400_SOE-Relating-to-Continuting-Storms.pdf">State Of Emergency (severe weather system with heavy rain thunderstorms and isolated strong winds causing flooding and flash flooding)</a></td><td>declaration</td><td>Kentucky Governor</td></tr>
+<tr><td>2025-02-14</td><td>2025-095</td><td><a href="https://governor.ky.gov/attachments/20250214_Executive-Order_2025-095_State-of-Emergency-Related-to-Winter-Weather-Event.pdf">State Of Emergency Related To Winter Weather Event</a></td><td>declaration</td><td>Kentucky Governor</td></tr>
+<tr><td>2025-01-04</td><td>2025-007</td><td><a href="https://governor.ky.gov/attachments/20250104_Executive-Order_2025-007_State-of-Emergency-Related-to-Winter-Weather-Event.pdf">State Of Emergency Related To Winter Weather Event</a></td><td>declaration</td><td>Kentucky Governor</td></tr>
+<tr><td>2015-02-16</td><td>2015-118</td><td><a href="https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/docs/20150216_KY_DoE_State_of_Emergency.pdf">State Of Emergency (severe winter storm with significant snowfall accumulations bitterly cold air and sub zero wind chills)</a></td><td>declaration</td><td>Kentucky Governor</td></tr></tbody></table></div>
 </div>
 
 <div class="layer">
@@ -98,7 +101,10 @@
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td colspan="4" class="empty">No state actions are loaded to cross-reference yet.</td></tr></tbody></table></div>
+<tbody><tr><td>2026-06-27 &middot; State Of Emergency (severe weather system with heavy rain thunderstorms and isolated strong winds causing flooding and flash flooding)</td><td>0</td><td>None matched</td><td>4937</td></tr>
+<tr><td>2025-02-14 &middot; State Of Emergency Related To Winter Weather Event</td><td>40</td><td>BALLARD, BOONE, BOYD, BOYLE, CALDWELL, CALLOWAY, CAMPBELL, CARLISLE</td><td>4860</td></tr>
+<tr><td>2025-01-04 &middot; State Of Emergency Related To Winter Weather Event</td><td>102</td><td>ADAIR, ANDERSON, BALLARD, BARREN, BATH, BOONE, BOURBON, BOYD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2015-02-16 &middot; State Of Emergency (severe winter storm with significant snowfall accumulations bitterly cold air and sub zero wind chills)</td><td>220</td><td>ADAIR, ALLEN, ANDERSON, BALLARD, BARREN, BATH, BELL, BOONE</td><td>4216</td></tr></tbody></table></div>
 </div>
 
 <details class="layer">
@@ -208,11 +214,310 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">0 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">362 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td colspan="6" class="empty">No matched NOAA/NWS Storm Events are loaded for this state yet.</td></tr></tbody></table></div></div>
+<tbody><tr><td>2015-02-16 03:00:00</td><td>ADAIR</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>ALLEN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>ANDERSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>BALLARD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>BALLARD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>BALLARD</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>BARREN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:30:00</td><td>BATH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 07:00:00</td><td>BELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 11:45:00</td><td>BELL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>BELL</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>BOONE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>BOONE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>BOURBON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 22:00:00</td><td>BOYD</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>BOYD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>BOYD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 20:00:00</td><td>BOYD</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td>100.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>BOYLE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>BRACKEN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>BRACKEN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>BREATHITT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>BREATHITT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>BRECKINRIDGE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>BULLITT</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 00:00:00</td><td>BULLITT</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>1 / 1</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>BUTLER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>CALDWELL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>CALDWELL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>CALDWELL</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>CALLOWAY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>CALLOWAY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>CALLOWAY</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>CAMPBELL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>CAMPBELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>CARLISLE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>CARLISLE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>CARLISLE</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 22:00:00</td><td>CARTER</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>CARTER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>CARTER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 20:00:00</td><td>CARTER</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>CASEY</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>CHRISTIAN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>CHRISTIAN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>CHRISTIAN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>CLARK</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 06:30:00</td><td>CLAY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>1 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>CLAY</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>CLINTON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>CRITTENDEN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>CRITTENDEN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>CRITTENDEN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>CUMBERLAND</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>DAVIESS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>DAVIESS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>DAVIESS</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>EDMONSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>ELLIOTT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 05:00:00</td><td>ESTILL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 10:00:00</td><td>ESTILL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 06:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>1 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 00:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>1 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>FLEMING</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 15:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>FULTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>FULTON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>FULTON</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>GALLATIN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>GALLATIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>GARRARD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>GRANT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>GRANT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>GRAVES</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>GRAVES</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>GRAVES</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>GRAYSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>GREEN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 22:00:00</td><td>GREENUP</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 06:30:00</td><td>GREENUP</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>GREENUP</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 20:00:00</td><td>GREENUP</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td>100.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>HANCOCK</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>HARDIN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 07:30:00</td><td>HARLAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>HARLAN</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>HARRISON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>HART</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>HENDERSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>HENDERSON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>HENDERSON</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>HENRY</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>HICKMAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>HICKMAN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>HICKMAN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>HOPKINS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>HOPKINS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>HOPKINS</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 05:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 10:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>JEFFERSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>JESSAMINE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:30:00</td><td>JOHNSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>JOHNSON</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>KENTON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>KENTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 06:00:00</td><td>KNOTT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>KNOTT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>KNOTT</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 07:00:00</td><td>KNOX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>KNOX</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>KNOX</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>1 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>LARUE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>LAUREL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 22:00:00</td><td>LAWRENCE</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>LAWRENCE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>LAWRENCE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 20:00:00</td><td>LAWRENCE</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2015-02-16 05:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 09:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 07:30:00</td><td>LESLIE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 08:00:00</td><td>LETCHER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>LETCHER</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>LEWIS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>LEWIS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>LINCOLN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>LIVINGSTON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>LIVINGSTON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>LIVINGSTON</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>LOGAN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 00:00:00</td><td>LOGAN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>1 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>LYON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>LYON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>LYON</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>1 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:30:00</td><td>MAGOFFIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 14:50:00</td><td>MAGOFFIN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MARION</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>MARSHALL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>MARSHALL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>MARSHALL</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:30:00</td><td>MARTIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>MARTIN</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>MASON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>MASON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>MCCRACKEN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>MCCRACKEN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>MCCRACKEN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2015-02-16 05:00:00</td><td>MCCREARY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>MCLEAN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>MCLEAN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>MCLEAN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MEADE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MENIFEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MERCER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>METCALFE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>MONROE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>MORGAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>MUHLENBERG</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>MUHLENBERG</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>MUHLENBERG</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>NELSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>NICHOLAS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>OHIO</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>OLDHAM</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>OWEN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>OWEN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>OWSLEY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 12:30:00</td><td>OWSLEY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>PENDLETON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>PENDLETON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 07:30:00</td><td>PERRY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 12:38:00</td><td>PERRY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>PERRY</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 05:30:00</td><td>PIKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 11:55:00</td><td>PIKE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>PIKE</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 04:30:00</td><td>POWELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 09:55:00</td><td>POWELL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 04:30:00</td><td>PULASKI</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-14 10:00:00</td><td>ROBERTSON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-15 22:00:00</td><td>ROBERTSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 04:30:00</td><td>ROCKCASTLE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>ROWAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>RUSSELL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 04:00:00</td><td>SCOTT</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>SHELBY</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>SIMPSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>SPENCER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>TAYLOR</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>TODD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>TODD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>TODD</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 00:00:00</td><td>TRIGG</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>TRIGG</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>TRIGG</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>TRIMBLE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>WASHINGTON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 04:30:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>1 / 0</td><td></td></tr>
+<tr><td>2015-02-16 02:00:00</td><td>WEBSTER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-17 23:00:00</td><td>WEBSTER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>WEBSTER</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 05:00:00</td><td>WHITLEY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:30:00</td><td>WOLFE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-18 14:50:00</td><td>WOLFE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-19 00:00:00</td><td>WOLFE</td><td>NWS forecast zone</td><td>Extreme Cold/Wind Chill</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 03:00:00</td><td>WOODFORD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 06:15:00</td><td>ADAIR</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 07:00:00</td><td>ANDERSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>BALLARD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2025-01-05 05:45:00</td><td>BARREN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>BATH</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>BOONE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 07:00:00</td><td>BOURBON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 12:00:00</td><td>BOYD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 07:30:00</td><td>BOYLE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>BRACKEN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>BREATHITT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.50K</td></tr>
+<tr><td>2025-01-05 06:15:00</td><td>BRECKINRIDGE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 07:00:00</td><td>BULLITT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>BUTLER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>CALDWELL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>60.00K</td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>CALLOWAY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>CAMPBELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>CARLISLE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 12:00:00</td><td>CARTER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 08:00:00</td><td>CASEY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>CHRISTIAN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>140.00K</td></tr>
+<tr><td>2025-01-05 07:30:00</td><td>CLARK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>CRITTENDEN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>90.00K</td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>DAVIESS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>350.00K</td></tr>
+<tr><td>2025-01-05 06:45:00</td><td>EDMONSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 11:00:00</td><td>ELLIOTT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>ESTILL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2025-01-05 07:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 11:00:00</td><td>FLEMING</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 06:30:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>FULTON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>GALLATIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:15:00</td><td>GARRARD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>GRANT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>GRAVES</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 06:15:00</td><td>GRAYSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 07:00:00</td><td>GREEN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 12:00:00</td><td>GREENUP</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 06:00:00</td><td>HANCOCK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 06:45:00</td><td>HARDIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>HARLAN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:00:00</td><td>HARRISON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 07:00:00</td><td>HART</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>HENDERSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>350.00K</td></tr>
+<tr><td>2025-01-05 06:45:00</td><td>HENRY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>HICKMAN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>HOPKINS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>85.00K</td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 06:15:00</td><td>JEFFERSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:00:00</td><td>JESSAMINE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 11:00:00</td><td>JOHNSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>KENTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 07:15:00</td><td>LARUE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:00:00</td><td>LAUREL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 12:00:00</td><td>LAWRENCE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>LETCHER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>LEWIS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:15:00</td><td>LINCOLN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>LIVINGSTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>LYON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>70.00K</td></tr>
+<tr><td>2025-01-05 07:30:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:00:00</td><td>MARION</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>MARSHALL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>20.00K</td></tr>
+<tr><td>2025-01-05 11:00:00</td><td>MARTIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2025-01-05 10:00:00</td><td>MASON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:00:00</td><td>MCCRACKEN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>150.00K</td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>MCLEAN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>20.00K</td></tr>
+<tr><td>2025-01-05 06:45:00</td><td>MEADE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>MENIFEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 08:00:00</td><td>MERCER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 11:00:00</td><td>MORGAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 05:00:00</td><td>MUHLENBERG</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>125.00K</td></tr>
+<tr><td>2025-01-05 07:30:00</td><td>NELSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 09:00:00</td><td>NICHOLAS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 04:45:00</td><td>OHIO</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2025-01-05 06:45:00</td><td>OLDHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr></tbody></table></div></div>
 </details>
 
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
