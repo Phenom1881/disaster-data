@@ -1,5 +1,5 @@
 {
-  "generated_on": "2026-09-06",
+  "generated_on": "2026-09-09",
   "states": [
     {
       "abbreviation": "AL",
@@ -105,20 +105,20 @@
     },
     {
       "abbreviation": "CT",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
-      "generated_on": "2026-09-06",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table",
+      "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 9,
         "federal_declaration_count": 43,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 95,
+        "storm_match_rows": 215
       },
       "name": "Connecticut",
       "slug": "connecticut",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "DE",
@@ -343,20 +343,20 @@
     },
     {
       "abbreviation": "MA",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
-      "generated_on": "2026-09-06",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "1941-present official State Library executive-order collection; unnumbered proclamation backfill pending",
+      "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 4,
         "federal_declaration_count": 59,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 29,
+        "storm_match_rows": 68
       },
       "name": "Massachusetts",
       "slug": "massachusetts",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "MI",
@@ -649,20 +649,20 @@
     },
     {
       "abbreviation": "RI",
-      "action_file": "",
-      "adapter_status": "pending",
-      "coverage": "State-source adapter not yet implemented",
-      "generated_on": "2026-09-06",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending",
+      "generated_on": "2026-09-09",
       "metrics": {
-        "action_count": 0,
+        "action_count": 6,
         "federal_declaration_count": 31,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 42,
+        "storm_match_rows": 49
       },
       "name": "Rhode Island",
       "slug": "rhode-island",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "SC",
