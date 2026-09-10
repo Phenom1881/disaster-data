@@ -24,7 +24,14 @@
       "abbreviation": "AZ",
       "name": "Arizona",
       "slug": "arizona",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "arizona.py",
+      "coverage_note": "January 2023-present structured current-Governor archive; 2000-2022 gap disclosed",
+      "official_source_url": "https://azgovernor.gov/executive-orders",
+      "action_files": [
+        "declarations_for_join.csv",
+        "az_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "AR",
@@ -43,7 +50,14 @@
       "abbreviation": "CA",
       "name": "California",
       "slug": "california",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "california.py",
+      "coverage_note": "2019-present current Governor publication archive; 2000-2018 not exposed",
+      "official_source_url": "https://www.gov.ca.gov/?s=state+of+emergency",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ca_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "CO",
@@ -144,7 +158,13 @@
       "abbreviation": "KS",
       "name": "Kansas",
       "slug": "kansas",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "kansas.py",
+      "coverage_note": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending",
+      "official_source_url": "https://www.kansastag.gov/388/Kansas-Disaster-Declarations",
+      "action_files": [
+        "declarations_for_join.csv"
+      ]
     },
     {
       "abbreviation": "KY",
@@ -260,19 +280,38 @@
       "abbreviation": "MT",
       "name": "Montana",
       "slug": "montana",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "montana.py",
+      "coverage_note": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing, backfill pending",
+      "official_source_url": "https://gov.mt.gov/Documents/GovernorsOffice/executiveorders/",
+      "action_files": [
+        "declarations_for_join.csv"
+      ]
     },
     {
       "abbreviation": "NE",
       "name": "Nebraska",
       "slug": "nebraska",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "nebraska.py",
+      "coverage_note": "2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+      "official_source_url": "https://govdocs.nebraska.gov/docs/pilot/pubs/eoindex.html",
+      "action_files": [
+        "declarations_for_join.csv"
+      ]
     },
     {
       "abbreviation": "NV",
       "name": "Nevada",
       "slug": "nevada",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "nevada.py",
+      "coverage_note": "January 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed",
+      "official_source_url": "https://www.gov.nv.gov/executive-actions/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "nv_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "NH",
@@ -304,7 +343,14 @@
       "abbreviation": "NM",
       "name": "New Mexico",
       "slug": "new-mexico",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "new_mexico.py",
+      "coverage_note": "January 2019-present current-Governor index; many migrated document links are currently unavailable and are disclosed record-by-record",
+      "official_source_url": "https://www.governor.state.nm.us/about-the-governor/executive-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "nm_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "NY",
@@ -336,7 +382,13 @@
       "abbreviation": "ND",
       "name": "North Dakota",
       "slug": "north-dakota",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "north_dakota.py",
+      "coverage_note": "2017-present numbered/dated Governor archive plus current-EOs page; 2000-2016 order numbers backfill pending",
+      "official_source_url": "https://www.governor.nd.gov/executive-orders",
+      "action_files": [
+        "declarations_for_join.csv"
+      ]
     },
     {
       "abbreviation": "OH",
@@ -355,13 +407,26 @@
       "abbreviation": "OK",
       "name": "Oklahoma",
       "slug": "oklahoma",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "oklahoma.py",
+      "coverage_note": "2016-present via OEM's Emergencies and Disasters archive (SOS EO index blocks automated requests); manual-only curation, 2000-2015 disclosed gap",
+      "official_source_url": "https://oklahoma.gov/oem/emergencies-and-disasters.html",
+      "action_files": [
+        "declarations_for_join.csv"
+      ]
     },
     {
       "abbreviation": "OR",
       "name": "Oregon",
       "slug": "oregon",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "oregon.py",
+      "coverage_note": "2003-present structured Governor archive; 2000-2002 unavailable in live source",
+      "official_source_url": "https://www.oregon.gov/gov/Pages/executive-orders.aspx",
+      "action_files": [
+        "declarations_for_join.csv",
+        "or_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "PA",
@@ -406,7 +471,13 @@
       "abbreviation": "SD",
       "name": "South Dakota",
       "slug": "south-dakota",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "south_dakota.py",
+      "coverage_note": "2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending",
+      "official_source_url": "https://sdsos.gov/general-information/executive-actions/executive-orders/search/Default.aspx",
+      "action_files": [
+        "declarations_for_join.csv"
+      ]
     },
     {
       "abbreviation": "TN",
@@ -471,7 +542,14 @@
       "abbreviation": "WA",
       "name": "Washington",
       "slug": "washington",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "washington.py",
+      "coverage_note": "2013-present structured Governor proclamation archive; 2000-2012 unavailable",
+      "official_source_url": "https://governor.wa.gov/office-governor/office/official-actions/proclamations",
+      "action_files": [
+        "declarations_for_join.csv",
+        "wa_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "WV",

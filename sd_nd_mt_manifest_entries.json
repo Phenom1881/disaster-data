@@ -1,0 +1,32 @@
+[
+  {
+    "abbreviation": "SD",
+    "name": "South Dakota",
+    "slug": "south-dakota",
+    "adapter_status": "implemented",
+    "adapter_file": "south_dakota.py",
+    "coverage_note": "2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending",
+    "official_source_url": "https://sdsos.gov/general-information/executive-actions/executive-orders/search/Default.aspx",
+    "action_files": ["declarations_for_join.csv"]
+  },
+  {
+    "abbreviation": "ND",
+    "name": "North Dakota",
+    "slug": "north-dakota",
+    "adapter_status": "implemented",
+    "adapter_file": "north_dakota.py",
+    "coverage_note": "2017-present numbered/dated Governor archive plus current-EOs page; 2000-2016 order numbers backfill pending",
+    "official_source_url": "https://www.governor.nd.gov/executive-orders",
+    "action_files": ["declarations_for_join.csv"]
+  },
+  {
+    "abbreviation": "MT",
+    "name": "Montana",
+    "slug": "montana",
+    "adapter_status": "implemented",
+    "adapter_file": "montana.py",
+    "coverage_note": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing, backfill pending",
+    "official_source_url": "https://gov.mt.gov/Documents/GovernorsOffice/executiveorders/",
+    "action_files": ["declarations_for_join.csv"]
+  }
+]
