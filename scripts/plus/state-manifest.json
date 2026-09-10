@@ -30,7 +30,14 @@
       "abbreviation": "AR",
       "name": "Arkansas",
       "slug": "arkansas",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "arkansas.py",
+      "coverage_note": "January 2023-present structured current-Governor archive; 2000-2022 gap disclosed",
+      "official_source_url": "https://governor.arkansas.gov/executive-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ar_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "CA",
@@ -156,7 +163,14 @@
       "abbreviation": "LA",
       "name": "Louisiana",
       "slug": "louisiana",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "louisiana.py",
+      "coverage_note": "January 2016-present official State Register web indexes; 2000-2015 gap disclosed",
+      "official_source_url": "https://www.doa.la.gov/doa/osr/executive-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "la_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "ME",
@@ -201,13 +215,27 @@
       "abbreviation": "MI",
       "name": "Michigan",
       "slug": "michigan",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "michigan.py",
+      "coverage_note": "2019-present structured Governor archive; 2000-2018 not covered by the current Governor source",
+      "official_source_url": "https://www.michigan.gov/whitmer/news/state-orders-and-directives",
+      "action_files": [
+        "declarations_for_join.csv",
+        "mi_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "MN",
       "name": "Minnesota",
       "slug": "minnesota",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "minnesota.py",
+      "coverage_note": "2019-present current Governor archive; 2000-2018 not covered; anti-bot interception is detected explicitly",
+      "official_source_url": "https://mn.gov/governor/newsroom/executive-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "mn_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "MS",
@@ -397,7 +425,14 @@
       "abbreviation": "TX",
       "name": "Texas",
       "slug": "texas",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "texas.py",
+      "coverage_note": "January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+      "official_source_url": "https://gov.texas.gov/news/category/proclamation",
+      "action_files": [
+        "declarations_for_join.csv",
+        "tx_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "UT",
@@ -455,7 +490,14 @@
       "abbreviation": "WI",
       "name": "Wisconsin",
       "slug": "wisconsin",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "wisconsin.py",
+      "coverage_note": "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR",
+      "official_source_url": "https://evers.wi.gov/pages/newsroom/executive-orders.aspx",
+      "action_files": [
+        "declarations_for_join.csv",
+        "wi_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "WY",

@@ -1,17 +1,17 @@
 {
   "abbreviation": "WI",
-  "action_file": "",
-  "adapter_status": "pending",
-  "coverage": "State-source adapter not yet implemented",
-  "generated_on": "2026-09-09",
+  "action_file": "declarations_for_join.csv",
+  "adapter_status": "implemented",
+  "coverage": "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR",
+  "generated_on": "2026-09-10",
   "metrics": {
-    "action_count": 0,
+    "action_count": 18,
     "federal_declaration_count": 56,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 421,
+    "storm_match_rows": 1138
   },
   "name": "Wisconsin",
   "slug": "wisconsin",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }

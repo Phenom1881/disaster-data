@@ -81,7 +81,7 @@
 <section class="metrics">
   <div class="metric"><strong>56</strong>federal FEMA declarations</div>
   <div class="metric"><strong>15</strong>original state weather declarations</div>
-  <div class="metric"><strong>334</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>483</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/indiana.html">Federal declaration overview</a> &middot; <a href="https://www.in.gov/gov/newsroom/executive-orders/">Official state source</a></p>
 
@@ -114,7 +114,7 @@
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-08-13 &middot; DECLARING A STATEWIDE DISASTER EMERGENCY DUE TO FLOODING SEVERE WEATHER TORNADIC ACTIVITY AND A DERECHO</td><td>0</td><td>None matched</td><td>4933</td></tr>
 <tr><td>2026-06-19 &middot; DECLARING A DISASTER EMERGENCY IN ALLEN BARTHOLOMEW BENTON BOONE BROWN CARROLL CASS CLAY CLINTON DEARBORN DECATUR DELAWARE ELKHART FRANKLIN FOUNTAIN FULTON GRANT GREENE HAMILTON HANCOCK HARRISON HENDRICKS HOWARD HUNTINGTON JACKSON JASPER JAY JEFFERSON JENNINGS JOHNSON KOSIUSKO KNOX LAGRANGE LAKE LAPORTE LAWRENCE MADISON MARION MARSHALL MIAMI MONROE MONTGOMERY MORGAN NEWTON OWEN PARKE PORTER PUTNAM RANDOLPH RIPLEY RUSH SHELBY ST JOSEPH STEUBEN SWITZERLAND TIPPECANOE WABASH WARREN WHITE VANDERBURGH VERMILLION AND VIGO COUNTIES DUE TO FLOODING SEVERE WEATHER TORNADIC ACTIVITY AND A DERECHO</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2026-01-23 &middot; DECLARATION OF A STATEWIDE DISASTER EMERGENCY DUE TO A SEVERE WINTER STORM</td><td>0</td><td>None matched</td><td>3641</td></tr>
+<tr><td>2026-01-23 &middot; DECLARATION OF A STATEWIDE DISASTER EMERGENCY DUE TO A SEVERE WINTER STORM</td><td>149</td><td>ADAMS, ALLEN, BARTHOLOMEW, BENTON, BLACKFORD, BOONE, BROWN, CARROLL</td><td>3641</td></tr>
 <tr><td>2025-02-27 &middot; DECLARING A DISASTER EMERGENCY IN BARTHOLOMEW BROWN CLARK CLAY CRAWFORD DEARBORN DELAWARE ELKHART FLOYD GIBSON GREEN HAMILTON HANCOCK HARRISON HENDRICKS JEFFERSON JENNINGS LAGRANGE LAKE LAPORTE MADISON MARSHALL MARTIN MORGAN OWEN PERRY PORTER POSEY SHELBY SPENCER STEUBEN SWITZERLAND VIGO WARRICK AND WASHINGTON COUNTIES DUE TO SEVERE WEATHER TORNADIC ACTIVITY AND FLOODING</td><td>1</td><td>GIBSON</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2024-03-21 &middot; DECLARING A DISASTER EMERGENCY IN DELAWARE JEFFERSON &amp; RANDOLPH COUNTIES DUE TO SEVERE WEATHER &amp; TORNADIC ACTIVITY</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2023-06-30 &middot; DECLARING DISASTER EMERGENCIES IN CLAY FOUNTAIN GIBSON JOHNSON MARTIN SPENCER VERMILLION AND VIGO COUNTIES DUE TO SEVERE WEATHER</td><td>156</td><td>BARTHOLOMEW, BENTON, BOONE, BROWN, CASS, CLARK, CLAY, CLINTON</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
@@ -193,7 +193,7 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">334 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">483 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
@@ -502,7 +502,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-09-09 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
+<footer>Generated 2026-09-10 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification.</footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

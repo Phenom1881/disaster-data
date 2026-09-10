@@ -1,17 +1,17 @@
 {
   "abbreviation": "MN",
-  "action_file": "",
-  "adapter_status": "pending",
-  "coverage": "State-source adapter not yet implemented",
-  "generated_on": "2026-09-09",
+  "action_file": "declarations_for_join.csv",
+  "adapter_status": "implemented",
+  "coverage": "2019-present current Governor archive; 2000-2018 not covered; anti-bot interception is detected explicitly",
+  "generated_on": "2026-09-10",
   "metrics": {
-    "action_count": 0,
+    "action_count": 15,
     "federal_declaration_count": 81,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 616,
+    "storm_match_rows": 885
   },
   "name": "Minnesota",
   "slug": "minnesota",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }
