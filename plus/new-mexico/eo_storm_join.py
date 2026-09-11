@@ -672,32 +672,9 @@ def main():
 
     declarations = pd.read_csv(args.declarations)
     validate_declarations(declarations)
-    parsed_dates = pd.to_datetime(
-        declarations["date_signed"], format="%Y-%m-%d", errors="coerce"
-    )
-    # A blank or unparseable date_signed is a known, honest outcome for a
-    # declaration whose real signing date genuinely couldn't be confirmed
-    # yet (e.g. the source PDF is a scanned image with no text layer, or no
-    # dated news coverage was found) - NOT a data-format error. It must be
-    # skipped for THIS one declaration, not allowed to crash the entire
-    # state's run before any other, perfectly valid declaration gets
-    # processed. errors="raise" here would do exactly that: pandas parses
-    # the whole date_signed column upfront, so one blank row fails before
-    # the per-declaration loop below even starts.
-    unresolved_mask = parsed_dates.isna()
-    if unresolved_mask.any():
-        for decl_id in declarations.loc[unresolved_mask, "declaration_id"]:
-            print(
-                f"SKIPPED {decl_id}: date_signed is blank or unparseable - "
-                "no real signing date has been confirmed for this "
-                "declaration yet. It is excluded from this run entirely "
-                "(not matched against any NCEI events) rather than guessed "
-                "at. Add a confirmed date_signed (YYYY-MM-DD) to re-include it.",
-                file=sys.stderr,
-            )
-        declarations = declarations.loc[~unresolved_mask].reset_index(drop=True)
-        parsed_dates = parsed_dates.loc[~unresolved_mask].reset_index(drop=True)
-    declarations["date_signed"] = parsed_dates.dt.date
+    declarations["date_signed"] = pd.to_datetime(
+        declarations["date_signed"], format="%Y-%m-%d", errors="raise"
+    ).dt.date
     if "declaration_id" not in declarations.columns:
         declarations["declaration_id"] = (
             declarations["eo_number"].astype(str)

@@ -1,0 +1,114 @@
+{
+  "MO-EO-00-22": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-04-17": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-04-19": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-24": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-25": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-26": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-28": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-29": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-32": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-34": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-35": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-05-38": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-17-22": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-24-03": {
+    "decision": "override_exclude",
+    "reason": "Out-of-state disaster assistance/evacuee support explicitly identified by source; no matching in-state weather event.",
+    "hazard_category_override": "exclude"
+  },
+  "MO-EO-22-09": {
+    "decision": "companion",
+    "reason": "Expressly continues emergency under EO 22-08; not a new declaration.",
+    "relationships": [
+      {
+        "target": "MO-EO-22-08",
+        "type": "continues",
+        "evidence": "SOS description explicitly continues state of emergency under Executive Order 22-08."
+      }
+    ]
+  },
+  "MO-EO-08-27": {
+    "decision": "override_exclude",
+    "hazard_category_override": "exclude",
+    "reason": "SOS description explicitly activates interstate assistance compact for another state; no corresponding Missouri weather event."
+  },
+  "MO-EO-12-06": {
+    "decision": "review",
+    "reason": "Record heat/low precipitation and fire-risk mobilization; no distinct incident established. Not assigned a speculative hazard category."
+  },
+  "MO-EO-12-07": {
+    "decision": "companion",
+    "reason": "Expressly extends Executive Order 12-06 until October 1, 2012.",
+    "relationships": [
+      {
+        "target": "MO-EO-12-06",
+        "type": "extends",
+        "evidence": "Executive Order 12-06 is extended until October 1, 2012."
+      }
+    ]
+  },
+  "MO-EO-17-05": {
+    "decision": "companion",
+    "reason": "Emergency Operations Center activation precedes formal winter-storm emergency declaration 17-06.",
+    "relationships": [
+      {
+        "target": "MO-EO-17-06",
+        "type": "operational_precursor",
+        "evidence": "January 11 EOC activation followed by January 12 declaration for forecast winter storms."
+      }
+    ]
+  }
+}

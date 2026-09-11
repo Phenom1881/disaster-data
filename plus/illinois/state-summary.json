@@ -1,17 +1,17 @@
 {
   "abbreviation": "IL",
-  "action_file": "",
-  "adapter_status": "pending",
-  "coverage": "State-source adapter not yet implemented",
-  "generated_on": "2026-09-10",
+  "action_file": "declarations_for_join.csv",
+  "adapter_status": "implemented",
+  "coverage": "2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.",
+  "generated_on": "2026-09-11",
   "metrics": {
-    "action_count": 0,
+    "action_count": 7,
     "federal_declaration_count": 68,
-    "severity_rows": 0,
-    "storm_match_rows": 0
+    "severity_rows": 118,
+    "storm_match_rows": 521
   },
   "name": "Illinois",
   "slug": "illinois",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join skipped: no state-action CSV is available"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }

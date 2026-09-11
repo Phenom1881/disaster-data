@@ -18,7 +18,14 @@
       "abbreviation": "AK",
       "name": "Alaska",
       "slug": "alaska",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "alaska.py",
+      "coverage_note": "Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.",
+      "official_source_url": "https://gov.alaska.gov/administrative-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ak_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "AZ",
@@ -63,7 +70,14 @@
       "abbreviation": "CO",
       "name": "Colorado",
       "slug": "colorado",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "colorado.py",
+      "coverage_note": "2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.",
+      "official_source_url": "https://spl.cde.state.co.us/artemis/goserials/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "co_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "CT",
@@ -121,19 +135,40 @@
       "abbreviation": "HI",
       "name": "Hawaii",
       "slug": "hawaii",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "hawaii.py",
+      "coverage_note": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.",
+      "official_source_url": "https://governor.hawaii.gov/category/newsroom/emergency-proclamations/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "hi_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "ID",
       "name": "Idaho",
       "slug": "idaho",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "idaho.py",
+      "coverage_note": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.",
+      "official_source_url": "https://adminrules.idaho.gov/executive-orders/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "id_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "IL",
       "name": "Illinois",
       "slug": "illinois",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "illinois.py",
+      "coverage_note": "2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.",
+      "official_source_url": "https://www.illinois.gov/government/disaster-proclamations.html",
+      "action_files": [
+        "declarations_for_join.csv",
+        "il_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "IN",
@@ -152,7 +187,14 @@
       "abbreviation": "IA",
       "name": "Iowa",
       "slug": "iowa",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "iowa.py",
+      "coverage_note": "2024-present HSEMD proclamation tables; 2000-2023 not collected.",
+      "official_source_url": "https://homelandsecurity.iowa.gov/disasters/governors-disaster-proclamations",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ia_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "KS",
@@ -274,7 +316,14 @@
       "abbreviation": "MO",
       "name": "Missouri",
       "slug": "missouri",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "missouri.py",
+      "coverage_note": "2000-present Secretary of State year indexes and legal order text.",
+      "official_source_url": "https://www.sos.mo.gov/library/reference/orders/default",
+      "action_files": [
+        "declarations_for_join.csv",
+        "mo_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "MT",
@@ -509,7 +558,14 @@
       "abbreviation": "UT",
       "name": "Utah",
       "slug": "utah",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "utah.py",
+      "coverage_note": "2000-present Office of Administrative Rules executive-document indexes and legal texts.",
+      "official_source_url": "https://rules.utah.gov/publications/executive-documents/",
+      "action_files": [
+        "declarations_for_join.csv",
+        "ut_emergency_actions_all.csv"
+      ]
     },
     {
       "abbreviation": "VT",
@@ -581,7 +637,14 @@
       "abbreviation": "WY",
       "name": "Wyoming",
       "slug": "wyoming",
-      "adapter_status": "pending"
+      "adapter_status": "implemented",
+      "adapter_file": "wyoming.py",
+      "coverage_note": "2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.",
+      "official_source_url": "https://governor.wyo.gov/state-government/executive-orders",
+      "action_files": [
+        "declarations_for_join.csv",
+        "wy_emergency_actions_all.csv"
+      ]
     }
   ]
 }
