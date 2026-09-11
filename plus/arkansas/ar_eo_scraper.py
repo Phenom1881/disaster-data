@@ -43,7 +43,10 @@ def parse_post(post):
     number=normalize_number(title[:24])
     if not number: number=f"POST-{post['id']}"
     signed=""
-    match=re.search(r"(?:this|on this)\s+(\d{1,2})(?:st|nd|rd|th)?\s+day of\s+([A-Za-z]+),?(?: in the year of our Lord)?\s+(20\d{2})",text,re.I)
+    # WordPress inserts whitespace between the day and ordinal suffix in some
+    # older orders (for example "31 st day"). Accept that rendering so the
+    # signed order date wins over the later post-publication date.
+    match=re.search(r"(?:this|on this)\s+(\d{1,2})\s*(?:st|nd|rd|th)?\s+day of\s+([A-Za-z]+),?(?: in the year of our Lord,?)?\s+(20\d{2})",text,re.I)
     if match:
         try: signed=datetime.strptime(" ".join(match.groups()),"%d %B %Y").date().isoformat()
         except ValueError: pass

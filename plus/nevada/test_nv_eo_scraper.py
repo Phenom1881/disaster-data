@@ -18,5 +18,9 @@ class NevadaTests(unittest.TestCase):
             paths=[root+"/"+n for n in ("a.csv","r.csv","j.csv")]; nv.write_outputs([original,amended],*paths)
             with open(paths[2],encoding="utf-8") as handle: rows=list(csv.DictReader(handle))
             self.assertEqual(len(rows),1); self.assertEqual(tuple(rows[0]),nv.JOIN_FIELDS)
-    def test_no_overrides(self): self.assertEqual(nv.HAZARD_OVERRIDES,{})
+    def test_propane_delivery_weather_override(self):
+        self.assertEqual(
+            nv.HAZARD_OVERRIDES["PROCLAMATION-2023-01-06-PROCLAMATION-DECLARING-A-LIQUID-PETROLEUM-GAS-DELIVERY-EMERGENCY"],
+            "winter",
+        )
 if __name__=="__main__": unittest.main()

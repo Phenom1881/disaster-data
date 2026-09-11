@@ -6,7 +6,7 @@ def post(title,text,date="2024-08-17T12:00:00",ident=1):
 
 class ArkansasTests(unittest.TestCase):
     def test_official_text_drives_hazard_and_date(self):
-        action=ar.parse_post(post("DR 24-06: Emergency declaration for severe thunderstorms and strong winds","I do hereby declare that a state of emergency exists. IN TESTIMONY on this 17th day of August, 2024."))
+        action=ar.parse_post(post("DR 24-06: Emergency declaration for severe thunderstorms and strong winds","I do hereby declare that a state of emergency exists. IN TESTIMONY on this 17 th day of August, 2024."))
         self.assertEqual(action.date,"2024-08-17"); self.assertEqual(ar.classify(action),"declaration")
         with tempfile.TemporaryDirectory() as root:
             paths=[root+f"/{n}.csv" for n in ("actions","rels","join")]; ar.write_outputs([action],*paths)
