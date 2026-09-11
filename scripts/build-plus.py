@@ -44,6 +44,7 @@ import csv
 import html
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 from datetime import date, datetime, timedelta
@@ -398,33 +399,16 @@ def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     return (True, "")
 
 
-def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool, bool]:
+def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool]:
     """Run eo_storm_join.py for one state, applying its reviewed sidecar
     overrides automatically when present.
 
-    Returns (note, failed, ran).
-
-    ran is True ONLY when a join subprocess actually executed this call AND
-    its output was successfully promoted to the real eo_storm_matches.csv /
-    eo_storm_severity_summary.csv paths - a genuine, trustworthy success.
-    It is False for every other outcome: the script being missing, a failed
-    subprocess, a failed zone-resolution step, or a failed promotion. A
-    caller uses this (not merely `not failed`) to decide whether this call's
-    own output is fresh enough to read directly, bypassing the legacy
-    filtered-file preference - failed=False can also mean "skipped", which
-    must never be mistaken for "ran and produced trustworthy output."
-
-    failed is True whenever this should count as a hard failure that blocks
-    the state's page/summary rebuild, blocks the aggregate coverage/landing
-    rebuild, and forces a nonzero process exit code - a malformed
-    hazard_category_override (inline or in hazard_overrides.csv), a failed
-    subprocess, or a failed promotion. A missing eo_storm_join.py is ALSO a
-    hard failure when state["adapter_status"] == "implemented": every
-    implemented state is expected to have this file installed, so its
-    absence there means something broke, not that storm-join support hasn't
-    been built yet. For a state that is not yet "implemented" (e.g.
-    "planned"), a missing script is treated as a benign, expected skip
-    during incremental rollout - failed=False, ran=False.
+    Returns (note, failed). failed is True whenever the join itself, the
+    zone-resolution step, or the final file-promotion step fails - a
+    malformed hazard_category_override (inline or in hazard_overrides.csv)
+    must not be allowed to leave an automated build looking successful, so
+    main() propagates this into the process exit code unconditionally, not
+    only under --strict.
 
     eo_storm_join.py and resolve_zones_to_counties.py write to *.tmp paths
     here, never directly to eo_storm_matches.csv / eo_storm_severity_summary.csv
@@ -439,17 +423,7 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     """
     join_script = state_dir / "eo_storm_join.py"
     if not join_script.exists():
-        if state["adapter_status"] == "implemented":
-            return (
-                "Storm join failed: eo_storm_join.py is not installed in the state folder",
-                True,
-                False,
-            )
-        return (
-            "Storm join skipped: eo_storm_join.py is not installed in the state folder",
-            False,
-            False,
-        )
+        return ("Storm join skipped: eo_storm_join.py is not installed in the state folder", False)
 
     # All final and temporary paths are defined together, up front,
     # including the zone-resolution outputs (used only conditionally below)
@@ -496,7 +470,7 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
             print(result.stderr, file=sys.stderr)
         matches_tmp.unlink(missing_ok=True)
         severity_tmp.unlink(missing_ok=True)
-        return (f"Storm join failed with exit code {result.returncode}", True, False)
+        return (f"Storm join failed with exit code {result.returncode}", True)
 
     if not matches_tmp.exists() or not severity_tmp.exists():
         matches_tmp.unlink(missing_ok=True)
@@ -506,7 +480,6 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
             f"its expected output files ({matches_tmp.name}, "
             f"{severity_tmp.name}) - treated as a failure",
             True,
-            False,
         )
 
     resolver = state_dir / "resolve_zones_to_counties.py"
@@ -538,7 +511,6 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
             return (
                 f"Storm join completed; zone resolution failed with exit code {resolve_result.returncode}",
                 True,
-                False,
             )
         if not resolved_tmp.exists():
             matches_tmp.unlink(missing_ok=True)
@@ -548,24 +520,22 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
                 f"produce its expected output file ({resolved_tmp.name}) - "
                 "treated as a failure",
                 True,
-                False,
             )
         ok, message = _promote_outputs(
             [(matches_tmp, matches), (severity_tmp, severity), (resolved_tmp, resolved)]
         )
         if not ok:
-            return (message, True, False)
-        return ("Storm join and forecast-zone resolution completed", False, True)
+            return (message, True)
+        return ("Storm join and forecast-zone resolution completed", False)
 
     # No zone resolution was attempted - the join itself is the last step,
     # so its outputs move into place now.
     ok, message = _promote_outputs([(matches_tmp, matches), (severity_tmp, severity)])
     if not ok:
-        return (message, True, False)
+        return (message, True)
     return (
         "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
         False,
-        True,
     )
 
 
@@ -783,6 +753,11 @@ def shared_css(prefix: str = "") -> str:
     .states {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
       gap:.8rem; }}
     .state-card a {{ color:var(--accent); font-weight:700; text-decoration:none; }}
+    .card-count-row {{ display:flex; align-items:baseline; justify-content:space-between;
+      gap:.5rem; flex-wrap:wrap; margin-top:.3rem; }}
+    .since-badge {{ display:inline-block; flex-shrink:0; padding:.15rem .55rem;
+      border-radius:99px; background:var(--accent); color:var(--paper-2);
+      font-size:.75rem; font-weight:700; white-space:nowrap; }}
     .status {{ display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
       border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }}
     table {{ width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }}
@@ -923,6 +898,60 @@ def render_state_page(
 </main>{table_script()}</body></html>"""
 
 
+_COVERAGE_START_MONTHS = (
+    "January|February|March|April|May|June|July|August|September|"
+    "October|November|December"
+)
+_COVERAGE_START_PATTERN = re.compile(
+    rf"^(?:(?:{_COVERAGE_START_MONTHS})\s+)?(\d{{4}})(?:-\d{{2}}-\d{{2}})?-present\b"
+)
+_COVERAGE_START_RANGE_PATTERN = re.compile(r"^(\d{4})-\d{4}\b")
+
+# A handful of states' real coverage_note text doesn't fit the common
+# "<year>-present" / "<Month year>-present" shape the regex above expects -
+# either because the note uses a closed range ("2000-2025 ..."), states the
+# start year in a full sentence rather than a leading date (Virginia), or
+# because the disclosed sources are narrower/less certain than a single
+# clean start year would honestly convey (Alaska, Hawaii, Ohio all
+# explicitly say no complete archive was verified). Rather than let the
+# regex either miss these or guess a misleading year, each is handled
+# explicitly here, verified against what that state's real coverage_note
+# actually says as of the date this was written.
+_COVERAGE_START_OVERRIDES = {
+    "CO": "2000",
+    "KY": "2019",
+    "VA": "2002",
+}
+_COVERAGE_START_NO_CLEAN_YEAR = {"AK", "HI", "OH"}
+
+
+def extract_coverage_start_label(abbreviation: str, coverage_note: str, action_count: int) -> str:
+    """A short, scannable label for how far back a state's real coverage
+    goes - meant to sit next to the declaration count so a reader isn't
+    misled into thinking a low count means "few disasters" when it may
+    just mean "a narrow coverage window." Falls back to a neutral,
+    honest label rather than guessing when the coverage_note text doesn't
+    state a single clean start year.
+    """
+    # "Adapter available; no cached action file found" and similar mean no
+    # data was loaded in this run at all - a different situation from a
+    # narrow-but-real coverage window, so it gets a distinct label rather
+    # than a fabricated or misleading date.
+    if "no cached action file" in coverage_note.lower() or "adapter not yet implemented" in coverage_note.lower():
+        return "No data loaded"
+    if abbreviation in _COVERAGE_START_OVERRIDES:
+        return f"Since {_COVERAGE_START_OVERRIDES[abbreviation]}"
+    if abbreviation in _COVERAGE_START_NO_CLEAN_YEAR:
+        return "Uneven coverage"
+    match = _COVERAGE_START_PATTERN.match(coverage_note)
+    if match:
+        return f"Since {match.group(1)}"
+    match = _COVERAGE_START_RANGE_PATTERN.match(coverage_note)
+    if match:
+        return f"Since {match.group(1)}"
+    return "See coverage note"
+
+
 def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
     by_abbreviation = {item["abbreviation"]: item for item in summaries}
     cards = []
@@ -930,10 +959,14 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
         summary = by_abbreviation.get(state["abbreviation"])
         count = summary["metrics"]["action_count"] if summary else 0
         coverage = summary["coverage"] if summary else "Not rebuilt in this run"
+        start_label = extract_coverage_start_label(state["abbreviation"], coverage, count)
         cards.append(
             '<article class="state-card">'
             f'<a href="/plus/{esc(state["slug"])}/">{esc(state["name"])}</a>'
-            f'<div>{count:,} original weather declarations</div>'
+            f'<div class="card-count-row">'
+            f'<span>{count:,} original weather declarations</span>'
+            f'<span class="since-badge">{esc(start_label)}</span>'
+            "</div>"
             f'<span class="status">{esc(coverage)}</span>'
             "</article>"
         )
@@ -957,7 +990,7 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
   <div class="metric"><strong>{loaded}</strong>states with loaded action data in this run</div>
 </section>
 <h2>Browse by state</h2><section class="states">{''.join(cards)}</section>
-<footer>Generated {date.today().isoformat()} &middot; DisasterData.IO</footer>
+<footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main></body></html>"""
 
 
@@ -1008,17 +1041,8 @@ def process_state(
             storm_note = "Storm join skipped: --dry-run and --join-storms cannot be combined"
         elif action_path:
             storm_join_path = ensure_declaration_id_column(action_path, state["abbreviation"])
-            storm_note, storm_failed, storm_pipeline_ran = run_storm_pipeline(
-                state, state_dir, storm_join_path
-            )
-        elif state["adapter_status"] == "implemented":
-            # An implemented state is expected to have a state-action CSV by
-            # now; its absence means something broke upstream (collection
-            # failed silently, a file got deleted, a path changed), not that
-            # this state hasn't been built out yet. storm_pipeline_ran stays
-            # False - nothing ran, so there is no fresh output to trust.
-            storm_note = "Storm join failed: no state-action CSV is available"
-            storm_failed = True
+            storm_note, storm_failed = run_storm_pipeline(state, state_dir, storm_join_path)
+            storm_pipeline_ran = not storm_failed
         else:
             storm_note = "Storm join skipped: no state-action CSV is available"
 

@@ -37,6 +37,11 @@
     .states { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
       gap:.8rem; }
     .state-card a { color:var(--accent); font-weight:700; text-decoration:none; }
+    .card-count-row { display:flex; align-items:baseline; justify-content:space-between;
+      gap:.5rem; flex-wrap:wrap; margin-top:.3rem; }
+    .since-badge { display:inline-block; flex-shrink:0; padding:.15rem .55rem;
+      border-radius:99px; background:var(--accent); color:var(--paper-2);
+      font-size:.75rem; font-weight:700; white-space:nowrap; }
     .status { display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
       border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }
     table { width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }
