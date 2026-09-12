@@ -1,27 +1,436 @@
 eo_number,title,year,hazard_guess,is_original_weather_declaration,source_url
-12-01,Disaster Declaration for Severe Storms and Tornados,2012,severe_storm,True,https://www.in.gov/governorhistory/mitchdaniels/2400.htm
-12-02,Waiver of Hours of Service Regulations Due to Severe Storms and Tornados,2012,severe_storm,False,https://www.in.gov/governorhistory/mitchdaniels/2400.htm
-12-03,Special Paid Leave for State Employees Affected by Severe Storms and Numerous Tornados in Eleven Indiana Counties,2012,severe_storm,False,https://www.in.gov/governorhistory/mitchdaniels/2400.htm
-17-13,DECLARATION OF DISASTER EMERGENCY (EAST CHICAGO),2017,,False,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2017-executive-orders/
-17-14,EXTENSION OF EXECUTIVE ORDER 17-13: DECLARATION OF DISASTER EMERGENCY (EAST CHICAGO),2017,,False,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2017-executive-orders/
-22-15,DECLARATION OF DISASTER EMERGENCY FOR JEFFERSON SWITZERLAND AND OHIO COUNTIES DUE TO STORMS TORRENTIAL RAINS & FLOODING,2022,flood,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2022-executive-orders/
-23-2,DECLARING A DISASTER EMERGENCY IN JOHNSON AND SULLIVAN COUNTIES DUE TO SEVERE WEATHER TORNADIC ACTIVITY AND FLOODING,2023,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2023-executive-orders/
-23-3,DECLARING A DISASTER EMERGENCY IN BENTON MONROE MORGAN OWEN AND WHITE COUNTIES DUE TO SEVERE WEATHER TORNADIC ACTIVITY AND FLOODING,2023,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2023-executive-orders/
-23-4,RECISSION OF EXECUTIVE ORDERS 2-89 & 13-03,2023,,False,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2023-executive-orders/
-23-5,DECLARING DISASTER EMERGENCIES IN CLAY FOUNTAIN GIBSON JOHNSON MARTIN SPENCER VERMILLION AND VIGO COUNTIES DUE TO SEVERE WEATHER,2023,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2023-executive-orders/
-23-6,DECLARING DISASTER EMERGENCIES IN DUBOIS WASHINGTON AND ORANGE COUNTIES DUE TO SEVERE WEATHER,2023,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2023-executive-orders/
-23-7,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2023,,False,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/2023-executive-orders/
-24-4,DECLARING A DISASTER EMERGENCY IN DELAWARE JEFFERSON & RANDOLPH COUNTIES DUE TO SEVERE WEATHER & TORNADIC ACTIVITY,2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/
-24-6,DECLARING A DISASTER EMERGENCY IN POSEY COUNTY DUE TO SEVERE AND TORNADIC ACTIVITY,2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/
-24-7,DECLARING A DISASTER EMERGENCY DUE TO SEVERE AND TORNADIC ACTIVITY WITH WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS WORKING IN RESPONSE TO THE SEVERE WEATHER,2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/
-24-8,DECLARING A DISASTER EMERGENCY IN GIBSON POSEY & WARRICK COUNTIES DUE TO SEVERE WEATHER & TORNADIC ACTIVITY,2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/newsroom/executive-orders/
-25-61,DECLARING A DISASTER EMERGENCY IN BARTHOLOMEW BROWN CLARK CLAY CRAWFORD DEARBORN DELAWARE ELKHART FLOYD GIBSON GREEN HAMILTON HANCOCK HARRISON HENDRICKS JEFFERSON JENNINGS LAGRANGE LAKE LAPORTE MADISON MARSHALL MARTIN MORGAN OWEN PERRY PORTER POSEY SHELBY SPENCER STEUBEN SWITZERLAND VIGO WARRICK AND WASHINGTON COUNTIES DUE TO SEVERE WEATHER TORNADIC ACTIVITY AND FLOODING,2025,severe_storm,True,https://www.in.gov/gov/files/25-61.pdf
+04-08,GIFT GIVING TO EXECUTIVE BRANCH EMPLOYEES,2004,,False,https://www.in.gov/gov/files/eo-still-active/EO-04-0846.pdf
+05-01,Executive Order 05-01,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-01_Creation_of_Commerce.pdf
+05-02,Executive Order 05-02,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-02_Creation_of_OMB.pdf
+05-03,Executive Order 05-03,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-03_Creation_of_Inspector_Gen.pdf
+05-04,Executive Order 05-04,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-04_Public_Finance.pdf
+05-05,Executive Order 05-05,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-05_Buy_Indiana.pdf
+05-06,Executive Order 05-06,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-06_Account_for_State_Assets.pdf
+05-07,Executive Order 05-07,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-07_Log_Contracts_on_Internet.pdf
+05-08,Executive Order 05-08,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-08_Creation_of_Grants_and_Procurement.pdf
+05-09,Executive Order 05-09,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-09_Duties_of_State_for_Emergency_Mgmt.pdf
+05-10,Executive Order 05-10,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-10_Medical_Error_Reporting.pdf
+05-11,Executive Order 05-11,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-11_Minority_Business_Enterprise.pdf
+05-12,Executive Order 05-12,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-12_Ethical_Rules_State_Employees.pdf
+05-13,Executive Order 05-13,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-13_Utility_Emergency.pdf
+05-14,Executive Order 05-14,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-14_Complaint_State_Employees.pdf
+05-15,Executive Order 05-15,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-15_Creation_of_Child_Services.pdf
+05-16,Executive Order 05-16,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-16_Creation_of_Faith_Based_Community.pdf
+05-17,Executive Order 05-17,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-17_Creation_of_Technology.pdf
+05-18,Executive Order 05-18,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-18_Military_Pay.pdf
+05-19,Executive Order 05-19,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-19_DLGF_Initiative.pdf
+05-20,Executive Order 05-20,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-20_Census_Data.pdf
+05-21,Executive Order 05-21,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-21_Greening_the_Govt.pdf
+05-22,Executive Order 05-22,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-22.pdf
+05-23,Executive Order 05-23,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-23_Clemency_Arthur_Baird_II.pdf
+05-24,Executive Order 05-24,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-24.pdf
+05-25,Executive Order 05-25,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-25.pdf
+05-26,Executive Order 05-26,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-26.pdf
+05-27,Executive Order 05-27,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-27.pdf
+05-28,Executive Order 05-28,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-28.pdf
+05-29,Executive Order 05-29,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-29.pdf
+05-30,Executive Order 05-30,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05_30.pdf
+05-31,Executive Order 05-31,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-31.pdf
+05-32,Executive Order 05-32,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-32.pdf
+05-33,Executive Order 05-33,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-33.pdf
+05-34,Executive Order 05-34,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-34.pdf
+05-35,Executive Order 05-35,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-35.pdf
+05-36,Executive Order 05-36,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-36.pdf
+05-37,Executive Order 05-37,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-37.pdf
+05-38,Executive Order 05-38,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-38.pdf
+05-39,Executive Order 05-39,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-39.pdf
+05-40,Executive Order 05-40,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-40.pdf
+05-41,Executive Order 05-41,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-41.pdf
+05-42,Executive Order 05-42,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-42.pdf
+05-43,Executive Order 05-43,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-43.pdf
+05-44,Executive Order 05-44,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-44.pdf
+05-45,Executive Order 05-45,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-45.pdf
+05-46,Executive Order 05-46,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-46.pdf
+05-47,Executive Order 05-47,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-47.pdf
+05-48,Executive Order 05-48,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-48.pdf
+05-49,Executive Order 05-49,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-49.pdf
+05-50,Executive Order 05-50,2005,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_05-50.pdf
+06-01,Executive Order 06-01,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06_01.pdf
+06-02,Executive Order 06-02,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-02.pdf
+06-03,Executive Order 06-03,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-03.pdf
+06-04,Executive Order 06-04,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-04.pdf
+06-05,Executive Order 06-05,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-05.pdf
+06-06,Executive Order 06-06,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-06.pdf
+06-07,Executive Order 06-07,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-07.pdf
+06-08,Executive Order 06-08,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-08.pdf
+06-09,Executive Order 06-09,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-09.pdf
+06-10,Executive Order 06-10,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-10.pdf
+06-11,Executive Order 06-11,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-11.pdf
+06-12,Executive Order 06-12,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-12.pdf
+06-13,Executive Order 06-13,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-13.pdf
+06-14,Executive Order 06-14,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-14.pdf
+06-15,Executive Order 06-15,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-15.pdf
+06-16,Executive Order 06-16,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-16.pdf
+06-17,Executive Order 06-17,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-17.pdf
+06-18,Executive Order 06-18,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-18.pdf
+06-20,Executive Order 06-20,2006,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_06-20.pdf
+07-01,Executive Order 07-01,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-01.pdf
+07-02,Executive Order 07-02,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-02.pdf
+07-03,Executive Order 07-03,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-03.pdf
+07-04,Executive Order 07-04,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-04.pdf
+07-05,Executive Order 07-05,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-05.pdf
+07-06,Executive Order 07-06,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-06.pdf
+07-07,Executive Order 07-07,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-07.pdf
+07-08,Executive Order 07-08,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-08.pdf
+07-09,Executive Order 07-09,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-09.pdf
+07-10,Executive Order 07-10,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO07-10.pdf
+07-11,Executive Order 07-11,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-11_Disaster_Declaration_in_northern_Indiana.pdf
+07-12,Executive Order 07-12,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-12_Pardon_for_Bollenbacher.pdf
+07-13,Executive Order 07-13,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-13_Pardon_for_Bear.pdf
+07-14,Executive Order 07-14,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-14_Pardon_for_Foster.pdf
+07-15,Executive Order 07-15,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-15_Pardon_for_Sams.pdf
+07-16,Executive Order 07-16,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-16_Pardon_for_Williams.pdf
+07-17,Executive Order 07-17,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-17_Pardon_for_Rush.pdf
+07-18,Executive Order 07-18,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-18_Pardon_for_Bender.pdf
+07-19,Executive Order 07-19,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_719.pdf
+07-20,Executive Order 07-20,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-20_Continuation_of_Current_Admin_Structure_FSSA.pdf
+07-21,Executive Order 07-21,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-21_Effectiveness_Population_Information_Census_Bureau.pdf
+07-22,Executive Order 07-22,2007,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_07-22.pdf
+08-01,Executive Order 08-01,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-01.pdf
+08-02,Executive Order 08-02,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-02_Continuation_of_ICCSV.pdf
+08-03,Executive Order 08-03,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-03.pdf
+08-04,Executive Order 08-04,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-04.pdf
+08-05,Executive Order 08-05,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-05.pdf
+08-06,Executive Order 08-06,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-06_Census_Data_for_Fishers.pdf
+08-07,Executive Order 08-07,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-07_Census_Data_for_Munster.pdf
+08-08,Executive Order 08-08,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-08.pdf
+08-09,Executive Order 08-09,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08_09.pdf
+08-10,Executive Order 08-10,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08_10.pdf
+08-11,Executive Order 08-11,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08_11.pdf
+08-12,Executive Order 08-12,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-12_Commission_on_Uniform_State_Laws.pdf
+08-13,Executive Order 08-13,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08_13.pdf
+08-14,Executive Order 08-14,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08_14.pdf
+08-15,Executive Order 08-15,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08_15.pdf
+08-16,Executive Order 08-16,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-16.pdf
+08-17,Executive Order 08-17,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-17_Pardon_for_Bennett.pdf
+08-18,Executive Order 08-18,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-18_Pardon_for_Blanton.pdf
+08-19,Executive Order 08-19,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-19_Pardon_for_Boss.pdf
+08-20,Executive Order 08-20,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-20_Pardon_for_Robin_Mitchell.pdf
+08-21,Executive Order 08-21,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-21_Pardon_for_Frances_Clark.pdf
+08-22,Executive Order 08-22,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-22_Pardon_for_Gregory_Buchanan.pdf
+08-23,Executive Order 08-23,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-23_Pardon_for_Thomas_Modglin.pdf
+08-24,Executive Order 08-24,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-24_Pardon_for_Sarah_Crank.pdf
+08-25,Executive Order 08-25,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-25_Pardon_for_Curtis_M_Burnette.pdf
+08-26,Executive Order 08-26,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-26_Pardon_for_James_Strong.pdf
+08-27,Executive Order 08-27,2008,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_08-27_Pardon_for_Tyrone_Edmondson.pdf
+09-01,Executive Order 09-01,2009,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_09-01_Waiver_of_Hours_of_Service_Regulation.pdf
+09-02,Executive Order 09-02,2009,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO09-02_Census_Information_for_Town_of_Fairland.pdf
+09-03,Executive Order 09-03,2009,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO09-03_Disaster_Declaration_for_Winter_Storm.pdf
+09-04,Executive Order 09-04,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-04.pdf
+09-05,Executive Order 09-05,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/09-05.pdf
+09-06,Executive Order 09-06,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-06.pdf
+09-07,Executive Order 09-07,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/EO_09-07.pdf
+09-08,Executive Order 09-08,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-08.pdf
+09-09,Executive Order 09-09,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-09.pdf
+09-10,Executive Order 09-10,2009,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO09-10_Extension_of_Waiver_of_Hours_of_Service_Regulation.pdf
+09-11,Executive Order 09-11,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-11_Bi-State_Authority.pdf
+09-12,Executive Order 09-12,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-12.pdf
+09-13,Executive Order 09-13,2009,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_09-13.pdf
+10-01,Executive Order 10-01,2010,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_10-01.pdf
+10-02,Executive Order 10-02,2010,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_10-2.pdf
+10-03,Executive Order 10-03,2010,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_10-3.pdf
+10-04,Executive Order 10-04,2010,,False,http://www.in.gov/governorhistory/mitchdaniels/files/Press/EO_10-4.pdf
+10-05,Executive Order 10-05,2010,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_10-5.pdf
+11-01,Executive Order 11-01,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-01.pdf
+11-02,Executive Order 11-02,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO11-02Receiptofdecennialcensus.pdf
+11-03,Executive Order 11-03,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO11-03DisasterDeclarationforNumerousCountiesduetoIce.pdf
+11-04,Executive Order 11-04,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-04.pdf
+11-05,Executive Order 11-05,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-05_Waiver_of_Hours_of_Service_Regulations_RE_Utility_Poles.pdf
+11-06,Executive Order 11-06,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-06.pdf
+11-07,Executive Order 11-07,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-07.pdf
+11-08,Executive Order 11-08,2011,,False,http://www.in.gov/governorhistory/mitchdaniels/files/EO_11-08.pdf
+11-09,Executive Order 11-09,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-09.pdf
+11-10,Executive Order 11-10,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-10_Medical_Clemency_for_Brandon_Jackson.pdf
+11-11,Executive Order 11-11,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-11_Pardon_for_Jesse_Gomez.pdf
+11-12,Executive Order 11-12,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-12_Pardon_for_Clyde_Harris.pdf
+11-13,Executive Order 11-13,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-13_Pardon_for_Charles_Dougherty.pdf
+11-14,Executive Order 11-14,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-14_Pardon_for_James_Lowery.pdf
+11-15,Executive Order 11-15,2011,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_11-15_Pardon_for_Donald_Berg_Jr.pdf
+12-01,Executive Order 12-01,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-01_Disaster_Declaration_for_Severe_Storms_and_Tornados.pdf
+12-02,Executive Order 12-02,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-02_Waiver_of_Hours_of_Service_Regulations_Due_to_Severe_Storms_and_Tornados.pdf
+12-03,Executive Order 12-03,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/20120314134421549.pdf
+12-04,Executive Order 12-04,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-04_Disaster_Declaration_for_Floods_in_April_2011.pdf
+12-05,Executive Order 12-05,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-05_Pardon_for_JOHNNIE_CLAYTON.pdf
+12-06,Executive Order 12-06,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-06_Pardon_for_HERBERT_WALKER.pdf
+12-07,Executive Order 12-07,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-07_Pardon_for_SCOTT_ELLENBERGER.pdf
+12-08,Executive Order 12-08,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-08_Pardon_for_THOMAS_DORSEY.pdf
+12-09,Executive Order 12-09,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-09_Pardon_for_HOMER_HOWARD.pdf
+12-10,Executive Order 12-10,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-10_Pardon_for_CHARLES_WINGER.pdf
+12-11,Executive Order 12-11,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-11_Pardon_for_DENNIS_FOLLOWELL.pdf
+12-12,Executive Order 12-12,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-12_Pardon_for_STEPHEN_GRIFFIN.pdf
+12-13,Executive Order 12-13,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-13_Pardon_for_THOMAS_CRANER.pdf
+12-14,Executive Order 12-14,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-14_Pardon_for_MONIKA_COMICK.pdf
+12-15,Executive Order 12-15,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-15_Pardon_for_BRIAN_MANKIN.pdf
+12-16,Executive Order 12-16,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-16_Pardon_for_MANONE_DEHONIESTO-LAMBERT.pdf
+12-17,Executive Order 12-17,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-17_Pardon_for_CHERRIE_PETERSON.pdf
+12-18,Executive Order 12-18,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-18_Pardon_for_JARELL_DAYHUFF.pdf
+12-20,Executive Order 12-20,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-20_Pardon_for_GORDON_DUNNE.pdf
+12-21,Executive Order 12-21,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-21_Pardon_for_SAMUEL_LOWE.pdf
+12-22,Executive Order 12-22,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-22_Disaster_Declaration_for_Allen_County.pdf
+12-23,Executive Order 12-23,2012,,False,https://www.in.gov/governorhistory/mitchdaniels/files/EO_12-23_Disasater_Declaration_for_Gibson_County.pdf
+13-01,DIRECTIVE TO NAME AN AGENCY ETHICS OFFICER AND TO HOLD AN ANNUAL LEGAL AND ETHICS CONFERENCE,2013,,False,https://www.in.gov/gov/files/eo-still-active/EO-13-01.pdf
+13-05,CREATION OF FAMILY IMPACT STATEMENTS IN CERTAIN INDIANA STATE DEPARTMENTS AND AGENCIES,2013,,False,https://www.in.gov/gov/files/eo-still-active/EO-13-05.pdf
+17-01,"CREATION OF POSITION OF ""EXECUTIVE DIRECTOR FOR DRUG PREVENTION, TREATMENT AND ENFORCEMENT",2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-01.pdf
+17-02,CONTINUING THE GOVERNOR'S EMERGENCY ADVISORY GROUP AND OTHER EMERGENCY MEASURES,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-02.pdf
+17-03,CONTINUING THE INDIANA TOLL ROAD OVERSIGHT BOARD,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-03.pdf
+17-04,CONTINUING THE INDIANA STATE TRAUMA CARE COMMITTEE,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-04.pdf
+17-05,CONTINUING THE OFFICE OF PUBLIC FINANCE,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-05.pdf
+17-06,CONTINUING THE INDIANA STATE HISTORICAL RECORDS ADVISORY BOARD,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-06.pdf
+17-07,CONTINUING WGU INDIANA IN PARTNERSHIP WITH WESTERN GOVERNORS UNIVERSITY TO EXPAND HIGHER EDUCATION OPPORTUNITIES FOR HOOSIERS THROUGH ON-LINE COMPETENCY-BASED EDUCATION,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-07.pdf
+17-08,CONTINUING THE OFFICE OF STATE-BASED INITIATIVES,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-08.pdf
+17-09,CONTINUING THE GOVERNOR'S MANAGEMENT AND PERFORMANCE HUB,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-09.pdf
+17-10,CONTINUING THE OFFICE OF FAITH-BASED AND COMMUNITY INITIATIVES AS SERVE INDIANA AND THE INDIANA COMMISSION ON COMMUNITY SERVICE AND VOLUNTEERISM AS THE SERVE INDIANA COMMISSION AS A DIVISION OF THE DEPARTMENT OF WORKFORCE DEVELOPMENT,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-10.pdf
+17-11,CONTINUING THE INDIANA EXECUTIVE COUNCIL ON CYBERSECURITY,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_17-11.pdf
+17-12,PARDON FOR KEITH DONNELL COOPER,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-12-Cooper_2.pdf
+17-13,DECLARATION OF DISASTER EMERGENCY (EAST CHICAGO),2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-13-East-Chicago_2.pdf
+17-14,EXTENSION OF EXECUTIVE ORDER 17-13: DECLARATION OF DISASTER EMERGENCY (EAST CHICAGO),2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-East-Chicago-Extension.pdf
+17-15,FAIR CHANCE HIRING PROCESS,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-15-Fair-Chance-Hiring.pdf
+17-16,COOPERATION WITH THE NATIONAL BASKETBALL ASSOCIATION FOR HOSTING THE 2021 NBA ALL-STAR GAME WEEKEND,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-17-16.pdf
+17-17,"CREATION OF THE POSITION OF ""SECRETARY OF CAREER CONNECTIONS AND TALENT",2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-17-Secretary-Career-Connections.pdf
+17-18,NEXT LEVEL TRUST FUND,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-18-Next-Level-Trust-Fund.pdf
+17-19,THE EFFECTIVENESS OF POPULATION INFORMATION FROM THE UNITED STATES CENSUS BUREAU FOR STATE LAW PURPOSES,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-19-Town-of-Whitestown-.pdf
+17-20,COOPERATION WITH THE COLLEGE FOOTBALL PLAYOFF GROUP FOR THE HOSTING OF THE 2022 COLLEGE FOOTBALL PLAYOFF NATIONAL CHAMPIONSHIP,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_17-20_College_Football_Playoff.pdf
+17-21,COOPERATION WITH THE NATIONAL COLLEGIATE ATHLETIC ASSOCIATION FOR THE HOSTING OF THE 2024 & 2026 MEN'S FINAL FOUR,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/eo-17-21-ncaa-final-four.pdf
+17-22,ESTABLISHING THE INDIANA VOLKSWAGEN ENVRIONMENTAL MITIGATION TRUST FUND COMMITTEE,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-22-Executed-Final.pdf
+17-23,"THE NAMING OF INTERSTATE  865 AFTER FRED M. FEHSENFELD, SR.",2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/ExecutiveOrder_17-23_Fehsenfeld_Sr.pdf
+17-24,PARDON FOR JAMIE PRESTON DRUELINGER,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-24-Druelinger-Pardon.pdf
+17-25,PARDON FOR VINCENT EUGENE GARTIN,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-25-Gartin-Pardon.pdf
+17-26,"PARDON FOR FRANKLIN RAY MEADOWS, JR.",2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-26-Meadows-Pardon.pdf
+17-27,PARDON FOR STEVEN MARK PYATTE,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-27-Pyatte-Pardon.pdf
+17-28,PARDON FOR GARY TIDD,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-28-Tidd-Pardon.pdf
+17-29,PARDON FOR MATTHEW BENJAMIN VOORHEES,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-29-Voorhees-Pardon.pdf
+17-30,THE EFFECTIVENESS OF POPULATION INFORMATION FROM THE UNITED STATES CENSUS BUREAU FOR STATE LAW PURPOSES,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-30-Huntertown-Census.pdf
+17-31,PARENTAL LEAVE FOR STATE EMPLOYEES,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-17-31-Parental-Leave.pdf
+17-32,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2017,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_17-32_Propane_Hours_of_Service_Ext.pdf
+18-01,"DECLARING A DISASTER EMERGENCY IN CARROLL, DEARBORN, ELKHART, FULTON, LAKE, MARSHALL, PERRY, ST. JOSEPH, STARKE, SWITZERLAND, AND WHITE COUNTIES DUE TO STORMS, TORRENTIAL RAINFALL, AND FLOODING",2018,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/EO_18-01_Disaster_Emergency_2-24-18.pdf
+18-02,"DECLARING A DISASTER EMERGENCY IN BENTON, CLARK, CRAWFORD, FLOYD, JEFFERSON, SPENCER, AND WARRICK COUNTIES DUE TO STORMS, TORRENTIAL RAINFALL, AND FLOODING",2018,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/18-02-Executive-Order.pdf
+18-03,"DECLARING A DISASTER EMERGENCY IN HARRISON, JASPER, OHIO, AND PULASKI COUNTIES DUE TO STORMS, TORRENTIAL RAINFALL, AND FLOODING",2018,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/EO-18-03.pdf
+18-04,CREATION OF THE OFFICE OF APPRENTICESHIP & WORK-BASED LEARNING,2018,,False,https://www.in.gov/governorhistory/ericjholcomb/files/20180301112440245.pdf
+18-05,"DECLARING A DISASTER EMERGENCY IN JACKSON, KOSCIUSKO, NEWTON, AND PORTER COUNTIES DUE TO STORMS, TORRENTIAL RAINFALL, AND FLOODING",2018,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/20180302114703109.pdf
+18-06,"DECLARING A DISASTER EMERGENCY IN LAPORTE, NOBLE, POSEY, WABASH, AND WARREN COUNTIES DUE TO STORMS, TORRENTIAL RAINFALL, AND FLOODING",2018,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/20180307104920789.pdf
+18-07,"DECLARING A DISASTER EMERGENCY IN GIBSON, LAGRANGE, VANDERBURG, AND VERMILLION COUNTIES DUE TO STORMS, TORRENTIAL RAINFALL, AND FLOODING",2018,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/20180316104745847.pdf
+18-08,THE EFFECTIVENESS OF POPULATION INFORMATION FROM THE UNITED STATES CENSUS BUREAU FOR STATE LAW PURPOSES,2018,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-18-08.pdf
+18-10,THE EFFECTIVENESS OF POPULATION INFORMATION FROM THE UNITED STATES CENSUS BUREAU FOR STATE LAW PURPOSES,2018,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-18-10-Carmel-Census.pdf
+19-01,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2019,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-19-01.pdf
+19-02,GRANT FOR CLEMENCY FOR BERTO N. DOOLEY,2019,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_19-02_Dooley_Clemency.pdf
+19-03,POSTPONEMENT OF THE DATE OF EXPIRATION OF RULES UNTIL ONE YEAR AFTER DATE SPECIFIED IN IC 4~22~2.5,2019,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_19-03_Postponement_of_Administrative_Rules.pdf
+20-01,EFFORTS BY INDIANA AGENCIES AND INSTRUMENTALITIES TO ASSIST IN LAKE MICHIGAN SHORELINE RELIEF,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-01.pdf
+20-02,DECLARATION OF PUBLIC HEALTH EMERGENCY FOR CORONAVIRUS DISEASE 2019 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/20-02ExecutiveOrderDeclarationofPublicHealthEmergencyforCOVID-19FINAL.pdf
+20-03,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS OF COMMERCIAL VEHICLES TRANSPORTING GOODS TO INDIANA BUSINESSES,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-03-Waiver-of-Motor-Carrier-Hours-due-to-Public-Health-Emergency.pdf
+20-04,FURTHER ORDERS AND DIRECTIVES IN RESPONSE TO THE CORONAVIRUS DISEASE 2019 EPIDEMIC,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/ExecutiveOrder20-04FurtherOrdersforPublicHealthEmergency.pdf
+20-05,HELPING HOOSIERS DURING THE PUBLIC HEALTH EMERGENCY DECLARED FOR THE CORONAVIRUS 2019 DISEASE OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_20-05.pdf
+20-06,TEMPORARY PROHIBITION ON EVICTION AND FORECLOSURES,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_20-06.pdf
+20-07,RESCHEDULING THE PRIMARY ELECTION DUE TO PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_20-07_Rescheduling_Primary.pdf
+20-08,DIRECTIVE FOR HOOSIERS TO STAY AT HOME,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_20-08_Stay_at_Home.pdf
+20-09,RELATING TO THE CONTINUITY OF OPERATION OF GOVERNMENT,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_20-09_Continuity_of_Government_Operations.pdf
+20-10,ENFORCEMENT DIRECTIVE REGARDING PROHIBITION OF IN-PERSON DINING IN RESPONSE TO THE CORONAVIRUS DISEASE 2019 EPIDEMIC,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_20-10_Enforcement_of-In_Person-Dining_Prohibition.pdf
+20-11,RELATING TO CARRYOUT CONSUMPTION OF ALCOHOL,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-11-Carryout-Consumption-of-Alcohol.pdf
+20-12,FURTHER PROVISIONS FOR HELPING HOOSIERS DURING THE COVID-19 PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_20-12_Further_Directives_Helping_Hoosiers.pdf
+20-13,DIRECTIVES TO MANAGE INDIANA'S HEALTH CARE RESPONSE FOR HOOSIERS WITH COVID_19 DURING THE PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-13-Medical-Surge.pdf
+20-14,"CONTINUATION OF EXECUTIVE ORDERS 20~04, 20~10 & 20~11 PERTAINING TO RESTAURANTS AND ALCOHOLIC BEVERAGES",2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-14-Continuation-of-Restaurant-Alcohol-EOs.pdf
+20-15,ADDITIONAL DIRECTIVES REGARDING GOVERNMENTAL FUNCTIONS,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-15-Miscellaneous-Govt-Functions.pdf
+20-16,Education Matters AND COVID-19,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-16-Education.pdf
+20-17,RENEWAL OF PUBLIC HEALTH EMERGENCY DECLARATION FOR COVID-19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-17-Renewal-of-Public-Health-Emergency-declaration-of-Covid-19.pdf
+20-18,CONTINUED DIRECTIVE FOR HOOSIERS TO STAY AT HOME; EXTENSION OF CONTINUITY OF OPERATIONS OF GOVERNMENT; and EXTENSION OF EXECUTIVE ORDERS PERTAINING TO RESTAURANTS AND ALCOHOLIC BEVERAGES,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-18-Cont-Stay-at-Home-Restaurants-Govt-Ops.pdf
+20-19,ADDITIONAL DIRECTIVES TO MANAGE INDIANA'S HEALTH CARE RESPONSE DURING THE COVID~19 PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-19-Additonal-Directives-to-Manage-Health-Response.pdf
+20-20,ADDITIONAL EDUCATION MATTERS AND COVID~19,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO_20-20.pdf
+20-21,"ADDITIONAL DIRECTIVES TO MANAGE INDIANA'S HEALTH CARE RESPONSE DURING THE COVID~19 PUBLIC HEALTH EMERGENCY, TO IMPLEMENT THE CARES ACT AND TO EXTEND OTHER PORTIONS OF COUNTY PROPERTY TAX BILLS",2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-21-Additional-Directives-Health-Finance-Matters.pdf
+20-22,EXTENSION OF DIRECTIVE FOR HOOSIERS TO STAY AT HOME; CONTINUITY OF OPERATIONS OF GOVERNMENT; and EXECUTIVE ORDERS PERTAINING TO RESTAURANTS AND ALCOHOLIC BEVERAGES,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-22-Extension-of-Stay-at-Home.pdf
+20-23,ADDITIONAL RELIEF FOR THE BUSINESS COMMUNITY AND ADDITIONAL HEALTH DIRECTIVES IN RESPONSE TO THE COVID~19 PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-23-Additional-Directives-Business-Health.pdf
+20-24,RESUMPTION OF ELECTIVE AND NON-URGENT MEDICAL PROCEDURES,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/20200424155508020.pdf
+20-25,RENEWAL OF PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-25-Renewal-of-Public-Health-Emergency-declaration-of-Covid-19.pdf
+20-26,"ROADMAP TO REOPEN INDIANA FOR HOOSIERS, BUSINESSES AND STATE GOVERNMENT",2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-26-Roadmap-to-Reopen-Indiana.pdf
+20-27,ADDITIONAL DIRECTIVES IN RESPONSE TO THE COVID~19 PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-27-Additional-Matters.pdf
+20-28,BACK ON TRACK: REOPENING INDIANA IN STAGE THREE,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-28-Reopen-Stage3.pdf
+20-29,FIRST AMENDMENT TO EXECUTIVE ORDERS 20-26 & 20-28,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-29.pdf
+20-30,RENEWAL OF PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-30-Renewal-of-Public-Health-Emergency.pdf
+20-31,ADDITIONAL EXTENSIONS OF TIME IN RESPONSE TO THE COVID~19 PUBLIC HEALTH EMERGENCY,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-31-Additional-Extensions-of-Time.pdf
+20-32,BACK ON TRACK INDIANA: STAGE FOUR,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-32-Stage-4.pdf
+20-33,FURTHER EXTENSIONS OF PRIOR DIRECTIVES,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-33-Further-Extensions.pdf
+20-34,FOURTH RENEWAL OF PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-34-Extention-of-the-Public-Health-Emergency.pdf
+20-35,BACK ON TRACK INDIANA: STAGE 4.5,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-35-Back-on-Track-Indiana-Stage-4_5.pdf
+20-36,BACK ON TRACK INDIANA: CONTINUATION OF STAGE 4.5,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-36-Continuation-Stage-4.5.pdf
+20-37,FACE COVERING REQUIREMENT,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-37-Face-Covering-Requirement.pdf
+20-38,FIFTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID-19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-38-5th-Extension-of-the-Public-Health-Emergency.pdf
+20-39,BACK ON TRACK INDIANA: SECOND CONTINUATION OF STAGE 4.5,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-39-2nd-Extension-Stage-4.5.pdf
+20-40,CHILD CARE MATTERS AND COVID~19,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-40-Child-Care-Matters.pdf
+20-41,SIXTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-41-Sixth-Renewal-of-Emergency-Declaration.pdf
+20-42,THIRD CONTINUATION OF STAGE 4.5 OF INDIANA'S BACK ON TRACK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-42-30-day-extension-of-4_5-and-Mask-Mandate.pdf
+20-43,BACK ON TRACK INDIANA: STAGE FIVE - THE NEW NORMAL DURING A GLOBAL PANDEMIC,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-43-Stage-5-The-New-Normal-w-Mask-Mandate.pdf
+20-44,SEVENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-44-Seventh-Renewal-of-Emergency-Declaration.pdf
+20-45,RENEWAL OF CERTAIN DIRECTIVES AND RESCISSION OF OTHER DIRECTIVES ISSUED IN RESPONSE TO THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-45-Renewal-and-Recission-of-Certain-Directives.pdf
+20-46,BACK ON TRACK INDIANA: STAGE FIVE CONTINUED,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-46-Stage-5-Continued.pdf
+20-47,EIGHTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-47-Eighth-Renewal-of-Emergency-Declaration_2.pdf
+20-48,COUNTY~BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_20-48_Color-Coded_County_Assessments.pdf
+20-49,NINTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-49-Ninth-Renewal-of-Emergency-Declaration.pdf
+20-50,CONTINUATION OF COUNTY-BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-50-Continuation-of-Color-Coded-County-Assessments.pdf
+20-51,ADDITIONAL DIRECTIVES AND RENEWAL OF OTHER DIRECTIVES ISSUED IN RESPONSE TO THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive_Order_20-51_New_Directives-Renewal_of_Other_Directives.pdf
+20-52,TENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-52-Tenth-Renewal-of-Emergency-Declaration.pdf
+20-53,EXTENSION OF THE EXECUTIVE ORDER 20-50 WITH CONTINUATION OF COUNTY-BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2020,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-20-53-Ext-of-20-50-Cont.-of-Color-Coded-County-Assessments.pdf
+21-01,SECOND EXTENSION OF EXECUTIVE ORDER 20-50 WITH CONTINUATION OF COUNTY-BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-01-Second-extension-of-executive-order-20-50.pdf
+21-02,THIRD CONTINUATION OF COUNTY-BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-02-Third-Extension-of-County-Based-Restrictions.pdf
+21-03,ELEVENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-03-Eleventh-Renewal-of-Emergency-Declaration.pdf
+21-04,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-04-Propane-Delivery-Hours.pdf
+21-05,TWELFTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-05-Twelfth-Renewal-of-Emergency-Declaration.pdf
+21-06,FOURTH CONTINUATION OF COUNTY-BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-06-Fourth-Extension-of-County-Based-Restrictions.pdf
+21-07,RENEWAL OF DIRECTIVES ISSUED IN RESPONSE TO THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-07-Renewal-of-COVID-Directives.pdf
+21-08,THIRTEENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-08-Thirtheeth-Renewal-of-Emergency-Declaration.pdf
+21-09,MODIFICATION OF COUNTY-BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-09-Modification-of-County-Based-Restrictions.pdf
+21-10,ACCOMMODATIONS FOR PREGNANT STATE EMPLOYEES,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-10-Pregnancy-Accommodations.pdf
+21-11,FOURTEENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-11-Fourtenth-Renewal-of-Emergency-Declaration.pdf
+21-12,CONTINUATION OF MODIFIED COUNTY~BASED MEASURES AND RESTRICTIONS BASED ON THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-12-Continuation-of-Modified-County-Based-Restrictions.pdf
+21-13,RECISSION OF DIRECTIVES AND RESTRICTIONS IMPOSED TO ADDRESS THE CORONAVIRUS (COVID~19) EMERGENCY,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-13-Recission-of-Prior-Directives1.pdf
+21-14,FIFTEENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-14-Fiftenth-Renewal-of-Emergency-Declaration.pdf
+21-15,CONTINUATION OF HEALTH AND WELFARE~BASED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-15-Continuation-of-Health-and-Welfare-Provsions.pdf
+21-16,SIXTEENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-16-Sixtenth-Renewal-of-Emergency-Declaration.pdf
+21-17,CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-17-Continuation-of-Limited-Health-and-Welfare-Provsions.pdf
+21-18,SEVENTEENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-18-Seventeenth-Renewal-of-Emergency-Declaration.pdf
+21-19,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-19-Continuation-of-Health-Based-Provisions.pdf
+21-20,THE NAMING OF STATE ROAD 26 IN DOWNTOWN RUSSIAVILLE AFTER JEFFREY A STOUT,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-20-Renaming-Highway.pdf
+21-21,ESTABLISHING THE GOVERNOR'S PUBLIC HEALTH COMMISSION,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-21-Governors-Public-Health-Commission.pdf
+21-22,EIGHTEENTH RENEWAL OF THE EMERGENCY DECLARATION,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-22-Eighteenth-Renewal-of-Emergency-Declaration.pdf
+21-23,LIMITED CONTINUATION OF PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID-19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-23-Lmtd-Cont-of-Health-Based-Provisions.pdf
+21-24,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-24-Health-Based-Provisions-Continued.pdf
+21-25,RECEIPT OF THE 2020 DECENNIAL CENSUS RESULTS,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-21-25-Census.pdf
+21-26,NINETEENTH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-26-Nineteenth-Renewal-of-Emergency-Declaration.pdf
+21-27,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-27-Health-Based-Provisions-Continued.pdf
+21-28,TWENTIETH RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-21-28.pdf
+21-29,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-21-29.pdf
+21-30,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/21-30-Executive-Order-Propane.pdf
+21-31,TWENTY~FIRST RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-21-31.pdf
+21-32,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-21-32.pdf
+21-33,TWENTY~SECOND RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-33-Twenty-second-Renewal-of-Emergency-Declaration.pdf
+21-34,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2021,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-21-34-Health-Based-Provisions-Continued.pdf
+22-01,TWENTY~THIRD RENEWAL OF THE PUBLIC HEALTH EMERGENCY DECLARATION FOR THE COVID~19 OUTBREAK,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-01-Twenty-third-Renewal-of-Emergency-Declaration.pdf
+22-02,FURTHER CONTINUATION OF LIMITED PROVISIONS TO ADDRESS THE IMPACT AND SPREAD OF THE CORONAVIRUS DISEASE (COVID~19),2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-02-Health-Based-Provisions-Continued.pdf
+22-03,GRANT OF CLEMENCY FOR CHARLES CALHOUN,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-03-Calhoun-Clemency.pdf
+22-04,GRANT OF CLEMENCY FOR ALPHONZO GRIFFIN,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-04-Griffin-Clemency.pdf
+22-05,GRANT OF CLEMENCY FOR JEROME MACLIN,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-05-Maclin-Clemency.pdf
+22-06,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING COMPOSTING MATERIALS,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-06.pdf
+22-07,FIRST AMENDMENT TO EXECUTIVE ORDER 22-06,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-07.pdf
+22-08,INDIANA'S RESPONSE TO RUSSIA'S UNJUST INVASION OF UKRAINE,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-08.pdf
+22-09,RECISSION OF COVID~19 PUBLIC HEALTH EMERGENCY DECLARATION & REMAINING PROVISIONS PERTAINING TO THE EMERGENCY,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-22-09.pdf
+22-10,ENABLING THE NEXT LEVEL GOVERNMENT SERVICE BY IMPROVING THE STATE EMPLOYEE EXPERIENCE,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-10.pdf
+22-11,EXTENSION OF EXECUTIVE ORDERS 22-06 & 22-07,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-11.pdf
+22-12,SPECIAL ELECTION,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-12.pdf
+22-13,SUSPENSION OF VAPOR PRESSURE REQUIREMENTS ON FUEL STANDARDS and WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING FUEL,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-13-BP-Whiting.pdf
+22-14,THE NAMING OF A PORTION OF STATE HIGHWAY 28,2022,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-14-Gaithers.pdf
+22-15,"DECLARATION OF DISASTER EMERGENCY FOR JEFFERSON, SWITZERLAND, AND OHIO COUNTIES DUE TO STORMS, TORRENTIAL RAINS & FLOODING",2022,flood,True,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-22-15.pdf
+23-1,GRANT OF CLEMENCY FOR TOMMY AISMAN,2023,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-23-01-Medical-Clemency-Alsman.pdf
+24-1,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2024,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-24-01.pdf
+24-2,TEMPORARILY POSTPONING CERTAIN TECHNOLOGY REQUIREMENTS,2024,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-24-02.pdf
+24-3,POSTPONING THE EXPIRATION OF CERTAIN ADMINISTRATIVE RULES,2024,,False,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-24-03-Postponing-Expiration-of-Certain-Rules.pdf
+24-4,"DECLARING A DISASTER EMERGENCY IN DELAWARE, JEFFERSON, & RANDOLPH COUNTIES DUE TO SEVERE WEATHER & TORNADIC ACTIVITY",2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/files/EO-24-04.pdf
+24-5,PREPARATION FOR THE TOTAL SOLAR ECLIPSE OF 2024,2024,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-24-05.pdf
+24-6,DECLARING A DISASTER EMERGENCY IN POSEY COUNTY DUE TO SEVERE AND TORNADIC ACTIVITY,2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-24-06-Storm-Emergency-Declaration.pdf
+24-7,DECLARING A DISASTER EMERGENCY DUE TO SEVERE AND TORNADIC ACTIVITY WITH WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS WORKING IN RESPONSE TO THE SEVERE WEATHER,2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-24-07-Severe-Weather-Utility-Restoration.pdf
+24-8,"DECLARING A DISASTER EMERGENCY IN GIBSON, POSEY & WARRICK COUNTIES DUE TO SEVERE WEATHER & TORNADIC ACTIVITY",2024,severe_storm,True,https://www.in.gov/governorhistory/ericjholcomb/files/Executive-Order-24-08-Storm-Emergency-Declaration.pdf
+24-9,POSTPONING THE EXPIRATION OF CERTAIN ADMINISTRATION RULES,2024,,False,https://www.in.gov/governorhistory/ericjholcomb/files/EO-24-09.pdf
+25-01,CREATION OF GOVERNOR'S CABINET,2025,,False,https://www.in.gov/gov/files/EO-25-01.pdf
+25-02,CREATION OF THE OFFICE SECRETARY OF MANAGEMENT AND BUDGET,2025,,False,https://www.in.gov/gov/files/EO-25-02.pdf
+25-03,CREATION OF THE OFFICE OF COMMERCE,2025,,False,https://www.in.gov/gov/files/EO-25-03.pdf
+25-04,CREATION OF THE OFFICE OF HEALTH AND FAMILY SERVICES,2025,,False,https://www.in.gov/gov/files/EO-25-04.pdf
+25-05,CREATION OF THE OFFICE OF SECRETARY OF PUBLIC SAFETY,2025,,False,https://www.in.gov/gov/files/EO-25-05.pdf
+25-06,CREATION OF THE OFFICE OF ENERGY AND NATURAL RESOURCES,2025,,False,https://www.in.gov/gov/files/EO-25-06.pdf
+25-07,CREATION OF THE OFFICE OF EDUCATION,2025,,False,https://www.in.gov/gov/files/EO-25-07.pdf
+25-08,CREATION OF THE OFFICE OF TRANSPORTATION AND INFRASTRUCTURE,2025,,False,https://www.in.gov/gov/files/EO-25-08.pdf
+25-09,CREATION OF THE OFFICE OF BUSINESS AFFAIRS,2025,,False,https://www.in.gov/gov/files/EO-25-09.pdf
+25-10,CONTINUING THE INDIANA EXECUTIVE COUNCIL ON CYBERSECURITY,2025,,False,https://www.in.gov/gov/files/EO-25-10-.pdf
+25-11,Executive Order 25-11,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_11
+25-12,Executive Order 25-12,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_12
+25-13,KEY PERFORMANCE METRICS ALIGNED TO OUTCOMES THAT IMPACT HOOSIERS,2025,,False,https://www.in.gov/gov/files/EO-25-13.pdf
+25-14,Executive Order 25-14,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_14
+25-15,Executive Order 25-15,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_15
+25-16,RETURN TO WORK,2025,,False,https://www.in.gov/gov/files/EO-25-16.pdf
+25-17,REDUCING REGULATION / REGULATORY SUNSET,2025,,False,https://www.in.gov/gov/files/EO-25-17.pdf
+25-18,PROFESSIONAL LICENSING DEREGULATION,2025,,False,https://www.in.gov/gov/files/EO-25-18.pdf
+25-19,IMPLEMENTATION OF STATERAMP,2025,,False,https://www.in.gov/gov/files/EO-25-19.pdf
+25-20,Executive Order 25-20,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_20
+25-21,Response to Executive Order 25-21 - Health Care Price Transparency,2025,,False,https://www.in.gov/gov/files/ISP-Executive-Order-25-21-Health-Care-Price-Transparency.pdf
+25-22,Executive Order 25-22,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_22
+25-23,Executive Order 25-23,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_23
+25-24,Executive Order 25-24,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_24
+25-25,HEALTH AND FAMILY SERVICES DASHBOARD,2025,,False,https://www.in.gov/gov/files/EO-25-25.pdf
+25-26,AGENCY DATA SHARING,2025,,False,https://www.in.gov/gov/files/EO-25-26.pdf
+25-27,340B PROGRAM,2025,,False,https://www.in.gov/gov/files/EO-25-27.pdf
+25-28,SPLIT RISK POOLS,2025,,False,https://www.in.gov/gov/files/EO-25-28.pdf
+25-29,SUPPORTING FEDERAL IMMIGRATION POLICY AND PROTECTING HOOSIER WORKERS BY INDIANA'S STATE AGENCIES,2025,,False,https://www.in.gov/gov/files/EO-25-29.pdf
+25-30,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2025,,False,https://www.in.gov/gov/files/Executive-Order-25-30.pdf
+25-31,Executive Order 25-31,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_31
+25-32,PROMOTING LONG-TERM GROWTH AND FLOURISHING THROUGH WORKFORCE ENCOURAGEMENT FOR HOOSIERS WITHOUT JOBS,2025,,False,https://www.in.gov/gov/files/EO_25_32.pdf
+25-33,ASSURING PRUDENT USE OF TAXPAYER FUNDS BY CONDUCTING DATA CROSS CHECKS OF UNEMPLOYMENT INSURANCE CLAIMS,2025,,False,https://www.in.gov/gov/files/EO_25_33.pdf
+25-34,PROMOTING FAMILIES AND STRENGTHENING THE STATE WORKFORCE THROUGH NEW PARENT LEAVE AND CHILDBIRTH RECOVERY LEAVE FOR STATE EMPLOYEES,2025,,False,https://www.in.gov/gov/files/EO-25-34.pdf
+25-35,CHE Executive Order 25-35 Appendix,2025,,False,https://www.in.gov/gov/files/EO-25-35-Report-Appendix-1.pdf
+25-36,RESPECTING THE BIOLOGICAL DICHOTOMY BETWEEN MEN AND WOMEN AS FUNDAMENTAL & DEEPLY ROOTED LEGAL PRINCIPLE EMBEDDED IN INDIANA LAW,2025,,False,https://www.in.gov/gov/files/EO-25-36.pdf
+25-37,"PROHIBITING THE USE OF ENVIRONMENTAL JUSTICE IN PERMITTING, ENFORCEMENT, OR GRANT DECISIONS",2025,,False,https://www.in.gov/gov/files/EO-25-37.pdf
+25-38,Executive Order 25-38,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_38
+25-39,CHE Executive Order 25-39 Report,2025,,False,https://www.in.gov/gov/files/CHE_EO-25-39-Report-Draft.pdf
+25-40,INCREASING OPPORTUNITY FOR INDIANA'S BUSINESSES AND HOOSIERS THROUGH PERMITTING TRANSPARENCY AND ACCOUNTABILITY,2025,,False,https://www.in.gov/gov/files/EO-25-40.pdf
+25-41,Executive Order 25-41,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_41
+25-42,Executive Order 25-42,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_42
+25-43,Executive Order 25-43,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_43
+25-44,PRIORITIZING WAGE GROWTH AND JOB CREATION IN ECONOMIC DEVELOPMENT INITIATIVES,2025,,False,https://www.in.gov/gov/files/EO-25-4431-copy.pdf
+25-45,Executive Order 25-45,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_45
+25-46,IMPROVING OPPORTUNITY AND REDUCING RECIDIVISM BY IMPROVING THE PATH FOR REENTRY WITHIN THE DEPARTMENT OF CORRECTIONS,2025,,False,https://www.in.gov/gov/files/EO-25-46.pdf
+25-47,PROMOTING PUBLIC SAFETY AND PRISON SECURITY BY DIRECTING THE INDIANA DEPARTMENT OF CORRECTION TO IMPLEMENT STRATEGIES TO IMPROVE EMPLOYEE RETENTION,2025,,False,https://www.in.gov/gov/files/EO-25-47.pdf
+25-48,Executive Order 25-48,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_48
+25-49,ENCOURAGING PRACTICAL APPROACHES TO CLIMATE AND ENERGY SOLUTIONS BY REJECTING SOCIAL COST OF GREENHOUSE GASES AND CLIMATE ACTION PLANS,2025,,False,https://www.in.gov/gov/files/EO-25-49.pdf
+25-50,Executive Order 25-50,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_50
+25-51,Executive Order 25-51,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_51
+25-52,PROMOTING LONG-TERM GROWTH AND FLOURISHING FOR HOOSIERS ON THE SUPPLEMENTAL NUTRITION ASSISTANCE PROGRAM BY WORKFORCE ENCOURAGEMENT,2025,,False,https://www.in.gov/gov/files/25-52.pdf
+25-53,INCREASING STATE ACCOUNTABILITY THROUGH SUPPLEMENTAL NUTRITION ASSISTANCE PROGRAM ASSET VERIFICATION,2025,,False,https://www.in.gov/gov/files/25-53.pdf
+25-54,Executive Order 25-54,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_54
+25-55,MAKING INDIANA HEALTHY AGAIN BY ENHANCING NUTRITION IN THE SUPPLEMENTAL NUTRITION ASSISTANCE PROGRAM,2025,,False,https://www.in.gov/gov/files/25-55.pdf
+25-56,MAKING INDIANA HEALTHY AGAIN BY INCREASING CONSUMER TRANSPARENCY RELATED TO FOOD DYES AND ADDITIVES,2025,,False,https://www.in.gov/gov/files/25-56.pdf
+25-57,MAKING INDIANA HEALTHY AGAIN BY DEVELOPING A COMPREHENSIVE DIET-RELATED CHRONIC DISEASE PLAN,2025,,False,https://www.in.gov/gov/files/25-57.pdf
+25-58,MAKING INDIANA HEALTHY AGAIN BY INCREASING HOOSIER ACCESS TO LOCAL FOODS,2025,,False,https://www.in.gov/gov/files/25-58.pdf
+25-59,MAKING INDIANA HEALTHY AGAIN BY PROMOTING THE HEALTH AND WELLNESS OF HOOSIER STUDENTS,2025,,False,https://www.in.gov/gov/files/25-59.pdf
+25-60,Executive Order 25-60,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_60
+25-61,"DECLARING A DISASTER EMERGENCY IN BARTHOLOMEW, BROWN, CLARK, CLAY, CRAWFORD, DEARBORN, DELAWARE, ELKHART, FLOYD, GIBSON, GREEN, HAMILTON, HANCOCK, HARRISON, HENDRICKS, JEFFERSON, JENNINGS, LAGRANGE, LAKE, LAPORTE, MADISON, MARSHALL, MARTIN, MORGAN, OWEN, PERRY, PORTER, POSEY, SHELBY, SPENCER, STEUBEN, SWITZERLAND, VIGO, WARRICK, AND WASHINGTON COUNTIES DUE TO SEVERE WEATHER, TORNADIC ACTIVITY AND FLOODING",2025,flood,True,https://www.in.gov/gov/files/25-61.pdf
+25-62,Executive Order 25-62,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_62
+25-63,ENSURING FUTURE ECONOMIC PROSPERITY AND OPPORTUNITY FOR HOOSIERS BY THE DEVELOPMENT OF A STATEWIDE WATER INVENTORY AND MANAGEMENT PLAN,2025,,False,https://www.in.gov/gov/files/EO-25-63_.pdf
+25-64,Executive Order 25-64,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_64
+25-65,CONTINUING THE  SERVE INDIANA COMMISSION  AS A DIVISION OF THE DEPARTMENT OF WORKFORCE DEVELOPMENT,2025,,False,https://www.in.gov/gov/files/EO-25-65.pdf
+25-66,Executive Order 25-66,2025,,False,https://www.in.gov/gov/newsroom/executive-orders/index.html#Executive_Order_25_66
+25-67,POSTPONING THE EXPIRATION OF CERTAIN ADMINISTRATIVE RULES,2025,,False,https://www.in.gov/gov/files/EO-25-67.pdf
+25-68,GRANTING EXTENSION ON EXPIRATION OF FSSA CHILDCARE REGULATIONS,2025,,False,https://www.in.gov/gov/files/EO-25-68.pdf
+25-69,GRANTING EXTENSION ON EXPIRATION OF PROFESSIONAL LICENSING AGENCY REGULATIONS IN ACCORDANCE WITH EO 25-18,2025,,False,https://www.in.gov/gov/files/EO-25-69.pdf
+25-70,POSTPONING THE EXPIRATION OF AN ADMINISTRATIVE RULE,2025,,False,https://www.in.gov/gov/files/EO-25-70.pdf
+25-71,POSTPONING THE EXPIRATION OF CERTAIN ADMINISTRATIVE RULES,2025,,False,https://www.in.gov/gov/files/Eo-25-71.pdf
+25-72,POSTPONING THE EXPIRATION OF AN ADMINISTRATIVE RULE,2025,,False,https://www.in.gov/gov/files/EO-25.72.pdf
+25-73,ESTABLISHING THE INDIANA INITIATIVE FOR DRONE DOMINANCE TASK FORCE TO SUPPORT THE FEDERAL GOVERNMENT'S GOAL OF AMERICAN DRONE DOMINANCE,2025,,False,https://www.in.gov/gov/files/EO-Drone.pdf
+25-74,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2025,,False,https://www.in.gov/gov/files/E0-25-74.pdf
+25-75,EXTENSION OF WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2025,,False,https://www.in.gov/gov/files/25-75.pdf
+25-76,THE EFFECTIVENESS OF POPULATION INFORMATION FROM THE UNITED STATES CENSUS BUREAU FOR STATE LAW PURPOSES,2025,,False,https://www.in.gov/gov/files/25-76.pdf
+25-77,RECONSTITUTION OF THE STATE WORKFORCE DEVELOPMENT BOARD UNDER THE WORKFORCE INNOVATION AND OPPORTUNITY ACT AS ADMINISTERED BY THE DEPARTMENT OF WORKFORCE DEVELOPMENT,2025,,False,https://www.in.gov/gov/files/25-77.pdf
+25-78,PARDON FOR KASHINDA ROBINSON,2025,,False,https://www.in.gov/gov/files/25-78.pdf
+26-01,UPDATING THE CODE OF ETHICS FOR THE INDIANA UTILITY REGULATORY COMMISSION AND PRIORITIZING HOOSIER RATEPAYERS,2026,,False,https://www.in.gov/gov/files/Executive-Order-26-01.pdf
 26-02,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS AND CRUCIAL AGRICULTURE PRODUCTS,2026,,False,https://www.in.gov/gov/files/EO-26-02.pdf
 26-03,DECLARATION OF A STATEWIDE DISASTER EMERGENCY DUE TO A SEVERE WINTER STORM,2026,winter,True,https://www.in.gov/gov/files/EO26-03.pdf
+26-04,PROTECTING HOOSIER TAXPAYER DOLLARS BY COORDINATING FRAUD PREVENTION ACROSS STATE GOVERNMENT,2026,,False,https://www.in.gov/gov/files/EO-26-04.pdf
 26-05,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING PROPANE GAS,2026,,False,https://www.in.gov/gov/files/EO-26-05.pdf
+26-06,FOSTERING INDIANA'S FAITH-BASED INSTITUTIONS,2026,,False,https://www.in.gov/gov/files/EO-26-06.pdf
 26-07,WAIVER OF HOURS OF SERVICE REGULATIONS RELATING TO MOTOR CARRIERS AND DRIVERS TRANSPORTING COMPOSTING MATERIALS,2026,,False,https://www.in.gov/gov/files/EO-26-07.pdf
-26-08,DECLARING A DISASTER EMERGENCY IN JASPER NEWTON AND STARKE COUNTIES DUE TO SEVERE WEATHER AND TORNADIC ACTIVITY,2026,severe_storm,True,https://www.in.gov/gov/files/EO-26-08.pdf
-26-15,DECLARING A DISASTER EMERGENCY IN ALLEN BARTHOLOMEW BENTON BOONE BROWN CARROLL CASS CLAY CLINTON DEARBORN DECATUR DELAWARE ELKHART FRANKLIN FOUNTAIN FULTON GRANT GREENE HAMILTON HANCOCK HARRISON HENDRICKS HOWARD HUNTINGTON JACKSON JASPER JAY JEFFERSON JENNINGS JOHNSON KOSIUSKO KNOX LAGRANGE LAKE LAPORTE LAWRENCE MADISON MARION MARSHALL MIAMI MONROE MONTGOMERY MORGAN NEWTON OWEN PARKE PORTER PUTNAM RANDOLPH RIPLEY RUSH SHELBY ST JOSEPH STEUBEN SWITZERLAND TIPPECANOE WABASH WARREN WHITE VANDERBURGH VERMILLION AND VIGO COUNTIES DUE TO FLOODING SEVERE WEATHER TORNADIC ACTIVITY AND A DERECHO,2026,flood,True,https://www.in.gov/gov/files/EO-26-15.pdf
-26-21,DECLARING A STATEWIDE DISASTER EMERGENCY DUE TO FLOODING SEVERE WEATHER TORNADIC ACTIVITY AND A DERECHO,2026,flood,True,https://www.in.gov/gov/files/EO-26-21.pdf
+26-08,"DECLARING A DISASTER EMERGENCY IN JASPER, NEWTON, AND STARKE COUNTIES DUE TO SEVERE WEATHER AND TORNADIC ACTIVITY",2026,severe_storm,True,https://www.in.gov/gov/files/EO-26-08.pdf
+26-09,DECLARATION OF ENERGY EMERGENCY AND WAIVER OF GAS SALES TAX,2026,,False,https://www.in.gov/gov/files/Gas-Tax-EO-Final.pdf
+26-10,WAIVER OF ENHANCED FUEL REQUIREMENTS IN CLARK AND FLOYD COUNTIES TO PREVENT MOTOR FUEL SUPPLY DISRUPTION,2026,,False,https://www.in.gov/gov/files/EO-26-10.pdf
+26-11,EXTENSION OF ENERGY EMERGENCY AND WAIVER OF GAS SALES AND EXCISE TAXES,2026,,False,https://www.in.gov/gov/files/EO-26-11.pdf
+26-12,DIRECTING THE INDIANA DEPARTMENT OF CHILD SERVICES TO PRESERVE FEDERAL EARNED BENEFITS FOR ELIGIBLE YOUTH IN STATE CARE,2026,,False,https://www.in.gov/gov/files/EO26-12.pdf
+26-13,SECOND DECLARATION OF ENERGY EMERGENCY AND WAIVER OF GAS SALES AND EXCISE TAX,2026,,False,https://www.in.gov/gov/files/EO-26-13.pdf
+26-14,SECOND WAIVER OF ENHANCED FUEL REQUIREMENTS IN CLARK AND FLOYD COUNTIES TO PREVENT MOTOR FUEL SUPPLY DISRUPTION,2026,,False,https://www.in.gov/gov/files/EO-26-14.pdf
+26-15,"DECLARING A DISASTER EMERGENCY IN ALLEN, BARTHOLOMEW, BENTON, BOONE, BROWN, CARROLL, CASS, CLAY, CLINTON, DEARBORN, DECATUR, DELAWARE, ELKHART, FRANKLIN, FOUNTAIN, FULTON, GRANT, GREENE, HAMILTON, HANCOCK, HARRISON, HENDRICKS, HOWARD, HUNTINGTON, JACKSON, JASPER, JAY, JEFFERSON, JENNINGS, JOHNSON, KOSIUSKO, KNOX, LAGRANGE, LAKE, LAPORTE, LAWRENCE, MADISON, MARION, MARSHALL, MIAMI, MONROE, MONTGOMERY, MORGAN, NEWTON, OHIO, OWEN, PARKE, PORTER, PUTNAM, RANDOLPH, RIPLEY, RUSH, SHELBY, ST. JOSEPH, STEUBEN, SWITZERLAND, TIPPECANOE, WABASH, WARREN, WHITE, VANDERBURGH, VERMILLION, AND VIGO COUNTIES DUE TO FLOODING, SEVERE WEATHER, TORNADIC ACTIVITY, AND A DERECHO",2026,flood,True,https://www.in.gov/gov/files/EO-26-15.pdf
+26-16,CONTINUATION OF SECOND ENERGY EMERGENCY AND WAIVER OF GAS SALES AND EXCISE TAXES,2026,,False,https://www.in.gov/gov/files/20260702141653762-copy.pdf
+26-17,SUSPENDING OPERATIONS OF THE SUPPLIER DIVERSITY PROGRAM AND THE CREATION OF THE INDIANA SMALL BUSINESS PROGRAM,2026,,False,https://www.in.gov/gov/files/EO-26-17.pdf
+26-18,CHALLENGING IMPRUDENT AND UNNECESSARY CONSENT DECREES TO ENSURE ECONOMIC GROWTH AND RATEPAYER DRIVEN STATEWIDE ENERGY STRATEGY,2026,,False,https://www.in.gov/gov/files/EO-18.pdf
+26-19,COORDINATING THE NEXT PHASE OF WHOLE OF GOVERNMENT CYBERSECURITY FOR THE STATE OF INDIANA,2026,,False,https://www.in.gov/gov/files/EO-19-.pdf
+26-20,DECLARATION OF ENERGY EMERGENCY AND WAIVER OF GAS SALES AND EXCISE TAXES,2026,,False,https://www.in.gov/gov/files/EO-26-20.pdf
+26-21,"DECLARING A STATEWIDE DISASTER EMERGENCY DUE TO FLOODING, SEVERE WEATHER, TORNADIC ACTIVITY AND A DERECHO",2026,flood,False,https://www.in.gov/gov/files/EO-26-21.pdf
 26-22,SUPPLEMENTING EXECUTIVE ORDER 26-21 AND TEMPORARILY SUSPENDING CERTAIN FLOODWAY PERMIT REQUIREMENTS TO FACILITATE EMERGENCY REPAIRS,2026,flood,False,https://www.in.gov/gov/files/EO-26-22.pdf
-26-24,SPECIAL PAID LEAVE FOR STATE EMPLOYEES AFFECTED BY FLOODING SEVERE WEATHER TORNADIC ACTIVITY AND A DERECHO,2026,flood,False,https://www.in.gov/gov/files/EO-26-24.pdf
+26-23,THE EFFECTIVENESS OF POPULATION INFORMATION FROM THE UNITED STATES CENSUS BUREAU FOR STATE LAW PURPOSES,2026,,False,https://www.in.gov/gov/files/EO-26-23.pdf
+26-24,"SPECIAL PAID LEAVE FOR STATE EMPLOYEES AFFECTED BY FLOODING, SEVERE WEATHER , TORNADIC ACTIVITY,  AND A DERECHO",2026,flood,False,https://www.in.gov/gov/files/EO-26-24.pdf
+26-25,CONTINUATION OF ENERGY EMERGENCY AND WAIVER OF GAS SALES AND EXCISE TAXES,2026,,False,https://www.in.gov/gov/files/EO-26-25-1.pdf

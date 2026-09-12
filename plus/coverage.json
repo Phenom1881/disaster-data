@@ -22,7 +22,7 @@
       "abbreviation": "AK",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.",
+      "coverage": "Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.; Collection failed: Alaska adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 6,
@@ -39,7 +39,7 @@
       "abbreviation": "AZ",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "Adapter available; no cached action file found",
+      "coverage": "2023-present structured current-Governor archive; 2000-2022 gap disclosed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 0,
@@ -56,7 +56,7 @@
       "abbreviation": "AR",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "January 2023-present structured current-Governor archive; 2000-2022 gap disclosed",
+      "coverage": "2023-present structured current-Governor archive; 2000-2022 gap disclosed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 9,
@@ -90,7 +90,7 @@
       "abbreviation": "CO",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.",
+      "coverage": "2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.; Collection failed: Colorado adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 120,
@@ -175,7 +175,7 @@
       "abbreviation": "HI",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.",
+      "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.; Collection failed: Hawaii adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 8,
@@ -192,7 +192,7 @@
       "abbreviation": "ID",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.",
+      "coverage": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.; Collection failed: Idaho adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 208,
@@ -209,7 +209,7 @@
       "abbreviation": "IL",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.",
+      "coverage": "2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.; Collection failed: Illinois adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 7,
@@ -226,7 +226,7 @@
       "abbreviation": "IN",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified",
+      "coverage": "2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 15,
@@ -243,7 +243,7 @@
       "abbreviation": "IA",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2024-present HSEMD proclamation tables; 2000-2023 not collected.",
+      "coverage": "2024-present HSEMD proclamation tables; 2000-2023 not collected.; Collection failed: Iowa adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 54,
@@ -260,13 +260,13 @@
       "abbreviation": "KS",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending",
+      "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 52,
+        "action_count": 0,
         "federal_declaration_count": 96,
-        "severity_rows": 1019,
-        "storm_match_rows": 2198
+        "severity_rows": 0,
+        "storm_match_rows": 0
       },
       "name": "Kansas",
       "slug": "kansas",
@@ -277,13 +277,13 @@
       "abbreviation": "KY",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "manual_only - Beshear-era (Dec 2019-present) newsroom feed proxy only. Authoritative SOS Executive Journal (apps.sos.ky.gov/executive/journal/) blocks automated requests; pre-2019 coverage is an open gap.",
+      "coverage": "manual_only - Beshear-era newsroom feed proxy only; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 4,
+        "action_count": 0,
         "federal_declaration_count": 99,
-        "severity_rows": 260,
-        "storm_match_rows": 362
+        "severity_rows": 0,
+        "storm_match_rows": 0
       },
       "name": "Kentucky",
       "slug": "kentucky",
@@ -294,7 +294,7 @@
       "abbreviation": "LA",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "January 2016-present official State Register web indexes; 2000-2015 gap disclosed",
+      "coverage": "2016-present official State Register web indexes; 2000-2015 gap disclosed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 8,
@@ -379,7 +379,7 @@
       "abbreviation": "MN",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2019-present current Governor archive; 2000-2018 not covered; anti-bot interception is detected explicitly",
+      "coverage": "2019-present current Governor archive; 2000-2018 not covered; anti-bot interception is detected explicitly; Collection failed: Minnesota adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 15,
@@ -413,7 +413,7 @@
       "abbreviation": "MO",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-present Secretary of State year indexes and legal order text.",
+      "coverage": "2000-present Secretary of State year indexes and legal order text.; Collection failed: Missouri adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 83,
@@ -430,13 +430,13 @@
       "abbreviation": "MT",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing, backfill pending",
+      "coverage": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 10,
+        "action_count": 0,
         "federal_declaration_count": 113,
-        "severity_rows": 123,
-        "storm_match_rows": 170
+        "severity_rows": 0,
+        "storm_match_rows": 0
       },
       "name": "Montana",
       "slug": "montana",
@@ -447,13 +447,13 @@
       "abbreviation": "NE",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+      "coverage": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 51,
+        "action_count": 57,
         "federal_declaration_count": 88,
-        "severity_rows": 460,
-        "storm_match_rows": 714
+        "severity_rows": 470,
+        "storm_match_rows": 725
       },
       "name": "Nebraska",
       "slug": "nebraska",
@@ -464,7 +464,7 @@
       "abbreviation": "NV",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "January 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed",
+      "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 6,
@@ -484,10 +484,10 @@
       "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 6,
+        "action_count": 0,
         "federal_declaration_count": 63,
-        "severity_rows": 58,
-        "storm_match_rows": 72
+        "severity_rows": 0,
+        "storm_match_rows": 0
       },
       "name": "New Hampshire",
       "slug": "new-hampshire",
@@ -498,7 +498,7 @@
       "abbreviation": "NJ",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented",
+      "coverage": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 149,
@@ -515,7 +515,7 @@
       "abbreviation": "NM",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "January 2019-present current-Governor index; many migrated document links are currently unavailable and are disclosed record-by-record",
+      "coverage": "2019-present structured current-Governor archive; 2000-2018 gap disclosed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 1,
@@ -532,7 +532,7 @@
       "abbreviation": "NY",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only",
+      "coverage": "2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 24,
@@ -552,10 +552,10 @@
       "coverage": "2017-01-06-present structured Governor archive; North Carolina Register backfill pending",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 15,
+        "action_count": 34,
         "federal_declaration_count": 85,
-        "severity_rows": 620,
-        "storm_match_rows": 853
+        "severity_rows": 657,
+        "storm_match_rows": 916
       },
       "name": "North Carolina",
       "slug": "north-carolina",
@@ -566,13 +566,13 @@
       "abbreviation": "ND",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page; 2000-2016 order numbers backfill pending",
+      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 24,
+        "action_count": 0,
         "federal_declaration_count": 76,
-        "severity_rows": 204,
-        "storm_match_rows": 458
+        "severity_rows": 0,
+        "storm_match_rows": 0
       },
       "name": "North Dakota",
       "slug": "north-dakota",
@@ -583,13 +583,13 @@
       "abbreviation": "OH",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "manual_only - GovDelivery bulletin feed proxy (Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs; the numbered EO archive is JS-rendered and has no working static index). No structured filed-order archive found; needs a follow-up round.",
+      "coverage": "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 5,
+        "action_count": 0,
         "federal_declaration_count": 60,
-        "severity_rows": 92,
-        "storm_match_rows": 137
+        "severity_rows": 0,
+        "storm_match_rows": 0
       },
       "name": "Ohio",
       "slug": "ohio",
@@ -600,13 +600,13 @@
       "abbreviation": "OK",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2016-present via OEM's Emergencies and Disasters archive (SOS EO index blocks automated requests); manual-only curation, 2000-2015 disclosed gap",
+      "coverage": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 4,
+        "action_count": 3,
         "federal_declaration_count": 259,
-        "severity_rows": 125,
-        "storm_match_rows": 413
+        "severity_rows": 55,
+        "storm_match_rows": 140
       },
       "name": "Oklahoma",
       "slug": "oklahoma",
@@ -688,7 +688,7 @@
       "coverage": "2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 24,
+        "action_count": 25,
         "federal_declaration_count": 98,
         "severity_rows": 342,
         "storm_match_rows": 847
@@ -719,10 +719,10 @@
       "abbreviation": "TX",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+      "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
       "generated_on": "2026-09-12",
       "metrics": {
-        "action_count": 58,
+        "action_count": 59,
         "federal_declaration_count": 391,
         "severity_rows": 1990,
         "storm_match_rows": 4100
@@ -736,7 +736,7 @@
       "abbreviation": "UT",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2000-present Office of Administrative Rules executive-document indexes and legal texts.",
+      "coverage": "2000-present Office of Administrative Rules executive-document indexes and legal texts.; Collection failed: Utah adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 33,
@@ -770,7 +770,7 @@
       "abbreviation": "VA",
       "action_file": "declarations_for_join_2002_present.csv",
       "adapter_status": "implemented",
-      "coverage": "Virginia structured archive coverage begins in 2002; the current administration is collected separately",
+      "coverage": "2002-present",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 75,
@@ -838,7 +838,7 @@
       "abbreviation": "WY",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "coverage": "2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.",
+      "coverage": "2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.; Collection failed: Wyoming adapter: scrape failed",
       "generated_on": "2026-09-12",
       "metrics": {
         "action_count": 4,
