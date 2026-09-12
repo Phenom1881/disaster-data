@@ -11,7 +11,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: Check out repo
@@ -31,6 +31,14 @@ jobs:
       - name: Generate state SEO pages
         run: python -u gen_state_pages.py
 
+      # Must run BEFORE the jurisdiction pages: it writes
+      # state-declarations.json, which gen-jurisdiction-pages.py reads to
+      # render each locality's "State declarations (governor)" panel.
+      # Standard library only, so it needs no extra install. If plus/ is
+      # missing it prints a notice and exits 0 rather than failing the build.
+      - name: Build state declaration sidecar
+        run: python -u gen_plus_sidecar.py
+
       - name: Generate jurisdiction pages
         run: python -u gen-jurisdiction-pages.py
 
@@ -43,6 +51,24 @@ jobs:
             --in data/decl-index \
             --out map-events.js \
             --events-out events.json
+
+      # The validation and release gate. This script was present in the repo
+      # but referenced by no workflow, so it had not been running at all:
+      # the weekly build had no gate despite one existing. It runs LAST,
+      # after every generator, and exits nonzero when a critical check
+      # fails, which fails this step and stops the commit below from
+      # running. That is the intended behavior; a build that fails
+      # validation should not be published.
+      #
+      # It writes data-status.json, status.html, build-report.json and
+      # release-state.json, which the commit step then picks up.
+      #
+      # DD_REQUIRE_CONTEXT / DD_REQUIRE_JURISDICTIONS / DD_REQUIRE_CITATIONS
+      # promote specific checks from warning to fatal. They are deliberately
+      # left unset so this starts at the script's own default strictness.
+      # Turn them on once the weekly run has been green for a few weeks.
+      - name: Validate and stamp release
+        run: python -u .github/workflows/release.py
 
       - name: Commit and push if changed
         run: |

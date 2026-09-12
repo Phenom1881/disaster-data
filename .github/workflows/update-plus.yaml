@@ -13,92 +13,33 @@ permissions:
 
 jobs:
   # ------------------------------------------------------------------
-  # One job per state. max-parallel: 1 means they run one after another,
-  # not simultaneously - this is deliberate, not a performance limitation:
-  # each job commits its own state's scraped files directly to main, and
-  # running them sequentially avoids every job racing to push at once
-  # (the exact kind of git conflict hit manually earlier this project).
-  # fail-fast: false means one state's scraper failing does NOT cancel
-  # the remaining states - each is fully isolated from the others, which
-  # is the actual goal here, achieved without needing separate files.
+  # This replaces a per-state build matrix that had gone badly stale.
   #
-  # To add a new state later: add one entry to the matrix list below.
-  # No new workflow file, no duplicated boilerplate to keep in sync.
+  # That matrix listed only pennsylvania and new-jersey, with three more
+  # states commented out as placeholders, so 48 of the 50 implemented
+  # states never had their source archives re-scraped: only the join and
+  # page build below ran for them, against declaration data that was
+  # frozen at whatever was last committed by hand.
+  #
+  # It could not simply be extended to 50 entries either. Each matrix job
+  # invoked the state's scraper directly with a hardcoded
+  # --actions-out/--relationships-out/--join-out flag set, and only 41 of
+  # the 50 scrapers accept those flags. Virginia alone runs two scrapers
+  # and merges them. The per-state calling convention lives in each
+  # state's own wrapper, in its collect() function, which is exactly what
+  # build-plus.py's --collect flag already loads and calls.
+  #
+  # So the matrix is gone. One step now collects every state through its
+  # own adapter contract. Adding a state later needs no change here at
+  # all: it is picked up from scripts/plus/state-manifest.json.
+  #
+  # Failure isolation is preserved. build-plus.py catches an individual
+  # adapter's collect() failure, prints a WARNING for that state and
+  # continues with the rest, rather than aborting the run.
   # ------------------------------------------------------------------
-  scrape:
+  refresh-plus:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        state:
-          - name: pennsylvania
-            prefix: pa
-            script: pa_eo_scraper.py
-          - name: new-jersey
-            prefix: nj
-            script: nj_eo_scraper.py
-          # NOT YET CONFIRMED - fill in the real script filename and
-          # prefix for each of these, then uncomment. A wrong guess here
-          # would fail this one state's job (visibly, in its own isolated
-          # log) without affecting the other four - that isolation is
-          # exactly why it's safe to add these incrementally rather than
-          # needing all 5 confirmed before this workflow can be used.
-          # - name: virginia
-          #   prefix: va
-          #   script: <SCRAPER_FILENAME>.py
-          # - name: new-york
-          #   prefix: ny
-          #   script: <SCRAPER_FILENAME>.py
-          # - name: north-carolina
-          #   prefix: nc
-          #   script: <SCRAPER_FILENAME>.py
-
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install pandas requests beautifulsoup4 lxml pdfplumber
-
-      - name: Scrape ${{ matrix.state.name }}
-        run: |
-          python plus/${{ matrix.state.name }}/${{ matrix.state.script }} \
-            --actions-out plus/${{ matrix.state.name }}/${{ matrix.state.prefix }}_emergency_actions_all.csv \
-            --relationships-out plus/${{ matrix.state.name }}/${{ matrix.state.prefix }}_order_relationships.csv \
-            --join-out plus/${{ matrix.state.name }}/declarations_for_join.csv
-
-      - name: Commit ${{ matrix.state.name }}'s scraped data if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -- "plus/${{ matrix.state.name }}/"
-          if git diff --staged --quiet; then
-            echo "No changes for ${{ matrix.state.name }}."
-          else
-            git commit -m "Auto-refresh ${{ matrix.state.name }} scraped data $(date -u '+%Y-%m-%d')"
-            git pull --rebase origin main
-            git push
-          fi
-
-  # ------------------------------------------------------------------
-  # Runs once, after every state's scrape job has finished (successfully
-  # or not - "if: always()" ensures a single state's scraper failure
-  # doesn't skip building/publishing the states that did succeed). Pulls
-  # whatever's on main at this point (each state's own commit, if it
-  # made one) and runs the actual cross-state join/match/page build.
-  # ------------------------------------------------------------------
-  join-and-build:
-    needs: scrape
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
 
     steps:
       - name: Check out repo
@@ -112,21 +53,26 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pandas requests
+        run: pip install pandas requests beautifulsoup4 lxml pdfplumber
 
-      - name: Run storm join for all Plus states
-        id: join
+      - name: Collect state archives and run the storm join
         run: |
           set -o pipefail
-          python scripts/build-plus.py --states all --join-storms 2>&1 | tee plus_build.log
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          python -u scripts/build-plus.py \
+            --states all --collect --join-storms 2>&1 | tee plus_build.log
 
-      - name: Check for newly-ambiguous declarations
+      # Ambiguous declarations are not errors. The classifier is
+      # fail-closed by design: a declaration whose text matches no hazard
+      # keyword is skipped rather than guessed at. But each one is a real
+      # record that needs a human decision and a hazard_overrides.csv row,
+      # so surface them instead of letting them sit silently in a log.
+      - name: Check for newly ambiguous declarations
         id: ambiguous_check
         run: |
           if grep -q "had no recognized hazard keyword" plus_build.log; then
             echo "found=true" >> "$GITHUB_OUTPUT"
-            grep -B1 "had no recognized hazard keyword" plus_build.log > ambiguous_summary.txt
+            grep -B1 "had no recognized hazard keyword" plus_build.log \
+              > ambiguous_summary.txt
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
           fi
@@ -145,21 +91,46 @@ jobs:
               body: "The weekly Plus refresh found declaration(s) that didn't match any hazard keyword and were skipped (not a bug - this is the intended fail-closed behavior). Each one below likely needs a manual review and a row added to that state's `hazard_overrides.csv`.\n\n```\n" + summary + "\n```\n\nSee the run log for full detail: " + `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             });
 
-      - name: Fail the run if any state's storm join failed
-        if: steps.join.outputs.exit_code != '0'
-        run: |
-          echo "One or more Plus states failed their storm join - see the log above. Not committing partial/stale results."
-          exit 1
-
-      - name: Commit built pages and matches if changed
+      # Commit the scraped source data and Plus pages on their own, before
+      # the main-site regeneration below. A week of fresh state archive
+      # data is worth keeping even if a downstream site check later fails.
+      - name: Commit Plus data and pages if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A -- plus/
           if git diff --staged --quiet; then
-            echo "No changes to commit from the join/build step."
+            echo "No Plus changes to commit."
           else
-            git commit -m "Auto-refresh Plus matches and pages $(date -u '+%Y-%m-%d')"
+            git commit -m "Auto-refresh Plus state data $(date -u '+%Y-%m-%d')"
+            git pull --rebase origin main
+            git push
+          fi
+
+      # This workflow runs AFTER the main build (04:00 vs 06:00), because
+      # the Plus join wants fresh federal data. The consequence is that the
+      # jurisdiction pages built at 04:00 carried last week's Plus data.
+      # Rebuilding the sidecar and the jurisdiction pages here closes that
+      # gap, so a locality page reflects state declarations collected in
+      # the same run rather than trailing them by a week.
+      - name: Rebuild state declaration sidecar
+        run: python -u gen_plus_sidecar.py
+
+      - name: Regenerate jurisdiction pages
+        run: python -u gen-jurisdiction-pages.py
+
+      - name: Validate and stamp release
+        run: python -u .github/workflows/release.py
+
+      - name: Commit regenerated site pages if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No site changes to commit."
+          else
+            git commit -m "Rebuild jurisdiction pages with refreshed Plus data $(date -u '+%Y-%m-%d')"
             git pull --rebase origin main
             git push
           fi
