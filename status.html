@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Disaster Data | Data Status</title>
+
+<meta name="description"
+content="Current DisasterData.io release, source status, and automated build validation results.">
+
+<link rel="canonical"
+href="https://disasterdata.io/status.html">
+
+<style>
+:root{
+  --paper:#f6f1e7;
+  --card:#fffdf7;
+  --ink:#1d1813;
+  --muted:#6b6357;
+  --rule:#ddd3bf;
+  --teal:#004c53;
+  --green:#2e6a45;
+  --amber:#9a661e;
+  --red:#9e3b32
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.55
+}
+
+a{
+  color:var(--teal)
+}
+
+.wrap{
+  max-width:1000px;
+  margin:auto;
+  padding:42px 22px 64px
+}
+
+.eyebrow{
+  font-size:.74rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--teal)
+}
+
+h1{
+  font-family:Georgia,serif;
+  font-weight:500;
+  font-size:clamp(2.1rem,6vw,3.8rem);
+  line-height:1;
+  margin:.4rem 0 .8rem;
+  color:var(--teal)
+}
+
+.lede{
+  max-width:70ch;
+  color:var(--muted);
+  font-size:1.05rem
+}
+
+.release{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+  margin:24px 0
+}
+
+.pill{
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:.82rem;
+  font-weight:700;
+  background:#d7e9ea;
+  color:var(--teal)
+}
+
+.pill.ok{
+  background:#dcebdd;
+  color:var(--green)
+}
+
+.pill.warn{
+  background:#f6e8c9;
+  color:var(--amber)
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:10px;
+  margin:25px 0 35px
+}
+
+.metric{
+  background:var(--card);
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:15px
+}
+
+.metric b{
+  display:block;
+  font-family:Georgia,serif;
+  font-size:1.55rem;
+  color:var(--teal)
+}
+
+.metric span{
+  font-size:.78rem;
+  color:var(--muted)
+}
+
+h2{
+  font-family:Georgia,serif;
+  color:var(--teal);
+  margin-top:36px
+}
+
+.table{
+  overflow:auto;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  background:var(--card)
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:650px;
+  font-size:.88rem
+}
+
+th,
+td{
+  text-align:left;
+  padding:10px 12px;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top
+}
+
+th{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+  background:#faf6ec
+}
+
+tr:last-child td{
+  border-bottom:0
+}
+
+.dot{
+  margin-right:8px
+}
+
+.dot.current,
+.dot.pass{
+  color:var(--green)
+}
+
+.dot.warning,
+.dot.warn{
+  color:var(--amber)
+}
+
+.dot.unavailable,
+.dot.fail{
+  color:var(--red)
+}
+
+footer{
+  margin-top:42px;
+  padding-top:20px;
+  border-top:1px solid var(--rule);
+  font-size:.82rem;
+  color:var(--muted)
+}
+</style>
+</head>
+
+<body>
+
+<script src="/nav.js"></script>
+
+<main class="wrap">
+
+<div class="eyebrow">
+Build, validation &amp; release
+</div>
+
+<h1>
+Data status
+</h1>
+
+<p class="lede">
+This page is generated from the same automated release gate
+that validates DisasterData.io before a successful data build
+is stamped for publication.
+</p>
+
+<div class="release">
+
+<span class="pill">
+Release 2026.09.12.1
+</span>
+
+<span class="pill ok">
+All critical checks passed
+</span>
+
+<span class="pill">
+Built 2026-09-12T16:25:48Z
+</span>
+
+</div>
+
+<div class="grid">
+
+<div class="metric">
+<b>3,533</b>
+<span>current declarations</span>
+</div>
+
+<div class="metric">
+<b>3,590</b>
+<span>jurisdiction profiles/index entries</span>
+</div>
+
+<div class="metric">
+<b>3,241</b>
+<span>county map geographies</span>
+</div>
+
+<div class="metric">
+<b>3,395</b>
+<span>national disaster events</span>
+</div>
+
+<div class="metric">
+<b>3,144</b>
+<span>SVI county records</span>
+</div>
+
+<div class="metric">
+<b>3,232</b>
+<span>NRI county records</span>
+</div>
+
+</div>
+
+<h2>
+Source status
+</h2>
+
+<div class="table">
+
+<table>
+
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Release / API</th>
+<th>Records</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+<tr><td><span class='dot current'>●</span>FEMA Disaster Declarations Summaries</td><td>OpenFEMA v2</td><td>3,533</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>FEMA Declaration Denials</td><td>OpenFEMA v1</td><td>365</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>FEMA Public Assistance</td><td>OpenFEMA v2</td><td>3,231</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>FEMA PA Grant Award Activities</td><td>OpenFEMA v2</td><td>3,287</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>FEMA Hazard Mitigation Assistance</td><td>OpenFEMA v4</td><td>2,996</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>FEMA Individual Assistance</td><td>OpenFEMA v2</td><td>3,265</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>DisasterData Event Index</td><td>Derived</td><td>3,395</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>CDC/ATSDR Social Vulnerability Index</td><td>2022</td><td>3,144</td><td>Current</td></tr><tr><td><span class='dot current'>●</span>FEMA National Risk Index</td><td>2025</td><td>3,232</td><td>Current</td></tr>
+</tbody>
+
+</table>
+
+</div>
+
+<h2>
+Automated validation
+</h2>
+
+<div class="table">
+
+<table>
+
+<thead>
+<tr>
+<th>Check</th>
+<th>Area</th>
+<th>Result</th>
+</tr>
+</thead>
+
+<tbody>
+<tr><td><span class='dot pass'>●</span>data.js exists</td><td>Core build</td><td>data.js is present and non-trivial</td></tr><tr><td><span class='dot pass'>●</span>BROWSE parsed</td><td>Declarations</td><td>Parsed 3,533 unique declarations</td></tr><tr><td><span class='dot pass'>●</span>LOCALITY_DATA parsed</td><td>Jurisdictions</td><td>Parsed locality data for 57 states/territories</td></tr><tr><td><span class='dot pass'>●</span>STATE_NAMES parsed</td><td>Core build</td><td>Parsed 57 state/territory labels</td></tr><tr><td><span class='dot pass'>●</span>NATIONAL_TOTALS parsed</td><td>Declarations</td><td>Canonical current and completed-FY totals are present</td></tr><tr><td><span class='dot pass'>●</span>DATA_DATE is valid</td><td>Freshness</td><td>Data date: 2026-09-12</td></tr><tr><td><span class='dot pass'>●</span>Declaration IDs are unique</td><td>Declarations</td><td>3,533 IDs; 0 duplicate(s); 0 blank ID(s)</td></tr><tr><td><span class='dot pass'>●</span>Declaration dates parse</td><td>Declarations</td><td>All populated declaration dates use YYYY-MM-DD</td></tr><tr><td><span class='dot pass'>●</span>Declaration types recognized</td><td>Declarations</td><td>Only DR, EM, and FM types found</td></tr><tr><td><span class='dot pass'>●</span>Canonical current total reconciles</td><td>Declarations</td><td>NATIONAL_TOTALS current=3,533; BROWSE=3,533</td></tr><tr><td><span class='dot pass'>●</span>map-data.js parsed</td><td>Map</td><td>County map data parsed successfully</td></tr><tr><td><span class='dot pass'>●</span>County FIPS keys valid</td><td>Map</td><td>3,241 county/county-equivalent FIPS keys; 0 invalid</td></tr><tr><td><span class='dot pass'>●</span>Map declaration total reconciles</td><td>Map</td><td>Map=3,533; BROWSE=3,533</td></tr><tr><td><span class='dot pass'>●</span>Declaration-index manifest parsed</td><td>Event indexes</td><td>Manifest lists 59 state/territory index file(s)</td></tr><tr><td><span class='dot pass'>●</span>Declaration-index files present</td><td>Event indexes</td><td>59 manifest entries; 0 missing file(s); 0 duplicate state entry/entries</td></tr><tr><td><span class='dot pass'>●</span>map-events.js parsed</td><td>Event indexes</td><td>Parsed 3,394 map event(s)</td></tr><tr><td><span class='dot pass'>●</span>events.json parsed</td><td>Event indexes</td><td>Parsed 3,395 detailed event(s)</td></tr><tr><td><span class='dot pass'>●</span>Map event rows valid</td><td>Event indexes</td><td>3,394 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s)</td></tr><tr><td><span class='dot pass'>●</span>Detailed event rows valid</td><td>Event indexes</td><td>3,395 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s); 0 state/disaster-number issue(s)</td></tr><tr><td><span class='dot pass'>●</span>Map and detailed event coverage reconciles</td><td>Event indexes</td><td>3,394 detailed event(s) with county footprints; 0 missing from map; 0 unexpected map event(s); 1 statewide-only detailed event(s)</td></tr><tr><td><span class='dot pass'>●</span>Map events match detailed events</td><td>Event indexes</td><td>3,394 shared event(s); 0 field mismatch(es)</td></tr><tr><td><span class='dot pass'>●</span>latest-data.js parsed</td><td>Website</td><td>25 latest declarations available</td></tr><tr><td><span class='dot pass'>●</span>Homepage exists</td><td>Website</td><td>index.html is present</td></tr><tr><td><span class='dot pass'>●</span>Homepage update stamp matches build</td><td>Freshness</td><td>Homepage contains build date 2026-09-12</td></tr><tr><td><span class='dot pass'>●</span>Public Assistance output present</td><td>Assistance</td><td>PA_NATIONAL is populated</td></tr><tr><td><span class='dot pass'>●</span>PA county rollups are nonnegative</td><td>Assistance</td><td>3,231 PA jurisdiction rollups; 0 invalid</td></tr><tr><td><span class='dot pass'>●</span>PA obligation timing output parses</td><td>Assistance</td><td>3,287 jurisdiction rollups</td></tr><tr><td><span class='dot pass'>●</span>Hazard Mitigation Assistance values valid</td><td>Assistance</td><td>2,996 jurisdiction rollups; 0 invalid numeric record(s)</td></tr><tr><td><span class='dot pass'>●</span>Individual Assistance values valid</td><td>Assistance</td><td>3,265 jurisdiction rollups; 0 invalid numeric record(s)</td></tr><tr><td><span class='dot pass'>●</span>CDC SVI file available</td><td>Risk context</td><td>3,144 county records in county-svi.js</td></tr><tr><td><span class='dot pass'>●</span>CDC SVI values valid</td><td>Risk context</td><td>0 invalid FIPS; 0 percentile value issue(s)</td></tr><tr><td><span class='dot pass'>●</span>FEMA NRI file available</td><td>Risk context</td><td>3,232 county records in county-nri.js</td></tr><tr><td><span class='dot pass'>●</span>FEMA NRI values parse</td><td>Risk context</td><td>0 invalid FIPS; 0 score parse issue(s)</td></tr><tr><td><span class='dot pass'>●</span>Jurisdiction search index available</td><td>Jurisdiction pages</td><td>3,590 generated jurisdiction entries</td></tr><tr><td><span class='dot pass'>●</span>Jurisdiction URLs are unique</td><td>Jurisdiction pages</td><td>3,590 entries; 0 duplicate URL(s)</td></tr><tr><td><span class='dot pass'>●</span>Jurisdiction pages exist</td><td>Jurisdiction pages</td><td>3,590/3,590 indexed jurisdiction files found</td></tr><tr><td><span class='dot pass'>●</span>Jurisdiction citation blocks present</td><td>Jurisdiction pages</td><td>3,590/3,590 pages contain a citation block</td></tr><tr><td><span class='dot pass'>●</span>No Example County placeholder</td><td>Website</td><td>jurisdiction.html contains no Example County placeholder</td></tr><tr><td><span class='dot pass'>●</span>Sitemap has no duplicate URLs</td><td>Website</td><td>3,418 sitemap URLs; 0 duplicate(s)</td></tr><tr><td><span class='dot pass'>●</span>Data freshness acceptable</td><td>Freshness</td><td>Data date is 0 day(s) old; weekly target is &lt;= 8 days</td></tr>
+</tbody>
+
+</table>
+
+</div>
+
+<footer>
+Disaster Data
+&middot;
+Release 2026.09.12.1
+&middot;
+<a href="/about.html">About and methodology</a>
+&middot;
+<a href="/data-status.json">Machine-readable status JSON</a>
+</footer>
+
+</main>
+
+</body>
+</html>

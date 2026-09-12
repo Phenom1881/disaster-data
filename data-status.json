@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 2,
+  "release": "2026.09.12.1",
+  "status": "passed",
+  "builtAt": "2026-09-12T16:25:48Z",
+  "dataDate": "2026-09-12",
+  "fingerprint": "9dd7318c859721361465",
+  "metrics": {
+    "dataDate": "2026-09-12",
+    "ageDays": 0,
+    "declarationsCurrent": 3533,
+    "declarationsCompletedFY": 3395,
+    "denials": 365,
+    "statesTerritories": 57,
+    "localities": 4195,
+    "mapCounties": 3241,
+    "mapDeclarationEvents": 3533,
+    "eventCount": 3395,
+    "mapEventCount": 3394,
+    "statewideOnlyEvents": 1,
+    "declIndexStates": 59,
+    "jurisdictionPages": 3590,
+    "paJurisdictions": 3231,
+    "paTotalObligated": 284184555115.86,
+    "paProjects": 822376,
+    "paTimingJurisdictions": 3287,
+    "hmaJurisdictions": 2996,
+    "iaJurisdictions": 3265,
+    "sviCounties": 3144,
+    "nriCounties": 3232,
+    "sviRelease": "2022",
+    "nriRelease": "2025"
+  },
+  "changesFromPreviousRelease": {
+    "declarationsCurrent": null,
+    "jurisdictionPages": null,
+    "mapCounties": null,
+    "eventCount": null,
+    "sviCounties": null,
+    "nriCounties": null
+  },
+  "sources": [
+    {
+      "name": "FEMA Disaster Declarations Summaries",
+      "status": "current",
+      "file": "data.js",
+      "records": 3533,
+      "release": "OpenFEMA v2",
+      "hash": "a514fe46aa594f81",
+      "note": "Federal declaration history and jurisdiction assignments."
+    },
+    {
+      "name": "FEMA Declaration Denials",
+      "status": "current",
+      "file": "data.js",
+      "records": 365,
+      "release": "OpenFEMA v1",
+      "hash": "a514fe46aa594f81",
+      "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
+    },
+    {
+      "name": "FEMA Public Assistance",
+      "status": "current",
+      "file": "data.js",
+      "records": 3231,
+      "release": "OpenFEMA v2",
+      "hash": "a514fe46aa594f81",
+      "note": "Public Assistance project and county rollups."
+    },
+    {
+      "name": "FEMA PA Grant Award Activities",
+      "status": "current",
+      "file": "pa-timing.json",
+      "records": 3287,
+      "release": "OpenFEMA v2",
+      "hash": "89dd4511c7ead52c",
+      "note": "Obligation timing used on jurisdiction profiles."
+    },
+    {
+      "name": "FEMA Hazard Mitigation Assistance",
+      "status": "current",
+      "file": "hma.json",
+      "records": 2996,
+      "release": "OpenFEMA v4",
+      "hash": "9c479465004bdf04",
+      "note": "Funded mitigation project rollups."
+    },
+    {
+      "name": "FEMA Individual Assistance",
+      "status": "current",
+      "file": "ia.json",
+      "records": 3265,
+      "release": "OpenFEMA v2",
+      "hash": "d8be60054e8520e8",
+      "note": "Housing Assistance owner/renter rollups."
+    },
+    {
+      "name": "DisasterData Event Index",
+      "status": "current",
+      "file": "events.json",
+      "records": 3395,
+      "release": "Derived",
+      "hash": "7d9b65d9eb0ad9d4",
+      "note": "National event index derived from the committed declaration index; named tropical systems are grouped by storm name and year."
+    },
+    {
+      "name": "CDC/ATSDR Social Vulnerability Index",
+      "status": "current",
+      "file": "county-svi.js",
+      "records": 3144,
+      "release": "2022",
+      "hash": "c7d982c5d9042d52",
+      "note": "Static county context joined by five-digit FIPS/GEOID."
+    },
+    {
+      "name": "FEMA National Risk Index",
+      "status": "current",
+      "file": "county-nri.js",
+      "records": 3232,
+      "release": "2025",
+      "hash": "b609cbe1d8bcf07c",
+      "note": "Static county risk context joined by five-digit FIPS/GEOID."
+    }
+  ],
+  "validation": {
+    "passed": 40,
+    "warnings": 0,
+    "failed": 0,
+    "checks": [
+      {
+        "name": "data.js exists",
+        "category": "Core build",
+        "status": "pass",
+        "severity": "error",
+        "detail": "data.js is present and non-trivial",
+        "metrics": {}
+      },
+      {
+        "name": "BROWSE parsed",
+        "category": "Declarations",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Parsed 3,533 unique declarations",
+        "metrics": {}
+      },
+      {
+        "name": "LOCALITY_DATA parsed",
+        "category": "Jurisdictions",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Parsed locality data for 57 states/territories",
+        "metrics": {}
+      },
+      {
+        "name": "STATE_NAMES parsed",
+        "category": "Core build",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Parsed 57 state/territory labels",
+        "metrics": {}
+      },
+      {
+        "name": "NATIONAL_TOTALS parsed",
+        "category": "Declarations",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Canonical current and completed-FY totals are present",
+        "metrics": {}
+      },
+      {
+        "name": "DATA_DATE is valid",
+        "category": "Freshness",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Data date: 2026-09-12",
+        "metrics": {}
+      },
+      {
+        "name": "Declaration IDs are unique",
+        "category": "Declarations",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,533 IDs; 0 duplicate(s); 0 blank ID(s)",
+        "metrics": {
+          "duplicates": 0,
+          "blankIds": 0
+        }
+      },
+      {
+        "name": "Declaration dates parse",
+        "category": "Declarations",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "All populated declaration dates use YYYY-MM-DD",
+        "metrics": {}
+      },
+      {
+        "name": "Declaration types recognized",
+        "category": "Declarations",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "Only DR, EM, and FM types found",
+        "metrics": {}
+      },
+      {
+        "name": "Canonical current total reconciles",
+        "category": "Declarations",
+        "status": "pass",
+        "severity": "error",
+        "detail": "NATIONAL_TOTALS current=3,533; BROWSE=3,533",
+        "metrics": {}
+      },
+      {
+        "name": "map-data.js parsed",
+        "category": "Map",
+        "status": "pass",
+        "severity": "error",
+        "detail": "County map data parsed successfully",
+        "metrics": {}
+      },
+      {
+        "name": "County FIPS keys valid",
+        "category": "Map",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,241 county/county-equivalent FIPS keys; 0 invalid",
+        "metrics": {}
+      },
+      {
+        "name": "Map declaration total reconciles",
+        "category": "Map",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Map=3,533; BROWSE=3,533",
+        "metrics": {}
+      },
+      {
+        "name": "Declaration-index manifest parsed",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Manifest lists 59 state/territory index file(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Declaration-index files present",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "59 manifest entries; 0 missing file(s); 0 duplicate state entry/entries",
+        "metrics": {}
+      },
+      {
+        "name": "map-events.js parsed",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Parsed 3,394 map event(s)",
+        "metrics": {}
+      },
+      {
+        "name": "events.json parsed",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Parsed 3,395 detailed event(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Map event rows valid",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,394 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Detailed event rows valid",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,395 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s); 0 state/disaster-number issue(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Map and detailed event coverage reconciles",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,394 detailed event(s) with county footprints; 0 missing from map; 0 unexpected map event(s); 1 statewide-only detailed event(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Map events match detailed events",
+        "category": "Event indexes",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,394 shared event(s); 0 field mismatch(es)",
+        "metrics": {}
+      },
+      {
+        "name": "latest-data.js parsed",
+        "category": "Website",
+        "status": "pass",
+        "severity": "error",
+        "detail": "25 latest declarations available",
+        "metrics": {}
+      },
+      {
+        "name": "Homepage exists",
+        "category": "Website",
+        "status": "pass",
+        "severity": "error",
+        "detail": "index.html is present",
+        "metrics": {}
+      },
+      {
+        "name": "Homepage update stamp matches build",
+        "category": "Freshness",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Homepage contains build date 2026-09-12",
+        "metrics": {}
+      },
+      {
+        "name": "Public Assistance output present",
+        "category": "Assistance",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "PA_NATIONAL is populated",
+        "metrics": {}
+      },
+      {
+        "name": "PA county rollups are nonnegative",
+        "category": "Assistance",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,231 PA jurisdiction rollups; 0 invalid",
+        "metrics": {}
+      },
+      {
+        "name": "PA obligation timing output parses",
+        "category": "Assistance",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,287 jurisdiction rollups",
+        "metrics": {}
+      },
+      {
+        "name": "Hazard Mitigation Assistance values valid",
+        "category": "Assistance",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "2,996 jurisdiction rollups; 0 invalid numeric record(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Individual Assistance values valid",
+        "category": "Assistance",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,265 jurisdiction rollups; 0 invalid numeric record(s)",
+        "metrics": {}
+      },
+      {
+        "name": "CDC SVI file available",
+        "category": "Risk context",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,144 county records in county-svi.js",
+        "metrics": {}
+      },
+      {
+        "name": "CDC SVI values valid",
+        "category": "Risk context",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "0 invalid FIPS; 0 percentile value issue(s)",
+        "metrics": {}
+      },
+      {
+        "name": "FEMA NRI file available",
+        "category": "Risk context",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,232 county records in county-nri.js",
+        "metrics": {}
+      },
+      {
+        "name": "FEMA NRI values parse",
+        "category": "Risk context",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "0 invalid FIPS; 0 score parse issue(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Jurisdiction search index available",
+        "category": "Jurisdiction pages",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,590 generated jurisdiction entries",
+        "metrics": {}
+      },
+      {
+        "name": "Jurisdiction URLs are unique",
+        "category": "Jurisdiction pages",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,590 entries; 0 duplicate URL(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Jurisdiction pages exist",
+        "category": "Jurisdiction pages",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,590/3,590 indexed jurisdiction files found",
+        "metrics": {}
+      },
+      {
+        "name": "Jurisdiction citation blocks present",
+        "category": "Jurisdiction pages",
+        "status": "pass",
+        "severity": "warning",
+        "detail": "3,590/3,590 pages contain a citation block",
+        "metrics": {}
+      },
+      {
+        "name": "No Example County placeholder",
+        "category": "Website",
+        "status": "pass",
+        "severity": "error",
+        "detail": "jurisdiction.html contains no Example County placeholder",
+        "metrics": {}
+      },
+      {
+        "name": "Sitemap has no duplicate URLs",
+        "category": "Website",
+        "status": "pass",
+        "severity": "error",
+        "detail": "3,418 sitemap URLs; 0 duplicate(s)",
+        "metrics": {}
+      },
+      {
+        "name": "Data freshness acceptable",
+        "category": "Freshness",
+        "status": "pass",
+        "severity": "error",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
+        "metrics": {}
+      }
+    ]
+  }
+}
