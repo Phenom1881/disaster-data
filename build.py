@@ -1924,8 +1924,49 @@ print(f"  latest-data.js written ({len(_latest_page)} declarations)")
 if os.path.exists("index.html"):
     with open("index.html", encoding="utf-8") as f:
         html = f.read()
-    # Update last-updated stamp
-    html = re.sub(r'Last updated:.*?</span>', f'Last updated: <span id="about-last-updated">{TODAY}</span>', html)
+    # Update last-updated stamp.
+    #
+    # This used to be a single regex against 'Last updated:...</span>'. That
+    # pattern was removed from index.html during a homepage rewrite, so the
+    # substitution silently matched nothing and the homepage quietly stopped
+    # carrying a build date for weeks. release.py's "Homepage update stamp
+    # matches build" check is what eventually caught it.
+    #
+    # Two changes to stop that recurring:
+    #   1. The authoritative stamp is now a meta tag, which is invisible to
+    #      readers and therefore will not be removed by a visual redesign.
+    #   2. If NOTHING matched, say so loudly instead of continuing as if the
+    #      stamp had been written. A no-op substitution is not a success.
+    _stamped = []
+
+    _meta_new = f'<meta name="dd-data-date" content="{TODAY}">'
+    html, _n_meta = re.subn(
+        r'<meta name="dd-data-date" content="[^"]*">',
+        _meta_new,
+        html,
+    )
+    if _n_meta:
+        _stamped.append(f"meta dd-data-date x{_n_meta}")
+
+    # Kept for any page that still shows a visible stamp.
+    html, _n_span = re.subn(
+        r'Last updated:.*?</span>',
+        f'Last updated: <span id="about-last-updated">{TODAY}</span>',
+        html,
+    )
+    if _n_span:
+        _stamped.append(f"visible span x{_n_span}")
+
+    if _stamped:
+        print(f"  index.html build date stamped ({TODAY}): " + ", ".join(_stamped))
+    else:
+        print(
+            "  WARNING: index.html carries NO build-date stamp target. "
+            'Expected <meta name="dd-data-date" content="..."> or a '
+            '"Last updated: ...</span>" block. The homepage will report a '
+            "stale or missing data date and release.py will fail its "
+            "homepage stamp check until this is restored."
+        )
     # Inject PA_NATIONAL using line-based replacement
     # (regex approach breaks when JSON contains semicolons in string values)
     pa_json = json.dumps(pa_national, separators=(",",":"))

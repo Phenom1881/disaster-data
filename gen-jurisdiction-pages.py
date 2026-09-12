@@ -135,6 +135,47 @@ def load_ia():
         return {}
 
 
+_STATE_DECLS_CACHE = None
+
+
+def load_state_decls():
+    """
+    Governor (state) emergency declarations resolved to county FIPS, written
+    by gen_plus_sidecar.py to state-declarations.json.
+
+    {"states": {ST: {"name","slug","coverage","total",
+                     "counties": {fips5: [ {id,eo,gov,desc,date,url,
+                                            types[],n,deaths,inj,dmg} ]}}}}
+
+    A county entry means NOAA Storm Events recorded reports of the matched
+    hazard in that county while the declaration was in effect. It does NOT
+    mean the governor named that county in the order. See gen_plus_sidecar.py
+    and the rendered method note.
+
+    Cached, because build_state() is called once per state and the file is
+    read-only for the whole run. Returns {} when the file is absent, which is
+    the same graceful-degradation contract as load_ia()/load_hma().
+    """
+    global _STATE_DECLS_CACHE
+
+    if _STATE_DECLS_CACHE is not None:
+        return _STATE_DECLS_CACHE
+
+    p = os.path.join(SRC_ROOT, "state-declarations.json")
+
+    if not os.path.exists(p):
+        _STATE_DECLS_CACHE = {}
+        return _STATE_DECLS_CACHE
+
+    try:
+        with open(p, encoding="utf-8") as fh:
+            _STATE_DECLS_CACHE = json.load(fh)
+    except Exception:
+        _STATE_DECLS_CACHE = {}
+
+    return _STATE_DECLS_CACHE
+
+
 def _load_county_js(filename, window_name):
     """
     Load a FIPS-keyed county dataset assigned to ``window.<window_name>``.
@@ -2869,6 +2910,237 @@ def ia_html(j):
     )
 
 
+# ---------------------------------------------------------------- state declarations
+def state_decl_html(j):
+    """
+    Governor (state) emergency declarations with storm evidence in this
+    jurisdiction, from DisasterData Plus via state-declarations.json.
+
+    Renders nothing when this county has no resolved evidence, which is the
+    normal case for the eight states whose archives are zone-only or whose
+    orders are image-only PDFs. Same convention as ia_html()/hma_html():
+    absent data produces no section, not an empty one.
+    """
+    rows = j.get("statedecl") or []
+
+    if not rows:
+        return ""
+
+    meta = j.get("statedecl_meta") or {}
+
+    e = html.escape
+
+    money = lambda n: "$" + format(
+        int(round(n or 0)),
+        ",",
+    )
+
+    total = meta.get("total") or 0
+
+    matched = len(rows)
+
+    # "N of M" framing so a county's matched count is never read as the
+    # state's full declaration history.
+    scope = (
+        "%s of the %s state declaration%s on record"
+        % (
+            format(matched, ","),
+            format(total, ","),
+            "" if total == 1 else "s",
+        )
+        if total
+        else "%s state declaration%s"
+        % (
+            format(matched, ","),
+            "" if matched == 1 else "s",
+        )
+    )
+
+    body = []
+
+    for d in rows[:40]:
+        types = ", ".join(d.get("types") or []) or "Not categorised"
+
+        label = d.get("eo") or d.get("id") or ""
+
+        desc = d.get("desc") or ""
+
+        url = d.get("url") or ""
+
+        title = (
+            '<a href="%s" rel="nofollow noopener" target="_blank">%s</a>'
+            % (
+                e(url),
+                e(desc),
+            )
+            if url
+            else e(desc)
+        )
+
+        dmg = d.get("dmg") or 0
+
+        body.append(
+            "<tr>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "<td>%s</td>"
+            "</tr>"
+            % (
+                e(fmt_date(d.get("date") or "")),
+                e(label),
+                title,
+                e(types),
+                money(dmg) if dmg else "Not reported",
+            )
+        )
+
+    more = (
+        '<p class="pa-note">Showing the 40 most recent. '
+        'The full record for this state is on the '
+        '<a href="/plus/%s/">Plus state page</a>.</p>'
+        % e(meta.get("slug") or "")
+        if len(rows) > 40
+        else ""
+    )
+
+    css = (
+        "<style>"
+
+        ".sd-stats{"
+        "display:flex;"
+        "gap:.6rem;"
+        "flex-wrap:wrap;"
+        "margin:.6rem 0 .9rem"
+        "}"
+
+        ".sd-stat{"
+        "border:1px solid #e4dcc9;"
+        "background:#f6f1e7;"
+        "padding:.7rem 1rem;"
+        "flex:1 1 150px"
+        "}"
+
+        ".sd-n{"
+        "font-family:Fraunces,Georgia,serif;"
+        "font-size:1.15rem;"
+        "color:#004c53;"
+        "letter-spacing:-.3px"
+        "}"
+
+        ".sd-l{"
+        "font-size:.72rem;"
+        "color:#6b6357;"
+        "margin-top:.15rem"
+        "}"
+
+        ".sd-wrap{"
+        "overflow-x:auto;"
+        "-webkit-overflow-scrolling:touch"
+        "}"
+
+        "table.sd-tbl td:last-child,"
+        "table.sd-tbl th:last-child{"
+        "text-align:right;"
+        "font-variant-numeric:tabular-nums;"
+        "white-space:nowrap"
+        "}"
+
+        "table.sd-tbl td:first-child,"
+        "table.sd-tbl th:first-child{"
+        "white-space:nowrap"
+        "}"
+
+        "</style>"
+    )
+
+    stat = (
+        '<div class="sd-stats">'
+
+        '<div class="sd-stat">'
+        '<div class="sd-n">%s</div>'
+        '<div class="sd-l">state declarations with local storm evidence</div>'
+        '</div>'
+
+        '<div class="sd-stat">'
+        '<div class="sd-n">%s</div>'
+        '<div class="sd-l">statewide on record</div>'
+        '</div>'
+
+        '</div>'
+        % (
+            format(matched, ","),
+            format(total, ",") if total else "Not counted",
+        )
+    )
+
+    coverage = (
+        '<p class="pa-note">Archive coverage for %s: %s</p>'
+        % (
+            e(meta.get("name") or ""),
+            e(meta.get("coverage") or "not stated"),
+        )
+        if meta.get("coverage")
+        else ""
+    )
+
+    return (
+        '<section>'
+
+        '<h2>'
+        'State declarations (governor)'
+        '</h2>'
+
+        '<p class="pa-note">'
+        'Emergency declarations issued by the governor of this state, which '
+        'are separate from and usually precede a federal declaration. A '
+        'declaration is listed here when NOAA Storm Events recorded reports '
+        'of the matched hazard in this jurisdiction while the order was in '
+        'effect. That is evidence of local impact during a declared state '
+        'emergency. It is not a statement that the governor named this '
+        'jurisdiction in the order, since most state declarations apply '
+        'statewide and name no localities at all. Hazard categories come '
+        'from the order text. Damage figures are NOAA storm report estimates '
+        'for this jurisdiction only, not the cost of the declaration.'
+        '</p>'
+
+        '%s'
+        '%s'
+        '%s'
+
+        '<div class="sd-wrap">'
+        '<table class="sd-tbl">'
+        '<thead><tr>'
+        '<th>Signed</th>'
+        '<th>Order</th>'
+        '<th>Declaration</th>'
+        '<th>Hazards reported here</th>'
+        '<th>Reported damage</th>'
+        '</tr></thead>'
+        '<tbody>%s</tbody>'
+        '</table>'
+        '</div>'
+
+        '%s'
+
+        '<p class="pa-note">'
+        'Source: state executive order archives collected by DisasterData '
+        'Plus, joined to NOAA Storm Events. See the '
+        '<a href="/plus/">Plus overview</a> for per-state coverage and method.'
+        '</p>'
+
+        '</section>'
+        % (
+            css,
+            stat,
+            coverage,
+            "".join(body),
+            more,
+        )
+    )
+
+
 # ---------------------------------------------------------------- SVI / NRI risk context
 def _finite_number(value):
     """Return a finite float, or None for blank, sentinel, or invalid data."""
@@ -4365,6 +4637,7 @@ def render_page(j, others, lcfy):
                 + pa_timing_html(j)
                 + ia_html(j)
                 + hma_html(j)
+                + state_decl_html(j)
             ),
 
             haz,
@@ -5338,6 +5611,24 @@ def build_state(
             or (j["nri"] or {}).get("fips")
             or ""
         )
+
+    # ------------------------------------------------ state (governor) declarations
+    _sd_state = (
+        (load_state_decls().get("states") or {}).get(state_ab)
+        or {}
+    )
+
+    _sd_counties = _sd_state.get("counties") or {}
+
+    for j in js:
+        j["statedecl"] = (
+            _sd_counties.get(
+                str(j.get("risk_fips") or "")
+            )
+            or []
+        )
+
+        j["statedecl_meta"] = _sd_state if j["statedecl"] else {}
 
     for j in js:
         j["thin"] = is_thin(j)

@@ -308,6 +308,48 @@ const manifest = await fetch(BASE + <span class="s">'/data/decl-index/manifest.j
     </section>
 
     <section class="section">
+      <div class="eyebrow">For builders and analysts</div>
+      <h2>State declarations, published the same way.</h2>
+      <div class="prose">
+        <p>A federal declaration is the end of a sequence, not the start of one. Before FEMA arrives, a governor declares. Those state emergency declarations live in fifty separate state archives, in fifty different formats, and no one publishes them as a single dataset. DisasterData Plus collects them, classifies each one by hazard from the order text, and joins it to NOAA Storm Events so you can see what was actually reported on the ground while the order was in effect.</p>
+        <p>All fifty states are collected. Counts below describe the current build: 1,381 state declarations across the states with resolved local evidence, 9,661 county and declaration pairs, covering 2,148 counties in 42 states. The other eight states are collected but have no county-resolved evidence yet, for reasons given in each one's coverage note.</p>
+      </div>
+      <div class="defs">
+        <div class="def">
+          <div class="def-t"><code class="path">state-declarations.json</code></div>
+          <div class="def-d">The joined product, keyed by state and then by five digit county FIPS. Each entry carries the order number, governor, signing date, the declaration text, a link to the source archive record, the hazard types reported in that county, the number of storm reports, and direct deaths, injuries, and reported damage. This is the file the locality pages on this site are built from.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">plus/coverage.json</code></div>
+          <div class="def-d">The index of the set: every state, its archive coverage window in plain language, whether its collection succeeded, and record counts. Fetch this first. Coverage is uneven by state and this file is where that is stated honestly rather than averaged away.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">plus/{state}/declarations_for_join.csv</code></div>
+          <div class="def-d">One state's declarations as collected from its own archive, before any storm matching: declaration id, governor, order number, description, signing date, and the archive record URL. Use this when you want the orders themselves rather than the weather join.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">plus/{state}/eo_storm_severity_summary.csv</code><span class="def-tag">row level</span></div>
+          <div class="def-d">The full join for one state, one row per declaration and reporting area, including the NOAA forecast zone rows that are not resolvable to a county. Use this if you want the zone level detail that state-declarations.json deliberately leaves out.</div>
+        </div>
+      </div>
+      <pre class="data-code"><span class="c">// Your live origin. Edit this one line if your domain differs.</span>
+const BASE = <span class="s">'https://disasterdata.io'</span>;
+
+<span class="c">// What is covered, and how well, state by state</span>
+const coverage = await fetch(BASE + <span class="s">'/plus/coverage.json'</span>).then(r =&gt; r.json());
+
+<span class="c">// State declarations with local evidence in Roanoke County, Virginia (FIPS 51161)</span>
+const states = (await fetch(BASE + <span class="s">'/state-declarations.json'</span>).then(r =&gt; r.json())).states;
+const local = states.VA.counties[<span class="s">'51161'</span>];</pre>
+      <div class="prose" style="margin-top:22px;">
+        <p><strong>Read the county attribution carefully.</strong> A declaration listed under a county does not mean the governor named that county in the order. Most state declarations apply statewide and name no localities at all. It means NOAA Storm Events recorded reports of the matched hazard in that county while the order was in effect. That is evidence of local impact during a declared state emergency, which is usually what you want, but it is an inference from two joined sources and not a quotation from the order. Treat it as evidence, not as a designation.</p>
+        <p><strong>What is left out is left out on purpose.</strong> Only county typed storm reports are resolved into the county file. NOAA forecast zones do not align to county boundaries and are not folded in silently; they stay in the per state row level file. Declarations whose text matches no hazard keyword are skipped rather than guessed at. Area names that cannot be resolved to a real county are dropped and counted, not approximated. The counts above are what survived that, not what was collected.</p>
+        <p><strong>Free to use.</strong> If you publish something built on this, please credit it: <em>Source: DisasterData.IO, state executive order archives joined to NOAA Storm Events</em>. The underlying state orders and NOAA records are public; the collection, classification, and join are the work being credited.</p>
+        <p><strong>Same caveat as the rest of the site.</strong> This is derived from public records but is not endorsed by or affiliated with any state government, FEMA, or NOAA. Where a figure here disagrees with the issuing state's own archive, treat the state as authoritative.</p>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="eyebrow">Beyond the dashboard</div>
       <h2>Lead Time, a training game.</h2>
       <div class="prose">
