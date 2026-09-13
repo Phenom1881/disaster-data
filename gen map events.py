@@ -215,7 +215,7 @@ def build_events(in_dir, types=None, since=0):
         # display name and incident label; a storm's own name and type
         # already cover anything folded into it.
         if not (new_key.startswith("storm-") or new_key == COVID_EVENT_ID):
-            dst["name"] = unnamed_cluster_label(dst["incident_types"], dst["begin"])
+            dst["name"] = unnamed_cluster_label(dst["incident_types"], dst["begin"], dst["states"])
             types = {t for t in dst["incident_types"] if t}
             dst["it"] = sorted(types)[0] if len(types) == 1 else "Severe Weather"
 

@@ -427,13 +427,15 @@ def build_indexes(records, decl_types=None, jurisdiction_override=None):
             if new_key.startswith("storm-") or new_key == COVID_EVENT_ID:
                 continue
             member_entries = [e for _, e in by_event.get(new_key, [])]
+            member_states = {s for s, _ in by_event.get(new_key, [])}
             for old_key, mapped in remap.items():
                 if mapped == new_key:
                     member_entries.extend(e for _, e in by_event.get(old_key, []))
+                    member_states.update(s for s, _ in by_event.get(old_key, []))
             types = {e["incidentType"] for e in member_entries}
             begin, _ = parse_window([(None, e) for e in member_entries])
             if begin is not None:
-                new_names[new_key] = unnamed_cluster_label(types, begin)
+                new_names[new_key] = unnamed_cluster_label(types, begin, member_states)
 
         for state, entry in all_entries:
             new_key = remap.get(entry["eventId"], entry["eventId"])

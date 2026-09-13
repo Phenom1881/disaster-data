@@ -183,7 +183,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   }
 
   function computeIA(ev){
-    if(!IAT) return null;
+    if(!IAT) return {unavailable:true};
     var dnset={}; (ev.dns||[]).forEach(function(d){ dnset[String(d)]=1; });
     var perState={}, totals={reg:0,app:0,ihp:0}, hitAny=false;
     Object.keys(IAT).forEach(function(st){
@@ -202,11 +202,11 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
           ps.reg+=creg; ps.app+=capp; ps.ihp+=cihp; ps.counties+=1; }
       });
     });
-    return hitAny ? {totals:totals,perState:perState} : null;
+    return {unavailable:false, hitAny:hitAny, totals:totals, perState:perState};
   }
 
   function computeHM(ev){
-    if(!HMT) return null;
+    if(!HMT) return {unavailable:true};
     var dnset={}; (ev.dns||[]).forEach(function(d){ dnset[String(d)]=1; });
     var perState={}, total=0, projects=0, hitAny=false;
     Object.keys(HMT).forEach(function(st){
@@ -220,7 +220,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
           var ps=perState[st]||(perState[st]={fed:0,n:0}); ps.fed+=cfed; ps.n+=cn; }
       });
     });
-    return hitAny ? {total:total,projects:projects,perState:perState} : null;
+    return {unavailable:false, hitAny:hitAny, total:total, projects:projects, perState:perState};
   }
 
   function renderProfile(ev){
@@ -241,7 +241,16 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 
     // by state (PA)
     var stateSec="";
-    if(pa){
+    var paNoRecords = pa && pa.perCounty.length===0;
+    if(!pa){
+      stateSec = '<section class="sec"><div class="shead"><div class="k">By state</div>'+
+        '<h2>States declared</h2></div><div class="d-chips">'+stChips+'</div>'+
+        '<p class="d-note">Public Assistance figures per state are not available for this event; pa-timing.json did not load.</p></section>';
+    } else if(paNoRecords){
+      stateSec = '<section class="sec"><div class="shead"><div class="k">By state</div>'+
+        '<h2>States declared</h2></div><div class="d-chips">'+stChips+'</div>'+
+        '<p class="d-note">No Public Assistance federal share has been obligated for this event in the data we have.</p></section>';
+    } else {
       var srows = states.map(function(s){ var p=pa.perState[s]||{fed:0,counties:0}; return {s:s,fed:p.fed,c:p.counties}; })
                         .sort(function(a,b){ return b.fed-a.fed; });
       var maxF = srows.length?Math.max(srows[0].fed,1):1;
@@ -256,33 +265,35 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         '<h2>Where the Public Assistance landed</h2>'+
         '<p class="lead">Federal share obligated to each state under this event, summed across its declarations.</p></div>'+
         '<div class="tier-h"><span class="t">States</span><span class="c">by federal share</span></div>'+body+'</section>';
-    } else {
-      stateSec = '<section class="sec"><div class="shead"><div class="k">By state</div>'+
-        '<h2>States declared</h2></div><div class="d-chips">'+stChips+'</div>'+
-        '<p class="d-note">Public Assistance figures per state appear once pa-timing.json is built.</p></section>';
     }
 
     // localities funded (PA)
     var locSec="";
-    if(pa){
+    if(pa && !paNoRecords){
       var cs=pa.perCounty.slice().sort(function(a,b){ return b.fed-a.fed; });
-      if(cs.length){
-        function crow(r){ return '<tr><td>'+aWrap(stateLink(r.st),esc(STATES[r.st]||r.st))+'</td><td>'+aWrap(countyLink(r.st,r.county),esc(r.county))+'</td><td class="r m">'+money(r.fed)+'</td></tr>'; }
-        var headRows=cs.slice(0,25).map(crow).join(""), rest=cs.slice(25);
-        var moreBtn = rest.length ? '<button class="morebtn" id="locToggle">Show all '+cs.length+' funded localities</button>' : "";
-        var restHtml = rest.length ? '<tbody id="locMore" hidden>'+rest.map(crow).join("")+'</tbody>' : "";
-        locSec = '<section class="sec"><div class="shead"><div class="k">By locality</div>'+
-          '<h2>Which places the money reached</h2>'+
-          '<p class="lead">Every county or equivalent with Public Assistance obligated under this event, most funded first.</p></div>'+
-          '<table class="d-tbl"><thead><tr><th>State</th><th>County or equivalent</th><th class="r">Federal share</th></tr></thead>'+
-          '<tbody>'+headRows+'</tbody>'+restHtml+'</table>'+moreBtn+'</section>';
-      }
+      function crow(r){ return '<tr><td>'+aWrap(stateLink(r.st),esc(STATES[r.st]||r.st))+'</td><td>'+aWrap(countyLink(r.st,r.county),esc(r.county))+'</td><td class="r m">'+money(r.fed)+'</td></tr>'; }
+      var headRows=cs.slice(0,25).map(crow).join(""), rest=cs.slice(25);
+      var moreBtn = rest.length ? '<button class="morebtn" id="locToggle">Show all '+cs.length+' funded localities</button>' : "";
+      var restHtml = rest.length ? '<tbody id="locMore" hidden>'+rest.map(crow).join("")+'</tbody>' : "";
+      locSec = '<section class="sec"><div class="shead"><div class="k">By locality</div>'+
+        '<h2>Which places the money reached</h2>'+
+        '<p class="lead">Every county or equivalent with Public Assistance obligated under this event, most funded first.</p></div>'+
+        '<table class="d-tbl"><thead><tr><th>State</th><th>County or equivalent</th><th class="r">Federal share</th></tr></thead>'+
+        '<tbody>'+headRows+'</tbody>'+restHtml+'</table>'+moreBtn+'</section>';
     }
 
     // Individual Assistance to households
     var iaSec = "";
     var ia = computeIA(ev);
-    if(ia){
+    if(ia.unavailable){
+      iaSec = '<section class="sec"><div class="shead"><div class="k">Individual Assistance</div>'+
+        '<h2>Aid that reached households</h2></div>'+
+        '<p class="d-note">Individual Assistance figures are not available for this event; ia-timing.json did not load.</p></section>';
+    } else if(!ia.hitAny){
+      iaSec = '<section class="sec"><div class="shead"><div class="k">Individual Assistance</div>'+
+        '<h2>Aid that reached households</h2></div>'+
+        '<p class="d-note">No Individual Assistance registrations or approvals are recorded for this event in the data we have.</p></section>';
+    } else {
       var iaTiles = [
         [num(ia.totals.reg), "valid registration"+(ia.totals.reg===1?"":"s")],
         [num(ia.totals.app), "household"+(ia.totals.app===1?"":"s")+" approved"],
@@ -312,7 +323,15 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     // Hazard Mitigation (HMGP, the program tied to a specific disaster)
     var hmSec = "";
     var hm = computeHM(ev);
-    if(hm){
+    if(hm.unavailable){
+      hmSec = '<section class="sec"><div class="shead"><div class="k">Hazard Mitigation</div>'+
+        '<h2>Funded mitigation projects</h2></div>'+
+        '<p class="d-note">Hazard Mitigation figures are not available for this event; hm-timing.json did not load.</p></section>';
+    } else if(!hm.hitAny){
+      hmSec = '<section class="sec"><div class="shead"><div class="k">Hazard Mitigation</div>'+
+        '<h2>Funded mitigation projects</h2></div>'+
+        '<p class="d-note">No HMGP-funded mitigation projects are recorded for this event in the data we have.</p></section>';
+    } else {
       var hmTiles = [
         [moneyStat(hm.total), "HMGP federal share obligated"],
         [num(hm.projects), "funded project"+(hm.projects===1?"":"s")]

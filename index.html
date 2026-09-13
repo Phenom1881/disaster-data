@@ -333,6 +333,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <span id="prov-asof">Latest declarations through &mdash;</span>
       <button type="button" id="prov-toggle" style="background:none;border:none;padding:0;margin:0;font:600 .8rem 'Public Sans',sans-serif;color:var(--accent);text-decoration:underline;cursor:pointer">Include the current partial year</button>
     </div>
+    <p class="reveal" style="animation-delay:.27s;margin:.5rem 0 0;font:400 .8rem/1.5 'Public Sans',sans-serif;color:#6b6357;max-width:640px">A declaration is a government action authorizing federal assistance, not a count of disasters. One incident can produce several declarations, across states or over time, and some incidents receive none.</p>
   </header>
 </div>
 
@@ -381,11 +382,11 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         </div>
       </div>
       <div class="fgroup">
-        <div class="flabel">Declaration type <a href="#types" class="whatlink">what's this?</a></div>
+        <div class="flabel">Declaration type: DR = Major Disaster, EM = Emergency, FM = Fire Management <a href="#types" class="whatlink">what's this?</a></div>
         <div class="seg" id="dtype">
-          <button class="on" data-d="DR">DR</button>
-          <button data-d="EM">EM</button>
-          <button data-d="FM">FM</button>
+          <button class="on" data-d="DR" title="Major Disaster">DR</button>
+          <button data-d="EM" title="Emergency">EM</button>
+          <button data-d="FM" title="Fire Management">FM</button>
         </div>
       </div>
       <div class="fgroup" id="tribal-fgroup" hidden>
