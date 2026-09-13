@@ -758,6 +758,7 @@ def shared_css(prefix: str = "") -> str:
     .since-badge {{ display:inline-block; flex-shrink:0; padding:.15rem .55rem;
       border-radius:99px; background:var(--accent); color:var(--paper-2);
       font-size:.75rem; font-weight:700; white-space:nowrap; }}
+    .count-unclear {{ color:var(--muted); font-style:italic; }}
     .status {{ display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
       border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }}
     table {{ width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }}
@@ -959,15 +960,51 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
         summary = by_abbreviation.get(state["abbreviation"])
         count = summary["metrics"]["action_count"] if summary else 0
         coverage = summary["coverage"] if summary else "Not rebuilt in this run"
+        coverage_base = summary.get("coverage_base") if summary else "Not rebuilt in this run"
+        collection_error = summary.get("collection_error") if summary else ""
+        collection_failed = bool(collection_error)
         start_label = extract_coverage_start_label(state["abbreviation"], coverage, count)
+        # A "0" here is not a verified finding of zero qualifying declarations -
+        # this dataset has no current mechanism to assert that, and every zero
+        # count so far corresponds to a disclosed coverage gap or a failed
+        # collection run, never a stated-complete archive with a real zero
+        # result. Rather than print a bare number that reads as a confirmed
+        # count either way, a zero is labeled as "not loaded" so a reader
+        # can't mistake missing data for a finding. A nonzero count from a
+        # run whose collection failed is still shown (it reflects real,
+        # previously-collected data on disk), but flagged as not refreshed
+        # this run so the reader knows it may be out of date.
+        count_uncertain = count == 0
+        if count_uncertain:
+            count_html = f'<span class="count-unclear">No records loaded yet</span>'
+        elif collection_failed:
+            count_html = (
+                f'<span>{count:,} original weather declarations</span> '
+                f'<span class="count-unclear">(not refreshed this run)</span>'
+            )
+        else:
+            count_html = f'<span>{count:,} original weather declarations</span>'
+        # "Collection failed: <exception text>" is a technical detail meant
+        # for a build log, not a first-read label. When today's collection
+        # run failed, lead with a plain-language status and move the raw
+        # error into a title attribute (visible on hover/long-press) rather
+        # than the primary text; otherwise show the real coverage note as-is,
+        # since that text is already written for a general reader.
+        if collection_failed:
+            status_display = "Latest update unsuccessful"
+            status_title = f"{coverage_base}; {collection_error}" if coverage_base else collection_error
+        else:
+            status_display = coverage_base
+            status_title = ""
+        title_attr = f' title="{esc(status_title)}"' if status_title else ""
         cards.append(
             '<article class="state-card">'
             f'<a href="/plus/{esc(state["slug"])}/">{esc(state["name"])}</a>'
             f'<div class="card-count-row">'
-            f'<span>{count:,} original weather declarations</span>'
+            f"{count_html}"
             f'<span class="since-badge">{esc(start_label)}</span>'
             "</div>"
-            f'<span class="status">{esc(coverage)}</span>'
+            f'<span class="status"{title_attr}>{esc(status_display)}</span>'
             "</article>"
         )
     loaded = sum(1 for item in summaries if item["metrics"]["action_count"] > 0)
@@ -985,9 +1022,9 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
 <p class="lede">State declarations, executive actions, proclamations, and observed weather evidence supplementing the federal disaster record.</p>
 <div class="notice">Coverage varies by state. A generated page is not evidence that its state-action archive is complete.</div>
 <section class="metrics">
-  <div class="metric"><strong>50</strong>state pages</div>
-  <div class="metric"><strong>{implemented}</strong>implemented source adapters</div>
-  <div class="metric"><strong>{loaded}</strong>states with loaded action data in this run</div>
+  <div class="metric"><strong>50</strong>states covered</div>
+  <div class="metric"><strong>{implemented}</strong>data sources set up</div>
+  <div class="metric"><strong>{loaded}</strong>states with records loaded right now</div>
 </section>
 <h2>Browse by state</h2><section class="states">{''.join(cards)}</section>
 <footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
@@ -1068,7 +1105,8 @@ def process_state(
     crosswalk = build_crosswalk(actions, federal_declarations, storm_rows_by_declaration)
 
     metrics = state_metrics(state, actions, federal_declarations, storm_rows, severity_rows)
-    coverage = coverage_label(state, actions, collection_note)
+    coverage_base = coverage_label(state, actions, collection_note)
+    coverage = coverage_base
     if collection_error:
         coverage += "; " + collection_error
 
@@ -1078,6 +1116,9 @@ def process_state(
         "slug": state["slug"],
         "adapter_status": state["adapter_status"],
         "coverage": coverage,
+        "coverage_base": coverage_base,
+        "collection_error": collection_error,
+        "collection_failed": bool(collection_error),
         "action_file": action_path.name if action_path else "",
         "metrics": metrics,
         "storm_pipeline_note": storm_note,

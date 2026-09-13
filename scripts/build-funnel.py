@@ -62,10 +62,30 @@ LOW_JOIN_RATIO = 0.10
 
 TRUE_VALUES = {"true", "t", "yes", "y", "1"}
 
+
+def raise_csv_field_limit():
+    """Lift the default 131072 byte cap on a single CSV field.
+
+    Some adapters carry a full order text or a long narrative in one column,
+    which exceeds the stdlib default and aborts the whole run. sys.maxsize is
+    rejected on some platforms, so step down until one is accepted.
+    """
+    limit = sys.maxsize
+    while True:
+        try:
+            csv.field_size_limit(limit)
+            return limit
+        except OverflowError:
+            limit //= 2
+
+
+raise_csv_field_limit()
+
 COLUMNS = [
     "slug",
     "abbreviation",
     "adapter_status",
+    "action_file_used",
     "collected",
     "weather_flagged",
     "joined",
@@ -173,6 +193,25 @@ def pct(part, whole):
     return round(100.0 * part / whole, 1)
 
 
+def resolve_action_file(directory, summary):
+    """Return the path to this state's real join output.
+
+    Most states use the default JOIN_FILE name, but a state's own
+    state-summary.json can declare a different action_file (for example
+    Virginia's declarations_for_join_2002_present.csv). Reading the summary
+    first avoids silently grading a state against a stub or fixture that
+    happens to sit under the default name in the same folder.
+    """
+    declared = summary.get("action_file")
+    if declared:
+        declared_path = os.path.join(directory, declared)
+        if os.path.isfile(declared_path):
+            return declared_path
+        # Declared but missing is worth surfacing, not silently falling back.
+        return declared_path
+    return os.path.join(directory, JOIN_FILE)
+
+
 def analyse_state(slug, plus_dir, manifest_entry, reference_hash):
     directory = os.path.join(plus_dir, slug)
     row = {column: "" for column in COLUMNS}
@@ -221,10 +260,14 @@ def analyse_state(slug, plus_dir, manifest_entry, reference_hash):
             )
         row["weather_flagged"] = "" if weather_flagged is None else weather_flagged
 
-    # Stage 2 and 3: joined, then date resolved.
-    join_rows = read_csv_rows(os.path.join(directory, JOIN_FILE))
+    # Stage 2 and 3: joined, then date resolved. The join file name is
+    # state-declared, not assumed, so a state that overrides action_file in
+    # its own summary is graded against its real output.
+    join_path = resolve_action_file(directory, summary)
+    row["action_file_used"] = os.path.basename(join_path)
+    join_rows = read_csv_rows(join_path)
     if join_rows is None:
-        flags.append("NO_JOIN_FILE")
+        flags.append("NO_JOIN_FILE" if not summary.get("action_file") else "DECLARED_ACTION_FILE_MISSING")
         joined = None
     else:
         joined = len(join_rows)
