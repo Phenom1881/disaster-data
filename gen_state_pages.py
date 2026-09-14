@@ -44,10 +44,12 @@ def _grab_js(text, name):
     return json.JSONDecoder().raw_decode(text, m.end())[0]
 
 def build_from_live(text):
-    """Reconstruct (STATES, DECLS, DENS, YOY, KEEP) from the live data.js variables.
+    """Reconstruct (STATES, DECLS, DENS, YOY, KEEP, PA) from the live data.js variables.
     KEEP[ab] = {"ids": set of declaration strings that land on a jurisdiction page,
     "n": number of jurisdiction pages} -- used to find declarations that belong to
-    no single locality (shown on the statewide page instead)."""
+    no single locality (shown on the statewide page instead).
+    PA = PA_BY_COUNTY, {ST: {county: [obligated, projects, topCat, cats]}}; the same
+    figure the jurisdiction pages show, so a state and its counties never disagree."""
     names   = _grab_js(text, "STATE_NAMES")
     browse  = _grab_js(text, "BROWSE")
     denials = _grab_js(text, "DENIALS")
@@ -56,6 +58,10 @@ def build_from_live(text):
         loc = _grab_js(text, "LOCALITY_DATA")
     except Exception:
         loc = {}
+    try:
+        pa_county = _grab_js(text, "PA_BY_COUNTY")
+    except Exception:
+        pa_county = {}
     KEEP = {}
     for ab, entries in loc.items():
         ids, n = set(), 0
@@ -84,7 +90,7 @@ def build_from_live(text):
                "days": round(day_sum[ab] / day_n[ab], 1) if day_n.get(ab) else 0}
               for ab, nm in names.items()]
     YOY = [[row["fyDeclared"], row["declarations"]] for row in summary.get("yoy", [])]
-    return STATES, DECLS, DENS, YOY, KEEP
+    return STATES, DECLS, DENS, YOY, KEEP, pa_county
 
 def load_data():
     # live data.js first (fresh weekly data); baked index.html only as a fallback
@@ -97,7 +103,7 @@ def load_data():
     p = os.path.join(SRC_ROOT, "index.html")
     if os.path.exists(p):
         t = open(p, encoding="utf-8").read()
-        return (_grab(t, "STATES"), _grab(t, "DECLS"), _grab(t, "DENS"), _grab(t, "YOY"), {})
+        return (_grab(t, "STATES"), _grab(t, "DECLS"), _grab(t, "DENS"), _grab(t, "YOY"), {}, {})
     raise SystemExit("no data.js or index.html found")
 
 # ---------------------------------------------------------------- helpers
@@ -292,6 +298,18 @@ th.sortable::after{content:"↕";opacity:.32;margin-left:.35em;font-weight:400}
 th.sortable:hover{color:var(--teal)}
 th[aria-sort="ascending"]::after{content:"↑";opacity:.95}
 th[aria-sort="descending"]::after{content:"↓";opacity:.95}
+.pasplit{margin:1.6rem 0}
+.pasplit h2{margin-top:0}
+.patotal{font-size:1.02rem;margin:.2rem 0 .8rem;font-variant-numeric:tabular-nums}
+.patotal b{color:var(--teal)}
+.pabar{display:flex;height:12px;border-radius:4px;overflow:hidden;margin:0 0 .7rem}
+.pabar span{display:block;min-width:2px}
+.paline{font-size:.92rem;margin:0 0 .6rem;max-width:68ch;font-variant-numeric:tabular-nums}
+.paline b{color:var(--teal)}
+.panote{font-size:.82rem;color:var(--ink3);margin:0;max-width:68ch}
+.kinds{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:.9rem 1.2rem;margin:.6rem 0 1rem;font-size:.9rem}
+.kinds p{margin:.35rem 0}
+.kinds b{color:var(--teal)}
 .audience{background:#eef4f4;border:1px solid #cfe0e0;border-radius:12px;padding:1rem 1.2rem;margin:2rem 0}
 .method{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.2rem 1.4rem;margin:2rem 0;font-size:.92rem}
 .method h2{margin-top:0;font-size:1.1rem}
@@ -401,6 +419,74 @@ def load_hma():
 def load_ia():
     return _load_json("ia.json")
 
+def load_pa_timing():
+    """Per (county, disaster) obligation rows written by build.py. Shape:
+    {ST: {county: {disasterNumber: [declDate, firstObl, lastObl, obligated, topCat]}}}.
+    Returns {} when the file is absent, same graceful degradation as hma/ia."""
+    return _load_json("pa-timing.json")
+
+# Public Assistance, split by the kind of declaration the money followed.
+#
+# The headline total comes from PA_BY_COUNTY, which is the same figure the
+# jurisdiction pages show, so a state page and its counties can never disagree.
+# The split comes from pa-timing.json, the only source carrying a disaster number
+# per obligation. Those are two separate passes in build.py and nothing guarantees
+# they sum to the same number, so anything the split cannot account for is
+# reported as an explicit residual instead of being quietly dropped. The segments
+# always add up to the headline by construction.
+def state_pa(decls, pa_county_state, pa_timing_state):
+    total = 0.0
+    for v in (pa_county_state or {}).values():
+        try:
+            total += float(v[0] or 0)
+        except (TypeError, ValueError, IndexError):
+            continue
+
+    # disaster number -> (declaration type, incident type), from this state's own
+    # declaration records; same digit-extraction join the jurisdiction pages use.
+    meta = {}
+    for r in decls:
+        m = re.search(r"(\d+)", r[0] or "")
+        if m:
+            meta[m.group(1)] = (r[1] or "", r[2] or "")
+
+    buckets = {"dr": 0.0, "em": 0.0, "fm": 0.0, "covid": 0.0}
+    attributed = 0.0
+    for county in (pa_timing_state or {}).values():
+        for dn, v in (county or {}).items():
+            try:
+                obl = float(v[3] or 0)
+            except (TypeError, ValueError, IndexError):
+                continue
+            if obl <= 0:
+                continue
+            dtype, itype = meta.get(str(dn), ("", ""))
+            if itype == "Biological":     # every COVID declaration, DR and EM alike
+                key = "covid"
+            elif dtype == "DR":
+                key = "dr"
+            elif dtype == "EM":
+                key = "em"
+            elif dtype == "FM":
+                key = "fm"
+            else:
+                continue                  # unknown declaration -> left in the residual
+            buckets[key] += obl
+            attributed += obl
+
+    if attributed > total:
+        # the timing file accounts for more than the county totals; report the
+        # larger figure so the bar can never exceed its own stated total
+        total = attributed
+
+    resid = total - attributed
+    if resid < 1:
+        resid = 0.0
+
+    out = {"total": total, "attributed": attributed, "resid": resid}
+    out.update(buckets)
+    return out
+
 def agg_hma(state_dict):
     fed = n = props = 0
     prog = {}
@@ -466,14 +552,89 @@ def state_hma_html(s):
             '<div class="stats">%s</div>%s' % (e(s["name"]), stats, table))
 
 
+# Segment order is the order they appear in the bar and in the sentence below it.
+PA_SEGS = (
+    ("dr",    "#004c53", "major disasters other than COVID-19"),
+    ("em",    "#5a8f8c", "emergency declarations"),
+    ("fm",    "#9fb8b6", "fire management assistance"),
+    ("covid", "#a89a80", "COVID-19"),
+    ("resid", "#d3cab5", "not tied to a single declaration"),
+)
+
+PA_CLAUSE = {
+    "dr":    "<b>%s</b> followed major disasters other than COVID-19.",
+    "em":    "<b>%s</b> followed emergency declarations, which cover debris removal "
+             "and emergency protective work only.",
+    "fm":    "<b>%s</b> went to fire management assistance grants.",
+    "resid": "<b>%s</b> appears in FEMA's county totals but is not tied to a single "
+             "declaration in the obligation timing file, so it is left unattributed "
+             "here rather than assigned to a type.",
+}
+
+def pa_split_html(s, name):
+    """Headline Public Assistance for the state, with the money split by the kind of
+    declaration it followed. Renders nothing when the state has no PA on record, and
+    each segment renders only when it is non-zero, so a state with no fire management
+    grants never sees an empty sliver."""
+    pa = s.get("pa") or {}
+    total = float(pa.get("total") or 0)
+    if total <= 0:
+        return ""
+
+    segs = [(k, col, lab, float(pa.get(k) or 0))
+            for k, col, lab in PA_SEGS if float(pa.get(k) or 0) > 0]
+    if not segs:
+        return ""
+
+    bar = "".join('<span style="flex:%.5f;background:%s" title="%s %s"></span>'
+                  % (v / total, col, money(v), lab)
+                  for _k, col, lab, v in segs)
+
+    clauses = []
+    for k, _col, _lab, v in segs:
+        if k == "covid":
+            clauses.append("<b>%s</b>, or %d%% of the total, was COVID-19, which every "
+                           "state and county in the country received."
+                           % (money(v), round(100.0 * v / total)))
+        else:
+            clauses.append(PA_CLAUSE[k] % money(v))
+
+    return ('<section class="pasplit">'
+            '<h2>Federal Public Assistance obligated</h2>'
+            '<p class="patotal"><b>%s</b> has been obligated to %s in Public Assistance '
+            'since FY2000.</p>'
+            '<div class="pabar">%s</div>'
+            '<p class="paline">%s</p>'
+            '<p class="panote">Obligated is the committed share, not necessarily spent, '
+            'and can be revised as projects close out. Totals are summed from funded '
+            'localities, so a declaration administered entirely at state level may not '
+            'appear here.</p>'
+            '</section>'
+            % (money(total), name, bar, " ".join(clauses)))
+
+def decl_kinds_html():
+    """Plain-English explanation of the three declaration types, placed with the
+    declaration table it explains. The acronyms stay, demoted to the reference
+    identifiers a practitioner needs rather than the label a reader must decode."""
+    return ('<div class="kinds">'
+            '<p><b>Major disaster (DR).</b> The big one. Opens the full toolbox: repair '
+            'money for public infrastructure, help for households, and mitigation funding '
+            'to reduce the next loss.</p>'
+            '<p><b>Emergency (EM).</b> Narrower and usually faster, for protective work '
+            'before or during an incident. Capped, and rarely brings household assistance. '
+            'Nearly every state and county has one from COVID-19.</p>'
+            '<p><b>Fire management (FM).</b> Cost sharing to fight a wildfire as it burns. '
+            'Not a disaster declaration, and it does not open recovery programs.</p>'
+            '</div>')
+
 def render_state_page(s, states, lcfy):
     name, ab, slug = s["name"], s["ab"], s["slug"]
     canonical = "%s/states/%s.html" % (SITE, slug)
     e = html.escape
-    desc = ("%s has recorded %d federal disaster and emergency declarations since FY2000: "
-            "%d major disasters, %d emergencies, and %d fire-management declarations. "
+    desc = ("%s has recorded %d major disaster declarations since FY2000, plus %d emergency "
+            "declarations and %d fire management declarations, %d in all. "
             "Declaration-request denial rate %.1f%%. Full FEMA declaration history, mapped and ranked."
-            % (name, s["decl"], s["dr"], s["em"], s["fm"], s["rate"]))
+            % (name, s["dr"], s["em"], s["fm"], s["decl"], s["rate"]))
 
     ld = {
         "@context": "https://schema.org", "@type": "Dataset",
@@ -488,13 +649,15 @@ def render_state_page(s, states, lcfy):
     }
 
     # stat cards
-    cards = [("%d" % s["decl"], "Declarations since FY2000"),
-             ("%d" % s["dr"], "Major disasters (DR)"),
-             ("%d" % s["em"], "Emergencies (EM)"),
-             ("%d" % s["fm"], "Fire management (FM)"),
-             ("%d" % s["den"], "Declaration requests denied"),
-             ("%.1f%%" % s["rate"], "Declaration-request denial rate"),
-             ("#%d" % s["rank"], "National rank by declarations")]
+    cards = [("%d" % s["dr"], "Major disasters"),
+             ("%d" % s["em"], "Emergency declarations"),
+             ("%d" % s["fm"], "Fire management grants"),
+             ("%d" % s["decl"], "All declarations on record")]
+    if float((s.get("pa") or {}).get("total") or 0) > 0:
+        cards.append((money(s["pa"]["total"]), "Federal PA obligated"))
+    cards += [("%d" % s["den"], "Declaration requests denied"),
+              ("%.1f%%" % s["rate"], "Declaration-request denial rate"),
+              ("#%d" % s["rank"], "National rank by major disasters")]
     if isinstance(s["days"], (int, float)) and s["days"] > 0:
         cards.append(("%.1f" % s["days"], "Avg days to a decision"))
     stats = "".join('<div class="stat"><div class="n">%s</div><div class="l">%s</div></div>'
@@ -550,11 +713,13 @@ def render_state_page(s, states, lcfy):
     # lede
     if s["decl"]:
         top_haz = s["hazards"][0][0] if s["hazards"] else "disasters"
-        lede = ("%s has recorded <b>%d</b> federal disaster and emergency declarations since FY2000 "
-                "(through FY%d): %d major disasters, %d emergencies, and %d fire-management "
-                "declarations. Its most common hazard is %s. It ranks #%d nationally by total "
-                "declarations." % (name, s["decl"], lcfy, s["dr"], s["em"], s["fm"],
-                                   e(top_haz.lower()), s["rank"]))
+        lede = ("%s has recorded <b>%d</b> major disaster declarations since FY2000 "
+                "(through FY%d), the federal government's fullest response to an event. "
+                "Alongside those sit %d emergency declarations and %d fire management "
+                "declarations, %d in all. Its most common hazard is %s. It ranks #%d "
+                "nationally by major disasters."
+                % (name, s["dr"], lcfy, s["em"], s["fm"], s["decl"],
+                   e(top_haz.lower()), s["rank"]))
     else:
         lede = ("%s has no federal declarations recorded in complete fiscal years through FY%d."
                 % (name, lcfy))
@@ -591,6 +756,8 @@ def render_state_page(s, states, lcfy):
 
     ia_sec  = state_ia_html(s)
     hma_sec = state_hma_html(s)
+    pa_sec  = pa_split_html(s, e(name))
+    kinds   = decl_kinds_html()
 
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -611,8 +778,9 @@ def render_state_page(s, states, lcfy):
             '%s'
             '<div class="stats">%s</div>'
             '%s'
+            '%s'
             '<h2>Most common hazards</h2><ul class="haz">%s</ul>'
-            '<h2>All declarations on record</h2>%s'
+            '<h2>All declarations on record</h2>%s%s'
             '%s%s'
             '<h2>Denied requests</h2>%s'
             '%s'
@@ -626,18 +794,18 @@ def render_state_page(s, states, lcfy):
             '</div></main>%s</body></html>'
             % (e(name), e(desc), canonical, e(name), e(desc), canonical,
                HEAD, json.dumps(ld), header_html(),
-               e(name), e(name), lede, provenance_stamp_html(lcfy), stats, jlink, haz, recent_tbl, ia_sec, hma_sec, denials, orphan_html,
+               e(name), e(name), lede, provenance_stamp_html(lcfy), stats, pa_sec, jlink, haz, kinds, recent_tbl, ia_sec, hma_sec, denials, orphan_html,
                e(name), ab, method_html(), grid, footer_html()))
 
 
 # ---------------------------------------------------------------- hub
 def render_hub(states, lcfy):
     e = html.escape
-    total = sum(s["decl"] for s in states)
-    rows = "".join('<li><a href="%s.html">%s</a><span class="c">%d declarations</span></li>'
-                   % (s["slug"], e(s["name"]), s["decl"]) for s in states)
-    desc = ("Federal disaster and emergency declarations for all 50 states, DC, and US "
-            "territories since FY2000. %d declarations, ranked, mapped, and exportable. "
+    total = sum(s["dr"] for s in states)
+    rows = "".join('<li><a href="%s.html">%s</a><span class="c">%d major disasters</span></li>'
+                   % (s["slug"], e(s["name"]), s["dr"]) for s in states)
+    desc = ("Federal major disaster declarations for all 50 states, DC, and US "
+            "territories since FY2000. %d major disasters, ranked, mapped, and exportable. "
             "Built from FEMA OpenFEMA data." % total)
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -654,9 +822,10 @@ def render_hub(states, lcfy):
             '<p class="crumb"><a href="../index.html">Disaster Data</a> / States</p>'
             '<h1>FEMA Disaster Declarations by State</h1>'
             '<p class="lede">Every US state, the District of Columbia, and the territories, ranked '
-            'by federal disaster and emergency declarations since FY2000 (through FY%d). '
-            '%d declarations in all. Select a state for its full history, hazard breakdown, '
-            'declaration-request denial rate, and most recent declarations.</p>'
+            'by federal major disaster declarations since FY2000 (through FY%d). '
+            '%d major disasters in all. Emergency and fire management declarations are counted '
+            'separately on each state page. Select a state for its full history, hazard breakdown, '
+            'declaration-request denial rate, and Public Assistance obligated.</p>'
             '%s'
             '<ol class="rank">%s</ol>'
             '%s</div></main>%s</body></html>'
@@ -690,7 +859,7 @@ def render_robots():
 
 # ---------------------------------------------------------------- main
 def main():
-    STATES, DECLS, DENS, YOY, KEEP = load_data()
+    STATES, DECLS, DENS, YOY, KEEP, PA_COUNTY = load_data()
     lcfy = last_complete_fy(YOY)
     meta = {s["ab"]: s for s in STATES}
 
@@ -698,14 +867,18 @@ def main():
                         DECLS.get(ab, []), DENS.get(ab, []), lcfy,
                         KEEP.get(ab, {"ids": set(), "n": 0}))
             for ab, m in meta.items()]
-    rows.sort(key=lambda s: -s["decl"])
+    rows.sort(key=lambda s: (-s["dr"], -s["decl"]))
     for i, s in enumerate(rows):
         s["rank"] = i + 1
 
     HMA, IA = load_hma(), load_ia()
+    PA_TIMING = load_pa_timing()
     for s in rows:
         s["hma"] = agg_hma(HMA.get(s["ab"], {}))
         s["ia"]  = agg_ia(IA.get(s["ab"], {}))
+        s["pa"]  = state_pa(DECLS.get(s["ab"], []),
+                            PA_COUNTY.get(s["ab"], {}),
+                            PA_TIMING.get(s["ab"], {}))
 
     os.makedirs(STATES_DIR, exist_ok=True)
     for s in rows:
@@ -718,7 +891,13 @@ def main():
     open(os.path.join(OUT_ROOT, "robots.txt"), "w", encoding="utf-8").write(render_robots())
 
     print("generated %d state pages + hub, through FY%d" % (len(rows), lcfy))
-    print("national total (complete FY): %d" % sum(s["decl"] for s in rows))
+    print("national total (complete FY): %d declarations, %d major disasters"
+          % (sum(s["decl"] for s in rows), sum(s["dr"] for s in rows)))
+    _pa_states = [s for s in rows if (s.get("pa") or {}).get("total", 0) > 0]
+    _attr  = sum((s.get("pa") or {}).get("attributed", 0) for s in rows)
+    _resid = sum((s.get("pa") or {}).get("resid", 0) for s in rows)
+    print("PA: %d states with obligated dollars; $%.0f attributed to a declaration, "
+          "$%.0f unattributed residual" % (len(_pa_states), _attr, _resid))
 
 if __name__ == "__main__":
     main()
