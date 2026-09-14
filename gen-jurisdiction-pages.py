@@ -811,6 +811,7 @@ def juris_stats(entry, state_ab, c, by_id, lcfy):
             key=lambda kv: -kv[1],
         ),
         "recent": recent[:40],
+        "allrecs": recs,
         "hmp": sorted(
             complete,
             key=lambda r: r.get(
@@ -981,6 +982,18 @@ h2{
   max-width:66ch
 }
 
+.pasplit{margin:1.6rem 0}
+.pasplit h2{margin-top:0}
+.patotal{font-size:1.02rem;margin:.2rem 0 .8rem;font-variant-numeric:tabular-nums}
+.patotal b{color:#004c53}
+.pabar{display:flex;height:12px;border-radius:4px;overflow:hidden;margin:0 0 .7rem}
+.pabar span{display:block;min-width:2px}
+.paline{font-size:.92rem;margin:0 0 .6rem;max-width:68ch;font-variant-numeric:tabular-nums}
+.paline b{color:#004c53}
+.panote{font-size:.82rem;color:#6b6357;margin:0;max-width:68ch}
+.kinds{background:#fffdf7;border:1px solid #e4dccb;border-radius:12px;padding:.9rem 1.2rem;margin:.5rem 0 .8rem;font-size:.9rem}
+.kinds p{margin:.35rem 0}
+.kinds b{color:#004c53}
 .stats{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
@@ -1903,6 +1916,168 @@ def citation_html(j, canonical):
 
 
 # ---------------------------------------------------------------- PA category breakdown
+def _money_short(n):
+    n = float(n or 0)
+    if n >= 1e9:
+        return ("$%.1fB" % (n / 1e9)).replace(".0B", "B")
+    if n >= 1e6:
+        return "$%dM" % round(n / 1e6)
+    if n >= 1e3:
+        return "$%dK" % round(n / 1e3)
+    return "$%d" % round(n)
+
+
+# Segment order is the order they appear in the bar and in the sentence below it.
+PA_SEGS = (
+    ("dr",    "#004c53", "major disasters other than COVID-19"),
+    ("em",    "#5a8f8c", "emergency declarations"),
+    ("fm",    "#9fb8b6", "fire management assistance"),
+    ("covid", "#a89a80", "COVID-19"),
+    ("resid", "#d3cab5", "not tied to a single declaration"),
+)
+
+PA_CLAUSE = {
+    "dr":    "<b>%s</b> followed major disasters other than COVID-19.",
+    "em":    "<b>%s</b> followed emergency declarations, which cover debris removal "
+             "and emergency protective work only.",
+    "fm":    "<b>%s</b> went to fire management assistance grants.",
+    "resid": "<b>%s</b> appears in FEMA's county totals but is not tied to a single "
+             "declaration in the obligation timing file, so it is left unattributed "
+             "here rather than assigned to a type.",
+}
+
+
+def juris_pa_split(j):
+    """
+    Public Assistance for one jurisdiction, split by the kind of declaration the
+    money followed.
+
+    The headline stays j["pa_obl"], which comes from PA_BY_COUNTY, so the split can
+    never contradict the figure already shown in the stat card and the summary
+    paragraph. The split itself comes from j["pa_timing"], the only source carrying
+    a disaster number per obligation, and those are two separate passes in build.py
+    with nothing guaranteeing they agree. Anything the split cannot attribute is
+    reported as an explicit residual instead of being quietly dropped, so the
+    segments always add up to the headline by construction.
+    """
+    total = float(j.get("pa_obl") or 0)
+    timing = j.get("pa_timing") or {}
+
+    meta = {}
+    for r in j.get("allrecs") or j.get("hmp") or []:
+        m = re.search(r"(\d+)", r.get("femaDeclarationString", "") or "")
+        if m:
+            meta[m.group(1)] = (
+                r.get("declarationType", "") or "",
+                r.get("incidentType", "") or "",
+            )
+
+    buckets = {"dr": 0.0, "em": 0.0, "fm": 0.0, "covid": 0.0}
+    attributed = 0.0
+    for dn, v in timing.items():
+        try:
+            obl = float(v[3] or 0)
+        except (TypeError, ValueError, IndexError):
+            continue
+        if obl <= 0:
+            continue
+        dtype, itype = meta.get(str(dn), ("", ""))
+        if itype == "Biological":      # every COVID declaration, DR and EM alike
+            key = "covid"
+        elif dtype == "DR":
+            key = "dr"
+        elif dtype == "EM":
+            key = "em"
+        elif dtype == "FM":
+            key = "fm"
+        else:
+            continue                   # unknown declaration -> left in the residual
+        buckets[key] += obl
+        attributed += obl
+
+    if attributed > total:
+        total = attributed
+
+    resid = total - attributed
+    if resid < 1:
+        resid = 0.0
+
+    out = {"total": total, "attributed": attributed, "resid": resid}
+    out.update(buckets)
+    return out
+
+
+def pa_split_html(j):
+    """
+    The split bar. Renders nothing when the jurisdiction has no PA on record, and
+    each segment renders only when it is non-zero, so a place with no fire
+    management grants never sees an empty sliver.
+    """
+    pa = juris_pa_split(j)
+    total = pa["total"]
+    if total <= 0:
+        return ""
+
+    segs = [
+        (k, col, lab, pa.get(k) or 0.0)
+        for k, col, lab in PA_SEGS
+        if (pa.get(k) or 0.0) > 0
+    ]
+    if not segs:
+        return ""
+
+    bar = "".join(
+        '<span style="flex:%.5f;background:%s" title="%s %s"></span>'
+        % (v / total, col, _money_short(v), lab)
+        for _k, col, lab, v in segs
+    )
+
+    clauses = []
+    for k, _col, _lab, v in segs:
+        if k == "covid":
+            clauses.append(
+                "<b>%s</b>, or %d%% of the total, was COVID-19, which every county "
+                "in the country received."
+                % (_money_short(v), round(100.0 * v / total))
+            )
+        else:
+            clauses.append(PA_CLAUSE[k] % _money_short(v))
+
+    return (
+        '<section class="pasplit">'
+        '<h2>Federal Public Assistance obligated</h2>'
+        '<p class="patotal"><b>%s</b> has been obligated to %s in Public Assistance '
+        'since FY2000.</p>'
+        '<div class="pabar">%s</div>'
+        '<p class="paline">%s</p>'
+        '<p class="panote">Obligated is the committed share, not necessarily spent, '
+        'and can be revised as projects close out.</p>'
+        '</section>'
+        % (_money_short(total), html.escape(j["name"]), bar, " ".join(clauses))
+    )
+
+
+def decl_kinds_html():
+    """
+    Plain-English explanation of the three declaration types, placed with the table
+    it explains. The acronyms stay, demoted to the reference identifiers a
+    practitioner needs rather than the label a reader has to decode.
+    """
+    return (
+        '<div class="kinds">'
+        '<p><b>Major disaster (DR).</b> The big one. Opens the full toolbox: repair '
+        'money for public infrastructure, help for households, and mitigation '
+        'funding to reduce the next loss.</p>'
+        '<p><b>Emergency (EM).</b> Narrower and usually faster, for protective work '
+        'before or during an incident. Capped, and rarely brings household '
+        'assistance. Nearly every county has one from COVID-19.</p>'
+        '<p><b>Fire management (FM).</b> Cost sharing to fight a wildfire as it '
+        'burns. Not a disaster declaration, and it does not open recovery '
+        'programs.</p>'
+        '</div>'
+    )
+
+
 def pa_breakdown_html(j):
     """
     Per-jurisdiction Public Assistance category table.
@@ -3403,18 +3578,18 @@ def render_page(j, others, lcfy):
     )
 
     desc = (
-        "%s, %s has had %d federal disaster and emergency declarations "
-        "since FY2000 (%d major disasters, %d emergencies, "
-        "%d fire-management). Full FEMA declaration history and a "
-        "ready-to-use previous-occurrences table for hazard mitigation "
-        "planning, with CDC SVI and FEMA NRI context where available."
+        "%s, %s has had %d federal major disaster declarations since FY2000, "
+        "plus %d emergency declarations and %d fire management declarations, "
+        "%d in all. Full FEMA declaration history and a ready-to-use "
+        "previous-occurrences table for hazard mitigation planning, with "
+        "CDC SVI and FEMA NRI context where available."
         % (
             j["name"],
             STATE_NAME,
-            j["decl"],
             j["dr"],
             j["em"],
             j["fm"],
+            j["decl"],
         )
     )
 
@@ -3459,20 +3634,20 @@ def render_page(j, others, lcfy):
 
     cards = [
         (
-            "%d" % j["decl"],
-            "Declarations since FY2000",
-        ),
-        (
             "%d" % j["dr"],
-            "Major disasters (DR)",
+            "Major disasters",
         ),
         (
             "%d" % j["em"],
-            "Emergencies (EM)",
+            "Emergency declarations",
         ),
         (
             "%d" % j["fm"],
-            "Fire management (FM)",
+            "Fire management grants",
+        ),
+        (
+            "%d" % j["decl"],
+            "All declarations on record",
         ),
     ]
 
@@ -3698,14 +3873,7 @@ def render_page(j, others, lcfy):
     history = (
         '<div id="declbox">'
 
-        '<p class="legend" '
-        'style="font-size:.82rem;color:#6b6357;margin:.5rem 0 .6rem">'
-        '<b style="color:#004c53">DR</b> = Major disaster (Stafford Act) '
-        '&middot; '
-        '<b style="color:#004c53">EM</b> = Emergency declaration '
-        '&middot; '
-        '<b style="color:#004c53">FM</b> = Fire management assistance'
-        '</p>'
+        + decl_kinds_html()
 
         + type_chips(
             j["decl"],
@@ -3902,17 +4070,18 @@ def render_page(j, others, lcfy):
     )
 
     lede = (
-        "%s recorded <b>%d</b> federal disaster and emergency declarations "
-        "since FY2000 (through FY2025): %d major disasters, %d emergencies, "
-        "and %d fire-management declarations.%s"
+        "%s recorded <b>%d</b> federal major disaster declarations since "
+        "FY2000 (through FY2025), the federal government's fullest response "
+        "to an event. Alongside those sit %d emergency declarations and "
+        "%d fire management declarations, %d in all.%s"
         % (
             e(
                 j["name"]
             ),
-            j["decl"],
             j["dr"],
             j["em"],
             j["fm"],
+            j["decl"],
             (
                 " Its most common hazard is %s."
                 % e(
@@ -4633,7 +4802,8 @@ def render_page(j, others, lcfy):
             risk_context_html(j),
 
             (
-                pa_breakdown_html(j)
+                pa_split_html(j)
+                + pa_breakdown_html(j)
                 + pa_timing_html(j)
                 + ia_html(j)
                 + hma_html(j)
