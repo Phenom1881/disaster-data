@@ -1,16 +1,16 @@
 {
   "schemaVersion": 2,
-  "release": "2026.09.12.1",
+  "release": "2026.09.14.1",
   "status": "passed",
-  "builtAt": "2026-09-12T16:25:48Z",
-  "dataDate": "2026-09-12",
-  "fingerprint": "9dd7318c859721361465",
+  "builtAt": "2026-09-14T23:13:28Z",
+  "dataDate": "2026-09-14",
+  "fingerprint": "451cdbbab0f55956068e",
   "metrics": {
-    "dataDate": "2026-09-12",
+    "dataDate": "2026-09-14",
     "ageDays": 0,
     "declarationsCurrent": 3533,
     "declarationsCompletedFY": 3395,
-    "denials": 365,
+    "denials": 363,
     "statesTerritories": 57,
     "localities": 4195,
     "mapCounties": 3241,
@@ -21,8 +21,8 @@
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 284184555115.86,
-    "paProjects": 822376,
+    "paTotalObligated": 284177379249.29,
+    "paProjects": 822427,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3265,
@@ -32,12 +32,12 @@
     "nriRelease": "2025"
   },
   "changesFromPreviousRelease": {
-    "declarationsCurrent": null,
-    "jurisdictionPages": null,
-    "mapCounties": null,
-    "eventCount": null,
-    "sviCounties": null,
-    "nriCounties": null
+    "declarationsCurrent": 0.0,
+    "jurisdictionPages": 0.0,
+    "mapCounties": 0.0,
+    "eventCount": 0.0,
+    "sviCounties": 0.0,
+    "nriCounties": 0.0
   },
   "sources": [
     {
@@ -46,16 +46,16 @@
       "file": "data.js",
       "records": 3533,
       "release": "OpenFEMA v2",
-      "hash": "a514fe46aa594f81",
+      "hash": "9661687e9d9c41a8",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
       "name": "FEMA Declaration Denials",
       "status": "current",
       "file": "data.js",
-      "records": 365,
+      "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "a514fe46aa594f81",
+      "hash": "9661687e9d9c41a8",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "a514fe46aa594f81",
+      "hash": "9661687e9d9c41a8",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "89dd4511c7ead52c",
+      "hash": "9456527f7347de1c",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,7 +91,7 @@
       "file": "ia.json",
       "records": 3265,
       "release": "OpenFEMA v2",
-      "hash": "d8be60054e8520e8",
+      "hash": "bc4f3323084b43a1",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
@@ -100,7 +100,7 @@
       "file": "events.json",
       "records": 3395,
       "release": "Derived",
-      "hash": "7d9b65d9eb0ad9d4",
+      "hash": "f27b72bafd0ecb44",
       "note": "National event index derived from the committed declaration index; named tropical systems are grouped by storm name and year."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-09-12",
+        "detail": "Data date: 2026-09-14",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-09-12",
+        "detail": "Homepage contains build date 2026-09-14",
         "metrics": {}
       },
       {
