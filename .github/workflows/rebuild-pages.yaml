@@ -1,0 +1,92 @@
+name: Rebuild Pages
+
+# Re-renders the state pages and the jurisdiction pages from the ALREADY-COMMITTED
+# data.js and sidecar files. It does NOT fetch anything from FEMA, so the data is
+# held constant and any change you see on a page came from a generator edit rather
+# than a data refresh. Use it after changing gen_state_pages.py or
+# gen-jurisdiction-pages.py; use "Refresh FEMA Data" when you actually want new data.
+#
+# Dispatch only, no cron. The Sunday build already re-runs these generators as part
+# of the full pipeline, so a schedule here would only duplicate it.
+#
+# Scripts are called by name with no if/else fallback. The fallback pattern is what
+# let update.yaml silently run a stale generator for weeks when its filename check
+# could never match.
+
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: 'Optional two-letter state code (e.g. VA) to render only that state, for a fast check. Leave blank to render everything.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+# Shares a group with the data build so the two can never push at once. Add the
+# same two lines to update.yaml (concurrency: group: disasterdata-pages) so the
+# lock actually holds across both workflows.
+concurrency:
+  group: disasterdata-pages
+  cancel-in-progress: false
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Confirm the inputs this build reads are present
+        # Fails early with a readable message rather than letting a generator
+        # emit thousands of pages with silently empty Public Assistance sections.
+        run: |
+          test -f data.js || { echo "data.js missing; run Refresh FEMA Data first"; exit 1; }
+          test -f dd_classify.py || { echo "dd_classify.py missing"; exit 1; }
+          for f in pa-timing.json hma.json ia.json; do
+            if [ -f "$f" ]; then echo "found $f"; else echo "NOTE: $f absent, its sections will be skipped"; fi
+          done
+
+      - name: Render state pages
+        # Writes states/index.html, states/<slug>.html, sitemap.xml, robots.txt.
+        run: python -u gen_state_pages.py
+
+      - name: Render jurisdiction pages
+        # Writes states/<state>/<jurisdiction>.html plus each state's hub.
+        # DD_STATE, when set, limits the run to one state for a quick check.
+        env:
+          DD_STATE: ${{ inputs.state }}
+        run: python -u gen-jurisdiction-pages.py
+
+      - name: Validate and release
+        # Same gate the weekly build uses. If your update.yaml sets any
+        # DD_REQUIRE_CONTEXT / DD_REQUIRE_JURISDICTIONS / DD_REQUIRE_CITATIONS
+        # values, mirror them here so this job applies the same severities.
+        # A partial single-state render will legitimately fail the jurisdiction
+        # count check, which is why the gate is skipped in that case.
+        if: ${{ inputs.state == '' }}
+        run: python -u release.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit, pages already match the generators."
+          else
+            if [ -n "${{ inputs.state }}" ]; then
+              git commit -m "Rebuild pages for ${{ inputs.state }} only $(date -u '+%Y-%m-%d')"
+            else
+              git commit -m "Rebuild pages $(date -u '+%Y-%m-%d')"
+            fi
+            git pull --rebase origin main
+            git push
+          fi
