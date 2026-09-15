@@ -42,6 +42,7 @@
     .since-badge { display:inline-block; flex-shrink:0; padding:.15rem .55rem;
       border-radius:99px; background:var(--accent); color:var(--paper-2);
       font-size:.75rem; font-weight:700; white-space:nowrap; }
+    .count-unclear { color:var(--muted); font-style:italic; }
     .status { display:inline-block; margin-top:.5rem; padding:.15rem .5rem;
       border-radius:99px; background:var(--paper-3); color:var(--accent); font-size:.78rem; }
     table { width:100%; border-collapse:collapse; background:var(--paper-2); font-size:.9rem; }
@@ -85,7 +86,7 @@
 <div class="notice"><strong>Coverage:</strong> 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>85</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>16</strong>original state weather declarations</div>
+  <div class="metric"><strong>15</strong>original state weather declarations</div>
   <div class="metric"><strong>928</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/west-virginia.html">Federal declaration overview</a> &middot; <a href="https://governor.wv.gov/allnews/all">Official state source</a></p>
@@ -97,7 +98,6 @@
 <div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-08-18</td><td></td><td><a href="https://governor.wv.gov/article/governor-morrisey-declares-state-emergency-following-new-round-severe-storms-and-flooding">Governor Morrisey Declares State of Emergency Following New Round of Severe Storms and Flooding</a></td><td>declaration</td><td>Patrick Morrisey</td></tr>
 <tr><td>2026-07-21</td><td></td><td><a href="https://governor.wv.gov/article/governor-morrisey-declares-state-preparedness-all-55-counties-ahead-severe-weather-systems">Governor Morrisey Declares State of Preparedness for All 55 Counties Ahead of Severe Weather Systems</a></td><td>declaration</td><td>Patrick Morrisey</td></tr>
-<tr><td>2026-07-21</td><td></td><td><a href="https://governor.wv.gov/article/governor-morrisey-declares-state-emergency-all-55-counties-due-severe-weather">Governor Morrisey Declares State of Emergency for All 55 Counties Due to Severe Weather</a></td><td>declaration</td><td>Patrick Morrisey</td></tr>
 <tr><td>2026-07-20</td><td></td><td><a href="https://governor.wv.gov/article/governor-morrisey-declares-state-emergency-barbour-county-following-severe-flooding">Governor Morrisey Declares State of Emergency for Barbour County Following Severe Flooding</a></td><td>declaration</td><td>Patrick Morrisey</td></tr>
 <tr><td>2026-06-24</td><td></td><td><a href="https://governor.wv.gov/article/governor-morrisey-declares-state-emergency-boone-logan-and-raleigh-counties">Governor Morrisey Declares State of Emergency for Boone, Logan, and Raleigh Counties — - Governor Patrick Morrisey has declared a State of Emergency for Boone, Logan, and Raleigh counties following severe storms, flash flooding, and landslides that impacted communities across southern West Virginia.</a></td><td>declaration</td><td>Patrick Morrisey</td></tr>
 <tr><td>2026-01-23</td><td></td><td><a href="https://governor.wv.gov/article/governor-morrisey-declares-state-emergency-all-55-counties-major-winter-storm-approaches">Governor Morrisey Declares State of Emergency for All 55 Counties as Major Winter Storm Approaches</a></td><td>declaration</td><td>Patrick Morrisey</td></tr>
@@ -120,7 +120,6 @@
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-08-18 &middot; Governor Morrisey Declares State of Emergency Following New Round of Severe Storms and Flooding</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2026-07-21 &middot; Governor Morrisey Declares State of Preparedness for All 55 Counties Ahead of Severe Weather Systems</td><td>0</td><td>None matched</td><td>4932</td></tr>
-<tr><td>2026-07-21 &middot; Governor Morrisey Declares State of Emergency for All 55 Counties Due to Severe Weather</td><td>0</td><td>None matched</td><td>4932</td></tr>
 <tr><td>2026-07-20 &middot; Governor Morrisey Declares State of Emergency for Barbour County Following Severe Flooding</td><td>0</td><td>None matched</td><td>4932</td></tr>
 <tr><td>2026-06-24 &middot; Governor Morrisey Declares State of Emergency for Boone, Logan, and Raleigh Counties — - Governor Patrick Morrisey has declared a State of Emergency for Boone, Logan, and Raleigh counties following severe storms, flash flooding, and landslides that impacted communities across southern West Virginia.</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2026-01-23 &middot; Governor Morrisey Declares State of Emergency for All 55 Counties as Major Winter Storm Approaches</td><td>122</td><td>BARBOUR, BERKELEY, BOONE, BRAXTON, BROOKE, CABELL, CALHOUN, CLAY</td><td>3639</td></tr>
@@ -538,7 +537,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-09-12 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-09-15 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {
