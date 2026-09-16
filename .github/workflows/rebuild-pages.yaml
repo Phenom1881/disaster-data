@@ -72,7 +72,7 @@ jobs:
         # A partial single-state render will legitimately fail the jurisdiction
         # count check, which is why the gate is skipped in that case.
         if: ${{ inputs.state == '' }}
-        run: python -u release.py
+        run: python -u .github/workflows/release.py
 
       - name: Commit and push if changed
         run: |
