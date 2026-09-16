@@ -38,23 +38,15 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp.
 
 AL: 30 actions, 102 federal declarations; April 2017-present structured Governor archive; 2000-April 2017 gap disclosed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/alaska/ak_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/alaska/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+{"actions": 556, "declarations": 4, "relationships": 7, "overrides": 3, "review": 151}
 
-WARNING AK: Collection failed: Alaska adapter: scrape failed
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alaska/hazard_overrides.csv
-AK-PROC-50F8F77DB45624B9: no matching storm events found in the date window.
 AK-PROC-A6A9E065F2B06307: no matching storm events found in the date window.
 AK-PROC-A6D583FF9DAEC3EC: no matching storm events found in the date window.
-Wrote 39 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_matches.csv.tmp
-Wrote severity summary (22 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp
+Wrote 9 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_matches.csv.tmp
+Wrote severity summary (7 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
-  AK-PROC-6D8DA06E66F93EEE MATANUSKA VALLEY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,000,000 (High Wind)
   AK-PROC-357EC442FE5AD093 SUSITNA VALLEY [county/county-equivalent]: deaths=0, injuries=0, damage=$190,000 (Flood)
   AK-PROC-7D07AC53F2CDB1BE LOWER KOYUKUK VALLEY [county/county-equivalent]: deaths=0, injuries=0, damage=$120,000 (Flood)
   AK-PROC-7D07AC53F2CDB1BE MIDDLE YUKON VALLEY [county/county-equivalent]: deaths=0, injuries=0, damage=$30,000 (Flood)
@@ -62,7 +54,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
-AK: 6 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.; Collection failed: Alaska adapter: scrape failed
+AK: 4 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
 AZ: 0 actions, 120 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
@@ -101,7 +93,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp.
 
-AR: 9 actions, 88 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
+AR: 9 actions, 89 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
 Applied 30 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/california/hazard_overrides.csv
 CA-PROC-109626: no matching storm events found in the date window.
 CA-PROC-108024: no matching storm events found in the date window.
@@ -145,14 +137,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/california/eo_storm_severity_summary.csv.tmp.
 
 CA: 47 actions, 397 federal declarations; 2019-present current Governor publication archive; 2000-2018 not exposed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/colorado/co_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/colorado/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+{"actions": 1028, "declarations": 120, "relationships": 666, "overrides": 76, "review": 61}
 
-WARNING CO: Collection failed: Colorado adapter: scrape failed
 Applied 76 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/colorado/hazard_overrides.csv
 CO-EO-D-2001-003: no matching storm events found in the date window.
 CO-EO-D-2002-009: no matching storm events found in the date window.
@@ -227,7 +213,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp.
 
-CO: 120 actions, 112 federal declarations; 2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.; Collection failed: Colorado adapter: scrape failed
+CO: 120 actions, 112 federal declarations; 2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.
 Connecticut scraper: fetching 241 official document(s)...
     fetched 50/241
     fetched 100/241
@@ -362,14 +348,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp.
 
 GA: 32 actions, 81 federal declarations; 2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/hawaii/hi_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/hawaii/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+{"actions": 226, "declarations": 8, "relationships": 102, "overrides": 4, "review": 15}
 
-WARNING HI: Collection failed: Hawaii adapter: scrape failed
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/hawaii/hazard_overrides.csv
 HI-PROC-90E4F2C2D09DF827: no matching storm events found in the date window.
 HI-PROC-B6022CFEC43CFC7D: no matching storm events found in the date window.
@@ -389,15 +369,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp.
 
-HI: 8 actions, 74 federal declarations; Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.; Collection failed: Hawaii adapter: scrape failed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/idaho/id_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/idaho/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+HI: 8 actions, 74 federal declarations; Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.
+{"actions": 412, "declarations": 208, "relationships": 21, "overrides": 1, "review": 6}
 
-WARNING ID: Collection failed: Idaho adapter: scrape failed
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/idaho/hazard_overrides.csv
 ID-PROC-052986E2B7ABDFC0: no matching storm events found in the date window.
 ID-PROC-7859BB5B2699D461: no matching storm events found in the date window.
@@ -614,16 +588,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/idaho/eo_storm_severity_summary.csv.tmp.
 
-ID: 208 actions, 61 federal declarations; 2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.; Collection failed: Idaho adapter: scrape failed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/illinois/il_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/illinois/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+ID: 208 actions, 61 federal declarations; 2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.
+{"actions": 378, "declarations": 7, "relationships": 16, "overrides": 0, "review": 8}
 
-WARNING IL: Collection failed: Illinois adapter: scrape failed
-Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/illinois/hazard_overrides.csv
 IL-PROC-4883F2AF4F255E59: no matching storm events found in the date window.
 IL-PROC-AEE0D01A62913D91: no matching storm events found in the date window.
 IL-PROC-FC5A67E0B30F609E: no matching storm events found in the date window.
@@ -658,22 +625,15 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_severity_summary.csv.tmp.
 
-IL: 7 actions, 68 federal declarations; 2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.; Collection failed: Illinois adapter: scrape failed
+IL: 7 actions, 68 federal declarations; 2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.
 Indiana: 435 actions scraped, 15 routed to join CSV.
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/indiana/hazard_overrides.csv
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/indiana/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/indiana/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
 IN: 15 actions, 56 federal declarations; 2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/iowa/ia_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/iowa/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+{"actions": 100, "declarations": 54, "relationships": 26, "overrides": 0, "review": 1}
 
-WARNING IA: Collection failed: Iowa adapter: scrape failed
-Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/iowa/hazard_overrides.csv
 IA-PROC-2024-42: no matching storm events found in the date window.
 IA-PROC-2024-44: no matching storm events found in the date window.
 IA-PROC-2024-45: no matching storm events found in the date window.
@@ -717,7 +677,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
-IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected.; Collection failed: Iowa adapter: scrape failed
+IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected.
 Kansas: wrote 0 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
 
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
@@ -824,7 +784,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 88 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 83 relationship(s), 4 original weather declaration(s).
 
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -969,11 +929,21 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 MS: 9 actions, 99 federal declarations; January 2020-present structured Governor archive; 2000-2019 gap disclosed
 Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/mo_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/mo_eo_scraper.py", line 33, in <module>
+    if __name__=='__main__':run(collect,Path(__file__).parent)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 184, in run
+    a=p.parse_args();records,rels,overrides=finalize(collector(),base)
+                                                     ^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/mo_eo_scraper.py", line 30, in collect
+    for year,u in sorted(set(years)):out.extend(parse_archive(html(u),u,year))
+                                                              ^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 39, in html
+    def html(url):return fetch(url)[0].decode('utf-8',errors='replace')
+                         ^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 37, in fetch
+    raise RuntimeError(str(error))
+RuntimeError: HTTPSConnectionPool(host='www.sos.mo.gov', port=443): Read timed out.
 
 WARNING MO: Collection failed: Missouri adapter: scrape failed
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/missouri/hazard_overrides.csv
@@ -1579,6 +1549,41 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 TN: 2 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 96, in <module>
+    if __name__=="__main__": main()
+                             ^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 95, in main
+    args=parser.parse_args(); write_outputs(collect(),args.actions_out,args.relationships_out,args.join_out)
+                                            ^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 55, in collect
+    pages=list(pool.map(lambda url: get(url).text,month_urls))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 55, in <lambda>
+    pages=list(pool.map(lambda url: get(url).text,month_urls))
+                                    ^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 28, in get
+    response=requests.get(url,headers=HEADERS,timeout=TIMEOUT); response.raise_for_status(); return response
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://gov.texas.gov/news/archive/2021/03
+
+WARNING TX: Collection failed: Texas adapter: scrape failed
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-PROCLAMATION-2026-07-14-governor-abbott-issues-severe-storm-disaster-proclamation-in-july-2026: no matching storm events found in the date window.
 TX-PROCLAMATION-2026-06-15-governor-abbott-issues-severe-storm-disaster-proclamation-in-june-2026: no matching storm events found in the date window.
@@ -1621,15 +1626,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 59 actions, 391 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/utah/ut_eo_scraper.py", line 9, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/utah/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+TX: 59 actions, 391 federal declarations; January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; Collection failed: Texas adapter: scrape failed
+{"actions": 557, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
-WARNING UT: Collection failed: Utah adapter: scrape failed
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
 UT-PROC-E1536D0F537ACA7F: no matching storm events found in the date window.
 UT-PROC-85873626B4A182F1: no matching storm events found in the date window.
@@ -1685,7 +1684,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/utah/eo_storm_severity_summary.csv.tmp.
 
-UT: 33 actions, 61 federal declarations; 2000-present Office of Administrative Rules executive-document indexes and legal texts.; Collection failed: Utah adapter: scrape failed
+UT: 33 actions, 61 federal declarations; 2000-present Office of Administrative Rules executive-document indexes and legal texts.
 Vermont: 123 actions, 55 relationships, 1 weather declarations
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/vermont/hazard_overrides.csv
@@ -1708,8 +1707,8 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 VT: 1 actions, 62 federal declarations; 2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending
 Virginia adapter: collecting current-administration declarations...
   running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_scraper.py --raw-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
-https://www.governor.virginia.gov/executive-actions/: parsed 44 order links
-Wrote 22 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
+https://www.governor.virginia.gov/executive-actions/: parsed 46 order links
+Wrote 23 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
 Wrote 1 emergency declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv
 Wrote 1 weather declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv (ready for eo_storm_join.py)
   EO-11: 2026-01-22 — Declaring State of Emergency Due to Winter Weather
@@ -1858,11 +1857,12 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
 
 WA: 38 actions, 223 federal declarations; 2013-present structured Governor proclamation archive; 2000-2012 unavailable
-West Virginia: 19 actions, 0 relationships, 15 weather declarations
+West Virginia: 20 actions, 0 relationships, 16 weather declarations
 
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/west-virginia/hazard_overrides.csv
 WV-PROC-2026-08-18-declares-state-of-emergency-following-new-round-of-severe-st: no matching storm events found in the date window.
 WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of-: no matching storm events found in the date window.
+WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever: no matching storm events found in the date window.
 WV-PROC-2026-07-20-declares-state-of-emergency-for-barbour-county-following-sev: no matching storm events found in the date window.
 WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun: no matching storm events found in the date window.
 Wrote 928 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_matches.csv.tmp
@@ -1898,8 +1898,8 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
-WV: 15 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f1d8d367650>, 'Connection to evers.wi.gov timed out. (connect timeout=45)'))
+WV: 16 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7ff837fd8490>, 'Connection to evers.wi.gov timed out. (connect timeout=45)'))
 
 WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
@@ -1940,14 +1940,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
 WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/wyoming/wy_eo_scraper.py", line 5, in <module>
-    from _adapter_support import *
-  File "/home/runner/work/disaster-data/disaster-data/plus/wyoming/_adapter_support.py", line 9, in <module>
-    from pypdf import PdfReader
-ModuleNotFoundError: No module named 'pypdf'
+{"actions": 62, "declarations": 4, "relationships": 19, "overrides": 4, "review": 5}
 
-WARNING WY: Collection failed: Wyoming adapter: scrape failed
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wyoming/hazard_overrides.csv
 Wrote 39 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_matches.csv.tmp
 Wrote severity summary (37 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp
@@ -1957,4 +1951,4 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
-WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.; Collection failed: Wyoming adapter: scrape failed
+WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
