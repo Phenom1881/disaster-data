@@ -272,24 +272,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
 DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/florida/fl_eo_scraper.py", line 82, in <module>
-    if __name__=="__main__": main()
-                             ^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/florida/fl_eo_scraper.py", line 81, in main
-    write_outputs(collect(),a.actions_out,a.relationships_out,a.join_out)
-                  ^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/florida/fl_eo_scraper.py", line 51, in collect
-    r=fetch(ARCHIVE_URL,{"field_date_value":year_value,"page":page}); batch=parse_page(r.text)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/florida/fl_eo_scraper.py", line 28, in fetch
-    r=requests.get(url,params=params,headers=HEADERS,timeout=TIMEOUT); r.raise_for_status(); return r
-                                                                       ^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
-    raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 520 Server Error: <none> for url: https://www.flgov.com/eog/news/executive-orders?field_date_value=1&page=0
-
-WARNING FL: Collection failed: Florida adapter: scrape failed
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2022-218: no matching storm events found in the date window.
 FL-EO-2022-54: no matching storm events found in the date window.
@@ -330,7 +312,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/florida/eo_storm_severity_summary.csv.tmp.
 
-FL: 25 actions, 188 federal declarations; 2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending; Collection failed: Florida adapter: scrape failed
+FL: 25 actions, 188 federal declarations; 2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/georgia/hazard_overrides.csv
 GA-EO-06-12-26-01: no matching storm events found in the date window.
 GA-EO-09-12-18-01: no matching storm events found in the date window.
@@ -646,7 +628,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_severity_summary.csv.tmp.
 
 IL: 7 actions, 68 federal declarations; 2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.
-Indiana: 156 actions scraped, 11 routed to join CSV.
+Indiana: 156 actions scraped, 11 routed to join CSV, 0 with a resolved date_signed (0 via OCR).
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/indiana/hazard_overrides.csv
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/indiana/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/indiana/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
@@ -804,7 +786,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 96 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 93 relationship(s), 4 original weather declaration(s).
 
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -948,24 +930,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
 
 MS: 9 actions, 99 federal declarations; January 2020-present structured Governor archive; 2000-2019 gap disclosed
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/mo_eo_scraper.py", line 33, in <module>
-    if __name__=='__main__':run(collect,Path(__file__).parent)
-                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 184, in run
-    a=p.parse_args();records,rels,overrides=finalize(collector(),base)
-                                                     ^^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/mo_eo_scraper.py", line 30, in collect
-    for year,u in sorted(set(years)):out.extend(parse_archive(html(u),u,year))
-                                                              ^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 39, in html
-    def html(url):return fetch(url)[0].decode('utf-8',errors='replace')
-                         ^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/missouri/_adapter_support.py", line 37, in fetch
-    raise RuntimeError(str(error))
-RuntimeError: HTTPSConnectionPool(host='www.sos.mo.gov', port=443): Read timed out.
+{"actions": 620, "declarations": 83, "relationships": 215, "overrides": 15, "review": 49}
 
-WARNING MO: Collection failed: Missouri adapter: scrape failed
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/missouri/hazard_overrides.csv
 MO-EO-05-17: no matching storm events found in the date window.
 MO-EO-07-27: no matching storm events found in the date window.
@@ -1013,7 +979,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
 
-MO: 83 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text.; Collection failed: Missouri adapter: scrape failed
+MO: 83 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text.
 Montana: 0 orders scraped, 0 written as declarations.
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/montana/hazard_overrides.csv
@@ -1185,6 +1151,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
 NJ: 149 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+New Mexico: 1210 actions scraped, 0 recovered via OCR, 1178 still image-only with no usable text.
+
 NM-2026-047: no matching storm events found in the date window.
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
@@ -1578,8 +1546,8 @@ TX-PROCLAMATION-2018-04-13-governor-abbott-issues-disaster-declaration-in-respon
 TX-PROCLAMATION-2015-03-09-drought_disaster_proclamation_by_the_governor_of_the_state_of_texas: no matching storm events found in the date window.
 
 1 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): TX-PROCLAMATION-2015-05-15-governor_abbott_again_declares_state_of_disaster_in_texas_counties
-Wrote 4059 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_matches.csv.tmp
-Wrote severity summary (1964 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp
+Wrote 4100 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_matches.csv.tmp
+Wrote severity summary (1990 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   TX-PROCLAMATION-2017-08-23-Disaster-Proclamation-Issued-For-30-Texas-Counties-in-Anticipation-Of-Tropical-Depression-Harvey-Making-Landfall HARRIS [county/county-equivalent]: deaths=36, injuries=0, damage=$10,000,780,000 (Flash Flood, Tornado)
@@ -1607,11 +1575,11 @@ Areas with reported deaths, injuries, or damage:
   TX-PROCLAMATION-2021-02-12-governor-abbott-issues-disaster-declaration-in-response-to-severe-winter-weather-in-texas MONTGOMERY [NWS forecast zone]: deaths=2, injuries=0, damage=$238,000 (Extreme Cold/Wind Chill, Winter Storm)
   TX-PROCLAMATION-2025-03-29-governor-abbott-issues-severe-storm-and-flooding-disaster-declaration-in-march-2025 WILLACY [county/county-equivalent]: deaths=2, injuries=0, damage=$20,000 (Flash Flood, Flood, Lightning)
   TX-PROCLAMATION-2023-05-16-governor-abbott-issues-severe-weather-disaster-declaration-in-may-2023 BOSQUE [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Lightning)
-  Showing the 25 highest-consequence areas; all 577 are retained in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 583 are retained in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 58 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
+TX: 59 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
 {"actions": 557, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
