@@ -1,28 +1,28 @@
 {
   "schemaVersion": 2,
-  "release": "2026.09.16.3",
+  "release": "2026.09.17.1",
   "status": "passed",
-  "builtAt": "2026-09-16T17:31:24Z",
-  "dataDate": "2026-09-16",
-  "fingerprint": "cfcf02be4dabc9b83df6",
+  "builtAt": "2026-09-17T13:50:43Z",
+  "dataDate": "2026-09-17",
+  "fingerprint": "7203cc3116e18aacc65d",
   "metrics": {
-    "dataDate": "2026-09-16",
+    "dataDate": "2026-09-17",
     "ageDays": 0,
-    "declarationsCurrent": 3534,
+    "declarationsCurrent": 3535,
     "declarationsCompletedFY": 3395,
     "denials": 363,
     "statesTerritories": 57,
     "localities": 4195,
     "mapCounties": 3241,
-    "mapDeclarationEvents": 3534,
+    "mapDeclarationEvents": 3535,
     "eventCount": 3397,
     "mapEventCount": 3396,
     "statewideOnlyEvents": 1,
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 284294115422.43,
-    "paProjects": 822513,
+    "paTotalObligated": 284197399110.64,
+    "paProjects": 822567,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3265,
@@ -32,7 +32,7 @@
     "nriRelease": "2025"
   },
   "changesFromPreviousRelease": {
-    "declarationsCurrent": 0.0,
+    "declarationsCurrent": 1.0,
     "jurisdictionPages": 0.0,
     "mapCounties": 0.0,
     "eventCount": 0.0,
@@ -44,9 +44,9 @@
       "name": "FEMA Disaster Declarations Summaries",
       "status": "current",
       "file": "data.js",
-      "records": 3534,
+      "records": 3535,
       "release": "OpenFEMA v2",
-      "hash": "86c7a91cef7a702e",
+      "hash": "10df6177ab5365cf",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,7 +55,7 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "86c7a91cef7a702e",
+      "hash": "10df6177ab5365cf",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "86c7a91cef7a702e",
+      "hash": "10df6177ab5365cf",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "1ac92186a9d96abc",
+      "hash": "92f8a27af1a39857",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -100,7 +100,7 @@
       "file": "events.json",
       "records": 3397,
       "release": "Derived",
-      "hash": "53a35b8cc5ac0871",
+      "hash": "0f6e925068ea8c39",
       "note": "National event index derived from the committed declaration index; named tropical systems are grouped by storm name and year."
     },
     {
@@ -140,7 +140,7 @@
         "category": "Declarations",
         "status": "pass",
         "severity": "error",
-        "detail": "Parsed 3,534 unique declarations",
+        "detail": "Parsed 3,535 unique declarations",
         "metrics": {}
       },
       {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-09-16",
+        "detail": "Data date: 2026-09-17",
         "metrics": {}
       },
       {
@@ -180,7 +180,7 @@
         "category": "Declarations",
         "status": "pass",
         "severity": "error",
-        "detail": "3,534 IDs; 0 duplicate(s); 0 blank ID(s)",
+        "detail": "3,535 IDs; 0 duplicate(s); 0 blank ID(s)",
         "metrics": {
           "duplicates": 0,
           "blankIds": 0
@@ -207,7 +207,7 @@
         "category": "Declarations",
         "status": "pass",
         "severity": "error",
-        "detail": "NATIONAL_TOTALS current=3,534; BROWSE=3,534",
+        "detail": "NATIONAL_TOTALS current=3,535; BROWSE=3,535",
         "metrics": {}
       },
       {
@@ -231,7 +231,7 @@
         "category": "Map",
         "status": "pass",
         "severity": "error",
-        "detail": "Map=3,534; BROWSE=3,534",
+        "detail": "Map=3,535; BROWSE=3,535",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-09-16",
+        "detail": "Homepage contains build date 2026-09-17",
         "metrics": {}
       },
       {
