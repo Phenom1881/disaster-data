@@ -46,6 +46,14 @@ as a NEW disaster/emergency declaration for a weather hazard (e.g. begins
 amendments, extensions, waivers of hours-of-service for carriers, or
 rescissions of an already-recorded declaration are captured in
 --actions-out (for completeness/audit) but excluded from --join-out.
+
+Date extraction (fetch_signed_date): confirmed 2026-09-16 that Indiana's
+older PDFs (at minimum EO 18-01, likely more of the pre-2020 batch) are
+scanned images with no text layer, which is why every one of the 15
+declarations currently in declarations_for_join.csv has a blank
+date_signed -- not a scraper bug, pdfplumber was correctly reporting no
+text to find. OCR is now tried as a second, honest attempt when native
+extraction returns nothing; see fetch_signed_date's docstring below.
 """
 from __future__ import annotations
 
@@ -66,6 +74,13 @@ try:
     import pdfplumber
 except ImportError:  # pragma: no cover - dependency documented in README
     pdfplumber = None
+
+try:
+    import pytesseract
+    from pdf2image import convert_from_bytes
+except ImportError:
+    pytesseract = None
+    convert_from_bytes = None
 
 STATE = "IN"
 GOVERNOR = "Indiana Governor"
@@ -135,6 +150,7 @@ class Action:
     hazard_guess: Optional[str] = None
     is_original_weather_declaration: bool = False
     date_signed: str = ""
+    date_via_ocr: bool = False
 
 
 def _year_from_eo_number(eo_number: str) -> Optional[int]:
@@ -247,6 +263,40 @@ DATE_RE = re.compile(
     r"\s+([0-9]{1,2}),?\s+([0-9]{4})",
     re.IGNORECASE,
 )
+# Indiana's own attestation language ("this 29th day of September, 2022")
+# never matched DATE_RE above -- that pattern only covers "Month Day, Year".
+# Confirmed as a real, pre-existing gap on 2026-09-17 (EO 22-15 checked
+# directly: the WHEREAS clause's "September 3, 2022" was being returned as
+# the signing date because it was the only shape DATE_RE could see; the
+# real signature line, "this 29th day of September, 2022," used a shape
+# this regex never covered at all). New Mexico's scraper already handles
+# both shapes; Indiana's never did.
+#
+# The suffix after the day number is deliberately permissive ([^\d\s]{0,3}
+# rather than a fixed st|nd|rd|th list): confirmed the same day, against
+# EO 22-15's real OCR output, that Tesseract misread the superscript "th"
+# in "29th" as "29%". A fixed suffix list would have kept missing dates
+# like this one every time OCR garbles a small superscript ordinal, which
+# is common. Allowing up to 3 non-digit, non-space characters between the
+# day number and "day" catches "th"/"st"/"nd"/"rd" and this kind of OCR
+# artifact alike, without being so loose it could swallow an unrelated
+# number.
+DATE_RE_DAY_OF = re.compile(
+    r"([0-9]{1,2})[^\d\s]{0,3}\s+day\s+of\s+"
+    r"(January|February|March|April|May|June|July|August|September|October|November|December)"
+    r"[,]?\s+([0-9]{4})",
+    re.IGNORECASE,
+)
+# Phrases that mark the actual attestation/signature block, distinct from
+# a WHEREAS clause that happens to mention a date. Searching for a date
+# AFTER one of these anchors (when present) is far more reliable than
+# assuming the last date in the whole document is the signing date --
+# especially once OCR is involved, since OCR doesn't reliably preserve
+# a document's true reading order the way native text extraction does.
+SIGNATURE_ANCHOR_RE = re.compile(
+    r"(?:IN\s+TESTIMONY\s+WHEREOF|GIVEN\s+under\s+my\s+hand|hereunto\s+set\s+my\s+hand)",
+    re.IGNORECASE,
+)
 MONTHS = {
     m.lower(): i
     for i, m in enumerate(
@@ -259,38 +309,119 @@ MONTHS = {
 }
 
 
-def fetch_signed_date(session: requests.Session, pdf_url: str) -> str:
+def _ocr_pdf_text(pdf_bytes: bytes, max_pages: int = 3, dpi: int = 300) -> str:
+    """Second attempt at getting text out of a PDF, used ONLY when native
+    pdfplumber extraction already returned nothing. Confirmed 2026-09-16
+    that at least Indiana's older EOs are scanned images with no text
+    layer (EO 18-01 checked directly against the live source).
+
+    Never guesses: returns "" if OCR isn't installed, the PDF can't be
+    rendered, or OCR itself produces no text. A blank result here flows
+    through exactly the same way a blank native-extraction result always
+    has -- date_signed stays blank, the declaration is correctly skipped
+    by eo_storm_join.py, same fail-closed behavior as before this existed.
+    """
+    if pytesseract is None or convert_from_bytes is None:
+        return ""
+    try:
+        images = convert_from_bytes(pdf_bytes, dpi=dpi, first_page=1, last_page=max_pages)
+    except Exception as exc:
+        print(f"  OCR fallback: could not render PDF to images: {exc}", file=sys.stderr)
+        return ""
+    parts = []
+    for image in images:
+        try:
+            parts.append(pytesseract.image_to_string(image))
+        except Exception as exc:
+            print(f"  OCR fallback: tesseract failed on a page: {exc}", file=sys.stderr)
+    return "\n".join(parts)
+
+
+def _date_from_text(text: str) -> str:
+    """Find the signing date within a block of text, trying both date
+    shapes Indiana's real PDFs use ("Month Day, Year" and "Nth day of
+    Month, Year"). Returns "" if neither pattern matches anywhere in the
+    given text. This is a pure helper with no anchor logic of its own --
+    fetch_signed_date decides WHICH slice of the document to hand it.
+    """
+    for month_name, day, year in reversed(DATE_RE.findall(text)):
+        month = MONTHS.get(month_name.lower())
+        if month:
+            try:
+                return f"{int(year):04d}-{month:02d}-{int(day):02d}"
+            except ValueError:
+                pass
+    for day, month_name, year in reversed(DATE_RE_DAY_OF.findall(text)):
+        month = MONTHS.get(month_name.lower())
+        if month:
+            try:
+                return f"{int(year):04d}-{month:02d}-{int(day):02d}"
+            except ValueError:
+                pass
+    return ""
+
+
+def fetch_signed_date(session: requests.Session, pdf_url: str) -> tuple[str, bool]:
     """Extract the real signing date from the order's own PDF text.
 
     Never inferred from the EO number or file name -- read from the
-    document's own 'I have hereunto set my hand ... this __ day of' /
-    dateline text. Returns an empty string (not a guess) if the PDF
-    can't be fetched or parsed; a blank date_signed is a correct,
-    honest outcome rather than a fabricated one.
+    document's own attestation language ("IN TESTIMONY WHEREOF ... this
+    __ day of ___, 20__" or "GIVEN under my hand ... [Month] [Day], [Year]").
+    Returns ("", False) if the PDF can't be fetched or parsed even after
+    the OCR fallback, or if no date can be confidently attributed to the
+    signature block; a blank date_signed is a correct, honest outcome
+    rather than a fabricated one.
+
+    Confirmed 2026-09-17 (EO 22-15): searching the WHOLE document for the
+    last date-shaped string is not safe. That document's WHEREAS clause
+    mentions a flood date ("September 3, 2022") that is NOT the signing
+    date; the real signing date ("29th day of September, 2022") appears
+    only in the attestation block, in a date SHAPE the old pattern never
+    covered at all. Fix: when an attestation anchor phrase is present,
+    search only the text AFTER it. Only when no such anchor can be found
+    does this fall back to searching the whole document, which is no
+    worse than the original behavior and still better than giving up.
+
+    Returns (date_signed, via_ocr) so callers can record honestly whether
+    the date came from the PDF's native text or from OCR.
     """
     if pdfplumber is None:
-        return ""
+        return "", False
     try:
         resp = session.get(pdf_url, headers=HEADERS, timeout=30)
         resp.raise_for_status()
     except requests.RequestException:
-        return ""
+        return "", False
+
+    via_ocr = False
+    text = ""
     try:
         with pdfplumber.open(io.BytesIO(resp.content)) as pdf:
             text = "\n".join((page.extract_text() or "") for page in pdf.pages)
     except Exception:
-        return ""
-    matches = DATE_RE.findall(text)
-    if not matches:
-        return ""
-    month_name, day, year = matches[-1]  # signature block is at the end
-    month = MONTHS.get(month_name.lower())
-    if not month:
-        return ""
-    try:
-        return f"{int(year):04d}-{month:02d}-{int(day):02d}"
-    except ValueError:
-        return ""
+        text = ""
+
+    if not text.strip():
+        # Native extraction found nothing -- likely a scanned image PDF,
+        # confirmed to be the case for at least one Indiana EO already.
+        # Try OCR before giving up.
+        text = _ocr_pdf_text(resp.content)
+        via_ocr = bool(text.strip())
+
+    if not text.strip():
+        return "", False
+
+    anchor = SIGNATURE_ANCHOR_RE.search(text)
+    if anchor:
+        date = _date_from_text(text[anchor.end():])
+        if date:
+            return date, via_ocr
+        # Anchor found but no date matched right after it (OCR garble on
+        # exactly that line is plausible) -- fall through to the
+        # whole-document search below rather than giving up immediately.
+
+    date = _date_from_text(text)
+    return date, via_ocr
 
 
 def scrape(session: Optional[requests.Session] = None) -> list[Action]:
@@ -323,7 +454,7 @@ def scrape(session: Optional[requests.Session] = None) -> list[Action]:
                 action.title
             )
             if action.is_original_weather_declaration:
-                action.date_signed = fetch_signed_date(session, action.pdf_url)
+                action.date_signed, action.date_via_ocr = fetch_signed_date(session, action.pdf_url)
             all_actions.append(action)
 
     # De-duplicate by EO number (the current-governor page and historical
@@ -397,7 +528,9 @@ def main() -> None:
     actions = scrape()
     write_outputs(actions, Path(args.actions_out), Path(args.relationships_out), Path(args.join_out))
     n_join = sum(1 for a in actions if a.is_original_weather_declaration)
-    print(f"Indiana: {len(actions)} actions scraped, {n_join} routed to join CSV.")
+    n_dated = sum(1 for a in actions if a.is_original_weather_declaration and a.date_signed)
+    n_ocr = sum(1 for a in actions if a.date_via_ocr)
+    print(f"Indiana: {len(actions)} actions scraped, {n_join} routed to join CSV, {n_dated} with a resolved date_signed ({n_ocr} via OCR).")
 
 
 if __name__ == "__main__":
