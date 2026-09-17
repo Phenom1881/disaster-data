@@ -580,33 +580,6 @@ def action_rows(actions: list[dict]) -> str:
     return "\n".join(output)
 
 
-# Both caps exist for page-weight reasons, not data-quality ones: a table
-# renders every row server-side (there is no pagination), so an uncapped
-# state with several thousand NOAA matches would ship a multi-megabyte
-# page. The cap silently dropped rows with no on-page indication until
-# now - render_state_page() calls truncation_note() below whenever the
-# real count exceeds the cap, so a reader can tell a table is partial
-# rather than assuming 200 or 300 is the whole story.
-FEDERAL_ROWS_CAP = 200
-NOAA_ROWS_CAP = 300
-
-
-def truncation_note(total: int, shown: int) -> str:
-    """A table this cuts off needs a visible note, not a silent drop.
-
-    The client-side search box (table_filter/table_script) only ever
-    searches rows actually present in the DOM, so it cannot find anything
-    past the cap either - the note says so, rather than implying the
-    search box reaches records it cannot see."""
-    if total <= shown:
-        return ""
-    return (
-        f'<p class="table-note">Showing the first {shown:,} of {total:,} records. '
-        "The search box above searches only these; it does not reach records "
-        "past the cut-off.</p>"
-    )
-
-
 def federal_declaration_rows(federal_declarations: list[dict]) -> str:
     if not federal_declarations:
         return (
@@ -614,7 +587,7 @@ def federal_declaration_rows(federal_declarations: list[dict]) -> str:
             "for this state yet.</td></tr>"
         )
     output = []
-    for declaration in federal_declarations[:FEDERAL_ROWS_CAP]:
+    for declaration in federal_declarations[:200]:
         number = esc(declaration.get("number") or declaration.get("id"))
         title = esc(declaration.get("title") or declaration.get("eventName") or "Untitled declaration")
         output.append(
@@ -637,7 +610,7 @@ def noaa_event_rows(storm_rows: list[dict]) -> str:
             "are loaded for this state yet.</td></tr>"
         )
     output = []
-    for row in storm_rows[:NOAA_ROWS_CAP]:
+    for row in storm_rows[:300]:
         output.append(
             "<tr>"
             f"<td>{esc(row.get('BEGIN_DATE_TIME'))}</td>"
@@ -795,9 +768,7 @@ def shared_css(prefix: str = "") -> str:
     .sort-button {{ width:100%; border:0; padding:0; color:inherit; background:none;
       font:inherit; font-weight:600; text-align:left; cursor:pointer; }}
     td a {{ color:var(--accent-2); }} .empty {{ color:var(--muted); font-style:italic; }}
-    .actions {{ overflow-x:auto; overflow-y:auto; max-height:22rem; }}
-    .actions table thead th {{ position:sticky; top:0; z-index:1; }}
-    .table-note {{ margin:.6rem 0 0; color:var(--muted); font-size:.82rem; }}
+    .actions {{ overflow-x:auto; }}
     .layer {{ margin-top:2.5rem; padding-top:.5rem; border-top:3px solid var(--line); }}
     .layer h2 {{ margin-top:.5rem; }}
     .primary {{ background:var(--paper-2); border:1px solid var(--line); border-radius:12px;
@@ -886,33 +857,31 @@ def render_state_page(
   <div class="metric"><strong>{metrics['federal_declaration_count']:,}</strong>federal FEMA declarations</div>
   <div class="metric"><strong>{metrics['action_count']:,}</strong>original state weather declarations</div>
   <div class="metric"><strong>{metrics['storm_match_rows']:,}</strong>matched NOAA event rows</div>
-  <div class="metric"><strong>{esc(extract_coverage_start_label(state['abbreviation'], coverage, metrics['action_count']))}</strong>state coverage begins</div>
 </section>
 <p><a href="/states/{esc(state['slug'])}.html">Federal declaration overview</a> &middot; {source_link}</p>
 
-<details class="layer primary" open>
+<div class="layer primary">
+<h2>State weather declarations</h2>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+{table_filter('state-weather-table', 'state declarations')}
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}</tr></thead>
+<tbody>{action_rows(actions)}</tbody></table></div>
+</div>
+
+<div class="layer">
+<h2>Combined event crosswalk</h2>
+<p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within {FEDERAL_MATCH_WINDOW_DAYS} days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+{table_filter('crosswalk-table', 'crosswalk')}
+<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr>{sortable_header('State action', 0)}{sortable_header('NOAA matches', 1)}{sortable_header('Matched areas', 2)}{sortable_header('Federal declaration', 3)}</tr></thead>
+<tbody>{crosswalk_rows(crosswalk)}</tbody></table></div>
+</div>
+
+<details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">{metrics['federal_declaration_count']:,} records</span></summary>
 <div class="details-body"><p class="note">DR, EM, and FM declarations for {name} from the site's national FEMA dataset.</p>
 {table_filter('federal-table', 'federal declarations')}
 <div class="actions"><table id="federal-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Type', 2)}{sortable_header('Title', 3)}{sortable_header('Incident type', 4)}{sortable_header('Incident period', 5)}</tr></thead>
-<tbody>{federal_declaration_rows(federal_declarations)}</tbody></table></div>
-{truncation_note(metrics['federal_declaration_count'], min(metrics['federal_declaration_count'], FEDERAL_ROWS_CAP))}</div>
-</details>
-
-<details class="layer">
-<summary><span>State weather declarations</span><span class="count-badge">{metrics['action_count']:,} records</span></summary>
-<div class="details-body"><p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
-{table_filter('state-weather-table', 'state declarations')}
-<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}</tr></thead>
-<tbody>{action_rows(actions)}</tbody></table></div></div>
-</details>
-
-<details class="layer">
-<summary><span>Combined event crosswalk</span><span class="count-badge">{len(crosswalk):,} records</span></summary>
-<div class="details-body"><p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within {FEDERAL_MATCH_WINDOW_DAYS} days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-{table_filter('crosswalk-table', 'crosswalk')}
-<div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr>{sortable_header('State action', 0)}{sortable_header('NOAA matches', 1)}{sortable_header('Matched areas', 2)}{sortable_header('Federal declaration', 3)}</tr></thead>
-<tbody>{crosswalk_rows(crosswalk)}</tbody></table></div></div>
+<tbody>{federal_declaration_rows(federal_declarations)}</tbody></table></div></div>
 </details>
 
 <details class="layer">
@@ -920,8 +889,7 @@ def render_state_page(
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 {table_filter('noaa-table', 'NOAA events')}
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Area', 1)}{sortable_header('Area type', 2)}{sortable_header('Hazard', 3)}{sortable_header('Deaths / injuries', 4)}{sortable_header('Property damage', 5)}</tr></thead>
-<tbody>{noaa_event_rows(storm_rows)}</tbody></table></div>
-{truncation_note(metrics['storm_match_rows'], min(metrics['storm_match_rows'], NOAA_ROWS_CAP))}</div>
+<tbody>{noaa_event_rows(storm_rows)}</tbody></table></div></div>
 </details>
 
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
