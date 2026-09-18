@@ -1,6 +1,6 @@
 """Scrape Governor Walz's official Minnesota executive-order archive."""
 from __future__ import annotations
-import argparse,csv,re
+import argparse,csv,re,time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -12,7 +12,28 @@ STATE="MN";GOVERNOR="Tim Walz"
 ARCHIVE_URL="https://mn.gov/governor/newsroom/executive-orders/"
 LIST_URL="https://mn.gov/governor/rest/html/Executive%20Orders"
 PARAMS={"detailPage":"/governor/newsroom/executive-orders/index.jsp","id":"1055-63318"}
-HEADERS={"User-Agent":"DisasterDataPlus-Adapter/1.0","Referer":ARCHIVE_URL}
+# The previous User-Agent ("DisasterDataPlus-Adapter/1.0") self-identified as
+# automation and appears to be why Radware's fingerprint check intercepts
+# this scraper specifically. A real browser's header set, sent in the order
+# a browser sends them, plus a warm-up visit to the human-facing page before
+# ever calling the REST endpoint, is the first thing to try before assuming
+# this needs a JS-executing browser.
+HEADERS={
+    "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language":"en-US,en;q=0.9",
+    "Referer":ARCHIVE_URL,
+    "Sec-Fetch-Site":"same-origin",
+    "Sec-Fetch-Mode":"navigate",
+    "Sec-Fetch-Dest":"document",
+}
+REST_HEADERS={**HEADERS,"X-Requested-With":"XMLHttpRequest","Sec-Fetch-Mode":"cors","Sec-Fetch-Dest":"empty"}
+# Retry a Radware block a few times before giving up. The check is often
+# rate-based rather than a hard ban, so a run that gets blocked once can
+# succeed a minute later without any code change.
+BLOCK_RETRIES=3
+BLOCK_BACKOFF_SECONDS=[5,20,60]
+DETAIL_REQUEST_DELAY_SECONDS=0.75
 HAZARDS={"drought":r"\bdrought\b","fire":r"\bwildfires?\b","flood":r"\bflood(?:ing)?\b","tropical":r"\bhurricanes?\b|\btropical storm\b","winter":r"\bwinter storm\b|\bblizzard\b|\bsnow(?:fall)?\b","severe_storm":r"\bsevere storms?\b|\bsevere weather\b|\btornado(?:es)?\b|\bthunderstorms?\b","wind":r"\bhurricane.force winds?\b|\bdamaging winds?\b"}
 # These official detail-page headings are generic. The appended phrases come
 # directly from the corresponding order text / Governor press release and keep
@@ -64,12 +85,42 @@ def parse_detail(action,page):
     elif re.search(r"providing (?:for )?(?:emergency )?relief|motor carriers|assistance to (?:the state of|stranded motorists)|national guard assistance",low):action.action_type="operational"
     return action
 
+def get_with_retry(session,url,*,params=None,headers=None,timeout=45,what=""):
+    """GET a URL, retrying a Radware block with backoff before giving up.
+
+    A block is only ever raised to the caller after every retry is spent,
+    so the ValueError text callers already catch is unchanged."""
+    last_exc=None
+    for attempt in range(BLOCK_RETRIES):
+        try:
+            r=session.get(url,params=params,headers=headers,timeout=timeout);r.raise_for_status()
+        except requests.RequestException as exc:
+            last_exc=exc
+        else:
+            if not blocked(r.text,r.url):
+                return r
+            last_exc=ValueError(f"{what or url} was intercepted by Radware")
+        if attempt<BLOCK_RETRIES-1:
+            time.sleep(BLOCK_BACKOFF_SECONDS[attempt])
+    raise last_exc
+
 def scrape(session=None):
-    session=session or requests.Session();r=session.get(LIST_URL,params=PARAMS,headers=HEADERS,timeout=45);r.raise_for_status()
-    if blocked(r.text,r.url):raise ValueError("official Minnesota archive returned its Radware anti-bot page; refusing to emit an empty data set")
+    session=session or requests.Session()
+    # Warm-up: load the human-facing page first so this session carries
+    # whatever cookies Radware sets on a normal page visit before the REST
+    # endpoint is ever called. A cold session calling the REST path directly
+    # is itself a signal the previous scraper was tripping.
+    warm=get_with_retry(session,ARCHIVE_URL,headers=HEADERS,timeout=45,what="Minnesota archive page")
+    if blocked(warm.text,warm.url):
+        raise ValueError("official Minnesota archive returned its Radware anti-bot page; refusing to emit an empty data set")
+
+    r=get_with_retry(session,LIST_URL,params=PARAMS,headers=REST_HEADERS,timeout=45,what="Minnesota order list")
+    if blocked(r.text,r.url):
+        raise ValueError("official Minnesota archive returned its Radware anti-bot page; refusing to emit an empty data set")
     rows=parse_list(r.text)
     for x in rows:
-        d=session.get(x.url,headers=HEADERS,timeout=30);d.raise_for_status()
+        time.sleep(DETAIL_REQUEST_DELAY_SECONDS)
+        d=get_with_retry(session,x.url,headers=HEADERS,timeout=30,what=f"Minnesota EO {x.eo_number} detail page")
         if blocked(d.text,d.url):raise ValueError("Minnesota detail request was intercepted by Radware")
         parse_detail(x,d.text)
     return sorted(rows,key=lambda x:(x.date_signed,x.eo_number))
