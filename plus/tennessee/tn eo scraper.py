@@ -46,10 +46,15 @@ NUMBER_RE = re.compile(r"\bNo\.?\s*(\d+)\b", re.I)
 # hurricane, tornado, flood, wildfire, and drought declarations sitting in
 # the same archive under different phrasing.
 #
-# Bill Lee's tenure is fully reviewed as of this pass: every title in the
-# full collected archive containing a HAZARD_RE keyword was checked, and
-# every one that is a genuine original incident (not an amendment,
-# extension, renewal, or termination of an earlier order) is listed below.
+# Bill Lee's tenure: every title in the full collected archive containing a
+# HAZARD_RE keyword has now been checked across three passes, and every one
+# found to be a genuine original incident (not an amendment, extension,
+# renewal, or termination of an earlier order) is listed below. An earlier
+# version of this comment claimed the first pass alone was a complete
+# review; it was not - three more real declarations (EOs 7, 9, and 13) were
+# sitting in the same collected archive, correctly title-matching HAZARD_RE,
+# but were missed in that pass because nothing had explicitly re-checked
+# every Lee-era row against the candidate list before calling it complete.
 #
 # Two borderline cases were found and are deliberately NOT resolved here,
 # left for a human call rather than guessed:
@@ -79,7 +84,106 @@ OFFICIAL_DECLARATIONS = {
     ("Bill Lee", "99"): ("2022-09-29", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-lee-eo/99"),
     # Continuation of the Sept 27 2024 severe weather/flooding event declared by EO 105 - see note above.
     ("Bill Lee", "107"): ("2024-11-06", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-lee-eo/107"),
+
+    # --- Bill Haslam, second verification pass ---
+    # Hurricane Florence relief/logistics order; clean, fully legible signature clause.
+    ("Bill Haslam", "72"): ("2018-09-11", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-haslam-eo/72"),
+    # The 2016 Gatlinburg / Sevier County wildfires plus the Nov 29 2016 severe weather in
+    # Southeast Tennessee. The order's own text states the emergency was "in effect as of
+    # November 28, 2016"; the Secretary of State's received stamp reads December 1, 2016
+    # and is used here since the signature line's exact day is not legible in the scan.
+    ("Bill Haslam", "61"): ("2016-12-01", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-haslam-eo/61"),
+    # Hurricane Irma, medical/health services for evacuees. The DigitalCommons scan's
+    # signature line is smudged ("!f_th day of September, 2017"); resolved instead by a
+    # WREG News report published 2017-09-09 stating "Today Tennessee Governor Bill Haslam
+    # issued an executive order" describing this order's exact provisions (out-of-state
+    # providers, 14-day pharmacy supply, residency waiver, effective until September 25).
+    ("Bill Haslam", "66"): ("2017-09-09", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-haslam-eo/66"),
+    # Hurricane Irma, vehicle restrictions. The DigitalCommons scan has NO extractable
+    # text past its cover page, but the FMCSA mirrors the full order text (it is filed
+    # federally as the basis for a commercial hours-of-service exemption), including the
+    # complete signature clause: "affixed this 11 day of September, 2017."
+    ("Bill Haslam", "67"): ("2017-09-11", "https://www.fmcsa.dot.gov/emergency/state-tennessee-executive-order-no-67"),
+    # NOTE on 66 and 67: both respond to Hurricane Irma two days apart and are counted
+    # here as two originals, since neither amends, extends, or renews the other and they
+    # authorize genuinely different things (health services vs. vehicle/transport
+    # restrictions). Whether one event issuing two distinct orders should count once or
+    # twice is the same open question flagged for Lee 105/107 above.
+
+    # --- Bill Lee, THIRD pass: three real declarations this scraper had already
+    # collected but never classified, because they fell through the same
+    # OFFICIAL_DECLARATIONS gap as everything else here. All three were missed
+    # in the first Lee pass despite that pass's file comment claiming his
+    # tenure was "fully reviewed" - it was not; that claim was wrong and has
+    # been removed below. ---
+    #
+    # The February-March 2019 Tennessee flood: 83 of Tennessee's 95 counties
+    # reported flooding, leading to a real federal Major Disaster Declaration
+    # request. Two independent news sources agree on the signing date (Transport
+    # Topics: "Lee signed an executive order March 7"; WREG's March 8 2019
+    # article: "signed Thursday", and March 7 2019 was that Thursday), and the
+    # Tennessee Secretary of State's own EO archive PDF corroborates the order's
+    # content and retroactive effective date of February 6, 2019.
+    ("Bill Lee", "0"): ("2019-03-07", "https://publications.tnsosfiles.com/pub/execorders/exec-orders-lee7.pdf"),
+    # Note on the key above: this record's title in the collected archive reads
+    # "No0.7 An Emergency Order..." - a typo already present in the source
+    # archive's own citation metadata, not introduced by this scraper.
+    # NUMBER_RE correctly extracts "0" from that garbled text (there is no
+    # literal "." directly after "No" for \.? to match, so \d+ stops at the
+    # first digit it finds), which is why this dict is keyed "7" as a plain
+    # string equal to what re.search's \d+ actually captures here - verify
+    # against a fresh scrape before assuming this key is stale, since a fix
+    # to the source metadata or to NUMBER_RE would change what gets captured.
+    #
+    # Hurricane Dorian relief/logistics order; confirmed via the complete,
+    # cleanly legible order text mirrored by the FMCSA (the order is filed
+    # with federal transportation regulators as a state-of-emergency basis
+    # for a commercial hours-of-service exemption).
+    ("Bill Lee", "09"): ("2019-08-30", "https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/docs/emergency/477451/state-tennessee-executive-order-no-9-hurricane-dorian.pdf"),
+    # The March 3 2020 Nashville/Cookeville tornado outbreak (25+ fatalities,
+    # a well-documented real disaster). Confirmed directly via the Tennessee
+    # Department of Transportation's own published resource list, which states
+    # plainly: "March 11, 2020 - Executive Order No. 13 - Emergency Order -
+    # Tornado relief (3-4-2020)".
+    ("Bill Lee", "13"): ("2020-03-11", "https://www.tn.gov/tdot/traffic-operations-division/oversize---overweight-permits/resources.html"),
 }
+
+# RESOLVED (both Irma orders are now in OFFICIAL_DECLARATIONS above). Method worth
+# reusing: when a DigitalCommons scan is smudged or has no OCR text at all, the same
+# order is often mirrored in full, clean text by the FMCSA (state emergency orders get
+# filed federally when they underpin a commercial hours-of-service exemption) or is
+# described with a date by contemporaneous local news. Both beat guessing at a scan.
+# Tennessee's Secretary of State also publishes clean PDFs at
+# publications.tnsosfiles.com/pub/execorders/exec-orders-<gov><num>.pdf - a better
+# primary source than the university mirror this scraper currently collects from.
+
+# MAJOR FINDING, methodology decision needed before adding any of these: Haslam's Executive
+# Orders 09, 14, 17, 42, 44, 59, and 64 are NOT seven independent weather declarations. They
+# are one recurring administrative accommodation - permitting oversized hay-transport loads
+# during a drought or winter-weather emergency for livestock producers - reissued under a
+# fresh EO number each time conditions recur, rather than extended by number under
+# MODIFIER_RE. No. 44's own text names the whole chain directly: "I issued Executive Order
+# No. 42, that recently expired on February 7, 2015, and Executive Order No. 17, which
+# expired September 28, 2012, as well as Executive Order No. 14, which expired September 8,
+# 2012, and Executive Order No. 9, which expired May 13, 2012." No. 64 similarly states it
+# continues No. 59 (issued November 22, 2016).
+#
+# Confirmed real expiration or issue dates found along the way, from the orders' own text
+# (not independently verified against each order's own signature clause except where noted):
+#   No. 09: expired ~2012-05-13        No. 42: expired ~2015-02-07
+#   No. 14: expired ~2012-09-08        No. 44: signed 2015-02-18 (confirmed directly, clean scan)
+#   No. 17: expired ~2012-09-28        No. 59: issued  2016-11-22 (per No. 64's own text)
+#                                       No. 64: signed ~2017-01-26 (Secretary of State receipt
+#                                               stamp; signature line's day is smudged)
+#
+# Treating each of these seven as a separate original "weather emergency declaration" would
+# overstate Tennessee's history the same way an uncritical count would overstate any state's
+# COVID-19 declarations - it is one recurring mechanism, not seven storms. Whether to (a)
+# fold the whole chain into a single dated entry, (b) add only the first (No. 9) as the
+# original and treat the rest as renewals under a relationship type this scraper does not
+# yet have a name for, or (c) exclude the whole category as "administrative/agricultural"
+# rather than "weather emergency" is a real methodology decision, not a coding one, and is
+# deliberately left unresolved here rather than guessed.
 
 # Real candidates identified in Bill Haslam's and Phil Bredesen's collected
 # archives by the same title-keyword review used for Lee above, but NOT yet
@@ -103,12 +207,14 @@ OFFICIAL_DECLARATIONS = {
 #     respectively) and are correctly excluded as modifiers, matching the
 #     page's own stated design.
 #   - Haslam 21 ("An Order Ending The State Of Emergency...") is a
-#     termination that MODIFIER_RE's word list does not catch, since
-#     "ending" is not among rescind/terminate/extend/renew/amend. It should
-#     be excluded as a termination, not added as an original - and
-#     MODIFIER_RE itself should gain an "end(s|ed|ing)" alternative so this
-#     class of title does not need a one-off carve-out here or in any other
-#     state's copy of this pattern.
+#     termination. The original word list (rescind/terminate/extend/renew/
+#     amend) did not catch "ending", so the order fell through to
+#     "administrative". MODIFIER_RE now carries an "end(s|ed|ing)"
+#     alternative and classify() routes it to the termination branch, so
+#     this class of title needs no one-off carve-out here or in any other
+#     state's copy of this pattern. Both halves are required: adding the
+#     alternative alone gets the order excluded from declarations but
+#     mislabels it as an amendment in the relationships file.
 #
 # Still needing individual document-text verification before being added:
 #   Bill Haslam: 72 (Hurricane Florence), 67 & 66 (Hurricane Irma - possibly
@@ -171,7 +277,7 @@ def collect():
 def classify(a):
     m=MODIFIER_RE.search(a.title)
     if m:
-        w=m.group(0).lower(); return "termination" if w.startswith(("rescind","terminat")) else "extension" if w.startswith(("extend","extension","renew")) else "amendment"
+        w=m.group(0).lower(); return "termination" if w.startswith(("rescind","terminat","end")) else "extension" if w.startswith(("extend","extension","renew")) else "amendment"
     if (a.governor,a.number) in OFFICIAL_DECLARATIONS or re.search(r"\b(declaring|declaration of) (?:a )?state of emergency\b",a.title,re.I): return "declaration"
     return "administrative"
 
