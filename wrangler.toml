@@ -1,5 +1,14 @@
-name       = "femaproxy"
-main       = "worker.js"
-compatibility_date = "2024-01-01"
+name = "disasterdata-api"
+main = "worker-api.js"
+compatibility_date = "2026-01-01"
 
-# No KV, Durable Objects, or secrets needed — pure proxy
+# Route this Worker at api.disasterdata.io, separate from the existing
+# femaproxy Worker's route. Requires api.disasterdata.io to be a DNS record
+# (proxied, orange-cloud) in the same Cloudflare account/zone as
+# disasterdata.io before this route can attach.
+routes = [
+  { pattern = "api.disasterdata.io/*", custom_domain = true }
+]
+
+[observability]
+enabled = true
