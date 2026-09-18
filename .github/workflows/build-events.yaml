@@ -8,9 +8,8 @@ name: Refresh Event Indexes
 
 on:
   workflow_dispatch:
-
   schedule:
-    - cron: '0 4 * * 3'
+    - cron: '0 4 * * 3'   # Wednesday 04:00 UTC, offset from the Sunday data build
 
 permissions:
   contents: write
@@ -19,7 +18,6 @@ jobs:
   events:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -29,27 +27,75 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Build event indexes (map-events.js + events.json)
+      # ----------------------------------------------------------------
+      # This step used to be a one-line if/else that tried
+      # gen_map_events.py and fell back to "gen map events.py".
+      #
+      # That straddle hid two failures rather than reporting them. If
+      # neither file existed, the else branch ran the spaced name, bash
+      # reported "No such file or directory", and the run failed with an
+      # error about a filename nobody uses. If BOTH existed, the if branch
+      # silently won and the spaced copy went on sitting in the repo
+      # accumulating edits that never ran.
+      #
+      # Resolving the name explicitly costs a few lines and turns both
+      # cases into a message that says what to do about it.
+      # ----------------------------------------------------------------
+      - name: Resolve the event-index generator
+        id: resolve
         run: |
-          if [ -f gen_map_events.py ]; then
-            python -u gen_map_events.py \
-              --in data/decl-index \
-              --out map-events.js \
-              --events-out events.json
-          else
-            python -u "gen map events.py" \
-              --in data/decl-index \
-              --out map-events.js \
-              --events-out events.json
+          set -euo pipefail
+          found=""
+          for candidate in gen_map_events.py "gen map events.py" gen-map-events.py; do
+            if [ -f "$candidate" ]; then
+              if [ -n "$found" ]; then
+                echo "ERROR: both '$found' and '$candidate' exist. Two spellings" >&2
+                echo "of the same generator means one is stale and nothing says" >&2
+                echo "which. Delete the wrong one before rerunning." >&2
+                exit 1
+              fi
+              found="$candidate"
+            fi
+          done
+          if [ -z "$found" ]; then
+            echo "ERROR: no event-index generator found at repo root." >&2
+            echo "Looked for: gen_map_events.py / 'gen map events.py' / gen-map-events.py" >&2
+            ls -1 gen*.py 2>/dev/null | sed 's/^/  present: /' >&2 || true
+            exit 1
           fi
+          echo "Using generator: $found"
+          echo "generator=$found" >> "$GITHUB_OUTPUT"
+
+      - name: Build event indexes (map-events.js + events.json)
+        # Reads data/decl-index/{ST}.json + manifest.json, writes map-events.js
+        # and events.json to the repo root. Standard library only, no pip install.
+        run: |
+          set -euo pipefail
+          python -u "${{ steps.resolve.outputs.generator }}" \
+            --in data/decl-index \
+            --out map-events.js \
+            --events-out events.json
+
+      # A generator that runs to exit 0 but writes nothing is the failure
+      # mode this workflow cannot otherwise see: the commit step finds no
+      # diff, reports "already up to date," and the run goes green while
+      # the site keeps serving last week's indexes.
+      - name: Verify the indexes were written
+        run: |
+          set -euo pipefail
+          for f in map-events.js events.json; do
+            if [ ! -s "$f" ]; then
+              echo "ERROR: $f is missing or empty after the build." >&2
+              exit 1
+            fi
+            echo "$f: $(wc -c < "$f") bytes"
+          done
 
       - name: Commit and push if changed
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
           git add -A
-
           if git diff --staged --quiet; then
             echo "No changes to commit, event indexes already up to date."
           else
