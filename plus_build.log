@@ -61,6 +61,7 @@ No matches found for any declaration. Wrote empty /home/runner/work/disaster-dat
 
 AZ: 0 actions, 120 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arkansas/hazard_overrides.csv
+AR-POST-5133: no matching storm events found in the date window.
 AR-POST-5085: no matching storm events found in the date window.
 Wrote 818 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_matches.csv.tmp
 Wrote severity summary (376 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp
@@ -95,7 +96,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp.
 
-AR: 9 actions, 89 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
+AR: 10 actions, 89 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
 Applied 30 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/california/hazard_overrides.csv
 CA-PROC-109626: no matching storm events found in the date window.
 CA-PROC-108024: no matching storm events found in the date window.
@@ -594,10 +595,9 @@ ID: 208 actions, 61 federal declarations; 2000-present OARC EO metadata plus IDW
 {"actions": 378, "declarations": 7, "relationships": 16, "overrides": 0, "review": 8}
 
 IL-PROC-4883F2AF4F255E59: no matching storm events found in the date window.
-IL-PROC-AEE0D01A62913D91: no matching storm events found in the date window.
 IL-PROC-FC5A67E0B30F609E: no matching storm events found in the date window.
-Wrote 521 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_matches.csv.tmp
-Wrote severity summary (118 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_severity_summary.csv.tmp
+Wrote 528 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_matches.csv.tmp
+Wrote severity summary (124 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   IL-PROC-4F457EA2DD4BDB96 CRAWFORD [county/county-equivalent]: deaths=3, injuries=8, damage=$0 (Tornado)
@@ -618,6 +618,7 @@ Areas with reported deaths, injuries, or damage:
   IL-PROC-4F457EA2DD4BDB96 PULASKI [county/county-equivalent]: deaths=0, injuries=0, damage=$20,000 (Thunderstorm Wind)
   IL-PROC-4F457EA2DD4BDB96 BROWN [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000 (Hail, Thunderstorm Wind)
   IL-PROC-4F457EA2DD4BDB96 MACOUPIN [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000 (Tornado)
+  IL-PROC-AEE0D01A62913D91 MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000 (Flash Flood)
   IL-PROC-4F457EA2DD4BDB96 ADAMS [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Hail)
   IL-PROC-4F457EA2DD4BDB96 JACKSON [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Thunderstorm Wind)
   IL-PROC-0BD2BDD1F555C1FA LEE [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Flash Flood)
@@ -639,15 +640,13 @@ IN: 11 actions, 56 federal declarations; 2000-present via current + historical g
 IA-PROC-2024-42: no matching storm events found in the date window.
 IA-PROC-2024-44: no matching storm events found in the date window.
 IA-PROC-2024-45: no matching storm events found in the date window.
-IA-PROC-2026-10: no matching storm events found in the date window.
-IA-PROC-2026-11: no matching storm events found in the date window.
 IA-PROC-2026-12: no matching storm events found in the date window.
 IA-PROC-2026-13: no matching storm events found in the date window.
 IA-PROC-2026-14: no matching storm events found in the date window.
 IA-PROC-2026-15: no matching storm events found in the date window.
 IA-PROC-2026-16: no matching storm events found in the date window.
-Wrote 4986 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_matches.csv.tmp
-Wrote severity summary (1526 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp
+Wrote 5107 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_matches.csv.tmp
+Wrote severity summary (1563 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   IA-PROC-2024-12 ADAIR [county/county-equivalent]: deaths=4, injuries=35, damage=$30,750,000 (Hail, Thunderstorm Wind, Tornado)
@@ -675,7 +674,7 @@ Areas with reported deaths, injuries, or damage:
   IA-PROC-2024-09 POLK [county/county-equivalent]: deaths=0, injuries=1, damage=$1,500,000 (Tornado)
   IA-PROC-2024-10 POLK [county/county-equivalent]: deaths=0, injuries=1, damage=$1,500,000 (Tornado)
   IA-PROC-2026-04 HOWARD [county/county-equivalent]: deaths=0, injuries=1, damage=$380,000 (Hail, Tornado)
-  Showing the 25 highest-consequence areas; all 353 are retained in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 354 are retained in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
@@ -692,12 +691,11 @@ No matches found for any declaration. Wrote empty /home/runner/work/disaster-dat
 
 KY: 0 actions, 99 federal declarations; manual_only - Beshear-era newsroom feed proxy only; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap
 LA-EO-JML-26-68: no matching storm events found in the date window.
-LA-EO-JML-26-55: no matching storm events found in the date window.
 
 1 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): LA-EO-JML-24-30
 Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
-Wrote 178 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_matches.csv.tmp
-Wrote severity summary (101 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_severity_summary.csv.tmp
+Wrote 275 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_matches.csv.tmp
+Wrote severity summary (127 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   LA-EO-JML-24-105 BOSSIER [county/county-equivalent]: deaths=2, injuries=1, damage=$736,000 (Tornado)
@@ -706,6 +704,7 @@ Areas with reported deaths, injuries, or damage:
   LA-EO-JML-26-06 JACKSON [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Cold/Wind Chill, Winter Storm)
   LA-EO-JML-26-06 SABINE [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Cold/Wind Chill, Winter Storm)
   LA-EO-JML-26-06 FRANKLIN [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Ice Storm)
+  LA-EO-JML-26-55 JEFFERSON [county/county-equivalent]: deaths=0, injuries=2, damage=$315,000 (Flash Flood, Tornado)
   LA-EO-JML-24-142 WESTERN ASCENSION PARISH [NWS forecast zone]: deaths=0, injuries=2, damage=$62,000 (Tropical Storm)
   LA-EO-JML-24-142 ORLEANS [county/county-equivalent]: deaths=0, injuries=1, damage=$1,000,000 (Flash Flood)
   LA-EO-JML-24-105 CADDO [county/county-equivalent]: deaths=0, injuries=1, damage=$260,000 (Tornado)
@@ -720,12 +719,11 @@ Areas with reported deaths, injuries, or damage:
   LA-EO-JML-24-142 LOWER LAFOURCHE [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
   LA-EO-JML-24-142 UPPER ST. MARY PARISH [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000,000 (Hurricane (Typhoon))
   LA-EO-JML-24-142 LOWER ST. MARY PARISH [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000,000 (Hurricane (Typhoon))
+  LA-EO-JML-26-55 AVOYELLES [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000,000 (Flash Flood)
   LA-EO-JML-24-142 LAFOURCHE [county/county-equivalent]: deaths=0, injuries=0, damage=$4,500,000 (Flash Flood)
   LA-EO-JML-24-142 ST. TAMMANY [county/county-equivalent]: deaths=0, injuries=0, damage=$3,000,000 (Flash Flood)
-  LA-EO-JML-24-105 DE SOTO [county/county-equivalent]: deaths=0, injuries=0, damage=$1,775,000 (Tornado)
-  LA-EO-JML-24-142 EAST BATON ROUGE [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Tropical Storm)
-  LA-EO-JML-24-142 ASSUMPTION [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Hurricane (Typhoon))
-  Showing the 25 highest-consequence areas; all 53 are retained in /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_severity_summary.csv.tmp.
+  LA-EO-JML-26-55 TERREBONNE [county/county-equivalent]: deaths=0, injuries=0, damage=$2,372,000 (Flash Flood, Tornado)
+  Showing the 25 highest-consequence areas; all 66 are retained in /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/louisiana/eo_storm_severity_summary.csv.tmp.
 
@@ -786,7 +784,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 89 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 85 relationship(s), 4 original weather declaration(s).
 
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -942,12 +940,11 @@ MO-EO-14-12: no matching storm events found in the date window.
 MO-EO-17-06: no matching storm events found in the date window.
 MO-EO-18-05: no matching storm events found in the date window.
 MO-EO-25-29: no matching storm events found in the date window.
-MO-EO-26-15: no matching storm events found in the date window.
 MO-EO-26-16: no matching storm events found in the date window.
 
 15 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): MO-EO-00-22, MO-EO-04-17, MO-EO-04-19, MO-EO-05-24, MO-EO-05-25, MO-EO-05-26, MO-EO-05-28, MO-EO-05-29, MO-EO-05-32, MO-EO-05-34, MO-EO-05-35, MO-EO-05-38, MO-EO-08-27, MO-EO-17-22, MO-EO-24-03
-Wrote 6741 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_matches.csv.tmp
-Wrote severity summary (2309 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp
+Wrote 6817 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_matches.csv.tmp
+Wrote severity summary (2332 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   MO-EO-15-10 PULASKI [county/county-equivalent]: deaths=7, injuries=0, damage=$2,000,000 (Flash Flood, Heavy Rain)
@@ -975,7 +972,7 @@ Areas with reported deaths, injuries, or damage:
   MO-EO-06-12 HENRY [county/county-equivalent]: deaths=1, injuries=13, damage=$500,000 (Hail, Thunderstorm Wind, Tornado)
   MO-EO-03-12 GREENE [county/county-equivalent]: deaths=1, injuries=12, damage=$14,700,000 (Hail, Thunderstorm Wind, Tornado)
   MO-EO-12-03 DALLAS [county/county-equivalent]: deaths=1, injuries=12, damage=$650,000 (Tornado)
-  Showing the 25 highest-consequence areas; all 762 are retained in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 772 are retained in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
 
@@ -986,77 +983,8 @@ Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
 MT: 0 actions, 113 federal declarations; 2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 239, in _new_conn
-    sock = connection.create_connection(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
-    raise err
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
-    sock.connect(sa)
-TimeoutError: timed out
+Nebraska: wrote 57 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/nebraska/declarations_for_join.csv
 
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 494, in _make_request
-    raise new_e
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 470, in _make_request
-    self._validate_conn(conn)
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1125, in _validate_conn
-    conn.connect()
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 827, in connect
-    self.sock = sock = self._new_conn()
-                       ^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 248, in _new_conn
-    raise ConnectTimeoutError(
-urllib3.exceptions.ConnectTimeoutError: (<HTTPSConnection(host='govdocs.nebraska.gov', port=443) at 0x7f7c2f077bd0>, 'Connection to govdocs.nebraska.gov timed out. (connect timeout=30)')
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
-    retries = retries.increment(
-              ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 555, in increment
-    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='govdocs.nebraska.gov', port=443): Max retries exceeded with url: /docs/pilot/pubs/eoindex.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='govdocs.nebraska.gov', port=443) at 0x7f7c2f077bd0>, 'Connection to govdocs.nebraska.gov timed out. (connect timeout=30)'))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/nebraska/ne_eo_scraper.py", line 188, in <module>
-    main()
-  File "/home/runner/work/disaster-data/disaster-data/plus/nebraska/ne_eo_scraper.py", line 183, in main
-    n = collect(args.actions_out, args.relationships_out, args.join_out)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/nebraska/ne_eo_scraper.py", line 116, in collect
-    html = fetch(SOURCE_URL, session)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/nebraska/ne_eo_scraper.py", line 76, in fetch
-    resp = session.get(url, timeout=30, headers={"User-Agent": "DisasterData.io research crawler"})
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 671, in get
-    return self.request("GET", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 717, in send
-    raise ConnectTimeout(e, request=request)
-requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='govdocs.nebraska.gov', port=443): Max retries exceeded with url: /docs/pilot/pubs/eoindex.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='govdocs.nebraska.gov', port=443) at 0x7f7c2f077bd0>, 'Connection to govdocs.nebraska.gov timed out. (connect timeout=30)'))
-
-WARNING NE: Collection failed: Nebraska adapter: scrape failed
 Applied 44 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nebraska/hazard_overrides.csv
 NE-EO-25-06: no matching storm events found in the date window.
 NE-EO-19-06: no matching storm events found in the date window.
@@ -1102,7 +1030,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_severity_summary.csv.tmp.
 
-NE: 57 actions, 88 federal declarations; 2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review; Collection failed: Nebraska adapter: scrape failed
+NE: 57 actions, 88 federal declarations; 1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nevada/hazard_overrides.csv
 NV-PROCLAMATION-2023-05-29-DECLARATION-OF-EMERGENCY: no matching storm events found in the date window.
 Wrote 87 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_matches.csv.tmp
@@ -1222,8 +1150,13 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 NJ: 149 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
 New Mexico: 1210 actions scraped, 0 recovered via OCR, 1178 still image-only with no usable text.
 
-NM-2026-047: no matching storm events found in the date window.
-No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
+Wrote 4 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_matches.csv.tmp
+Wrote severity summary (3 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp
+
+Areas with reported deaths, injuries, or damage:
+  None in the matched NCEI records.
+
+Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp.
 
 NM: 1 actions, 126 federal declarations; 2019-present structured current-Governor archive; 2000-2018 gap disclosed
 New York adapter: collecting executive orders...
@@ -1480,86 +1413,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_severity_summary.csv.tmp.
 
 RI: 6 actions, 31 federal declarations; 2015-present structured Governor archive; State Library 1973-2014 backfill pending
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 540, in _make_request
-    response = conn.getresponse()
-               ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 638, in getresponse
-    httplib_response = super().getresponse()
-                       ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 1443, in getresponse
-    response.begin()
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 337, in begin
-    version, status, reason = self._read_status()
-                              ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 306, in _read_status
-    raise RemoteDisconnected("Remote end closed connection without"
-http.client.RemoteDisconnected: Remote end closed connection without response
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
-    retries = retries.increment(
-              ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 510, in increment
-    raise reraise(type(error), error, _stacktrace)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/util.py", line 38, in reraise
-    raise value.with_traceback(tb)
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 540, in _make_request
-    response = conn.getresponse()
-               ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 638, in getresponse
-    httplib_response = super().getresponse()
-                       ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 1443, in getresponse
-    response.begin()
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 337, in begin
-    version, status, reason = self._read_status()
-                              ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 306, in _read_status
-    raise RemoteDisconnected("Remote end closed connection without"
-urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/south-carolina/sc_eo_scraper.py", line 88, in <module>
-    if __name__=="__main__": main()
-                             ^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/south-carolina/sc_eo_scraper.py", line 87, in main
-    p=argparse.ArgumentParser(); p.add_argument("--actions-out",required=True); p.add_argument("--relationships-out",required=True); p.add_argument("--join-out",required=True); a=p.parse_args(); write_outputs(collect(),a.actions_out,a.relationships_out,a.join_out)
-                                                                                                                                                                                                                 ^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/south-carolina/sc_eo_scraper.py", line 48, in collect
-    r=requests.get(API_URL,params={"scope":SCOPE,"size":100,"page":page,"sort":"dc.date.issued,ASC"},headers=HEADERS,timeout=TIMEOUT); r.raise_for_status(); data=r.json()["_embedded"]["searchResult"]; objs=data.get("_embedded",{}).get("objects",[])
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 87, in get
-    return request("get", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 71, in request
-    return session.request(method=method, url=url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 711, in send
-    raise ConnectionError(err, request=request)
-requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
-
-WARNING SC: Collection failed: South Carolina adapter: scrape failed
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/south-carolina/hazard_overrides.csv
 SC-EO-2024-28: no matching storm events found in the date window.
 SC-EO-2024-17: no matching storm events found in the date window.
@@ -1609,13 +1462,12 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/south-carolina/eo_storm_severity_summary.csv.tmp.
 
-SC: 50 actions, 51 federal declarations; 1966-present official State Library collection, enriched from the 2017-present Governor archive; Collection failed: South Carolina adapter: scrape failed
+SC: 50 actions, 51 federal declarations; 1966-present official State Library collection, enriched from the 2017-present Governor archive
 South Dakota: 102 orders scraped, 25 written as declarations.
 
 Applied 14 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/south-dakota/hazard_overrides.csv
 SD-EO-2026-01: no matching storm events found in the date window.
 SD-EO-2026-06: no matching storm events found in the date window.
-SD-EO-2026-07: no matching storm events found in the date window.
 SD-EO-2026-08: no matching storm events found in the date window.
 SD-EO-2026-09: no matching storm events found in the date window.
 SD-EO-2023-14: no matching storm events found in the date window.
@@ -1626,8 +1478,8 @@ SD-EO-2020-27: no matching storm events found in the date window.
 
 1 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): SD-EO-2022-04
 Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
-Wrote 847 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_matches.csv.tmp
-Wrote severity summary (342 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp
+Wrote 919 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_matches.csv.tmp
+Wrote severity summary (362 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   SD-EO-2022-03 MINNEHAHA [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Thunderstorm Wind)
@@ -1687,6 +1539,51 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 TN: 2 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending
 Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 239, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 494, in _make_request
+    raise new_e
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 470, in _make_request
+    self._validate_conn(conn)
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1125, in _validate_conn
+    conn.connect()
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 827, in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 254, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: HTTPSConnection(host='gov.texas.gov', port=443): Failed to establish a new connection: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 555, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='gov.texas.gov', port=443): Max retries exceeded with url: /news/archive/2015/01 (Caused by NewConnectionError("HTTPSConnection(host='gov.texas.gov', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
   File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 96, in <module>
     if __name__=="__main__": main()
                              ^^^^^^
@@ -1702,7 +1599,7 @@ Traceback (most recent call last):
   File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
     return fut.result(timeout)
            ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 449, in result
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 456, in result
     return self.__get_result()
            ^^^^^^^^^^^^^^^^^^^
   File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
@@ -1715,23 +1612,34 @@ Traceback (most recent call last):
                                     ^^^^^^^^
   File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 28, in get
     response=requests.get(url,headers=HEADERS,timeout=TIMEOUT); response.raise_for_status(); return response
-                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
-    raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://gov.texas.gov/news/archive/2019/10
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 87, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 729, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='gov.texas.gov', port=443): Max retries exceeded with url: /news/archive/2015/01 (Caused by NewConnectionError("HTTPSConnection(host='gov.texas.gov', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
 
 WARNING TX: Collection failed: Texas adapter: scrape failed
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-PROCLAMATION-2026-07-14-governor-abbott-issues-severe-storm-disaster-proclamation-in-july-2026: no matching storm events found in the date window.
-TX-PROCLAMATION-2026-06-15-governor-abbott-issues-severe-storm-disaster-proclamation-in-june-2026: no matching storm events found in the date window.
 TX-PROCLAMATION-2021-04-15-governor-abbott-issues-disaster-declaration-in-response-to-drought-conditions-in-april-2021: no matching storm events found in the date window.
 TX-PROCLAMATION-2020-07-21-governor-abbott-issues-disaster-declaration-in-response-to-drought-conditions-in-25-texas-counties: no matching storm events found in the date window.
 TX-PROCLAMATION-2018-04-13-governor-abbott-issues-disaster-declaration-in-response-drought-conditions-across-texas: no matching storm events found in the date window.
 TX-PROCLAMATION-2015-03-09-drought_disaster_proclamation_by_the_governor_of_the_state_of_texas: no matching storm events found in the date window.
 
 1 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): TX-PROCLAMATION-2015-05-15-governor_abbott_again_declares_state_of_disaster_in_texas_counties
-Wrote 4100 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_matches.csv.tmp
-Wrote severity summary (1990 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp
+Wrote 4208 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_matches.csv.tmp
+Wrote severity summary (2032 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   TX-PROCLAMATION-2017-08-23-Disaster-Proclamation-Issued-For-30-Texas-Counties-in-Anticipation-Of-Tropical-Depression-Harvey-Making-Landfall HARRIS [county/county-equivalent]: deaths=36, injuries=0, damage=$10,000,780,000 (Flash Flood, Tornado)
@@ -1759,7 +1667,7 @@ Areas with reported deaths, injuries, or damage:
   TX-PROCLAMATION-2021-02-12-governor-abbott-issues-disaster-declaration-in-response-to-severe-winter-weather-in-texas MONTGOMERY [NWS forecast zone]: deaths=2, injuries=0, damage=$238,000 (Extreme Cold/Wind Chill, Winter Storm)
   TX-PROCLAMATION-2025-03-29-governor-abbott-issues-severe-storm-and-flooding-disaster-declaration-in-march-2025 WILLACY [county/county-equivalent]: deaths=2, injuries=0, damage=$20,000 (Flash Flood, Flood, Lightning)
   TX-PROCLAMATION-2023-05-16-governor-abbott-issues-severe-weather-disaster-declaration-in-may-2023 BOSQUE [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Lightning)
-  Showing the 25 highest-consequence areas; all 583 are retained in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 591 are retained in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
@@ -1784,12 +1692,11 @@ UT-EO-2022-004: no matching storm events found in the date window.
 UT-EO-2023-05: no matching storm events found in the date window.
 UT-EO-2025-04: no matching storm events found in the date window.
 UT-EO-2026-02: no matching storm events found in the date window.
-UT-EO-2026-04: no matching storm events found in the date window.
 UT-EO-2026-05: no matching storm events found in the date window.
 
 1 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): UT-EO-2005-0017
-Wrote 113 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/utah/eo_storm_matches.csv.tmp
-Wrote severity summary (77 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/utah/eo_storm_severity_summary.csv.tmp
+Wrote 119 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/utah/eo_storm_matches.csv.tmp
+Wrote severity summary (82 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/utah/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   UT-EO-2005-0001 SC WASHINGTON [NWS forecast zone]: deaths=1, injuries=6, damage=$300,000,000 (Flood)
@@ -1844,8 +1751,8 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 VT: 1 actions, 62 federal declarations; 2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending
 Virginia adapter: collecting current-administration declarations...
   running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_scraper.py --raw-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
-https://www.governor.virginia.gov/executive-actions/: parsed 46 order links
-Wrote 23 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
+https://www.governor.virginia.gov/executive-actions/: parsed 48 order links
+Wrote 24 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
 Wrote 1 emergency declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv
 Wrote 1 weather declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv (ready for eo_storm_join.py)
   EO-11: 2026-01-22 — Declaring State of Emergency Due to Winter Weather
@@ -2002,9 +1909,8 @@ WV-PROC-2026-08-18-declares-state-of-emergency-following-new-round-of-severe-st:
 WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of-: no matching storm events found in the date window.
 WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever: no matching storm events found in the date window.
 WV-PROC-2026-07-20-declares-state-of-emergency-for-barbour-county-following-sev: no matching storm events found in the date window.
-WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun: no matching storm events found in the date window.
-Wrote 928 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_matches.csv.tmp
-Wrote severity summary (418 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp
+Wrote 982 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_matches.csv.tmp
+Wrote severity summary (434 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   WV-PROC-2025-06-15-declares-state-of-emergency-in-marion-county OHIO [county/county-equivalent]: deaths=9, injuries=0, damage=$2,505,000 (Flash Flood, Heavy Rain)
@@ -2015,6 +1921,12 @@ Areas with reported deaths, injuries, or damage:
   WV-PROC-2025-06-15-declares-state-of-emergency-in-marion-county MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$1,160,000 (Flash Flood)
   WV-PROC-2025-06-15-declares-state-of-emergency-in-ohio-county MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$1,160,000 (Flash Flood)
   WV-PROC-2025-02-15-declares-state-of-emergency-in-10-counties-urges-caution-acr SUMMERS [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flash Flood, Flood)
+  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun MINGO [county/county-equivalent]: deaths=0, injuries=0, damage=$76,000 (Flash Flood, Thunderstorm Wind)
+  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun HARRISON [county/county-equivalent]: deaths=0, injuries=0, damage=$42,000 (Flash Flood, Thunderstorm Wind)
+  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun LOGAN [county/county-equivalent]: deaths=0, injuries=0, damage=$40,000 (Flash Flood, Flood)
+  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$40,000 (Thunderstorm Wind, Tornado)
+  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun BARBOUR [county/county-equivalent]: deaths=0, injuries=0, damage=$25,000 (Flood, Tornado)
+  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun RALEIGH [county/county-equivalent]: deaths=0, injuries=0, damage=$22,500 (Flash Flood, Thunderstorm Wind)
   WV-PROC-2025-02-06-declares-state-of-emergency-in-cabell-and-kanawha-counties MERCER [county/county-equivalent]: deaths=0, injuries=0, damage=$20,000 (Debris Flow)
   WV-PROC-2025-02-15-declares-state-of-emergency-in-10-counties-urges-caution-acr GREENBRIER [county/county-equivalent]: deaths=0, injuries=0, damage=$20,000 (Flash Flood, Flood)
   WV-PROC-2025-06-15-declares-state-of-emergency-in-marion-county PRESTON [county/county-equivalent]: deaths=0, injuries=0, damage=$20,000 (Flash Flood)
@@ -2026,13 +1938,7 @@ Areas with reported deaths, injuries, or damage:
   WV-PROC-2025-06-15-declares-state-of-emergency-in-ohio-county MONONGALIA [county/county-equivalent]: deaths=0, injuries=0, damage=$15,000 (Flash Flood)
   WV-PROC-2025-05-13-declares-state-of-emergency-in-mineral-county BERKELEY [county/county-equivalent]: deaths=0, injuries=0, damage=$12,000 (Flood, Thunderstorm Wind)
   WV-PROC-2025-04-02-declares-state-of-preparedness-in-all-55-counties WAYNE [county/county-equivalent]: deaths=0, injuries=0, damage=$11,250 (Flash Flood, Flood, Hail, Thunderstorm Wind)
-  WV-PROC-2025-04-02-declares-state-of-preparedness-in-all-55-counties MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$11,000 (Thunderstorm Wind)
-  WV-PROC-2025-04-02-declares-state-of-preparedness-in-all-55-counties OHIO [county/county-equivalent]: deaths=0, injuries=0, damage=$11,000 (Thunderstorm Wind)
-  WV-PROC-2025-05-13-declares-state-of-emergency-in-mineral-county LOGAN [county/county-equivalent]: deaths=0, injuries=0, damage=$10,750 (Thunderstorm Wind)
-  WV-PROC-2025-01-05-state-of-emergency-issued-january-5-2025-extreme-cold-and-wi EASTERN GREENBRIER [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000 (Winter Storm)
-  WV-PROC-2025-01-05-state-of-emergency-issued-january-5-2025-extreme-cold-and-wi WESTERN GREENBRIER [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000 (Winter Storm)
-  WV-PROC-2025-05-13-declares-state-of-emergency-in-mineral-county HAMPSHIRE [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000 (Flood, Thunderstorm Wind)
-  Showing the 25 highest-consequence areas; all 84 are retained in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 98 are retained in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
@@ -2077,7 +1983,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
 WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR
-{"actions": 62, "declarations": 4, "relationships": 19, "overrides": 4, "review": 5}
+{"actions": 63, "declarations": 4, "relationships": 19, "overrides": 4, "review": 5}
 
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wyoming/hazard_overrides.csv
 Wrote 39 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_matches.csv.tmp
