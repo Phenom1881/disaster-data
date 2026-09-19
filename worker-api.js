@@ -60,6 +60,16 @@
  *     compatibility_date = "2026-01-01"
  *
  *   Route it at api.disasterdata.io/* separately from femaproxy's own route.
+ *
+ * Rate limiting: uses Cloudflare's native Rate Limiting binding (not a
+ * hand-rolled counter, so it costs nothing extra and needs no storage of
+ * its own). Keyed per client IP (CF-Connecting-IP), 60 requests per 60
+ * seconds by default, generous enough for normal use and a real integrator
+ * doing a full state pull, but enough to stop one runaway script from
+ * hammering the free tier. The binding itself is declared in wrangler.toml,
+ * not here, so raising or lowering the limit is a config change, not a
+ * code change. A request over the limit gets a 429 with Retry-After, not a
+ * silent drop, so a well-behaved client can back off correctly.
  */
 
 const SITE_ORIGIN = "https://www.disasterdata.io";
@@ -480,8 +490,36 @@ async function handleStateSummary(abbreviationRaw) {
   });
 }
 
+/**
+ * Applies the Rate Limiting binding, if one is configured, and returns a
+ * 429 Response when the caller is over the limit, or null when the request
+ * may proceed. Keyed per client IP so one noisy caller cannot exhaust the
+ * limit for everyone else. If the binding is missing (e.g. running under
+ * `wrangler dev` without ratelimits configured, or a deploy that hasn't
+ * added it yet), this skips the check rather than failing the request,
+ * since an unconfigured limiter is a deploy-config gap, not a reason to
+ * take the whole API down.
+ */
+async function enforceRateLimit(request, env) {
+  const limiter = env && env.API_RATE_LIMITER;
+  if (!limiter) {
+    return null;
+  }
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const { success } = await limiter.limit({ key: ip });
+  if (success) {
+    return null;
+  }
+  return jsonResponse(
+    {
+      error: "Rate limit exceeded. Please slow down and retry shortly.",
+    },
+    429
+  );
+}
+
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
 
@@ -497,6 +535,11 @@ export default {
 
     if (path === "/v1/health") {
       return jsonResponse({ status: "ok" });
+    }
+
+    const limited = await enforceRateLimit(request, env);
+    if (limited) {
+      return limited;
     }
 
     let match;

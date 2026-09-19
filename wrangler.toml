@@ -12,3 +12,14 @@ routes = [
 
 [observability]
 enabled = true
+
+# Native Cloudflare rate limiting, checked in worker-api.js's fetch handler
+# before any real work runs. namespace_id just needs to be unique among any
+# rate limiters this account defines elsewhere (femaproxy has none, so 1001
+# is free) - it is not a Cloudflare resource you create separately, wrangler
+# provisions it on deploy. 60 requests per 60 seconds per client IP: raise
+# or lower this here, no code change needed.
+[[ratelimits]]
+name = "API_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }
