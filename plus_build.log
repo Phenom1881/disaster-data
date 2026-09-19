@@ -784,7 +784,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 94 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 86 relationship(s), 4 original weather declaration(s).
 
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1512,6 +1512,9 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp.
 
 SD: 25 actions, 98 federal declarations; 2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending
+/opt/hostedtoolcache/Python/3.11.16/x64/bin/python: can't open file '/home/runner/work/disaster-data/disaster-data/plus/tennessee/tn_eo_scraper.py': [Errno 2] No such file or directory
+
+WARNING TN: Collection failed: Tennessee adapter: scrape failed
 Wrote 154 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_matches.csv.tmp
 Wrote severity summary (106 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp
 
@@ -1537,7 +1540,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
-TN: 2 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending
+TN: 2 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending; Collection failed: Tennessee adapter: scrape failed
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-PROCLAMATION-2026-07-14-governor-abbott-issues-severe-storm-disaster-proclamation-in-july-2026: no matching storm events found in the date window.
 TX-PROCLAMATION-2021-04-15-governor-abbott-issues-disaster-declaration-in-response-to-drought-conditions-in-april-2021: no matching storm events found in the date window.
@@ -1580,7 +1583,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
 TX: 59 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
-{"actions": 557, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
+{"actions": 558, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
 UT-PROC-E1536D0F537ACA7F: no matching storm events found in the date window.
