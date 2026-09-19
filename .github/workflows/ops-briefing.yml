@@ -2,9 +2,8 @@ name: Capture FEMA Daily Ops Briefing
 
 on:
   schedule:
-    # 13:45 UTC = 9:45am ET (EDT) / 8:45am ET (EST).
-    # FEMA publishes the briefing around 8:30am ET; this gives the
-    # Disaster Center mirror time to update before the job runs.
+    # 13:45 UTC = 9:45am ET during daylight saving time
+    # and 8:45am ET during standard time.
     - cron: "45 13 * * *"
   workflow_dispatch: {}
 
@@ -14,6 +13,7 @@ permissions:
 jobs:
   capture:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,12 +29,46 @@ jobs:
       - name: Fetch briefing
         env:
           DD_OUT: archive
+          KTN_FEED_URL: ${{ secrets.KTN_FEED_URL }}
+          STALE_MAX_DAYS: "3"
         run: |
           FETCH=$(find scripts -iname 'fetch*ops*brief*.py' | head -n1)
+
+          if [ -z "$FETCH" ]; then
+            echo "ERROR: FEMA Daily Ops fetch script not found."
+            exit 1
+          fi
+
           echo "Using fetch script: $FETCH"
           python "$FETCH"
 
       - name: Build ops briefing pages
+        env:
+          DD_OUT: archive
+        run: |
+          BUILD=$(find scripts -iname 'build*ops*pages*.py' | head -n1)
+
+          if [ -z "$BUILD" ]; then
+            echo "ERROR: Ops briefing page builder not found."
+            exit 1
+          fi
+
+          echo "Using build script: $BUILD"
+          python "$BUILD"
+
+      - name: Commit new briefing(s) and pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add archive/ops-briefings ops-briefings
+
+          if git diff --cached --quiet; then
+            echo "No new briefing or page changes to commit."
+          else
+            git commit -m "Archive FEMA Daily Ops Briefing"
+            git push
+          fi      - name: Build ops briefing pages
         env:
           DD_OUT: archive
         run: |
