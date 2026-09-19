@@ -112,6 +112,28 @@ section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
 
 .terr-note{margin-top:16px;font-size:12.5px;color:var(--ink-3);line-height:1.6;}
 
+/* Approvals vs denials by president */
+.pres-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;color:var(--ink-2);}
+.pres-legend .sw{display:inline-flex;align-items:center;gap:6px;}
+.pres-legend .sw i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+.pres-grid{display:flex;flex-direction:column;gap:2px;}
+.pres-row{display:grid;grid-template-columns:1.5fr 2.2fr auto auto;align-items:center;gap:16px;padding:13px 10px;border-bottom:1px solid var(--rule);border-radius:6px;transition:background .12s;}
+.pres-row:hover{background:var(--paper-2);}
+.pres-who{min-width:0;}
+.pres-name{font-weight:600;font-size:15px;letter-spacing:-.2px;}
+.pres-term{font-size:12px;color:var(--ink-3);font-weight:400;}
+.pres-dates{font-size:11.5px;color:var(--ink-3);margin-top:2px;}
+.pres-bar-track{height:15px;background:var(--paper-3);border-radius:3px;overflow:hidden;display:flex;min-width:60px;}
+.pres-bar-appr{height:100%;background:var(--accent);}
+.pres-bar-den{height:100%;background:var(--ember);}
+.pres-count{font-size:12px;color:var(--ink-2);text-align:right;white-space:nowrap;}
+.pres-rate{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;text-align:right;min-width:52px;}
+@media(max-width:720px){
+  .pres-row{grid-template-columns:1fr auto;row-gap:6px;}
+  .pres-bar-track{grid-column:1/-1;order:3;}
+  .pres-count{order:4;text-align:left;}
+}
+
 footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
 .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
 .foot a{color:var(--accent);text-decoration:none;}
@@ -204,6 +226,25 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   </section>
 </div>
 
+<!-- ===== Approvals vs denials by president ===== -->
+<div class="container">
+  <section id="by-president">
+    <div class="shead">
+      <div>
+        <h2>Approvals vs. denials, by president</h2>
+        <p>Every declaration request since FY2000, grouped by whose administration was in office on the date FEMA acted on it.</p>
+      </div>
+    </div>
+    <div class="pres-legend">
+      <span class="sw"><i style="background:var(--accent)"></i>Approved</span>
+      <span class="sw"><i style="background:var(--ember)"></i>Denied</span>
+    </div>
+    <div class="pres-grid" id="pres-rows">
+      <p class="ll-placeholder">Loading&hellip;</p>
+    </div>
+  </section>
+</div>
+
 </div>
 
 <footer>
@@ -252,7 +293,60 @@ let DENS={"ID":[["24176","Major Disaster","Fire","2024-10-07"],["17018","Major D
 
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function fdateFull(iso){ var p=(iso||'').split('-'); if(p.length<3) return iso||''; return MON[+p[1]-1]+' '+(+p[2])+', '+p[0]; }
+function fdateShort(iso){ var p=(iso||'').split('-'); if(p.length<3) return iso||''; return MON[+p[1]-1]+' '+p[0]; }
 const TCODE={'Major Disaster':'DR','Emergency':'EM','Fire Management Assistance':'FM'};
+
+/* ---- Approvals vs denials, by president ----
+   Ranges use the actual inauguration dates. Anything dated before Jan 20, 2001
+   (the start of the FEMA declaration data, FY2000 forward) falls to Bill Clinton's
+   last stretch in office. */
+const PRESIDENTS=[
+  {name:'Bill Clinton', term:'end of term', start:null, end:'2001-01-19'},
+  {name:'George W. Bush', term:null, start:'2001-01-20', end:'2009-01-19'},
+  {name:'Barack Obama', term:null, start:'2009-01-20', end:'2017-01-19'},
+  {name:'Donald Trump', term:'1st term', start:'2017-01-20', end:'2021-01-19'},
+  {name:'Joe Biden', term:null, start:'2021-01-20', end:'2025-01-19'},
+  {name:'Donald Trump', term:'2nd term', start:'2025-01-20', end:null}
+];
+function bucketForDate(iso){
+  if(!iso) return null;
+  for(var i=0;i<PRESIDENTS.length;i++){
+    var p=PRESIDENTS[i];
+    if((p.start==null||iso>=p.start)&&(p.end==null||iso<=p.end)) return i;
+  }
+  return null;
+}
+function renderPresidents(){
+  var el=document.getElementById('pres-rows');
+  if(!el) return;
+  if(!window.BROWSE || !window.BROWSE.length){
+    el.innerHTML='<p class="ll-placeholder">This view needs the live declaration feed (data.js) to count approvals, not just the baked-in denial snapshot. It will populate once that file is present.</p>';
+    return;
+  }
+  var buckets=PRESIDENTS.map(function(p){ return {name:p.name,term:p.term,start:p.start,end:p.end,approved:0,denied:0}; });
+  window.BROWSE.forEach(function(r){
+    var d=(r.declarationDate||r.date||r.incidentBeginDate||'').slice(0,10);
+    var i=bucketForDate(d);
+    if(i!=null) buckets[i].approved++;
+  });
+  (window.DENIALS||[]).forEach(function(r){
+    var d=(r.declarationRequestDate||'').slice(0,10);
+    var i=bucketForDate(d);
+    if(i!=null) buckets[i].denied++;
+  });
+  var rows=buckets.filter(function(b){ return (b.approved+b.denied)>0; });
+  el.innerHTML=rows.map(function(b){
+    var total=b.approved+b.denied;
+    var rate=total?(b.denied/total*100):0;
+    var apprW=total?(b.approved/total*100):0;
+    var denW=total?(b.denied/total*100):0;
+    var dateLabel=(b.start?fdateShort(b.start):'start of data')+'  to  '+(b.end?fdateShort(b.end):'present');
+    return '<div class="pres-row"><div class="pres-who"><div class="pres-name">'+b.name+(b.term?' <span class="pres-term">('+b.term+')</span>':'')+'</div><div class="pres-dates">'+dateLabel+'</div></div>'
+      +'<div class="pres-bar-track"><div class="pres-bar-appr" style="width:'+apprW+'%"></div><div class="pres-bar-den" style="width:'+denW+'%"></div></div>'
+      +'<div class="pres-count">'+b.approved.toLocaleString()+' approved &middot; '+b.denied.toLocaleString()+' denied</div>'
+      +'<div class="pres-rate">'+rate.toFixed(1)+'<small style="font-size:.6em">% denied</small></div></div>';
+  }).join('');
+}
 
 /* ---- Flatten DENS into one list, newest first ---- */
 function flatDenials(){
@@ -319,6 +413,7 @@ function renderRanked(){
 renderLatest();
 renderStats();
 renderRanked();
+renderPresidents();
 </script>
 
 <!-- ---- Choropleth map ---- -->
