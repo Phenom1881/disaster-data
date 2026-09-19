@@ -69,7 +69,7 @@ CSS = """
   --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
   --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
   --rule:#e0d8c5;--rule-2:#cfc6b0;
-  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;--ember:#c85c2e;
   --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -77,15 +77,6 @@ html{scroll-behavior:smooth;}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 ::selection{background:var(--accent);color:#fff;}
 .wrap{position:relative;z-index:1;}
-
-nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
-.brand{display:flex;align-items:baseline;gap:10px;}
-.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);text-decoration:none;}
-.navlinks{display:flex;align-items:center;gap:4px;}
-.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
-.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
-.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
-@media(max-width:720px){nav{height:auto;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:9px;padding-top:11px;padding-bottom:11px;}.navlinks{flex-wrap:wrap;gap:4px;}}
 
 .container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
 .section{padding:clamp(40px,6vw,72px) 0;}
@@ -129,15 +120,10 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;margin-top:40px;}
 """
 
 
-NAV = """<nav>
-  <div class="brand"><a class="mark" href="/">Disaster Data</a></div>
-  <div class="navlinks"><a href="/#">Overview</a><a href="/#board">Explore</a><a href="/map.html">Map</a><a href="/states/index.html">States</a><a href="/public-assistance-projects.html">Funding</a><a href="/denials.html">Denials</a><a href="/about.html">About</a><a href="/ops-briefings/index.html" class="on">Daily Ops Brief</a></div>
-</nav>"""
-
 FOOTER = """<footer>
   <div class="container">
     <div class="foot">
-      <div class="disc">FEMA's Daily Operations Briefing is not published anywhere else online; it only goes out to GovDelivery subscribers. This archive captures each day's PDF as-is, with no text or table extraction.</div>
+      <div class="disc">FEMA distributes the Daily Operations Briefing through GovDelivery. This archive preserves each captured PDF as-is, with no text or table extraction.</div>
       <div style="text-align:right;">DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="/">Back to Disaster Data</a></div>
     </div>
   </div>
@@ -151,7 +137,7 @@ def page_shell(title: str, body: str, description: str = "") -> str:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>{title}</title>
+<title>Disaster Data | {title}</title>
 <meta name="description" content="{description}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,7 +146,7 @@ def page_shell(title: str, body: str, description: str = "") -> str:
 </head>
 <body>
 <div class="wrap">
-{NAV}
+<script src="/nav.js"></script>
 <div class="container">
 <div class="section narrow">
 {body}
@@ -206,13 +192,12 @@ def build_index(rows: list[dict]) -> None:
 
     body = f"""<div class="kicker">DisasterData.IO</div>
 <h1 class="headline">FEMA Daily Operations Briefing Archive</h1>
-<p class="standfirst">FEMA does not publish these briefings anywhere online;
-they only go out to GovDelivery subscribers. This archive captures each
-day's PDF so anyone can look back and see what FEMA's National Watch
-Center was reporting on any given day, including declaration requests
-as they move through the process.</p>
+<p class="standfirst">FEMA distributes the Daily Operations Briefing through GovDelivery.
+This archive preserves captured briefing PDFs so anyone can look back and see what FEMA's
+National Watch Center was reporting on a given day, including declaration requests as they
+move through the process.</p>
 
-<h2 class="section-h">Last {LAST_N_DAYS_SHOWN} days</h2>
+<h2 class="section-h">Latest {LAST_N_DAYS_SHOWN} briefings</h2>
 <ul class="briefing-list">
 {items}
 </ul>
@@ -225,7 +210,7 @@ as they move through the process.</p>
         page_shell(
             "FEMA Daily Ops Briefing Archive",
             body,
-            "A daily archive of FEMA's Daily Operations Briefing, otherwise unpublished anywhere online.",
+            "A browsable archive of captured FEMA Daily Operations Briefing PDFs.",
         ),
         encoding="utf-8",
     )
@@ -295,7 +280,7 @@ def build_archive_hub(rows: list[dict]) -> None:
 <ul class="briefing-list">
 {items}
 </ul>
-<a class="archive-link" href="/ops-briefings/">&larr; Back to last {LAST_N_DAYS_SHOWN} days</a>
+<a class="archive-link" href="/ops-briefings/">&larr; Back to latest briefings</a>
 """
     ARCHIVE_HUB_DIR.mkdir(parents=True, exist_ok=True)
     (ARCHIVE_HUB_DIR / "index.html").write_text(
