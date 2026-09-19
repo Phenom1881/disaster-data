@@ -1,44 +1,44 @@
 #!/usr/bin/env python3
 """Build DisasterData Plus coverage pages for one or more states.
- 
+
 This builder is deliberately safe to run nationally. It creates a page for
 every selected state, reads any state pipeline outputs already present under
 ``plus/<state-slug>/``, and labels incomplete coverage honestly. It does not
 pretend that a missing state adapter means the state has no emergencies.
- 
+
 Three layers are shown per state, kept visually and structurally distinct:
   1. Federal FEMA declarations, read from data/decl-index/<ABBR>.json
   2. State-issued emergency actions, read from the state's own action CSV
   3. NOAA/NWS Storm Events evidence, read from the state's eo_storm_join.py
      output (individual matched events, not just counts)
- 
+
 A combined event crosswalk then joins state actions to their NOAA matches and,
 where one exists within the matching window, a federal declaration. When no
 federal declaration falls in that window the crosswalk says so explicitly
 ("No corresponding federal declaration found") rather than leaving a blank
 cell, since silence would be read as "not checked" rather than "checked, none
 found."
- 
+
 The crosswalk here is an automated proximity match on date and state, exactly
 like eo_storm_join.py's own NOAA matching. It is not the same thing as an
 accepted, human-reviewed link, and the page says so. If a stricter
 reviewed-only crosswalk is wanted later, gate this section on an accepted
 review file the way the original state-evidence design proposed, rather than
 publishing every automated candidate as-is.
- 
+
 Examples (run from the repository root):
- 
+
     python scripts/build-plus.py --states all
     python scripts/build-plus.py --states VA,NY,NJ,PA
     python scripts/build-plus.py --states VA --collect --join-storms
- 
+
 An optional state adapter lives in the corresponding state directory and must
 expose ``collect(workdir, scripts_dir) -> (csv_path, coverage_note)``. Virginia's
 existing ``plus/virginia/virginia.py`` already follows that contract.
 """
- 
+
 from __future__ import annotations
- 
+
 import argparse
 import csv
 import html
@@ -49,18 +49,23 @@ import subprocess
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
- 
- 
+
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_MANIFEST = SCRIPT_DIR / "plus" / "state-manifest.json"
- 
+
 # How far a state action's signing date may sit from a federal declaration's
 # incident window and still be offered as a candidate match. Wider than
 # eo_storm_join.py's own NOAA window (3 days) because a federal declaration
 # is often filed weeks after the state emergency that preceded it.
 FEDERAL_MATCH_WINDOW_DAYS = 21
- 
- 
+
+# Keep large detail tables from making each state page unnecessarily heavy.
+# These caps affect rendered rows only; metrics and count badges remain uncapped.
+FEDERAL_ROWS_CAP = 200
+NOAA_ROWS_CAP = 300
+
+
 def load_manifest(path: Path) -> list[dict]:
     with path.open(encoding="utf-8") as handle:
         payload = json.load(handle)
@@ -80,8 +85,8 @@ def load_manifest(path: Path) -> list[dict]:
             raise ValueError(f"Duplicate state abbreviation in manifest: {abbreviation}")
         seen.add(abbreviation)
     return states
- 
- 
+
+
 def select_states(states: list[dict], requested: str) -> list[dict]:
     if requested.strip().lower() == "all":
         return states
@@ -106,8 +111,8 @@ def select_states(states: list[dict], requested: str) -> list[dict]:
     if not selected:
         raise ValueError("No states selected")
     return selected
- 
- 
+
+
 def import_adapter(path: Path):
     module_name = "disasterdata_plus_adapter_" + path.parent.name.replace("-", "_")
     spec = importlib.util.spec_from_file_location(module_name, path)
@@ -118,8 +123,8 @@ def import_adapter(path: Path):
     if not hasattr(module, "collect"):
         raise RuntimeError(f"Adapter does not expose collect(): {path}")
     return module
- 
- 
+
+
 def candidate_action_files(state: dict) -> list[str]:
     configured = state.get("action_files", [])
     defaults = [
@@ -130,27 +135,27 @@ def candidate_action_files(state: dict) -> list[str]:
         "state_actions.csv",
     ]
     return list(dict.fromkeys(configured + defaults))
- 
- 
+
+
 def locate_first(state_dir: Path, names: list[str]) -> Path | None:
     for name in names:
         path = state_dir / name
         if path.exists() and path.is_file():
             return path
     return None
- 
- 
+
+
 def read_csv_rows(path: Path | None) -> list[dict]:
     if path is None:
         return []
     with path.open(encoding="utf-8-sig", newline="") as handle:
         return list(csv.DictReader(handle))
- 
- 
+
+
 def clean(value) -> str:
     return str(value or "").strip()
- 
- 
+
+
 def normalized_action(row: dict, abbreviation: str) -> dict:
     action_number = clean(
         row.get("action_number")
@@ -190,8 +195,8 @@ def normalized_action(row: dict, abbreviation: str) -> dict:
         "governor": clean(row.get("governor")),
         "source_url": source_url,
     }
- 
- 
+
+
 def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(state_dir, candidate_action_files(state))
     rows = [normalized_action(row, state["abbreviation"]) for row in read_csv_rows(path)]
@@ -203,13 +208,13 @@ def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path |
         unique.values(), key=lambda row: row.get("date_signed", ""), reverse=True
     )
     return actions, path
- 
- 
+
+
 def ensure_declaration_id_column(action_path: Path, abbreviation: str) -> Path:
     """Guarantee the CSV handed to eo_storm_join.py has an explicit
     declaration_id column, computed with the exact same formula
     normalized_action() uses above.
- 
+
     Without this, a state whose source CSV has no declaration_id column ends
     up with TWO independently-synthesized ids: this file's own
     normalized_action() produces one shape (state-prefixed, e.g.
@@ -221,7 +226,7 @@ def ensure_declaration_id_column(action_path: Path, abbreviation: str) -> Path:
     eo_storm_join.py genuinely found real ones. Virginia is unaffected today
     only because its own CSV already supplies a real declaration_id column;
     this only matters once a state adapter's output does not.
- 
+
     Writes a sibling file rather than mutating the original, and returns the
     original path unchanged if a declaration_id column is already present.
     """
@@ -236,12 +241,12 @@ def ensure_declaration_id_column(action_path: Path, abbreviation: str) -> Path:
         writer.writeheader()
         writer.writerows(rows)
     return enriched_path
- 
- 
+
+
 def count_rows(path: Path | None) -> int:
     return len(read_csv_rows(path)) if path else 0
- 
- 
+
+
 def load_federal_declarations(repo_root: Path, abbreviation: str) -> list[dict]:
     path = repo_root / "data" / "decl-index" / f"{abbreviation.upper()}.json"
     if not path.exists():
@@ -252,16 +257,16 @@ def load_federal_declarations(repo_root: Path, abbreviation: str) -> list[dict]:
         return []
     records = payload if isinstance(payload, list) else payload.get("declarations", [])
     return sorted(records, key=lambda row: row.get("date", "") or row.get("begin", ""), reverse=True)
- 
- 
+
+
 def parse_iso_date(value) -> date | None:
     text = clean(value)[:10]
     try:
         return datetime.strptime(text, "%Y-%m-%d").date()
     except ValueError:
         return None
- 
- 
+
+
 def load_storm_match_rows(state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(
         state_dir,
@@ -272,8 +277,8 @@ def load_storm_match_rows(state_dir: Path) -> tuple[list[dict], Path | None]:
         ],
     )
     return read_csv_rows(path), path
- 
- 
+
+
 def load_severity_rows(state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(
         state_dir,
@@ -284,8 +289,8 @@ def load_severity_rows(state_dir: Path) -> tuple[list[dict], Path | None]:
         ],
     )
     return read_csv_rows(path), path
- 
- 
+
+
 def group_by_declaration(rows: list[dict]) -> dict[str, list[dict]]:
     grouped: dict[str, list[dict]] = {}
     for row in rows:
@@ -294,8 +299,8 @@ def group_by_declaration(rows: list[dict]) -> dict[str, list[dict]]:
             continue
         grouped.setdefault(key, []).append(row)
     return grouped
- 
- 
+
+
 def state_metrics(
     state: dict,
     actions: list[dict],
@@ -309,8 +314,8 @@ def state_metrics(
         "storm_match_rows": len(storm_rows),
         "severity_rows": len(severity_rows),
     }
- 
- 
+
+
 def find_federal_match(action: dict, federal_declarations: list[dict]) -> dict | None:
     signed = parse_iso_date(action.get("date_signed"))
     if signed is None or not federal_declarations:
@@ -328,8 +333,8 @@ def find_federal_match(action: dict, federal_declarations: list[dict]) -> dict |
             if best_gap is None or gap < best_gap:
                 best, best_gap = declaration, gap
     return best
- 
- 
+
+
 def build_crosswalk(
     actions: list[dict],
     federal_declarations: list[dict],
@@ -352,12 +357,12 @@ def build_crosswalk(
             }
         )
     return rows
- 
- 
+
+
 def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     """Move each (tmp_path, final_path) into place, with rollback if any
     individual move fails partway through the set.
- 
+
     Each single tmp -> final move is atomic (Path.replace()), but the set of
     moves together is not one atomic transaction - if a later move in the
     list raises after an earlier one already succeeded, the final files
@@ -397,19 +402,19 @@ def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     for backup_path, _ in backups:
         backup_path.unlink(missing_ok=True)
     return (True, "")
- 
- 
+
+
 def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool]:
     """Run eo_storm_join.py for one state, applying its reviewed sidecar
     overrides automatically when present.
- 
+
     Returns (note, failed). failed is True whenever the join itself, the
     zone-resolution step, or the final file-promotion step fails - a
     malformed hazard_category_override (inline or in hazard_overrides.csv)
     must not be allowed to leave an automated build looking successful, so
     main() propagates this into the process exit code unconditionally, not
     only under --strict.
- 
+
     eo_storm_join.py and resolve_zones_to_counties.py write to *.tmp paths
     here, never directly to eo_storm_matches.csv / eo_storm_severity_summary.csv
     / severity_resolved.csv. Those real paths are only overwritten once
@@ -424,7 +429,7 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     join_script = state_dir / "eo_storm_join.py"
     if not join_script.exists():
         return ("Storm join skipped: eo_storm_join.py is not installed in the state folder", False)
- 
+
     # All final and temporary paths are defined together, up front,
     # including the zone-resolution outputs (used only conditionally below)
     # so every one of them can be cleared before this run starts.
@@ -434,10 +439,10 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     matches_tmp = state_dir / "eo_storm_matches.csv.tmp"
     severity_tmp = state_dir / "eo_storm_severity_summary.csv.tmp"
     resolved_tmp = state_dir / "severity_resolved.csv.tmp"
- 
+
     for temporary_path in (matches_tmp, severity_tmp, resolved_tmp):
         temporary_path.unlink(missing_ok=True)
- 
+
     cmd = [
         sys.executable,
         str(join_script),
@@ -471,7 +476,7 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
         matches_tmp.unlink(missing_ok=True)
         severity_tmp.unlink(missing_ok=True)
         return (f"Storm join failed with exit code {result.returncode}", True)
- 
+
     if not matches_tmp.exists() or not severity_tmp.exists():
         matches_tmp.unlink(missing_ok=True)
         severity_tmp.unlink(missing_ok=True)
@@ -481,7 +486,7 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
             f"{severity_tmp.name}) - treated as a failure",
             True,
         )
- 
+
     resolver = state_dir / "resolve_zones_to_counties.py"
     zone_files = sorted(state_dir.glob("bp*.dbx"))
     if resolver.exists() and zone_files and severity_tmp.exists():
@@ -527,7 +532,7 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
         if not ok:
             return (message, True)
         return ("Storm join and forecast-zone resolution completed", False)
- 
+
     # No zone resolution was attempted - the join itself is the last step,
     # so its outputs move into place now.
     ok, message = _promote_outputs([(matches_tmp, matches), (severity_tmp, severity)])
@@ -537,8 +542,8 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
         "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
         False,
     )
- 
- 
+
+
 def coverage_label(state: dict, actions: list[dict], collection_note: str) -> str:
     if collection_note:
         return collection_note
@@ -551,12 +556,12 @@ def coverage_label(state: dict, actions: list[dict], collection_note: str) -> st
     if state["adapter_status"] == "planned":
         return "State-source adapter planned; state-action coverage not yet available"
     return "State-source adapter not yet implemented"
- 
- 
+
+
 def esc(value) -> str:
     return html.escape(str(value or ""), quote=True)
- 
- 
+
+
 def action_rows(actions: list[dict]) -> str:
     if not actions:
         return (
@@ -578,35 +583,19 @@ def action_rows(actions: list[dict]) -> str:
             "</tr>"
         )
     return "\n".join(output)
- 
- 
-# Both caps exist for page-weight reasons, not data-quality ones: a table
-# renders every row server-side (there is no pagination), so an uncapped
-# state with several thousand NOAA matches would ship a multi-megabyte
-# page. The cap silently dropped rows with no on-page indication until
-# now - render_state_page() calls truncation_note() below whenever the
-# real count exceeds the cap, so a reader can tell a table is partial
-# rather than assuming 200 or 300 is the whole story.
-FEDERAL_ROWS_CAP = 200
-NOAA_ROWS_CAP = 300
- 
- 
-def truncation_note(total: int, shown: int) -> str:
-    """A table this cuts off needs a visible note, not a silent drop.
- 
-    The client-side search box (table_filter/table_script) only ever
-    searches rows actually present in the DOM, so it cannot find anything
-    past the cap either - the note says so, rather than implying the
-    search box reaches records it cannot see."""
-    if total <= shown:
+
+
+def truncation_note(shown: int, total: int, label: str) -> str:
+    """Explain when a rendered table shows fewer rows than its full count."""
+    if shown >= total:
         return ""
     return (
-        f'<p class="table-note">Showing the first {shown:,} of {total:,} records. '
+        f'<p class="table-note">Showing the first {shown:,} of {total:,} {esc(label)}. '
         "The search box above searches only these; it does not reach records "
         "past the cut-off.</p>"
     )
- 
- 
+
+
 def federal_declaration_rows(federal_declarations: list[dict]) -> str:
     if not federal_declarations:
         return (
@@ -628,8 +617,8 @@ def federal_declaration_rows(federal_declarations: list[dict]) -> str:
             "</tr>"
         )
     return "\n".join(output)
- 
- 
+
+
 def noaa_event_rows(storm_rows: list[dict]) -> str:
     if not storm_rows:
         return (
@@ -649,8 +638,8 @@ def noaa_event_rows(storm_rows: list[dict]) -> str:
             "</tr>"
         )
     return "\n".join(output)
- 
- 
+
+
 def crosswalk_rows(crosswalk: list[dict]) -> str:
     if not crosswalk:
         return (
@@ -676,16 +665,16 @@ def crosswalk_rows(crosswalk: list[dict]) -> str:
             "</tr>"
         )
     return "\n".join(output)
- 
- 
+
+
 def sortable_header(label: str, column: int) -> str:
     return (
         f'<th><button class="sort-button" type="button" data-column="{column}" '
         f'aria-label="Sort by {esc(label)}">{esc(label)} <span aria-hidden="true">↕</span>'
         "</button></th>"
     )
- 
- 
+
+
 def table_filter(table_id: str, label: str) -> str:
     return (
         '<div class="table-tools">'
@@ -694,8 +683,8 @@ def table_filter(table_id: str, label: str) -> str:
         f'data-table="{esc(table_id)}" type="search" placeholder="Search this table…">'
         "</div>"
     )
- 
- 
+
+
 def table_script() -> str:
     return """
 <script>
@@ -709,7 +698,7 @@ document.querySelectorAll('.table-search').forEach((input) => {
     });
   });
 });
- 
+
 document.querySelectorAll('table.sortable').forEach((table) => {
   table.querySelectorAll('.sort-button').forEach((button) => {
     button.addEventListener('click', () => {
@@ -736,11 +725,11 @@ document.querySelectorAll('table.sortable').forEach((table) => {
   });
 });
 </script>"""
- 
- 
+
+
 def shared_css(prefix: str = "") -> str:
     """DisasterData.IO's site-wide design tokens, applied to the Plus pages.
- 
+
     NOTE: these color/type tokens (--paper/--accent/--ember/--ink, Fraunces +
     Public Sans) were carried over from the live main site. If the main site
     keeps a single shared stylesheet (e.g. /styles.css) rather than repeating
@@ -824,11 +813,11 @@ def shared_css(prefix: str = "") -> str:
     footer {{ margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
       color:var(--muted); font-size:.85rem; }}
     """
- 
- 
+
+
 def brand_fonts() -> str:
     """Fraunces + Public Sans, matching the main site's typography.
- 
+
     Swap this block for the exact font-loading snippet used elsewhere on
     DisasterData.IO (e.g. a self-hosted @font-face block) if the main site
     does not load these from Google Fonts, so every page requests fonts the
@@ -841,16 +830,16 @@ def brand_fonts() -> str:
         '9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" '
         'rel="stylesheet">'
     )
- 
- 
+
+
 def brand_header(breadcrumb: str) -> str:
     """The site's one shared nav (served from /nav.js at the root) plus a
     Plus-specific breadcrumb underneath it, matching how the rest of the
     site carries only <script src="/nav.js"></script> and defines no nav of
     its own."""
     return f'<script src="/nav.js"></script><nav class="dd-breadcrumb">{breadcrumb}</nav>'
- 
- 
+
+
 def render_state_page(
     state: dict,
     actions: list[dict],
@@ -889,16 +878,16 @@ def render_state_page(
   <div class="metric"><strong>{esc(extract_coverage_start_label(state['abbreviation'], coverage, metrics['action_count']))}</strong>state coverage begins</div>
 </section>
 <p><a href="/states/{esc(state['slug'])}.html">Federal declaration overview</a> &middot; {source_link}</p>
- 
+
 <details class="layer primary" open>
 <summary><span>Federal FEMA declarations</span><span class="count-badge">{metrics['federal_declaration_count']:,} records</span></summary>
 <div class="details-body"><p class="note">DR, EM, and FM declarations for {name} from the site's national FEMA dataset.</p>
 {table_filter('federal-table', 'federal declarations')}
 <div class="actions"><table id="federal-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Type', 2)}{sortable_header('Title', 3)}{sortable_header('Incident type', 4)}{sortable_header('Incident period', 5)}</tr></thead>
 <tbody>{federal_declaration_rows(federal_declarations)}</tbody></table></div>
-{truncation_note(metrics['federal_declaration_count'], min(metrics['federal_declaration_count'], FEDERAL_ROWS_CAP))}</div>
+{truncation_note(FEDERAL_ROWS_CAP, metrics['federal_declaration_count'], 'federal declarations') if metrics['federal_declaration_count'] > FEDERAL_ROWS_CAP else ''}</div>
 </details>
- 
+
 <details class="layer">
 <summary><span>State weather declarations</span><span class="count-badge">{metrics['action_count']:,} records</span></summary>
 <div class="details-body"><p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
@@ -906,7 +895,7 @@ def render_state_page(
 <div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}</tr></thead>
 <tbody>{action_rows(actions)}</tbody></table></div></div>
 </details>
- 
+
 <details class="layer">
 <summary><span>Combined event crosswalk</span><span class="count-badge">{len(crosswalk):,} records</span></summary>
 <div class="details-body"><p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within {FEDERAL_MATCH_WINDOW_DAYS} days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
@@ -914,23 +903,23 @@ def render_state_page(
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr>{sortable_header('State action', 0)}{sortable_header('NOAA matches', 1)}{sortable_header('Matched areas', 2)}{sortable_header('Federal declaration', 3)}</tr></thead>
 <tbody>{crosswalk_rows(crosswalk)}</tbody></table></div></div>
 </details>
- 
+
 <details class="layer">
 <summary><span>NOAA/NWS matched event details</span><span class="count-badge">{metrics['storm_match_rows']:,} rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 {table_filter('noaa-table', 'NOAA events')}
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Area', 1)}{sortable_header('Area type', 2)}{sortable_header('Hazard', 3)}{sortable_header('Deaths / injuries', 4)}{sortable_header('Property damage', 5)}</tr></thead>
 <tbody>{noaa_event_rows(storm_rows)}</tbody></table></div>
-{truncation_note(metrics['storm_match_rows'], min(metrics['storm_match_rows'], NOAA_ROWS_CAP))}</div>
+{truncation_note(NOAA_ROWS_CAP, metrics['storm_match_rows'], 'NOAA event rows') if metrics['storm_match_rows'] > NOAA_ROWS_CAP else ''}</div>
 </details>
- 
+
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider {FEDERAL_MATCH_WINDOW_DAYS} day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
 <footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>{table_script()}</body></html>"""
- 
- 
+
+
 _COVERAGE_START_MONTHS = (
     "January|February|March|April|May|June|July|August|September|"
     "October|November|December"
@@ -939,7 +928,7 @@ _COVERAGE_START_PATTERN = re.compile(
     rf"^(?:(?:{_COVERAGE_START_MONTHS})\s+)?(\d{{4}})(?:-\d{{2}}-\d{{2}})?-present\b"
 )
 _COVERAGE_START_RANGE_PATTERN = re.compile(r"^(\d{4})-\d{4}\b")
- 
+
 # A handful of states' real coverage_note text doesn't fit the common
 # "<year>-present" / "<Month year>-present" shape the regex above expects -
 # either because the note uses a closed range ("2000-2025 ..."), states the
@@ -956,8 +945,8 @@ _COVERAGE_START_OVERRIDES = {
     "VA": "2002",
 }
 _COVERAGE_START_NO_CLEAN_YEAR = {"AK", "HI", "OH"}
- 
- 
+
+
 def extract_coverage_start_label(abbreviation: str, coverage_note: str, action_count: int) -> str:
     """A short, scannable label for how far back a state's real coverage
     goes - meant to sit next to the declaration count so a reader isn't
@@ -983,8 +972,8 @@ def extract_coverage_start_label(abbreviation: str, coverage_note: str, action_c
     if match:
         return f"Since {match.group(1)}"
     return "See coverage note"
- 
- 
+
+
 def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
     by_abbreviation = {item["abbreviation"]: item for item in summaries}
     cards = []
@@ -1061,12 +1050,12 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
 <h2>Browse by state</h2><section class="states">{''.join(cards)}</section>
 <footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main></body></html>"""
- 
- 
+
+
 def write_json(path: Path, payload) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
- 
- 
+
+
 def process_state(
     state: dict,
     repo_root: Path,
@@ -1081,7 +1070,7 @@ def process_state(
     adapter_path = state_dir / adapter_name
     collection_note = ""
     collection_error = ""
- 
+
     if collect:
         if adapter_path.exists():
             try:
@@ -1094,7 +1083,7 @@ def process_state(
                 print(f"WARNING {state['abbreviation']}: {collection_error}", file=sys.stderr)
         else:
             collection_error = "No state-source adapter is installed"
- 
+
     actions, action_path = load_state_actions(state, state_dir)
     storm_note = ""
     storm_failed = False
@@ -1114,7 +1103,7 @@ def process_state(
             storm_pipeline_ran = not storm_failed
         else:
             storm_note = "Storm join skipped: no state-action CSV is available"
- 
+
     federal_declarations = load_federal_declarations(repo_root, state["abbreviation"])
     if storm_pipeline_ran:
         # Read this run's own freshly-generated, verified outputs directly,
@@ -1135,13 +1124,13 @@ def process_state(
         severity_rows, _ = load_severity_rows(state_dir)
     storm_rows_by_declaration = group_by_declaration(storm_rows)
     crosswalk = build_crosswalk(actions, federal_declarations, storm_rows_by_declaration)
- 
+
     metrics = state_metrics(state, actions, federal_declarations, storm_rows, severity_rows)
     coverage_base = coverage_label(state, actions, collection_note)
     coverage = coverage_base
     if collection_error:
         coverage += "; " + collection_error
- 
+
     summary = {
         "abbreviation": state["abbreviation"],
         "name": state["name"],
@@ -1176,8 +1165,8 @@ def process_state(
             )
             write_json(state_dir / "state-summary.json", summary)
     return summary
- 
- 
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build DisasterData Plus state pages")
     parser.add_argument("--states", default="all", help="all or comma-separated names/abbreviations")
@@ -1214,13 +1203,13 @@ def main() -> int:
             "runs, and a successful run promotes real output files. Run "
             "--join-storms on its own, without --dry-run, instead."
         )
- 
+
     all_states = load_manifest(args.manifest)
     selected = select_states(all_states, args.states)
     repo_root = args.repo_root.resolve()
     print(f"Repository root: {repo_root}")
     print(f"Selected states: {', '.join(state['abbreviation'] for state in selected)}")
- 
+
     summaries = []
     incomplete = []
     storm_failures = []
@@ -1238,7 +1227,7 @@ def main() -> int:
             f"{summary['metrics']['federal_declaration_count']} federal declarations; "
             f"{summary['coverage']}"
         )
- 
+
     if not args.dry_run and not storm_failures:
         plus_dir = repo_root / "plus"
         plus_dir.mkdir(parents=True, exist_ok=True)
@@ -1268,13 +1257,13 @@ def main() -> int:
             "failure in it.",
             file=sys.stderr,
         )
- 
+
     if incomplete:
         print(
             "Coverage pending for: " + ", ".join(incomplete)
             + ". Pages were generated with explicit incomplete-coverage notices."
         )
- 
+
     if storm_failures:
         print(
             "Storm join failed for: " + ", ".join(storm_failures)
@@ -1284,10 +1273,9 @@ def main() -> int:
             "build looking successful.",
             file=sys.stderr,
         )
- 
+
     return 1 if (storm_failures or (args.strict and incomplete)) else 0
- 
- 
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
- 
