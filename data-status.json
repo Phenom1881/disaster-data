@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "release": "2026.09.19.1",
+  "release": "2026.09.19.2",
   "status": "passed",
-  "builtAt": "2026-09-19T00:32:07Z",
-  "dataDate": "2026-09-18",
-  "fingerprint": "bf50e053c12d127f8dd0",
+  "builtAt": "2026-09-19T00:48:52Z",
+  "dataDate": "2026-09-19",
+  "fingerprint": "8ba31ab7419938beb751",
   "metrics": {
-    "dataDate": "2026-09-18",
-    "ageDays": 1,
+    "dataDate": "2026-09-19",
+    "ageDays": 0,
     "declarationsCurrent": 3535,
     "declarationsCompletedFY": 3395,
     "denials": 363,
@@ -46,7 +46,7 @@
       "file": "data.js",
       "records": 3535,
       "release": "OpenFEMA v2",
-      "hash": "81a4a43ce1edeb27",
+      "hash": "23c0df0cceabe254",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,7 +55,7 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "81a4a43ce1edeb27",
+      "hash": "23c0df0cceabe254",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "81a4a43ce1edeb27",
+      "hash": "23c0df0cceabe254",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-09-18",
+        "detail": "Data date: 2026-09-19",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-09-18",
+        "detail": "Homepage contains build date 2026-09-19",
         "metrics": {}
       },
       {
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 1 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
