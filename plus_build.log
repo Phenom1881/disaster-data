@@ -679,11 +679,25 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected.
-Kansas: wrote 0 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/kansas/ks_eo_scraper.py", line 274, in <module>
+    main()
+  File "/home/runner/work/disaster-data/disaster-data/plus/kansas/ks_eo_scraper.py", line 269, in main
+    n = collect(args.actions_out, args.relationships_out, args.join_out)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/kansas/ks_eo_scraper.py", line 201, in collect
+    html = fetch(SOURCE_URL, session)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/kansas/ks_eo_scraper.py", line 88, in fetch
+    resp.raise_for_status()
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
 
+WARNING KS: Collection failed: Kansas adapter: scrape failed
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
-KS: 0 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)
+KS: 0 actions, 96 federal declarations; Adapter available; no cached action file found; Collection failed: Kansas adapter: scrape failed
 Kentucky: 0 orders scraped, 0 routed to join CSV.
 
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kentucky/hazard_overrides.csv
@@ -977,12 +991,90 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
 
 MO: 83 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text.
-Montana: 0 orders scraped, 0 written as declarations.
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 540, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 638, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 1443, in getresponse
+    response.begin()
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 337, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/http/client.py", line 298, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/socket.py", line 718, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/ssl.py", line 1314, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/ssl.py", line 1166, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
 
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 510, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 542, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 373, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='gov.mt.gov', port=443): Read timed out. (read timeout=30)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/montana/mt_eo_scraper.py", line 241, in <module>
+    main()
+  File "/home/runner/work/disaster-data/disaster-data/plus/montana/mt_eo_scraper.py", line 227, in main
+    orders = collect_orders()
+             ^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/montana/mt_eo_scraper.py", line 161, in collect_orders
+    current_text = fetch(CURRENT_URL)
+                   ^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/montana/mt_eo_scraper.py", line 95, in fetch
+    resp = requests.get(url, timeout=30, headers={"User-Agent": "DisasterDataIO-Plus/1.0"})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 87, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 742, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='gov.mt.gov', port=443): Read timed out. (read timeout=30)
+
+WARNING MT: Collection failed: Montana adapter: scrape failed
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/montana/hazard_overrides.csv
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
-MT: 0 actions, 113 federal declarations; 2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending
+MT: 0 actions, 113 federal declarations; Adapter available; no cached action file found; Collection failed: Montana adapter: scrape failed
 Nebraska: wrote 57 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/nebraska/declarations_for_join.csv
 
 Applied 44 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nebraska/hazard_overrides.csv
@@ -1048,7 +1140,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 6 actions, 115 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed
-New Hampshire: 340 actions, 304 relationships, 0 weather declarations
+New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
@@ -1294,11 +1386,90 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp.
 
 NC: 34 actions, 85 federal declarations; 2017-01-06-present structured Governor archive; North Carolina Register backfill pending
-North Dakota: 0 orders scraped, 0 written as declarations.
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 470, in _make_request
+    self._validate_conn(conn)
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1125, in _validate_conn
+    conn.connect()
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 878, in connect
+    wrapped_socket, is_verified = _ssl_wrap_socket_and_match_hostname(
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connection.py", line 1080, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+               ^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 437, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 481, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/ssl.py", line 517, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/ssl.py", line 1104, in _create
+    self.do_handshake()
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/ssl.py", line 1382, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)
 
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 494, in _make_request
+    raise new_e
+urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 847, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 555, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.governor.nd.gov', port=443): Max retries exceeded with url: /executive-orders/executive-order-archive (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/north-dakota/nd_eo_scraper.py", line 235, in <module>
+    main()
+  File "/home/runner/work/disaster-data/disaster-data/plus/north-dakota/nd_eo_scraper.py", line 221, in main
+    orders = collect_orders()
+             ^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/north-dakota/nd_eo_scraper.py", line 155, in collect_orders
+    archive_html = fetch(ARCHIVE_URL)
+                   ^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/north-dakota/nd_eo_scraper.py", line 74, in fetch
+    resp = requests.get(url, timeout=30, headers={"User-Agent": "DisasterDataIO-Plus/1.0"})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 87, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/adapters.py", line 727, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='www.governor.nd.gov', port=443): Max retries exceeded with url: /executive-orders/executive-order-archive (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)')))
+
+WARNING ND: Collection failed: North Dakota adapter: scrape failed
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
 
-ND: 0 actions, 76 federal declarations; 2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending
+ND: 0 actions, 76 federal declarations; Adapter available; no cached action file found; Collection failed: North Dakota adapter: scrape failed
 Ohio: 0 bulletins scraped, 0 routed to join CSV.
 
 No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
@@ -1551,6 +1722,41 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 TN: 14 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 96, in <module>
+    if __name__=="__main__": main()
+                             ^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 95, in main
+    args=parser.parse_args(); write_outputs(collect(),args.actions_out,args.relationships_out,args.join_out)
+                                            ^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 55, in collect
+    pages=list(pool.map(lambda url: get(url).text,month_urls))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 55, in <lambda>
+    pages=list(pool.map(lambda url: get(url).text,month_urls))
+                                    ^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 28, in get
+    response=requests.get(url,headers=HEADERS,timeout=TIMEOUT); response.raise_for_status(); return response
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://gov.texas.gov/news/archive/2026/06
+
+WARNING TX: Collection failed: Texas adapter: scrape failed
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-PROCLAMATION-2026-07-14-governor-abbott-issues-severe-storm-disaster-proclamation-in-july-2026: no matching storm events found in the date window.
 TX-PROCLAMATION-2021-04-15-governor-abbott-issues-disaster-declaration-in-response-to-drought-conditions-in-april-2021: no matching storm events found in the date window.
@@ -1592,7 +1798,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 59 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
+TX: 59 actions, 392 federal declarations; January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; Collection failed: Texas adapter: scrape failed
 {"actions": 558, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
