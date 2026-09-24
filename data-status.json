@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "release": "2026.09.24.1",
+  "release": "2026.09.24.2",
   "status": "passed",
-  "builtAt": "2026-09-24T13:49:53Z",
-  "dataDate": "2026-09-20",
-  "fingerprint": "7f8c244b963b181b4b70",
+  "builtAt": "2026-09-24T14:29:12Z",
+  "dataDate": "2026-09-24",
+  "fingerprint": "e0e30f3b4b47f0d15ca4",
   "metrics": {
-    "dataDate": "2026-09-20",
-    "ageDays": 4,
+    "dataDate": "2026-09-24",
+    "ageDays": 0,
     "declarationsCurrent": 3535,
     "declarationsCompletedFY": 3395,
     "denials": 363,
@@ -21,8 +21,8 @@
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 284125385739.16,
-    "paProjects": 822691,
+    "paTotalObligated": 284116303949.84,
+    "paProjects": 822766,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3265,
@@ -46,7 +46,7 @@
       "file": "data.js",
       "records": 3535,
       "release": "OpenFEMA v2",
-      "hash": "b46ae5fb3779a4f6",
+      "hash": "3c2087f6d8968fa9",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,7 +55,7 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "b46ae5fb3779a4f6",
+      "hash": "3c2087f6d8968fa9",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "b46ae5fb3779a4f6",
+      "hash": "3c2087f6d8968fa9",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "bba280f915be905a",
+      "hash": "cb6d2e9a921f9bc9",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,7 +91,7 @@
       "file": "ia.json",
       "records": 3265,
       "release": "OpenFEMA v2",
-      "hash": "bbf452662112f45d",
+      "hash": "25ef42831d502e18",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-09-20",
+        "detail": "Data date: 2026-09-24",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-09-20",
+        "detail": "Homepage contains build date 2026-09-24",
         "metrics": {}
       },
       {
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 4 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
