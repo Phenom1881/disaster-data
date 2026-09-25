@@ -4,7 +4,9 @@ Sources (all verified against the live sites, structure confirmed by hand
 before this scraper was written -- no URL structure here is guessed):
 
   1. Current governor (Braun, 2025-present):
-     https://www.in.gov/gov/newsroom/executive-orders/index.html
+     https://www.in.gov/gov/newsroom/executive-orders/
+     (the canonical listing URL; the explicit .../index.html form is kept
+     only as a fallback, see CURRENT_EO_PAGES below)
      Static server-rendered HTML. Each EO is listed as:
        "Executive Order NN-NN" (bold/heading text)
        "TITLE IN ALL CAPS" (hyperlink to a PDF under /gov/files/...)
@@ -88,7 +90,18 @@ GOVERNOR = "Indiana Governor"
 BASE = "https://www.in.gov"
 
 # Real, verified entry points -- not guessed.
-CURRENT_EO_PAGE = f"{BASE}/gov/newsroom/executive-orders/index.html"
+#
+# The current governor's listing is tried at its canonical URL first (the one
+# in.gov itself links to and search engines index, confirmed live on
+# 2026-09-25 to list EO 26-21), then at the explicit index.html form this
+# scraper originally used. Every Plus run from 2026-09-17 on came back with no
+# 2025-2026 orders at all while the Holcomb per-year pages, which are linked
+# without index.html, kept working. Whichever URL returns orders first wins.
+CURRENT_EO_PAGES = [
+    f"{BASE}/gov/newsroom/executive-orders/",
+    f"{BASE}/gov/newsroom/executive-orders/index.html",
+]
+CURRENT_EO_PAGE = CURRENT_EO_PAGES[0]
 HOLCOMB_EO_INDEX = f"{BASE}/governorhistory/ericjholcomb/newsroom/executive-orders/"
 DANIELS_EO_INDEX = f"{BASE}/governorhistory/mitchdaniels/2400.htm"
 HISTORICAL_PDF = "https://iar.iga.in.gov/Historical-List-of-EOs.pdf"
@@ -139,6 +152,19 @@ NON_ORIGINAL_RE = re.compile("|".join(NON_ORIGINAL_PATTERNS), re.IGNORECASE)
 
 EO_HEADING_RE = re.compile(r"Executive Order\s+([0-9]{2,4}-[0-9]{1,3})", re.IGNORECASE)
 
+# Every shape of an ORIGINAL disaster declaration title seen on Indiana's own
+# pages. The earlier fixed-phrase check only knew "declaring a disaster
+# emergency" and two "declaration of" forms, so it silently dropped:
+#   "DECLARING A STATEWIDE DISASTER EMERGENCY ..."  EO 26-21 (Aug 2026 derecho)
+#   "DECLARING DISASTER EMERGENCIES IN ..."          EO 23-5, EO 23-6
+#   "Disaster Declaration for ..."                   EO 12-01 (Daniels era)
+ORIGINAL_DECLARATION_RE = re.compile(
+    r"\bdeclar(?:ing|ation\s+of)\s+(?:an?\s+)?(?:statewide\s+)?"
+    r"disaster\s+emergenc(?:y|ies)\b"
+    r"|\bdisaster\s+declaration\s+for\b",
+    re.IGNORECASE,
+)
+
 
 @dataclass
 class Action:
@@ -176,9 +202,7 @@ def classify_title(title: str) -> Optional[str]:
 def is_original_declaration(title: str) -> bool:
     lowered = title.lower()
     has_declaration_phrase = (
-        "declaring a disaster emergency" in lowered
-        or "declaration of a statewide disaster emergency" in lowered
-        or "declaration of disaster emergency" in lowered
+        bool(ORIGINAL_DECLARATION_RE.search(lowered))
         or ("declaration of energy emergency" in lowered and classify_title(title))
     )
     if not has_declaration_phrase:
@@ -424,10 +448,34 @@ def fetch_signed_date(session: requests.Session, pdf_url: str) -> tuple[str, boo
     return date, via_ocr
 
 
+def _fetch_current_governor_page(session: requests.Session) -> list[Action]:
+    """Read the current governor's listing, trying CURRENT_EO_PAGES in order and
+    stopping at the first URL that returns at least one order. An empty result
+    is reported on stdout, not just stderr, so it shows up in plus_build.log
+    even if a caller drops stderr."""
+    for url in CURRENT_EO_PAGES:
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as exc:
+            print(f"warning: failed to fetch {url}: {exc}", file=sys.stderr)
+            continue
+        actions = _parse_listing_page(resp.text, url)
+        if actions:
+            print(f"Indiana: {len(actions)} orders read from the current governor's page ({url}).")
+            return actions
+        print(f"warning: {url} returned a page with no executive orders on it", file=sys.stderr)
+    print(
+        "WARNING Indiana: no orders could be read from the current governor's page; "
+        "2025-present Indiana orders are missing from this run."
+    )
+    return []
+
+
 def scrape(session: Optional[requests.Session] = None) -> list[Action]:
     session = session or requests.Session()
     all_actions: list[Action] = []
-    pages_to_scrape = [CURRENT_EO_PAGE]
+    pages_to_scrape = []
 
     try:
         pages_to_scrape.extend(_discover_holcomb_year_pages(session))
@@ -439,6 +487,9 @@ def scrape(session: Optional[requests.Session] = None) -> list[Action]:
     except requests.RequestException as exc:
         print(f"warning: could not enumerate Daniels-era pages: {exc}", file=sys.stderr)
 
+    # (listing actions, page url) batches: the current governor first, then the
+    # historical per-year pages, same order as before.
+    batches = [_fetch_current_governor_page(session)]
     for url in pages_to_scrape:
         try:
             resp = session.get(url, headers=HEADERS, timeout=30)
@@ -446,7 +497,10 @@ def scrape(session: Optional[requests.Session] = None) -> list[Action]:
         except requests.RequestException as exc:
             print(f"warning: failed to fetch {url}: {exc}", file=sys.stderr)
             continue
-        for action in _parse_listing_page(resp.text, url):
+        batches.append(_parse_listing_page(resp.text, url))
+
+    for batch in batches:
+        for action in batch:
             if action.year < MIN_YEAR:
                 continue
             action.hazard_guess = classify_title(action.title)

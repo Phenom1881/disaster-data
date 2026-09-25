@@ -242,6 +242,151 @@ def count_rows(path: Path | None) -> int:
     return len(read_csv_rows(path)) if path else 0
 
 
+# ---------------------------------------------------------------- keep saved records
+# A state's action CSV is the record of what its governor declared, and those
+# declarations do not stop having happened. But each adapter rewrites its CSV
+# from scratch on every --collect run, so a run where the state's site was
+# unreachable, blocked the runner, or changed its layout used to replace a
+# good file with an empty or shorter one, and the workflow then committed it.
+# That silently erased every saved record for Kansas, Kentucky, Montana, New
+# Hampshire, North Dakota, and Ohio on 2026-09-12 and for Texas on
+# 2026-09-17, and dropped some of Indiana's and Oklahoma's.
+#
+# So the builder now snapshots every candidate action file before an adapter
+# runs and, afterwards, merges the snapshot back in:
+#   - a saved row the new scrape did not return is kept (carried forward);
+#   - a field the new scrape left blank keeps its saved value (for example a
+#     signing date that needed OCR the runner does not have);
+#   - a text field the new scrape filled with page markup (a parser picking
+#     up HTML attributes instead of the title) keeps its saved clean value.
+# Rows are matched on declaration_id only. Order numbers repeat across
+# governors (NJ-MURPHY-EO-15 and NJ-SHERRILL-EO-15 are different orders), so
+# matching on the number alone would wrongly treat one as the other.
+#
+# To remove a record on purpose, delete its row from the committed CSV: the
+# snapshot is taken from the file as committed, so a deleted row is not
+# brought back unless the state's own source still lists it.
+
+_TEXT_FIELDS = ("event_description", "title", "subject", "short_title")
+_MARKUP_RE = re.compile(
+    r"<\s*[A-Za-z/!]"                                # an HTML tag
+    r"|\b(?:class|id|href|style|src)\s*=\s*[\"']"    # an HTML attribute
+    r"|&#\d+;|&quot;|&lt;|&gt;"                      # escaped markup
+    r"|\}\}"                                         # template or JSON residue
+)
+
+
+def looks_like_markup(value) -> bool:
+    return bool(_MARKUP_RE.search(str(value or "")))
+
+
+def _csv_rows_from_bytes(raw: bytes) -> tuple[list[str], list[dict]]:
+    text = raw.decode("utf-8-sig", errors="replace")
+    reader = csv.DictReader(text.splitlines(keepends=True))
+    rows = list(reader)
+    return list(reader.fieldnames or []), rows
+
+
+def snapshot_action_files(state: dict, state_dir: Path) -> dict[Path, bytes]:
+    """The exact bytes of every candidate action file that exists right now."""
+    saved = {}
+    for name in candidate_action_files(state):
+        path = state_dir / name
+        if path.is_file():
+            saved[path] = path.read_bytes()
+    return saved
+
+
+def _merge_saved_rows(path: Path, raw_old: bytes, abbreviation: str) -> dict:
+    old_fields, old_rows = _csv_rows_from_bytes(raw_old)
+    counts = {"kept": 0, "filled": 0, "cleaned": 0}
+    if not old_rows:
+        return counts
+    if path.is_file():
+        raw_new = path.read_bytes()
+        new_fields, new_rows = _csv_rows_from_bytes(raw_new)
+        newline = "\r\n" if b"\r\n" in raw_new[:4096] else "\n"
+    else:
+        new_fields, new_rows = [], []
+        newline = "\r\n" if b"\r\n" in raw_old[:4096] else "\n"
+
+    fields = list(new_fields) or list(old_fields)
+    for name in old_fields:
+        if name and name not in fields:
+            fields.append(name)
+
+    def key(row):
+        return clean(row.get("declaration_id")) or normalized_action(row, abbreviation)["declaration_id"]
+
+    current = {}
+    for row in new_rows:
+        current.setdefault(key(row), row)
+
+    changed = False
+    for old in old_rows:
+        k = key(old)
+        if not k:
+            continue
+        row = current.get(k)
+        if row is None:
+            new_rows.append(dict(old))
+            current[k] = new_rows[-1]
+            counts["kept"] += 1
+            changed = True
+            continue
+        filled = cleaned = False
+        for name, old_value in old.items():
+            if not name or not clean(old_value):
+                continue
+            if not clean(row.get(name)):
+                row[name] = old_value
+                filled = True
+            elif (name in _TEXT_FIELDS and looks_like_markup(row.get(name))
+                  and not looks_like_markup(old_value)):
+                row[name] = old_value
+                cleaned = True
+        counts["filled"] += int(filled)
+        counts["cleaned"] += int(cleaned)
+        changed = changed or filled or cleaned
+
+    if changed or not path.is_file():
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields, restval="",
+                                    extrasaction="ignore", lineterminator=newline)
+            writer.writeheader()
+            writer.writerows(new_rows)
+    return counts
+
+
+def keep_saved_actions(state: dict, saved: dict[Path, bytes]) -> dict:
+    """Merge the pre-collection snapshot back into each action file (see the
+    notes above). If a merge itself fails, the saved file is put back exactly
+    as it was, so a bug here can never cost data either. Returns totals for
+    the file the page is built from."""
+    abbreviation = state["abbreviation"]
+    primary = None
+    for name in candidate_action_files(state):
+        if name in {p.name for p in saved}:
+            primary = name
+            break
+    totals = {"kept": 0, "filled": 0, "cleaned": 0}
+    for path, raw_old in saved.items():
+        try:
+            counts = _merge_saved_rows(path, raw_old, abbreviation)
+        except Exception as exc:
+            path.write_bytes(raw_old)
+            print(f"WARNING {abbreviation}: could not merge saved records into {path.name} "
+                  f"({exc}); restored the saved file unchanged", file=sys.stderr)
+            continue
+        if any(counts.values()):
+            print(f"{abbreviation}: {path.name}: kept {counts['kept']} saved record(s) this "
+                  f"run's scrape did not return, kept saved values for {counts['filled']} "
+                  f"blank and {counts['cleaned']} garbled field set(s)")
+        if path.name == primary:
+            totals = counts
+    return totals
+
+
 def load_federal_declarations(repo_root: Path, abbreviation: str) -> list[dict]:
     path = repo_root / "data" / "decl-index" / f"{abbreviation.upper()}.json"
     if not path.exists():
@@ -1049,9 +1194,13 @@ def process_state(
     adapter_path = state_dir / adapter_name
     collection_note = ""
     collection_error = ""
+    kept = {"kept": 0, "filled": 0, "cleaned": 0}
 
     if collect:
         if adapter_path.exists():
+            # Snapshot first, merge back after, even when the adapter raises
+            # partway through a write. See keep_saved_actions().
+            saved = snapshot_action_files(state, state_dir)
             try:
                 adapter = import_adapter(adapter_path)
                 _, collection_note = adapter.collect(
@@ -1060,6 +1209,8 @@ def process_state(
             except Exception as exc:
                 collection_error = f"Collection failed: {exc}"
                 print(f"WARNING {state['abbreviation']}: {collection_error}", file=sys.stderr)
+            finally:
+                kept = keep_saved_actions(state, saved)
         else:
             collection_error = "No state-source adapter is installed"
 
@@ -1109,6 +1260,13 @@ def process_state(
     coverage = coverage_base
     if collection_error:
         coverage += "; " + collection_error
+    if kept["kept"]:
+        # Said on the page itself, so a reader knows some records come from
+        # earlier refreshes rather than from this week's check of the source.
+        coverage += (
+            "; %d saved record%s kept that this refresh's check of the state source "
+            "did not return" % (kept["kept"], "" if kept["kept"] == 1 else "s")
+        )
 
     summary = {
         "abbreviation": state["abbreviation"],
@@ -1123,6 +1281,8 @@ def process_state(
         "metrics": metrics,
         "storm_pipeline_note": storm_note,
         "storm_pipeline_failed": storm_failed,
+        "kept_saved_records": kept["kept"],
+        "kept_saved_values": kept["filled"] + kept["cleaned"],
         "generated_on": date.today().isoformat(),
     }
     if not dry_run:
@@ -1242,6 +1402,17 @@ def main() -> int:
             "Coverage pending for: " + ", ".join(incomplete)
             + ". Pages were generated with explicit incomplete-coverage notices."
         )
+
+    kept_states = [
+        "%s (%d)" % (item["abbreviation"], item["kept_saved_records"])
+        for item in summaries if item.get("kept_saved_records")
+    ]
+    if kept_states:
+        # One greppable line: these states' sources returned fewer records
+        # than were already saved, so the saved ones were kept. Worth a look
+        # at each state's scraper, but nothing was lost.
+        print("WARNING kept saved records the state source did not return: "
+              + ", ".join(kept_states))
 
     if storm_failures:
         print(
