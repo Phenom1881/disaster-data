@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "release": "2026.09.25.1",
+  "release": "2026.09.25.2",
   "status": "passed",
-  "builtAt": "2026-09-25T15:09:28Z",
-  "dataDate": "2026-09-24",
-  "fingerprint": "dbb23f860007a433f1ed",
+  "builtAt": "2026-09-25T15:34:01Z",
+  "dataDate": "2026-09-25",
+  "fingerprint": "982a3fd97f59924734da",
   "metrics": {
-    "dataDate": "2026-09-24",
-    "ageDays": 1,
+    "dataDate": "2026-09-25",
+    "ageDays": 0,
     "declarationsCurrent": 3535,
     "declarationsCompletedFY": 3395,
     "denials": 363,
@@ -15,14 +15,14 @@
     "localities": 4195,
     "mapCounties": 3241,
     "mapDeclarationEvents": 3535,
-    "eventCount": 3397,
-    "mapEventCount": 3396,
+    "eventCount": 3398,
+    "mapEventCount": 3397,
     "statewideOnlyEvents": 1,
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 284116303949.84,
-    "paProjects": 822766,
+    "paTotalObligated": 284101579491.75,
+    "paProjects": 822845,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3265,
@@ -35,7 +35,7 @@
     "declarationsCurrent": 0.0,
     "jurisdictionPages": 0.0,
     "mapCounties": 0.0,
-    "eventCount": 0.0,
+    "eventCount": 1.0,
     "sviCounties": 0.0,
     "nriCounties": 0.0
   },
@@ -46,7 +46,7 @@
       "file": "data.js",
       "records": 3535,
       "release": "OpenFEMA v2",
-      "hash": "3c2087f6d8968fa9",
+      "hash": "dcd576289b183995",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,7 +55,7 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "3c2087f6d8968fa9",
+      "hash": "dcd576289b183995",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "3c2087f6d8968fa9",
+      "hash": "dcd576289b183995",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "cb6d2e9a921f9bc9",
+      "hash": "7a11a169e59b3bb5",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,16 +91,16 @@
       "file": "ia.json",
       "records": 3265,
       "release": "OpenFEMA v2",
-      "hash": "25ef42831d502e18",
+      "hash": "b72645dd4ec2e8ee",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
       "name": "DisasterData Event Index",
       "status": "current",
       "file": "events.json",
-      "records": 3397,
+      "records": 3398,
       "release": "Derived",
-      "hash": "0f6e925068ea8c39",
+      "hash": "ae552222142de210",
       "note": "National event index derived from the committed declaration index; named tropical systems are grouped by storm name and year."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-09-24",
+        "detail": "Data date: 2026-09-25",
         "metrics": {}
       },
       {
@@ -255,7 +255,7 @@
         "category": "Event indexes",
         "status": "pass",
         "severity": "error",
-        "detail": "Parsed 3,396 map event(s)",
+        "detail": "Parsed 3,397 map event(s)",
         "metrics": {}
       },
       {
@@ -263,7 +263,7 @@
         "category": "Event indexes",
         "status": "pass",
         "severity": "error",
-        "detail": "Parsed 3,397 detailed event(s)",
+        "detail": "Parsed 3,398 detailed event(s)",
         "metrics": {}
       },
       {
@@ -271,7 +271,7 @@
         "category": "Event indexes",
         "status": "pass",
         "severity": "error",
-        "detail": "3,396 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s)",
+        "detail": "3,397 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s)",
         "metrics": {}
       },
       {
@@ -279,7 +279,7 @@
         "category": "Event indexes",
         "status": "pass",
         "severity": "error",
-        "detail": "3,397 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s); 0 state/disaster-number issue(s)",
+        "detail": "3,398 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s); 0 state/disaster-number issue(s)",
         "metrics": {}
       },
       {
@@ -287,7 +287,7 @@
         "category": "Event indexes",
         "status": "pass",
         "severity": "error",
-        "detail": "3,396 detailed event(s) with county footprints; 0 missing from map; 0 unexpected map event(s); 1 statewide-only detailed event(s)",
+        "detail": "3,397 detailed event(s) with county footprints; 0 missing from map; 0 unexpected map event(s); 1 statewide-only detailed event(s)",
         "metrics": {}
       },
       {
@@ -295,7 +295,7 @@
         "category": "Event indexes",
         "status": "pass",
         "severity": "error",
-        "detail": "3,396 shared event(s); 0 field mismatch(es)",
+        "detail": "3,397 shared event(s); 0 field mismatch(es)",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-09-24",
+        "detail": "Homepage contains build date 2026-09-25",
         "metrics": {}
       },
       {
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 1 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
