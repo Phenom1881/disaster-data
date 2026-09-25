@@ -234,7 +234,7 @@ def state_stats(ab, name, days, decls, dens, lcfy, keep):
     # LISTS (the declaration table and the not-tied-to-a-locality table) show
     # every declaration FEMA has published, including the in-progress year, so a
     # declaration made last month is on the page the week it appears in OpenFEMA
-    # instead of after Sep 30. Those rows are marked "In progress" and left out
+    # instead of after Sep 30. Those rows are tagged with their fiscal year and left out
     # of every total. Before this split the table was built from the complete-year
     # list, which hid every declaration made since Oct 1.
     complete = [r for r in decls if fy_of(r[3]) <= lcfy]
@@ -289,31 +289,38 @@ def open_fy_label(fys):
 
 
 def open_fy_pill(fy):
-    """Marker for a listed declaration that is not yet counted in the totals.
-    Sits on its own line inside the date cell, so date sorting (which reads the
-    cell's data-s attribute) and text sorting on the other columns are unaffected."""
-    return ('<span class="fy-open" title="FY%d is still in progress, so this declaration '
-            'is listed here but not yet counted in the totals">In progress</span>' % fy)
+    """Tag for a listed declaration from a fiscal year that is not complete, so
+    it is not counted in the totals yet. The tag names the fiscal year itself.
+    It used to say "In progress", which read as though the declaration or its
+    incident were still open; that is not what it means. It sits on its own
+    line inside the date cell, so date sorting (which reads the cell's data-s
+    attribute) and text sorting on the other columns are unaffected."""
+    if not fy:
+        return ('<span class="fy-open" title="From a fiscal year that is not complete '
+                'yet. Counted in the totals once that year ends.">Current FY</span>')
+    return ('<span class="fy-open" title="Declared in FY%d, which ends Sep 30, %d. '
+            'Counted in the totals once that year is complete.">FY%d</span>' % (fy, fy, fy))
 
 
 def open_fy_note_html(n, fys):
-    """One plain-language line above the table explaining the marked rows.
+    """One plain-language line above the table explaining the tagged rows.
     Renders nothing when every listed declaration is from a complete year."""
     if not n:
         return ""
-    label = open_fy_label(fys)
+    tags = " or ".join('<span class="fy-open">FY%d</span>' % y for y in fys) \
+        or '<span class="fy-open">Current FY</span>'
     if len(fys) == 1:
-        when = ("%s, the federal fiscal year now under way (it ends Sep 30, %d)"
-                % (label, fys[0]))
+        when = "the federal fiscal year now under way, which ends Sep 30, %d" % fys[0]
     else:
-        when = "%s, fiscal years not yet complete in this build" % label
+        when = "fiscal years not yet complete in this build"
     if n == 1:
-        return ('<p class="fy-note">1 declaration marked <span class="fy-open">In progress</span> '
-                'is from %s. It is listed as soon as it appears in FEMA\'s data but is not '
-                'counted in the totals above until the year is complete.</p>' % when)
-    return ('<p class="fy-note">%d declarations marked <span class="fy-open">In progress</span> '
-            'are from %s. They are listed as soon as they appear in FEMA\'s data but are not '
-            'counted in the totals above until the year is complete.</p>' % (n, when))
+        return ('<p class="fy-note">1 declaration tagged %s is from %s. It is listed as '
+                'soon as it appears in FEMA\'s data but is not counted in the totals above '
+                'until that year is complete.</p>' % (tags, when))
+    return ('<p class="fy-note">%d declarations tagged %s are from %s. They are listed as '
+            'soon as they appear in FEMA\'s data but are not counted in the totals above '
+            'until that year is complete.</p>' % (n, tags, when))
+
 
 # ---------------------------------------------------------------- CSS
 CSS = """
@@ -438,8 +445,8 @@ def method_html():
             'affecting five states counts as five declarations. Years are federal fiscal years '
             '(Oct 1 to Sep 30). Totals, ranks, and rates on this page cover complete fiscal years '
             'only. Declarations from the fiscal year still in progress are listed in each '
-            'state\'s declaration tables and its recent-declarations panel, marked In '
-            'progress, but '
+            'state\'s declaration tables and its recent-declarations panel, tagged with '
+            'their fiscal year, but '
             'are not counted in any total until the year is complete. '
             'Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section>')
 
@@ -831,7 +838,7 @@ def nowfy_compare_sentence(dn, app, ia_dn, meta, where):
 def recent_aid_html(s, lcfy):
     """The state's "recent declarations" panel: every declaration from the past 12
     months with the aid FEMA has reported for it so far. Rows from the fiscal year
-    still in progress carry the same In progress marker as the declaration table.
+    still in progress carry the same fiscal-year tag as the declaration table.
     Renders nothing when the state has no declarations in that window."""
     rows = s.get("recent12") or []
     if not rows:
@@ -915,11 +922,11 @@ def recent_aid_html(s, lcfy):
                    " All of them are from %s, the fiscal year still under way, so none are "
                    "counted in the complete-year totals above yet.") % lbl)
     elif n_open == 1:
-        intro += (" The one marked In progress is from %s, the fiscal year still under way, "
-                  "and is not counted in the complete-year totals above yet." % lbl)
+        intro += (" The one tagged %s is from the fiscal year still under way and is not "
+                  "counted in the complete-year totals above yet." % lbl)
     elif n_open:
-        intro += (" The %d marked In progress are from %s, the fiscal year still under way, "
-                  "and are not counted in the complete-year totals above yet." % (n_open, lbl))
+        intro += (" The %d tagged %s are from the fiscal year still under way and are not "
+                  "counted in the complete-year totals above yet." % (n_open, lbl))
     else:
         intro += " All of them fall in complete fiscal years and are counted in the totals above."
     src = ("Individual Assistance is FEMA's Individuals and Households Program, from "
@@ -1063,7 +1070,7 @@ def render_state_page(s, states, lcfy):
 
     # link down to the per-jurisdiction hub for this state
     jlink = ('<p class="jlink"><a href="%s/"><b>Browse all %d jurisdictions in %s</b>, each with '
-             'its full declaration history and a ready-to-use mitigation-plan table &rarr;</a></p>'
+             'its full declaration history, sortable and ready to copy into a mitigation plan &rarr;</a></p>'
              % (slug, s["jur_n"], e(name))) if s.get("jur_n") else ''
 
     # declarations that belong to no single locality -> listed here, on the state page.
@@ -1079,8 +1086,8 @@ def render_state_page(s, states, lcfy):
         n_open = sum(1 for r in s["orphans"] if fy_of(r[3]) > lcfy)
         if n_open:
             counted = ('They do not appear on any individual jurisdiction page. Those from '
-                       'complete fiscal years are included in the state totals above; any marked '
-                       'In progress will be counted once its fiscal year is complete.')
+                       'complete fiscal years are included in the state totals above; any tagged '
+                       'with the current fiscal year will be counted once that year is complete.')
         else:
             counted = ('They are included in the state totals above but do not appear on any '
                        'individual jurisdiction page.')
