@@ -4,19 +4,19 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2016-present via OEM's Emergencies and Disasters archive (SOS EO index blocks automated requests); manual-only curation, 2000-2015 disclosed gap",
-  "coverage_base": "2016-present via OEM's Emergencies and Disasters archive (SOS EO index blocks automated requests); manual-only curation, 2000-2015 disclosed gap",
+  "coverage": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; 1 saved record kept that this refresh's check of the state source did not return",
+  "coverage_base": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending",
   "generated_on": "2026-09-25",
-  "kept_saved_records": 0,
-  "kept_saved_values": 0,
+  "kept_saved_records": 1,
+  "kept_saved_values": 1,
   "metrics": {
     "action_count": 4,
     "federal_declaration_count": 259,
-    "severity_rows": 125,
-    "storm_match_rows": 413
+    "severity_rows": 66,
+    "storm_match_rows": 158
   },
   "name": "Oklahoma",
   "slug": "oklahoma",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": ""
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }
