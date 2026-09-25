@@ -5,8 +5,8 @@ gen_jurisdiction_pages.py  --  Disaster Data per-jurisdiction pages (Virginia pi
 Reads LOCALITY_DATA + BROWSE from data.js and writes one crawlable page per
 Virginia jurisdiction (counties, independent cities, and tribal areas), plus a
 hub, into states/virginia/. Joins each jurisdiction's declaration IDs back to
-BROWSE for full per-declaration detail, and emits an HMP "previous occurrences"
-table for each one.
+BROWSE for full per-declaration detail, shown as one sortable table with Copy
+table and CSV export for hazard mitigation plans.
 
 Pilot is scoped to one state (STATE_AB below) but written to generalize.
 """
@@ -851,8 +851,8 @@ def juris_stats(entry, state_ab, c, by_id, lcfy):
     ]
 
     # Counts (stat cards, lede, hazard tallies, hub ranking) use complete fiscal
-    # years only. The lists built from "hmp" below (the declaration table, the
-    # previous-occurrences table, the CSV, and the summary paragraph) carry every
+    # years only. The lists built from "hmp" below (the declaration table, its
+    # Copy table and CSV exports, and the summary paragraph) carry every
     # record, including the in-progress year, so a declaration made this year is
     # on the page the week it appears in OpenFEMA instead of after Sep 30. Before
     # this, "hmp" held complete years only, which hid every declaration made since
@@ -990,52 +990,37 @@ def open_fy_label(fys):
 
 
 def open_fy_pill(fy):
-    """Marker for a listed declaration that is not yet counted in the totals.
-    Sits on its own line inside the date cell, so date sorting (which reads the
-    cell's data-s attribute) and text sorting on the other columns are unaffected."""
-    return (
-        '<span class="fy-open" title="FY%s is still in progress, so this '
-        'declaration is listed here but not yet counted in the totals">'
-        'In progress</span>'
-        % (fy if fy else "")
-    )
+    """Tag for a listed declaration from a fiscal year that is not complete, so
+    it is not counted in the totals yet. The tag names the fiscal year itself.
+    It used to say "In progress", which read as though the declaration or its
+    incident were still open; that is not what it means. It sits on its own
+    line inside the date cell, so date sorting (which reads the cell's data-s
+    attribute) and text sorting on the other columns are unaffected."""
+    if not fy:
+        return ('<span class="fy-open" title="From a fiscal year that is not complete '
+                'yet. Counted in the totals once that year ends.">Current FY</span>')
+    return ('<span class="fy-open" title="Declared in FY%d, which ends Sep 30, %d. '
+            'Counted in the totals once that year is complete.">FY%d</span>' % (fy, fy, fy))
 
 
 def open_fy_note_html(n, fys):
-    """One plain-language line above the table explaining the marked rows.
+    """One plain-language line above the table explaining the tagged rows.
     Renders nothing when every listed declaration is from a complete year."""
     if not n:
         return ""
-
-    label = open_fy_label(fys)
-
+    tags = " or ".join('<span class="fy-open">FY%d</span>' % y for y in fys) \
+        or '<span class="fy-open">Current FY</span>'
     if len(fys) == 1:
-        when = (
-            "%s, the federal fiscal year now under way (it ends Sep 30, %d)"
-            % (label, fys[0])
-        )
+        when = "the federal fiscal year now under way, which ends Sep 30, %d" % fys[0]
     else:
-        when = (
-            "%s, fiscal years not yet complete in this build"
-            % label
-        )
-
+        when = "fiscal years not yet complete in this build"
     if n == 1:
-        return (
-            '<p class="fy-note">1 declaration marked '
-            '<span class="fy-open">In progress</span> is from %s. It is listed '
-            "as soon as it appears in FEMA's data but is not counted in the "
-            "totals above until the year is complete.</p>"
-            % when
-        )
-
-    return (
-        '<p class="fy-note">%d declarations marked '
-        '<span class="fy-open">In progress</span> are from %s. They are listed '
-        "as soon as they appear in FEMA's data but are not counted in the "
-        "totals above until the year is complete.</p>"
-        % (n, when)
-    )
+        return ('<p class="fy-note">1 declaration tagged %s is from %s. It is listed as '
+                'soon as it appears in FEMA\'s data but is not counted in the totals above '
+                'until that year is complete.</p>' % (tags, when))
+    return ('<p class="fy-note">%d declarations tagged %s are from %s. They are listed as '
+            'soon as they appear in FEMA\'s data but are not counted in the totals above '
+            'until that year is complete.</p>' % (n, tags, when))
 
 
 # ---------------------------------------------------------------- recent declarations
@@ -1143,7 +1128,7 @@ def nowfy_compare_sentence(dn, app, ia_dn, meta, where):
 def recent_aid_html(j):
     """The jurisdiction's "recent declarations" panel: every declaration from the
     past 12 months that names it, with the aid FEMA has reported here so far.
-    Rows from the fiscal year still in progress carry the same In progress marker
+    Rows from the fiscal year still in progress carry the same fiscal-year tag
     as the declaration table. Renders nothing when there are none."""
     lcfy = j.get("lcfy")
     rows = j.get("recent12") or []
@@ -1293,13 +1278,13 @@ def recent_aid_html(j):
         ) % lbl
     elif n_open == 1:
         intro += (
-            " The one marked In progress is from %s, the fiscal year still under "
-            "way, and is not counted in the complete-year totals above yet." % lbl
+            " The one tagged %s is from the fiscal year still under way and is "
+            "not counted in the complete-year totals above yet." % lbl
         )
     elif n_open:
         intro += (
-            " The %d marked In progress are from %s, the fiscal year still under "
-            "way, and are not counted in the complete-year totals above yet."
+            " The %d tagged %s are from the fiscal year still under way and are "
+            "not counted in the complete-year totals above yet."
             % (n_open, lbl)
         )
     else:
@@ -1588,19 +1573,6 @@ tr:last-child td{border-bottom:none}
 .tag{
   font-weight:700;
   color:var(--teal)
-}
-
-.hmp{
-  background:#eef4f4;
-  border:1px solid #cfe0e0;
-  border-radius:12px;
-  padding:1.1rem 1.3rem;
-  margin:1rem 0
-}
-
-.hmp p{
-  margin:.2rem 0 .9rem;
-  font-size:.92rem
 }
 
 .copybtn{
@@ -2424,7 +2396,7 @@ def method_html(kind, spans=False):
         "%s "
         "Totals cover complete fiscal years (Oct 1 to Sep 30). "
         "Declarations from the fiscal year still in progress are listed in "
-        "the tables on this page, marked In progress, but are not counted in "
+        "the tables on this page, tagged with their fiscal year, but are not counted in "
         "the totals until the year is complete. Uses OpenFEMA data but is not "
         "endorsed by or affiliated with FEMA."
         "</p>"
@@ -4219,9 +4191,9 @@ def render_page(j, others, lcfy):
     desc = (
         "%s, %s has had %d federal major disaster declarations since FY2000, "
         "plus %d emergency declarations and %d fire management declarations, "
-        "%d in all. Full FEMA declaration history and a ready-to-use "
-        "previous-occurrences table for hazard mitigation planning, with "
-        "CDC SVI and FEMA NRI context where available."
+        "%d in all. Full FEMA declaration history in a sortable table ready "
+        "to copy into a hazard mitigation plan, with CDC SVI and FEMA NRI "
+        "context where available."
         % (
             j["name"],
             STATE_NAME,
@@ -4423,7 +4395,7 @@ def render_page(j, others, lcfy):
     )
 
     # Every declaration, newest first, including the in-progress fiscal year.
-    # Those rows carry an "In progress" marker and are not in the totals above.
+    # Those rows carry a fiscal-year tag (FY2026, say) and are not in the totals above.
     rows = "".join(
         (
             '<tr data-t="%s">'
@@ -4518,6 +4490,21 @@ def render_page(j, others, lcfy):
         else "tablewrap"
     )
 
+    # Rows for the Copy table button: the table as shown, default order, with the
+    # display date. Tab-separated on the clipboard, so it pastes straight into a
+    # hazard mitigation plan's previous-occurrences section. This button used to
+    # sit on a second, near-identical table above this one.
+    copy_rows = [["Date", "Declaration", "Type", "Hazard", "Title"]] + [
+        [
+            fmt_date(r.get("declarationDate", "")),
+            r.get("femaDeclarationString", ""),
+            r.get("declarationType", ""),
+            r.get("incidentType", ""),
+            pretty_title(r.get("declarationTitle", "")),
+        ]
+        for r in j["hmp"]
+    ]
+
     history = (
         '<div id="declbox">'
 
@@ -4588,6 +4575,12 @@ def render_page(j, others, lcfy):
         '<div class="export-bar" '
         'style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0 0">'
 
+        '<button class="copybtn" type="button" data-hmp="'
+        + e(json.dumps(copy_rows))
+        + '">'
+        'Copy table'
+        '</button>'
+
         '<button class="copybtn csvbtn" type="button">'
         'Download CSV'
         '</button>'
@@ -4596,133 +4589,6 @@ def render_page(j, others, lcfy):
 
         '</div>'
         + FILTER_JS
-    )
-
-    hmp_rows = "".join(
-        (
-            "<tr>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "<td>%s</td>"
-            "</tr>"
-        )
-        % (
-            e(
-                r.get(
-                    "incidentType",
-                    "",
-                )
-            ),
-            fmt_date(
-                r.get(
-                    "declarationDate",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "femaDeclarationString",
-                    "",
-                )
-            ),
-            e(
-                r.get(
-                    "declarationType",
-                    "",
-                )
-            ),
-        )
-        for r in j["hmp"]
-    )
-
-    hmp_data = [
-        [
-            "Hazard",
-            "Date",
-            "FEMA declaration",
-            "Type",
-        ]
-    ] + [
-        [
-            r.get(
-                "incidentType",
-                "",
-            ),
-            fmt_date(
-                r.get(
-                    "declarationDate",
-                    "",
-                )
-            ),
-            r.get(
-                "femaDeclarationString",
-                "",
-            ),
-            r.get(
-                "declarationType",
-                "",
-            ),
-        ]
-        for r in j["hmp"]
-    ]
-
-    hmp = (
-        '<section>'
-
-        '<h2>'
-        'Previous occurrences, for your mitigation plan'
-        '</h2>'
-
-        '<div class="hmp">'
-
-        '<p>'
-        'Every local hazard mitigation plan must document previous '
-        'occurrences of each hazard. Here is that record for %s, sourced '
-        'to OpenFEMA and refreshed weekly. Copy it straight into your plan.'
-        '</p>'
-
-        '<div class="tablewrap">'
-
-        '<table>'
-
-        '<thead>'
-        '<tr>'
-        '<th>Hazard</th>'
-        '<th>Date</th>'
-        '<th>FEMA declaration</th>'
-        '<th>Type</th>'
-        '</tr>'
-        '</thead>'
-
-        '<tbody>'
-        '%s'
-        '</tbody>'
-
-        '</table>'
-
-        '</div>'
-
-        '<button class="copybtn" '
-        'type="button" '
-        'data-hmp="%s">'
-        'Copy table'
-        '</button>'
-
-        '</div>'
-
-        '</section>'
-        % (
-            e(
-                j["name"]
-            ),
-            hmp_rows,
-            e(
-                json.dumps(
-                    hmp_data
-                )
-            ),
-        )
     )
 
     # The fiscal year comes from lcfy, not a literal, so the lede rolls forward
@@ -5374,8 +5240,6 @@ def render_page(j, others, lcfy):
 
         '<ul class="haz">%s</ul>'
 
-        '%s'
-
         '<h2>Every declaration on record</h2>'
 
         '%s'
@@ -5470,8 +5334,6 @@ def render_page(j, others, lcfy):
             ),
 
             haz,
-
-            hmp,
 
             history,
 
@@ -5585,8 +5447,8 @@ def render_hub(js, stubs=(), lcfy=None):
 
     desc = (
         "Federal disaster and emergency declaration history for every "
-        "%s %s since FY2000, with a ready-to-use previous-occurrences "
-        "table for hazard mitigation planning."
+        "%s %s since FY2000, each in a sortable table ready to copy into a "
+        "hazard mitigation plan."
         % (
             STATE_NAME,
             phrase,
@@ -5645,8 +5507,8 @@ def render_hub(js, stubs=(), lcfy=None):
         '<p class="lede">'
         'Every %s %s, ranked by federal disaster and emergency '
         'declarations since FY2000. Each page carries the full declaration '
-        'history and a previous-occurrences table built for local '
-        'mitigation plans.'
+        'history in a sortable table ready to copy into a local '
+        'mitigation plan.'
         '</p>'
 
         '%s'
@@ -5920,8 +5782,7 @@ def render_stub(
 
         '<p class="lede">'
         '%s spans %s. To keep its record whole rather than split across '
-        'state lines, the full declaration history and previous-occurrences '
-        'table live on one page.'
+        'state lines, its full declaration history lives on one page.'
         '</p>'
 
         '<p style="margin:1.5rem 0">'
