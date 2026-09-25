@@ -20,5 +20,10 @@ def collect(workdir=".", scripts_dir=None):
     cmd = [sys.executable, str(scripts_dir / "in_eo_scraper.py"), "--actions-out", str(workdir / "in_emergency_actions_all.csv"), "--relationships-out", str(workdir / "in_order_relationships.csv"), "--join-out", str(workdir / "declarations_for_join.csv")]
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
-    if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Indiana adapter: scrape failed")
+    # Always pass the scraper's warnings through. They used to be printed only
+    # when the scraper exited nonzero, but a failed page or PDF fetch is a
+    # warning the scraper skips past (exit 0), so those never reached
+    # plus_build.log and a whole governor's orders could vanish without a trace.
+    if result.stderr: print(result.stderr, file=sys.stderr)
+    if result.returncode: raise RuntimeError("Indiana adapter: scrape failed")
     return workdir / "declarations_for_join.csv", "2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified"

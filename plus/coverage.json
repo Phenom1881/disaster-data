@@ -1,5 +1,5 @@
 {
-  "generated_on": "2026-09-24",
+  "generated_on": "2026-09-25",
   "states": [
     {
       "abbreviation": "AL",
@@ -267,19 +267,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified",
-      "coverage_base": "2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified",
-      "generated_on": "2026-09-24",
+      "coverage": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified",
+      "coverage_base": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 11,
+        "action_count": 21,
         "federal_declaration_count": 56,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 125,
+        "storm_match_rows": 334
       },
       "name": "Indiana",
       "slug": "indiana",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "IA",
@@ -307,19 +309,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
-      "coverage_base": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
-      "generated_on": "2026-09-24",
+      "coverage": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending",
+      "coverage_base": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 52,
         "federal_declaration_count": 96,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 1019,
+        "storm_match_rows": 2198
       },
       "name": "Kansas",
       "slug": "kansas",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "KY",
@@ -327,19 +331,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "manual_only - Beshear-era newsroom feed proxy only; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap",
-      "coverage_base": "manual_only - Beshear-era newsroom feed proxy only; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap",
-      "generated_on": "2026-09-24",
+      "coverage": "manual_only - Beshear-era (Dec 2019-present) newsroom feed proxy only. Authoritative SOS Executive Journal (apps.sos.ky.gov/executive/journal/) blocks automated requests; pre-2019 coverage is an open gap.",
+      "coverage_base": "manual_only - Beshear-era (Dec 2019-present) newsroom feed proxy only. Authoritative SOS Executive Journal (apps.sos.ky.gov/executive/journal/) blocks automated requests; pre-2019 coverage is an open gap.",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 4,
         "federal_declaration_count": 99,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 260,
+        "storm_match_rows": 362
       },
       "name": "Kentucky",
       "slug": "kentucky",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "LA",
@@ -507,19 +513,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending",
-      "coverage_base": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending",
-      "generated_on": "2026-09-24",
+      "coverage": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing, backfill pending",
+      "coverage_base": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing, backfill pending",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 10,
         "federal_declaration_count": 113,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 123,
+        "storm_match_rows": 170
       },
       "name": "Montana",
       "slug": "montana",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "NE",
@@ -569,17 +577,19 @@
       "collection_failed": false,
       "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR",
       "coverage_base": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR",
-      "generated_on": "2026-09-24",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 6,
         "federal_declaration_count": 63,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 58,
+        "storm_match_rows": 72
       },
       "name": "New Hampshire",
       "slug": "new-hampshire",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "NJ",
@@ -667,19 +677,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
-      "coverage_base": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
-      "generated_on": "2026-09-24",
+      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page; 2000-2016 order numbers backfill pending",
+      "coverage_base": "2017-present numbered/dated Governor archive plus current-EOs page; 2000-2016 order numbers backfill pending",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 24,
         "federal_declaration_count": 76,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 204,
+        "storm_match_rows": 458
       },
       "name": "North Dakota",
       "slug": "north-dakota",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "OH",
@@ -687,19 +699,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index",
-      "coverage_base": "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index",
-      "generated_on": "2026-09-24",
+      "coverage": "manual_only - GovDelivery bulletin feed proxy (Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs; the numbered EO archive is JS-rendered and has no working static index). No structured filed-order archive found; needs a follow-up round.",
+      "coverage_base": "manual_only - GovDelivery bulletin feed proxy (Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs; the numbered EO archive is JS-rendered and has no working static index). No structured filed-order archive found; needs a follow-up round.",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 5,
         "federal_declaration_count": 60,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 92,
+        "storm_match_rows": 137
       },
       "name": "Ohio",
       "slug": "ohio",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "OK",
@@ -707,19 +721,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending",
-      "coverage_base": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending",
-      "generated_on": "2026-09-24",
+      "coverage": "2016-present via OEM's Emergencies and Disasters archive (SOS EO index blocks automated requests); manual-only curation, 2000-2015 disclosed gap",
+      "coverage_base": "2016-present via OEM's Emergencies and Disasters archive (SOS EO index blocks automated requests); manual-only curation, 2000-2015 disclosed gap",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 3,
+        "action_count": 4,
         "federal_declaration_count": 259,
-        "severity_rows": 55,
-        "storm_match_rows": 140
+        "severity_rows": 125,
+        "storm_match_rows": 413
       },
       "name": "Oklahoma",
       "slug": "oklahoma",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "OR",
@@ -847,19 +863,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
-      "coverage_base": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
-      "generated_on": "2026-09-24",
+      "coverage": "January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+      "coverage_base": "January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+      "generated_on": "2026-09-25",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
       "metrics": {
-        "action_count": 0,
+        "action_count": 59,
         "federal_declaration_count": 392,
-        "severity_rows": 0,
-        "storm_match_rows": 0
+        "severity_rows": 2032,
+        "storm_match_rows": 4208
       },
       "name": "Texas",
       "slug": "texas",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": ""
     },
     {
       "abbreviation": "UT",

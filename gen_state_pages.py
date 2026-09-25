@@ -21,6 +21,7 @@ No arguments needed. Re-running overwrites cleanly and is idempotent.
 """
 
 import os, re, json, html, datetime
+from urllib.parse import quote
 from dd_classify import classify
 
 SITE = "https://disasterdata.io"
@@ -218,13 +219,27 @@ def provenance_stamp_html(lcfy):
     as_of = datetime.date.today().strftime("%b %-d, %Y")
     return ('<p class="prov-stamp" style="font:500 .82rem/1.5 \'Public Sans\',sans-serif;'
             'color:#6b6357;margin:.4rem 0 1.1rem">'
-            'Totals: FY2000&ndash;FY%d &middot; Page last rebuilt %s '
+            'Totals: FY2000 to FY%d &middot; Page last rebuilt %s '
             '&middot; the current in-progress fiscal year is not included in totals</p>'
             % (lcfy, as_of))
 
 # ---------------------------------------------------------------- per-state stats
 def state_stats(ab, name, days, decls, dens, lcfy, keep):
+    # Two different jobs, deliberately kept apart.
+    #
+    # COUNTS (stat cards, lede, rank, hazard tallies, denial rate) use complete
+    # fiscal years only, so a year that is still under way can never make one
+    # state look quieter than another or move a rank mid-year.
+    #
+    # LISTS (the declaration table and the not-tied-to-a-locality table) show
+    # every declaration FEMA has published, including the in-progress year, so a
+    # declaration made last month is on the page the week it appears in OpenFEMA
+    # instead of after Sep 30. Those rows are marked "In progress" and left out
+    # of every total. Before this split the table was built from the complete-year
+    # list, which hid every declaration made since Oct 1.
     complete = [r for r in decls if fy_of(r[3]) <= lcfy]
+    open_rows = sorted([r for r in decls if fy_of(r[3]) > lcfy],
+                       key=lambda r: r[3], reverse=True)
     by_type = {"DR": 0, "EM": 0, "FM": 0}
     haz = {}
     for r in complete:
@@ -236,18 +251,69 @@ def state_stats(ab, name, days, decls, dens, lcfy, keep):
     rate = round(100.0 * den / (decl + den), 1) if (decl + den) else 0.0
     hazards = sorted(haz.items(), key=lambda kv: -kv[1])
     recent = sorted(decls, key=lambda r: r[3], reverse=True)[:40]
+    listed = sorted(decls, key=lambda r: r[3], reverse=True)
+    list_type = {"DR": 0, "EM": 0, "FM": 0}
+    for r in listed:
+        list_type[r[1]] = list_type.get(r[1], 0) + 1
     keep_ids = keep.get("ids", set())
-    orphans = sorted([r for r in complete if r[0] not in keep_ids],
+    orphans = sorted([r for r in decls if r[0] not in keep_ids],
                      key=lambda r: r[3], reverse=True)
+    # The "recent declarations" panel uses a rolling 12 months, not the fiscal
+    # year, so an event declared in August stays in view after Oct 1 while its
+    # recovery money is still moving.
+    cutoff = (datetime.date.today() - datetime.timedelta(days=365)).isoformat()
+    recent12 = [r for r in listed if (r[3] or "")[:10] >= cutoff]
     return {
         "ab": ab, "name": name, "slug": slugify(name),
         "decl": decl, "dr": by_type["DR"], "em": by_type["EM"], "fm": by_type["FM"],
         "den": den, "rate": rate, "days": days,
         "hazards": hazards, "recent": recent,
-        "history": sorted(complete, key=lambda r: r[3], reverse=True),
+        "history": listed,
+        "list_n": len(listed), "list_dr": list_type["DR"],
+        "list_em": list_type["EM"], "list_fm": list_type["FM"],
+        "open_rows": open_rows, "open_n": len(open_rows), "recent12": recent12,
+        "open_fys": sorted({fy_of(r[3]) for r in open_rows}),
         "recent_dens": sorted(den_c, key=lambda d: d[3], reverse=True)[:10],
         "orphans": orphans, "jur_n": keep.get("n", 0),
     }
+
+
+# ---------------------------------------------------------------- in-progress year
+def open_fy_label(fys):
+    """'FY2026', or 'FY2025 and FY2026' in the rare case a data lag leaves more
+    than one year outside the complete-year window."""
+    labels = ["FY%d" % y for y in fys]
+    if len(labels) <= 1:
+        return labels[0] if labels else "the current fiscal year"
+    return ", ".join(labels[:-1]) + " and " + labels[-1]
+
+
+def open_fy_pill(fy):
+    """Marker for a listed declaration that is not yet counted in the totals.
+    Sits on its own line inside the date cell, so date sorting (which reads the
+    cell's data-s attribute) and text sorting on the other columns are unaffected."""
+    return ('<span class="fy-open" title="FY%d is still in progress, so this declaration '
+            'is listed here but not yet counted in the totals">In progress</span>' % fy)
+
+
+def open_fy_note_html(n, fys):
+    """One plain-language line above the table explaining the marked rows.
+    Renders nothing when every listed declaration is from a complete year."""
+    if not n:
+        return ""
+    label = open_fy_label(fys)
+    if len(fys) == 1:
+        when = ("%s, the federal fiscal year now under way (it ends Sep 30, %d)"
+                % (label, fys[0]))
+    else:
+        when = "%s, fiscal years not yet complete in this build" % label
+    if n == 1:
+        return ('<p class="fy-note">1 declaration marked <span class="fy-open">In progress</span> '
+                'is from %s. It is listed as soon as it appears in FEMA\'s data but is not '
+                'counted in the totals above until the year is complete.</p>' % when)
+    return ('<p class="fy-note">%d declarations marked <span class="fy-open">In progress</span> '
+            'are from %s. They are listed as soon as they appear in FEMA\'s data but are not '
+            'counted in the totals above until the year is complete.</p>' % (n, when))
 
 # ---------------------------------------------------------------- CSS
 CSS = """
@@ -290,6 +356,19 @@ tr:last-child td{border-bottom:none}
 .decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
 .decl-chip.off{opacity:.42;cursor:default}
 .decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
+.fy-open{display:inline-block;font:700 .64rem/1.3 'Public Sans',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#8f3f1a;background:#fbefe7;border:1px solid #ebc3ad;border-radius:999px;padding:.08rem .45rem;white-space:nowrap;vertical-align:.08em}
+td .fy-open{display:block;width:max-content;margin-top:.3rem}
+.fy-note{font-size:.84rem;color:var(--ink3);background:#fdf8f3;border:1px solid #efdccd;border-radius:10px;padding:.55rem .8rem;margin:.1rem 0 .6rem;max-width:72ch}
+.nowfy{background:#fffaf5;border:1px solid #efdccd;border-radius:14px;padding:1.1rem 1.25rem;margin:1.6rem 0}
+.nowfy h2{margin:.15rem 0 .5rem}
+.nowfy .kick{font:700 .7rem/1.2 'Public Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8f3f1a;margin:0}
+.nowfy>p{max-width:70ch;margin:.2rem 0 .8rem;font-size:.95rem}
+.nowfy .stats{margin:.9rem 0 1rem}
+.nowfy .stat{background:#fff}
+.nowfy td small{display:block;color:var(--ink3);font-size:.76rem;margin-top:.15rem}
+.nowfy .nowfy-na{color:var(--ink3);font-size:.82rem}
+.nowfy p.cmp{font-size:.93rem;margin:.9rem 0 0}
+.nowfy p.src{font-size:.8rem;color:var(--ink3);margin:.7rem 0 0}
 .tablewrap.scroll{max-height:460px;overflow-y:auto}
 .tablewrap.scroll thead th{position:sticky;top:0;z-index:1}
 tr.hide{display:none}
@@ -357,8 +436,11 @@ def method_html():
             'rebuilt automatically each week. A "declaration" is one unique combination of '
             'declaration type (DR / EM / FM), disaster number, and state, so a single disaster '
             'affecting five states counts as five declarations. Years are federal fiscal years '
-            '(Oct 1 to Sep 30). Totals on this page cover complete fiscal years only; the current '
-            'in-progress year may appear in the most-recent list but is not counted in the totals. '
+            '(Oct 1 to Sep 30). Totals, ranks, and rates on this page cover complete fiscal years '
+            'only. Declarations from the fiscal year still in progress are listed in each '
+            'state\'s declaration tables and its recent-declarations panel, marked In '
+            'progress, but '
+            'are not counted in any total until the year is complete. '
             'Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section>')
 
 def footer_html():
@@ -424,6 +506,34 @@ def load_pa_timing():
     {ST: {county: {disasterNumber: [declDate, firstObl, lastObl, obligated, topCat]}}}.
     Returns {} when the file is absent, same graceful degradation as hma/ia."""
     return _load_json("pa-timing.json")
+
+def load_ia_timing():
+    """Per (county, disaster) Individual Assistance written by build.py. Shape:
+    {ST: {rawCounty: {disasterNumber: [reg, app, ihp, rr, rent, ona]}}}, where
+    rawCounty is OpenFEMA's "Name (Type)" string. Returns {} when absent."""
+    return _load_json("ia-timing.json")
+
+def load_event_ids():
+    """{disasterNumber: eventId} from events.json, the same event index
+    disaster.html reads, so every "full event profile" link resolves to a real
+    profile. (The Compare index in data/decl-index is not used for this: its
+    eventId disagrees with events.json for about 2% of declarations.) The weekly
+    workflow rebuilds events.json after this script runs, so a declaration that is
+    brand new this week gets its link on the following build; every other
+    declaration links right away. A missing or unreadable file means no links."""
+    p = os.path.join(SRC_ROOT, "events.json")
+    try:
+        with open(p, encoding="utf-8") as fh:
+            events = json.load(fh)
+    except Exception:
+        return {}
+    out = {}
+    for ev in events if isinstance(events, list) else []:
+        if not isinstance(ev, dict) or not ev.get("id"):
+            continue
+        for dn in ev.get("dns") or []:
+            out[str(dn)] = ev["id"]
+    return out
 
 # Public Assistance, split by the kind of declaration the money followed.
 #
@@ -612,6 +722,222 @@ def pa_split_html(s, name):
             '</section>'
             % (money(total), name, bar, " ".join(clauses)))
 
+# ---------------------------------------------------------------- recent declarations
+# The "right now" view: every declaration from the past 12 months, with
+# the Individual Assistance and Public Assistance FEMA has reported for it to
+# date, and a plain-language comparison against the state's earlier disasters.
+# Built only from sidecars build.py already writes (ia-timing.json and
+# pa-timing.json, summed across the state's counties by disaster number), so it
+# needs no new fetch and renders nothing when a file or the data is absent.
+# None of it feeds a total, rank, or rate on the page.
+
+def money1(n):
+    """One decimal in millions and billions ($108.6M rather than $109M), for
+    amounts that are still moving week to week."""
+    n = float(n or 0)
+    if n >= 1e9: return ("$%.1fB" % (n / 1e9)).replace(".0B", "B")
+    if n >= 1e6: return ("$%.1fM" % (n / 1e6)).replace(".0M", "M")
+    if n >= 1e3: return "$%dK" % round(n / 1e3)
+    return "$%d" % round(n)
+
+def ia_by_dn(ia_timing_state):
+    """{disasterNumber: [reg, app, ihp, rr, rent, ona, areas]} summed over a state's
+    counties from ia-timing.json. 'areas' counts the counties with data."""
+    out = {}
+    for per_dn in (ia_timing_state or {}).values():
+        for dn, v in (per_dn or {}).items():
+            try:
+                vals = [float(x or 0) for x in list(v)[:6]]
+            except (TypeError, ValueError):
+                continue
+            if len(vals) < 6:
+                continue
+            acc = out.setdefault(str(dn), [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0])
+            for i in range(6):
+                acc[i] += vals[i]
+            acc[6] += 1
+    return out
+
+def pa_by_dn(pa_timing_state):
+    """{disasterNumber: obligated federal share} summed over a state's counties from
+    pa-timing.json (index 3 of each entry)."""
+    out = {}
+    for per_dn in (pa_timing_state or {}).values():
+        for dn, v in (per_dn or {}).items():
+            try:
+                obl = float(v[3] or 0)
+            except (TypeError, ValueError, IndexError):
+                continue
+            if obl > 0:
+                out[str(dn)] = out.get(str(dn), 0.0) + obl
+    return out
+
+def dn_meta(decls):
+    """{disasterNumber: (declaration string, type, incident type, date)}."""
+    return {decl_num(r[0]): (r[0], r[1], r[2], r[3]) for r in decls}
+
+def _nowfy_ordinal(n):
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return "%d%s" % (n, suf)
+
+def nowfy_compare_sentence(dn, app, ia_dn, meta, where):
+    """One sentence placing a current declaration's households approved against every
+    other disaster in the same place in FEMA's household assistance data, which begins
+    in 2002. Uses household counts rather than dollars, so inflation cannot distort it.
+    COVID-19 is left out because its household aid was funeral assistance, not help
+    after physical damage. Returns (sentence, covid_was_excluded)."""
+    own = (meta.get(dn) or ("",))[0] or ("Disaster %s" % dn)
+    others, covid = [], False
+    for odn, v in ia_dn.items():
+        if odn == dn:
+            continue
+        try:
+            oapp = int(round(float(v[1] or 0)))
+        except (TypeError, ValueError, IndexError):
+            continue
+        if oapp <= 0:
+            continue
+        m = meta.get(odn)
+        if m and m[2] == "Biological":
+            covid = True
+            continue
+        others.append((oapp, odn))
+    data = "FEMA's household assistance data, which begins in 2002"
+    if not others:
+        return ("%s has approved %s households for assistance so far, the first %s disaster "
+                "with approved households in %s." % (own, num(app), where, data)), covid
+    others.sort(reverse=True)
+    top_app, top_dn = others[0]
+    tm = meta.get(top_dn)
+    top_lbl = tm[0] if tm else "disaster number %s" % top_dn
+    top_yr = (" in %s" % tm[3][:4]) if (tm and tm[3]) else ""
+    if app > top_app:
+        ratio = float(app) / top_app
+        more = ("more than three times as many as" if ratio >= 3 else
+                "more than twice as many as" if ratio >= 2 else "more than")
+        return ("%s has already approved %s households for assistance, %s any other %s "
+                "disaster in %s. The previous high was %s%s, with %s."
+                % (own, num(app), more, where, data, top_lbl, top_yr, num(top_app))), covid
+    if app == top_app:
+        return ("%s has approved %s households for assistance so far, tied with %s%s for "
+                "the most of any %s disaster in %s."
+                % (own, num(app), top_lbl, top_yr, where, data)), covid
+    rank = 1 + sum(1 for a, _ in others if a > app)
+    return ("%s has approved %s households for assistance so far, the %s most of any %s "
+            "disaster in %s. The most was %s%s, with %s."
+            % (own, num(app), _nowfy_ordinal(rank), where, data, top_lbl, top_yr,
+               num(top_app))), covid
+
+def recent_aid_html(s, lcfy):
+    """The state's "recent declarations" panel: every declaration from the past 12
+    months with the aid FEMA has reported for it so far. Rows from the fiscal year
+    still in progress carry the same In progress marker as the declaration table.
+    Renders nothing when the state has no declarations in that window."""
+    rows = s.get("recent12") or []
+    if not rows:
+        return ""
+    e = html.escape
+    name = s["name"]
+    ia_dn = s.get("ia_dn") or {}
+    pa_dn = s.get("pa_dn") or {}
+    ev_ids = s.get("event_ids") or {}
+    meta = s.get("dn_meta") or {}
+    na = '<span class="nowfy-na">%s</span>'
+    na_fm = ('<span class="nowfy-na" title="Fire management declarations do not include '
+             'household assistance">Not applicable</span>')
+
+    tot_app = tot_ihp = tot_pa = 0.0
+    trs, ia_hits, linked, open_fys = [], [], False, set()
+    for r in rows:
+        dn, t = decl_num(r[0]), r[1]
+        fy = fy_of(r[3])
+        is_open = fy > lcfy
+        if is_open:
+            open_fys.add(fy)
+        ia = ia_dn.get(dn)
+        pa = float(pa_dn.get(dn) or 0)
+        ev = ev_ids.get(dn)
+        if ev:
+            linked = True
+            num_html = ('<a href="../disaster.html?event=%s">%s</a>'
+                        % (quote(str(ev), safe=""), e(r[0])))
+        else:
+            num_html = e(r[0])
+        head = ('%s<small>%s &middot; %s</small>'
+                % (num_html, e(TYPE_LONG.get(t, t)), e(r[2] or "")))
+        declared = fmt_date(r[3]) + (open_fy_pill(fy) if is_open else "")
+        if t == "FM":
+            hh = ihp_html = na_fm
+        elif ia and (ia[0] > 0 or ia[1] > 0 or ia[2] > 0):
+            hh = '%s<small>of %s registered</small>' % (num(ia[1]), num(ia[0]))
+            ihp_html = money1(ia[2]) if ia[2] > 0 else na % "None reported"
+            tot_app += ia[1]
+            tot_ihp += ia[2]
+            if ia[1] > 0:
+                ia_hits.append((int(round(ia[1])), dn))
+        else:
+            hh = ihp_html = na % "None reported"
+        pa_html = money1(pa) if pa > 0 else na % "None reported yet"
+        tot_pa += pa
+        trs.append('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>'
+                   % (head, declared, hh, ihp_html, pa_html))
+
+    tiles = ""
+    if tot_app or tot_ihp or tot_pa:
+        tiles = '<div class="stats">%s</div>' % "".join(
+            '<div class="stat"><div class="n">%s</div><div class="l">%s</div></div>' % (v, l)
+            for v, l in ((num(tot_app) if tot_app else "None yet",
+                          "Households approved for assistance"),
+                         (money1(tot_ihp) if tot_ihp else "None yet",
+                          "Individual Assistance approved"),
+                         (money1(tot_pa) if tot_pa else "None yet",
+                          "Public Assistance obligated")))
+
+    # One comparison, for the declaration with the most households approved so
+    # far, so the paragraph stays short when a state has several recent events.
+    cmp_html = ""
+    if ia_hits:
+        app, dn = max(ia_hits)
+        text, covid = nowfy_compare_sentence(dn, app, ia_dn, meta, name)
+        if covid:
+            text += " COVID-19 funeral assistance is left out of this comparison."
+        cmp_html = '<p class="cmp">%s</p>' % e(text)
+
+    n = len(rows)
+    n_open = sum(1 for r in rows if fy_of(r[3]) > lcfy)
+    lbl = open_fy_label(sorted(open_fys))
+    intro = ("%s has had %d federal declaration%s in the past 12 months. The figures are "
+             "what FEMA has reported to date and grow as recovery continues."
+             % (e(name), n, "" if n == 1 else "s"))
+    if n_open and n_open == n:
+        intro += ((" It is from %s, the fiscal year still under way, so it is not counted "
+                   "in the complete-year totals above yet." if n == 1 else
+                   " All of them are from %s, the fiscal year still under way, so none are "
+                   "counted in the complete-year totals above yet.") % lbl)
+    elif n_open == 1:
+        intro += (" The one marked In progress is from %s, the fiscal year still under way, "
+                  "and is not counted in the complete-year totals above yet." % lbl)
+    elif n_open:
+        intro += (" The %d marked In progress are from %s, the fiscal year still under way, "
+                  "and are not counted in the complete-year totals above yet." % (n_open, lbl))
+    else:
+        intro += " All of them fall in complete fiscal years and are counted in the totals above."
+    src = ("Individual Assistance is FEMA's Individuals and Households Program, from "
+           "OpenFEMA's Housing Assistance data for owners and renters. Public Assistance is "
+           "the obligated federal share from OpenFEMA's grant award activity, which usually "
+           "starts posting weeks to months after a declaration.")
+    if linked:
+        src += " Select a declaration number to open its full event profile."
+    return ('<section class="nowfy" id="recent">'
+            '<p class="kick">Past 12 months</p>'
+            '<h2>Recent declarations and aid so far</h2>'
+            '<p>%s</p>%s'
+            '<div class="tablewrap"><table><thead><tr><th>Declaration</th><th>Declared</th>'
+            '<th>Households approved</th><th>Individual Assistance</th>'
+            '<th>Public Assistance obligated</th></tr></thead><tbody>%s</tbody></table></div>'
+            '%s<p class="src">%s</p></section>'
+            % (intro, tiles, "".join(trs), cmp_html, e(src)))
+
 def decl_kinds_html():
     """Plain-English explanation of the three declaration types, placed with the
     declaration table it explains. The acronyms stay, demoted to the reference
@@ -667,12 +993,18 @@ def render_state_page(s, states, lcfy):
     haz = "".join('<li>%s <b>%d</b></li>' % (e(h), n) for h, n in s["hazards"][:8]) \
           or '<li>None recorded</li>'
 
-    # recent declarations
-    # Full declaration record (complete fiscal years), most recent first. data-t drives the filter.
+    # Full declaration record, most recent first, including the in-progress fiscal
+    # year (marked, and not counted in the totals above). data-t drives the filter.
+    # The chips and the "Showing" line count the rows actually in the table, so a
+    # filter click always shows exactly the number on its chip.
+    def open_mark(r):
+        fy = fy_of(r[3])
+        return open_fy_pill(fy) if fy > lcfy else ""
+
     rows = "".join(
-        "<tr data-t=\"%s\"><td data-s=\"%s\">%s</td><td data-s=\"%s\">%s</td><td><span class='tag' title='%s'>%s</span></td>"
+        "<tr data-t=\"%s\"><td data-s=\"%s\">%s%s</td><td data-s=\"%s\">%s</td><td><span class='tag' title='%s'>%s</span></td>"
         "<td>%s</td><td>%s</td></tr>"
-        % (e(r[1]), e(r[3][:10]), fmt_date(r[3]), decl_num(r[0]), e(r[0]),
+        % (e(r[1]), e(r[3][:10]), fmt_date(r[3]), open_mark(r), decl_num(r[0]), e(r[0]),
            TYPE_LONG.get(r[1], r[1]), e(r[1]),
            e(r[2]), e(pretty_title(r[4])))
         for r in s["history"])
@@ -682,8 +1014,9 @@ def render_state_page(s, states, lcfy):
                   '<b style="color:#004c53">DR</b> = Major disaster (Stafford Act) &middot; '
                   '<b style="color:#004c53">EM</b> = Emergency declaration &middot; '
                   '<b style="color:#004c53">FM</b> = Fire management assistance</p>'
-                  + type_chips(s["decl"], s["dr"], s["em"], s["fm"]) +
-                  '<p class="decl-count" aria-live="polite">Showing %d declarations</p>' % s["decl"] +
+                  + type_chips(s["list_n"], s["list_dr"], s["list_em"], s["list_fm"])
+                  + open_fy_note_html(s["open_n"], s["open_fys"]) +
+                  '<p class="decl-count" aria-live="polite">Showing %d declarations</p>' % s["list_n"] +
                   '<div class="' + wrap_cls + '"><table><thead><tr>'
                   '<th class="sortable" data-k="date">Date</th>'
                   '<th class="sortable" data-k="num">Number</th>'
@@ -733,30 +1066,37 @@ def render_state_page(s, states, lcfy):
              'its full declaration history and a ready-to-use mitigation-plan table &rarr;</a></p>'
              % (slug, s["jur_n"], e(name))) if s.get("jur_n") else ''
 
-    # declarations that belong to no single locality -> listed here, on the state page
+    # declarations that belong to no single locality -> listed here, on the state page.
+    # Like the main table this lists the in-progress year too, marked the same way.
     if s["orphans"]:
         orows = "".join(
-            "<tr><td>%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td>"
+            "<tr><td>%s%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td>"
             "<td>%s</td><td>%s</td></tr>"
-            % (fmt_date(r[3]), e(r[0]), TYPE_LONG.get(r[1], r[1]), e(r[1]),
+            % (fmt_date(r[3]), open_mark(r), e(r[0]), TYPE_LONG.get(r[1], r[1]), e(r[1]),
                e(r[2]), e(pretty_title(r[4])))
             for r in s["orphans"])
         n = len(s["orphans"])
+        n_open = sum(1 for r in s["orphans"] if fy_of(r[3]) > lcfy)
+        if n_open:
+            counted = ('They do not appear on any individual jurisdiction page. Those from '
+                       'complete fiscal years are included in the state totals above; any marked '
+                       'In progress will be counted once its fiscal year is complete.')
+        else:
+            counted = ('They are included in the state totals above but do not appear on any '
+                       'individual jurisdiction page.')
         orphan_html = ('<h2>Declarations not attributed to a specific locality</h2>'
                        '<p>%d declaration%s in %s applied statewide, or to areas FEMA did not tie '
-                       'to a single county or equivalent, such as wildfire management zones. They '
-                       'are included in the state totals above but do not appear on any individual '
-                       'jurisdiction page.</p>'
+                       'to a single county or equivalent, such as wildfire management zones. %s</p>'
                        '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Number</th>'
                        '<th>Type</th><th>Hazard</th><th>Title</th></tr></thead><tbody>%s'
                        '</tbody></table></div>'
-                       % (n, "" if n == 1 else "s", e(name), orows))
+                       % (n, "" if n == 1 else "s", e(name), counted, orows))
     else:
         orphan_html = ''
 
     ia_sec  = state_ia_html(s)
     hma_sec = state_hma_html(s)
-    pa_sec  = pa_split_html(s, e(name))
+    pa_sec  = recent_aid_html(s, lcfy) + pa_split_html(s, e(name))
     kinds   = decl_kinds_html()
 
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
@@ -836,7 +1176,7 @@ def render_hub(states, lcfy):
 # ---------------------------------------------------------------- sitemap + robots
 def render_sitemap(states):
     # lastmod is derived from real data (each state's most recent declaration),
-    # so the sitemap only changes when FEMA data does — no spurious weekly commits.
+    # so the sitemap only changes when FEMA data does, so there are no spurious weekly commits.
     def latest(s):
         return s["recent"][0][3] if s.get("recent") else None
     overall = max([d for d in (latest(s) for s in states) if d],
@@ -873,12 +1213,19 @@ def main():
 
     HMA, IA = load_hma(), load_ia()
     PA_TIMING = load_pa_timing()
+    IA_TIMING = load_ia_timing()
+    EVENT_IDS = load_event_ids()
     for s in rows:
         s["hma"] = agg_hma(HMA.get(s["ab"], {}))
         s["ia"]  = agg_ia(IA.get(s["ab"], {}))
         s["pa"]  = state_pa(DECLS.get(s["ab"], []),
                             PA_COUNTY.get(s["ab"], {}),
                             PA_TIMING.get(s["ab"], {}))
+        # inputs for the "recent declarations" panel
+        s["ia_dn"] = ia_by_dn(IA_TIMING.get(s["ab"], {}))
+        s["pa_dn"] = pa_by_dn(PA_TIMING.get(s["ab"], {}))
+        s["dn_meta"] = dn_meta(DECLS.get(s["ab"], []))
+        s["event_ids"] = EVENT_IDS
 
     os.makedirs(STATES_DIR, exist_ok=True)
     for s in rows:
@@ -898,6 +1245,14 @@ def main():
     _resid = sum((s.get("pa") or {}).get("resid", 0) for s in rows)
     print("PA: %d states with obligated dollars; $%.0f attributed to a declaration, "
           "$%.0f unattributed residual" % (len(_pa_states), _attr, _resid))
+    _cur = [(s, r) for s in rows for r in s.get("recent12", [])]
+    _cur_ia = sum(1 for s, r in _cur if (s["ia_dn"].get(decl_num(r[0])) or [0, 0])[1] > 0)
+    _cur_pa = sum(1 for s, r in _cur if s["pa_dn"].get(decl_num(r[0]), 0) > 0)
+    _cur_ln = sum(1 for s, r in _cur if decl_num(r[0]) in s["event_ids"])
+    print("recent declarations panel (past 12 months): %d declarations across %d states/territories; "
+          "%d with household assistance reported, %d with PA obligated, %d linked to an "
+          "event profile" % (len(_cur), len({s["ab"] for s, _ in _cur}), _cur_ia, _cur_pa,
+                             _cur_ln))
 
 if __name__ == "__main__":
     main()
