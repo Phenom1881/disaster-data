@@ -140,6 +140,17 @@ def _heading_like(text):
 _TAB_LABEL_TAGS = {"a", "button", "li"}
 
 
+def _is_tab_label(tag):
+    """A tab or accordion control, not a heading: a link, button or list item,
+    or anything marked as a tab (role="tab", aria-controls, data-target), or
+    inside such an element."""
+    for el in [tag] + [p for p in tag.parents if isinstance(p, Tag)][:2]:
+        if el.name in _TAB_LABEL_TAGS or el.get("role") == "tab" or any(
+                el.get(a) for a in ("aria-controls", "data-target", "data-bs-target", "data-tab")):
+            return True
+    return False
+
+
 def parse_declarations_page(html, max_year=None):
     """Parse the Kansas Disaster Declarations page into a list of dicts:
     {year, heading, pdf_url, doc_id}.
@@ -190,7 +201,7 @@ def parse_declarations_page(html, max_year=None):
             year = _year_label(node, max_year)
             if year is not None and node.find(is_label) is None:
                 end_line()
-                if node.name in _TAB_LABEL_TAGS:
+                if _is_tab_label(node):
                     st["streak"] += 1
                     # Two or more tab labels in a row with nothing between
                     # them are a tab strip, not a heading above its entries.
@@ -350,15 +361,42 @@ except Exception:  # pragma: no cover
     _KS_TZ = _tz(_td(hours=-6))
 
 
-def news_declarations(xml_bytes, session=None):
-    """[{doc_id, pdf_url, title, date}] for News Flash items announcing a
-    new state declaration whose signed document can be found."""
+def _declaration_doc_ids(html):
+    """Document Center ids of links labelled as a declaration or proclamation
+    in a piece of HTML (an item's description or a news article's body)."""
+    soup = BeautifulSoup(html or "", "html.parser")
+    ids = []
+    for a in soup.find_all("a", href=True):
+        m = DOC_LINK_RE.search(a["href"])
+        if m and DECLARATION_LINK_RE.search(a.get_text(" ", strip=True)) and not SKIP_LINK_RE.search(a.get_text(" ", strip=True)):
+            ids.append(m.group(1))
+    return list(dict.fromkeys(ids))
+
+
+def _article_body(html):
+    """The news article itself, not the site's menus and footer."""
+    soup = BeautifulSoup(html or "", "html.parser")
+    for sel in ("#newsFlashDetail", ".detail", ".fr-view", "article", "main", "#moduleContent", ".moduleContentNew"):
+        el = soup.select_one(sel)
+        if el is not None:
+            return str(el)
+    return ""
+
+
+def news_declarations(xml_bytes, session=None, saved_ids=(), review=None):
+    """[{doc_id, pdf_url, title, date, news_url}] for News Flash items that
+    announce a new weather declaration and link exactly one signed
+    declaration not saved yet, in the item or the article's own body (never
+    the page's menus). Anything less certain goes to review."""
     from email.utils import parsedate_to_datetime
     from xml.etree import ElementTree as ET
-    out, seen = [], set()
+    review = [] if review is None else review
+    out, seen = [], set(saved_ids)
     for item in ET.fromstring(xml_bytes).iter("item"):
         title = _clean(item.findtext("title"))
         if not NEWS_DECLARATION_RE.search(title) or NEWS_EXCLUDE_RE.search(title):
+            continue
+        if any(bad in slugify(title) for bad in NON_WEATHER_OR_SUSPECT_SLUGS):
             continue
         try:
             stamp = parsedate_to_datetime(item.findtext("pubDate") or "")
@@ -366,16 +404,22 @@ def news_declarations(xml_bytes, session=None):
         except (TypeError, ValueError, IndexError):
             continue
         link = (item.findtext("link") or "").strip()
-        m = DOC_LINK_RE.search(item.findtext("description") or "")
-        if not m and session is not None and link:
+        ids = _declaration_doc_ids(item.findtext("description") or "")
+        if not ids and session is not None and link:
             try:
-                m = DOC_LINK_RE.search(fetch(link, session))
+                ids = _declaration_doc_ids(_article_body(fetch(link, session)))
             except requests.RequestException:
-                m = None
-        if not m or m.group(1) in seen:
+                ids = []
+        new = [i for i in ids if f"KS-PROC-{i}" not in seen]
+        if not ids:
+            review.append(f"{day} {title} (no declaration link found)")
             continue
-        seen.add(m.group(1))
-        out.append({"doc_id": m.group(1), "pdf_url": f"{BASE}/DocumentCenter/View/{m.group(1)}",
+        if len(new) != 1:
+            if len(new) > 1:
+                review.append(f"{day} {title} (links {len(new)} unsaved declarations)")
+            continue
+        seen.add(f"KS-PROC-{new[0]}")
+        out.append({"doc_id": new[0], "pdf_url": f"{BASE}/DocumentCenter/View/{new[0]}",
                     "title": title, "date": day, "news_url": link})
     return out
 
@@ -386,14 +430,18 @@ def collect_from_news(session, join_out):
                                                        "Accept": "application/rss+xml, application/xml;q=0.9, */*;q=0.5"})
     resp.raise_for_status()
     saved = saved_rows(join_out)
+    review = []
     rows = []
-    for d in news_declarations(resp.content, session):
-        declaration_id = f"KS-PROC-{d['doc_id']}"
-        if declaration_id in saved:
-            continue
+    for d in news_declarations(resp.content, session, saved_ids=set(saved), review=review):
         dt = datetime.strptime(d["date"], "%Y-%m-%d")
-        rows.append({"declaration_id": declaration_id, "governor": governor_for(dt), "eo_number": d["doc_id"],
-                     "event_description": d["title"], "date_signed": d["date"], "archive_record_url": d["pdf_url"]})
+        # The news item's link is kept as the record's source, which also marks
+        # its date as the announcement's, not a reviewed signing date: when
+        # the page is read again, the page's own date replaces it.
+        rows.append({"declaration_id": f"KS-PROC-{d['doc_id']}", "governor": governor_for(dt), "eo_number": d["doc_id"],
+                     "event_description": d["title"], "date_signed": d["date"],
+                     "archive_record_url": d["news_url"] or d["pdf_url"]})
+    for line in review:
+        print(f"  REVIEW: Kansas News Flash item not recorded automatically: {line}", file=sys.stderr)
     return rows
 
 
@@ -450,8 +498,10 @@ def collect(actions_out, relationships_out, join_out):
                   % (rec["doc_id"], rec["year"], "/".join(map(str, sorted(years_in_name)))), file=sys.stderr)
             continue
         declaration_id = f"KS-PROC-{rec['doc_id']}"
-        saved_date = saved.get(declaration_id, {}).get("date_signed", "")
-        if saved_date and saved_date != date_signed:
+        saved_row = saved.get(declaration_id, {})
+        saved_date = saved_row.get("date_signed", "")
+        from_news = "CivicAlerts" in saved_row.get("archive_record_url", "")
+        if saved_date and saved_date != date_signed and not from_news:
             print("  NOTE: %s reads as %s but was saved as %s after review; kept the saved date"
                   % (declaration_id, date_signed, saved_date), file=sys.stderr)
             date_signed = saved_date

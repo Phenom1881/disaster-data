@@ -127,6 +127,7 @@ class TestNextDayMatching(unittest.TestCase):
         from oh_eo_scraper import event_tokens
         self.assertEqual(event_tokens("Governor Thanks Police Services")[1], set())     # 'Police' is not ice
         self.assertTrue(same_event("Flooding in Several Ohio Counties", "21 counties after significant flooding"))
+        self.assertTrue(same_event("High Winds Across Ohio", "damaging wind"))
 
     def test_updated_resend_is_not_a_new_declaration(self):
         from oh_eo_scraper import is_original_declaration

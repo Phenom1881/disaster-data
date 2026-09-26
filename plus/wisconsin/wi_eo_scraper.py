@@ -11,11 +11,12 @@ Governor's press releases, published through GovDelivery:
 https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 Each state of emergency the Governor declares is announced there ("Gov. Evers
 Declares State of Emergency in Response to Severe Storms throughout Eastern
-Wisconsin"). A release that names its executive order number becomes that
-order's record (WI-EO-<number>, the same id the archive gives it); one that
-does not is matched to a saved record within three days, or recorded by its
-date until the archive can be read again. Saved archive records are never
-replaced by a release: a saved row is written back as it was.
+Wisconsin"). Only a release that names the executive order it announces
+becomes a record, WI-EO-<number>, the same id the archive gives that order,
+so the archive and the releases can never produce two records for one
+declaration. A release that names no order, or orders that amend or extend
+another, is listed in the run log for review and not written. Saved archive
+records are never replaced by a release: a saved row is written back as it was.
 """
 from __future__ import annotations
 import argparse, csv, html as html_lib, json, re, sys, time
@@ -78,16 +79,19 @@ def scrape(session=None):
 _FOLLOW_UP=r"(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remain\w*|likely|possible|consider\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|terminat\w*)"
 # "Gov. Evers Declares State of Emergency ...", "Gov. Evers Declares Emergency
 # as State Prepares for Winter Storm", "Gov. Evers Signs Executive Order
-# Declaring State of Emergency ...", with no follow-up word between the verb
-# and the emergency.
+# Declaring State of Emergency ...": the verb right after the Governor's name,
+# no follow-up word between it and the emergency.
 RELEASE_SOE_RE=re.compile(
-    r"\bGov(?:ernor|\.)?\s+(?:Tony\s+)?Evers\s+(?:\w+\s+){0,3}?(?:declares?|declared|declaring|signs?|signed|issues?|issued)\b"
+    r"\bGov(?:ernor|\.)?\s+(?:Tony\s+)?Evers\s+(?:declares?|declared|signs?|signed|issues?|issued)\b"
     r"(?:(?!\b"+_FOLLOW_UP+r"\b)[^.;:]){0,60}?\b(?:state of emergency|emergency)\b",re.I)
-# Emergencies that are not about the weather.
-RELEASE_OFF_TOPIC_RE=re.compile(r"\b(?:economic disruption|price gouging|energy emergency|shutdown|foodshare|public health|health emergency|opioid\w*|fentanyl|half-staff|flag)\b",re.I)
+# Emergencies that are not about the weather, and releases about bills,
+# grants or aid that mention an emergency.
+RELEASE_OFF_TOPIC_RE=re.compile(r"\b(?:economic disruption|price gouging|energy emergency|shutdown|foodshare|public health|health emergency|opioid\w*|fentanyl|half-staff|flag|bills?|grants?|funding|responders)\b",re.I)
 RELEASE_WEATHER_RE=re.compile(r"\b(?:weather|storms?|flood\w*|tornad\w*|winter|snow\w*|ice|blizzard|winds?|rain\w*|wildfires?|fires?|drought)\b",re.I)
+# The order the release announces: "signed Executive Order #315 declaring".
+SIGNED_EO_RE=re.compile(r"\bsign\w*\s+(?:an?\s+)?Executive Order\s*(?:No\.?\s*)?#?\s*(\d{1,4})\b|\bExecutive Order\s*(?:No\.?\s*)?#?\s*(\d{1,4})\s*,?\s*(?:declaring|which declares|to declare)\b",re.I)
 EO_NUMBER_RE=re.compile(r"\bExecutive Order\s*(?:No\.?\s*)?#?\s*(\d{1,4})\b",re.I)
-SAME_EVENT_DAYS=3
+AMENDING_RE=re.compile(r"\b(?:amend\w*|extend\w*|expand\w*|renew\w*)\s+(?:the\s+)?(?:state of emergency|Executive Order)\b",re.I)
 try:
     from zoneinfo import ZoneInfo
     _WI_TZ=ZoneInfo("America/Chicago")
@@ -109,32 +113,41 @@ def is_weather_emergency_release(title):
     title=re.sub(r"^\s*press release:\s*","",title,flags=re.I)
     return bool(RELEASE_SOE_RE.search(title) and not RELEASE_OFF_TOPIC_RE.search(title) and RELEASE_WEATHER_RE.search(title))
 
-def feed_releases(xml_bytes):
-    """Weather state-of-emergency releases in the GovDelivery feed, oldest
-    first, one per event (releases within SAME_EVENT_DAYS of an earlier one
-    without an order number of their own are follow-ups)."""
+def announced_order(text):
+    """The number of the order a release announces, or '' when it cannot be
+    told: 'signed Executive Order #315' or 'Executive Order #315 declaring',
+    else the only order number the release mentions."""
+    m=SIGNED_EO_RE.search(text)
+    if m: return m.group(1) or m.group(2)
+    numbers={n for n in EO_NUMBER_RE.findall(text)}
+    return numbers.pop() if len(numbers)==1 else ""
+
+def feed_releases(xml_bytes,review=None):
+    """Weather state-of-emergency releases in the GovDelivery feed that name
+    the order they announce, oldest first, one per order. Releases that name
+    no order, or orders amending or extending another, go to review (a list
+    of titles) instead: a record without the archive's id could never be
+    reconciled with it later."""
+    review=[] if review is None else review
     root=ET.fromstring(xml_bytes)
-    found=[]
+    out,seen=[],set()
     for item in root.iter("item"):
         title=" ".join((item.findtext("title") or "").split())
         if not is_weather_emergency_release(title): continue
         day=release_date(item.findtext("pubDate") or "")
         if not day: continue
         text=title+" "+BeautifulSoup(item.findtext("description") or "","html.parser").get_text(" ",strip=True)
-        m=EO_NUMBER_RE.search(text)
         clean_title=re.sub(r"^\s*press release:\s*","",title,flags=re.I)
+        if "state of emergency" not in text.lower() or AMENDING_RE.search(text):
+            review.append(f"{day} {clean_title}"); continue
+        number=announced_order(text)
+        if not number:
+            review.append(f"{day} {clean_title} (no order number)"); continue
+        if number in seen: continue
+        seen.add(number)
         hazard=next((c for c,p in HAZARDS.items() if re.search(p,clean_title,re.I)),"") or "severe_storm"
-        found.append(Release(clean_title,(item.findtext("link") or "").strip(),day,m.group(1) if m else "",hazard))
-    out=[]
-    for r in sorted(found,key=lambda x:x.date_signed):
-        if r.eo_number and any(x.eo_number==r.eo_number for x in out): continue
-        if not r.eo_number and any(_days_apart(r.date_signed,x.date_signed)<=SAME_EVENT_DAYS for x in out): continue
-        out.append(r)
-    return out
-
-def _days_apart(a,b):
-    try: return abs((date.fromisoformat(a)-date.fromisoformat(b)).days)
-    except ValueError: return 9999
+        out.append(Release(clean_title,(item.findtext("link") or "").strip(),day,number,hazard))
+    return sorted(out,key=lambda x:x.date_signed)
 
 def read_saved(path):
     try:
@@ -142,28 +155,24 @@ def read_saved(path):
     except (OSError,csv.Error): return []
 
 def release_rows(releases,saved_join):
-    """Join rows for the releases: a saved record for the same order (or,
-    without a number, the same event within SAME_EVENT_DAYS) is written back
-    unchanged; a new one gets WI-EO-<number>, or WI-SOE-<date>."""
+    """Join rows for the releases: a saved record for the same order is
+    written back unchanged; a new one gets WI-EO-<number>."""
     by_id={r.get("declaration_id",""):r for r in saved_join}
     rows=[]
     for r in releases:
-        hit=by_id.get(f"WI-EO-{r.eo_number}") if r.eo_number else None
-        if not hit and not r.eo_number:
-            hit=next((s for s in saved_join if s.get("date_signed") and _days_apart(r.date_signed,s["date_signed"])<=SAME_EVENT_DAYS),None)
+        hit=by_id.get(f"WI-EO-{r.eo_number}")
         if hit: rows.append({k:hit.get(k,"") for k in JOIN_FIELDS}); continue
-        sid=f"WI-EO-{r.eo_number}" if r.eo_number else f"WI-SOE-{r.date_signed}"
-        rows.append({"declaration_id":sid,"governor":GOVERNOR,"eo_number":r.eo_number,"event_description":r.title,"date_signed":r.date_signed,"archive_record_url":r.url})
+        rows.append({"declaration_id":f"WI-EO-{r.eo_number}","governor":GOVERNOR,"eo_number":r.eo_number,"event_description":r.title,"date_signed":r.date_signed,"archive_record_url":r.url})
     return rows
 
-def scrape_releases(session=None):
+def scrape_releases(session=None,review=None):
     session=session or requests.Session()
     last=None
     for wait in (0,10):
         if wait: time.sleep(wait)
         try:
             r=session.get(RELEASE_FEED,headers=FEED_HEADERS,timeout=45); r.raise_for_status()
-            return feed_releases(r.content)
+            return feed_releases(r.content,review)
         except (requests.RequestException,ET.ParseError) as exc: last=exc
     raise last
 
@@ -202,10 +211,13 @@ def main():
         rows=scrape()
     except (requests.RequestException,ValueError) as archive_exc:
         print(f"Wisconsin archive not reachable ({archive_exc}); reading the Governor's press releases instead",file=sys.stderr)
+        review=[]
         try:
-            releases=scrape_releases()
+            releases=scrape_releases(review=review)
         except (requests.RequestException,ET.ParseError) as exc:
             raise SystemExit(f"Wisconsin archive scrape failed: {archive_exc}; press releases not read either: {exc}")
+        for line in review:
+            print(f"  REVIEW: Wisconsin release not recorded automatically: {line}",file=sys.stderr)
         added=write_release_outputs(releases,Path(a.actions_out),Path(a.relationships_out),Path(a.join_out))
         print(f"Wisconsin: archive not reachable; {len(releases)} weather emergency press releases read, {added} new declarations added (read from the Governor's press releases)")
         return

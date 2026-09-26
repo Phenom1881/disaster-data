@@ -115,7 +115,10 @@ def event_tokens(text: str) -> tuple[set, set]:
     whole words ('Police' is not ice), reduced to a stem (floods -> flood)."""
     low = (text or "").lower().replace("van wert", "vanwert")
     counties = {w for w in re.findall(r"[a-z]+", low) if w in OHIO_COUNTIES}
-    hazards = {m.group(1)[:5] for m in HAZARD_WORD_RE.finditer(low)}
+    canon = (("flood", "flood"), ("tornad", "tornado"), ("storm", "storm"), ("wind", "wind"), ("winter", "winter"),
+             ("snow", "snow"), ("ice", "ice"), ("wildfire", "fire"), ("fire", "fire"), ("drought", "drought"),
+             ("rain", "rain"), ("hurricane", "hurricane"))
+    hazards = {next(c for stem, c in canon if m.group(1).startswith(stem)) for m in HAZARD_WORD_RE.finditer(low)}
     return counties, hazards
 
 

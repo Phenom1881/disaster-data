@@ -154,7 +154,7 @@ _FOLLOW_UP = r"(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remai
 # or "State of Emergency Declared as Flooding Hits ...". The Governor is
 # named before the verb so a noun ("Flood Issues") is not read as one.
 SOE_TITLE_RE = re.compile(
-    r"\b(?:Beshear|Governor|Gov\.?)\s+(?:\w+\s+){0,2}?(?:declares?|declared|issues|issued|signs|signed)\b"
+    r"\b(?:Gov\.?|Governor)\s+(?:Andy\s+)?Beshear\s+(?:officially\s+|formally\s+)?(?:declares?|declared|issues|issued|signs|signed)\b"
     r"(?:(?!\b" + _FOLLOW_UP + r"\b)[^.;:]){0,60}?\b(?:state of emergency|statewide emergency)\b"
     r"|\b(?:state of emergency|statewide emergency)\b[^.;:]{0,20}?\b(?:declared|issued)\b",
     re.I)

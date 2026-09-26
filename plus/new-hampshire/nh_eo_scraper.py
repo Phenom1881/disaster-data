@@ -177,7 +177,8 @@ def date_in_text(text: str, fallback_year: Optional[int] = None) -> Optional[str
         if year:
             found = normalize_date(f"{month} {day}, {year}")
             signed = found or signed
-            if found and re.search(r"\bhand\b", text[max(0, match.start() - 160):match.start()], re.I):
+            sentence = text[max(text.rfind(".", 0, match.start()) + 1, match.start() - 400):match.start()]
+            if found and by_hand is None and re.search(r"\bhand\b", sentence, re.I):
                 by_hand = found
     if by_hand or signed:
         return by_hand or signed

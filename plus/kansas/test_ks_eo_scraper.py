@@ -11,6 +11,7 @@ since the exact raw markup could not be captured from this environment
 import os
 import sys
 import unittest
+from unittest import mock
 from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -133,6 +134,47 @@ class TestKansasPageLayouts(unittest.TestCase):
                  mock.patch.object(scraper.requests.Session, "get", side_effect=scraper.requests.ConnectionError("down")):
                 with self.assertRaises(SystemExit):
                     scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), os.path.join(tmp, "j.csv"))
+
+    def test_news_flash_takes_the_declaration_link_in_the_article_not_the_menu(self):
+        page = ("<html><body><nav><a href='/DocumentCenter/View/1500/Strategic-Plan'>Strategic Plan</a></nav>"
+                "<div id='newsFlashDetail'><p>The Governor signed the declaration today.</p>"
+                "<a href='/DocumentCenter/View/4144/Feb-15-2026-Wildfire'>Previous declaration</a> "
+                "<a href='/DocumentCenter/View/4430/Flooding-Declaration'>State Disaster Declaration</a></div></body></html>")
+        feed = b"""<?xml version="1.0"?><rss version="2.0"><channel>
+<item><title>Governor Kelly issues state of disaster emergency for flooding</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=950</link><description>Flooding in eastern Kansas.</description>
+<pubDate>Tue, 22 Sep 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly issues state of disaster emergency ahead of FIFA World Cup matches</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=951</link><description>World Cup.</description>
+<pubDate>Wed, 10 Jun 2026 20:00:00 GMT</pubDate></item>
+</channel></rss>"""
+        review = []
+        with mock.patch.object(scraper, "fetch", return_value=page):
+            found = scraper.news_declarations(feed, session=object(), saved_ids={"KS-PROC-4144"}, review=review)
+        self.assertEqual([d["doc_id"] for d in found], ["4430"])        # not the menu's 1500, not the saved 4144
+        self.assertEqual(found[0]["news_url"], "https://www.kansastag.gov/CivicAlerts.aspx?AID=950")
+
+    def test_page_date_replaces_a_news_announcement_date(self):
+        import csv as _csv, tempfile, os
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4126,Laura Kelly,4126,Governor Kelly issues state of disaster emergency for winter storms,"
+                        "2026-01-23,https://www.kansastag.gov/CivicAlerts.aspx?AID=817\n")
+            with mock.patch.object(scraper, "fetch", return_value=TABS_HTML):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
+        self.assertEqual(rows["KS-PROC-4126"]["date_signed"], "2026-01-24")   # the page's own date, not the news item's
+
+    def test_role_tab_labels_count_as_a_tab_strip(self):
+        html = TABS_HTML.replace('<ul class="tabs" role="tablist">', '<div class="tabs">').replace('</ul>\n<div id="tab2026"', '</div>\n<div id="tab2026"')
+        html = html.replace('<li><a href="#tab2026" role="tab">2026</a></li><li><a href="#tab2025" role="tab">2025</a></li>',
+                            '<div role="tab">2026</div><div role="tab">2025</div>')
+        html = html.replace('<li><a href="#tab2024" role="tab">2024</a></li><li><a href="#tab2023" role="tab">2023</a></li>', "")
+        html = html.replace(' id="tab', ' class="tab')
+        self.assertEqual(scraper.parse_declarations_page(html, max_year=2027), [])      # fails closed, no wrong years
 
     def test_news_flash_fallback_adds_new_declarations_only(self):
         import csv as _csv, tempfile, os

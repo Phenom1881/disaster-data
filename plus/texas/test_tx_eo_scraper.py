@@ -56,6 +56,7 @@ class TexasTests(unittest.TestCase):
     def test_impossible_or_missing_dates(self):
         self.assertEqual(tx.first_date("June 31, 2026 | Austin, Texas | Proclamation"),"")
         self.assertEqual(tx.first_date("Page not found"),"")
+        self.assertEqual(tx.first_date("On June 12, 2026 storms hit. 06/16/2026 | Austin, Texas | Proclamation"),"2026-06-16")
         self.assertEqual(tx.first_date("Related: May 1, 2026 story. June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
     def test_undated_page_is_skipped_not_given_a_new_id(self):
         with mock.patch.object(tx,"get",return_value=FakeResponse("<main><h1>Oops</h1><p>Austin, Texas | Proclamation</p></main>")):

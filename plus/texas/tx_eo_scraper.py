@@ -89,7 +89,13 @@ def first_date(text):
     """The post's date: the byline's ('September 2, 2026 | Austin, Texas |
     ...') when there is one, else the first 'September 2, 2026' or 'Sep 2,
     2026' in the text. An impossible date ('June 31') gives ''."""
-    match=re.search(DATE_RE.pattern+r"\s*\|",text,re.I) or DATE_RE.search(text)
+    match=re.search(DATE_RE.pattern+r"\s*\|",text,re.I)
+    if match: return _iso(match)
+    numeric=re.search(r"\b(\d{1,2})/(\d{1,2})/(20\d{2})\s*\|",text)
+    if numeric:
+        try: return date(int(numeric.group(3)),int(numeric.group(1)),int(numeric.group(2))).isoformat()
+        except ValueError: return ""
+    match=DATE_RE.search(text)
     return _iso(match) if match else ""
 
 # The Governor's post categories. A byline names one after the dateline:

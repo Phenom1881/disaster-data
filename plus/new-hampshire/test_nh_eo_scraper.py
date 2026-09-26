@@ -72,6 +72,10 @@ class NewHampshireTests(unittest.TestCase):
                 "in the year of Our Lord, two thousand and fifteen. Filed with the Secretary of State this 28th day of January, 2015.")
         self.assertEqual(nh.date_in_text(text, 2015), "2015-01-26")
 
+    def test_short_signature_line_still_beats_a_filing_stamp(self):
+        text = "Given under my hand this 26th day of January, 2015. Filed this 28th day of January, 2015."
+        self.assertEqual(nh.date_in_text(text, 2015), "2015-01-26")
+
     def test_year_words(self):
         self.assertEqual(nh.words_to_year("two thousand and three"), 2003)
         self.assertEqual(nh.words_to_year("two thousand twenty-one"), 2021)

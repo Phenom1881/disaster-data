@@ -161,6 +161,7 @@ class TestNewsroomReleases(unittest.TestCase):
         self.assertTrue(ok("Gov. Beshear Declares State of Emergency as Flooding Concerns Remain"))
         self.assertTrue(ok("State of Emergency Declared as Flooding Hits Eastern Kentucky"))
         self.assertFalse(ok("Addresses Flood Issues With State of Emergency Response"))
+        self.assertFalse(ok("Gov. Beshear Addresses Flood Issues With State of Emergency Response"))
         self.assertFalse(ok("Gov. Beshear Extends State of Emergency for Flood-Damaged Counties"))
         self.assertFalse(ok("Flood State of Emergency Remains in Effect, Gov. Beshear Says"))
 

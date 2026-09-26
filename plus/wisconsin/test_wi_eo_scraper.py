@@ -49,12 +49,33 @@ SAVED_JOIN = ("declaration_id,governor,eo_number,event_description,date_signed,a
 class WisconsinPressReleaseFallbackTests(unittest.TestCase):
     """evers.wi.gov does not answer GitHub's servers; releases fill the gap."""
 
-    def test_weather_emergency_releases_are_read(self):
+    def test_only_releases_naming_their_order_are_recorded(self):
+        # A record without the archive's id could never be reconciled with
+        # it later, so releases without an order number go to review.
         from wi_eo_scraper import feed_releases
-        found = feed_releases(FEED)
-        self.assertEqual([(r.date_signed, r.eo_number) for r in found],
-                         [("2026-03-14", ""), ("2026-07-28", ""), ("2026-09-01", "310")])   # Sep 2 02:30 GMT is Sep 1 in Wisconsin
-        self.assertEqual(found[0].title, "Gov. Evers Declares Emergency as State Prepares for Winter Storm")
+        review = []
+        found = feed_releases(FEED, review)
+        self.assertEqual([(r.date_signed, r.eo_number) for r in found], [("2026-09-01", "310")])   # Sep 2 02:30 GMT is Sep 1 in Wisconsin
+        self.assertEqual(found[0].title, "Gov. Evers Declares State of Emergency in Response to Severe Storms throughout Eastern Wisconsin")
+        self.assertEqual(len(review), 2)
+
+    def test_the_announced_order_number_is_the_one_signed(self):
+        from wi_eo_scraper import announced_order
+        self.assertEqual(announced_order("Building on Executive Order #300, Gov. Evers today signed Executive Order #315 declaring a State of Emergency"), "315")
+        self.assertEqual(announced_order("Executive Order #320, declaring a State of Emergency, takes effect"), "320")
+        self.assertEqual(announced_order("See Executive Order #300 and Executive Order #301"), "")
+        self.assertEqual(announced_order("Executive Order #330 declares a state of emergency"), "330")
+
+    def test_amending_release_is_not_a_new_declaration(self):
+        from wi_eo_scraper import feed_releases
+        feed = b"""<?xml version="1.0"?><rss version="2.0"><channel>
+<item><title>Press Release: Gov. Evers Declares State of Emergency for Additional Counties After Flooding</title>
+<link>https://content.govdelivery.com/accounts/WIGOV/bulletins/9</link>
+<description>Executive Order #312, which amends Executive Order #310 and the state of emergency, adds counties.</description>
+<pubDate>Fri, 04 Sep 2026 15:00:00 +0000</pubDate></item></channel></rss>"""
+        review = []
+        self.assertEqual(feed_releases(feed, review), [])
+        self.assertEqual(len(review), 1)
 
     def test_fallback_keeps_saved_records_and_adds_the_new_order(self):
         import csv, tempfile
@@ -78,6 +99,7 @@ class WisconsinPressReleaseFallbackTests(unittest.TestCase):
         self.assertFalse(ok("Press Release: Gov. Evers Declares Energy Emergency"))
         self.assertFalse(ok("Press Release: Gov. Evers Extends State of Emergency for Flood-Damaged Counties"))
         self.assertFalse(ok("Press Release: Gov. Evers Orders Flags to Half-Staff"))
+        self.assertFalse(ok("Press Release: Gov. Evers Signs Bill to Support Emergency Responders After Tornadoes"))
 
 
 if __name__=="__main__": unittest.main()
