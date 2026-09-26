@@ -20,5 +20,9 @@ def collect(workdir=".", scripts_dir=None):
     cmd = [sys.executable, str(scripts_dir / "nh_eo_scraper.py"), "--actions-out", str(workdir / "nh_emergency_actions_all.csv"), "--relationships-out", str(workdir / "nh_order_relationships.csv"), "--join-out", str(workdir / "declarations_for_join.csv")]
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
-    if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("New Hampshire adapter: scrape failed")
+    # Always pass the scraper's warnings through (a page it could not fetch, a
+    # block page). They go to stderr, which used to be printed only when the
+    # scraper failed outright, so an empty week looked like a quiet one.
+    if result.stderr: print(result.stderr, file=sys.stderr)
+    if result.returncode: raise RuntimeError("New Hampshire adapter: scrape failed")
     return workdir / "declarations_for_join.csv", "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR"

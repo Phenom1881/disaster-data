@@ -20,5 +20,9 @@ def collect(workdir=".", scripts_dir=None):
     cmd = [sys.executable, str(scripts_dir / "oh_eo_scraper.py"), "--actions-out", str(workdir / "oh_emergency_actions_all.csv"), "--relationships-out", str(workdir / "oh_order_relationships.csv"), "--join-out", str(workdir / "declarations_for_join.csv")]
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
-    if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Ohio adapter: scrape failed")
+    # Always pass the scraper's warnings through (a page it could not fetch, a
+    # block page). They go to stderr, which used to be printed only when the
+    # scraper failed outright, so an empty week looked like a quiet one.
+    if result.stderr: print(result.stderr, file=sys.stderr)
+    if result.returncode: raise RuntimeError("Ohio adapter: scrape failed")
     return workdir / "declarations_for_join.csv", "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index"

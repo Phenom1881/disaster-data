@@ -57,9 +57,11 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout:
         print(result.stdout)
-    if result.returncode:
-        print(result.stderr, file=sys.stderr)
-        raise RuntimeError("North Dakota adapter: scrape failed")
+    # Always pass the scraper's warnings through (a page it could not fetch, a
+    # block page). They go to stderr, which used to be printed only when the
+    # scraper failed outright, so an empty week looked like a quiet one.
+    if result.stderr: print(result.stderr, file=sys.stderr)
+    if result.returncode: raise RuntimeError("North Dakota adapter: scrape failed")
 
     return workdir / "declarations_for_join.csv", (
         "2017-present numbered/dated Governor archive plus current-EOs page "

@@ -43,6 +43,7 @@ import argparse
 import csv
 import html
 import importlib.util
+import io
 import json
 import re
 import subprocess
@@ -280,9 +281,19 @@ def looks_like_markup(value) -> bool:
     return bool(_MARKUP_RE.search(str(value or "")))
 
 
+# Some action files carry an order's full text in a single field (Wyoming's
+# does), which is larger than the csv module's default 128 KB field limit.
+# Without this the merge below failed on that file and, by design, put the
+# saved copy back, which also threw away whatever that run had just scraped.
+csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
+
+
 def _csv_rows_from_bytes(raw: bytes) -> tuple[list[str], list[dict]]:
     text = raw.decode("utf-8-sig", errors="replace")
-    reader = csv.DictReader(text.splitlines(keepends=True))
+    # Split rows the way csv expects (newline=""), on line breaks only. The
+    # earlier str.splitlines() also split on form feeds and other separators
+    # that PDF text often carries, which broke such a row in two.
+    reader = csv.DictReader(io.StringIO(text, newline=""))
     rows = list(reader)
     return list(reader.fieldnames or []), rows
 

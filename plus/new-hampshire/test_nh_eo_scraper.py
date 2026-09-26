@@ -39,5 +39,31 @@ class NewHampshireTests(unittest.TestCase):
         text = "Given under my hand this 26th day of January, in the year of Our Lord, two thousand and fifteen."
         self.assertEqual(nh.date_in_text(text, 2015), "2015-01-26")
 
+    def test_extension_uses_its_own_signing_date_not_the_original_emergency(self):
+        # Every 2020-2021 COVID extension used to come out as 2020-03-13.
+        text = ("Twenty-first Extension of the State of Emergency declared on March 13, 2020 in "
+                "Executive Order 2020-04 ... Given under my hand and seal at the Executive Chambers "
+                "in Concord, this 9th day of April, in the year of Our Lord, two thousand twenty-one, "
+                "and the independence of the United States of America, two hundred and forty-five.")
+        self.assertEqual(nh.date_in_text(text, 2021), "2021-04-09")
+
+    def test_rescission_is_not_dated_by_the_order_it_rescinds(self):
+        text = "An order rescinding Executive Order 74-3, issued April 29, 1974. Given this 5th day of January, 2023."
+        self.assertEqual(nh.date_in_text(text, 2023), "2023-01-05")
+
+    def test_plain_dates_prefer_the_orders_own_year(self):
+        text = "This order extends the order of March 13, 2020. Signed April 9, 2021."
+        self.assertEqual(nh.date_in_text(text, 2021), "2021-04-09")
+        self.assertEqual(nh.date_in_text("Signed June 2, 2019.", None), "2019-06-02")
+        self.assertIsNone(nh.date_in_text("No date here.", 2019))
+
+    def test_year_words(self):
+        self.assertEqual(nh.words_to_year("two thousand and three"), 2003)
+        self.assertEqual(nh.words_to_year("two thousand twenty-one"), 2021)
+        self.assertEqual(nh.words_to_year("two thousand and twenty, and"), 2020)
+        self.assertEqual(nh.words_to_year("nineteen hundred and ninety-nine"), 1999)
+        self.assertEqual(nh.words_to_year("two thousand"), 2000)
+        self.assertIsNone(nh.words_to_year("the independence"))
+
 
 if __name__ == "__main__": unittest.main()

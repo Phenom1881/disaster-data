@@ -119,6 +119,24 @@ class KeepSavedRecordsTests(unittest.TestCase):
             bp.keep_saved_actions(STATE, saved)
         self.assertEqual(self.csv.read_text(encoding="utf-8"), SAVED)
 
+    def test_field_larger_than_csv_default_limit_merges(self):
+        # Wyoming's actions file carries whole order texts; one is over 128 KB.
+        big = "WHEREAS flooding " * 12000                                   # about 200 KB
+        self.csv.write_text(HEADER + 'XX-EO-26-40,Gov,26-40,"%s",2026-09-01,u\n' % big, encoding="utf-8")
+        counts = self._merge_after(HEADER + "XX-EO-26-41,Gov,26-41,FLOODING,2026-09-20,u\n")
+        rows = {r["declaration_id"]: r for r in rows_of(self.csv)}
+        self.assertEqual(counts["kept"], 1)
+        self.assertEqual(set(rows), {"XX-EO-26-40", "XX-EO-26-41"})     # new row not thrown away
+        self.assertEqual(rows["XX-EO-26-40"]["event_description"], big)
+
+    def test_form_feed_inside_a_field_stays_one_row(self):
+        # PDF text often carries form feeds; they are not row breaks.
+        self.csv.write_text(HEADER + "XX-EO-26-50,Gov,26-50,PAGE ONE\x0cPAGE TWO,2026-09-02,u\n", encoding="utf-8")
+        self._merge_after(HEADER)
+        rows = rows_of(self.csv)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["event_description"], "PAGE ONE\x0cPAGE TWO")
+
     def test_markup_detection(self):
         self.assertTrue(bp.looks_like_markup(GARBLED))
         self.assertFalse(bp.looks_like_markup("DECLARING A DISASTER EMERGENCY IN DELAWARE, JEFFERSON, & RANDOLPH COUNTIES"))
