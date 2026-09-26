@@ -234,7 +234,7 @@ def state_stats(ab, name, days, decls, dens, lcfy, keep):
     # LISTS (the declaration table and the not-tied-to-a-locality table) show
     # every declaration FEMA has published, including the in-progress year, so a
     # declaration made last month is on the page the week it appears in OpenFEMA
-    # instead of after Sep 30. Those rows are tagged with their fiscal year and left out
+    # instead of after Sep 30. Those rows carry no tag (a tag read as "still open") and are left out
     # of every total. Before this split the table was built from the complete-year
     # list, which hid every declaration made since Oct 1.
     complete = [r for r in decls if fy_of(r[3]) <= lcfy]
@@ -288,38 +288,105 @@ def open_fy_label(fys):
     return ", ".join(labels[:-1]) + " and " + labels[-1]
 
 
-def open_fy_pill(fy):
-    """Tag for a listed declaration from a fiscal year that is not complete, so
-    it is not counted in the totals yet. The tag names the fiscal year itself.
-    It used to say "In progress", which read as though the declaration or its
-    incident were still open; that is not what it means. It sits on its own
-    line inside the date cell, so date sorting (which reads the cell's data-s
-    attribute) and text sorting on the other columns are unaffected."""
-    if not fy:
-        return ('<span class="fy-open" title="From a fiscal year that is not complete '
-                'yet. Counted in the totals once that year ends.">Current FY</span>')
-    return ('<span class="fy-open" title="Declared in FY%d, which ends Sep 30, %d. '
-            'Counted in the totals once that year is complete.">FY%d</span>' % (fy, fy, fy))
+def open_fy_window(fys):
+    """How to name the fiscal years not in the totals yet: (name, since, until),
+    e.g. ('FY2026', 'Oct 1, 2025', 'after that year ends on Sep 30, 2026')."""
+    fys = sorted({y for y in fys if y})
+    if not fys:
+        return "the fiscal year under way", "", "after that year ends"
+    name = open_fy_label(fys)
+    if len(fys) == 1:
+        return name, "Oct 1, %d" % (fys[0] - 1), "after that year ends on Sep 30, %d" % fys[0]
+    return name, "Oct 1, %d" % (fys[0] - 1), "once those years are complete"
 
 
 def open_fy_note_html(n, fys):
-    """One plain-language line above the table explaining the tagged rows.
-    Renders nothing when every listed declaration is from a complete year."""
+    """One plain line above the declaration table saying which listed
+    declarations are not in the totals yet. It names them by date. Rows carry
+    no tag: a coloured "In progress" and later "FY2026" tag on a row read as a
+    status, as though the declaration were still open, when all it meant was
+    that the fiscal year had not ended. Renders nothing when every listed
+    declaration is from a complete year."""
     if not n:
         return ""
-    tags = " or ".join('<span class="fy-open">FY%d</span>' % y for y in fys) \
-        or '<span class="fy-open">Current FY</span>'
-    if len(fys) == 1:
-        when = "the federal fiscal year now under way, which ends Sep 30, %d" % fys[0]
+    name, since, until = open_fy_window(fys)
+    which = ("made since %s (%s)" % (since, name)) if since else ("from %s" % name)
+    return ('<p class="fy-note">The totals above count complete fiscal years only. This '
+            'list also includes %s %s; %s added to the totals %s.</p>'
+            % ("one declaration" if n == 1 else "%d declarations" % n, which,
+               "it is" if n == 1 else "they are", until))
+
+
+def open_fy_intro(n, n_open, fys):
+    """The sentence in the past-12-months panel saying which of its rows are in
+    the complete-year totals, by date rather than by a tag on the row."""
+    if not n_open:
+        return ("It falls in a complete fiscal year and is counted in the totals above."
+                if n == 1 else
+                "All of them fall in complete fiscal years and are counted in the totals above.")
+    name, since, until = open_fy_window(fys)
+    verb = "it is" if n_open == 1 else "they are"
+    if n_open == n:
+        who = "It is" if n == 1 else "All of them are"
+    elif since:
+        who = ("The one made since %s is" % since) if n_open == 1 else \
+              ("The %d made since %s are" % (n_open, since))
     else:
-        when = "fiscal years not yet complete in this build"
-    if n == 1:
-        return ('<p class="fy-note">1 declaration tagged %s is from %s. It is listed as '
-                'soon as it appears in FEMA\'s data but is not counted in the totals above '
-                'until that year is complete.</p>' % (tags, when))
-    return ('<p class="fy-note">%d declarations tagged %s are from %s. They are listed as '
-            'soon as they appear in FEMA\'s data but are not counted in the totals above '
-            'until that year is complete.</p>' % (n, tags, when))
+        who = "The one is" if n_open == 1 else "The %d are" % n_open
+    return "%s from %s, so %s added to the complete-year totals above %s." % (who, name, verb, until)
+
+
+def load_incident_periods():
+    """{femaDeclarationString: (begin, end)} from data/decl-index, the committed
+    index "gen decl index.py" writes from OpenFEMA's incident begin and end
+    dates. That script runs after this one in the weekly build, so a
+    declaration new this week gets its incident period on the next build.
+    A missing or unreadable index means no incident periods are shown."""
+    out = {}
+    folder = os.path.join(SRC_ROOT, "data", "decl-index")
+    try:
+        names = sorted(os.listdir(folder))
+    except OSError:
+        return out
+    for fn in names:
+        if not fn.endswith(".json") or fn == "manifest.json":
+            continue
+        try:
+            with open(os.path.join(folder, fn), encoding="utf-8") as fh:
+                doc = json.load(fh)
+        except Exception:
+            continue
+        st = doc.get("state") if isinstance(doc, dict) else None
+        if not st:
+            continue
+        for d in doc.get("declarations") or []:
+            if isinstance(d, dict) and d.get("id"):
+                out["%s-%s" % (d["id"], st)] = (d.get("begin") or "", d.get("end") or "")
+    return out
+
+
+def incident_period_html(period):
+    """'Incident period Jan 22 to 27, 2026' under a declared date, so a
+    finished incident reads as finished. Shown only when FEMA has recorded both
+    dates; nothing otherwise, rather than anything that reads as pending."""
+    if not period:
+        return ""
+    try:
+        b = datetime.datetime.strptime((period[0] or "")[:10], "%Y-%m-%d").date()
+        f = datetime.datetime.strptime((period[1] or "")[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return ""
+    if f < b:
+        return ""
+    if f == b:
+        text = b.strftime("%b %-d, %Y")
+    elif (f.year, f.month) == (b.year, b.month):
+        text = "%s to %d, %d" % (b.strftime("%b %-d"), f.day, f.year)
+    elif f.year == b.year:
+        text = "%s to %s" % (b.strftime("%b %-d"), f.strftime("%b %-d, %Y"))
+    else:
+        text = "%s to %s" % (b.strftime("%b %-d, %Y"), f.strftime("%b %-d, %Y"))
+    return '<small>Incident period %s</small>' % text
 
 
 # ---------------------------------------------------------------- CSS
@@ -363,8 +430,6 @@ tr:last-child td{border-bottom:none}
 .decl-chip[aria-pressed="true"] .n{background:rgba(255,255,255,.22);color:#fff}
 .decl-chip.off{opacity:.42;cursor:default}
 .decl-count{font-size:.82rem;color:var(--ink3);margin:.05rem 0 .55rem}
-.fy-open{display:inline-block;font:700 .64rem/1.3 'Public Sans',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#8f3f1a;background:#fbefe7;border:1px solid #ebc3ad;border-radius:999px;padding:.08rem .45rem;white-space:nowrap;vertical-align:.08em}
-td .fy-open{display:block;width:max-content;margin-top:.3rem}
 .fy-note{font-size:.84rem;color:var(--ink3);background:#fdf8f3;border:1px solid #efdccd;border-radius:10px;padding:.55rem .8rem;margin:.1rem 0 .6rem;max-width:72ch}
 .nowfy{background:#fffaf5;border:1px solid #efdccd;border-radius:14px;padding:1.1rem 1.25rem;margin:1.6rem 0}
 .nowfy h2{margin:.15rem 0 .5rem}
@@ -445,8 +510,7 @@ def method_html():
             'affecting five states counts as five declarations. Years are federal fiscal years '
             '(Oct 1 to Sep 30). Totals, ranks, and rates on this page cover complete fiscal years '
             'only. Declarations from the fiscal year still in progress are listed in each '
-            'state\'s declaration tables and its recent-declarations panel, tagged with '
-            'their fiscal year, but '
+            'state\'s declaration tables and its recent-declarations panel, but '
             'are not counted in any total until the year is complete. '
             'Uses OpenFEMA data but is not endorsed by or affiliated with FEMA.</p></section>')
 
@@ -849,6 +913,7 @@ def recent_aid_html(s, lcfy):
     pa_dn = s.get("pa_dn") or {}
     ev_ids = s.get("event_ids") or {}
     meta = s.get("dn_meta") or {}
+    periods = s.get("periods") or {}
     na = '<span class="nowfy-na">%s</span>'
     na_fm = ('<span class="nowfy-na" title="Fire management declarations do not include '
              'household assistance">Not applicable</span>')
@@ -872,7 +937,7 @@ def recent_aid_html(s, lcfy):
             num_html = e(r[0])
         head = ('%s<small>%s &middot; %s</small>'
                 % (num_html, e(TYPE_LONG.get(t, t)), e(r[2] or "")))
-        declared = fmt_date(r[3]) + (open_fy_pill(fy) if is_open else "")
+        declared = fmt_date(r[3]) + incident_period_html(periods.get(r[0]))
         if t == "FM":
             hh = ihp_html = na_fm
         elif ia and (ia[0] > 0 or ia[1] > 0 or ia[2] > 0):
@@ -912,23 +977,9 @@ def recent_aid_html(s, lcfy):
 
     n = len(rows)
     n_open = sum(1 for r in rows if fy_of(r[3]) > lcfy)
-    lbl = open_fy_label(sorted(open_fys))
     intro = ("%s has had %d federal declaration%s in the past 12 months. The figures are "
-             "what FEMA has reported to date and grow as recovery continues."
-             % (e(name), n, "" if n == 1 else "s"))
-    if n_open and n_open == n:
-        intro += ((" It is from %s, the fiscal year still under way, so it is not counted "
-                   "in the complete-year totals above yet." if n == 1 else
-                   " All of them are from %s, the fiscal year still under way, so none are "
-                   "counted in the complete-year totals above yet.") % lbl)
-    elif n_open == 1:
-        intro += (" The one tagged %s is from the fiscal year still under way and is not "
-                  "counted in the complete-year totals above yet." % lbl)
-    elif n_open:
-        intro += (" The %d tagged %s are from the fiscal year still under way and are not "
-                  "counted in the complete-year totals above yet." % (n_open, lbl))
-    else:
-        intro += " All of them fall in complete fiscal years and are counted in the totals above."
+             "what FEMA has reported to date and grow as recovery continues. %s"
+             % (e(name), n, "" if n == 1 else "s", open_fy_intro(n, n_open, open_fys)))
     src = ("Individual Assistance is FEMA's Individuals and Households Program, from "
            "OpenFEMA's Housing Assistance data for owners and renters. Public Assistance is "
            "the obligated federal share from OpenFEMA's grant award activity, which usually "
@@ -1004,14 +1055,11 @@ def render_state_page(s, states, lcfy):
     # year (marked, and not counted in the totals above). data-t drives the filter.
     # The chips and the "Showing" line count the rows actually in the table, so a
     # filter click always shows exactly the number on its chip.
-    def open_mark(r):
-        fy = fy_of(r[3])
-        return open_fy_pill(fy) if fy > lcfy else ""
 
     rows = "".join(
-        "<tr data-t=\"%s\"><td data-s=\"%s\">%s%s</td><td data-s=\"%s\">%s</td><td><span class='tag' title='%s'>%s</span></td>"
+        "<tr data-t=\"%s\"><td data-s=\"%s\">%s</td><td data-s=\"%s\">%s</td><td><span class='tag' title='%s'>%s</span></td>"
         "<td>%s</td><td>%s</td></tr>"
-        % (e(r[1]), e(r[3][:10]), fmt_date(r[3]), open_mark(r), decl_num(r[0]), e(r[0]),
+        % (e(r[1]), e(r[3][:10]), fmt_date(r[3]), decl_num(r[0]), e(r[0]),
            TYPE_LONG.get(r[1], r[1]), e(r[1]),
            e(r[2]), e(pretty_title(r[4])))
         for r in s["history"])
@@ -1074,20 +1122,21 @@ def render_state_page(s, states, lcfy):
              % (slug, s["jur_n"], e(name))) if s.get("jur_n") else ''
 
     # declarations that belong to no single locality -> listed here, on the state page.
-    # Like the main table this lists the in-progress year too, marked the same way.
+    # Like the main table this lists the in-progress year too, untagged.
     if s["orphans"]:
         orows = "".join(
-            "<tr><td>%s%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td>"
+            "<tr><td>%s</td><td>%s</td><td><span class='tag' title='%s'>%s</span></td>"
             "<td>%s</td><td>%s</td></tr>"
-            % (fmt_date(r[3]), open_mark(r), e(r[0]), TYPE_LONG.get(r[1], r[1]), e(r[1]),
+            % (fmt_date(r[3]), e(r[0]), TYPE_LONG.get(r[1], r[1]), e(r[1]),
                e(r[2]), e(pretty_title(r[4])))
             for r in s["orphans"])
         n = len(s["orphans"])
-        n_open = sum(1 for r in s["orphans"] if fy_of(r[3]) > lcfy)
-        if n_open:
+        o_fys = {fy_of(r[3]) for r in s["orphans"] if fy_of(r[3]) > lcfy}
+        if o_fys:
+            o_name, o_since, o_until = open_fy_window(o_fys)
             counted = ('They do not appear on any individual jurisdiction page. Those from '
-                       'complete fiscal years are included in the state totals above; any tagged '
-                       'with the current fiscal year will be counted once that year is complete.')
+                       'complete fiscal years are included in the state totals above; any made '
+                       'since %s (%s) are added %s.' % (o_since, o_name, o_until))
         else:
             counted = ('They are included in the state totals above but do not appear on any '
                        'individual jurisdiction page.')
@@ -1222,6 +1271,7 @@ def main():
     PA_TIMING = load_pa_timing()
     IA_TIMING = load_ia_timing()
     EVENT_IDS = load_event_ids()
+    PERIODS = load_incident_periods()
     for s in rows:
         s["hma"] = agg_hma(HMA.get(s["ab"], {}))
         s["ia"]  = agg_ia(IA.get(s["ab"], {}))
@@ -1233,6 +1283,7 @@ def main():
         s["pa_dn"] = pa_by_dn(PA_TIMING.get(s["ab"], {}))
         s["dn_meta"] = dn_meta(DECLS.get(s["ab"], []))
         s["event_ids"] = EVENT_IDS
+        s["periods"] = PERIODS
 
     os.makedirs(STATES_DIR, exist_ok=True)
     for s in rows:

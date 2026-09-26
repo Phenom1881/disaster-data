@@ -989,38 +989,108 @@ def open_fy_label(fys):
     return ", ".join(labels[:-1]) + " and " + labels[-1]
 
 
-def open_fy_pill(fy):
-    """Tag for a listed declaration from a fiscal year that is not complete, so
-    it is not counted in the totals yet. The tag names the fiscal year itself.
-    It used to say "In progress", which read as though the declaration or its
-    incident were still open; that is not what it means. It sits on its own
-    line inside the date cell, so date sorting (which reads the cell's data-s
-    attribute) and text sorting on the other columns are unaffected."""
-    if not fy:
-        return ('<span class="fy-open" title="From a fiscal year that is not complete '
-                'yet. Counted in the totals once that year ends.">Current FY</span>')
-    return ('<span class="fy-open" title="Declared in FY%d, which ends Sep 30, %d. '
-            'Counted in the totals once that year is complete.">FY%d</span>' % (fy, fy, fy))
+def open_fy_window(fys):
+    """How to name the fiscal years not in the totals yet: (name, since, until),
+    e.g. ('FY2026', 'Oct 1, 2025', 'after that year ends on Sep 30, 2026')."""
+    fys = sorted({y for y in fys if y})
+    if not fys:
+        return "the fiscal year under way", "", "after that year ends"
+    name = open_fy_label(fys)
+    if len(fys) == 1:
+        return name, "Oct 1, %d" % (fys[0] - 1), "after that year ends on Sep 30, %d" % fys[0]
+    return name, "Oct 1, %d" % (fys[0] - 1), "once those years are complete"
 
 
 def open_fy_note_html(n, fys):
-    """One plain-language line above the table explaining the tagged rows.
-    Renders nothing when every listed declaration is from a complete year."""
+    """One plain line above the declaration table saying which listed
+    declarations are not in the totals yet. It names them by date. Rows carry
+    no tag: a coloured "In progress" and later "FY2026" tag on a row read as a
+    status, as though the declaration were still open, when all it meant was
+    that the fiscal year had not ended. Renders nothing when every listed
+    declaration is from a complete year."""
     if not n:
         return ""
-    tags = " or ".join('<span class="fy-open">FY%d</span>' % y for y in fys) \
-        or '<span class="fy-open">Current FY</span>'
-    if len(fys) == 1:
-        when = "the federal fiscal year now under way, which ends Sep 30, %d" % fys[0]
+    name, since, until = open_fy_window(fys)
+    which = ("made since %s (%s)" % (since, name)) if since else ("from %s" % name)
+    return ('<p class="fy-note">The totals above count complete fiscal years only. This '
+            'list also includes %s %s; %s added to the totals %s.</p>'
+            % ("one declaration" if n == 1 else "%d declarations" % n, which,
+               "it is" if n == 1 else "they are", until))
+
+
+def open_fy_intro(n, n_open, fys):
+    """The sentence in the past-12-months panel saying which of its rows are in
+    the complete-year totals, by date rather than by a tag on the row."""
+    if not n_open:
+        return ("It falls in a complete fiscal year and is counted in the totals above."
+                if n == 1 else
+                "All of them fall in complete fiscal years and are counted in the totals above.")
+    name, since, until = open_fy_window(fys)
+    verb = "it is" if n_open == 1 else "they are"
+    if n_open == n:
+        who = "It is" if n == 1 else "All of them are"
+    elif since:
+        who = ("The one made since %s is" % since) if n_open == 1 else \
+              ("The %d made since %s are" % (n_open, since))
     else:
-        when = "fiscal years not yet complete in this build"
-    if n == 1:
-        return ('<p class="fy-note">1 declaration tagged %s is from %s. It is listed as '
-                'soon as it appears in FEMA\'s data but is not counted in the totals above '
-                'until that year is complete.</p>' % (tags, when))
-    return ('<p class="fy-note">%d declarations tagged %s are from %s. They are listed as '
-            'soon as they appear in FEMA\'s data but are not counted in the totals above '
-            'until that year is complete.</p>' % (n, tags, when))
+        who = "The one is" if n_open == 1 else "The %d are" % n_open
+    return "%s from %s, so %s added to the complete-year totals above %s." % (who, name, verb, until)
+
+
+PERIODS = {}
+
+
+def load_incident_periods():
+    """{femaDeclarationString: (begin, end)} from data/decl-index, the committed
+    index "gen decl index.py" writes from OpenFEMA's incident begin and end
+    dates. That script runs after this one in the weekly build, so a
+    declaration new this week gets its incident period on the next build.
+    A missing or unreadable index means no incident periods are shown."""
+    out = {}
+    folder = os.path.join(SRC_ROOT, "data", "decl-index")
+    try:
+        names = sorted(os.listdir(folder))
+    except OSError:
+        return out
+    for fn in names:
+        if not fn.endswith(".json") or fn == "manifest.json":
+            continue
+        try:
+            with open(os.path.join(folder, fn), encoding="utf-8") as fh:
+                doc = json.load(fh)
+        except Exception:
+            continue
+        st = doc.get("state") if isinstance(doc, dict) else None
+        if not st:
+            continue
+        for d in doc.get("declarations") or []:
+            if isinstance(d, dict) and d.get("id"):
+                out["%s-%s" % (d["id"], st)] = (d.get("begin") or "", d.get("end") or "")
+    return out
+
+
+def incident_period_html(period):
+    """'Incident period Jan 22 to 27, 2026' under a declared date, so a
+    finished incident reads as finished. Shown only when FEMA has recorded both
+    dates; nothing otherwise, rather than anything that reads as pending."""
+    if not period:
+        return ""
+    try:
+        b = datetime.datetime.strptime((period[0] or "")[:10], "%Y-%m-%d").date()
+        f = datetime.datetime.strptime((period[1] or "")[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return ""
+    if f < b:
+        return ""
+    if f == b:
+        text = b.strftime("%b %-d, %Y")
+    elif (f.year, f.month) == (b.year, b.month):
+        text = "%s to %d, %d" % (b.strftime("%b %-d"), f.day, f.year)
+    elif f.year == b.year:
+        text = "%s to %s" % (b.strftime("%b %-d"), f.strftime("%b %-d, %Y"))
+    else:
+        text = "%s to %s" % (b.strftime("%b %-d, %Y"), f.strftime("%b %-d, %Y"))
+    return '<small>Incident period %s</small>' % text
 
 
 # ---------------------------------------------------------------- recent declarations
@@ -1147,6 +1217,7 @@ def recent_aid_html(j):
     st_ia = j.get("ia_dn_state") or {}
     meta = j.get("dn_meta") or {}
     ev_ids = j.get("event_ids") or {}
+    periods = j.get("periods") or {}
     na = '<span class="nowfy-na">%s</span>'
     na_fm = (
         '<span class="nowfy-na" title="Fire management declarations do not '
@@ -1190,8 +1261,8 @@ def recent_aid_html(j):
             % (num_html, e(TYPE_LONG.get(t, t)), e(r.get("incidentType", "") or ""))
         )
 
-        declared = fmt_date(r.get("declarationDate", "")) + (
-            open_fy_pill(_rec_fy(r)) if is_open else ""
+        declared = fmt_date(r.get("declarationDate", "")) + incident_period_html(
+            periods.get(fds)
         )
 
         if t == "FM":
@@ -1259,39 +1330,13 @@ def recent_aid_html(j):
         cmp_html = '<p class="cmp">%s</p>' % e(text)
 
     n = len(rows)
-    lbl = open_fy_label(sorted(open_fys))
-
     intro = (
         "%s has been named in %d federal declaration%s in the past 12 months. "
         "The figures are what FEMA has reported for %s to date and grow as "
-        "recovery continues."
-        % (e(name), n, "" if n == 1 else "s", e(name))
+        "recovery continues. %s"
+        % (e(name), n, "" if n == 1 else "s", e(name),
+           open_fy_intro(n, n_open, open_fys))
     )
-
-    if n_open and n_open == n:
-        intro += (
-            (" It is from %s, the fiscal year still under way, so it is not "
-             "counted in the complete-year totals above yet.")
-            if n == 1 else
-            (" All of them are from %s, the fiscal year still under way, so none "
-             "are counted in the complete-year totals above yet.")
-        ) % lbl
-    elif n_open == 1:
-        intro += (
-            " The one tagged %s is from the fiscal year still under way and is "
-            "not counted in the complete-year totals above yet." % lbl
-        )
-    elif n_open:
-        intro += (
-            " The %d tagged %s are from the fiscal year still under way and are "
-            "not counted in the complete-year totals above yet."
-            % (n_open, lbl)
-        )
-    else:
-        intro += (
-            " All of them fall in complete fiscal years and are counted in the "
-            "totals above."
-        )
 
     src = (
         "Individual Assistance is FEMA's Individuals and Households Program, from "
@@ -1634,26 +1679,6 @@ tr:last-child td{border-bottom:none}
   font-size:.82rem;
   color:var(--ink3);
   margin:.05rem 0 .55rem
-}
-
-.fy-open{
-  display:inline-block;
-  font:700 .64rem/1.3 'Public Sans',sans-serif;
-  letter-spacing:.05em;
-  text-transform:uppercase;
-  color:#8f3f1a;
-  background:#fbefe7;
-  border:1px solid #ebc3ad;
-  border-radius:999px;
-  padding:.08rem .45rem;
-  white-space:nowrap;
-  vertical-align:.08em
-}
-
-td .fy-open{
-  display:block;
-  width:max-content;
-  margin-top:.3rem
 }
 
 .fy-note{
@@ -2396,7 +2421,7 @@ def method_html(kind, spans=False):
         "%s "
         "Totals cover complete fiscal years (Oct 1 to Sep 30). "
         "Declarations from the fiscal year still in progress are listed in "
-        "the tables on this page, tagged with their fiscal year, but are not counted in "
+        "the tables on this page but are not counted in "
         "the totals until the year is complete. Uses OpenFEMA data but is not "
         "endorsed by or affiliated with FEMA."
         "</p>"
@@ -2817,8 +2842,7 @@ def summary_html(j):
 
     elif n_open:
         count_txt = (
-            "covering %d declaration%s so far in %s, a fiscal year still "
-            "in progress"
+            "covering %d declaration%s so far in %s"
             % (
                 n_open,
                 "" if n_open == 1 else "s",
@@ -4400,7 +4424,7 @@ def render_page(j, others, lcfy):
         (
             '<tr data-t="%s">'
 
-            '<td data-s="%s">%s%s</td>'
+            '<td data-s="%s">%s</td>'
 
             '<td data-s="%s">%s</td>'
 
@@ -4431,13 +4455,6 @@ def render_page(j, others, lcfy):
                     "declarationDate",
                     "",
                 )
-            ),
-            (
-                open_fy_pill(
-                    _rec_fy(r)
-                )
-                if _is_open(r, lcfy)
-                else ""
             ),
             decl_num(
                 r.get(
@@ -6408,6 +6425,7 @@ def build_state(
         j["ia_dn_state"] = st_ia_dn
         j["dn_meta"] = st_meta
         j["event_ids"] = event_ids or {}
+        j["periods"] = PERIODS
 
     # ------------------------------------------------------------ SVI / NRI matching
     for j in js:
@@ -6551,6 +6569,8 @@ def main():
     IA = load_ia()
     IA_TIMING = load_ia_timing()
     EVENT_IDS = load_event_ids()
+    global PERIODS
+    PERIODS = load_incident_periods()
     SVI = load_svi()
     NRI = load_nri()
 
