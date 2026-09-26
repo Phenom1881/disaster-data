@@ -4,19 +4,19 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
-  "coverage_base": "2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+  "coverage": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope; 2 saved records kept that this refresh's check of the state source did not return",
+  "coverage_base": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope",
   "generated_on": "2026-09-26",
-  "kept_saved_records": 0,
+  "kept_saved_records": 2,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 58,
+    "action_count": 60,
     "federal_declaration_count": 88,
-    "severity_rows": 470,
-    "storm_match_rows": 725
+    "severity_rows": 483,
+    "storm_match_rows": 738
   },
   "name": "Nebraska",
   "slug": "nebraska",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": ""
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }

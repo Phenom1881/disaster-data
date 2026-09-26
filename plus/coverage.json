@@ -147,8 +147,8 @@
       "metrics": {
         "action_count": 9,
         "federal_declaration_count": 43,
-        "severity_rows": 95,
-        "storm_match_rows": 215
+        "severity_rows": 108,
+        "storm_match_rows": 232
       },
       "name": "Connecticut",
       "slug": "connecticut",
@@ -191,8 +191,8 @@
       "metrics": {
         "action_count": 25,
         "federal_declaration_count": 188,
-        "severity_rows": 467,
-        "storm_match_rows": 959
+        "severity_rows": 559,
+        "storm_match_rows": 1099
       },
       "name": "Florida",
       "slug": "florida",
@@ -345,8 +345,8 @@
       "metrics": {
         "action_count": 52,
         "federal_declaration_count": 96,
-        "severity_rows": 1238,
-        "storm_match_rows": 2623
+        "severity_rows": 1250,
+        "storm_match_rows": 2635
       },
       "name": "Kansas",
       "slug": "kansas",
@@ -461,7 +461,7 @@
       "name": "Massachusetts",
       "slug": "massachusetts",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": ""
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "MI",
@@ -565,8 +565,8 @@
       "metrics": {
         "action_count": 19,
         "federal_declaration_count": 113,
-        "severity_rows": 165,
-        "storm_match_rows": 224
+        "severity_rows": 221,
+        "storm_match_rows": 399
       },
       "name": "Montana",
       "slug": "montana",
@@ -579,21 +579,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
-      "coverage_base": "2000-present filtered from the full 1965-present numbered-EO index by disaster/emergency keyword; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+      "coverage": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope; 2 saved records kept that this refresh's check of the state source did not return",
+      "coverage_base": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope",
       "generated_on": "2026-09-26",
-      "kept_saved_records": 0,
+      "kept_saved_records": 2,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 58,
+        "action_count": 60,
         "federal_declaration_count": 88,
-        "severity_rows": 470,
-        "storm_match_rows": 725
+        "severity_rows": 483,
+        "storm_match_rows": 738
       },
       "name": "Nebraska",
       "slug": "nebraska",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": ""
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "NV",
@@ -653,8 +653,8 @@
       "metrics": {
         "action_count": 150,
         "federal_declaration_count": 59,
-        "severity_rows": 1355,
-        "storm_match_rows": 2046
+        "severity_rows": 1617,
+        "storm_match_rows": 2408
       },
       "name": "New Jersey",
       "slug": "new-jersey",
@@ -719,8 +719,8 @@
       "metrics": {
         "action_count": 34,
         "federal_declaration_count": 85,
-        "severity_rows": 657,
-        "storm_match_rows": 916
+        "severity_rows": 1289,
+        "storm_match_rows": 2143
       },
       "name": "North Carolina",
       "slug": "north-carolina",
@@ -733,16 +733,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending; 1 saved record kept that this refresh's check of the state source did not return",
+      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
       "coverage_base": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
       "generated_on": "2026-09-26",
-      "kept_saved_records": 1,
+      "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 33,
+        "action_count": 34,
         "federal_declaration_count": 76,
-        "severity_rows": 337,
-        "storm_match_rows": 685
+        "severity_rows": 340,
+        "storm_match_rows": 688
       },
       "name": "North Dakota",
       "slug": "north-dakota",
@@ -879,7 +879,7 @@
       "name": "South Carolina",
       "slug": "south-carolina",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": ""
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "SD",
@@ -901,7 +901,7 @@
       "name": "South Dakota",
       "slug": "south-dakota",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": ""
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
     },
     {
       "abbreviation": "TN",
