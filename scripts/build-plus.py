@@ -298,10 +298,26 @@ def _csv_rows_from_bytes(raw: bytes) -> tuple[list[str], list[dict]]:
     return list(reader.fieldnames or []), rows
 
 
+def protected_action_files(state: dict, state_dir: Path) -> list[str]:
+    """Every file the safeguard covers: the candidate action files, plus any
+    raw archive or order-relationship file an adapter keeps beside them
+    (sd_emergency_actions_all.csv, nh_order_relationships.csv and the like).
+    Those used to be left out because they are not listed in action_files,
+    so on 2026-09-25 New Hampshire's 307 relationship rows were wiped, and on
+    2026-09-26 an empty South Dakota scrape wiped its 102-order archive, even
+    though declarations_for_join.csv was kept both times."""
+    names = list(candidate_action_files(state))
+    for pattern in ("*emergency_actions*.csv", "*order_relationships*.csv"):
+        for path in sorted(state_dir.glob(pattern)):
+            if path.name not in names:
+                names.append(path.name)
+    return names
+
+
 def snapshot_action_files(state: dict, state_dir: Path) -> dict[Path, bytes]:
-    """The exact bytes of every candidate action file that exists right now."""
+    """The exact bytes of every protected action file that exists right now."""
     saved = {}
-    for name in candidate_action_files(state):
+    for name in protected_action_files(state, state_dir):
         path = state_dir / name
         if path.is_file():
             saved[path] = path.read_bytes()
@@ -334,7 +350,10 @@ def _merge_saved_rows(path: Path, raw_old: bytes, abbreviation: str) -> dict:
         # bulletin list) would give every row the bare state code, and the
         # whole file would collapse into one row. Use the row's link instead,
         # or failing that its whole content.
-        link = normalized_action(row, abbreviation)["source_url"]
+        # Raw archives name the link column "url" or "pdf_url" (Kansas and
+        # Oklahoma have no order number to match on), so check those too.
+        link = (normalized_action(row, abbreviation)["source_url"]
+                or clean(row.get("url")) or clean(row.get("pdf_url")))
         if link:
             return "url:" + link
         return "row:" + json.dumps({n: clean(v) for n, v in row.items() if n}, sort_keys=True)

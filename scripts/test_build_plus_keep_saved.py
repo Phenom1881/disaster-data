@@ -72,6 +72,32 @@ class KeepSavedRecordsTests(unittest.TestCase):
         self.assertEqual(rows["XX-EO-26-21"]["date_signed"], "2026-08-13")          # saved date kept
         self.assertEqual(rows["XX-EO-26-21"]["archive_record_url"], "https://x/new.pdf")  # new value wins
 
+    def test_raw_archive_outside_action_files_is_kept(self):
+        # South Dakota on 2026-09-26: the scrape returned nothing and the raw
+        # archive, which is not listed in action_files, was left as a header.
+        raw = self.state_dir / "xx_emergency_actions_all.csv"
+        raw.write_text("eo_number,date_filed,title,url\n"
+                       "2026-01,20260107,Windstorm Declaration,https://x/2026-01.pdf\n"
+                       "2026-02,20260113,Rename BIT,https://x/2026-02.pdf\n", encoding="utf-8")
+        saved = bp.snapshot_action_files(STATE, self.state_dir)
+        self.assertIn(raw, saved)
+        raw.write_text("eo_number,date_filed,title,url\n", encoding="utf-8")
+        bp.keep_saved_actions(STATE, saved)
+        self.assertEqual([r["eo_number"] for r in rows_of(raw)], ["2026-01", "2026-02"])
+
+    def test_raw_archive_without_order_numbers_matches_on_link(self):
+        # Kansas and Oklahoma archives have only a heading and a link. A
+        # corrected heading must replace the saved row, not sit beside it.
+        raw = self.state_dir / "xx_emergency_actions_all.csv"
+        raw.write_text("year,heading,pdf_url\n2025,Storm Declaratoin,https://x/a.pdf\n"
+                       "2024,Flood Declaration,https://x/b.pdf\n", encoding="utf-8")
+        saved = bp.snapshot_action_files(STATE, self.state_dir)
+        raw.write_text("year,heading,pdf_url\n2025,Storm Declaration,https://x/a.pdf\n", encoding="utf-8")
+        bp.keep_saved_actions(STATE, saved)
+        rows = rows_of(raw)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual({r["heading"] for r in rows}, {"Storm Declaration", "Flood Declaration"})
+
     def test_new_values_win_when_present(self):
         new = SAVED.replace("2024-03-21", "2024-03-22")
         counts = self._merge_after(new)
