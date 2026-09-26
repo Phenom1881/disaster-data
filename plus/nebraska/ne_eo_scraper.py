@@ -95,13 +95,29 @@ def parse_index_table(html):
     (mostly pre-1990 entries with "Undated" or narrative-only text in the
     Date column) are returned with date=None and are filtered out by the
     caller rather than here, so callers can still audit what was skipped
-    and why."""
+    and why.
+
+    Read cell by cell with an HTML parser. The earlier single regex let a
+    description run across cell and row boundaries wherever the index has
+    an unclosed cell, so EO 15-03 swallowed four later rows and a 2008 date
+    (found 2026-09-26). The parser closes such cells the way a browser
+    does, so each row keeps its own text and date."""
+    from bs4 import BeautifulSoup
+
+    try:
+        soup = BeautifulSoup(html, "lxml")
+    except Exception:  # lxml missing: the stdlib parser is close enough
+        soup = BeautifulSoup(html, "html.parser")
     records = []
-    for m in ROW_RE.finditer(html):
-        href, eo_number, description, date_text = m.groups()
-        description = re.sub(r"<[^>]+>", "", description or "").strip()
-        eo_number = (eo_number or "").strip()
-        dt = parse_date(date_text or "")
+    for row in soup.find_all("tr"):
+        cells = row.find_all("td", recursive=False)
+        if len(cells) < 3:
+            continue
+        link = cells[0].find("a", href=True) or cells[1].find("a", href=True)
+        href = link["href"] if link else ""
+        eo_number = cells[0].get_text(" ", strip=True)
+        description = re.sub(r"\s+", " ", cells[1].get_text(" ", strip=True))
+        dt = parse_date(cells[2].get_text(" ", strip=True))
         # The index links each order relatively ("eofiles/26-20.pdf"), which
         # was broken once shown on disasterdata.io, so resolve it here.
         pdf_url = urljoin(SOURCE_URL, href.strip()) if href else None
