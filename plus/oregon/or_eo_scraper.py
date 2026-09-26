@@ -92,16 +92,35 @@ def collect(session: requests.Session | None = None) -> list[Action]:
             continue
         actions.append(Action(year, number, re.sub(r"\s+", " ", item.get("Document_x0020_Description") or item.get("Title") or "").strip(), urljoin("https://www.oregon.gov", relative), item.get("Created", "")))
 
+    # Failures used to be swallowed here, which left 251 of 252 Oregon
+    # declarations without a signing date and no word in the log about why.
+    # Now each failure is counted by cause and reported, one retry is made,
+    # and fewer PDFs are requested at once.
+    failures: dict[str, int] = {}
+    no_date = [0]
+
     def enrich(action: Action) -> Action:
         if DECLARATION_RE.search(action.description) or MODIFIER_RE.search(action.description):
-            try:
-                action.text, action.signed = pdf_text_and_date(action.pdf_url, session)
-            except Exception:
-                pass
+            for attempt in (1, 2):
+                try:
+                    action.text, action.signed = pdf_text_and_date(action.pdf_url, session)
+                    if not action.signed:
+                        no_date[0] += 1
+                    break
+                except Exception as exc:
+                    if attempt == 2:
+                        cause = type(exc).__name__
+                        status = getattr(getattr(exc, "response", None), "status_code", None)
+                        if status:
+                            cause += f" {status}"
+                        failures[cause] = failures.get(cause, 0) + 1
         return action
 
-    with ThreadPoolExecutor(max_workers=10) as pool:
+    with ThreadPoolExecutor(max_workers=4) as pool:
         actions = list(pool.map(enrich, actions))
+    if failures or no_date[0]:
+        print("Oregon: order PDFs not read: %s; read but no signing date found: %d"
+              % (", ".join(f"{k} x{v}" for k, v in sorted(failures.items())) or "none", no_date[0]))
     unique = {}
     for action in actions:
         previous = unique.get(action.stable_id)

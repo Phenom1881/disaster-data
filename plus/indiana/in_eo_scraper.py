@@ -256,18 +256,48 @@ def _parse_listing_page(html: str, page_url: str) -> list[Action]:
     return actions
 
 
-def _discover_daniels_year_pages(session: requests.Session) -> list[str]:
-    """Follow the real links on the Daniels-era index page rather than
-    assuming a URL pattern for the per-year archives."""
-    resp = session.get(DANIELS_EO_INDEX, headers=HEADERS, timeout=30)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
+# 2400.htm answered 404 on 2026-09-26. The per-year archive pages are still
+# published, and several carry the same "Executive Order Archives: 2012 |
+# 2011 | ... | 2005" links, so they stand in for the index when it is gone.
+DANIELS_INDEX_FALLBACKS = [
+    f"{BASE}/governorhistory/mitchdaniels/2419.htm",
+    f"{BASE}/governorhistory/mitchdaniels/2938.htm",
+]
+
+
+def _daniels_year_links(html: str, page_url: str) -> list[str]:
+    soup = BeautifulSoup(html, "html.parser")
     year_urls = []
     for a in soup.find_all("a", href=True):
         text = a.get_text(strip=True)
         if text.isdigit() and 2000 <= int(text) <= 2013:
-            year_urls.append(urljoin(DANIELS_EO_INDEX, a["href"]))
+            url = urljoin(page_url, a["href"])
+            if url not in year_urls:
+                year_urls.append(url)
     return year_urls
+
+
+def _discover_daniels_year_pages(session: requests.Session) -> list[str]:
+    """Follow the real links on the Daniels-era index page rather than
+    assuming a URL pattern for the per-year archives. When the index itself
+    is gone, read the same links off an archive page that carries them."""
+    last_error = None
+    for page_url in [DANIELS_EO_INDEX] + DANIELS_INDEX_FALLBACKS:
+        try:
+            resp = session.get(page_url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as exc:
+            last_error = exc
+            continue
+        year_urls = _daniels_year_links(resp.text, page_url)
+        if year_urls:
+            if page_url != DANIELS_EO_INDEX:
+                print(f"note: Daniels-era index unavailable; year links read from {page_url}",
+                      file=sys.stderr)
+            return year_urls
+    if last_error:
+        raise last_error
+    return []
 
 
 def _discover_holcomb_year_pages(session: requests.Session) -> list[str]:

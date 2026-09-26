@@ -39,6 +39,20 @@ class ParseOrdersTests(unittest.TestCase):
         for o in orders:
             self.assertTrue(o["url"].startswith("https://sdsos.gov/"))
 
+    def test_relative_document_link_is_made_absolute(self):
+        # The live registry links "../assets/<year> Executive Orders/<n>.pdf".
+        html = ('<table><tr><td>2026-01</td><td>20260107</td><td>'
+                '<a href="../assets/2026 Executive Orders/2026-01.pdf">Windstorm Declaration</a>'
+                '</td></tr></table>')
+        self.assertEqual(scraper.parse_orders(html)[0]["url"],
+                         "https://sdsos.gov/general-information/executive-actions/"
+                         "executive-orders/assets/2026%20Executive%20Orders/2026-01.pdf")
+
+    def test_empty_page_is_described_for_the_log(self):
+        note = scraper.describe_page("<html><head><title>Access Denied</title></head></html>")
+        self.assertIn("Access Denied", note)
+        self.assertIn("0 table(s)", note)
+
 
 class ClassificationTests(unittest.TestCase):
     def test_flood_relief_is_declaration(self):

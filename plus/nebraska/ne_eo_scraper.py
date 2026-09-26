@@ -29,6 +29,7 @@ import csv
 import re
 import sys
 from datetime import datetime
+from urllib.parse import urljoin
 
 import requests
 
@@ -101,7 +102,9 @@ def parse_index_table(html):
         description = re.sub(r"<[^>]+>", "", description or "").strip()
         eo_number = (eo_number or "").strip()
         dt = parse_date(date_text or "")
-        pdf_url = href if href else None
+        # The index links each order relatively ("eofiles/26-20.pdf"), which
+        # was broken once shown on disasterdata.io, so resolve it here.
+        pdf_url = urljoin(SOURCE_URL, href.strip()) if href else None
         records.append({
             "eo_number": eo_number,
             "description": description,
