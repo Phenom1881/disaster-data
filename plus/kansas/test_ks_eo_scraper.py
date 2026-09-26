@@ -125,13 +125,53 @@ class TestKansasPageLayouts(unittest.TestCase):
         self.assertEqual(rows["KS-PROC-4126"]["date_signed"], "2026-01-24")
         self.assertEqual(n, len(rows))
 
-    def test_collect_stops_when_nothing_parses(self):
+    def test_collect_stops_when_nothing_parses_and_the_news_feed_fails(self):
         import tempfile, os
         from unittest import mock
         with tempfile.TemporaryDirectory() as tmp:
-            with mock.patch.object(scraper, "fetch", return_value=UNMAPPED_TABS_HTML):
+            with mock.patch.object(scraper, "fetch", return_value=UNMAPPED_TABS_HTML), \
+                 mock.patch.object(scraper.requests.Session, "get", side_effect=scraper.requests.ConnectionError("down")):
                 with self.assertRaises(SystemExit):
                     scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), os.path.join(tmp, "j.csv"))
+
+    def test_news_flash_fallback_adds_new_declarations_only(self):
+        import csv as _csv, tempfile, os
+        from unittest import mock
+
+        class Resp:
+            def __init__(self, content): self.content = content; self.text = content.decode()
+            def raise_for_status(self): pass
+        feed = b"""<?xml version="1.0"?><rss version="2.0"><channel><title>News Flash</title>
+<item><title>Governor Kelly issues state of disaster emergency for flooding</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=901</link>
+<description>&lt;a href="/DocumentCenter/View/4400/Flooding-Sept-2026"&gt;Declaration&lt;/a&gt;</description>
+<pubDate>Tue, 22 Sep 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly issues state of disaster emergency for winter storms</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=817</link>
+<description>&lt;a href="/DocumentCenter/View/4126/Jan-24"&gt;Declaration&lt;/a&gt;</description>
+<pubDate>Fri, 23 Jan 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly Requests Presidential Disaster Declaration for Severe Weather</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=448</link>
+<description>&lt;a href="/DocumentCenter/View/4401/Request"&gt;Letter&lt;/a&gt;</description>
+<pubDate>Mon, 21 Sep 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly issues state of disaster emergency for wildland fires</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=900</link>
+<description>No link here.</description><pubDate>Mon, 14 Sep 2026 20:00:00 GMT</pubDate></item>
+</channel></rss>"""
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4126,Laura Kelly,4126,Winter Storms (January 24 (Winter Storms)),2026-01-24,u\n")
+            with mock.patch.object(scraper, "fetch", side_effect=lambda url, session: UNMAPPED_TABS_HTML if "388" in url else "<p>no document</p>"), \
+                 mock.patch.object(scraper.requests.Session, "get", return_value=Resp(feed)):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
+        self.assertEqual(set(rows), {"KS-PROC-4126", "KS-PROC-4400"})
+        self.assertEqual(rows["KS-PROC-4126"]["event_description"], "Winter Storms (January 24 (Winter Storms))")  # saved row untouched
+        self.assertEqual(rows["KS-PROC-4400"]["date_signed"], "2026-09-22")
+        self.assertIn("flooding", rows["KS-PROC-4400"]["event_description"])
 
 
 class TestKansasEdgeCases(unittest.TestCase):

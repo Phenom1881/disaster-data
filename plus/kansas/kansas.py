@@ -44,8 +44,10 @@ def collect(workdir=".", scripts_dir=None):
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Kansas adapter: scrape failed")
-    return (
-        workdir / "declarations_for_join.csv",
-        "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending "
-        "(JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
-    )
+    note = ("2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending "
+            "(JS-loaded 'Archived Declarations' widget not reachable via plain fetch)")
+    if "read from the KDEM News Flash" in (result.stdout or ""):
+        # The declarations page was not understood this run; new declarations
+        # came from KDEM's News Flash feed instead (see ks_eo_scraper.py).
+        note += "; declarations page not read this run, new declarations read from the KDEM News Flash"
+    return workdir / "declarations_for_join.csv", note

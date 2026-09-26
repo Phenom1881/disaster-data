@@ -259,11 +259,24 @@ def describe_page(html, limit=8):
              and t.find(_year_label_child(max_year)) is None]
     lines = ["page %r, %d characters, %d DocumentCenter links, %d year labels"
              % (title, len(html), len(links), len(years))]
+    def chain(tag):
+        parts = []
+        for anc in [tag] + list(tag.parents)[:6]:
+            if not isinstance(anc, Tag) or anc.name in ("html", "[document]"):
+                break
+            ident = ("#" + anc["id"]) if anc.get("id") else ""
+            cls = ("." + ".".join(anc.get("class"))) if anc.get("class") else ""
+            parts.append(anc.name + ident + cls)
+        return " < ".join(parts)
+
     for a in links[:limit]:
-        lines.append("  link %r -> %s" % (_clean(a.get_text(" ", strip=True))[:60], a["href"][:90]))
+        prev = a.find_previous(string=lambda t: t.strip() and t.find_parent("a") is not a)
+        lines.append("  link %r -> %s | in %s | text before: %r"
+                     % (_clean(a.get_text(" ", strip=True))[:60], a["href"][:90], chain(a),
+                        _clean(str(prev))[:70] if prev else ""))
     for t in years[:limit]:
         attrs = {k: v for k, v in t.attrs.items() if k in ("id", "href", "aria-controls", "data-target", "class")}
-        lines.append("  year <%s %s> %s" % (t.name, attrs, _clean(t.get_text())))
+        lines.append("  year <%s %s> %s | in %s" % (t.name, attrs, _clean(t.get_text()), chain(t)))
     return "\n".join(lines)
 
 
@@ -316,17 +329,98 @@ def saved_rows(join_out):
         return {}
 
 
+# ---------------------------------------------------------------- news flash
+# KDEM announces each declaration in its News Flash ("Governor Kelly issues
+# state of disaster emergency for flooding"), which CivicPlus publishes as a
+# standard RSS feed. It is the fallback when the declarations page cannot be
+# read: an item counts only when its text or its news page links the signed
+# declaration in the Document Center, so it gets the same KS-PROC-<document>
+# id the page would give it and can never become a second record.
+NEWS_FEED = f"{BASE}/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml"
+NEWS_DECLARATION_RE = re.compile(
+    r"\b(?:issues?|issued|declares?|declared|signs?|signed)\b[^.;:]{0,40}?\b(?:state of disaster emergency|"
+    r"disaster emergency|disaster proclamation|disaster declaration|state of emergency)\b", re.I)
+NEWS_EXCLUDE_RE = re.compile(r"\b(?:presidential|federal|fema|extend\w*|extension|amend\w*|renew\w*|expand\w*|"
+                             r"updat\w*|rescind\w*|terminat\w*|approv\w*|request\w*)\b", re.I)
+try:
+    from zoneinfo import ZoneInfo
+    _KS_TZ = ZoneInfo("America/Chicago")
+except Exception:  # pragma: no cover
+    from datetime import timezone as _tz, timedelta as _td
+    _KS_TZ = _tz(_td(hours=-6))
+
+
+def news_declarations(xml_bytes, session=None):
+    """[{doc_id, pdf_url, title, date}] for News Flash items announcing a
+    new state declaration whose signed document can be found."""
+    from email.utils import parsedate_to_datetime
+    from xml.etree import ElementTree as ET
+    out, seen = [], set()
+    for item in ET.fromstring(xml_bytes).iter("item"):
+        title = _clean(item.findtext("title"))
+        if not NEWS_DECLARATION_RE.search(title) or NEWS_EXCLUDE_RE.search(title):
+            continue
+        try:
+            stamp = parsedate_to_datetime(item.findtext("pubDate") or "")
+            day = stamp.astimezone(_KS_TZ).date().isoformat() if stamp.tzinfo else stamp.date().isoformat()
+        except (TypeError, ValueError, IndexError):
+            continue
+        link = (item.findtext("link") or "").strip()
+        m = DOC_LINK_RE.search(item.findtext("description") or "")
+        if not m and session is not None and link:
+            try:
+                m = DOC_LINK_RE.search(fetch(link, session))
+            except requests.RequestException:
+                m = None
+        if not m or m.group(1) in seen:
+            continue
+        seen.add(m.group(1))
+        out.append({"doc_id": m.group(1), "pdf_url": f"{BASE}/DocumentCenter/View/{m.group(1)}",
+                    "title": title, "date": day, "news_url": link})
+    return out
+
+
+def collect_from_news(session, join_out):
+    """Declarations announced in the News Flash that are not saved yet."""
+    resp = session.get(NEWS_FEED, timeout=30, headers={"User-Agent": "DisasterData.io research crawler",
+                                                       "Accept": "application/rss+xml, application/xml;q=0.9, */*;q=0.5"})
+    resp.raise_for_status()
+    saved = saved_rows(join_out)
+    rows = []
+    for d in news_declarations(resp.content, session):
+        declaration_id = f"KS-PROC-{d['doc_id']}"
+        if declaration_id in saved:
+            continue
+        dt = datetime.strptime(d["date"], "%Y-%m-%d")
+        rows.append({"declaration_id": declaration_id, "governor": governor_for(dt), "eo_number": d["doc_id"],
+                     "event_description": d["title"], "date_signed": d["date"], "archive_record_url": d["pdf_url"]})
+    return rows
+
+
 def collect(actions_out, relationships_out, join_out):
     session = requests.Session()
     html = fetch(SOURCE_URL, session)
     raw_records = parse_declarations_page(html)
     if not raw_records:
         # The page has listed declarations every year since 2009, so zero
-        # means the layout was not understood. Stop (the saved records are
-        # kept) and print what the page held, to fix the parser against.
+        # means the layout was not understood. Print what the page held, to
+        # fix the parser against, then read the News Flash for new ones.
         print("Kansas: no declarations found on the page. Page outline:\n" + describe_page(html),
               file=sys.stderr)
-        raise SystemExit(1)
+        try:
+            news_rows = collect_from_news(session, join_out)
+        except Exception as exc:
+            print(f"Kansas: News Flash feed not read either: {exc}", file=sys.stderr)
+            raise SystemExit(1)
+        saved = list(saved_rows(join_out).values())
+        fields = ["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"]
+        with open(join_out, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n", extrasaction="ignore")
+            w.writeheader()
+            w.writerows(saved + news_rows)
+        print(f"Kansas: {len(news_rows)} new declaration(s) read from the KDEM News Flash "
+              f"(declarations page not understood this run)")
+        return len(saved) + len(news_rows)
     saved = saved_rows(join_out)
     # The page's files are often re-uploaded ("...-amended"), which gives the
     # same entry a new document number. The saved record already is that entry.

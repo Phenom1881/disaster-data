@@ -114,13 +114,23 @@ class CollectTests(unittest.TestCase):
 
     def test_pages_with_no_proclamations_anywhere_is_an_error_not_an_empty_state(self):
         with self._site(lambda url: FakeResponse(EMPTY_LISTING)):
-            with self.assertRaisesRegex(RuntimeError,"found no proclamation posts"):
+            with self.assertRaisesRegex(RuntimeError,"no proclamation posts"):
                 tx.collect({})
 
     def test_changed_layout_names_the_page_it_got(self):
         with self._site(lambda url: FakeResponse(CHANGED_LAYOUT)):
             with self.assertRaisesRegex(RuntimeError,"Just a moment"):
                 tx.collect({})
+
+    def test_category_listing_is_the_fallback_when_the_monthly_archive_is_empty(self):
+        def listing(url):
+            if "/news/category/proclamation" in url:
+                if url.endswith("/P2"): return FakeResponse(LISTING)
+                return FakeResponse(EMPTY_LISTING+'<a class="pagination-next" href="/news/category/proclamation/P2">Next</a>')
+            return FakeResponse(EMPTY_LISTING)
+        with self._site(listing):
+            stats={}; actions=tx.collect(stats)
+        self.assertEqual(len(actions),1); self.assertEqual(stats["category_posts"],1)
 
     def test_site_down_fails_fast(self):
         with self._site(lambda url: FakeResponse("",503)):

@@ -150,6 +150,31 @@ def count_posts(html):
     proclamations in it."""
     return len(BeautifulSoup(html,"html.parser").select("a[href*='/news/post/']"))
 
+def category_targets(max_pages=60):
+    """(post url, title) pairs from the Proclamation category listing,
+    following its "next" links, newest first."""
+    out,url,seen=[],ARCHIVE_URL,set()
+    for _ in range(max_pages):
+        if not url or url in seen: break
+        seen.add(url)
+        try: page=get(url).text
+        except requests.RequestException as exc:
+            print(f"  WARNING: Texas category page not read: {exc}",file=sys.stderr); break
+        rows,url=parse_listing(page)
+        out.extend(rows)
+    return out
+
+def outline_page(html,limit=12):
+    """A short outline of a listing page for the run log: its title, link
+    counts, and the first few links, to fix the parser against."""
+    soup=BeautifulSoup(html,"html.parser")
+    links=soup.find_all("a",href=True)
+    scripts=len(soup.find_all("script"))
+    text_len=len(soup.get_text(" ",strip=True))
+    sample="; ".join(f"{re.sub(chr(92)+'s+',' ',a.get_text(' ',strip=True))[:50]!r} -> {a['href'][:80]}" for a in links[:limit])
+    return (f"title {page_title(html)!r}, {len(html)} characters, {text_len} of text, {len(links)} links, "
+            f"{html.count('/news/post/')} mentions of /news/post/, {scripts} scripts; first links: {sample}")
+
 def page_title(html):
     soup=BeautifulSoup(html,"html.parser")
     return re.sub(r"\s+"," ",soup.title.get_text(" ",strip=True)) if soup.title else "(no title)"
@@ -186,10 +211,17 @@ def collect(stats=None):
     unique=dict(targets)
     stats.update(posts=sum(count_posts(page) for _,page in read),proclamation_posts=len(unique))
     if not unique:
+        # The monthly archive gave nothing: try the Proclamation category
+        # listing and its older pages before giving up.
         latest_url,latest=read[-1]
-        raise RuntimeError(f"read {len(read)} monthly archive pages but found no proclamation posts in them "
-                           f"({stats['posts']} news post links in all); the archive layout may have changed. "
-                           f"Latest page {latest_url} is titled {page_title(latest)!r}")
+        print(f"  WARNING: no proclamation posts in {len(read)} monthly archive pages ({stats['posts']} news post "
+              f"links in all); trying the category listing. Latest archive page: {outline_page(latest)}",file=sys.stderr)
+        unique=dict(category_targets())
+        stats["category_posts"]=len(unique)
+        stats["proclamation_posts"]=len(unique)
+        if not unique:
+            raise RuntimeError(f"no proclamation posts in {len(read)} monthly archive pages or the category listing; "
+                               f"the site layout may have changed. Latest archive page: {outline_page(latest)}")
     detail_errors=[]
     def safe_parse(pair):
         try:
