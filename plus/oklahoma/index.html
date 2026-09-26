@@ -87,7 +87,7 @@
 <section class="metrics">
   <div class="metric"><strong>259</strong>federal FEMA declarations</div>
   <div class="metric"><strong>4</strong>original state weather declarations</div>
-  <div class="metric"><strong>158</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>407</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/oklahoma.html">Federal declaration overview</a> &middot; <a href="https://oklahoma.gov/oem/emergencies-and-disasters.html">Official state source</a></p>
 
@@ -107,8 +107,8 @@
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-04-24 &middot; Garfield and Kay</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2026-03-07 &middot; Alfalfa, Creek, Grant, Major, Okmulgee, Rogers, Tulsa, and Wagoner</td><td>0</td><td>None matched</td><td>5624</td></tr>
+<tbody><tr><td>2026-04-24 &middot; Garfield and Kay</td><td>137</td><td>ATOKA, BRYAN, CHOCTAW, CLEVELAND, COMANCHE, COTTON, CRAIG, DELAWARE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-03-07 &middot; Alfalfa, Creek, Grant, Major, Okmulgee, Rogers, Tulsa, and Wagoner</td><td>112</td><td>ALFALFA, ATOKA, BECKHAM, BRYAN, CADDO, CANADIAN, CARTER, CHEROKEE</td><td>5624</td></tr>
 <tr><td>2026-02-18 &middot; State of Emergency - Beaver, Texas, and Woodward counties (wildfires)</td><td>18</td><td>BEAVER, CHEROKEE, CIMARRON, DELAWARE, HARPER, LATIMER, OSAGE, TEXAS</td><td>5621</td></tr>
 <tr><td>2025-03-14 &middot; State of Emergency - Cleveland, Creek, Dewey, Grady, Lincoln, Logan, Oklahoma, Pawnee, Payne, Pottawatomie, Roger Mills, and Stephens counties (wildfires and straight-line winds beginning March 14, 2025)</td><td>140</td><td>ADAIR, BEAVER, BECKHAM, BLAINE, CADDO, CANADIAN, CHEROKEE, CIMARRON</td><td>4866</td></tr></tbody></table></div>
 </div>
@@ -321,7 +321,7 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">158 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">407 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
@@ -482,13 +482,155 @@
 <tr><td>2026-02-17 16:25:00</td><td>WOODS</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
 <tr><td>2026-02-17 14:45:00</td><td>WOODWARD</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
 <tr><td>2026-02-17 15:40:00</td><td>WOODWARD</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2026-02-17 15:53:00</td><td>WOODWARD</td><td>NWS forecast zone</td><td>Wildfire</td><td>0 / 0</td><td>50.60K</td></tr></tbody></table></div></div>
+<tr><td>2026-02-17 15:53:00</td><td>WOODWARD</td><td>NWS forecast zone</td><td>Wildfire</td><td>0 / 0</td><td>50.60K</td></tr>
+<tr><td>2026-03-05 21:12:00</td><td>ALFALFA</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>400.00K</td></tr>
+<tr><td>2026-03-06 21:20:00</td><td>ATOKA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 19:33:00</td><td>BECKHAM</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 20:03:00</td><td>BECKHAM</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 21:19:00</td><td>BRYAN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:03:00</td><td>CADDO</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:17:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:20:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:35:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:42:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:50:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:52:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:54:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:55:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:55:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:58:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:04:00</td><td>CANADIAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-07 02:55:00</td><td>CARTER</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-07 03:05:00</td><td>CARTER</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 20:25:00</td><td>CARTER</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2026-03-10 22:52:00</td><td>CHEROKEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 23:10:00</td><td>CHEROKEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 17:29:00</td><td>COTTON</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 20:40:00</td><td>CRAIG</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-06 17:18:00</td><td>CREEK</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>150.00K</td></tr>
+<tr><td>2026-03-06 21:55:00</td><td>DELAWARE</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-05 19:22:00</td><td>DEWEY</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-06 00:00:00</td><td>DEWEY</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 16:22:00</td><td>GRADY</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:14:00</td><td>GRADY</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:20:00</td><td>GRADY</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2026-03-10 17:36:00</td><td>GRADY</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2026-03-10 19:45:00</td><td>GRADY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 21:47:00</td><td>GRANT</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>15.00K</td></tr>
+<tr><td>2026-03-05 22:22:00</td><td>GRANT</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>250.00K</td></tr>
+<tr><td>2026-03-05 22:50:00</td><td>GRANT</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-05 23:09:00</td><td>GRANT</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2026-03-10 20:07:00</td><td>GRANT</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-04 00:01:00</td><td>HARPER</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 15:40:00</td><td>HARPER</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-07 00:46:00</td><td>JEFFERSON</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 21:15:00</td><td>JOHNSTON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>100.00K</td></tr>
+<tr><td>2026-03-10 17:42:00</td><td>KINGFISHER</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 17:56:00</td><td>KINGFISHER</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 16:46:00</td><td>LINCOLN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 19:45:00</td><td>LINCOLN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 09:37:00</td><td>LOGAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-07 03:02:00</td><td>LOVE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 20:38:00</td><td>LOVE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>250.00K</td></tr>
+<tr><td>2026-03-05 20:08:00</td><td>MAJOR</td><td>county/county-equivalent</td><td>Tornado</td><td>2 / 0</td><td>50.00K</td></tr>
+<tr><td>2026-03-05 20:35:00</td><td>MAJOR</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 20:40:00</td><td>MAJOR</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 20:41:00</td><td>MAJOR</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2026-03-06 00:10:00</td><td>MAJOR</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>25.00K</td></tr>
+<tr><td>2026-03-06 20:38:00</td><td>MAYES</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2026-03-06 20:58:00</td><td>MAYES</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 22:45:00</td><td>MAYES</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2026-03-07 00:46:00</td><td>MCCLAIN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-04 22:31:00</td><td>MCCURTAIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 23:25:00</td><td>MCCURTAIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 23:30:00</td><td>MCCURTAIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 23:30:00</td><td>MCCURTAIN</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 1</td><td>500.00K</td></tr>
+<tr><td>2026-03-04 07:32:00</td><td>MCINTOSH</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 20:15:00</td><td>MURRAY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 18:38:00</td><td>OKFUSKEE</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2026-03-10 21:17:00</td><td>OKFUSKEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>100.00K</td></tr>
+<tr><td>2026-03-10 21:20:00</td><td>OKFUSKEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-07 00:55:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:03:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:04:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:06:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:10:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:12:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:13:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:13:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:15:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:15:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:16:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:20:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:20:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:22:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:25:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:26:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:29:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:33:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:33:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 19:09:00</td><td>OKLAHOMA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 19:17:00</td><td>OKMULGEE</td><td>county/county-equivalent</td><td>Tornado</td><td>2 / 2</td><td>3.00M</td></tr>
+<tr><td>2026-03-06 18:24:00</td><td>OSAGE</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>200.00K</td></tr>
+<tr><td>2026-03-06 18:24:00</td><td>OSAGE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-05 20:07:00</td><td>ROGER MILLS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 20:13:00</td><td>ROGER MILLS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 20:35:00</td><td>ROGER MILLS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 21:15:00</td><td>ROGER MILLS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-05 22:57:00</td><td>ROGER MILLS</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-05 23:15:00</td><td>ROGER MILLS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 18:55:00</td><td>ROGERS</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>850.00K</td></tr>
+<tr><td>2026-03-06 20:24:00</td><td>ROGERS</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-06 20:29:00</td><td>ROGERS</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>300.00K</td></tr>
+<tr><td>2026-03-10 22:20:00</td><td>ROGERS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-06 18:19:00</td><td>SEMINOLE</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-10 18:00:00</td><td>STEPHENS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:20:00</td><td>STEPHENS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:35:00</td><td>STEPHENS</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-10 18:18:00</td><td>TILLMAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-03-06 18:27:00</td><td>TULSA</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>7.00M</td></tr>
+<tr><td>2026-03-06 18:38:00</td><td>TULSA</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>150.00K</td></tr>
+<tr><td>2026-03-06 19:39:00</td><td>TULSA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-06 20:25:00</td><td>TULSA</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-03-06 20:03:00</td><td>WAGONER</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>40.00K</td></tr>
+<tr><td>2026-03-06 20:05:00</td><td>WAGONER</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>1.00M</td></tr>
+<tr><td>2026-03-06 00:40:00</td><td>WOODS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 16:50:00</td><td>ATOKA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 17:01:00</td><td>ATOKA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 17:29:00</td><td>ATOKA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 17:33:00</td><td>ATOKA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 17:41:00</td><td>ATOKA</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 17:30:00</td><td>BRYAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 17:52:00</td><td>BRYAN</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 18:15:00</td><td>CHOCTAW</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-04-24 18:30:00</td><td>CHOCTAW</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-04-24 13:19:00</td><td>CLEVELAND</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-23 19:24:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-23 19:30:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-23 19:32:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 18:24:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-24 18:55:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:13:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:14:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:16:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:17:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:26:00</td><td>COMANCHE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 16:53:00</td><td>COTTON</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:02:00</td><td>COTTON</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-26 17:42:00</td><td>COTTON</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-25 17:35:00</td><td>CRAIG</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-04-25 17:51:00</td><td>CRAIG</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>30.00K</td></tr>
+<tr><td>2026-04-25 18:26:00</td><td>DELAWARE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2026-04-23 18:48:00</td><td>GARFIELD</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-23 19:11:00</td><td>GARFIELD</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 1</td><td>0.00K</td></tr>
+<tr><td>2026-04-23 19:11:00</td><td>GARFIELD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2026-04-23 20:35:00</td><td>GARFIELD</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr></tbody></table></div></div>
 </details>
 
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-09-25 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-09-26 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

@@ -892,9 +892,9 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 86 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 89 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 2 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
 Wrote severity summary (29 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp
@@ -1223,7 +1223,7 @@ New Jersey adapter: collecting executive orders (1962-present, structured from 1
 New Jersey scraper: discovering administration pages...
   found 14 administration page(s)
   parsing Sherrill [057sherrill] (https://www.nj.gov/infobank/eo/057sherrill/approved/eo_archive.shtml)
-    24 order(s) found
+    25 order(s) found
   parsing Murphy [056murphy] (https://www.nj.gov/infobank/eo/056murphy/approved/eo_archive.shtml)
     415 order(s) found
   parsing Christie [055christie] (https://www.nj.gov/infobank/eo/055christie/index.shtml)
@@ -1255,7 +1255,7 @@ New Jersey scraper: fetching document text for classification (this is the slow 
 New Jersey scraper: extracting order relationships...
   147 relationship(s) extracted (after global dedup)
 
-Done. 1255 total order(s), 180 weather-related, 149 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
+Done. 1256 total order(s), 181 weather-related, 150 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
 
 New Jersey adapter: coverage = 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
 Applied 71 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-jersey/hazard_overrides.csv
@@ -1276,7 +1276,7 @@ NJ-FLORIO-EO-74: no matching storm events found in the date window.
 
 30 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NJ-MURPHY-EO-317, NJ-MURPHY-EO-316, NJ-MURPHY-EO-315, NJ-MURPHY-EO-274, NJ-MURPHY-EO-264, NJ-MURPHY-EO-258, NJ-MURPHY-EO-251, NJ-MURPHY-EO-175, NJ-MURPHY-EO-166, NJ-MURPHY-EO-100, NJ-MURPHY-EO-94, NJ-MURPHY-EO-89, NJ-MURPHY-EO-47, NJ-MURPHY-EO-10, NJ-MURPHY-EO-7, NJ-CHRISTIE-EO-101, NJ-CHRISTIE-EO-116, NJ-CHRISTIE-EO-125, NJ-CHRISTIE-EO-126, NJ-CHRISTIE-EO-200, NJ-CHRISTIE-EO-222, NJ-CHRISTIE-EO-233, NJ-CHRISTIE-EO-238, NJ-CORZINE-EO-111, NJ-MCGREEVEY-EO-97, NJ-FLORIO-EO-33, NJ-FLORIO-EO-66, NJ-FLORIO-EO-91, NJ-FLORIO-EO-115, NJ-KEAN-EO-219
 
-29 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): NJ-SHERRILL-EO-15, NJ-SHERRILL-EO-9, NJ-MURPHY-EO-415, NJ-MURPHY-EO-410, NJ-MURPHY-EO-409, NJ-MURPHY-EO-407, NJ-MURPHY-EO-400, NJ-MURPHY-EO-399, NJ-MURPHY-EO-397, NJ-MURPHY-EO-395, NJ-MURPHY-EO-394, NJ-MURPHY-EO-388, NJ-MURPHY-EO-380, NJ-MURPHY-EO-365, NJ-MURPHY-EO-343, NJ-MURPHY-EO-60, NJ-MURPHY-EO-58, NJ-MURPHY-EO-57, NJ-MURPHY-EO-37, NJ-MURPHY-EO-18, NJ-MURPHY-EO-15, NJ-CHRISTIE-EO-13, NJ-CHRISTIE-EO-105, NJ-CHRISTIE-EO-109, NJ-CHRISTIE-EO-113, NJ-CHRISTIE-EO-114, NJ-CHRISTIE-EO-117, NJ-CHRISTIE-EO-120, NJ-CHRISTIE-EO-132
+30 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): NJ-SHERRILL-EO-25, NJ-SHERRILL-EO-15, NJ-SHERRILL-EO-9, NJ-MURPHY-EO-415, NJ-MURPHY-EO-410, NJ-MURPHY-EO-409, NJ-MURPHY-EO-407, NJ-MURPHY-EO-400, NJ-MURPHY-EO-399, NJ-MURPHY-EO-397, NJ-MURPHY-EO-395, NJ-MURPHY-EO-394, NJ-MURPHY-EO-388, NJ-MURPHY-EO-380, NJ-MURPHY-EO-365, NJ-MURPHY-EO-343, NJ-MURPHY-EO-60, NJ-MURPHY-EO-58, NJ-MURPHY-EO-57, NJ-MURPHY-EO-37, NJ-MURPHY-EO-18, NJ-MURPHY-EO-15, NJ-CHRISTIE-EO-13, NJ-CHRISTIE-EO-105, NJ-CHRISTIE-EO-109, NJ-CHRISTIE-EO-113, NJ-CHRISTIE-EO-114, NJ-CHRISTIE-EO-117, NJ-CHRISTIE-EO-120, NJ-CHRISTIE-EO-132
 Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
 Wrote 2046 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_matches.csv.tmp
 Wrote severity summary (1355 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp
@@ -1311,7 +1311,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
-NJ: 149 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+NJ: 150 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
 New Mexico: 1210 actions scraped, 0 recovered via OCR, 1178 still image-only with no usable text.
 
 Wrote 4 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_matches.csv.tmp
@@ -1328,17 +1328,17 @@ New York adapter: collecting executive orders...
 New York scraper: collecting current executive orders...
     current page 1: 100 row(s), 100 new
     current page 2: 100 row(s), 100 new
-    current page 3: 32 row(s), 32 new
+    current page 3: 33 row(s), 33 new
 New York scraper: collecting selected prior orders...
     selected prior: 97 row(s)
 New York scraper: fetching linked documents...
-    fetched 50/329
-    fetched 100/329
-    fetched 150/329
-    fetched 200/329
-    fetched 250/329
-    fetched 300/329
-Done. 329 total row(s): 232 complete current, 97 selected prior; 51 weather-related; 24 written to join file.
+    fetched 50/330
+    fetched 100/330
+    fetched 150/330
+    fetched 200/330
+    fetched 250/330
+    fetched 300/330
+Done. 330 total row(s): 233 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
 
 New York adapter: coverage = 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 Applied 13 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-york/hazard_overrides.csv
@@ -1346,6 +1346,9 @@ NY-KATHYHOCHUL-EO-39: no matching storm events found in the date window.
 NY-GEORGEEPATAKI-EO-116: no matching storm events found in the date window.
 
 1 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NY-KATHYHOCHUL-EO-62
+
+1 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): NY-KATHYHOCHUL-EO-63
+Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
 Wrote 1742 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-york/eo_storm_matches.csv.tmp
 Wrote severity summary (636 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-york/eo_storm_severity_summary.csv.tmp
 
@@ -1379,7 +1382,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-york/eo_storm_severity_summary.csv.tmp.
 
-NY: 24 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
+NY: 25 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 North Carolina adapter: collecting official Executive Orders...
   running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/declarations_for_join.csv
 North Carolina scraper: walking official Executive Orders archive...
@@ -1547,34 +1550,37 @@ OH: 5 actions, 60 federal declarations; manual_only - GovDelivery bulletin feed 
 Oklahoma: wrote 3 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/declarations_for_join.csv
 
 OK: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
-
-2 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): OK-EO-2026-11, OK-EO-2026-17
-Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
-Wrote 158 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_matches.csv.tmp
-Wrote severity summary (66 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp
+Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oklahoma/hazard_overrides.csv
+Wrote 407 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_matches.csv.tmp
+Wrote severity summary (136 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  OK-EO-2026-11 OKMULGEE [county/county-equivalent]: deaths=2, injuries=2, damage=$3,000,000 (Tornado)
+  OK-EO-2026-11 MAJOR [county/county-equivalent]: deaths=2, injuries=0, damage=$125,000 (Thunderstorm Wind, Tornado)
   OK-EO-2025-06 PAWNEE [NWS forecast zone]: deaths=1, injuries=0, damage=$10,020,000 (High Wind, Wildfire)
   OK-EO-2025-06 HASKELL [NWS forecast zone]: deaths=1, injuries=0, damage=$65,000 (Wildfire)
+  OK-EO-2026-11 MCCURTAIN [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Thunderstorm Wind, Tornado)
   OK-EO-2026-09 BEAVER [NWS forecast zone]: deaths=0, injuries=1, damage=$101,000 (High Wind, Wildfire)
+  OK-EO-2026-17 GARFIELD [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Hail, Thunderstorm Wind, Tornado)
   OK-EO-2025-06 LOGAN [NWS forecast zone]: deaths=0, injuries=0, damage=$23,000,000 (High Wind, Wildfire)
   OK-EO-2025-06 PAYNE [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (High Wind, Wildfire)
   OK-EO-2025-06 OKLAHOMA [NWS forecast zone]: deaths=0, injuries=0, damage=$8,010,000 (High Wind, Wildfire)
+  OK-EO-2026-11 TULSA [county/county-equivalent]: deaths=0, injuries=0, damage=$7,150,000 (Flash Flood, Hail, Tornado)
   OK-EO-2025-06 CLEVELAND [NWS forecast zone]: deaths=0, injuries=0, damage=$3,300,000 (High Wind, Wildfire)
+  OK-EO-2026-11 ROGERS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,150,000 (Thunderstorm Wind, Tornado)
+  OK-EO-2026-11 WAGONER [county/county-equivalent]: deaths=0, injuries=0, damage=$1,040,000 (Tornado)
   OK-EO-2026-09 TEXAS [NWS forecast zone]: deaths=0, injuries=0, damage=$626,000 (High Wind, Wildfire)
   OK-EO-2025-06 DEWEY [NWS forecast zone]: deaths=0, injuries=0, damage=$400,000 (High Wind, Wildfire)
+  OK-EO-2026-11 ALFALFA [county/county-equivalent]: deaths=0, injuries=0, damage=$400,000 (Tornado)
+  OK-EO-2026-17 LE FLORE [county/county-equivalent]: deaths=0, injuries=0, damage=$385,000 (Hail)
+  OK-EO-2026-17 PITTSBURG [county/county-equivalent]: deaths=0, injuries=0, damage=$280,000 (Hail, Tornado)
+  OK-EO-2026-11 GRANT [county/county-equivalent]: deaths=0, injuries=0, damage=$270,000 (Thunderstorm Wind, Tornado)
+  OK-EO-2026-11 LOVE [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Hail, Thunderstorm Wind)
+  OK-EO-2026-11 OSAGE [county/county-equivalent]: deaths=0, injuries=0, damage=$200,000 (Hail, Tornado)
+  OK-EO-2026-17 KAY [county/county-equivalent]: deaths=0, injuries=0, damage=$200,000 (Hail, Tornado)
+  OK-EO-2026-11 CREEK [county/county-equivalent]: deaths=0, injuries=0, damage=$150,000 (Tornado)
   OK-EO-2025-06 ROGER MILLS [NWS forecast zone]: deaths=0, injuries=0, damage=$140,000 (High Wind, Wildfire)
-  OK-EO-2025-06 WOODWARD [NWS forecast zone]: deaths=0, injuries=0, damage=$75,000 (High Wind)
-  OK-EO-2025-06 KIOWA [NWS forecast zone]: deaths=0, injuries=0, damage=$75,000 (High Wind)
-  OK-EO-2026-09 WOODWARD [NWS forecast zone]: deaths=0, injuries=0, damage=$50,600 (High Wind, Wildfire)
-  OK-EO-2025-06 BLAINE [NWS forecast zone]: deaths=0, injuries=0, damage=$50,000 (High Wind)
-  OK-EO-2025-06 MCCLAIN [NWS forecast zone]: deaths=0, injuries=0, damage=$50,000 (High Wind, Wildfire)
-  OK-EO-2025-06 TILLMAN [NWS forecast zone]: deaths=0, injuries=0, damage=$50,000 (High Wind)
-  OK-EO-2025-06 OSAGE [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (High Wind)
-  OK-EO-2025-06 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (High Wind)
-  OK-EO-2025-06 TULSA [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (High Wind)
-  OK-EO-2025-06 GRADY [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000 (High Wind)
-  OK-EO-2025-06 ROGERS [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000 (High Wind)
+  Showing the 25 highest-consequence areas; all 45 are retained in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
@@ -1795,41 +1801,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 TN: 14 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending
-Traceback (most recent call last):
-  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 96, in <module>
-    if __name__=="__main__": main()
-                             ^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 95, in main
-    args=parser.parse_args(); write_outputs(collect(),args.actions_out,args.relationships_out,args.join_out)
-                                            ^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 55, in collect
-    pages=list(pool.map(lambda url: get(url).text,month_urls))
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
-    yield _result_or_cancel(fs.pop())
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
-    return fut.result(timeout)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 449, in result
-    return self.__get_result()
-           ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
-    raise self._exception
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/concurrent/futures/thread.py", line 58, in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 55, in <lambda>
-    pages=list(pool.map(lambda url: get(url).text,month_urls))
-                                    ^^^^^^^^
-  File "/home/runner/work/disaster-data/disaster-data/plus/texas/tx_eo_scraper.py", line 28, in get
-    response=requests.get(url,headers=HEADERS,timeout=TIMEOUT); response.raise_for_status(); return response
-                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
-    raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://gov.texas.gov/news/archive/2018/12
-
-WARNING TX: Collection failed: Texas adapter: scrape failed
+TX: declarations_for_join.csv: kept 59 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-PROCLAMATION-2026-07-14-governor-abbott-issues-severe-storm-disaster-proclamation-in-july-2026: no matching storm events found in the date window.
 TX-PROCLAMATION-2021-04-15-governor-abbott-issues-disaster-declaration-in-response-to-drought-conditions-in-april-2021: no matching storm events found in the date window.
@@ -1871,7 +1843,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 59 actions, 392 federal declarations; January 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; Collection failed: Texas adapter: scrape failed
+TX: 59 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 59 saved records kept that this refresh's check of the state source did not return
 {"actions": 558, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
@@ -2144,7 +2116,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f76f475ff10>, 'Connection to evers.wi.gov timed out. (connect timeout=45)'))
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0cb1d7c410>, 'Connection to evers.wi.gov timed out. (connect timeout=45)'))
 
 WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
@@ -2198,4 +2170,4 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
-WARNING kept saved records the state source did not return: IN (5), KS (52), KY (4), MT (10), NH (6), ND (24), OH (5), OK (1)
+WARNING kept saved records the state source did not return: IN (5), KS (52), KY (4), MT (10), NH (6), ND (24), OH (5), OK (1), TX (59)
