@@ -66,6 +66,16 @@ class NewJerseyRoundThreeTests(unittest.TestCase):
         }
         self.assertEqual(len(nj.dedupe_relationships([row, dict(row)])), 1)
 
+    def test_untitled_order_is_described_by_its_weather_clause(self):
+        text = ("EXECUTIVE ORDER No. 409 WHEREAS, the budget act requires reporting; and "
+                "WHEREAS, the National Weather Service has forecast a major winter storm "
+                "with heavy snow beginning December 26, 2025; and NOW, THEREFORE, I")
+        self.assertEqual(
+            nj.weather_clause_from_text(text),
+            "From the order text: the National Weather Service has forecast a major "
+            "winter storm with heavy snow beginning December 26, 2025")
+        self.assertIsNone(nj.weather_clause_from_text("EXECUTIVE ORDER No. 5 WHEREAS, the budget is late"))
+
 
 if __name__ == "__main__":
     unittest.main()

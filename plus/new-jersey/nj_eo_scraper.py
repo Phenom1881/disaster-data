@@ -672,6 +672,31 @@ def classify_action_type(order: NJOrder) -> str:
     return "declaration"
 
 
+def weather_clause_from_text(text: str) -> Optional[str]:
+    """The first recital in an order's own text that names a weather hazard,
+    used as the description when the archive table has none and the order
+    has no title of its own. Most orders since 2018 go straight from the
+    heading into "WHEREAS," clauses, so without this their join rows were
+    blank and the hazard classifier had nothing to read (27 of them on
+    2026-09-26). Returned as a quote of the order, never a paraphrase."""
+    if not text:
+        return None
+    flat = re.sub(r"\s+", " ", text)
+    for clause in re.split(r"\bWHEREAS\b,?", flat, flags=re.I)[1:]:
+        clause = re.split(r"\bNOW,? THEREFORE\b", clause, flags=re.I)[0].strip(" ,;:")
+        clause = re.sub(r"[;,]?\s*and$", "", clause).strip(" ,;:")
+        for pattern in WEATHER_PATTERNS:
+            match = pattern.search(clause)
+            if not match:
+                continue
+            if len(clause) > 240:
+                start = max(0, match.start() - 110)
+                clause = clause[start:start + 240].strip()
+                clause = ("..." if start else "") + clause + "..."
+            return "From the order text: " + clause
+    return None
+
+
 def is_weather_related(order: NJOrder) -> bool:
     text = f"{order.description} {order.document_text}"
     return any(pattern.search(text) for pattern in WEATHER_PATTERNS)
@@ -914,6 +939,19 @@ def main() -> None:
     for order in all_orders:
         order.action_type = classify_action_type(order)
         order.weather_related = is_weather_related(order)
+
+    # Done after classify_action_type(), which reads the description and must
+    # keep seeing only the archive table's own text.
+    quoted = 0
+    for order in all_orders:
+        if order.weather_related and not order.description.strip():
+            clause = weather_clause_from_text(order.document_text)
+            if clause:
+                order.description = clause
+                quoted += 1
+    if quoted:
+        print(f"  Described {quoted} untitled weather order(s) with the weather "
+              "clause from their own text.")
 
     print("New Jersey scraper: extracting order relationships...")
     all_relationships: list[dict] = []

@@ -79,7 +79,11 @@ DEFAULT_UNMATCHED_HAZARD_POLICY = "skip"
 EXCLUDE_SENTINEL = "exclude"
 
 REQUIRED_OVERRIDE_COLUMNS = {"declaration_id", "hazard_category_override"}
-OPTIONAL_OVERRIDE_COLUMNS = ["review_note", "source_url"]
+# event_date (YYYY-MM-DD) is for an order signed well after its event, such
+# as a state Individual Assistance declaration made weeks or months later
+# (North Carolina EO 174 was signed 2020-10-30 for flooding on 2020-05-18).
+# When set, the NCEI search window is centered on it instead of date_signed.
+OPTIONAL_OVERRIDE_COLUMNS = ["review_note", "source_url", "event_date"]
 
 AREA_TYPE_LABELS = {
     "C": "county/county-equivalent",
@@ -183,6 +187,9 @@ HAZARD_EVENT_TYPES = {
     # "water" remains available below as a category name for that override,
     # for the genuinely drought/water-supply cases.
     "water": {"Flood", "Flash Flood", "Heavy Rain", "Drought"},
+    # Heat waves had no category, so a "Heat Wave" declaration (Nebraska EO
+    # 23-15) could only be skipped. NCEI records them as these two types.
+    "heat": {"Heat", "Excessive Heat"},
     "winter": {
         "Winter Storm",
         "Winter Weather",
@@ -273,11 +280,17 @@ def compatible_event_types(description):
     categories = []
     if "drought" in text:
         categories.append("drought")
-    if re.search(r"\b(?:wildfire|forest fire|brush fire)s?\b", text):
+    # "Wildland fire", "grass fire" and a red-flag (fire weather) warning all
+    # name fire hazards; Kansas titles use them (2026-09-26 review).
+    if re.search(r"\b(?:wildfire|forest fire|brush fire|wildland fire|grass ?fire|"
+                 r"range fire|prairie fire)s?\b|\bred flag warning|\bfire weather\b", text):
         categories.append("fire")
     if re.search(r"\b(?:flood|flooding|rainfall|heavy rain|mudslide|landslide)", text):
         categories.append("flood")
-    if re.search(r"\b(?:hurricane|tropical storm|tropical depression|tropical weather)", text):
+    # "Potential Tropical Cyclone Nine" (Florida) and "Superstorm Sandy"
+    # (Connecticut) name tropical systems without any of the older words.
+    if re.search(r"\b(?:hurricane|tropical storm|tropical depression|tropical weather|"
+                 r"tropical cyclone|post-tropical|superstorm)", text):
         categories.append("tropical")
     if re.search(r"\b(?:winter|snow|ice|icing|sleet|blizzard|cold|freeze|freezing)", text):
         categories.append("winter")
@@ -285,6 +298,8 @@ def compatible_event_types(description):
         categories.append("severe_storm")
     if re.search(r"\b(?:wind|winds|wind damage)", text):
         categories.append("wind")
+    if re.search(r"\b(?:heat wave|heatwave|excessive heat|extreme heat|heat emergency)", text):
+        categories.append("heat")
     if not categories:
         generic_storm = re.search(
             r"\bstorms?\b|storm[- ]related|nor['\u2019]?\s?easter|noreaster", text
@@ -371,7 +386,8 @@ def load_overrides(path):
 
     Required columns: declaration_id, hazard_category_override.
     Optional columns: review_note, source_url - audit trail only, never
-    used for matching logic.
+    used for matching logic. event_date - when filled, the day the NCEI
+    search window is centered on in place of date_signed.
 
     hazard_category_override accepts everything resolve_override() accepts
     (comma-separated HAZARD_EVENT_TYPES category names and/or literal
@@ -440,6 +456,12 @@ def load_overrides(path):
             # Validate now, regardless of whether this id matches anything
             # in the current declarations CSV - see docstring above.
             resolve_override(value)
+        event_date = row.get("event_date", "")
+        if event_date and pd.isna(pd.to_datetime(event_date, format="%Y-%m-%d", errors="coerce")):
+            raise ValueError(
+                f"Overrides file {path}, declaration_id {row['declaration_id']!r}: "
+                f"event_date {event_date!r} is not YYYY-MM-DD"
+            )
 
     return overrides
 
@@ -462,6 +484,7 @@ def apply_overrides(declarations, overrides):
         declarations["hazard_category_override"] = ""
     declarations["override_review_note"] = ""
     declarations["override_source_url"] = ""
+    declarations["override_event_date"] = ""
 
     known_ids = set(declarations["declaration_id"])
     unmatched = []
@@ -474,6 +497,7 @@ def apply_overrides(declarations, overrides):
         declarations.loc[mask, "hazard_category_override"] = row["hazard_category_override"]
         declarations.loc[mask, "override_review_note"] = row["review_note"]
         declarations.loc[mask, "override_source_url"] = row["source_url"]
+        declarations.loc[mask, "override_event_date"] = row.get("event_date", "") or ""
 
     if unmatched:
         print(
@@ -775,9 +799,15 @@ def main():
                     file=sys.stderr,
                 )
 
+        center_date = declaration["date_signed"]
+        event_date = str(declaration.get("override_event_date", "") or "").strip()
+        if event_date and event_date.lower() != "nan":
+            center_date = pd.to_datetime(event_date, format="%Y-%m-%d").date()
+            print(f"{declaration['declaration_id']}: searching around the reviewed "
+                  f"event date {event_date} (signed {declaration['date_signed']})")
         matches = events_near_date(
             args.state,
-            declaration["date_signed"],
+            center_date,
             args.window_days,
             filenames,
             allowed_types,

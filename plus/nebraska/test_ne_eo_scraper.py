@@ -61,6 +61,17 @@ class TestNebraskaScraper(unittest.TestCase):
         self.assertTrue(scraper.DECLARATION_KEYWORDS_RE.search("Emergency Relief Due to Weather Events"))
         self.assertFalse(scraper.DECLARATION_KEYWORDS_RE.search("Dynamic Pricing"))
 
+    def test_unclosed_cell_does_not_swallow_later_rows(self):
+        html = """<table>
+<tr><td><a href="eofiles/15-03.pdf">15-03</a></td><td>Nebraska Workforce Innovation and Opportunity Act<td>04/01/15
+<tr><td><a href="eofiles/15-02.pdf">15-02</a></td><td>Designation of Applicable Elected Representative</td><td>02/17/15</td></tr>
+</table>"""
+        rows = {r["eo_number"]: r for r in scraper.parse_index_table(html)}
+        self.assertEqual(rows["15-03"]["description"], "Nebraska Workforce Innovation and Opportunity Act")
+        self.assertEqual(rows["15-03"]["date"], "2015-04-01")
+        self.assertEqual(rows["15-02"]["date"], "2015-02-17")
+        self.assertTrue(rows["15-03"]["pdf_url"].endswith("/pubs/eofiles/15-03.pdf"))
+
     def test_date_parsing(self):
         dt = scraper.parse_date("03/25/25")
         self.assertEqual(dt, datetime(2025, 3, 25))
