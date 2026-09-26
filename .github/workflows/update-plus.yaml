@@ -77,19 +77,58 @@ jobs:
             echo "found=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Open an issue for new ambiguous declarations
-        if: steps.ambiguous_check.outputs.found == 'true'
+      # One issue, kept current. It used to open a new issue every run, even
+      # when the list had not changed, which left seven copies open by
+      # 2026-09-26. Now the newest open one is updated with this run's list,
+      # older copies are closed, and the issue closes itself once nothing is
+      # left to review.
+      - name: Keep one issue for declarations that need a hazard review
         uses: actions/github-script@v7
+        env:
+          FOUND: ${{ steps.ambiguous_check.outputs.found }}
         with:
           script: |
             const fs = require('fs');
+            const prefixes = ['Plus refresh: new ambiguous declaration', 'Plus refresh: declarations that need a hazard review'];
+            const title = 'Plus refresh: declarations that need a hazard review';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const open = (await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100,
+            })).filter(i => !i.pull_request && prefixes.some(p => i.title.startsWith(p)))
+               .sort((a, b) => b.number - a.number);
+            const found = process.env.FOUND === 'true' && fs.existsSync('ambiguous_summary.txt');
+            const today = new Date().toISOString().slice(0, 10);
+            if (!found) {
+              for (const issue of open) {
+                await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: issue.number, body: `The ${today} refresh found nothing left to review. Closing. ${runUrl}` });
+                await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: issue.number, state: 'closed' });
+              }
+              return;
+            }
             const summary = fs.readFileSync('ambiguous_summary.txt', 'utf8');
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `Plus refresh: new ambiguous declaration(s) need a hazard_overrides.csv review - ${new Date().toISOString().slice(0,10)}`,
-              body: "The weekly Plus refresh found declaration(s) that didn't match any hazard keyword and were skipped (not a bug - this is the intended fail-closed behavior). Each one below likely needs a manual review and a row added to that state's `hazard_overrides.csv`.\n\n```\n" + summary + "\n```\n\nSee the run log for full detail: " + `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
-            });
+            const body = `Last checked ${today}. These declarations matched no hazard keyword, so no storm search was made for them. This is the intended fail-closed behavior, not a bug. Each needs a row in that state's \`hazard_overrides.csv\`: a hazard category (with \`event_date\` if the order was signed well after the event), or \`exclude\` if it is not weather. Once a declaration has a row it drops off this list.\n\n\`\`\`\n${summary}\n\`\`\`\n\nRun log: ${runUrl}`;
+            if (open.length === 0) {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body });
+              return;
+            }
+            const [keep, ...older] = open;
+            await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: keep.number, title, body });
+            for (const issue of older) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number, body: `Superseded by #${keep.number}, which now holds the current list.` });
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number, state: 'closed' });
+            }
+
+      # Backstop for the keep-saved safeguard in build-plus.py: compare every
+      # protected state file with the last commit and put back any saved row
+      # this refresh dropped. It restores rather than fails, and its lines go
+      # into plus_build.log so each repair is on record.
+      - name: Put back any saved rows the refresh dropped
+        run: python -u scripts/check_plus_row_loss.py 2>&1 | tee -a plus_build.log
 
       # Commit the scraped source data and Plus pages on their own, before
       # the main-site regeneration below. A week of fresh state archive
