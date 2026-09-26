@@ -327,21 +327,36 @@ def _merge_saved_rows(path: Path, raw_old: bytes, abbreviation: str) -> dict:
             fields.append(name)
 
     def key(row):
-        return clean(row.get("declaration_id")) or normalized_action(row, abbreviation)["declaration_id"]
+        k = clean(row.get("declaration_id")) or normalized_action(row, abbreviation)["declaration_id"]
+        if k and k != abbreviation:
+            return k
+        # A file with no id, number or date to tell its rows apart (Ohio's
+        # bulletin list) would give every row the bare state code, and the
+        # whole file would collapse into one row. Use the row's link instead,
+        # or failing that its whole content.
+        link = normalized_action(row, abbreviation)["source_url"]
+        if link:
+            return "url:" + link
+        return "row:" + json.dumps({n: clean(v) for n, v in row.items() if n}, sort_keys=True)
 
+    # Rows are paired in order within a key, so a file that lists one id
+    # twice (Virginia's and Wisconsin's audit files do) keeps both.
     current = {}
     for row in new_rows:
-        current.setdefault(key(row), row)
+        current.setdefault(key(row), []).append(row)
 
     changed = False
+    seen = {}
     for old in old_rows:
         k = key(old)
         if not k:
             continue
-        row = current.get(k)
+        nth = seen.get(k, 0)
+        seen[k] = nth + 1
+        matches = current.get(k, [])
+        row = matches[nth] if nth < len(matches) else None
         if row is None:
             new_rows.append(dict(old))
-            current[k] = new_rows[-1]
             counts["kept"] += 1
             changed = True
             continue

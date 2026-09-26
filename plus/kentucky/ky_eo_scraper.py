@@ -37,7 +37,7 @@ import csv
 import re
 import sys
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Optional
@@ -148,11 +148,20 @@ def extract_attachment_links(html: str) -> list[OrderAction]:
 # is therefore read as a declaration in its own right: its title and date
 # are the Governor's own, and it gets the order number only if a PDF link
 # does appear with it.
-SOE_TITLE_RE = re.compile(r"\b(?:declar\w*|issu\w*|sign\w*)\b.{0,40}\bstate of emergency\b|\bstate of emergency\b.{0,20}\bdeclar", re.I)
-SOE_EXCLUDE_RE = re.compile(r"\b(?:extend\w*|extension|renew\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|price[- ]gouging|"
-                            r"gas prices|fuel|opioid\w*|overdose\w*|cyber\w*|shutdown|snap|food)\b", re.I)
+SOE_TITLE_RE = re.compile(
+    r"\b(?:declares?|declared|declaring|issues|issued|signs|signed)\b.{0,60}?\b(?:state of emergency|statewide emergency)\b",
+    re.I)
+# Follow-ups and near-misses: an extension, an amendment, an update, "remains
+# in effect", "likely", and orders that end one.
+SOE_EXCLUDE_RE = re.compile(
+    r"\b(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remain\w*|likely|possible|"
+    r"consider\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|terminat\w*)\b", re.I)
+# Orders whose subject is not the weather itself (gas prices, price gouging
+# on its own) count only when the headline itself names the weather.
+SOE_OFF_TOPIC_RE = re.compile(r"\b(?:price[- ]gouging|gas prices|fuel|opioid\w*|overdose\w*|cyber\w*|shutdown|snap|food)\b", re.I)
 SOE_WEATHER_RE = re.compile(r"\b(?:weather|storms?|flood\w*|tornad\w*|winter|snow\w*|ice|winds?|rain\w*|"
                             r"wildfires?|drought|landslides?)\b", re.I)
+SAME_EVENT_DAYS = 3   # releases this close together are one declaration
 
 
 @dataclass
@@ -176,22 +185,48 @@ def feed_items(xml_text: str) -> list[dict]:
     return items
 
 
+try:
+    from zoneinfo import ZoneInfo
+    _KY_TZ = ZoneInfo("America/New_York")
+except Exception:  # pragma: no cover - no tz database; Eastern standard time is close enough
+    _KY_TZ = timezone(timedelta(hours=-5))
+
+
 def release_date(pub_date: str) -> str:
+    """The release's date in Kentucky. The feed stamps items in GMT, so an
+    evening release would otherwise carry the next day's date."""
     try:
-        return parsedate_to_datetime(pub_date).date().isoformat()
+        stamp = parsedate_to_datetime(pub_date)
     except (TypeError, ValueError, IndexError):
         return ""
+    if stamp.tzinfo is None:
+        stamp = stamp.replace(tzinfo=timezone.utc)
+    return stamp.astimezone(_KY_TZ).date().isoformat()
+
+
+def is_weather_declaration_release(title: str, description: str = "") -> bool:
+    if not SOE_TITLE_RE.search(title) or SOE_EXCLUDE_RE.search(title):
+        return False
+    if SOE_OFF_TOPIC_RE.search(title):
+        return bool(SOE_WEATHER_RE.search(title))
+    return bool(SOE_WEATHER_RE.search(title + " " + description))
 
 
 def release_declarations(items: list[dict]) -> list[ReleaseDeclaration]:
-    out = []
+    """Weather state-of-emergency releases, oldest first. Releases within
+    SAME_EVENT_DAYS of an earlier one are follow-ups on the same declaration
+    ("... as Winter Storm Arrives") and are not counted again."""
+    found = []
     for it in items:
         title = " ".join(it["title"].split())
-        text = title + " " + it.get("description", "")
-        if SOE_TITLE_RE.search(title) and not SOE_EXCLUDE_RE.search(title) and SOE_WEATHER_RE.search(text):
+        if is_weather_declaration_release(title, it.get("description", "")):
             day = release_date(it["pubDate"])
             if day:
-                out.append(ReleaseDeclaration(title, it["link"], day))
+                found.append(ReleaseDeclaration(title, it["link"], day))
+    out = []
+    for r in sorted(found, key=lambda x: x.date_signed):
+        if not _near(r.date_signed, {x.date_signed for x in out}, SAME_EVENT_DAYS):
+            out.append(r)
     return out
 
 
@@ -223,14 +258,15 @@ def scrape(session: Optional[requests.Session] = None, stats: Optional[dict] = N
     return result, releases
 
 
-def _near(day: str, days: set) -> Optional[str]:
-    """The entry of days within one day of day, if any (a release can go out
-    the day after the order is signed, or the evening before)."""
+def _near(day: str, days: set, window: int = SAME_EVENT_DAYS) -> Optional[str]:
+    """The entry of days closest to day within window days, if any (the
+    order and its releases can be a few days apart: one ahead of a storm,
+    one as it arrives)."""
     try:
         d = date.fromisoformat(day)
     except ValueError:
         return None
-    for delta in (0, -1, 1):
+    for delta in sorted(range(-window, window + 1), key=abs):
         cand = (d + timedelta(days=delta)).isoformat()
         if cand in days:
             return cand

@@ -209,10 +209,14 @@ def parse_date_text(date_text):
 
 _MONTHS = ("January|February|March|April|May|June|July|August|September|October|"
            "November|December")
+# "this 21st day of June, 2025" is the signature line's form; a WHEREAS
+# clause does not use it. "issued" is left out of the second pattern because
+# the orders cite other things issued on a date ("the NWS issued a Red Flag
+# Warning on August 4").
 SIGNED_DAY_OF_RE = re.compile(
-    r"\b(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r"),?\s+(\d{4})\b", re.I)
+    r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r"),?\s+(\d{4})\b", re.I)
 SIGNED_NEAR_RE = re.compile(
-    r"\b(?:executed|signed|dated|issued|given)\b[^.]{0,60}?\b(" + _MONTHS + r")\s+(\d{1,2}),\s+(\d{4})\b", re.I)
+    r"\b(?:executed|signed|dated|given)\b[^.]{0,60}?\b(" + _MONTHS + r")\s+(\d{1,2}),\s+(\d{4})\b", re.I)
 
 
 def signed_date_from_text(text, eo_number):
@@ -298,7 +302,15 @@ def write_csv(orders, actions_out, relationships_out, join_out, confirmed_dates=
     confirmed_dates = confirmed_dates or {}
     declarations = []
     undated = []
+    # An order can be listed on both pages (the archive's undated entries
+    # overlap the current page), so keep one entry per order number: the
+    # one with a date on the page, else the one with a link to its PDF.
+    best = {}
     for o in orders:
+        rank = (bool(o.get("date_text")), str(o.get("url", "")).lower().endswith(".pdf"))
+        if o["eo_number"] not in best or rank > best[o["eo_number"]][0]:
+            best[o["eo_number"]] = (rank, o)
+    for o in (entry for _, entry in best.values()):
         if not is_declaration(o["eo_number"], o["title"]):
             continue
         date_signed = (parse_date_text(o["date_text"]) or confirmed_dates.get(o["eo_number"], "")

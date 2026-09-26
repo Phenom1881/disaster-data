@@ -104,6 +104,23 @@ class TestStableIdsAndDates(unittest.TestCase):
         self.assertEqual(rows[0]["declaration_id"], "OH-PROC-2026-09-22")
 
 
+class TestNextDayMatching(unittest.TestCase):
+    SAVED = [{"declaration_id": "OH-PROC-2026-09-22", "archive_record_url": "https://governor.ohio.gov/x",
+              "date_signed": "2026-09-22",
+              "event_description": "Governor DeWine declares state of emergency in 21 counties (Athens Vinton) after "
+                                   "severe weather and significant flooding"}]
+
+    def test_a_different_proclamation_the_next_day_keeps_its_own_id(self):
+        from oh_eo_scraper import BulletinAction, assign_ids
+        tornado = BulletinAction("Governor DeWine Declares State of Emergency in Allen County Following Tornado",
+                                 "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/zzz", "2026-09-23")
+        self.assertEqual(assign_ids([tornado], self.SAVED)[id(tornado)], "OH-PROC-2026-09-23")
+
+    def test_updated_resend_is_not_a_new_declaration(self):
+        from oh_eo_scraper import is_original_declaration
+        self.assertFalse(is_original_declaration("UPDATED: Governor DeWine Declares State of Emergency in Several Ohio Counties"))
+
+
 class TestSavedRowsKept(unittest.TestCase):
     def test_bulletin_matching_a_saved_record_writes_the_reviewed_row_back(self):
         # A headline like "... in Several Ohio Counties" names no hazard, so

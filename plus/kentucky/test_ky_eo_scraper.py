@@ -121,7 +121,8 @@ class TestNewsroomReleases(unittest.TestCase):
     def test_weather_emergency_releases_are_found(self):
         from ky_eo_scraper import feed_items, release_declarations
         found = release_declarations(feed_items(FEED))
-        self.assertEqual([(r.date_signed, r.url[-4:]) for r in found], [("2026-08-29", "2801"), ("2026-06-27", "2700")])
+        # Oldest first, dated in Kentucky: 01:15 GMT on Aug 29 is the evening of Aug 28 there.
+        self.assertEqual([(r.date_signed, r.url[-4:]) for r in found], [("2026-06-27", "2700"), ("2026-08-28", "2801")])
 
     def test_join_reuses_the_saved_record_and_names_a_new_one_by_date(self):
         import csv, tempfile
@@ -138,10 +139,29 @@ class TestNewsroomReleases(unittest.TestCase):
             write_outputs([], tmp / "a.csv", tmp / "r.csv", join, release_declarations(feed_items(FEED)))
             with join.open(encoding="utf-8") as f:
                 rows = {r["declaration_id"]: r for r in csv.DictReader(f)}
-        self.assertEqual(set(rows), {"KY-EO-2026-400", "KY-SOE-2026-08-29"})
+        self.assertEqual(set(rows), {"KY-EO-2026-400", "KY-SOE-2026-08-28"})
         self.assertIn("isolated strong winds", rows["KY-EO-2026-400"]["event_description"])   # reviewed text kept
-        self.assertEqual(rows["KY-SOE-2026-08-29"]["event_description"],
+        self.assertEqual(rows["KY-SOE-2026-08-28"]["event_description"],
                          "Gov. Beshear Declares State of Emergency Ahead of Severe Storms and Flash Flooding")
+
+    def test_headline_filters(self):
+        from ky_eo_scraper import is_weather_declaration_release as ok
+        self.assertTrue(ok("Gov. Beshear Declares State of Emergency, Activates Price Gouging Laws Ahead of Winter Storm"))
+        self.assertTrue(ok("Gov. Beshear Declares a Statewide Emergency Ahead of Flooding"))
+        self.assertTrue(ok("Gov. Beshear Declares State of Emergency", "Heavy rain and flash flooding expected."))
+        self.assertFalse(ok("Gov. Beshear Says State of Emergency Likely as Storms Approach"))
+        self.assertFalse(ok("Gov. Beshear Signs Order Expanding State of Emergency to 20 More Counties After Flooding"))
+        self.assertFalse(ok("Gov. Beshear on Flood Recovery Issues; State of Emergency Remains in Effect"))
+        self.assertFalse(ok("Gov. Beshear Declares State of Emergency to Stop Price Gouging", "after the winter storm"))
+        self.assertFalse(ok("Significant Progress on Roads; Gov. Beshear Reviews State of Emergency Response"))
+
+    def test_follow_up_release_is_the_same_declaration(self):
+        from ky_eo_scraper import feed_items, release_declarations
+        feed = FEED.replace("</channel>", """<item><title>Gov. Beshear Signs Executive Order Declaring State of Emergency as Storms Arrive</title>
+<link>https://kentucky.gov/Pages/Activity-stream.aspx?n=GovernorBeshear&amp;prId=2802</link>
+<pubDate>Sun, 30 Aug 2026 16:00:00 GMT</pubDate><description>Flooding.</description></item></channel>""")
+        found = release_declarations(feed_items(feed))
+        self.assertEqual([r.date_signed for r in found], ["2026-06-27", "2026-08-28"])
 
 
 if __name__ == "__main__":

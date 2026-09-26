@@ -97,9 +97,24 @@ DECLARATION_TITLE_RE = re.compile(
     re.IGNORECASE,
 )
 NON_DECLARATION_RE = re.compile(
-    r"\bupdate[s]?\b|\btours?\b|\bviews?\b|week in review|media advisory",
+    r"\bupdat(?:e|es|ed|ing)\b|\btours?\b|\bviews?\b|week in review|media advisory",
     re.IGNORECASE,
 )
+# Ohio's 88 counties, to tell two proclamations a day apart from each other.
+OHIO_COUNTIES = set("""adams allen ashland ashtabula athens auglaize belmont brown butler carroll champaign clark
+clermont clinton columbiana coshocton crawford cuyahoga darke defiance delaware erie fairfield fayette franklin fulton
+gallia geauga greene guernsey hamilton hancock hardin harrison henry highland hocking holmes huron jackson jefferson
+knox lake lawrence licking logan lorain lucas madison mahoning marion medina meigs mercer miami monroe montgomery
+morgan morrow muskingum noble ottawa paulding perry pickaway pike portage preble putnam richland ross sandusky scioto
+seneca shelby stark summit trumbull tuscarawas union vanwert vinton warren washington wayne williams wood wyandot""".split())
+HAZARD_WORDS = ("flood", "tornado", "storm", "wind", "winter", "snow", "ice", "fire", "drought", "rain", "hurricane")
+
+
+def event_tokens(text: str) -> set:
+    """County names and hazard words in a title or description."""
+    low = (text or "").lower().replace("van wert", "vanwert")
+    words = set(re.findall(r"[a-z]+", low))
+    return {w for w in words if w in OHIO_COUNTIES} | {h for h in HAZARD_WORDS if h in low}
 
 
 @dataclass
@@ -214,7 +229,10 @@ def write_outputs(actions: list[BulletinAction], actions_out: Path, relationship
         writer = csv.writer(f, lineterminator="\n")
         writer.writerow(["bulletin_url", "relationship_type", "references_bulletin_url"])
 
-    originals = [a for a in actions if a.is_original_weather_declaration]
+    # A bulletin with no date cannot be matched to storms and would only get
+    # a placeholder id, so it stays out of the join (it is still listed in
+    # the actions file above).
+    originals = [a for a in actions if a.is_original_weather_declaration and a.pub_date]
     saved = saved_join_rows(join_out)
     saved_by_id = {r["declaration_id"]: r for r in saved if r.get("declaration_id")}
     ids = assign_ids(originals, saved)
@@ -258,24 +276,33 @@ def assign_ids(originals: list[BulletinAction], saved: list[dict]) -> dict[int, 
     by_date = {}
     for r in saved:
         if r.get("declaration_id") and r.get("date_signed"):
-            by_date.setdefault(r["date_signed"], r["declaration_id"])
+            by_date.setdefault(r["date_signed"], []).append(r)
     taken = {r["declaration_id"] for r in saved if r.get("declaration_id")}
     ids, used = {}, set()
 
-    def near(day: str) -> Optional[str]:
+    def near(a: BulletinAction) -> Optional[str]:
+        """Same day: that record. A day either side: that record too, unless
+        the two clearly name different counties or hazards, so a different
+        proclamation the next day (a tornado in Allen County after a flood
+        elsewhere) is not taken for it and lost."""
         try:
-            d = date.fromisoformat(day)
+            d = date.fromisoformat(a.pub_date)
         except ValueError:
             return None
+        mine = event_tokens(a.title)
         for delta in (0, -1, 1):
-            hit = by_date.get((d + timedelta(days=delta)).isoformat())
-            if hit and hit not in used:
-                return hit
+            for r in by_date.get((d + timedelta(days=delta)).isoformat(), []):
+                sid = r["declaration_id"]
+                if sid in used:
+                    continue
+                theirs = event_tokens(r.get("event_description", ""))
+                if delta == 0 or not mine or not theirs or mine & theirs:
+                    return sid
         return None
 
     for a in sorted(originals, key=lambda x: x.pub_date):
         sid = by_url.get(a.url) if by_url.get(a.url) not in used else None
-        sid = sid or near(a.pub_date)
+        sid = sid or near(a)
         if not sid:
             base = f"OH-PROC-{a.pub_date}" if a.pub_date else "OH-PROC-UNDATED"
             sid, n = base, 2

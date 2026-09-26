@@ -40,6 +40,21 @@ class TexasTests(unittest.TestCase):
         self.assertEqual(tx.first_date("June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
         self.assertTrue(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas","Governor Abbott Renews Drought Disaster Proclamation"))
         self.assertFalse(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas | Press Release","Governor Abbott Announces Jobs"))
+    def test_press_release_about_a_declaration_is_not_a_proclamation(self):
+        # Only the byline's category decides when there is one.
+        self.assertFalse(tx.is_proclamation_post(
+            "June 16, 2026 | Austin, Texas | Press Release Governor Abbott today issued a disaster declaration",
+            "Governor Abbott Issues Disaster Declaration For 18 Counties"))
+        self.assertTrue(tx.is_proclamation_post(
+            "June 15, 2026 | Austin, Texas | Proclamation WHEREAS severe storms",
+            "Governor Abbott Issues Severe Storm Disaster Proclamation"))
+    def test_impossible_or_missing_dates(self):
+        self.assertEqual(tx.first_date("June 31, 2026 | Austin, Texas | Proclamation"),"")
+        self.assertEqual(tx.first_date("Page not found"),"")
+        self.assertEqual(tx.first_date("Related: May 1, 2026 story. June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
+    def test_undated_page_is_skipped_not_given_a_new_id(self):
+        with mock.patch.object(tx,"get",return_value=FakeResponse("<main><h1>Oops</h1><p>Austin, Texas | Proclamation</p></main>")):
+            self.assertIsNone(tx.parse_detail("https://gov.texas.gov/news/post/x","Governor Abbott Renews Drought Disaster Proclamation"))
     def test_month_urls_stop_at_the_current_month(self):
         urls=tx.month_urls(date(2026,9,26))
         self.assertEqual(urls[0],"https://gov.texas.gov/news/archive/2015/01")

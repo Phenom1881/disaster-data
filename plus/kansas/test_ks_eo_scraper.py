@@ -134,6 +134,54 @@ class TestKansasPageLayouts(unittest.TestCase):
                     scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), os.path.join(tmp, "j.csv"))
 
 
+class TestKansasEdgeCases(unittest.TestCase):
+    """Cases an independent review found in the first version of the walk."""
+
+    def parse(self, body):
+        return scraper.parse_declarations_page(
+            "<html><body><h2>2025</h2>%s</body></html>" % body, max_year=2027)
+
+    def test_a_heading_is_used_for_one_link_only(self):
+        # The amended-only entry's heading must not pass to the next entry,
+        # whose own heading the parser does not understand.
+        records = self.parse("""<ul>
+        <li>April 1 - April 9 (Wildland Fire)<ul><li><a href="/DocumentCenter/View/3650/x">Amended State Declaration (PDF)</a></li></ul></li>
+        <li>Statewide (Drought)<ul><li><a href="/DocumentCenter/View/3844/Drought-2025">State Declaration (PDF)</a></li></ul></li>
+        </ul>""")
+        self.assertEqual(records, [])
+
+    def test_entries_separated_by_line_breaks(self):
+        records = self.parse("""<p>June 7 (Drought) <a href="/DocumentCenter/View/3379/SOK-June-7-2025-Drought">State Declaration (PDF)</a><br>
+        June 23 -26 (SG Fire) <a href="/DocumentCenter/View/2921/June-23-26-Sedgwick-Fire">State Declaration (PDF)</a></p>""")
+        self.assertEqual([(r["doc_id"], r["heading"]) for r in records],
+                         [("3379", "June 7 (Drought)"), ("2921", "June 23 -26 (SG Fire)")])
+
+    def test_document_number_is_not_read_as_a_year(self):
+        self.assertEqual(scraper.slug_years("https://www.kansastag.gov/DocumentCenter/View/2019"), set())
+        self.assertEqual(scraper.slug_years("https://www.kansastag.gov/DocumentCenter/View/2019/Flood-May-2025"), {2025})
+
+    def test_two_unmatched_tab_labels_give_no_years(self):
+        html = TABS_HTML.replace('<li><a href="#tab2024" role="tab">2024</a></li><li><a href="#tab2023" role="tab">2023</a></li>', "")
+        html = html.replace('href="#tab', 'data-x="#tab').replace(' id="tab', ' class="tab')
+        self.assertEqual(scraper.parse_declarations_page(html, max_year=2027), [])
+
+    def test_reupload_of_a_saved_entry_is_not_a_second_record(self):
+        import csv as _csv, tempfile, os
+        from unittest import mock
+        page = TABS_HTML.replace("/DocumentCenter/View/4126/Jan-24-2026-Winter-Storm-Disaster-Declaration",
+                                 "/DocumentCenter/View/4400/Jan-24-2026-Winter-Storm-Disaster-Declaration-amended")
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4126,Laura Kelly,4126,Winter Storms (January 24 (Winter Storms)),2026-01-24,u\n")
+            with mock.patch.object(scraper, "fetch", return_value=page):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                ids = {r["declaration_id"] for r in _csv.DictReader(f)}
+        self.assertNotIn("KS-PROC-4400", ids)
+
+
 class TestKansasScraper(unittest.TestCase):
     def test_parses_2025_events(self):
         records = scraper.parse_declarations_page(FIXTURE_HTML)

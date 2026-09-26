@@ -114,7 +114,7 @@ _MONTHS = "January|February|March|April|May|June|July|August|September|October|N
 # ... this 13th day of March, in the year of Our Lord, two thousand and twenty".
 # The year is usually in words, sometimes in digits, sometimes left out.
 SIGNING_RE = re.compile(
-    r"\b(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b[\s,]*"
+    r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b[\s,]*"
     r"(?:(?:in\s+)?(?:the\s+)?year\s+of\s+(?:our\s+lord)?[\s,]*)?"
     r"(\d{4}|(?:nineteen\s+hundred|two\s+thousand)(?:[\s,-]+(?:and|[a-z]+teen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b)*)?",
     re.I,
@@ -153,17 +153,33 @@ def date_in_text(text: str, fallback_year: Optional[int] = None) -> Optional[str
     date. Taking the first plain date in the text, as this used to, picked up
     the date of the emergency an extension extends (every 2020-2021 COVID
     extension came out as 2020-03-13) or of an old order being rescinded."""
-    signed = None
-    for match in SIGNING_RE.finditer(text):
-        day, month, year_text = match.groups()
+    # PDF text breaks words across lines ("twen-\nty"); join them first.
+    text = re.sub(r"(\w)-[ \t]*\r?\n[ \t]*(\w)", r"\1\2", text or "")
+
+    def year_of(year_text):
         year = None
         if year_text:
             year = int(year_text) if year_text.isdigit() else words_to_year(year_text)
-        year = year or fallback_year
+        # An order is signed in (or within a year of) the year in its number;
+        # a year further off is a misread, so the number's year is used.
+        if fallback_year and (not year or abs(year - fallback_year) > 1):
+            year = fallback_year
+        return year
+
+    signed = None
+    for match in SIGNING_RE.finditer(text):       # "this 13th day of March, ..."
+        day, month, year_text = match.groups()
+        year = year_of(year_text)
         if year:
             signed = normalize_date(f"{month} {day}, {year}") or signed
     if signed:
         return signed
+    if fallback_year:
+        # No "this ... day of" clause: a bare "13th day of March" in the order's year.
+        for match in re.finditer(r"\b(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b", text, re.I):
+            signed = normalize_date(f"{match.group(2)} {match.group(1)}, {fallback_year}") or signed
+        if signed:
+            return signed
     plain = [(m.group(1), int(m.group(2))) for m in PLAIN_DATE_RE.finditer(text)]
     for raw, year in plain:
         if fallback_year and year == fallback_year:

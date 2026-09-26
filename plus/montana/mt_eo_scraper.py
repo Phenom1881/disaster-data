@@ -101,7 +101,14 @@ BULLOCK_ENTRY_RE = re.compile(
 
 _BLOCKS = ["p", "div", "li", "ul", "ol", "tr", "table", "section", "article", "header",
            "footer", "h1", "h2", "h3", "h4", "h5", "h6", "dt", "dd", "br", "main",
-           "nav", "aside", "td", "th", "span", "time", "blockquote"]
+           "nav", "aside", "td", "th", "time", "blockquote"]
+
+
+def _is_block(tag):
+    """Block elements, plus spans that carry a class or id: a listing that
+    lays out title, number and date as <span class="..."> needs each on its
+    own line, while a plain <span> inside a title (emphasis) must not split it."""
+    return tag.name in _BLOCKS or (tag.name == "span" and (tag.get("class") or tag.get("id")))
 
 
 def fetch(url):
@@ -121,7 +128,7 @@ def page_text(html):
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "noscript", "template"]):
         tag.decompose()
-    for tag in soup.find_all(_BLOCKS):
+    for tag in soup.find_all(_is_block):
         tag.insert_before("\n")
         tag.insert_after("\n")
     lines = (" ".join(line.split()) for line in soup.get_text().splitlines())
@@ -136,9 +143,11 @@ def _entry_links(html):
         return links
     soup = BeautifulSoup(html, "html.parser")
     for a in soup.find_all("a", href=True):
-        m = re.search(r"Executive Order(?: No\.?)?\s*(\d+-\d{4})", a.get_text(" ", strip=True))
-        if m and m.group(1) not in links:
-            links[m.group(1)] = urljoin(CURRENT_URL, a["href"])
+        # The entry's own number, read the same way as the page's entries: a
+        # title such as "Amending Executive Order 9-2025" names another order.
+        m = CURRENT_ENTRY_RE.search(page_text(str(a)))
+        if m and m.group("num") not in links:
+            links[m.group("num")] = urljoin(CURRENT_URL, a["href"])
     return links
 
 

@@ -29,11 +29,14 @@ from bs4 import BeautifulSoup
 ARCHIVE_URL="https://gov.texas.gov/news/category/proclamation"
 MONTH_URL="https://gov.texas.gov/news/archive/{year}/{month:02d}"
 FIRST_YEAR=2015
-HEADERS={"User-Agent":"Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)"}; TIMEOUT=45
-# Fewer parallel requests than before (12). Sep 25's run got a 500 from the
-# archive, and the site answers a steady, small crawl more reliably.
-LISTING_WORKERS=4; DETAIL_WORKERS=4
-RETRY_STATUS={429,500,502,503,504}; RETRY_WAITS=(5,20)
+HEADERS={"User-Agent":"Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)"}; TIMEOUT=30
+# Fewer parallel requests than before (12); Sep 25's run got a 500 from the
+# archive. One retry per request, and a time budget for the whole crawl, so a
+# slow site cannot push the 50-state job past its 90-minute limit.
+LISTING_WORKERS=8; DETAIL_WORKERS=8
+RETRY_STATUS={429,500,502,503,504}; RETRY_WAITS=(5,)
+CRAWL_BUDGET_SECONDS=25*60
+_deadline=[None]
 ACTION_FIELDS=("declaration_id","state","governor","eo_number","action_kind","action_type","event_description","date_signed","end_date","weather_related","source_scope","document_format","detail_url","archive_record_url")
 REL_FIELDS=("source_order_id","target_order_id","relationship_type","relationship_text","relationship_source","confidence")
 JOIN_FIELDS=("declaration_id","governor","eo_number","event_description","date_signed","archive_record_url")
@@ -50,9 +53,13 @@ class Action:
     def stable_id(self): return "TX-"+self.number
 
 def get(url):
-    """GET with retries on a timeout, a dropped connection, or a 429/5xx."""
+    """GET with a retry on a timeout, a dropped connection, or a 429/5xx.
+    Once the crawl's time budget is spent, every further request fails at
+    once, and collect() decides whether enough was read."""
     last=None
     for wait in (0,)+RETRY_WAITS:
+        if _deadline[0] is not None and time.monotonic()>_deadline[0]:
+            raise requests.Timeout(f"crawl time budget spent before {url}")
         if wait: time.sleep(wait)
         try:
             response=requests.get(url,headers=HEADERS,timeout=TIMEOUT)
@@ -72,24 +79,44 @@ def month_urls(today=None):
 _MONTH_NUM={name:i for i,name in enumerate("jan feb mar apr may jun jul aug sep oct nov dec".split(),1)}
 DATE_RE=re.compile(r"\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2}),\s+(20\d{2})\b",re.I)
 
+def _iso(match):
+    try:
+        return date(int(match.group(3)),_MONTH_NUM[match.group(1)[:3].lower()],int(match.group(2))).isoformat()
+    except ValueError:
+        return ""
+
 def first_date(text):
-    """The post's date: the first 'September 2, 2026' or 'Sep 2, 2026'."""
-    match=DATE_RE.search(text)
-    if not match: return ""
-    return f"{match.group(3)}-{_MONTH_NUM[match.group(1)[:3].lower()]:02d}-{int(match.group(2)):02d}"
+    """The post's date: the byline's ('September 2, 2026 | Austin, Texas |
+    ...') when there is one, else the first 'September 2, 2026' or 'Sep 2,
+    2026' in the text. An impossible date ('June 31') gives ''."""
+    match=re.search(DATE_RE.pattern+r"\s*\|",text,re.I) or DATE_RE.search(text)
+    return _iso(match) if match else ""
+
+def byline_category(text):
+    """'Proclamation' from 'June 15, 2026 | Austin, Texas | Proclamation',
+    or '' when the post has no such byline."""
+    m=re.search(DATE_RE.pattern+r"\s*\|\s*[^|]{2,60}?\|\s*([A-Za-z]+(?: [A-Za-z]+)?)",text,re.I)
+    return m.group(4).strip() if m else ""
 
 def is_proclamation_post(text,title):
-    """A proclamation post is filed under Proclamation ("... | Austin, Texas
-    | Proclamation"). If the byline stops saying so, a title that names a
-    proclamation or disaster declaration still counts, so a byline change
+    """A proclamation post is filed under Proclamation in its byline. A post
+    filed under anything else (Press Release) is not one, even when its title
+    mentions a disaster declaration. Only when a post has no category byline
+    at all does a title naming a proclamation count, so a byline change
     alone cannot empty the state."""
-    return bool(re.search(r"\|\s*Proclamation\b",text) or re.search(r"\bProclamation\b|\bdisaster declaration\b",title,re.I))
+    category=byline_category(text)
+    if category:
+        return category.lower().startswith("proclamation")
+    return bool(re.search(r"\bProclamation\b|\bdisaster declaration\b",title,re.I))
 
 def parse_detail(url,title):
     soup=BeautifulSoup(get(url).text,"html.parser"); main=soup.select_one("main") or soup
     text=re.sub(r"\s+"," ",main.get_text(" ",strip=True))
     if not is_proclamation_post(text,title): return None
     date_text=first_date(text)
+    # An undated page (an error page served with status 200, say) would get
+    # an id of its own next to the record's real dated one. Skip it instead.
+    if not date_text: return None
     slug=urlparse(url).path.rstrip("/").rsplit("/",1)[-1]
     number=f"PROCLAMATION-{date_text or 'UNDATED'}-{slug}"
     governor="Dan Patrick" if re.search(r"Acting Governor Dan Patrick",title,re.I) else "Greg Abbott"
@@ -126,6 +153,7 @@ def _fetch_listing(url):
 
 def collect(stats=None):
     stats={} if stats is None else stats
+    _deadline[0]=time.monotonic()+CRAWL_BUDGET_SECONDS
     urls=month_urls()
     # Read last month's page first. If the site is down or refusing this
     # runner, that answers it in about a minute instead of retrying every

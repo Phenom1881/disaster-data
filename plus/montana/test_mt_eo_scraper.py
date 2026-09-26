@@ -54,6 +54,20 @@ class RawHtmlTests(unittest.TestCase):
         self.assertEqual(by["9-2025"]["url"], scraper.CURRENT_URL + "View?doc=241211EODisasterDeclarationFlooding.pdf")
         self.assertEqual(by["2-2024"]["url"], scraper.CURRENT_URL)      # no link around that entry
 
+    def test_title_naming_another_order_does_not_take_its_link(self):
+        html = CURRENT_HTML.replace('<div class="doc"><a href="View?doc=241211EODisasterDeclarationFlooding.pdf">',
+                                    '<div class="doc"><a href="View?doc=EO-12-2025.pdf"><h3>Amending Executive Order 9-2025</h3>'
+                                    '<p>Executive Order No. 12-2025</p><p>December 22, 2025</p></a></div>'
+                                    '<div class="doc"><a href="View?doc=241211EODisasterDeclarationFlooding.pdf">')
+        by = {o["eo_number"]: o for o in scraper.parse_current_page(html)}
+        self.assertTrue(by["12-2025"]["url"].endswith("EO-12-2025.pdf"))
+        self.assertTrue(by["9-2025"]["url"].endswith("241211EODisasterDeclarationFlooding.pdf"))
+
+    def test_plain_span_inside_a_title_does_not_split_it(self):
+        html = ('<div class="doc"><h3>Declaring Statewide <span>Drought</span> Emergency</h3>'
+                '<p>Executive Order No. 11-2021</p><p>July 1, 2021</p></div>')
+        self.assertEqual(scraper.parse_current_page(html)[0]["title"], "Declaring Statewide Drought Emergency")
+
     def test_bullock_page_html(self):
         orders = scraper.parse_bullock_page(BULLOCK_HTML)
         self.assertEqual(orders[0]["eo_number"], "15-2019")

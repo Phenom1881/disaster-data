@@ -127,6 +127,23 @@ class SignedDateTests(unittest.TestCase):
     def test_event_dates_alone_are_not_a_signing_date(self):
         self.assertEqual(scraper.signed_date_from_text("WHEREAS, on June 20, 2025, storms struck.", "2025-05"), "")
 
+    def test_other_things_issued_on_a_date_are_not_the_signing_date(self):
+        text = "WHEREAS, the National Weather Service issued a Red Flag Warning on August 4, 2026 ..."
+        self.assertEqual(scraper.signed_date_from_text(text, "2026-05"), "")
+        self.assertEqual(scraper.signed_date_from_text("WHEREAS on the 3rd day of August, 2026 fires began", "2026-05"), "")
+
+    def test_order_on_both_pages_is_written_once(self):
+        archive = scraper.parse_archive_markdown(
+            "<ul><li><strong>2024-02</strong> - Burgum Declares Emergency for Burleigh and Morton Counties Amid "
+            "Threat of Ice Jam Flooding</li></ul>")
+        current = scraper.parse_current_markdown(CURRENT_HTML)
+        with tempfile.TemporaryDirectory() as tmp:
+            decls = scraper.write_csv(archive + current, os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"),
+                                      os.path.join(tmp, "j.csv"), confirmed_dates=scraper.CONFIRMED_DATES)
+        rows = [d for d in decls if d["declaration_id"] == "ND-EO-2024-02"]
+        self.assertEqual(len(rows), 1)
+        self.assertTrue(rows[0]["archive_record_url"].endswith(".pdf"))
+
     def test_year_must_match_the_order_number(self):
         self.assertEqual(scraper.signed_date_from_text("this 3rd day of January, 2024", "2023-09"), "")
 

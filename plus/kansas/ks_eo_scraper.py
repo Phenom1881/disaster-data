@@ -107,27 +107,6 @@ def _year_label(tag, max_year):
     return None
 
 
-def _own_text(block):
-    """A block's text without its nested lists and document links, so an
-    entry's heading is read on its own even when its PDF link sits inside it
-    ("April 25 - April 27 (Severe Weather) - State Declaration (PDF)")."""
-    parts = []
-    for node in block.descendants:
-        if not isinstance(node, NavigableString) or isinstance(node, Comment):
-            continue
-        skip = False
-        for parent in node.parents:
-            if parent is block:
-                break
-            if parent.name in ("ul", "ol") or (
-                    parent.name == "a" and DOC_LINK_RE.search(parent.get("href", ""))):
-                skip = True
-                break
-        if not skip:
-            parts.append(str(node))
-    return _clean(" ".join(parts)).strip(" -\u2013\u2014:|,")
-
-
 def _panel_years(soup, max_year):
     """{panel element id: year} for tab or accordion labels that point at
     their panel (href="#id", aria-controls, data-target). Tab labels sit
@@ -148,6 +127,9 @@ def _panel_years(soup, max_year):
     return years
 
 
+_MONTH_WORD_RE = re.compile(r"\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d", re.I)
+
+
 def parse_declarations_page(html, max_year=None):
     """Parse the Kansas Disaster Declarations page into a list of dicts:
     {year, heading, pdf_url, doc_id}.
@@ -158,7 +140,10 @@ def parse_declarations_page(html, max_year=None):
     flattened to "[2026](#...)" and never matched, so every run found 0
     records. A declaration's year now comes from the tab panel it sits in
     (matched by the label's target), or from the nearest year heading above
-    it; its heading is the nearest "Dates (Hazard)" text above its link.
+    it. Its heading is the "Dates (Hazard)" line right before its link: text
+    is read line by line (a block, a <br>, or a link ends a line), and a
+    heading is used for one link only, so an entry whose own heading is not
+    understood is skipped rather than given its neighbour's.
     Deliberately tolerant of the page's inconsistent capitalization ("State
     Declaration" / "Sate Declaration") and its 2024 entries, which reuse the
     same DocumentCenter id for two different headings (a real error on
@@ -168,50 +153,68 @@ def parse_declarations_page(html, max_year=None):
     for tag in soup(["script", "style", "noscript", "template"]):
         tag.decompose()
     panel_years = _panel_years(soup, max_year)
+    is_label = _year_label_child(max_year)
 
     records, seen_docs = [], set()
-    current_year, pending_heading, streak = None, None, 0
-    last_block = None
+    st = {"year": None, "heading": None, "streak": 0}
+    line, line_block = [], [None]
+
+    def end_line():
+        text = _clean(" ".join(line)).strip(" -\u2013\u2014:|,")
+        line.clear()
+        if not text or YEAR_RE.fullmatch(text):
+            return
+        if HEADING_RE.search(text):
+            st["heading"], st["streak"] = text, 0
+        elif _MONTH_WORD_RE.search(text) or "(" in text:
+            # Heading-like text this parser does not understand: the heading
+            # before it must not carry over to the link after it.
+            st["heading"] = None
+
     for node in soup.descendants:
         if isinstance(node, Tag):
+            if node.name == "br":
+                end_line()
+                continue
             year = _year_label(node, max_year)
-            if year is not None and node.find(_year_label_child(max_year)) is None:
-                streak += 1
-                # Three or more year labels in a row with nothing between
-                # them is a tab strip, not a heading above its own entries.
-                current_year = None if streak >= 3 else year
-                pending_heading = None
+            if year is not None and node.find(is_label) is None:
+                end_line()
+                st["streak"] += 1
+                # Two or more year labels in a row with nothing between them
+                # are a tab strip, not a heading above its own entries.
+                st["year"] = None if st["streak"] >= 2 else year
+                st["heading"] = None
                 continue
             if node.name == "a" and DOC_LINK_RE.search(node.get("href", "")):
-                streak = 0
+                end_line()
+                st["streak"] = 0
+                heading, st["heading"] = st["heading"], None      # one link per heading
                 text = _clean(node.get_text(" ", strip=True))
                 doc_id = DOC_LINK_RE.search(node["href"]).group(1)
-                heading = text if HEADING_RE.search(text) else pending_heading
-                is_decl = bool(DECLARATION_LINK_RE.search(text)) or HEADING_RE.search(text)
+                if HEADING_RE.search(text):
+                    heading = text
+                is_decl = bool(DECLARATION_LINK_RE.search(text)) or bool(HEADING_RE.search(text))
                 if not is_decl or SKIP_LINK_RE.search(text) or not heading:
                     continue
                 year = next((panel_years[p["id"]] for p in node.parents
-                             if isinstance(p, Tag) and p.get("id") in panel_years), current_year)
+                             if isinstance(p, Tag) and p.get("id") in panel_years), st["year"])
                 if year is None or year < MODERN_FORMAT_MIN_YEAR or doc_id in seen_docs:
                     continue
                 seen_docs.add(doc_id)
                 records.append({"year": str(year), "heading": heading,
                                 "pdf_url": urljoin(BASE, node["href"]), "doc_id": doc_id})
-                pending_heading = None
             continue
         if not isinstance(node, NavigableString) or isinstance(node, Comment) or not node.strip():
             continue
         link = node.find_parent("a")
         if link is not None and DOC_LINK_RE.search(link.get("href", "")):
             continue
-        block = node.find_parent(_BLOCK_TAGS)
-        if block is None or block is last_block:
-            continue
-        last_block = block
-        text = _own_text(block)
-        if HEADING_RE.search(text) and not YEAR_RE.fullmatch(text):
-            pending_heading = text
-            streak = 0
+        block = node.find_parent(_BLOCK_TAGS + ("ul", "ol"))
+        if block is not line_block[0]:
+            end_line()
+            line_block[0] = block
+        line.append(str(node))
+    end_line()
     return records
 
 
@@ -224,8 +227,11 @@ def _year_label_child(max_year):
 
 
 def slug_years(pdf_url):
-    """Years written in a PDF's file name, e.g. Jan-24-2026-Winter-Storm."""
-    slug = pdf_url.rstrip("/").rsplit("/", 1)[-1]
+    """Years written in a PDF's file name, e.g. Jan-24-2026-Winter-Storm.
+    Only the name after the document number counts: .../View/2019 is
+    document 2019, not the year 2019."""
+    m = re.search(r"/DocumentCenter/View/\d+/?([^?#]*)", pdf_url, re.I)
+    slug = m.group(1) if m else ""
     return {int(y) for y in re.findall(r"(?<!\d)((?:19|20)\d{2})(?!\d)", slug)}
 
 
@@ -288,11 +294,11 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
-def saved_dates(join_out):
-    """{declaration_id: date_signed} already saved in the join file."""
+def saved_rows(join_out):
+    """The join file's saved rows, by declaration_id."""
     try:
         with open(join_out, newline="", encoding="utf-8") as f:
-            return {r["declaration_id"]: r["date_signed"] for r in csv.DictReader(f) if r.get("date_signed")}
+            return {r["declaration_id"]: r for r in csv.DictReader(f) if r.get("declaration_id")}
     except (OSError, KeyError, csv.Error):
         return {}
 
@@ -308,7 +314,10 @@ def collect(actions_out, relationships_out, join_out):
         print("Kansas: no declarations found on the page. Page outline:\n" + describe_page(html),
               file=sys.stderr)
         raise SystemExit(1)
-    saved = saved_dates(join_out)
+    saved = saved_rows(join_out)
+    # The page's files are often re-uploaded ("...-amended"), which gives the
+    # same entry a new document number. The saved record already is that entry.
+    saved_entries = {(r.get("date_signed", ""), r.get("event_description", "")): i for i, r in saved.items()}
 
     actions = []
     relationships = []
@@ -334,10 +343,16 @@ def collect(actions_out, relationships_out, join_out):
                   % (rec["doc_id"], rec["year"], "/".join(map(str, sorted(years_in_name)))), file=sys.stderr)
             continue
         declaration_id = f"KS-PROC-{rec['doc_id']}"
-        if saved.get(declaration_id) and saved[declaration_id] != date_signed:
+        saved_date = saved.get(declaration_id, {}).get("date_signed", "")
+        if saved_date and saved_date != date_signed:
             print("  NOTE: %s reads as %s but was saved as %s after review; kept the saved date"
-                  % (declaration_id, date_signed, saved[declaration_id]), file=sys.stderr)
-            date_signed = saved[declaration_id]
+                  % (declaration_id, date_signed, saved_date), file=sys.stderr)
+            date_signed = saved_date
+        same_entry = saved_entries.get((date_signed, f"{hazard_text} ({rec['heading']})"))
+        if same_entry and same_entry != declaration_id:
+            print("  NOTE: %s is a re-upload of saved %s (same heading and date); not counted again"
+                  % (declaration_id, same_entry), file=sys.stderr)
+            continue
         dt = datetime.strptime(date_signed, "%Y-%m-%d")
         if dt < SCOPE_START:
             continue

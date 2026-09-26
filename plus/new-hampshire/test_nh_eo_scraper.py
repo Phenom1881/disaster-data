@@ -57,6 +57,16 @@ class NewHampshireTests(unittest.TestCase):
         self.assertEqual(nh.date_in_text("Signed June 2, 2019.", None), "2019-06-02")
         self.assertIsNone(nh.date_in_text("No date here.", 2019))
 
+    def test_year_split_across_lines_and_misread_years(self):
+        text = "Given under my hand this 13th day of March, in the year of Our Lord, two thousand and twen-\nty."
+        self.assertEqual(nh.date_in_text(text, 2020), "2020-03-13")
+        self.assertEqual(nh.date_in_text("Given this 13th day of March, 1920.", 2020), "2020-03-13")
+
+    def test_a_later_until_clause_is_not_the_signing_date(self):
+        text = ("Given under my hand this 5th day of June, 2020. This order remains in effect until the "
+                "30th day of November, 2020.")
+        self.assertEqual(nh.date_in_text(text, 2020), "2020-06-05")
+
     def test_year_words(self):
         self.assertEqual(nh.words_to_year("two thousand and three"), 2003)
         self.assertEqual(nh.words_to_year("two thousand twenty-one"), 2021)
