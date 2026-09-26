@@ -28,6 +28,18 @@ class TexasTests(unittest.TestCase):
             with open(paths[2],encoding="utf-8") as handle: rows=list(csv.DictReader(handle))
             self.assertEqual(len(rows),1); self.assertEqual(list(rows[0]),list(tx.JOIN_FIELDS))
     def test_no_overrides(self): self.assertEqual(tx.HAZARD_OVERRIDES,{})
+    def test_listing_does_not_depend_on_the_heading_level(self):
+        html='''<div class="post"><a href="/news/post/governor-abbott-issues-flood-disaster-proclamation"><img alt=""></a>
+        <h2><a href="/news/post/governor-abbott-issues-flood-disaster-proclamation">Governor Abbott Issues Flood Disaster Proclamation</a></h2></div>
+        <div class="post"><h4><a href="https://gov.texas.gov/news/post/governor-abbott-announces-jobs">Governor Abbott Announces Jobs</a></h4></div>'''
+        rows,_=tx.parse_listing(html)
+        self.assertEqual(rows,[("https://gov.texas.gov/news/post/governor-abbott-issues-flood-disaster-proclamation","Governor Abbott Issues Flood Disaster Proclamation")])
+    def test_abbreviated_dates_and_bylines_without_the_category(self):
+        self.assertEqual(tx.first_date("Sep 2, 2026 | Austin, Texas"),"2026-09-02")
+        self.assertEqual(tx.first_date("Sept. 12, 2025"),"2025-09-12")
+        self.assertEqual(tx.first_date("June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
+        self.assertTrue(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas","Governor Abbott Renews Drought Disaster Proclamation"))
+        self.assertFalse(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas | Press Release","Governor Abbott Announces Jobs"))
     def test_month_urls_stop_at_the_current_month(self):
         urls=tx.month_urls(date(2026,9,26))
         self.assertEqual(urls[0],"https://gov.texas.gov/news/archive/2015/01")

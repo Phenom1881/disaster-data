@@ -24,8 +24,10 @@ import csv
 import re
 import sys
 from datetime import datetime
+from urllib.parse import urljoin
 
 import requests
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 STATE = "KS"
 BASE = "https://www.kansastag.gov"
@@ -63,16 +65,18 @@ NON_WEATHER_OR_SUSPECT_SLUGS = {
 # mis-attributing a heading).
 MODERN_FORMAT_MIN_YEAR = 2016
 
-# One (year_label, heading_text, pdf_url) tuple per proclamation, as they
-# literally appear on the page. Populated by parse_declarations_page();
-# kept as a module-level regex set here for clarity/testability.
-YEAR_HEADING_RE = re.compile(r">\s*(\d{4})\s*<", re.IGNORECASE)
-ENTRY_RE = re.compile(
-    r'<li[^>]*>\s*([^<]+?)\s*(?:<[^>]+>\s*)*'
-    r'<a[^>]+href="(https://www\.kansastag\.gov/DocumentCenter/View/(\d+)[^"]*)"[^>]*>'
-    r'\s*(?:State |Sate )?Declaration \(PDF\)',
-    re.IGNORECASE,
-)
+DOC_LINK_RE = re.compile(r"/DocumentCenter/View/(\d+)", re.IGNORECASE)
+YEAR_RE = re.compile(r"(?:19|20)\d{2}")
+# A declaration's heading: its dates and a hazard in parentheses, e.g.
+# "April 25 - April 27 (Severe Weather)" or "May 12 - Continuing (Drought)".
+# The parenthesis must hold a hazard, not a file type ("State Declaration
+# (PDF)" is a link label, not a heading), and a heading carries a date.
+HEADING_RE = re.compile(r"\d[^()]*\((?!\s*(?:pdf|docx?|xlsx?)\s*\))[^()]*[A-Za-z][^()]*\)\s*$", re.I)
+DECLARATION_LINK_RE = re.compile(r"declar|proclam", re.IGNORECASE)
+SKIP_LINK_RE = re.compile(r"amend|federal|extension|rescind|terminat", re.IGNORECASE)
+_LABEL_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6", "a", "button", "li", "span", "strong",
+               "b", "p", "div", "dt", "summary", "label", "th", "td"}
+_BLOCK_TAGS = ("li", "p", "div", "td", "dd", "dt", "h1", "h2", "h3", "h4", "h5", "h6")
 
 
 def governor_for(date_obj):
@@ -89,71 +93,159 @@ def fetch(url, session):
     return resp.text
 
 
-def _html_to_lines(html):
-    """Flatten raw HTML to one logical line per block/list-item/link,
-    turning <a href="URL">TEXT</a> into "[TEXT](URL)" first so links
-    survive the flattening. kansastag.gov (CivicPlus) wraps each year's
-    declarations in nested <div>/<li> tab-panel markup that varies enough
-    year to year that matching it directly is brittle; flattening to text
-    first and pattern-matching on content, the same way a human skimming
-    the rendered page would, is the more robust approach and is what this
-    scraper actually does at run time."""
-    text = re.sub(
-        r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
-        lambda m: f"[{re.sub(r'<[^>]+>', '', m.group(2)).strip()}]({m.group(1)})",
-        html,
-        flags=re.IGNORECASE | re.DOTALL,
-    )
-    text = re.sub(r"</?(li|div|p|tr|h[1-6])[^>]*>", "\n", text, flags=re.IGNORECASE)
-    text = re.sub(r"<[^>]+>", "", text)
-    lines = [ln.strip() for ln in text.splitlines()]
-    return [ln for ln in lines if ln]
+def _clean(text):
+    return " ".join((text or "").split())
 
 
-def parse_declarations_page(html):
+def _year_label(tag, max_year):
+    """The year a tab, button or heading shows, if its whole text is a year."""
+    if not isinstance(tag, Tag) or tag.name not in _LABEL_TAGS:
+        return None
+    text = _clean(tag.get_text(" ", strip=True))
+    if YEAR_RE.fullmatch(text) and 2009 <= int(text) <= max_year:
+        return int(text)
+    return None
+
+
+def _own_text(block):
+    """A block's text without its nested lists and document links, so an
+    entry's heading is read on its own even when its PDF link sits inside it
+    ("April 25 - April 27 (Severe Weather) - State Declaration (PDF)")."""
+    parts = []
+    for node in block.descendants:
+        if not isinstance(node, NavigableString) or isinstance(node, Comment):
+            continue
+        skip = False
+        for parent in node.parents:
+            if parent is block:
+                break
+            if parent.name in ("ul", "ol") or (
+                    parent.name == "a" and DOC_LINK_RE.search(parent.get("href", ""))):
+                skip = True
+                break
+        if not skip:
+            parts.append(str(node))
+    return _clean(" ".join(parts)).strip(" -\u2013\u2014:|,")
+
+
+def _panel_years(soup, max_year):
+    """{panel element id: year} for tab or accordion labels that point at
+    their panel (href="#id", aria-controls, data-target). Tab labels sit
+    together above the panels, so document order alone would give every
+    panel the last label's year."""
+    years = {}
+    for tag in soup.find_all(True):
+        year = _year_label(tag, max_year)
+        if year is None:
+            continue
+        for attr in ("aria-controls", "data-target", "data-bs-target", "data-tab", "href"):
+            target = (tag.get(attr) or "").strip()
+            if attr == "href" and not target.startswith("#"):
+                continue
+            target = target.lstrip("#")
+            if target:
+                years.setdefault(target, year)
+    return years
+
+
+def parse_declarations_page(html, max_year=None):
     """Parse the Kansas Disaster Declarations page into a list of dicts:
-    {year, heading, pdf_url, doc_id}. Deliberately tolerant of the page's
-    inconsistent capitalization ("State Declaration" / "Sate Declaration")
-    and its 2024 entries, which reuse the same DocumentCenter id for two
-    different headings (a real error on kansastag.gov itself - see the
-    summary report)."""
-    records = []
-    current_year = None
-    pending_heading = None
-    for line in _html_to_lines(html):
-        year_match = re.match(r"^(\d{4})$", line)
-        if year_match:
-            current_year = year_match.group(1)
-            pending_heading = None
+    {year, heading, pdf_url, doc_id}.
+
+    Reads the page's HTML structure rather than a flattened text copy of it.
+    The earlier version flattened the page and expected each year alone on a
+    line, but kansastag.gov shows its years as tab labels (links), which
+    flattened to "[2026](#...)" and never matched, so every run found 0
+    records. A declaration's year now comes from the tab panel it sits in
+    (matched by the label's target), or from the nearest year heading above
+    it; its heading is the nearest "Dates (Hazard)" text above its link.
+    Deliberately tolerant of the page's inconsistent capitalization ("State
+    Declaration" / "Sate Declaration") and its 2024 entries, which reuse the
+    same DocumentCenter id for two different headings (a real error on
+    kansastag.gov itself - see the summary report)."""
+    max_year = max_year or datetime.now().year + 1
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "noscript", "template"]):
+        tag.decompose()
+    panel_years = _panel_years(soup, max_year)
+
+    records, seen_docs = [], set()
+    current_year, pending_heading, streak = None, None, 0
+    last_block = None
+    for node in soup.descendants:
+        if isinstance(node, Tag):
+            year = _year_label(node, max_year)
+            if year is not None and node.find(_year_label_child(max_year)) is None:
+                streak += 1
+                # Three or more year labels in a row with nothing between
+                # them is a tab strip, not a heading above its own entries.
+                current_year = None if streak >= 3 else year
+                pending_heading = None
+                continue
+            if node.name == "a" and DOC_LINK_RE.search(node.get("href", "")):
+                streak = 0
+                text = _clean(node.get_text(" ", strip=True))
+                doc_id = DOC_LINK_RE.search(node["href"]).group(1)
+                heading = text if HEADING_RE.search(text) else pending_heading
+                is_decl = bool(DECLARATION_LINK_RE.search(text)) or HEADING_RE.search(text)
+                if not is_decl or SKIP_LINK_RE.search(text) or not heading:
+                    continue
+                year = next((panel_years[p["id"]] for p in node.parents
+                             if isinstance(p, Tag) and p.get("id") in panel_years), current_year)
+                if year is None or year < MODERN_FORMAT_MIN_YEAR or doc_id in seen_docs:
+                    continue
+                seen_docs.add(doc_id)
+                records.append({"year": str(year), "heading": heading,
+                                "pdf_url": urljoin(BASE, node["href"]), "doc_id": doc_id})
+                pending_heading = None
             continue
-        # Only look at the link TEXT (inside the brackets) for "amended" /
-        # "federal declaration" - several real PDF filenames contain the
-        # word "amended" even though the link text itself is the plain,
-        # original "State Declaration (PDF)" (e.g. 2026's April 13 Severe
-        # Weather entry, whose file is named "...-amendeddocx"), and
-        # checking the whole line would wrongly skip those.
-        link_text_match = re.match(r"^\[([^\]]*)\]", line)
-        if link_text_match and re.search(r"amend|federal declaration", link_text_match.group(1), re.IGNORECASE):
+        if not isinstance(node, NavigableString) or isinstance(node, Comment) or not node.strip():
             continue
-        pdf_match = re.search(
-            r"\[(?:State |Sate )?Declaration \(PDF\)\]\((https://www\.kansastag\.gov/DocumentCenter/View/(\d+)[^)]*)\)",
-            line,
-        )
-        if pdf_match and current_year and pending_heading and int(current_year) >= MODERN_FORMAT_MIN_YEAR:
-            records.append({
-                "year": current_year,
-                "heading": pending_heading,
-                "pdf_url": pdf_match.group(1),
-                "doc_id": pdf_match.group(2),
-            })
-            pending_heading = None
+        link = node.find_parent("a")
+        if link is not None and DOC_LINK_RE.search(link.get("href", "")):
             continue
-        # A heading line is plain text (not a link, not a bare year) that
-        # contains a parenthesised hazard tag, e.g. "April 25 - April 27
-        # (Severe Weather)".
-        if current_year and re.search(r"\([^)]+\)\s*$", line) and not line.startswith("["):
-            pending_heading = line
+        block = node.find_parent(_BLOCK_TAGS)
+        if block is None or block is last_block:
+            continue
+        last_block = block
+        text = _own_text(block)
+        if HEADING_RE.search(text) and not YEAR_RE.fullmatch(text):
+            pending_heading = text
+            streak = 0
     return records
+
+
+def _year_label_child(max_year):
+    """Matcher for a descendant that is itself a year label, so only the
+    innermost label element counts (a <li><a>2026</a></li> is one label)."""
+    def match(tag):
+        return _year_label(tag, max_year) is not None
+    return match
+
+
+def slug_years(pdf_url):
+    """Years written in a PDF's file name, e.g. Jan-24-2026-Winter-Storm."""
+    slug = pdf_url.rstrip("/").rsplit("/", 1)[-1]
+    return {int(y) for y in re.findall(r"(?<!\d)((?:19|20)\d{2})(?!\d)", slug)}
+
+
+def describe_page(html, limit=8):
+    """A short outline of what the page held, printed when nothing parsed,
+    so the run log shows the layout to fix against."""
+    soup = BeautifulSoup(html, "html.parser")
+    title = _clean(soup.title.get_text()) if soup.title else "(no title)"
+    links = [a for a in soup.find_all("a", href=True) if DOC_LINK_RE.search(a["href"])]
+    max_year = datetime.now().year + 1
+    years = [t for t in soup.find_all(True) if _year_label(t, max_year) is not None
+             and t.find(_year_label_child(max_year)) is None]
+    lines = ["page %r, %d characters, %d DocumentCenter links, %d year labels"
+             % (title, len(html), len(links), len(years))]
+    for a in links[:limit]:
+        lines.append("  link %r -> %s" % (_clean(a.get_text(" ", strip=True))[:60], a["href"][:90]))
+    for t in years[:limit]:
+        attrs = {k: v for k, v in t.attrs.items() if k in ("id", "href", "aria-controls", "data-target", "class")}
+        lines.append("  year <%s %s> %s" % (t.name, attrs, _clean(t.get_text())))
+    return "\n".join(lines)
 
 
 _MONTHS = {
@@ -196,10 +288,27 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
+def saved_dates(join_out):
+    """{declaration_id: date_signed} already saved in the join file."""
+    try:
+        with open(join_out, newline="", encoding="utf-8") as f:
+            return {r["declaration_id"]: r["date_signed"] for r in csv.DictReader(f) if r.get("date_signed")}
+    except (OSError, KeyError, csv.Error):
+        return {}
+
+
 def collect(actions_out, relationships_out, join_out):
     session = requests.Session()
     html = fetch(SOURCE_URL, session)
     raw_records = parse_declarations_page(html)
+    if not raw_records:
+        # The page has listed declarations every year since 2009, so zero
+        # means the layout was not understood. Stop (the saved records are
+        # kept) and print what the page held, to fix the parser against.
+        print("Kansas: no declarations found on the page. Page outline:\n" + describe_page(html),
+              file=sys.stderr)
+        raise SystemExit(1)
+    saved = saved_dates(join_out)
 
     actions = []
     relationships = []
@@ -216,12 +325,25 @@ def collect(actions_out, relationships_out, join_out):
         date_signed, hazard_text = parse_date_range(rec["year"], rec["heading"])
         if not date_signed:
             continue
+        # A year written in the PDF's own file name must agree with the tab
+        # the entry sits under. When it does not, which of the two is wrong
+        # cannot be told from here, so the saved record stands.
+        years_in_name = slug_years(rec["pdf_url"])
+        if years_in_name and int(rec["year"]) not in years_in_name:
+            print("  NOTE: KS-PROC-%s is under %s but its file name says %s; left as saved"
+                  % (rec["doc_id"], rec["year"], "/".join(map(str, sorted(years_in_name)))), file=sys.stderr)
+            continue
+        declaration_id = f"KS-PROC-{rec['doc_id']}"
+        if saved.get(declaration_id) and saved[declaration_id] != date_signed:
+            print("  NOTE: %s reads as %s but was saved as %s after review; kept the saved date"
+                  % (declaration_id, date_signed, saved[declaration_id]), file=sys.stderr)
+            date_signed = saved[declaration_id]
         dt = datetime.strptime(date_signed, "%Y-%m-%d")
         if dt < SCOPE_START:
             continue
 
         declarations.append({
-            "declaration_id": f"KS-PROC-{rec['doc_id']}",
+            "declaration_id": declaration_id,
             "governor": governor_for(dt),
             "eo_number": rec["doc_id"],
             "event_description": f"{hazard_text} ({rec['heading']})",
@@ -266,7 +388,10 @@ def main():
     parser.add_argument("--join-out", required=True)
     args = parser.parse_args()
 
-    n = collect(args.actions_out, args.relationships_out, args.join_out)
+    try:
+        n = collect(args.actions_out, args.relationships_out, args.join_out)
+    except requests.RequestException as exc:
+        raise SystemExit(f"Kansas: could not read {SOURCE_URL}: {exc}")
     print(f"Kansas: wrote {n} declaration(s) to {args.join_out}")
 
 

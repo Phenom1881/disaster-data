@@ -49,6 +49,8 @@ import csv
 import re
 import sys
 from dataclasses import dataclass
+from datetime import date, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Optional
 from xml.etree import ElementTree as ET
@@ -120,10 +122,24 @@ def is_original_declaration(title: str) -> bool:
     return bool(DECLARATION_TITLE_RE.search(title))
 
 
+def feed_date(pub_date: str) -> str:
+    """ISO date from an RSS pubDate ('Mon, 22 Sep 2026 14:05:00 -0400')."""
+    try:
+        return parsedate_to_datetime(pub_date).date().isoformat()
+    except (TypeError, ValueError, IndexError):
+        m = re.search(r"\b(20\d{2})-(\d{2})-(\d{2})\b", pub_date or "")
+        return "-".join(m.groups()) if m else ""
+
+
 def fetch_bulletin_feed(session: requests.Session) -> list[BulletinAction]:
     resp = session.get(BULLETIN_FEED, headers=HEADERS, timeout=30)
     resp.raise_for_status()
-    root = ET.fromstring(resp.content)
+    try:
+        root = ET.fromstring(resp.content)
+    except ET.ParseError:
+        print("warning: Ohio bulletin feed was not XML (%s, %d bytes, starts %r)"
+              % (resp.headers.get("Content-Type", "?"), len(resp.content), resp.text[:120]), file=sys.stderr)
+        raise
     items = []
     for item in root.iter("item"):
         title_el = item.find("title")
@@ -135,9 +151,12 @@ def fetch_bulletin_feed(session: requests.Session) -> list[BulletinAction]:
             BulletinAction(
                 title=(title_el.text or "").strip(),
                 url=(link_el.text or "").strip(),
-                pub_date=(date_el.text or "").strip() if date_el is not None else "",
+                pub_date=feed_date((date_el.text or "").strip()) if date_el is not None else "",
             )
         )
+    if not items:
+        print("warning: Ohio bulletin feed parsed but held no items (%d bytes, root <%s>)"
+              % (len(resp.content), root.tag), file=sys.stderr)
     return items
 
 
@@ -192,18 +211,63 @@ def write_outputs(actions: list[BulletinAction], actions_out: Path, relationship
         writer = csv.writer(f, lineterminator="\n")
         writer.writerow(["bulletin_url", "relationship_type", "references_bulletin_url"])
 
+    originals = [a for a in actions if a.is_original_weather_declaration]
+    ids = assign_ids(originals, saved_join_rows(join_out))
     with join_out.open("w", newline="\n", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
         writer.writerow(["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"])
-        seq = {}
-        for a in actions:
-            if not a.is_original_weather_declaration:
-                continue
-            year_match = re.search(r"20[0-9]{2}", a.pub_date)
-            year = year_match.group(0) if year_match else "unknown"
-            seq[year] = seq.get(year, 0) + 1
-            declaration_id = f"OH-PROC-{year}-{seq[year]:03d}"
-            writer.writerow([declaration_id, GOVERNOR, "", a.title, "", a.url])
+        for a in originals:
+            writer.writerow([ids[id(a)], GOVERNOR, "", a.title, a.pub_date, a.url])
+
+
+def saved_join_rows(join_out: Path) -> list[dict]:
+    try:
+        with join_out.open(newline="", encoding="utf-8") as f:
+            return list(csv.DictReader(f))
+    except (OSError, csv.Error):
+        return []
+
+
+def assign_ids(originals: list[BulletinAction], saved: list[dict]) -> dict[int, str]:
+    """A stable declaration_id for each proclamation.
+
+    These used to be numbered by position in the feed (OH-PROC-2026-001 was
+    whichever 2026 proclamation the feed listed first), so the next new
+    proclamation would have taken an existing number and pushed a saved
+    record out of the file. A proclamation already saved keeps its id,
+    matched by its link or by a date within a day of the saved one (a
+    bulletin can go out the day after the proclamation). A new one is named
+    by its date, OH-PROC-YYYY-MM-DD, with -2, -3 for a second that day."""
+    by_url = {r.get("archive_record_url", ""): r["declaration_id"] for r in saved if r.get("declaration_id")}
+    by_date = {}
+    for r in saved:
+        if r.get("declaration_id") and r.get("date_signed"):
+            by_date.setdefault(r["date_signed"], r["declaration_id"])
+    taken = {r["declaration_id"] for r in saved if r.get("declaration_id")}
+    ids, used = {}, set()
+
+    def near(day: str) -> Optional[str]:
+        try:
+            d = date.fromisoformat(day)
+        except ValueError:
+            return None
+        for delta in (0, -1, 1):
+            hit = by_date.get((d + timedelta(days=delta)).isoformat())
+            if hit and hit not in used:
+                return hit
+        return None
+
+    for a in sorted(originals, key=lambda x: x.pub_date):
+        sid = by_url.get(a.url) if by_url.get(a.url) not in used else None
+        sid = sid or near(a.pub_date)
+        if not sid:
+            base = f"OH-PROC-{a.pub_date}" if a.pub_date else "OH-PROC-UNDATED"
+            sid, n = base, 2
+            while sid in used or sid in taken:
+                sid, n = f"{base}-{n}", n + 1
+        used.add(sid)
+        ids[id(a)] = sid
+    return ids
 
 
 def main() -> None:

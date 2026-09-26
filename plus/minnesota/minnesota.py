@@ -7,12 +7,12 @@ from pathlib import Path
 STATE = "MN"
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
-    "structured_archive_source": "Minnesota Governor Executive Orders (https://mn.gov/governor/newsroom/executive-orders/)",
+    "structured_archive_source": "Minnesota Legislative Reference Library executive order database, Governor Walz (https://www.lrl.mn.gov/execorders/eoresults?gov=44)",
     "structured_archive_coverage_start": "2019-01-07", "structured_archive_coverage_end": None,
     "pdf_text_available": True, "ocr_required": False,
-    "current_governor_source_available": True, "current_governor_source": "https://mn.gov/governor/newsroom/executive-orders/",
+    "current_governor_source_available": True, "current_governor_source": "https://www.lrl.mn.gov/execorders/eoresults?gov=44",
     "current_governor_source_start": "2019-01-07", "manual_only": False,
-    "known_gaps": ["The current Governor archive covers Governor Walz only, so 2000-2018 is not populated. The Minnesota Legislative Reference Library has deeper official holdings, retained only as a future backfill candidate under the standing scope rule.", "The archive's list endpoint can return a Radware anti-bot page; the scraper detects that condition and fails rather than writing a false empty data set."],
+    "known_gaps": ["Covers Governor Walz (2019-present) only, so 2000-2018 is not populated. The same Legislative Reference Library database holds Dayton, Pawlenty and Ventura orders under other gov= numbers, a backfill candidate under the standing 2000-present scope rule.", "Until Sep 2026 this adapter read the Governor's own site (mn.gov/governor), which is behind Radware's bot manager and intercepted every request from GitHub's runners. It now reads the Legislative Reference Library, the state's official archive of these orders; an anti-bot page from any source is still detected and fails rather than writing a false empty data set."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -25,4 +25,4 @@ def collect(workdir=".", scripts_dir=None):
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Minnesota adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2019-present current Governor archive; 2000-2018 not covered; anti-bot interception is detected explicitly"
+    return workdir / "declarations_for_join.csv", "2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered"

@@ -30,6 +30,84 @@ CURRENT_FIXTURE = """
 """
 
 
+# The same entries as served: raw HTML, which is what the scraper actually
+# receives. Before Sep 2026 the patterns only matched the markdown form above,
+# so every run from GitHub found 0 orders.
+CURRENT_HTML = """<html><body><main><div class="field--name-body">
+<h2><strong>2026</strong></h2>
+<ul>
+<li><strong>2026-07.1</strong> - <a href="/sites/default/files/documents/Executive%20Order%202026-07.1%20drought.pdf">Armstrong Expands Drought Relief Program to All Counties</a></li>
+<li><strong>2026-07</strong> - <a href="/sites/default/files/documents/Executive%20Order%202026-07%20drought%20disaster%20declaration.pdf">Armstrong Declares Drought Disaster</a></li>
+<li><strong>2026-06</strong> &ndash; <a href="/sites/default/files/documents/Executive%20Order%202026-06%20rescinding%20TikTok%20ban.pdf">Armstrong Rescinds Ban on TikTok on State-owned Devices</a></li>
+<li><strong>2026-05</strong> - <a href="/sites/default/files/documents/Executive%20Order%202026-05%20statewide%20fire%20emergency.pdf">Armstrong Declares Statewide Fire Emergency</a></li>
+</ul>
+<h2><strong>2024</strong></h2>
+<ul>
+<li><strong>2024-02</strong> - <a href="https://www.governor.nd.gov/sites/www/files/documents/Executive%20Order%202024-02.pdf">Burgum Declares Emergency for Burleigh and Morton Counties Amid Threat of Ice Jam Flooding</a></li>
+</ul>
+</div></main></body></html>"""
+
+ARCHIVE_HTML = """<html><body><main>
+<h2><strong>2023</strong></h2>
+<ul>
+<li><strong>2023-04</strong> - April 10, 2023 - Burgum Declares Statewide Emergency for Spring Flooding</li>
+<li><strong>2023-07</strong> - June 13, 2023 - Burgum Declares an Emergency and Authorizes the North Dakota National Guard to Help Texas Secure the U.S.-Mexico Border</li>
+</ul>
+<p>June 1, 2015 - Dalrymple Declares Flood Emergency</p>
+</main></body></html>"""
+
+
+class RawHtmlTests(unittest.TestCase):
+    def test_current_page_html(self):
+        orders = scraper.parse_current_markdown(CURRENT_HTML)
+        self.assertEqual([o["eo_number"] for o in orders], ["2026-07.1", "2026-07", "2026-06", "2026-05", "2024-02"])
+        by = {o["eo_number"]: o for o in orders}
+        self.assertEqual(by["2026-07"]["title"], "Declares Drought Disaster")
+        self.assertEqual(by["2026-07"]["governor"], "Armstrong")
+        self.assertEqual(by["2024-02"]["governor"], "Burgum")
+        self.assertEqual(by["2026-07"]["url"],
+                         "https://www.governor.nd.gov/sites/default/files/documents/"
+                         "Executive%20Order%202026-07%20drought%20disaster%20declaration.pdf")
+
+    def test_archive_page_html(self):
+        orders = scraper.parse_archive_markdown(ARCHIVE_HTML)
+        self.assertEqual([o["eo_number"] for o in orders], ["2023-04", "2023-07"])   # unnumbered 2015 line skipped
+        self.assertEqual(orders[0]["title"], "Declares Statewide Emergency for Spring Flooding")
+        self.assertEqual(orders[0]["date_text"], "April 10, 2023")
+
+    def test_expansion_order_is_not_a_second_declaration(self):
+        self.assertFalse(scraper.is_declaration("2026-07.1", "Expands Drought Relief Program to All Counties"))
+        self.assertTrue(scraper.is_declaration("2026-07", "Declares Drought Disaster"))
+        self.assertTrue(scraper.is_declaration("2026-05", "Declares Statewide Fire Emergency"))
+
+    def test_pdf_dates_feed_the_join(self):
+        orders = scraper.parse_current_markdown(CURRENT_HTML)
+        for o in orders:
+            o["pdf_date"] = {"2026-07": "2026-08-04", "2026-05": "2026-04-17"}.get(o["eo_number"], "")
+        with tempfile.TemporaryDirectory() as tmp:
+            decls = scraper.write_csv(orders, os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"),
+                                      os.path.join(tmp, "j.csv"))
+        self.assertEqual({d["declaration_id"]: d["date_signed"] for d in decls},
+                         {"ND-EO-2026-07": "2026-08-04", "ND-EO-2026-05": "2026-04-17"})   # 2024-02 has no date yet
+
+
+class SignedDateTests(unittest.TestCase):
+    def test_signature_clause(self):
+        text = ("WHEREAS, on June 20, 2025, severe storms struck Enderlin ... "
+                "Executed at the State Capitol in Bismarck, North Dakota, this 21st day of June, 2025.")
+        self.assertEqual(scraper.signed_date_from_text(text, "2025-05"), "2025-06-21")
+
+    def test_executed_on_date(self):
+        text = "WHEREAS drought began May 1, 2026 ... Executed on August 4, 2026."
+        self.assertEqual(scraper.signed_date_from_text(text, "2026-07"), "2026-08-04")
+
+    def test_event_dates_alone_are_not_a_signing_date(self):
+        self.assertEqual(scraper.signed_date_from_text("WHEREAS, on June 20, 2025, storms struck.", "2025-05"), "")
+
+    def test_year_must_match_the_order_number(self):
+        self.assertEqual(scraper.signed_date_from_text("this 3rd day of January, 2024", "2023-09"), "")
+
+
 class ArchiveParsingTests(unittest.TestCase):
     def test_parses_numbered_dated_entries(self):
         orders = scraper.parse_archive_markdown(ARCHIVE_FIXTURE)

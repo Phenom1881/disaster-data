@@ -69,25 +69,43 @@ def month_urls(today=None):
     today=today or date.today()
     return [MONTH_URL.format(year=y,month=m) for y in range(FIRST_YEAR,today.year+1) for m in range(1,13) if (y,m)<=(today.year,today.month)]
 
+_MONTH_NUM={name:i for i,name in enumerate("jan feb mar apr may jun jul aug sep oct nov dec".split(),1)}
+DATE_RE=re.compile(r"\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2}),\s+(20\d{2})\b",re.I)
+
+def first_date(text):
+    """The post's date: the first 'September 2, 2026' or 'Sep 2, 2026'."""
+    match=DATE_RE.search(text)
+    if not match: return ""
+    return f"{match.group(3)}-{_MONTH_NUM[match.group(1)[:3].lower()]:02d}-{int(match.group(2)):02d}"
+
+def is_proclamation_post(text,title):
+    """A proclamation post is filed under Proclamation ("... | Austin, Texas
+    | Proclamation"). If the byline stops saying so, a title that names a
+    proclamation or disaster declaration still counts, so a byline change
+    alone cannot empty the state."""
+    return bool(re.search(r"\|\s*Proclamation\b",text) or re.search(r"\bProclamation\b|\bdisaster declaration\b",title,re.I))
+
 def parse_detail(url,title):
     soup=BeautifulSoup(get(url).text,"html.parser"); main=soup.select_one("main") or soup
     text=re.sub(r"\s+"," ",main.get_text(" ",strip=True))
-    if not re.search(r"\|\s*Proclamation\b",text): return None
-    match=re.search(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s+(20\d{2})\b",text)
-    date_text=""
-    if match:
-        months={name:i for i,name in enumerate("January February March April May June July August September October November December".split(),1)}
-        date_text=f"{match.group(3)}-{months[match.group(1)]:02d}-{int(match.group(2)):02d}"
+    if not is_proclamation_post(text,title): return None
+    date_text=first_date(text)
     slug=urlparse(url).path.rstrip("/").rsplit("/",1)[-1]
     number=f"PROCLAMATION-{date_text or 'UNDATED'}-{slug}"
     governor="Dan Patrick" if re.search(r"Acting Governor Dan Patrick",title,re.I) else "Greg Abbott"
     return Action(number,title,date_text,url,text,governor)
 
 def parse_listing(html):
-    soup=BeautifulSoup(html,"html.parser"); out=[]
-    for anchor in soup.select("h3 a[href*='/news/post/']"):
+    """(post url, title) for every proclamation post a listing page links to.
+    Any link to /news/post/ counts, not only one inside an <h3>, so a change
+    of heading level does not empty the state. A post linked twice (image and
+    title) is kept once, with the longer text as its title."""
+    soup=BeautifulSoup(html,"html.parser"); found={}
+    for anchor in soup.select("a[href*='/news/post/']"):
+        url=urljoin(ARCHIVE_URL,anchor["href"]).split("#")[0]
         title=re.sub(r"\s+"," ",anchor.get_text(" ",strip=True))
-        if RELEVANT_RE.search(title): out.append((urljoin(ARCHIVE_URL,anchor["href"]),title))
+        if len(title)>len(found.get(url,"")): found[url]=title
+    out=[(url,title) for url,title in found.items() if RELEVANT_RE.search(title)]
     next_link=soup.select_one("a.pagination-next[href]")
     return out,(urljoin(ARCHIVE_URL,next_link["href"]) if next_link else "")
 
