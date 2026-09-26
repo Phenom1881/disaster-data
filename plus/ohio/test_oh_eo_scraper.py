@@ -104,6 +104,31 @@ class TestStableIdsAndDates(unittest.TestCase):
         self.assertEqual(rows[0]["declaration_id"], "OH-PROC-2026-09-22")
 
 
+class TestSavedRowsKept(unittest.TestCase):
+    def test_bulletin_matching_a_saved_record_writes_the_reviewed_row_back(self):
+        # A headline like "... in Several Ohio Counties" names no hazard, so
+        # letting it replace the reviewed description would drop the record
+        # from the storm join.
+        import csv, tempfile
+        from pathlib import Path
+        from oh_eo_scraper import BulletinAction, write_outputs
+        a = BulletinAction("Governor DeWine Declares State of Emergency in Several Ohio Counties Following Flooding",
+                           "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/abc", "2026-09-22",
+                           hazard_guess="flood", is_original_weather_declaration=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            join = tmp / "j.csv"
+            join.write_text("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                            "OH-PROC-2026-09-22,Ohio Governor,,Governor DeWine declares state of emergency in 21 counties "
+                            "after severe weather and significant flooding,2026-09-22,https://governor.ohio.gov/x\n", encoding="utf-8")
+            write_outputs([a], tmp / "a.csv", tmp / "r.csv", join)
+            with join.open(encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+        self.assertEqual(len(rows), 1)
+        self.assertIn("21 counties", rows[0]["event_description"])
+        self.assertEqual(rows[0]["archive_record_url"], "https://governor.ohio.gov/x")
+
+
 class TestFeedParsing(unittest.TestCase):
     def test_real_fixture_parses(self):
         root = ET.fromstring(REAL_FEED_FIXTURE)

@@ -618,6 +618,14 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     overrides_path = state_dir / "hazard_overrides.csv"
     if overrides_path.exists():
         cmd.extend(["--overrides", str(overrides_path.resolve())])
+    # Only hazard_overrides.csv is read. Reviewed overrides saved under another
+    # name (hazard_overrides_kansas.csv, say) were silently never applied:
+    # Kansas's 14 and Montana's last 2 sat unused until Sep 2026. Say so.
+    stray = sorted(p.name for p in state_dir.glob("hazard_overrides*.csv")
+                   if p.name != "hazard_overrides.csv" and not p.name.endswith(".tmp"))
+    if stray:
+        print(f"WARNING {state['abbreviation']}: {', '.join(stray)} is not read; reviewed "
+              f"overrides must be in hazard_overrides.csv", file=sys.stderr)
     result = subprocess.run(cmd, cwd=str(state_dir), capture_output=True, text=True)
     if result.stdout:
         print(result.stdout)

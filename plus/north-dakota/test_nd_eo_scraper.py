@@ -75,6 +75,29 @@ class RawHtmlTests(unittest.TestCase):
         self.assertEqual(orders[0]["title"], "Declares Statewide Emergency for Spring Flooding")
         self.assertEqual(orders[0]["date_text"], "April 10, 2023")
 
+    def test_undated_archive_entry_uses_confirmed_date(self):
+        html = ARCHIVE_HTML.replace(
+            "<ul>\n<li><strong>2023-04</strong>",
+            "<ul>\n<li><strong>2023-10</strong> - Burgum Declares Statewide Emergency for Impacts of Ice Storm</li>\n"
+            "<li><strong>2023-04</strong>")
+        orders = scraper.parse_archive_markdown(html)
+        by = {o["eo_number"]: o for o in orders}
+        self.assertIsNone(by["2023-10"]["date_text"])
+        self.assertEqual(by["2023-10"]["title"], "Declares Statewide Emergency for Impacts of Ice Storm")
+        with tempfile.TemporaryDirectory() as tmp:
+            decls = scraper.write_csv(orders, os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"),
+                                      os.path.join(tmp, "j.csv"), confirmed_dates=scraper.CONFIRMED_DATES)
+        self.assertIn({"id": "ND-EO-2023-10", "date": "2023-12-29"},
+                      [{"id": d["declaration_id"], "date": d["date_signed"]} for d in decls])
+
+    def test_every_current_page_declaration_has_a_confirmed_date(self):
+        orders = scraper.parse_current_markdown(CURRENT_HTML)
+        with tempfile.TemporaryDirectory() as tmp:
+            decls = scraper.write_csv(orders, os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"),
+                                      os.path.join(tmp, "j.csv"), confirmed_dates=scraper.CONFIRMED_DATES)
+        self.assertEqual({d["declaration_id"]: d["date_signed"] for d in decls},
+                         {"ND-EO-2026-07": "2026-08-18", "ND-EO-2026-05": "2026-08-07", "ND-EO-2024-02": "2024-02-29"})
+
     def test_expansion_order_is_not_a_second_declaration(self):
         self.assertFalse(scraper.is_declaration("2026-07.1", "Expands Drought Relief Program to All Counties"))
         self.assertTrue(scraper.is_declaration("2026-07", "Declares Drought Disaster"))

@@ -37,6 +37,8 @@ import csv
 import re
 import sys
 from dataclasses import dataclass
+from datetime import date, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Optional
 from xml.etree import ElementTree as ET
@@ -138,16 +140,76 @@ def extract_attachment_links(html: str) -> list[OrderAction]:
     return actions
 
 
-def scrape(session: Optional[requests.Session] = None) -> list[OrderAction]:
+# The newsroom feed (checked Sep 2026) is a working RSS feed of the
+# Governor's releases, about eight months deep, but its items link to
+# kentucky.gov release pages, not to the signed PDFs, so the attachment
+# pattern above finds nothing in it. That is why every run reported
+# "0 orders scraped". A release that announces a weather state of emergency
+# is therefore read as a declaration in its own right: its title and date
+# are the Governor's own, and it gets the order number only if a PDF link
+# does appear with it.
+SOE_TITLE_RE = re.compile(r"\b(?:declar\w*|issu\w*|sign\w*)\b.{0,40}\bstate of emergency\b|\bstate of emergency\b.{0,20}\bdeclar", re.I)
+SOE_EXCLUDE_RE = re.compile(r"\b(?:extend\w*|extension|renew\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|price[- ]gouging|"
+                            r"gas prices|fuel|opioid\w*|overdose\w*|cyber\w*|shutdown|snap|food)\b", re.I)
+SOE_WEATHER_RE = re.compile(r"\b(?:weather|storms?|flood\w*|tornad\w*|winter|snow\w*|ice|winds?|rain\w*|"
+                            r"wildfires?|drought|landslides?)\b", re.I)
+
+
+@dataclass
+class ReleaseDeclaration:
+    title: str
+    url: str
+    date_signed: str
+
+
+def feed_items(xml_text: str) -> list[dict]:
+    try:
+        root = ET.fromstring(xml_text.encode("utf-8") if isinstance(xml_text, str) else xml_text)
+    except ET.ParseError as exc:
+        print(f"warning: Kentucky newsroom feed was not XML: {exc}", file=sys.stderr)
+        return []
+    items = []
+    for item in root.iter("item"):
+        get = lambda tag: (item.findtext(tag) or "").strip()
+        items.append({"title": get("title"), "link": get("link"), "pubDate": get("pubDate"),
+                      "description": get("description")})
+    return items
+
+
+def release_date(pub_date: str) -> str:
+    try:
+        return parsedate_to_datetime(pub_date).date().isoformat()
+    except (TypeError, ValueError, IndexError):
+        return ""
+
+
+def release_declarations(items: list[dict]) -> list[ReleaseDeclaration]:
+    out = []
+    for it in items:
+        title = " ".join(it["title"].split())
+        text = title + " " + it.get("description", "")
+        if SOE_TITLE_RE.search(title) and not SOE_EXCLUDE_RE.search(title) and SOE_WEATHER_RE.search(text):
+            day = release_date(it["pubDate"])
+            if day:
+                out.append(ReleaseDeclaration(title, it["link"], day))
+    return out
+
+
+def scrape(session: Optional[requests.Session] = None, stats: Optional[dict] = None):
+    """(orders found by PDF link, weather state-of-emergency releases)."""
     session = session or requests.Session()
+    stats = {} if stats is None else stats
     try:
         resp = session.get(NEWSROOM_FEED, headers=HEADERS, timeout=30)
         resp.raise_for_status()
     except requests.RequestException as exc:
         print(f"warning: could not fetch Kentucky newsroom feed: {exc}", file=sys.stderr)
-        return []
+        return [], []
 
     actions = extract_attachment_links(resp.text)
+    items = feed_items(resp.text)
+    releases = release_declarations(items)
+    stats.update(feed_items=len(items), releases=len(releases))
 
     # De-duplicate by EO number; keep earliest-seen date.
     dedup: dict[str, OrderAction] = {}
@@ -155,10 +217,36 @@ def scrape(session: Optional[requests.Session] = None) -> list[OrderAction]:
         if a.eo_number not in dedup:
             dedup[a.eo_number] = a
     result = [a for a in dedup.values() if int(a.date_signed[:4]) >= MIN_YEAR]
-    return result
+    # A release announcing an order already found by its PDF is the same declaration.
+    pdf_days = {a.date_signed for a in result if a.is_original_weather_declaration}
+    releases = [r for r in releases if not _near(r.date_signed, pdf_days)]
+    return result, releases
 
 
-def write_outputs(actions: list[OrderAction], actions_out: Path, relationships_out: Path, join_out: Path) -> None:
+def _near(day: str, days: set) -> Optional[str]:
+    """The entry of days within one day of day, if any (a release can go out
+    the day after the order is signed, or the evening before)."""
+    try:
+        d = date.fromisoformat(day)
+    except ValueError:
+        return None
+    for delta in (0, -1, 1):
+        cand = (d + timedelta(days=delta)).isoformat()
+        if cand in days:
+            return cand
+    return None
+
+
+def saved_join(join_out: Path) -> list[dict]:
+    try:
+        with join_out.open(newline="", encoding="utf-8") as f:
+            return list(csv.DictReader(f))
+    except (OSError, csv.Error):
+        return []
+
+
+def write_outputs(actions: list[OrderAction], actions_out: Path, relationships_out: Path, join_out: Path,
+                  releases: Optional[list] = None) -> None:
     actions_out.parent.mkdir(parents=True, exist_ok=True)
 
     with actions_out.open("w", newline="\n", encoding="utf-8") as f:
@@ -183,14 +271,38 @@ def write_outputs(actions: list[OrderAction], actions_out: Path, relationships_o
                 rel_type = "extension" if "extension" in a.slug.lower() or "extend" in a.slug.lower() else "amendment"
                 writer.writerow([a.eo_number, rel_type, ref])
 
+    # Weather state-of-emergency releases. One that matches a saved record
+    # by date (within a day) is that record, written back unchanged, so a
+    # reviewed description is not replaced by a headline. A new one is named
+    # by its date, KY-SOE-YYYY-MM-DD, until someone adds its order number.
+    saved = saved_join(join_out)
+    saved_by_day = {}
+    for r in saved:
+        saved_by_day.setdefault(r.get("date_signed", ""), r)
+    release_rows = []
+    for r in sorted(releases or [], key=lambda x: x.date_signed):
+        hit = _near(r.date_signed, set(saved_by_day))
+        if hit:
+            row = saved_by_day[hit]
+            release_rows.append([row["declaration_id"], row["governor"], row["eo_number"],
+                                 row["event_description"], row["date_signed"], row["archive_record_url"]])
+        else:
+            release_rows.append([f"KY-SOE-{r.date_signed}", GOVERNOR, "", r.title, r.date_signed, r.url])
+
     with join_out.open("w", newline="\n", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
         writer.writerow(["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"])
+        written = set()
         for a in sorted(actions, key=lambda x: x.date_signed):
             if not a.is_original_weather_declaration:
                 continue
             declaration_id = f"KY-EO-{a.eo_number}"
+            written.add(declaration_id)
             writer.writerow([declaration_id, GOVERNOR, a.eo_number, a.slug.title(), a.date_signed, a.url])
+        for row in release_rows:
+            if row[0] not in written:
+                written.add(row[0])
+                writer.writerow(row)
 
 
 def main() -> None:
@@ -200,11 +312,13 @@ def main() -> None:
     parser.add_argument("--join-out", required=True)
     args = parser.parse_args()
 
-    actions = scrape()
-    write_outputs(actions, Path(args.actions_out), Path(args.relationships_out), Path(args.join_out))
+    stats = {}
+    actions, releases = scrape(stats=stats)
+    write_outputs(actions, Path(args.actions_out), Path(args.relationships_out), Path(args.join_out), releases)
     n_join = sum(1 for a in actions if a.is_original_weather_declaration)
-    print(f"Kentucky: {len(actions)} orders scraped, {n_join} routed to join CSV.")
-    if not actions:
+    print(f"Kentucky: {stats.get('feed_items', 0)} newsroom releases read, {len(actions)} orders found by PDF link "
+          f"({n_join} routed to join CSV), {len(releases)} weather state-of-emergency releases.")
+    if not actions and not stats.get("feed_items"):
         print(
             "Kentucky: zero orders retrieved from the newsroom feed. The feed's "
             "retention window is unconfirmed and known to lean recent -- do not "

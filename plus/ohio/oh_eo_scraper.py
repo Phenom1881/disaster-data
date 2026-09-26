@@ -65,7 +65,10 @@ BULLETIN_FEED = "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins
 MIN_YEAR = 2000
 
 HEADERS = {
-    "User-Agent": "DisasterDataPlus-Adapter/1.0 (+https://disasterdata.io/plus/)"
+    "User-Agent": "DisasterDataPlus-Adapter/1.0 (+https://disasterdata.io/plus/)",
+    # Ask for the feed format explicitly; GovDelivery answers 406 Not
+    # Acceptable to a request that asks only for web page formats.
+    "Accept": "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5",
 }
 
 WEATHER_KEYWORDS = {
@@ -212,12 +215,25 @@ def write_outputs(actions: list[BulletinAction], actions_out: Path, relationship
         writer.writerow(["bulletin_url", "relationship_type", "references_bulletin_url"])
 
     originals = [a for a in actions if a.is_original_weather_declaration]
-    ids = assign_ids(originals, saved_join_rows(join_out))
+    saved = saved_join_rows(join_out)
+    saved_by_id = {r["declaration_id"]: r for r in saved if r.get("declaration_id")}
+    ids = assign_ids(originals, saved)
+    fields = ["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"]
     with join_out.open("w", newline="\n", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
-        writer.writerow(["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"])
+        writer.writerow(fields)
+        written = set()
         for a in originals:
-            writer.writerow([ids[id(a)], GOVERNOR, "", a.title, a.pub_date, a.url])
+            sid = ids[id(a)]
+            if sid in written:
+                continue
+            written.add(sid)
+            if sid in saved_by_id:
+                # A saved record is reviewed text (county list, hazards); a
+                # bulletin headline is not, so the saved row is written back.
+                writer.writerow([saved_by_id[sid].get(k, "") for k in fields])
+            else:
+                writer.writerow([sid, GOVERNOR, "", a.title, a.pub_date, a.url])
 
 
 def saved_join_rows(join_out: Path) -> list[dict]:

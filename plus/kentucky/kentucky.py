@@ -25,4 +25,4 @@ def collect(workdir=".", scripts_dir=None):
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Kentucky adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "manual_only - Beshear-era newsroom feed proxy only; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap"
+    return workdir / "declarations_for_join.csv", "manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap"

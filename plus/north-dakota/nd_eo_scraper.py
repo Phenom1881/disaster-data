@@ -72,13 +72,22 @@ EXCLUDE_IDS = {
     "2023-07",  # ND Guard deployed to Texas border, not a ND weather event.
 }
 
-# Dates independently confirmed via governor's-office news releases for
-# orders on the undated current-EOs page. Used when the order's PDF has no
-# signature date that can be read, and preferred over a date read from the
-# PDF if the two ever disagree.
+# Dates independently confirmed for orders the pages list without a date:
+# every current-page order, plus a few late-2023 archive entries. The signed
+# PDFs are scans with no readable text (checked Sep 2026 on 2026-07), so the
+# date comes from the Governor's announcement of the order, as dated by the
+# office's own release or same-day news coverage. Preferred over a date read
+# from a PDF if the two ever disagree.
 CONFIRMED_DATES = {
-    "2025-05": "2025-06-21",
-    "2026-03": "2026-06-30",
+    "2023-10": "2023-12-29",  # ice storm emergency; Valley News Live, UPI, Washington Times, Dec 29 2023
+    "2024-02": "2024-02-29",  # Burleigh/Morton ice jam emergency; Governor's release as covered by KFYR, Feb 29 2024
+    "2024-04": "2024-07-31",  # central ND summer storm disaster; KFYR, Valley News Live, KNOX, Jul 31 2024
+    "2024-06": "2024-10-03",  # statewide fire emergency; KFYR, KFGO, Valley News Live, Oct 3 2024
+    "2025-04": "2025-03-10",  # statewide fire emergency; KVRR, Valley News Live, Mar 10 2025
+    "2025-05": "2025-06-21",  # tornado damage disaster; Governor's release
+    "2026-03": "2026-06-30",  # June 7-9 severe storms disaster; Governor's release
+    "2026-05": "2026-08-07",  # statewide fire emergency; Valley News Live, News Dakota, Aug 7 2026
+    "2026-07": "2026-08-18",  # drought disaster; North Dakota Monitor, Valley News Live, Aug 18 2026
 }
 
 DISASTER_KEYWORDS = re.compile(
@@ -101,6 +110,9 @@ _NUM = r"(?:\*\*)?(?P<num>\d{4}-\d+(?:\.\d+)?)(?:\*\*)?"
 _DATE = r"(?P<date>[A-Z][a-z]+\.? \d{1,2}, \d{4})"
 
 ARCHIVE_ITEM_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + _DATE + _DASH + r"(?P<title>.+)$")
+# A few archive entries carry a number but no date ("2023-10 - Burgum
+# Declares Statewide Emergency for Impacts of Ice Storm").
+ARCHIVE_UNDATED_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + r"(?![A-Z][a-z]+\.? \d{1,2}, \d{4})(?P<title>.+)$")
 CURRENT_ITEM_RE = re.compile(
     _NUM + _DASH + r"\[(?P<title>[^\]]+)\]\((?P<url>[^)]+)\)"
 )
@@ -151,14 +163,14 @@ def parse_archive_markdown(md_text):
     rendered '**YYYY-NN** - Month Day, Year - Title' lines."""
     orders = []
     for line in page_markdown(md_text, ARCHIVE_URL).splitlines():
-        m = ARCHIVE_ITEM_RE.search(line.strip())
+        m = ARCHIVE_ITEM_RE.search(line.strip()) or ARCHIVE_UNDATED_RE.search(line.strip())
         if m:
             title = m.group("title").strip()
             link = _MD_LINK_RE.search(title)
             gov, title = split_governor(_MD_LINK_RE.sub(r"\1", title).strip())
             orders.append({
                 "eo_number": m.group("num"),
-                "date_text": m.group("date"),
+                "date_text": m.groupdict().get("date"),
                 "title": title,
                 "url": link.group(2) if link and link.group(2).lower().endswith(".pdf") else ARCHIVE_URL,
                 "governor": gov,
