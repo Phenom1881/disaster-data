@@ -92,22 +92,29 @@ def first_date(text):
     match=re.search(DATE_RE.pattern+r"\s*\|",text,re.I) or DATE_RE.search(text)
     return _iso(match) if match else ""
 
+# The Governor's post categories. A byline names one after the dateline:
+# "June 15, 2026 | Austin, Texas | Proclamation", "06/16/2026 | Press Release".
+CATEGORIES=("Proclamation","Press Release","Executive Order","Media Advisory","Statement","Speech","Op-Ed","Appointment","Letter","Announcement","Video")
+CATEGORY_RE=re.compile(r"\|\s*("+"|".join(re.escape(c) for c in CATEGORIES)+r")\b",re.I)
+PROCLAMATION_TEXT_RE=re.compile(r"\bdo hereby\b|\bWHEREAS\b|\bby the authority vested\b",re.I)
+
 def byline_category(text):
-    """'Proclamation' from 'June 15, 2026 | Austin, Texas | Proclamation',
-    or '' when the post has no such byline."""
-    m=re.search(DATE_RE.pattern+r"\s*\|\s*[^|]{2,60}?\|\s*([A-Za-z]+(?: [A-Za-z]+)?)",text,re.I)
-    return m.group(4).strip() if m else ""
+    """The category a post is filed under ('Proclamation', 'Press Release'),
+    read from the first '| Category' in its opening text whatever the date
+    format, or '' when there is none."""
+    m=CATEGORY_RE.search(text[:600])
+    return m.group(1) if m else ""
 
 def is_proclamation_post(text,title):
     """A proclamation post is filed under Proclamation in its byline. A post
     filed under anything else (Press Release) is not one, even when its title
-    mentions a disaster declaration. Only when a post has no category byline
-    at all does a title naming a proclamation count, so a byline change
-    alone cannot empty the state."""
+    mentions a disaster declaration. With no category at all (the byline
+    changed), it counts only if its title names a proclamation and its text
+    reads like one ('do hereby', 'WHEREAS'), so press releases cannot slip in."""
     category=byline_category(text)
     if category:
-        return category.lower().startswith("proclamation")
-    return bool(re.search(r"\bProclamation\b|\bdisaster declaration\b",title,re.I))
+        return category.lower()=="proclamation"
+    return bool(re.search(r"\bProclamation\b|\bdisaster declaration\b",title,re.I) and PROCLAMATION_TEXT_RE.search(text))
 
 def parse_detail(url,title):
     soup=BeautifulSoup(get(url).text,"html.parser"); main=soup.select_one("main") or soup
@@ -217,12 +224,32 @@ def write_csv(path,fields,rows):
     with open(path,"w",newline="",encoding="utf-8") as handle:
         writer=csv.DictWriter(handle,fieldnames=fields,lineterminator="\n"); writer.writeheader(); writer.writerows(rows)
 
+def saved_by_url(*paths):
+    """{post url: (declaration_id, eo_number, date_signed)} from saved files.
+    A record's id carries the date it was first read with, so a post already
+    saved keeps that id and date: a change in how dates are read must not
+    give it a second id."""
+    out={}
+    for path in paths:
+        try:
+            with open(path,newline="",encoding="utf-8") as handle:
+                for r in csv.DictReader(handle):
+                    url=r.get("detail_url") or r.get("archive_record_url") or ""
+                    if url and r.get("declaration_id") and url not in out:
+                        out[url]=(r["declaration_id"],r.get("eo_number",""),r.get("date_signed",""))
+        except (OSError,csv.Error):
+            pass
+    return out
+
 def write_outputs(actions,actions_out,relationships_out,join_out):
     rows=[]; joins=[]
+    saved=saved_by_url(join_out,actions_out)
     for action in actions:
         kind=classify(action); evidence=action.title+" "+action.text; weather=kind=="declaration" and bool(HAZARD_RE.search(evidence))
-        row={"declaration_id":action.stable_id,"state":"TX","governor":action.governor,"eo_number":action.number,"action_kind":"emergency_declaration" if kind!="administrative" else "proclamation","action_type":kind,"event_description":action.title,"date_signed":action.date,"end_date":"","weather_related":str(weather).lower(),"source_scope":"texas_governor_proclamation_archive_2015_present","document_format":"html","detail_url":action.url,"archive_record_url":action.url}; rows.append(row)
-        if weather and action.date: joins.append({field:row[field] for field in JOIN_FIELDS})
+        sid,number,signed=saved.get(action.url,(action.stable_id,action.number,action.date))
+        number=number or action.number; signed=signed or action.date
+        row={"declaration_id":sid,"state":"TX","governor":action.governor,"eo_number":number,"action_kind":"emergency_declaration" if kind!="administrative" else "proclamation","action_type":kind,"event_description":action.title,"date_signed":signed,"end_date":"","weather_related":str(weather).lower(),"source_scope":"texas_governor_proclamation_archive_2015_present","document_format":"html","detail_url":action.url,"archive_record_url":action.url}; rows.append(row)
+        if weather and signed: joins.append({field:row[field] for field in JOIN_FIELDS})
     write_csv(actions_out,ACTION_FIELDS,rows); write_csv(relationships_out,REL_FIELDS,[]); write_csv(join_out,JOIN_FIELDS,joins)
     return len(rows),len(joins)
 

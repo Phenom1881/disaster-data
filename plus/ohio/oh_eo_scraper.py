@@ -107,14 +107,28 @@ gallia geauga greene guernsey hamilton hancock hardin harrison henry highland ho
 knox lake lawrence licking logan lorain lucas madison mahoning marion medina meigs mercer miami monroe montgomery
 morgan morrow muskingum noble ottawa paulding perry pickaway pike portage preble putnam richland ross sandusky scioto
 seneca shelby stark summit trumbull tuscarawas union vanwert vinton warren washington wayne williams wood wyandot""".split())
-HAZARD_WORDS = ("flood", "tornado", "storm", "wind", "winter", "snow", "ice", "fire", "drought", "rain", "hurricane")
+HAZARD_WORD_RE = re.compile(r"\b(flood\w*|tornad\w*|storms?|winds?|winter|snow\w*|ice|wildfires?|fires?|drought|rain\w*|hurricanes?)\b")
 
 
-def event_tokens(text: str) -> set:
-    """County names and hazard words in a title or description."""
+def event_tokens(text: str) -> tuple[set, set]:
+    """(county names, hazard words) in a title or description, hazards as
+    whole words ('Police' is not ice), reduced to a stem (floods -> flood)."""
     low = (text or "").lower().replace("van wert", "vanwert")
-    words = set(re.findall(r"[a-z]+", low))
-    return {w for w in words if w in OHIO_COUNTIES} | {h for h in HAZARD_WORDS if h in low}
+    counties = {w for w in re.findall(r"[a-z]+", low) if w in OHIO_COUNTIES}
+    hazards = {m.group(1)[:5] for m in HAZARD_WORD_RE.finditer(low)}
+    return counties, hazards
+
+
+def same_event(a: str, b: str) -> bool:
+    """Whether two texts can describe the same proclamation. When both name
+    counties, the counties decide; otherwise shared hazards; a text that
+    names neither cannot rule the other out."""
+    (ca, ha), (cb, hb) = event_tokens(a), event_tokens(b)
+    if ca and cb:
+        return bool(ca & cb)
+    if ha and hb:
+        return bool(ha & hb)
+    return True
 
 
 @dataclass
@@ -289,14 +303,12 @@ def assign_ids(originals: list[BulletinAction], saved: list[dict]) -> dict[int, 
             d = date.fromisoformat(a.pub_date)
         except ValueError:
             return None
-        mine = event_tokens(a.title)
         for delta in (0, -1, 1):
             for r in by_date.get((d + timedelta(days=delta)).isoformat(), []):
                 sid = r["declaration_id"]
                 if sid in used:
                     continue
-                theirs = event_tokens(r.get("event_description", ""))
-                if delta == 0 or not mine or not theirs or mine & theirs:
+                if delta == 0 or same_event(a.title, r.get("event_description", "")):
                     return sid
         return None
 

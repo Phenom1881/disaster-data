@@ -116,6 +116,18 @@ class TestNextDayMatching(unittest.TestCase):
                                  "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/zzz", "2026-09-23")
         self.assertEqual(assign_ids([tornado], self.SAVED)[id(tornado)], "OH-PROC-2026-09-23")
 
+    def test_a_shared_generic_hazard_word_does_not_merge_two_counties(self):
+        from oh_eo_scraper import BulletinAction, assign_ids, same_event
+        saved = [{"declaration_id": "OH-PROC-2026-07-07", "archive_record_url": "https://governor.ohio.gov/m",
+                  "date_signed": "2026-07-07",
+                  "event_description": "Governor DeWine tours Mahoning County storm damage and declares state of emergency after severe storms and a tornado"}]
+        allen = BulletinAction("Governor DeWine Declares State of Emergency in Allen County Following Severe Storms",
+                               "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/q", "2026-07-08")
+        self.assertEqual(assign_ids([allen], saved)[id(allen)], "OH-PROC-2026-07-08")
+        from oh_eo_scraper import event_tokens
+        self.assertEqual(event_tokens("Governor Thanks Police Services")[1], set())     # 'Police' is not ice
+        self.assertTrue(same_event("Flooding in Several Ohio Counties", "21 counties after significant flooding"))
+
     def test_updated_resend_is_not_a_new_declaration(self):
         from oh_eo_scraper import is_original_declaration
         self.assertFalse(is_original_declaration("UPDATED: Governor DeWine Declares State of Emergency in Several Ohio Counties"))

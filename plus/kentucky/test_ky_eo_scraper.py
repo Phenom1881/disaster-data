@@ -154,6 +154,15 @@ class TestNewsroomReleases(unittest.TestCase):
         self.assertFalse(ok("Gov. Beshear on Flood Recovery Issues; State of Emergency Remains in Effect"))
         self.assertFalse(ok("Gov. Beshear Declares State of Emergency to Stop Price Gouging", "after the winter storm"))
         self.assertFalse(ok("Significant Progress on Roads; Gov. Beshear Reviews State of Emergency Response"))
+        # Follow-up words elsewhere in the headline do not reject a new declaration.
+        self.assertTrue(ok("Gov. Beshear Declares State of Emergency Ahead of Possible Flooding"))
+        self.assertTrue(ok("Gov. Beshear Declares State of Emergency, Provides Update on Severe Weather"))
+        self.assertTrue(ok("Gov. Beshear Declares State of Emergency as Heavy Snow Likely Across Kentucky"))
+        self.assertTrue(ok("Gov. Beshear Declares State of Emergency as Flooding Concerns Remain"))
+        self.assertTrue(ok("State of Emergency Declared as Flooding Hits Eastern Kentucky"))
+        self.assertFalse(ok("Addresses Flood Issues With State of Emergency Response"))
+        self.assertFalse(ok("Gov. Beshear Extends State of Emergency for Flood-Damaged Counties"))
+        self.assertFalse(ok("Flood State of Emergency Remains in Effect, Gov. Beshear Says"))
 
     def test_follow_up_release_is_the_same_declaration(self):
         from ky_eo_scraper import feed_items, release_declarations

@@ -114,7 +114,7 @@ _MONTHS = "January|February|March|April|May|June|July|August|September|October|N
 # ... this 13th day of March, in the year of Our Lord, two thousand and twenty".
 # The year is usually in words, sometimes in digits, sometimes left out.
 SIGNING_RE = re.compile(
-    r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b[\s,]*"
+    r"\bthis\s+(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b[\s,]*"
     r"(?:(?:in\s+)?(?:the\s+)?year\s+of\s+(?:our\s+lord)?[\s,]*)?"
     r"(\d{4}|(?:nineteen\s+hundred|two\s+thousand)(?:[\s,-]+(?:and|[a-z]+teen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b)*)?",
     re.I,
@@ -166,14 +166,21 @@ def date_in_text(text: str, fallback_year: Optional[int] = None) -> Optional[str
             year = fallback_year
         return year
 
-    signed = None
-    for match in SIGNING_RE.finditer(text):       # "this 13th day of March, ..."
+    # "this 13th day of March, ...". The one in the "Given under my hand"
+    # signature line is preferred; otherwise the last one, since the
+    # signature sits at the end of the order. (A filing stamp after the
+    # signature also says "this ... day of", which is why "hand" is checked.)
+    signed = by_hand = None
+    for match in SIGNING_RE.finditer(text):
         day, month, year_text = match.groups()
         year = year_of(year_text)
         if year:
-            signed = normalize_date(f"{month} {day}, {year}") or signed
-    if signed:
-        return signed
+            found = normalize_date(f"{month} {day}, {year}")
+            signed = found or signed
+            if found and re.search(r"\bhand\b", text[max(0, match.start() - 160):match.start()], re.I):
+                by_hand = found
+    if by_hand or signed:
+        return by_hand or signed
     if fallback_year:
         # No "this ... day of" clause: a bare "13th day of March" in the order's year.
         for match in re.finditer(r"\b(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b", text, re.I):

@@ -144,6 +144,9 @@ class SignedDateTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertTrue(rows[0]["archive_record_url"].endswith(".pdf"))
 
+    def test_this_the_nth_day_of(self):
+        self.assertEqual(scraper.signed_date_from_text("Executed this the 18th day of August, 2026.", "2026-07"), "2026-08-18")
+
     def test_year_must_match_the_order_number(self):
         self.assertEqual(scraper.signed_date_from_text("this 3rd day of January, 2024", "2023-09"), "")
 

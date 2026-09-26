@@ -214,7 +214,7 @@ _MONTHS = ("January|February|March|April|May|June|July|August|September|October|
 # the orders cite other things issued on a date ("the NWS issued a Red Flag
 # Warning on August 4").
 SIGNED_DAY_OF_RE = re.compile(
-    r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r"),?\s+(\d{4})\b", re.I)
+    r"\bthis\s+(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r"),?\s+(\d{4})\b", re.I)
 SIGNED_NEAR_RE = re.compile(
     r"\b(?:executed|signed|dated|given)\b[^.]{0,60}?\b(" + _MONTHS + r")\s+(\d{1,2}),\s+(\d{4})\b", re.I)
 
@@ -307,7 +307,7 @@ def write_csv(orders, actions_out, relationships_out, join_out, confirmed_dates=
     # one with a date on the page, else the one with a link to its PDF.
     best = {}
     for o in orders:
-        rank = (bool(o.get("date_text")), str(o.get("url", "")).lower().endswith(".pdf"))
+        rank = (bool(parse_date_text(o.get("date_text"))), str(o.get("url", "")).lower().endswith(".pdf"))
         if o["eo_number"] not in best or rank > best[o["eo_number"]][0]:
             best[o["eo_number"]] = (rank, o)
     for o in (entry for _, entry in best.values()):

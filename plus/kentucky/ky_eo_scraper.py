@@ -148,14 +148,24 @@ def extract_attachment_links(html: str) -> list[OrderAction]:
 # is therefore read as a declaration in its own right: its title and date
 # are the Governor's own, and it gets the order number only if a PDF link
 # does appear with it.
+_FOLLOW_UP = r"(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remain\w*|likely|possible|consider\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|terminat\w*)"
+# "Gov. Beshear Declares State of Emergency ...", with no follow-up word
+# (extends, amends, expands, likely ...) between the verb and the phrase,
+# or "State of Emergency Declared as Flooding Hits ...". The Governor is
+# named before the verb so a noun ("Flood Issues") is not read as one.
 SOE_TITLE_RE = re.compile(
-    r"\b(?:declares?|declared|declaring|issues|issued|signs|signed)\b.{0,60}?\b(?:state of emergency|statewide emergency)\b",
+    r"\b(?:Beshear|Governor|Gov\.?)\s+(?:\w+\s+){0,2}?(?:declares?|declared|issues|issued|signs|signed)\b"
+    r"(?:(?!\b" + _FOLLOW_UP + r"\b)[^.;:]){0,60}?\b(?:state of emergency|statewide emergency)\b"
+    r"|\b(?:state of emergency|statewide emergency)\b[^.;:]{0,20}?\b(?:declared|issued)\b",
     re.I)
-# Follow-ups and near-misses: an extension, an amendment, an update, "remains
-# in effect", "likely", and orders that end one.
+# A headline about an emergency already in place: extended, amended,
+# expanded, lifted, ended, or one that "remains in effect".
 SOE_EXCLUDE_RE = re.compile(
-    r"\b(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remain\w*|likely|possible|"
-    r"consider\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|terminat\w*)\b", re.I)
+    r"\b(?:extends?|extended|extension of|renews?|renewed|amends?|amended|expands?|expanded|lifts?|lifted|"
+    r"ends|ended|rescinds?|rescinded|terminates?|terminated)\b[^.;:]{0,40}\b(?:state of emergency|statewide emergency)\b"
+    r"|\b(?:state of emergency|statewide emergency)\s+(?:is\s+|has\s+been\s+|was\s+)?"
+    r"(?:remains?|continues|extended|lifted|ended|expires?|expired)\b",
+    re.I)
 # Orders whose subject is not the weather itself (gas prices, price gouging
 # on its own) count only when the headline itself names the weather.
 SOE_OFF_TOPIC_RE = re.compile(r"\b(?:price[- ]gouging|gas prices|fuel|opioid\w*|overdose\w*|cyber\w*|shutdown|snap|food)\b", re.I)

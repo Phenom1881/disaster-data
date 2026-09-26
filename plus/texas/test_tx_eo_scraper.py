@@ -38,7 +38,12 @@ class TexasTests(unittest.TestCase):
         self.assertEqual(tx.first_date("Sep 2, 2026 | Austin, Texas"),"2026-09-02")
         self.assertEqual(tx.first_date("Sept. 12, 2025"),"2025-09-12")
         self.assertEqual(tx.first_date("June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
-        self.assertTrue(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas","Governor Abbott Renews Drought Disaster Proclamation"))
+        # No category in the byline: the title must name a proclamation and the text must read like one.
+        self.assertTrue(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas WHEREAS exceptional drought conditions","Governor Abbott Renews Drought Disaster Proclamation"))
+        self.assertFalse(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas Governor Abbott today renewed","Governor Abbott Renews Drought Disaster Proclamation"))
+        # Other date formats and two-part bylines still show the category.
+        self.assertFalse(tx.is_proclamation_post("06/16/2026 | Austin, Texas | Press Release On June 12, 2026 storms hit","Governor Abbott Issues Disaster Declaration For 18 Counties"))
+        self.assertFalse(tx.is_proclamation_post("June 16, 2026 | Press Release WHEREAS","Governor Abbott Issues Disaster Proclamation"))
         self.assertFalse(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas | Press Release","Governor Abbott Announces Jobs"))
     def test_press_release_about_a_declaration_is_not_a_proclamation(self):
         # Only the byline's category decides when there is one.
@@ -55,6 +60,18 @@ class TexasTests(unittest.TestCase):
     def test_undated_page_is_skipped_not_given_a_new_id(self):
         with mock.patch.object(tx,"get",return_value=FakeResponse("<main><h1>Oops</h1><p>Austin, Texas | Proclamation</p></main>")):
             self.assertIsNone(tx.parse_detail("https://gov.texas.gov/news/post/x","Governor Abbott Renews Drought Disaster Proclamation"))
+    def test_saved_post_keeps_its_id_and_date(self):
+        # Ids carry the date they were first read with; a post already saved
+        # keeps that id even if its date now reads differently.
+        with tempfile.TemporaryDirectory() as root:
+            paths=[root+f"/{n}.csv" for n in ("actions","rels","join")]
+            with open(paths[0],"w",encoding="utf-8") as f:
+                f.write(",".join(tx.ACTION_FIELDS)+"\n"+"TX-PROCLAMATION-2016-05-07-special-election,TX,Greg Abbott,PROCLAMATION-2016-05-07-special-election,proclamation,administrative,Special Election,2016-05-07,,false,s,html,https://gov.texas.gov/news/post/special-election,https://gov.texas.gov/news/post/special-election\n")
+            post=tx.Action("PROCLAMATION-2016-03-01-special-election","Governor Abbott Orders Special Election","2016-03-01","https://gov.texas.gov/news/post/special-election","text")
+            tx.write_outputs([post],*paths)
+            with open(paths[0],encoding="utf-8") as f: rows=list(csv.DictReader(f))
+        self.assertEqual(rows[0]["declaration_id"],"TX-PROCLAMATION-2016-05-07-special-election")
+        self.assertEqual(rows[0]["date_signed"],"2016-05-07")
     def test_month_urls_stop_at_the_current_month(self):
         urls=tx.month_urls(date(2026,9,26))
         self.assertEqual(urls[0],"https://gov.texas.gov/news/archive/2015/01")

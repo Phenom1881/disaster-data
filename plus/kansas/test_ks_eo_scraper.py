@@ -150,6 +150,24 @@ class TestKansasEdgeCases(unittest.TestCase):
         </ul>""")
         self.assertEqual(records, [])
 
+    def test_a_map_or_amended_copy_before_the_declaration_keeps_the_heading(self):
+        records = self.parse("""<ul><li>May 18 - 19 (Severe Storms)<ul>
+        <li><a href="/DocumentCenter/View/3906/County-Map">County Map (PDF)</a></li>
+        <li><a href="/DocumentCenter/View/3907/Amended">Amended State Declaration (PDF)</a></li>
+        <li><a href="/DocumentCenter/View/3905/Severe-Storms-May-18-19-2025">State Declaration (PDF)</a></li></ul></li></ul>""")
+        self.assertEqual([(r["doc_id"], r["heading"]) for r in records], [("3905", "May 18 - 19 (Severe Storms)")])
+
+    def test_a_note_line_does_not_clear_the_heading(self):
+        records = self.parse("""<ul><li>June 3 - 8 (Severe Storms)<p>Counties: Allen, Bourbon (see map)</p>
+        <a href="/DocumentCenter/View/3943/State-of-Disaster-Proclamation-June-3-8-2025">State Declaration (PDF)</a></li></ul>""")
+        self.assertEqual([r["doc_id"] for r in records], ["3943"])
+
+    def test_year_headings_with_an_empty_year_are_not_a_tab_strip(self):
+        html = ("<html><body><h2>2026</h2><h2>2025</h2><h2>2024</h2><p>June 7 (Drought)</p>"
+                '<p><a href="/DocumentCenter/View/3379/SOK-June-7-2024-Drought">State Declaration (PDF)</a></p></body></html>')
+        records = scraper.parse_declarations_page(html, max_year=2027)
+        self.assertEqual([(r["doc_id"], r["year"]) for r in records], [("3379", "2024")])
+
     def test_entries_separated_by_line_breaks(self):
         records = self.parse("""<p>June 7 (Drought) <a href="/DocumentCenter/View/3379/SOK-June-7-2025-Drought">State Declaration (PDF)</a><br>
         June 23 -26 (SG Fire) <a href="/DocumentCenter/View/2921/June-23-26-Sedgwick-Fire">State Declaration (PDF)</a></p>""")

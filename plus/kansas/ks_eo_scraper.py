@@ -127,7 +127,17 @@ def _panel_years(soup, max_year):
     return years
 
 
-_MONTH_WORD_RE = re.compile(r"\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d", re.I)
+def _heading_like(text):
+    """Shaped like an entry heading HEADING_RE did not accept: it starts with
+    a month and day, or ends in a capitalized parenthesis ("Statewide
+    (Drought)"). A note such as "Counties: Allen, Bourbon (see map)" is not."""
+    return bool(re.match(r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d", text, re.I)
+                or re.search(r"^[^:]*\([A-Z][^()]*\)\s*$", text))
+
+
+# Tab labels are links or buttons in a strip above the panels; a heading
+# (h2, strong, p ...) sits right above its own entries.
+_TAB_LABEL_TAGS = {"a", "button", "li"}
 
 
 def parse_declarations_page(html, max_year=None):
@@ -164,10 +174,11 @@ def parse_declarations_page(html, max_year=None):
         line.clear()
         if not text or YEAR_RE.fullmatch(text):
             return
+        st["streak"] = 0            # any text between year labels: not a tab strip
         if HEADING_RE.search(text):
-            st["heading"], st["streak"] = text, 0
-        elif _MONTH_WORD_RE.search(text) or "(" in text:
-            # Heading-like text this parser does not understand: the heading
+            st["heading"] = text
+        elif _heading_like(text):
+            # An entry heading this parser does not understand: the heading
             # before it must not carry over to the link after it.
             st["heading"] = None
 
@@ -179,23 +190,25 @@ def parse_declarations_page(html, max_year=None):
             year = _year_label(node, max_year)
             if year is not None and node.find(is_label) is None:
                 end_line()
-                st["streak"] += 1
-                # Two or more year labels in a row with nothing between them
-                # are a tab strip, not a heading above its own entries.
-                st["year"] = None if st["streak"] >= 2 else year
+                if node.name in _TAB_LABEL_TAGS:
+                    st["streak"] += 1
+                    # Two or more tab labels in a row with nothing between
+                    # them are a tab strip, not a heading above its entries.
+                    st["year"] = None if st["streak"] >= 2 else year
+                else:
+                    st["streak"], st["year"] = 0, year
                 st["heading"] = None
                 continue
             if node.name == "a" and DOC_LINK_RE.search(node.get("href", "")):
                 end_line()
                 st["streak"] = 0
-                heading, st["heading"] = st["heading"], None      # one link per heading
                 text = _clean(node.get_text(" ", strip=True))
                 doc_id = DOC_LINK_RE.search(node["href"]).group(1)
-                if HEADING_RE.search(text):
-                    heading = text
+                heading = text if HEADING_RE.search(text) else st["heading"]
                 is_decl = bool(DECLARATION_LINK_RE.search(text)) or bool(HEADING_RE.search(text))
                 if not is_decl or SKIP_LINK_RE.search(text) or not heading:
-                    continue
+                    continue                 # an amended copy or a map does not use up the heading
+                st["heading"] = None         # one declaration per heading
                 year = next((panel_years[p["id"]] for p in node.parents
                              if isinstance(p, Tag) and p.get("id") in panel_years), st["year"])
                 if year is None or year < MODERN_FORMAT_MIN_YEAR or doc_id in seen_docs:

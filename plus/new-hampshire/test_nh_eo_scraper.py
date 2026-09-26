@@ -67,6 +67,11 @@ class NewHampshireTests(unittest.TestCase):
                 "30th day of November, 2020.")
         self.assertEqual(nh.date_in_text(text, 2020), "2020-06-05")
 
+    def test_filing_stamp_after_the_signature_is_not_the_signing_date(self):
+        text = ("Given under my hand and seal at the Executive Chambers in Concord, this 26th day of January, "
+                "in the year of Our Lord, two thousand and fifteen. Filed with the Secretary of State this 28th day of January, 2015.")
+        self.assertEqual(nh.date_in_text(text, 2015), "2015-01-26")
+
     def test_year_words(self):
         self.assertEqual(nh.words_to_year("two thousand and three"), 2003)
         self.assertEqual(nh.words_to_year("two thousand twenty-one"), 2021)
