@@ -162,6 +162,16 @@ class ArchiveParsingTests(unittest.TestCase):
     def test_date_conversion(self):
         self.assertEqual(scraper.parse_date_text("April 10, 2023"), "2023-04-10")
 
+    def test_date_followed_by_comma(self):
+        # 2017-14 was left out on 2026-09-26 because its date ends in a comma.
+        m = scraper.ARCHIVE_ITEM_RE.search(
+            "**2017-14** - August 17, 2017, Burgum Declares Summer Storm Disaster for Three Counties")
+        self.assertEqual(m.group("date"), "August 17, 2017")
+        self.assertEqual(m.group("title"), "Burgum Declares Summer Storm Disaster for Three Counties")
+
+    def test_2025_06_has_a_confirmed_date(self):
+        self.assertEqual(scraper.CONFIRMED_DATES["2025-06"], "2025-09-02")
+
 
 class CurrentPageParsingTests(unittest.TestCase):
     def test_parses_linked_entries(self):

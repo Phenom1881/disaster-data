@@ -193,9 +193,59 @@ def normalized_action(row: dict, abbreviation: str) -> dict:
     }
 
 
+# State declarations signed before this year are left off the site. A few
+# state archives reach further back (Massachusetts 1941, Nebraska 1965, South
+# Carolina 1966), but the federal record and the NOAA storm data the join
+# relies on are thin before 1970, so those older orders are dropped rather
+# than shown without evidence. A row with no readable signing date is kept:
+# it is waiting on a date, not known to be old.
+EARLIEST_ACTION_YEAR = 1970
+
+
+def signed_year(row: dict) -> int | None:
+    """The year a state action was signed, or None when no date is readable.
+    Reads the same fields normalized_action() does, in ISO (2026-01-07) or
+    compact (20260107) form."""
+    value = clean(row.get("date_signed") or row.get("issued_date") or row.get("date"))
+    match = re.match(r"(\d{4})", value)
+    return int(match.group(1)) if match else None
+
+
+def before_cutoff(row: dict) -> bool:
+    year = signed_year(row)
+    return year is not None and year < EARLIEST_ACTION_YEAR
+
+
+def drop_pre_cutoff_actions(state: dict, state_dir: Path) -> int:
+    """Remove pre-1970 rows from the files the storm join and the pages read.
+    Runs after keep_saved_actions(), so a saved copy cannot bring them back.
+    Raw archives are left whole as the record of what the source listed."""
+    dropped = 0
+    for name in candidate_action_files(state):
+        path = state_dir / name
+        if not path.is_file():
+            continue
+        raw = path.read_bytes()
+        fields, rows = _csv_rows_from_bytes(raw)
+        keep = [row for row in rows if not before_cutoff(row)]
+        if len(keep) == len(rows):
+            continue
+        newline = "\r\n" if b"\r\n" in raw[:4096] else "\n"
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields, restval="",
+                                    extrasaction="ignore", lineterminator=newline)
+            writer.writeheader()
+            writer.writerows(keep)
+        dropped += len(rows) - len(keep)
+        print(f"{state['abbreviation']}: {name}: left off {len(rows) - len(keep)} "
+              f"declaration(s) signed before {EARLIEST_ACTION_YEAR}")
+    return dropped
+
+
 def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(state_dir, candidate_action_files(state))
-    rows = [normalized_action(row, state["abbreviation"]) for row in read_csv_rows(path)]
+    rows = [normalized_action(row, state["abbreviation"]) for row in read_csv_rows(path)
+            if not before_cutoff(row)]
     unique = {}
     for row in rows:
         key = row["declaration_id"] or json.dumps(row, sort_keys=True)
@@ -589,7 +639,22 @@ def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     return (True, "")
 
 
-def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool]:
+def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool, bool]:
+    """Returns (note, failed, ran). A state marked 'implemented' is expected
+    to have eo_storm_join.py, so its absence there means something broke and
+    fails the build. For a state still mid-rollout the same absence is an
+    expected skip. ran is True only when a join actually executed and
+    succeeded, so a skipped state is never read as having fresh output."""
+    join_script = state_dir / "eo_storm_join.py"
+    if not join_script.exists():
+        if state.get("adapter_status") == "implemented":
+            return ("Storm join failed: eo_storm_join.py is missing from the state folder", True, False)
+        return ("Storm join skipped: eo_storm_join.py is not installed in the state folder", False, False)
+    note, failed = _run_storm_join(state, state_dir, action_path)
+    return note, failed, not failed
+
+
+def _run_storm_join(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool]:
     """Run eo_storm_join.py for one state, applying its reviewed sidecar
     overrides automatically when present.
 
@@ -612,8 +677,6 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     run's output if a later step exits 0 without writing anything.
     """
     join_script = state_dir / "eo_storm_join.py"
-    if not join_script.exists():
-        return ("Storm join skipped: eo_storm_join.py is not installed in the state folder", False)
 
     # All final and temporary paths are defined together, up front,
     # including the zone-resolution outputs (used only conditionally below)
@@ -1142,12 +1205,12 @@ def extract_coverage_start_label(abbreviation: str, coverage_note: str, action_c
         return f"Since {_COVERAGE_START_OVERRIDES[abbreviation]}"
     if abbreviation in _COVERAGE_START_NO_CLEAN_YEAR:
         return "Uneven coverage"
-    match = _COVERAGE_START_PATTERN.match(coverage_note)
+    match = (_COVERAGE_START_PATTERN.match(coverage_note)
+             or _COVERAGE_START_RANGE_PATTERN.match(coverage_note))
     if match:
-        return f"Since {match.group(1)}"
-    match = _COVERAGE_START_RANGE_PATTERN.match(coverage_note)
-    if match:
-        return f"Since {match.group(1)}"
+        # Nothing before EARLIEST_ACTION_YEAR is shown, so the badge never
+        # claims an earlier start than the page can back up.
+        return f"Since {max(int(match.group(1)), EARLIEST_ACTION_YEAR)}"
     return "See coverage note"
 
 
@@ -1264,6 +1327,7 @@ def process_state(
                 print(f"WARNING {state['abbreviation']}: {collection_error}", file=sys.stderr)
             finally:
                 kept = keep_saved_actions(state, saved)
+                drop_pre_cutoff_actions(state, state_dir)
         else:
             collection_error = "No state-source adapter is installed"
 
@@ -1282,8 +1346,11 @@ def process_state(
             storm_note = "Storm join skipped: --dry-run and --join-storms cannot be combined"
         elif action_path:
             storm_join_path = ensure_declaration_id_column(action_path, state["abbreviation"])
-            storm_note, storm_failed = run_storm_pipeline(state, state_dir, storm_join_path)
-            storm_pipeline_ran = not storm_failed
+            storm_note, storm_failed, storm_pipeline_ran = run_storm_pipeline(
+                state, state_dir, storm_join_path)
+        elif state.get("adapter_status") == "implemented":
+            storm_note = "Storm join failed: no state-action CSV is available"
+            storm_failed = True
         else:
             storm_note = "Storm join skipped: no state-action CSV is available"
 

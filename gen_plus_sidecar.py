@@ -276,6 +276,14 @@ def collect_state(slug, state_dir, cover, by_name, by_squash, stats):
                 )] += 1
                 continue
 
+            # State declarations signed before 1970 are left off the site
+            # (EARLIEST_ACTION_YEAR in scripts/build-plus.py).
+            signed = (row.get("date_signed") or "").strip()
+            if signed[:4].isdigit() and int(signed[:4]) < 1970:
+                stats.setdefault("pre_1970_rows_skipped", 0)
+                stats["pre_1970_rows_skipped"] += 1
+                continue
+
             stats["resolved_rows"] += 1
             decl_id = (row.get("declaration_id") or "").strip()
             key = (fips5, decl_id)

@@ -85,6 +85,7 @@ CONFIRMED_DATES = {
     "2024-06": "2024-10-03",  # statewide fire emergency; KFYR, KFGO, Valley News Live, Oct 3 2024
     "2025-04": "2025-03-10",  # statewide fire emergency; KVRR, Valley News Live, Mar 10 2025
     "2025-05": "2025-06-21",  # tornado damage disaster; Governor's release
+    "2025-06": "2025-09-02",  # Aug 7-8 severe storms disaster; Governor's release of Sep 2 2025 links Executive Order 2025-06
     "2026-03": "2026-06-30",  # June 7-9 severe storms disaster; Governor's release
     "2026-05": "2026-08-07",  # statewide fire emergency; Valley News Live, News Dakota, Aug 7 2026
     "2026-07": "2026-08-18",  # drought disaster; North Dakota Monitor, Valley News Live, Aug 18 2026
@@ -109,7 +110,9 @@ _DASH = r"\s*[-–—]\s*"
 _NUM = r"(?:\*\*)?(?P<num>\d{4}-\d+(?:\.\d+)?)(?:\*\*)?"
 _DATE = r"(?P<date>[A-Z][a-z]+\.? \d{1,2}, \d{4})"
 
-ARCHIVE_ITEM_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + _DATE + _DASH + r"(?P<title>.+)$")
+# The date is usually followed by a dash, but some entries use a comma
+# ("2017-14 - August 17, 2017, Burgum Declares Summer Storm Disaster ...").
+ARCHIVE_ITEM_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + _DATE + r"(?:" + _DASH + r"|,\s*)" + r"(?P<title>.+)$")
 # A few archive entries carry a number but no date ("2023-10 - Burgum
 # Declares Statewide Emergency for Impacts of Ice Storm").
 ARCHIVE_UNDATED_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + r"(?![A-Z][a-z]+\.? \d{1,2}, \d{4})(?P<title>.+)$")

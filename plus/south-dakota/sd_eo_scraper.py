@@ -37,6 +37,7 @@ import csv
 import re
 import sys
 from datetime import datetime
+from urllib.parse import urljoin
 
 try:
     import requests
@@ -67,10 +68,14 @@ EXCLUDED_TITLE_PATTERNS = re.compile(
 )
 
 
+LAST_PAGE = {}
+
+
 def fetch_current_page():
     """GET the registry page. Years 2020-present render directly in HTML."""
     resp = requests.get(BASE_URL, timeout=30, headers={"User-Agent": "DisasterDataIO-Plus/1.0"})
     resp.raise_for_status()
+    LAST_PAGE["html"] = resp.text
     return resp.text
 
 
@@ -122,9 +127,12 @@ def parse_orders(html):
             if not re.match(r"^\d{4}-\d{2}", eo_number):
                 continue
             title = (link.get_text(strip=True) if link else title_cell.get_text(strip=True))
-            url = link["href"] if link and link.has_attr("href") else ""
-            if url and url.startswith("/"):
-                url = "https://sdsos.gov" + url
+            url = link["href"].strip() if link and link.has_attr("href") else ""
+            if url:
+                # The registry links documents relatively ("../assets/2026
+                # Executive Orders/2026-01.pdf"). Kept as-is, those links
+                # pointed at disasterdata.io and were broken on the page.
+                url = absolute_url(url)
             orders.append({
                 "eo_number": eo_number,
                 "date_filed": date_filed,  # YYYYMMDD per site convention
@@ -132,6 +140,19 @@ def parse_orders(html):
                 "url": url,
             })
     return orders
+
+
+def absolute_url(href):
+    return urljoin(BASE_URL, href.strip()).replace(" ", "%20")
+
+
+def describe_page(html):
+    """A short account of a page that yielded no orders, for the run log."""
+    soup = BeautifulSoup(html or "", "html.parser")
+    title = soup.title.get_text(strip=True) if soup.title else "(no title)"
+    return ("%d bytes, title %r, %d table(s), %d table row(s), starts %r"
+            % (len(html or ""), title[:80], len(soup.find_all("table")),
+               len(soup.find_all("tr")), re.sub(r"\s+", " ", (html or "")[:160])))
 
 
 def is_declaration(title):
@@ -223,6 +244,13 @@ def main():
     args = parser.parse_args()
 
     orders = collect_orders(include_prior_years=args.include_prior_years)
+    if not orders:
+        # An empty result is never a real finding here (the registry lists
+        # every order since 2020), so stop before writing empty files and
+        # fail loudly with what the page actually returned.
+        print("South Dakota: 0 orders parsed from the registry page: "
+              + describe_page(LAST_PAGE.get("html", "")), file=sys.stderr)
+        sys.exit(2)
     declarations = write_csv(orders, args.actions_out, args.relationships_out, args.join_out)
     print(f"South Dakota: {len(orders)} orders scraped, {len(declarations)} written as declarations.")
 

@@ -198,5 +198,24 @@ class TestCurrentGovernorPage(unittest.TestCase):
         self.assertEqual(in_eo_scraper.scrape(session), [])
 
 
+class TestDanielsIndexFallback(unittest.TestCase):
+    def test_year_links_read_from_archive_page_when_index_is_gone(self):
+        archive = ('<p>Executive Order Archives: <a href="3635.htm">2011</a> | '
+                   '<a href="3359.htm">2009</a> | <a href="2417.htm">2007</a></p>')
+
+        class Session:
+            def get(self, url, headers=None, timeout=None):
+                if url == in_eo_scraper.DANIELS_INDEX_FALLBACKS[0]:
+                    return _FakeResponse(200, archive)
+                return _FakeResponse(404)
+
+        urls = in_eo_scraper._discover_daniels_year_pages(Session())
+        self.assertEqual(urls, [
+            "https://www.in.gov/governorhistory/mitchdaniels/3635.htm",
+            "https://www.in.gov/governorhistory/mitchdaniels/3359.htm",
+            "https://www.in.gov/governorhistory/mitchdaniels/2417.htm",
+        ])
+
+
 if __name__ == "__main__":
     unittest.main()

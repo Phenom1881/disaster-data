@@ -65,7 +65,9 @@ BULLETIN_FEED = "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins
 MIN_YEAR = 2000
 
 HEADERS = {
-    "User-Agent": "DisasterDataPlus-Adapter/1.0 (+https://disasterdata.io/plus/)",
+    # Same form the Wisconsin adapter uses for the WIGOV feed. The Accept
+    # header alone did not clear GovDelivery's 406 on 2026-09-26.
+    "User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlus-Adapter/1.0; +https://disasterdata.io/plus/)",
     # Ask for the feed format explicitly; GovDelivery answers 406 Not
     # Acceptable to a request that asks only for web page formats.
     "Accept": "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5",
@@ -168,6 +170,11 @@ def feed_date(pub_date: str) -> str:
 
 def fetch_bulletin_feed(session: requests.Session) -> list[BulletinAction]:
     resp = session.get(BULLETIN_FEED, headers=HEADERS, timeout=30)
+    if resp.status_code == 406:
+        # Ask once more accepting anything, and say what came back.
+        print("warning: Ohio bulletin feed answered 406; retrying with Accept: */*",
+              file=sys.stderr)
+        resp = session.get(BULLETIN_FEED, headers={**HEADERS, "Accept": "*/*"}, timeout=30)
     resp.raise_for_status()
     try:
         root = ET.fromstring(resp.content)

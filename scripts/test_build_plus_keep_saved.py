@@ -98,6 +98,27 @@ class KeepSavedRecordsTests(unittest.TestCase):
         self.assertEqual(len(rows), 2)
         self.assertEqual({r["heading"] for r in rows}, {"Storm Declaration", "Flood Declaration"})
 
+    def test_declarations_before_1970_are_left_off(self):
+        # A saved copy must not bring an old order back either, so the drop
+        # runs after the keep-saved merge.
+        old = "XX-EO-1966-02,Gov,1966-02,DECLARING A FLOOD EMERGENCY,1966-03-04,https://x/66.pdf\n"
+        undated = "XX-EO-18-01,Gov,18-01,DECLARING A DISASTER EMERGENCY,,https://x/18.pdf\n"
+        self.csv.write_text(SAVED + old + undated, encoding="utf-8")
+        saved = bp.snapshot_action_files(STATE, self.state_dir)
+        self.csv.write_text(HEADER + old, encoding="utf-8")
+        bp.keep_saved_actions(STATE, saved)
+        self.assertEqual(bp.drop_pre_cutoff_actions(STATE, self.state_dir), 1)
+        ids = {r["declaration_id"] for r in rows_of(self.csv)}
+        self.assertNotIn("XX-EO-1966-02", ids)
+        self.assertIn("XX-EO-18-01", ids)          # no date yet: kept
+        self.assertEqual(len(ids), 4)
+        actions, _ = bp.load_state_actions(STATE, self.state_dir)
+        self.assertTrue(all(a["date_signed"] >= "1970" or not a["date_signed"] for a in actions))
+
+    def test_since_badge_never_earlier_than_1970(self):
+        self.assertEqual(bp.extract_coverage_start_label("MA", "1941-present collection", 4), "Since 1970")
+        self.assertEqual(bp.extract_coverage_start_label("NJ", "1990-present structured", 4), "Since 1990")
+
     def test_new_values_win_when_present(self):
         new = SAVED.replace("2024-03-21", "2024-03-22")
         counts = self._merge_after(new)

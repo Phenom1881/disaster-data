@@ -21,4 +21,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("South Carolina adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "1966-present official State Library collection, enriched from the 2017-present Governor archive"
+    return workdir / "declarations_for_join.csv", "1970-present from the official State Library collection (orders before 1970 left off), enriched from the 2017-present Governor archive"
