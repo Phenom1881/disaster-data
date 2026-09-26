@@ -43,6 +43,7 @@ import argparse
 import csv
 import html
 import importlib.util
+import io
 import json
 import re
 import subprocess
@@ -280,9 +281,19 @@ def looks_like_markup(value) -> bool:
     return bool(_MARKUP_RE.search(str(value or "")))
 
 
+# Some action files carry an order's full text in a single field (Wyoming's
+# does), which is larger than the csv module's default 128 KB field limit.
+# Without this the merge below failed on that file and, by design, put the
+# saved copy back, which also threw away whatever that run had just scraped.
+csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
+
+
 def _csv_rows_from_bytes(raw: bytes) -> tuple[list[str], list[dict]]:
     text = raw.decode("utf-8-sig", errors="replace")
-    reader = csv.DictReader(text.splitlines(keepends=True))
+    # Split rows the way csv expects (newline=""), on line breaks only. The
+    # earlier str.splitlines() also split on form feeds and other separators
+    # that PDF text often carries, which broke such a row in two.
+    reader = csv.DictReader(io.StringIO(text, newline=""))
     rows = list(reader)
     return list(reader.fieldnames or []), rows
 
@@ -316,21 +327,36 @@ def _merge_saved_rows(path: Path, raw_old: bytes, abbreviation: str) -> dict:
             fields.append(name)
 
     def key(row):
-        return clean(row.get("declaration_id")) or normalized_action(row, abbreviation)["declaration_id"]
+        k = clean(row.get("declaration_id")) or normalized_action(row, abbreviation)["declaration_id"]
+        if k and k != abbreviation:
+            return k
+        # A file with no id, number or date to tell its rows apart (Ohio's
+        # bulletin list) would give every row the bare state code, and the
+        # whole file would collapse into one row. Use the row's link instead,
+        # or failing that its whole content.
+        link = normalized_action(row, abbreviation)["source_url"]
+        if link:
+            return "url:" + link
+        return "row:" + json.dumps({n: clean(v) for n, v in row.items() if n}, sort_keys=True)
 
+    # Rows are paired in order within a key, so a file that lists one id
+    # twice (Virginia's and Wisconsin's audit files do) keeps both.
     current = {}
     for row in new_rows:
-        current.setdefault(key(row), row)
+        current.setdefault(key(row), []).append(row)
 
     changed = False
+    seen = {}
     for old in old_rows:
         k = key(old)
         if not k:
             continue
-        row = current.get(k)
+        nth = seen.get(k, 0)
+        seen[k] = nth + 1
+        matches = current.get(k, [])
+        row = matches[nth] if nth < len(matches) else None
         if row is None:
             new_rows.append(dict(old))
-            current[k] = new_rows[-1]
             counts["kept"] += 1
             changed = True
             continue
@@ -607,6 +633,14 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     overrides_path = state_dir / "hazard_overrides.csv"
     if overrides_path.exists():
         cmd.extend(["--overrides", str(overrides_path.resolve())])
+    # Only hazard_overrides.csv is read. Reviewed overrides saved under another
+    # name (hazard_overrides_kansas.csv, say) were silently never applied:
+    # Kansas's 14 and Montana's last 2 sat unused until Sep 2026. Say so.
+    stray = sorted(p.name for p in state_dir.glob("hazard_overrides*.csv")
+                   if p.name != "hazard_overrides.csv" and not p.name.endswith(".tmp"))
+    if stray:
+        print(f"WARNING {state['abbreviation']}: {', '.join(stray)} is not read; reviewed "
+              f"overrides must be in hazard_overrides.csv", file=sys.stderr)
     result = subprocess.run(cmd, cwd=str(state_dir), capture_output=True, text=True)
     if result.stdout:
         print(result.stdout)

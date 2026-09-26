@@ -11,6 +11,7 @@ since the exact raw markup could not be captured from this environment
 import os
 import sys
 import unittest
+from unittest import mock
 from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -54,6 +55,231 @@ FIXTURE_HTML = """
 </ul>
 </div>
 """
+
+
+# kansastag.gov shows each year as a tab. The tab labels are links that sit
+# together above the panels, and the document links are relative. The old
+# parser flattened this to "[2026](#...)" lines and matched nothing.
+TABS_HTML = """<html><head><title>Kansas Disaster Declarations | KS Adjutant General</title></head><body>
+<div class="tabbedWidget">
+<ul class="tabs" role="tablist">
+<li><a href="#tab2026" role="tab">2026</a></li><li><a href="#tab2025" role="tab">2025</a></li>
+<li><a href="#tab2024" role="tab">2024</a></li><li><a href="#tab2023" role="tab">2023</a></li>
+</ul>
+<div id="tab2026" role="tabpanel"><ul>
+<li>January 24 (Winter Storms)<ul><li><a href="/DocumentCenter/View/4126/Jan-24-2026-Winter-Storm-Disaster-Declaration">State Declaration (PDF)</a></li></ul></li>
+<li>April 11 - April 26 (Wildland Fire)<ul><li><a href="/DocumentCenter/View/4221/SOK-Apr-11--Apr-26-2023-Wildland-Fire">State Declaration</a></li></ul></li>
+<li>August 18 - Continuing (Severe Weather) - <a href="/DocumentCenter/View/4326/State-of-Disaster-Emergency-Proclamation_August-18-">State Declaration (PDF)</a></li>
+<li>May 12 - Continuing (Hantavirus)<ul><li><a href="/DocumentCenter/View/4250/Hantavirus">State Declaration (PDF)</a></li></ul></li>
+</ul></div>
+<div id="tab2025" role="tabpanel"><ul>
+<li>September 8 - September 12 (Flooding)<ul>
+<li><a href="/DocumentCenter/View/4023/State-of-Disaster-Proclamation-September-8-12-2025">State Declaration (PDF)</a></li>
+<li><a href="/DocumentCenter/View/4030/Amended">Amended State Declaration (PDF)</a></li></ul></li>
+</ul></div>
+<div id="tab2024" role="tabpanel"><p><strong>June 7 (Drought)</strong></p><p><a href="/DocumentCenter/View/3379/SOK-June-7-2024-Drought">Sate Declaration (PDF)</a></p></div>
+<div id="tab2023" role="tabpanel"><ul><li>April 12-26 (Wildland Fires)<ul><li><a href="/DocumentCenter/View/2700/April-12-26">State Declaration (PDF)</a></li></ul></li></ul></div>
+</div></body></html>"""
+
+# The same tabs with no way to tell which panel belongs to which label.
+UNMAPPED_TABS_HTML = TABS_HTML.replace('href="#tab', 'data-x="#tab').replace(' id="tab', ' class="tab')
+
+
+class TestKansasPageLayouts(unittest.TestCase):
+    def test_tab_panels_get_their_own_year(self):
+        by_id = {r["doc_id"]: r for r in scraper.parse_declarations_page(TABS_HTML, max_year=2027)}
+        self.assertEqual(by_id["4126"]["year"], "2026")
+        self.assertEqual(by_id["4126"]["heading"], "January 24 (Winter Storms)")
+        self.assertEqual(by_id["4126"]["pdf_url"],
+                         "https://www.kansastag.gov/DocumentCenter/View/4126/Jan-24-2026-Winter-Storm-Disaster-Declaration")
+        self.assertEqual(by_id["4023"]["year"], "2025")
+        self.assertEqual(by_id["3379"]["year"], "2024")      # "Sate Declaration", bold heading in a <p>
+        self.assertEqual(by_id["2700"]["year"], "2023")
+        self.assertNotIn("4030", by_id)                       # amended copy is not a second record
+
+    def test_heading_and_link_in_one_item(self):
+        by_id = {r["doc_id"]: r for r in scraper.parse_declarations_page(TABS_HTML, max_year=2027)}
+        self.assertEqual(by_id["4326"]["heading"], "August 18 - Continuing (Severe Weather)")
+
+    def test_tabs_that_cannot_be_matched_to_panels_give_no_years(self):
+        # Better no record than one filed under the wrong year.
+        self.assertEqual(scraper.parse_declarations_page(UNMAPPED_TABS_HTML, max_year=2027), [])
+        outline = scraper.describe_page(UNMAPPED_TABS_HTML)
+        self.assertIn("DocumentCenter links", outline)
+        self.assertIn("year <a", outline)
+
+    def test_collect_checks_file_name_year_and_saved_dates(self):
+        import csv as _csv, tempfile, os
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4023,Laura Kelly,4023,Flooding,2025-09-09,u\n")
+            with mock.patch.object(scraper, "fetch", return_value=TABS_HTML):
+                n = scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
+        self.assertNotIn("KS-PROC-4221", rows)                  # file name says 2023, tab says 2026
+        self.assertNotIn("KS-PROC-4250", rows)                  # hantavirus is not weather
+        self.assertEqual(rows["KS-PROC-4023"]["date_signed"], "2025-09-09")   # reviewed date kept
+        self.assertEqual(rows["KS-PROC-4126"]["date_signed"], "2026-01-24")
+        self.assertEqual(n, len(rows))
+
+    def test_collect_stops_when_nothing_parses_and_the_news_feed_fails(self):
+        import tempfile, os
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(scraper, "fetch", return_value=UNMAPPED_TABS_HTML), \
+                 mock.patch.object(scraper.requests.Session, "get", side_effect=scraper.requests.ConnectionError("down")):
+                with self.assertRaises(SystemExit):
+                    scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), os.path.join(tmp, "j.csv"))
+
+    def test_news_flash_takes_the_declaration_link_in_the_article_not_the_menu(self):
+        page = ("<html><body><nav><a href='/DocumentCenter/View/1500/Strategic-Plan'>Strategic Plan</a></nav>"
+                "<div id='newsFlashDetail'><p>The Governor signed the declaration today.</p>"
+                "<a href='/DocumentCenter/View/4144/Feb-15-2026-Wildfire'>Previous declaration</a> "
+                "<a href='/DocumentCenter/View/4430/Flooding-Declaration'>State Disaster Declaration</a></div></body></html>")
+        feed = b"""<?xml version="1.0"?><rss version="2.0"><channel>
+<item><title>Governor Kelly issues state of disaster emergency for flooding</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=950</link><description>Flooding in eastern Kansas.</description>
+<pubDate>Tue, 22 Sep 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly issues state of disaster emergency ahead of FIFA World Cup matches</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=951</link><description>World Cup.</description>
+<pubDate>Wed, 10 Jun 2026 20:00:00 GMT</pubDate></item>
+</channel></rss>"""
+        review = []
+        with mock.patch.object(scraper, "fetch", return_value=page):
+            found = scraper.news_declarations(feed, session=object(), saved_ids={"KS-PROC-4144"}, review=review)
+        self.assertEqual([d["doc_id"] for d in found], ["4430"])        # not the menu's 1500, not the saved 4144
+        self.assertEqual(found[0]["news_url"], "https://www.kansastag.gov/CivicAlerts.aspx?AID=950")
+
+    def test_page_date_replaces_a_news_announcement_date(self):
+        import csv as _csv, tempfile, os
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4126,Laura Kelly,4126,Governor Kelly issues state of disaster emergency for winter storms,"
+                        "2026-01-23,https://www.kansastag.gov/CivicAlerts.aspx?AID=817\n")
+            with mock.patch.object(scraper, "fetch", return_value=TABS_HTML):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
+        self.assertEqual(rows["KS-PROC-4126"]["date_signed"], "2026-01-24")   # the page's own date, not the news item's
+
+    def test_role_tab_labels_count_as_a_tab_strip(self):
+        html = TABS_HTML.replace('<ul class="tabs" role="tablist">', '<div class="tabs">').replace('</ul>\n<div id="tab2026"', '</div>\n<div id="tab2026"')
+        html = html.replace('<li><a href="#tab2026" role="tab">2026</a></li><li><a href="#tab2025" role="tab">2025</a></li>',
+                            '<div role="tab">2026</div><div role="tab">2025</div>')
+        html = html.replace('<li><a href="#tab2024" role="tab">2024</a></li><li><a href="#tab2023" role="tab">2023</a></li>', "")
+        html = html.replace(' id="tab', ' class="tab')
+        self.assertEqual(scraper.parse_declarations_page(html, max_year=2027), [])      # fails closed, no wrong years
+
+    def test_news_flash_fallback_adds_new_declarations_only(self):
+        import csv as _csv, tempfile, os
+        from unittest import mock
+
+        class Resp:
+            def __init__(self, content): self.content = content; self.text = content.decode()
+            def raise_for_status(self): pass
+        feed = b"""<?xml version="1.0"?><rss version="2.0"><channel><title>News Flash</title>
+<item><title>Governor Kelly issues state of disaster emergency for flooding</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=901</link>
+<description>&lt;a href="/DocumentCenter/View/4400/Flooding-Sept-2026"&gt;Declaration&lt;/a&gt;</description>
+<pubDate>Tue, 22 Sep 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly issues state of disaster emergency for winter storms</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=817</link>
+<description>&lt;a href="/DocumentCenter/View/4126/Jan-24"&gt;Declaration&lt;/a&gt;</description>
+<pubDate>Fri, 23 Jan 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly Requests Presidential Disaster Declaration for Severe Weather</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=448</link>
+<description>&lt;a href="/DocumentCenter/View/4401/Request"&gt;Letter&lt;/a&gt;</description>
+<pubDate>Mon, 21 Sep 2026 20:00:00 GMT</pubDate></item>
+<item><title>Governor Kelly issues state of disaster emergency for wildland fires</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=900</link>
+<description>No link here.</description><pubDate>Mon, 14 Sep 2026 20:00:00 GMT</pubDate></item>
+</channel></rss>"""
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4126,Laura Kelly,4126,Winter Storms (January 24 (Winter Storms)),2026-01-24,u\n")
+            with mock.patch.object(scraper, "fetch", side_effect=lambda url, session: UNMAPPED_TABS_HTML if "388" in url else "<p>no document</p>"), \
+                 mock.patch.object(scraper.requests.Session, "get", return_value=Resp(feed)):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
+        self.assertEqual(set(rows), {"KS-PROC-4126", "KS-PROC-4400"})
+        self.assertEqual(rows["KS-PROC-4126"]["event_description"], "Winter Storms (January 24 (Winter Storms))")  # saved row untouched
+        self.assertEqual(rows["KS-PROC-4400"]["date_signed"], "2026-09-22")
+        self.assertIn("flooding", rows["KS-PROC-4400"]["event_description"])
+
+
+class TestKansasEdgeCases(unittest.TestCase):
+    """Cases an independent review found in the first version of the walk."""
+
+    def parse(self, body):
+        return scraper.parse_declarations_page(
+            "<html><body><h2>2025</h2>%s</body></html>" % body, max_year=2027)
+
+    def test_a_heading_is_used_for_one_link_only(self):
+        # The amended-only entry's heading must not pass to the next entry,
+        # whose own heading the parser does not understand.
+        records = self.parse("""<ul>
+        <li>April 1 - April 9 (Wildland Fire)<ul><li><a href="/DocumentCenter/View/3650/x">Amended State Declaration (PDF)</a></li></ul></li>
+        <li>Statewide (Drought)<ul><li><a href="/DocumentCenter/View/3844/Drought-2025">State Declaration (PDF)</a></li></ul></li>
+        </ul>""")
+        self.assertEqual(records, [])
+
+    def test_a_map_or_amended_copy_before_the_declaration_keeps_the_heading(self):
+        records = self.parse("""<ul><li>May 18 - 19 (Severe Storms)<ul>
+        <li><a href="/DocumentCenter/View/3906/County-Map">County Map (PDF)</a></li>
+        <li><a href="/DocumentCenter/View/3907/Amended">Amended State Declaration (PDF)</a></li>
+        <li><a href="/DocumentCenter/View/3905/Severe-Storms-May-18-19-2025">State Declaration (PDF)</a></li></ul></li></ul>""")
+        self.assertEqual([(r["doc_id"], r["heading"]) for r in records], [("3905", "May 18 - 19 (Severe Storms)")])
+
+    def test_a_note_line_does_not_clear_the_heading(self):
+        records = self.parse("""<ul><li>June 3 - 8 (Severe Storms)<p>Counties: Allen, Bourbon (see map)</p>
+        <a href="/DocumentCenter/View/3943/State-of-Disaster-Proclamation-June-3-8-2025">State Declaration (PDF)</a></li></ul>""")
+        self.assertEqual([r["doc_id"] for r in records], ["3943"])
+
+    def test_year_headings_with_an_empty_year_are_not_a_tab_strip(self):
+        html = ("<html><body><h2>2026</h2><h2>2025</h2><h2>2024</h2><p>June 7 (Drought)</p>"
+                '<p><a href="/DocumentCenter/View/3379/SOK-June-7-2024-Drought">State Declaration (PDF)</a></p></body></html>')
+        records = scraper.parse_declarations_page(html, max_year=2027)
+        self.assertEqual([(r["doc_id"], r["year"]) for r in records], [("3379", "2024")])
+
+    def test_entries_separated_by_line_breaks(self):
+        records = self.parse("""<p>June 7 (Drought) <a href="/DocumentCenter/View/3379/SOK-June-7-2025-Drought">State Declaration (PDF)</a><br>
+        June 23 -26 (SG Fire) <a href="/DocumentCenter/View/2921/June-23-26-Sedgwick-Fire">State Declaration (PDF)</a></p>""")
+        self.assertEqual([(r["doc_id"], r["heading"]) for r in records],
+                         [("3379", "June 7 (Drought)"), ("2921", "June 23 -26 (SG Fire)")])
+
+    def test_document_number_is_not_read_as_a_year(self):
+        self.assertEqual(scraper.slug_years("https://www.kansastag.gov/DocumentCenter/View/2019"), set())
+        self.assertEqual(scraper.slug_years("https://www.kansastag.gov/DocumentCenter/View/2019/Flood-May-2025"), {2025})
+
+    def test_two_unmatched_tab_labels_give_no_years(self):
+        html = TABS_HTML.replace('<li><a href="#tab2024" role="tab">2024</a></li><li><a href="#tab2023" role="tab">2023</a></li>', "")
+        html = html.replace('href="#tab', 'data-x="#tab').replace(' id="tab', ' class="tab')
+        self.assertEqual(scraper.parse_declarations_page(html, max_year=2027), [])
+
+    def test_reupload_of_a_saved_entry_is_not_a_second_record(self):
+        import csv as _csv, tempfile, os
+        from unittest import mock
+        page = TABS_HTML.replace("/DocumentCenter/View/4126/Jan-24-2026-Winter-Storm-Disaster-Declaration",
+                                 "/DocumentCenter/View/4400/Jan-24-2026-Winter-Storm-Disaster-Declaration-amended")
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "KS-PROC-4126,Laura Kelly,4126,Winter Storms (January 24 (Winter Storms)),2026-01-24,u\n")
+            with mock.patch.object(scraper, "fetch", return_value=page):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                ids = {r["declaration_id"] for r in _csv.DictReader(f)}
+        self.assertNotIn("KS-PROC-4400", ids)
 
 
 class TestKansasScraper(unittest.TestCase):

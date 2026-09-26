@@ -12,7 +12,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://newsroom.ky.gov/GovernorBeshear/_layouts/15/Fwk.Webparts.Agency.Ui/newslistfeed.aspx",
     "current_governor_source_start": "unknown - newsroom feed retention window not confirmed, and only covers the Beshear administration (Dec 2019-present); pre-2019 governors (Bevin, back through 2000) have no equivalent feed identified yet", "manual_only": True,
-    "known_gaps": ["No path found yet to the authoritative SOS Executive Journal without triggering bot detection -- this is the single biggest open item for Kentucky and should be revisited (e.g. checking whether the Journal exposes any unauthenticated API, or whether KY's Open Records process could obtain a bulk export).", "Pre-Beshear (2000-2019: Patton, Fletcher, Beshear-Sr., Bevin) coverage has no identified enumeration source yet.", "EO 2025-305 (State-of-Emergency-Related-to-Continuing-Weather-Event) is a real, deliberate exclusion pending manual review -- see hazard_overrides.csv and the summary report."],
+    "known_gaps": ["No path found yet to the authoritative SOS Executive Journal without triggering bot detection -- this is the single biggest open item for Kentucky and should be revisited (e.g. checking whether the Journal exposes any unauthenticated API, or whether KY's Open Records process could obtain a bulk export).", "Pre-Beshear (2000-2019: Patton, Fletcher, Beshear-Sr., Bevin) coverage has no identified enumeration source yet.", "The filename classifier deliberately leaves out titles it cannot read a hazard from ('...Weather', '...Continuing Weather Event'). EO 2025-210, 2025-305 and 2026-047 were reviewed by hand in Sep 2026 and added to declarations_for_join.csv, the first two with sourced hazard_overrides.csv rows; the saved-records safeguard keeps them across refreshes."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -20,5 +20,9 @@ def collect(workdir=".", scripts_dir=None):
     cmd = [sys.executable, str(scripts_dir / "ky_eo_scraper.py"), "--actions-out", str(workdir / "ky_emergency_actions_all.csv"), "--relationships-out", str(workdir / "ky_order_relationships.csv"), "--join-out", str(workdir / "declarations_for_join.csv")]
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
-    if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Kentucky adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "manual_only - Beshear-era newsroom feed proxy only; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap"
+    # Always pass the scraper's warnings through (a page it could not fetch, a
+    # block page). They go to stderr, which used to be printed only when the
+    # scraper failed outright, so an empty week looked like a quiet one.
+    if result.stderr: print(result.stderr, file=sys.stderr)
+    if result.returncode: raise RuntimeError("Kentucky adapter: scrape failed")
+    return workdir / "declarations_for_join.csv", "manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap"

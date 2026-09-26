@@ -119,6 +119,47 @@ class KeepSavedRecordsTests(unittest.TestCase):
             bp.keep_saved_actions(STATE, saved)
         self.assertEqual(self.csv.read_text(encoding="utf-8"), SAVED)
 
+    def test_field_larger_than_csv_default_limit_merges(self):
+        # Wyoming's actions file carries whole order texts; one is over 128 KB.
+        big = "WHEREAS flooding " * 12000                                   # about 200 KB
+        self.csv.write_text(HEADER + 'XX-EO-26-40,Gov,26-40,"%s",2026-09-01,u\n' % big, encoding="utf-8")
+        counts = self._merge_after(HEADER + "XX-EO-26-41,Gov,26-41,FLOODING,2026-09-20,u\n")
+        rows = {r["declaration_id"]: r for r in rows_of(self.csv)}
+        self.assertEqual(counts["kept"], 1)
+        self.assertEqual(set(rows), {"XX-EO-26-40", "XX-EO-26-41"})     # new row not thrown away
+        self.assertEqual(rows["XX-EO-26-40"]["event_description"], big)
+
+    def test_form_feed_inside_a_field_stays_one_row(self):
+        # PDF text often carries form feeds; they are not row breaks.
+        self.csv.write_text(HEADER + "XX-EO-26-50,Gov,26-50,PAGE ONE\x0cPAGE TWO,2026-09-02,u\n", encoding="utf-8")
+        self._merge_after(HEADER)
+        rows = rows_of(self.csv)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["event_description"], "PAGE ONE\x0cPAGE TWO")
+
+    def test_file_without_ids_does_not_collapse_into_one_row(self):
+        # Ohio's bulletin list has no id, number or date column. Every row
+        # used to get the key "OH", so the merge kept one row of eight.
+        state = dict(STATE, action_files=["bulletins.csv"])
+        path = self.state_dir / "bulletins.csv"
+        header = "title,pub_date,hazard_guess,source_url\n"
+        path.write_text(header + "Flood emergency,2026-09-22,flood,https://x/1\n"
+                        "Tornado emergency,2026-07-07,severe_storm,https://x/2\n"
+                        "Winter storm emergency,2026-01-24,winter,https://x/3\n", encoding="utf-8")
+        saved = bp.snapshot_action_files(state, self.state_dir)
+        path.write_text(header + "New storm emergency,2026-10-01,,https://x/4\n", encoding="utf-8")
+        bp.keep_saved_actions(state, saved)
+        rows = rows_of(path)
+        self.assertEqual([r["source_url"] for r in rows], ["https://x/4", "https://x/1", "https://x/2", "https://x/3"])
+        self.assertEqual(rows[0]["hazard_guess"], "")              # not borrowed from an unrelated row
+
+    def test_an_id_listed_twice_keeps_both_rows(self):
+        self.csv.write_text(HEADER + "XX-EO-9,Gov,9,FLOOD PART ONE,2020-01-01,u1\n"
+                                     "XX-EO-9,Gov,9,FLOOD PART TWO,2020-01-02,u2\n", encoding="utf-8")
+        counts = self._merge_after(HEADER)
+        self.assertEqual(counts["kept"], 2)
+        self.assertEqual([r["event_description"] for r in rows_of(self.csv)], ["FLOOD PART ONE", "FLOOD PART TWO"])
+
     def test_markup_detection(self):
         self.assertTrue(bp.looks_like_markup(GARBLED))
         self.assertFalse(bp.looks_like_markup("DECLARING A DISASTER EMERGENCY IN DELAWARE, JEFFERSON, & RANDOLPH COUNTIES"))

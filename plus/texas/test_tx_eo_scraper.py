@@ -1,7 +1,20 @@
 import csv, tempfile, unittest
+from datetime import date
+from unittest import mock
+import requests
 import tx_eo_scraper as tx
 
 DETAIL='''<main><h1>Governor Abbott Issues Severe Storm Disaster Proclamation</h1><p>June 15, 2026 | Austin, Texas | Proclamation</p><p>WHEREAS severe storms included heavy rainfall, flash flooding, hail and tornado threats; I do hereby certify that this event is a disaster.</p></main>'''
+LISTING='''<html><head><title>News Archive | Office of the Texas Governor</title></head><body>
+<h3><a href="/news/post/governor-abbott-issues-severe-storm-disaster-proclamation-in-june-2026">Governor Abbott Issues Severe Storm Disaster Proclamation In June 2026</a></h3>
+<h3><a href="/news/post/governor-abbott-announces-jobs">Governor Abbott Announces Jobs</a></h3></body></html>'''
+EMPTY_LISTING='''<html><head><title>News Archive | Office of the Texas Governor</title></head><body><h3><a href="/news/post/jobs">Governor Abbott Announces Jobs</a></h3></body></html>'''
+CHANGED_LAYOUT='''<html><head><title>Just a moment...</title></head><body><div>Checking your browser</div></body></html>'''
+
+class FakeResponse:
+    def __init__(self,text,status=200): self.text=text; self.status_code=status
+    def raise_for_status(self):
+        if self.status_code>=400: raise requests.HTTPError(f"{self.status_code} for url")
 
 class TexasTests(unittest.TestCase):
     def test_listing(self):
@@ -15,9 +28,115 @@ class TexasTests(unittest.TestCase):
             with open(paths[2],encoding="utf-8") as handle: rows=list(csv.DictReader(handle))
             self.assertEqual(len(rows),1); self.assertEqual(list(rows[0]),list(tx.JOIN_FIELDS))
     def test_no_overrides(self): self.assertEqual(tx.HAZARD_OVERRIDES,{})
+    def test_listing_does_not_depend_on_the_heading_level(self):
+        html='''<div class="post"><a href="/news/post/governor-abbott-issues-flood-disaster-proclamation"><img alt=""></a>
+        <h2><a href="/news/post/governor-abbott-issues-flood-disaster-proclamation">Governor Abbott Issues Flood Disaster Proclamation</a></h2></div>
+        <div class="post"><h4><a href="https://gov.texas.gov/news/post/governor-abbott-announces-jobs">Governor Abbott Announces Jobs</a></h4></div>'''
+        rows,_=tx.parse_listing(html)
+        self.assertEqual(rows,[("https://gov.texas.gov/news/post/governor-abbott-issues-flood-disaster-proclamation","Governor Abbott Issues Flood Disaster Proclamation")])
+    def test_abbreviated_dates_and_bylines_without_the_category(self):
+        self.assertEqual(tx.first_date("Sep 2, 2026 | Austin, Texas"),"2026-09-02")
+        self.assertEqual(tx.first_date("Sept. 12, 2025"),"2025-09-12")
+        self.assertEqual(tx.first_date("June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
+        # No category in the byline: the title must name a proclamation and the text must read like one.
+        self.assertTrue(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas WHEREAS exceptional drought conditions","Governor Abbott Renews Drought Disaster Proclamation"))
+        self.assertFalse(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas Governor Abbott today renewed","Governor Abbott Renews Drought Disaster Proclamation"))
+        # Other date formats and two-part bylines still show the category.
+        self.assertFalse(tx.is_proclamation_post("06/16/2026 | Austin, Texas | Press Release On June 12, 2026 storms hit","Governor Abbott Issues Disaster Declaration For 18 Counties"))
+        self.assertFalse(tx.is_proclamation_post("June 16, 2026 | Press Release WHEREAS","Governor Abbott Issues Disaster Proclamation"))
+        self.assertFalse(tx.is_proclamation_post("Sep 2, 2026 | Austin, Texas | Press Release","Governor Abbott Announces Jobs"))
+    def test_press_release_about_a_declaration_is_not_a_proclamation(self):
+        # Only the byline's category decides when there is one.
+        self.assertFalse(tx.is_proclamation_post(
+            "June 16, 2026 | Austin, Texas | Press Release Governor Abbott today issued a disaster declaration",
+            "Governor Abbott Issues Disaster Declaration For 18 Counties"))
+        self.assertTrue(tx.is_proclamation_post(
+            "June 15, 2026 | Austin, Texas | Proclamation WHEREAS severe storms",
+            "Governor Abbott Issues Severe Storm Disaster Proclamation"))
+    def test_impossible_or_missing_dates(self):
+        self.assertEqual(tx.first_date("June 31, 2026 | Austin, Texas | Proclamation"),"")
+        self.assertEqual(tx.first_date("Page not found"),"")
+        self.assertEqual(tx.first_date("On June 12, 2026 storms hit. 06/16/2026 | Austin, Texas | Proclamation"),"2026-06-16")
+        self.assertEqual(tx.first_date("Related: May 1, 2026 story. June 15, 2026 | Austin, Texas | Proclamation"),"2026-06-15")
+    def test_undated_page_is_skipped_not_given_a_new_id(self):
+        with mock.patch.object(tx,"get",return_value=FakeResponse("<main><h1>Oops</h1><p>Austin, Texas | Proclamation</p></main>")):
+            self.assertIsNone(tx.parse_detail("https://gov.texas.gov/news/post/x","Governor Abbott Renews Drought Disaster Proclamation"))
+    def test_saved_post_keeps_its_id_and_date(self):
+        # Ids carry the date they were first read with; a post already saved
+        # keeps that id even if its date now reads differently.
+        with tempfile.TemporaryDirectory() as root:
+            paths=[root+f"/{n}.csv" for n in ("actions","rels","join")]
+            with open(paths[0],"w",encoding="utf-8") as f:
+                f.write(",".join(tx.ACTION_FIELDS)+"\n"+"TX-PROCLAMATION-2016-05-07-special-election,TX,Greg Abbott,PROCLAMATION-2016-05-07-special-election,proclamation,administrative,Special Election,2016-05-07,,false,s,html,https://gov.texas.gov/news/post/special-election,https://gov.texas.gov/news/post/special-election\n")
+            post=tx.Action("PROCLAMATION-2016-03-01-special-election","Governor Abbott Orders Special Election","2016-03-01","https://gov.texas.gov/news/post/special-election","text")
+            tx.write_outputs([post],*paths)
+            with open(paths[0],encoding="utf-8") as f: rows=list(csv.DictReader(f))
+        self.assertEqual(rows[0]["declaration_id"],"TX-PROCLAMATION-2016-05-07-special-election")
+        self.assertEqual(rows[0]["date_signed"],"2016-05-07")
+    def test_month_urls_stop_at_the_current_month(self):
+        urls=tx.month_urls(date(2026,9,26))
+        self.assertEqual(urls[0],"https://gov.texas.gov/news/archive/2015/01")
+        self.assertEqual(urls[-1],"https://gov.texas.gov/news/archive/2026/09")
+        self.assertEqual(len(urls),11*12+9)
     def test_county_addition_excluded(self):
         action=tx.Action("PROCLAMATION-2015-01-01-test","Disaster Proclamation issued for North Texas Storms Adding Wichita County","2015-01-01","https://gov.texas.gov/news/post/test",BeautifulText)
         self.assertEqual(tx.classify(action),"amendment")
+
+class CollectTests(unittest.TestCase):
+    """collect() against a fake site, so no network is used."""
+    def setUp(self):
+        patcher=mock.patch.object(tx,"month_urls",return_value=[tx.MONTH_URL.format(year=2026,month=m) for m in range(1,10)])
+        patcher.start(); self.addCleanup(patcher.stop)
+        sleeper=mock.patch.object(tx.time,"sleep"); sleeper.start(); self.addCleanup(sleeper.stop)
+
+    def _site(self,listing_for):
+        def fake_get(url,headers=None,timeout=None):
+            if "/news/post/" in url: return FakeResponse(DETAIL)
+            return listing_for(url)
+        return mock.patch.object(tx.requests,"get",side_effect=fake_get)
+
+    def test_one_failing_month_is_skipped_not_fatal(self):
+        # Sep 25: a single 500 on one month used to fail all of Texas.
+        with self._site(lambda url: FakeResponse("",500) if url.endswith("/2026/03") else FakeResponse(LISTING)):
+            stats={}; actions=tx.collect(stats)
+        self.assertEqual(len(actions),1)
+        self.assertEqual(stats["months_failed"],1); self.assertEqual(stats["months_read"],8)
+
+    def test_retry_recovers_a_transient_500(self):
+        calls={"n":0}
+        def listing(url):
+            if url.endswith("/2026/08"):
+                calls["n"]+=1
+                if calls["n"]==1: return FakeResponse("",500)
+            return FakeResponse(LISTING)
+        with self._site(listing):
+            stats={}; tx.collect(stats)
+        self.assertEqual(stats["months_failed"],0)
+
+    def test_pages_with_no_proclamations_anywhere_is_an_error_not_an_empty_state(self):
+        with self._site(lambda url: FakeResponse(EMPTY_LISTING)):
+            with self.assertRaisesRegex(RuntimeError,"no proclamation posts"):
+                tx.collect({})
+
+    def test_changed_layout_names_the_page_it_got(self):
+        with self._site(lambda url: FakeResponse(CHANGED_LAYOUT)):
+            with self.assertRaisesRegex(RuntimeError,"Just a moment"):
+                tx.collect({})
+
+    def test_category_listing_is_the_fallback_when_the_monthly_archive_is_empty(self):
+        def listing(url):
+            if "/news/category/proclamation" in url:
+                if url.endswith("/P2"): return FakeResponse(LISTING)
+                return FakeResponse(EMPTY_LISTING+'<a class="pagination-next" href="/news/category/proclamation/P2">Next</a>')
+            return FakeResponse(EMPTY_LISTING)
+        with self._site(listing):
+            stats={}; actions=tx.collect(stats)
+        self.assertEqual(len(actions),1); self.assertEqual(stats["category_posts"],1)
+
+    def test_site_down_fails_fast(self):
+        with self._site(lambda url: FakeResponse("",503)):
+            with self.assertRaisesRegex(RuntimeError,"did not answer"):
+                tx.collect({})
 
 BeautifulText="severe storms, heavy rainfall, flash flooding, hail and tornado threats; I do hereby certify that this event is a disaster"
 if __name__=="__main__": unittest.main()

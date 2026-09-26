@@ -59,6 +59,106 @@ class TestIsOriginalDeclaration(unittest.TestCase):
         self.assertFalse(is_original_declaration("MEDIA ADVISORY: Governor DeWine to Announce New BMV Services"))
 
 
+class TestStableIdsAndDates(unittest.TestCase):
+    """Ids used to be numbered by feed position, so a new proclamation took
+    an existing id and pushed a saved record out; and dates were left blank."""
+
+    SAVED = [
+        {"declaration_id": "OH-PROC-2024-002", "archive_record_url": "https://governor.ohio.gov/x/eight-counties",
+         "date_signed": "2024-08-10"},
+        {"declaration_id": "OH-PROC-2024-003", "archive_record_url": "https://governor.ohio.gov/x/four-counties",
+         "date_signed": "2024-10-02"},
+    ]
+
+    def test_feed_date(self):
+        from oh_eo_scraper import feed_date
+        self.assertEqual(feed_date("Tue, 22 Sep 2026 14:05:00 -0400"), "2026-09-22")
+        self.assertEqual(feed_date(""), "")
+
+    def test_saved_proclamations_keep_their_ids_and_new_ones_do_not_collide(self):
+        from oh_eo_scraper import BulletinAction, assign_ids
+        old = BulletinAction("Governor DeWine Declares State of Emergency for Eight Northeast Ohio Counties",
+                             "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/abc", "2024-08-11")
+        new = BulletinAction("Governor DeWine Declares State of Emergency in Several Ohio Counties",
+                             "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/def", "2026-09-22")
+        same_day = BulletinAction("Governor DeWine Declares State of Emergency in Two More Counties",
+                                  "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/ghi", "2026-09-22")
+        ids = assign_ids([new, old, same_day], self.SAVED)
+        self.assertEqual(ids[id(old)], "OH-PROC-2024-002")          # matched a day off the saved date
+        self.assertEqual(ids[id(new)], "OH-PROC-2026-09-22")
+        self.assertEqual(ids[id(same_day)], "OH-PROC-2026-09-22-2")
+
+    def test_join_rows_carry_dates(self):
+        import csv, tempfile
+        from pathlib import Path
+        from oh_eo_scraper import BulletinAction, write_outputs
+        a = BulletinAction("Governor DeWine Declares State of Emergency Following Flooding",
+                           "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/def", "2026-09-22",
+                           hazard_guess="flood", is_original_weather_declaration=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            write_outputs([a], tmp / "a.csv", tmp / "r.csv", tmp / "j.csv")
+            with (tmp / "j.csv").open(encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+        self.assertEqual(rows[0]["date_signed"], "2026-09-22")
+        self.assertEqual(rows[0]["declaration_id"], "OH-PROC-2026-09-22")
+
+
+class TestNextDayMatching(unittest.TestCase):
+    SAVED = [{"declaration_id": "OH-PROC-2026-09-22", "archive_record_url": "https://governor.ohio.gov/x",
+              "date_signed": "2026-09-22",
+              "event_description": "Governor DeWine declares state of emergency in 21 counties (Athens Vinton) after "
+                                   "severe weather and significant flooding"}]
+
+    def test_a_different_proclamation_the_next_day_keeps_its_own_id(self):
+        from oh_eo_scraper import BulletinAction, assign_ids
+        tornado = BulletinAction("Governor DeWine Declares State of Emergency in Allen County Following Tornado",
+                                 "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/zzz", "2026-09-23")
+        self.assertEqual(assign_ids([tornado], self.SAVED)[id(tornado)], "OH-PROC-2026-09-23")
+
+    def test_a_shared_generic_hazard_word_does_not_merge_two_counties(self):
+        from oh_eo_scraper import BulletinAction, assign_ids, same_event
+        saved = [{"declaration_id": "OH-PROC-2026-07-07", "archive_record_url": "https://governor.ohio.gov/m",
+                  "date_signed": "2026-07-07",
+                  "event_description": "Governor DeWine tours Mahoning County storm damage and declares state of emergency after severe storms and a tornado"}]
+        allen = BulletinAction("Governor DeWine Declares State of Emergency in Allen County Following Severe Storms",
+                               "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/q", "2026-07-08")
+        self.assertEqual(assign_ids([allen], saved)[id(allen)], "OH-PROC-2026-07-08")
+        from oh_eo_scraper import event_tokens
+        self.assertEqual(event_tokens("Governor Thanks Police Services")[1], set())     # 'Police' is not ice
+        self.assertTrue(same_event("Flooding in Several Ohio Counties", "21 counties after significant flooding"))
+        self.assertTrue(same_event("High Winds Across Ohio", "damaging wind"))
+
+    def test_updated_resend_is_not_a_new_declaration(self):
+        from oh_eo_scraper import is_original_declaration
+        self.assertFalse(is_original_declaration("UPDATED: Governor DeWine Declares State of Emergency in Several Ohio Counties"))
+
+
+class TestSavedRowsKept(unittest.TestCase):
+    def test_bulletin_matching_a_saved_record_writes_the_reviewed_row_back(self):
+        # A headline like "... in Several Ohio Counties" names no hazard, so
+        # letting it replace the reviewed description would drop the record
+        # from the storm join.
+        import csv, tempfile
+        from pathlib import Path
+        from oh_eo_scraper import BulletinAction, write_outputs
+        a = BulletinAction("Governor DeWine Declares State of Emergency in Several Ohio Counties Following Flooding",
+                           "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/abc", "2026-09-22",
+                           hazard_guess="flood", is_original_weather_declaration=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            join = tmp / "j.csv"
+            join.write_text("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                            "OH-PROC-2026-09-22,Ohio Governor,,Governor DeWine declares state of emergency in 21 counties "
+                            "after severe weather and significant flooding,2026-09-22,https://governor.ohio.gov/x\n", encoding="utf-8")
+            write_outputs([a], tmp / "a.csv", tmp / "r.csv", join)
+            with join.open(encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+        self.assertEqual(len(rows), 1)
+        self.assertIn("21 counties", rows[0]["event_description"])
+        self.assertEqual(rows[0]["archive_record_url"], "https://governor.ohio.gov/x")
+
+
 class TestFeedParsing(unittest.TestCase):
     def test_real_fixture_parses(self):
         root = ET.fromstring(REAL_FEED_FIXTURE)

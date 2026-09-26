@@ -12,6 +12,7 @@ import csv
 import io
 import re
 import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
@@ -56,15 +57,23 @@ class Action:
         return f"NH-{token}"
 
 
-def fetch(url: str) -> Optional[requests.Response]:
+RETRY_WAITS = (10, 30)   # seconds before the 2nd and 3rd tries of the registry page
+
+
+def fetch(url: str, retries: tuple[int, ...] = ()) -> Optional[requests.Response]:
+    """Fetch url, trying the bare sos.nh.gov host too. The registry page itself
+    is fetched with retries: from GitHub's runners it loads on some weeks and
+    times out on others, and one refused request should not cost a week."""
     candidates = [url]
     if "www.sos.nh.gov" in url: candidates.append(url.replace("www.sos.nh.gov", "sos.nh.gov"))
     last = None
-    for candidate in candidates:
-        try:
-            response = requests.get(candidate, headers=HEADERS, timeout=TIMEOUT)
-            response.raise_for_status(); return response
-        except requests.RequestException as exc: last = exc
+    for wait in (0,) + tuple(retries):
+        if wait: time.sleep(wait)
+        for candidate in candidates:
+            try:
+                response = requests.get(candidate, headers=HEADERS, timeout=TIMEOUT)
+                response.raise_for_status(); return response
+            except requests.RequestException as exc: last = exc
     print(f"  WARNING: failed to fetch {url}: {last}", file=sys.stderr); return None
 
 
@@ -100,17 +109,90 @@ def normalize_date(raw: str) -> Optional[str]:
     return None
 
 
+_MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
+# The signature clause of a New Hampshire order: "Given under my hand and seal
+# ... this 13th day of March, in the year of Our Lord, two thousand and twenty".
+# The year is usually in words, sometimes in digits, sometimes left out.
+SIGNING_RE = re.compile(
+    r"\bthis\s+(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b[\s,]*"
+    r"(?:(?:in\s+)?(?:the\s+)?year\s+of\s+(?:our\s+lord)?[\s,]*)?"
+    r"(\d{4}|(?:nineteen\s+hundred|two\s+thousand)(?:[\s,-]+(?:and|[a-z]+teen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b)*)?",
+    re.I,
+)
+PLAIN_DATE_RE = re.compile(r"\b((?:" + _MONTHS + r")\s+\d{1,2}(?:st|nd|rd|th)?,\s+(\d{4}))\b", re.I)
+_UNITS = {w: i for i, w in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen "
+                                     "fourteen fifteen sixteen seventeen eighteen nineteen".split())}
+_TENS = {w: 10 * i for i, w in enumerate("_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()) if i > 1}
+
+
+def words_to_year(text: str) -> Optional[int]:
+    """'two thousand and fifteen' -> 2015, 'two thousand twenty-one' -> 2021,
+    'nineteen hundred and ninety-nine' -> 1999. None if it is not a year."""
+    words = [w for w in re.findall(r"[a-z]+", text.lower()) if w != "and"]
+    if words[:2] == ["two", "thousand"]:
+        year, rest = 2000, words[2:]
+    elif words[:2] == ["nineteen", "hundred"]:
+        year, rest = 1900, words[2:]
+    else:
+        return None
+    if rest and rest[0] in _TENS:
+        year += _TENS[rest[0]]
+        if len(rest) > 1 and 0 < _UNITS.get(rest[1], 0) < 10:
+            year += _UNITS[rest[1]]
+    elif rest and rest[0] in _UNITS:
+        year += _UNITS[rest[0]]
+    return year
+
+
 def date_in_text(text: str, fallback_year: Optional[int] = None) -> Optional[str]:
-    patterns = (
-        r"(?:this|on)\s+(\d{1,2}(?:st|nd|rd|th)?\s+day of\s+(?:January|February|March|April|May|June|July|August|September|October|November|December),?\s+(?:in the year of Our Lord,?\s+)?(?:two thousand and [a-z-]+|\d{4}))",
-        r"\b((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?,\s+\d{4})\b",
-    )
-    match = re.search(patterns[1], text, re.I)
-    if match: return normalize_date(match.group(1))
+    """The date an order was signed.
+
+    The signature clause comes first, and the last one in the text wins, since
+    it sits at the end of the order. Without one, a plain "Month D, YYYY" date
+    from the order's own year (the year in its number) is used, then any plain
+    date. Taking the first plain date in the text, as this used to, picked up
+    the date of the emergency an extension extends (every 2020-2021 COVID
+    extension came out as 2020-03-13) or of an old order being rescinded."""
+    # PDF text breaks words across lines ("twen-\nty"); join them first.
+    text = re.sub(r"(\w)-[ \t]*\r?\n[ \t]*(\w)", r"\1\2", text or "")
+
+    def year_of(year_text):
+        year = None
+        if year_text:
+            year = int(year_text) if year_text.isdigit() else words_to_year(year_text)
+        # An order is signed in (or within a year of) the year in its number;
+        # a year further off is a misread, so the number's year is used.
+        if fallback_year and (not year or abs(year - fallback_year) > 1):
+            year = fallback_year
+        return year
+
+    # "this 13th day of March, ...". The one in the "Given under my hand"
+    # signature line is preferred; otherwise the last one, since the
+    # signature sits at the end of the order. (A filing stamp after the
+    # signature also says "this ... day of", which is why "hand" is checked.)
+    signed = by_hand = None
+    for match in SIGNING_RE.finditer(text):
+        day, month, year_text = match.groups()
+        year = year_of(year_text)
+        if year:
+            found = normalize_date(f"{month} {day}, {year}")
+            signed = found or signed
+            sentence = text[max(text.rfind(".", 0, match.start()) + 1, match.start() - 400):match.start()]
+            if found and by_hand is None and re.search(r"\bhand\b", sentence, re.I):
+                by_hand = found
+    if by_hand or signed:
+        return by_hand or signed
     if fallback_year:
-        match = re.search(r"\b(\d{1,2})(?:st|nd|rd|th)?\s+day of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b", text, re.I)
-        if match: return normalize_date(f"{match.group(2)} {match.group(1)}, {fallback_year}")
-    return None
+        # No "this ... day of" clause: a bare "13th day of March" in the order's year.
+        for match in re.finditer(r"\b(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(" + _MONTHS + r")\b", text, re.I):
+            signed = normalize_date(f"{match.group(2)} {match.group(1)}, {fallback_year}") or signed
+        if signed:
+            return signed
+    plain = [(m.group(1), int(m.group(2))) for m in PLAIN_DATE_RE.finditer(text)]
+    for raw, year in plain:
+        if fallback_year and year == fallback_year:
+            return normalize_date(raw)
+    return normalize_date(plain[0][0]) if plain else None
 
 
 def pdf_text(content: bytes) -> str:
@@ -135,7 +217,7 @@ def classify(action: Action) -> None:
 
 
 def collect() -> list[Action]:
-    page = fetch(REGISTRY_URL)
+    page = fetch(REGISTRY_URL, retries=RETRY_WAITS)
     if page is None: return []
     actions = parse_registry(page.text)
     for action in actions:

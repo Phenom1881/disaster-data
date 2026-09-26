@@ -31,6 +31,63 @@ BULLOCK_FIXTURE = """
 """
 
 
+# The same kind of entries as served: raw HTML. Until Sep 2026 the pattern was
+# run on this directly and matched nothing, so every run found 0 orders.
+CURRENT_HTML = """<html><body><main><div class="documents">
+<div class="doc"><a href="View?doc=EO-2-2026.pdf"><h3>Continuing the Youth Justice Advisory Council</h3>
+<p>Executive Order No. 2-2026</p><p>March 1, 2026</p></a></div>
+<div class="doc"><a href="View?doc=241211EODisasterDeclarationFlooding.pdf"><h3>Declaring a Disaster to Exist in the State of Montana</h3>
+<p>Executive Order 9-2025</p><p>December 11, 2025</p></a></div>
+<div class="doc"><h3>Winter Energy Emergency</h3><span>Executive Order No. 2-2024</span><time>January 19, 2024</time></div>
+</div></main></body></html>"""
+
+BULLOCK_HTML = """<ul><li><a href="docs/2019EOs/EO%2015-2019_Declaring%20a%20Winter%20Storm%20Emergency.pdf">Declaring a Winter Storm Emergency in Montana</a> - Executive Order No. 15-2019</li></ul>"""
+
+
+class RawHtmlTests(unittest.TestCase):
+    def test_current_page_html(self):
+        orders = scraper.parse_current_page(CURRENT_HTML)
+        self.assertEqual([o["eo_number"] for o in orders], ["2-2026", "9-2025", "2-2024"])
+        by = {o["eo_number"]: o for o in orders}
+        self.assertEqual(by["9-2025"]["title"], "Declaring a Disaster to Exist in the State of Montana")
+        self.assertEqual(by["9-2025"]["date_text"], "December 11, 2025")
+        self.assertEqual(by["9-2025"]["url"], scraper.CURRENT_URL + "View?doc=241211EODisasterDeclarationFlooding.pdf")
+        self.assertEqual(by["2-2024"]["url"], scraper.CURRENT_URL)      # no link around that entry
+
+    def test_title_naming_another_order_does_not_take_its_link(self):
+        html = CURRENT_HTML.replace('<div class="doc"><a href="View?doc=241211EODisasterDeclarationFlooding.pdf">',
+                                    '<div class="doc"><a href="View?doc=EO-12-2025.pdf"><h3>Amending Executive Order 9-2025</h3>'
+                                    '<p>Executive Order No. 12-2025</p><p>December 22, 2025</p></a></div>'
+                                    '<div class="doc"><a href="View?doc=241211EODisasterDeclarationFlooding.pdf">')
+        by = {o["eo_number"]: o for o in scraper.parse_current_page(html)}
+        self.assertTrue(by["12-2025"]["url"].endswith("EO-12-2025.pdf"))
+        self.assertTrue(by["9-2025"]["url"].endswith("241211EODisasterDeclarationFlooding.pdf"))
+
+    def test_plain_span_inside_a_title_does_not_split_it(self):
+        html = ('<div class="doc"><h3>Declaring Statewide <span>Drought</span> Emergency</h3>'
+                '<p>Executive Order No. 11-2021</p><p>July 1, 2021</p></div>')
+        self.assertEqual(scraper.parse_current_page(html)[0]["title"], "Declaring Statewide Drought Emergency")
+
+    def test_bullock_page_html(self):
+        orders = scraper.parse_bullock_page(BULLOCK_HTML)
+        self.assertEqual(orders[0]["eo_number"], "15-2019")
+        self.assertTrue(orders[0]["url"].startswith("https://formergovernors.mt.gov/bullock/docs/2019EOs/"))
+
+    def test_saved_specific_url_is_kept_over_the_listing_address(self):
+        orders = scraper.parse_current_page(CURRENT_HTML)
+        with tempfile.TemporaryDirectory() as tmp:
+            join_out = os.path.join(tmp, "j.csv")
+            with open(join_out, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                        "MT-EO-2-2024,Gianforte,2-2024,Winter Energy Emergency,2024-01-19,"
+                        "https://www.fmcsa.dot.gov/emergency/montana-executive-order-2-2024\n")
+            decls = scraper.write_csv(orders, os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join_out)
+        by = {d["declaration_id"]: d for d in decls}
+        self.assertEqual(by["MT-EO-2-2024"]["archive_record_url"],
+                         "https://www.fmcsa.dot.gov/emergency/montana-executive-order-2-2024")
+        self.assertNotIn("MT-EO-2-2026", by)                            # a council, not a declaration
+
+
 class CurrentPageParsingTests(unittest.TestCase):
     def test_parses_title_number_date_triplets(self):
         orders = scraper.parse_current_page(CURRENT_FIXTURE)

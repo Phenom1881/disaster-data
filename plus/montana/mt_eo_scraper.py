@@ -30,6 +30,10 @@ administration - there is no single archive covering 2000-present:
    returns real per-year EO listings - treat as a known, real, but
    unimplemented source for a future backfill pass.
 
+Sep 2026: the entry patterns below were written against the rendered text of
+these pages but were run on raw HTML, so every run from GitHub found 0 orders.
+page_text() now renders the HTML into that text first.
+
 Output schema (declarations_for_join.csv):
     declaration_id, governor, eo_number, event_description, date_signed,
     archive_record_url
@@ -47,11 +51,15 @@ import csv
 import re
 import sys
 from datetime import datetime
+from pathlib import Path
+from urllib.parse import urljoin
 
 try:
     import requests
+    from bs4 import BeautifulSoup
 except ImportError:  # pragma: no cover
     requests = None
+    BeautifulSoup = None
 
 CURRENT_URL = "https://gov.mt.gov/Documents/GovernorsOffice/executiveorders/"
 BULLOCK_URL = "https://formergovernors.mt.gov/bullock/ExecutiveOrders.html"
@@ -91,22 +99,83 @@ BULLOCK_ENTRY_RE = re.compile(
 )
 
 
+_BLOCKS = ["p", "div", "li", "ul", "ol", "tr", "table", "section", "article", "header",
+           "footer", "h1", "h2", "h3", "h4", "h5", "h6", "dt", "dd", "br", "main",
+           "nav", "aside", "td", "th", "time", "blockquote"]
+
+
+def _is_block(tag):
+    """Block elements, plus spans that carry a class or id: a listing that
+    lays out title, number and date as <span class="..."> needs each on its
+    own line, while a plain <span> inside a title (emphasis) must not split it."""
+    return tag.name in _BLOCKS or (tag.name == "span" and (tag.get("class") or tag.get("id")))
+
+
 def fetch(url):
     resp = requests.get(url, timeout=30, headers={"User-Agent": "DisasterDataIO-Plus/1.0"})
     resp.raise_for_status()
     return resp.text
 
 
+def page_text(html):
+    """Server HTML as the page reads: one block per line. The entry patterns
+    above were written against that rendered text, and until Sep 2026 they
+    were run on the raw HTML instead, where the three lines of an entry sit
+    in separate tags, so every run from GitHub found 0 orders. Text that is
+    already plain (the test fixtures) passes through unchanged."""
+    if "<" not in html:
+        return html
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "noscript", "template"]):
+        tag.decompose()
+    for tag in soup.find_all(_is_block):
+        tag.insert_before("\n")
+        tag.insert_after("\n")
+    lines = (" ".join(line.split()) for line in soup.get_text().splitlines())
+    return "\n".join(line for line in lines if line)
+
+
+def _entry_links(html):
+    """{order number: absolute URL of the link that holds that entry}, for
+    entries whose title, number and date sit inside one link to the PDF."""
+    links = {}
+    if "<" not in html:
+        return links
+    soup = BeautifulSoup(html, "html.parser")
+    for a in soup.find_all("a", href=True):
+        # The entry's own number, read the same way as the page's entries: a
+        # title such as "Amending Executive Order 9-2025" names another order.
+        m = CURRENT_ENTRY_RE.search(page_text(str(a)))
+        if m and m.group("num") not in links:
+            links[m.group("num")] = urljoin(CURRENT_URL, a["href"])
+    return links
+
+
 def parse_current_page(text):
+    links = _entry_links(text)
     orders = []
-    for m in CURRENT_ENTRY_RE.finditer(text):
+    for m in CURRENT_ENTRY_RE.finditer(page_text(text)):
         orders.append({
             "eo_number": m.group("num"),
             "title": m.group("title").strip(),
             "date_text": m.group("date"),
-            "url": CURRENT_URL,
+            "url": links.get(m.group("num"), CURRENT_URL),
         })
     return orders
+
+
+def _markdown_links(html, base_url):
+    """Links as [text](url), for the Bullock page's '[title](url) - Executive
+    Order No. N-YYYY' pattern. Plain text passes through unchanged."""
+    if "<" not in html:
+        return html
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "noscript", "template"]):
+        tag.decompose()
+    for a in soup.find_all("a", href=True):
+        label = " ".join(a.get_text(" ", strip=True).split())
+        a.replace_with("[%s](%s)" % (label, urljoin(base_url, a["href"])) if label else "")
+    return page_text(str(soup))
 
 
 def parse_bullock_page(text):
@@ -114,7 +183,7 @@ def parse_bullock_page(text):
     text; date_text is always None here and must come from a supplemental
     per-PDF read (not implemented) before these can join declarations_for_join.csv."""
     orders = []
-    for m in BULLOCK_ENTRY_RE.finditer(text):
+    for m in BULLOCK_ENTRY_RE.finditer(_markdown_links(text, BULLOCK_URL)):
         orders.append({
             "eo_number": m.group("num"),
             "title": m.group("title").strip(),
@@ -157,15 +226,40 @@ def classify_title(title):
 
 def collect_orders():
     if requests is None:
-        raise RuntimeError("requests not installed - pip install requests")
-    current_text = fetch(CURRENT_URL)
-    bullock_text = fetch(BULLOCK_URL)
-    orders = parse_current_page(current_text) + parse_bullock_page(bullock_text)
-    return orders
+        raise RuntimeError("requests/bs4 not installed - pip install requests beautifulsoup4")
+    page = fetch(CURRENT_URL)
+    current = parse_current_page(page)
+    if not current:
+        # The page always lists this administration's orders, so zero means
+        # the layout was not understood. Stop; the saved records are kept.
+        raise SystemExit("Montana: the executive-order page gave 0 entries (%d characters, %d "
+                         "mentions of 'Executive Order'); the page layout may have changed"
+                         % (len(page), page.count("Executive Order")))
+    try:
+        bullock = parse_bullock_page(fetch(BULLOCK_URL))
+    except requests.RequestException as exc:
+        # Bullock-era entries are undated and never reach the join file, so
+        # losing this page must not cost the current administration's orders.
+        print(f"  WARNING: Montana Bullock archive not read: {exc}", file=sys.stderr)
+        bullock = []
+    return current + bullock
+
+
+def saved_urls(join_out):
+    """Specific order URLs already saved in the join file. The listing page
+    does not always expose a per-order link, and a saved PDF or news-release
+    link is better than the generic listing address."""
+    try:
+        with open(join_out, newline="", encoding="utf-8") as f:
+            return {r["declaration_id"]: r["archive_record_url"] for r in csv.DictReader(f)
+                    if r.get("archive_record_url") and r["archive_record_url"] != CURRENT_URL}
+    except (OSError, KeyError, csv.Error):
+        return {}
 
 
 def write_csv(orders, actions_out, relationships_out, join_out, confirmed_dates=None):
     confirmed_dates = confirmed_dates or {}
+    keep_urls = saved_urls(join_out)
     declarations = []
     needs_override = []
     for o in orders:
@@ -183,6 +277,8 @@ def write_csv(orders, actions_out, relationships_out, join_out, confirmed_dates=
             "date_signed": date_signed,
             "archive_record_url": o["url"],
         }
+        if row["archive_record_url"] == CURRENT_URL and row["declaration_id"] in keep_urls:
+            row["archive_record_url"] = keep_urls[row["declaration_id"]]
         declarations.append(row)
         if needs_override_flag:
             needs_override.append(row["declaration_id"])
