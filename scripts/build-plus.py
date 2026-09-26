@@ -45,9 +45,11 @@ import html
 import importlib.util
 import io
 import json
+import os
 import re
 import subprocess
 import sys
+import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -480,6 +482,95 @@ def keep_saved_actions(state: dict, saved: dict[Path, bytes]) -> dict:
         if path.name == primary:
             totals = counts
     return totals
+
+
+# ---------------------------------------------------------------- source result
+# What each state's source actually returned on this run, recorded in
+# state-summary.json for the health check (scripts/plus_health.py).
+#
+# The keep-saved merge above protects the data, but it also hides failures:
+# the page shows the saved records either way. New Hampshire's registry
+# answered 503 on every run from 2026-09-25 on and its page still looked
+# normal. So the rows the adapter itself wrote are counted before the merge,
+# and every state gets one of these:
+SOURCE_OK = "ok"                    # returned every record already saved, or more
+SOURCE_PARTIAL = "partial"          # returned some records; saved ones it missed were kept
+SOURCE_EMPTY = "empty"              # returned nothing although records were saved
+SOURCE_FAILED = "failed"            # the adapter raised or is missing
+SOURCE_NOT_COLLECTED = "not_collected"  # this run did not collect (no --collect)
+SOURCE_BAD = (SOURCE_EMPTY, SOURCE_FAILED)
+
+
+def adapter_path_for(state: dict, state_dir: Path) -> Path:
+    name = state.get("adapter_file") or (
+        state["name"].lower().replace(" ", "_").replace("-", "_") + ".py"
+    )
+    return state_dir / name
+
+
+def primary_action_name(state: dict, state_dir: Path, saved: dict[Path, bytes]) -> str | None:
+    """The file the page is built from, chosen the way keep_saved_actions()
+    chooses it: the first candidate that was saved, else the first that
+    exists now."""
+    saved_names = {path.name for path in saved}
+    for name in candidate_action_files(state):
+        if name in saved_names:
+            return name
+    for name in candidate_action_files(state):
+        if (state_dir / name).is_file():
+            return name
+    return None
+
+
+def source_status(error: str, saved_rows: int, scraped_rows: int, kept: int) -> str:
+    if error:
+        return SOURCE_FAILED
+    if saved_rows > 0 and scraped_rows == 0:
+        return SOURCE_EMPTY
+    if kept > 0:
+        return SOURCE_PARTIAL
+    return SOURCE_OK
+
+
+def collect_with_safeguard(state: dict, state_dir: Path) -> dict:
+    """Run one state's adapter inside the keep-saved safeguard and report
+    what its source returned. Snapshot first, merge back after, even when
+    the adapter raises partway through a write (see keep_saved_actions())."""
+    adapter_path = adapter_path_for(state, state_dir)
+    if not adapter_path.exists():
+        return {"note": "", "error": "No state-source adapter is installed",
+                "kept": {"kept": 0, "filled": 0, "cleaned": 0},
+                "saved_rows": 0, "scraped_rows": 0, "status": SOURCE_FAILED}
+    saved = snapshot_action_files(state, state_dir)
+    primary = primary_action_name(state, state_dir, saved)
+    saved_rows = 0
+    if primary and (state_dir / primary) in saved:
+        saved_rows = len(_csv_rows_from_bytes(saved[state_dir / primary])[1])
+    note, error, scraped_rows = "", "", 0
+    kept = {"kept": 0, "filled": 0, "cleaned": 0}
+    try:
+        adapter = import_adapter(adapter_path)
+        _, note = adapter.collect(workdir=state_dir, scripts_dir=state_dir)
+    except (Exception, SystemExit) as exc:
+        # SystemExit too: an adapter that calls sys.exit() must fail its own
+        # state, not end the whole build.
+        reason = (f"adapter exited with code {exc.code}" if isinstance(exc, SystemExit)
+                  else str(exc))
+        error = f"Collection failed: {reason}"
+        print(f"WARNING {state['abbreviation']}: {error}", file=sys.stderr)
+    finally:
+        name = primary or primary_action_name(state, state_dir, {})
+        path = state_dir / name if name else None
+        try:
+            if path and path.is_file():
+                scraped_rows = len(_csv_rows_from_bytes(path.read_bytes())[1])
+        except Exception:
+            scraped_rows = 0
+        kept = keep_saved_actions(state, saved)
+        drop_pre_cutoff_actions(state, state_dir)
+    status = source_status(error, saved_rows, scraped_rows, kept["kept"])
+    return {"note": note or "", "error": error, "kept": kept, "saved_rows": saved_rows,
+            "scraped_rows": scraped_rows, "status": status}
 
 
 def load_federal_declarations(repo_root: Path, abbreviation: str) -> list[dict]:
@@ -1302,34 +1393,21 @@ def process_state(
     collect: bool,
     join_storms: bool,
     dry_run: bool,
+    collected: dict | None = None,
 ) -> dict:
+    """Collect (when asked), join and render one state. `collected` is the
+    result of a collection already made, used by main()'s retry pass so a
+    recovered state is rebuilt without being collected a second time."""
     state_dir = repo_root / "plus" / state["slug"]
-    adapter_name = state.get("adapter_file") or (
-        state["name"].lower().replace(" ", "_").replace("-", "_") + ".py"
-    )
-    adapter_path = state_dir / adapter_name
-    collection_note = ""
-    collection_error = ""
-    kept = {"kept": 0, "filled": 0, "cleaned": 0}
-
-    if collect:
-        if adapter_path.exists():
-            # Snapshot first, merge back after, even when the adapter raises
-            # partway through a write. See keep_saved_actions().
-            saved = snapshot_action_files(state, state_dir)
-            try:
-                adapter = import_adapter(adapter_path)
-                _, collection_note = adapter.collect(
-                    workdir=state_dir, scripts_dir=state_dir
-                )
-            except Exception as exc:
-                collection_error = f"Collection failed: {exc}"
-                print(f"WARNING {state['abbreviation']}: {collection_error}", file=sys.stderr)
-            finally:
-                kept = keep_saved_actions(state, saved)
-                drop_pre_cutoff_actions(state, state_dir)
-        else:
-            collection_error = "No state-source adapter is installed"
+    if collected is None and collect:
+        collected = collect_with_safeguard(state, state_dir)
+    if collected is not None:
+        collection_note = collected["note"]
+        collection_error = collected["error"]
+        kept = collected["kept"]
+    else:
+        collection_note, collection_error = "", ""
+        kept = {"kept": 0, "filled": 0, "cleaned": 0}
 
     actions, action_path = load_state_actions(state, state_dir)
     storm_note = ""
@@ -1403,6 +1481,11 @@ def process_state(
         "storm_pipeline_failed": storm_failed,
         "kept_saved_records": kept["kept"],
         "kept_saved_values": kept["filled"] + kept["cleaned"],
+        # What the source returned this run; read by scripts/plus_health.py.
+        "source_status": collected["status"] if collected else SOURCE_NOT_COLLECTED,
+        "source_records_returned": collected["scraped_rows"] if collected else None,
+        "source_records_saved_before": collected["saved_rows"] if collected else None,
+        "retried": False,
         "generated_on": date.today().isoformat(),
     }
     if not dry_run:
@@ -1424,6 +1507,53 @@ def process_state(
             )
             write_json(state_dir / "state-summary.json", summary)
     return summary
+
+
+# A state site that fails once often answers a minute later: Minnesota,
+# Texas, Wisconsin and Missouri each failed on some runs and not others, and
+# on 2026-09-15 eleven states failed in the same run. So every state whose
+# source failed or returned nothing gets one more try after the rest of the
+# run, and a state that recovers is rebuilt from what the retry collected.
+RETRY_DELAY_SECONDS = int(os.environ.get("PLUS_RETRY_DELAY", "60"))
+
+
+def retry_failed_sources(selected: list[dict], summaries: list[dict], repo_root: Path,
+                         join_storms: bool) -> list[dict]:
+    by_abbreviation = {state["abbreviation"]: state for state in selected}
+    retry = [item for item in summaries if item.get("source_status") in SOURCE_BAD
+             and adapter_path_for(by_abbreviation[item["abbreviation"]],
+                                  repo_root / "plus" / item["slug"]).exists()]
+    if not retry:
+        return summaries
+    print(f"\nRetrying {len(retry)} state(s) whose source failed or returned nothing, "
+          f"after {RETRY_DELAY_SECONDS}s: " + ", ".join(item["abbreviation"] for item in retry))
+    time.sleep(RETRY_DELAY_SECONDS)
+    replaced = {}
+    for first in retry:
+        state = by_abbreviation[first["abbreviation"]]
+        state_dir = repo_root / "plus" / state["slug"]
+        result = collect_with_safeguard(state, state_dir)
+        first_attempt = {"status": first["source_status"], "error": first.get("collection_error", "")}
+        if result["status"] in SOURCE_BAD:
+            print(f"RETRY {state['abbreviation']}: still {result['status']}"
+                  + (f" ({result['error']})" if result["error"] else ""))
+            updated = dict(first, retried=True, retry_status=result["status"],
+                           retry_error=result["error"])
+        else:
+            print(f"RETRY {state['abbreviation']}: recovered ({result['status']}, "
+                  f"{result['scraped_rows']} records returned); rebuilding")
+            updated = process_state(state, repo_root, False, join_storms, False, collected=result)
+            updated.update(retried=True, retry_status=result["status"], first_attempt=first_attempt)
+        summary_path = state_dir / "state-summary.json"
+        # process_state() writes the summary unless the storm join failed, in
+        # which case the previous run's files are left alone on purpose.
+        if not updated.get("storm_pipeline_failed") and summary_path.exists():
+            write_json(summary_path, updated)
+        replaced[state["abbreviation"]] = updated
+        print(f"{state['abbreviation']}: {updated['metrics']['action_count']} actions, "
+              f"{updated['metrics']['federal_declaration_count']} federal declarations; "
+              f"{updated['coverage']}")
+    return [replaced.get(item["abbreviation"], item) for item in summaries]
 
 
 def main() -> int:
@@ -1451,6 +1581,11 @@ def main() -> int:
         "--strict",
         action="store_true",
         help="return an error when a selected state has neither an adapter nor cached actions",
+    )
+    parser.add_argument(
+        "--no-retry",
+        action="store_true",
+        help="do not retry states whose source failed or returned nothing",
     )
     args = parser.parse_args()
     if args.dry_run and args.join_storms:
@@ -1486,6 +1621,11 @@ def main() -> int:
             f"{summary['metrics']['federal_declaration_count']} federal declarations; "
             f"{summary['coverage']}"
         )
+
+    if args.collect and not args.dry_run and not args.no_retry:
+        summaries = retry_failed_sources(selected, summaries, repo_root, args.join_storms)
+        storm_failures = [item["abbreviation"] for item in summaries
+                          if item.get("storm_pipeline_failed")]
 
     if not args.dry_run and not storm_failures:
         plus_dir = repo_root / "plus"
