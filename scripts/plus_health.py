@@ -39,7 +39,7 @@ BAD_SOURCES = ("empty", "failed")
 SOURCE_WORDS = {
     "ok": "returned everything",
     "partial": "returned part",
-    "empty": "returned nothing",
+    "empty": "no declarations",
     "failed": "failed",
     "not_collected": "not collected",
     "unknown": "not recorded",
@@ -47,14 +47,14 @@ SOURCE_WORDS = {
 RULES = """How grades are set
 
 Red, needs attention now:
-- the state site failed or returned nothing, on this run and on the retry
+- collecting from the state source failed or produced no declarations, on this run and on the retry
 - no declarations on the page
 - fewer than half the declarations have a signing date, so the rest cannot be matched to storms
 - declarations fell by more than a fifth since the last run
 - the page was not rebuilt on this run
 
 Yellow, working with gaps:
-- the source failed on another of the last 4 runs
+- collection failed or produced no declarations on another of the last 4 runs
 - the source left out more than a tenth of the saved records, which are shown from earlier runs
 - fewer than 10 declarations, which usually means the source only covers recent years
 - more than a tenth of the declarations have no signing date, title or working link
@@ -81,8 +81,8 @@ def load_states(repo_root: Path) -> list[dict]:
 def infer_source(summary: dict) -> str:
     """What the source returned, from a summary. Summaries written before the
     source was recorded directly are read the same way the numbers imply:
-    if every record on the page had to be kept from earlier runs, the source
-    returned nothing."""
+    if every record on the page had to be kept from earlier runs, collection
+    produced no declarations."""
     status = summary.get("source_status")
     if status:
         if summary.get("retried") and summary.get("retry_status"):
@@ -145,20 +145,25 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
     error = short_error(summary.get("retry_error") or summary.get("collection_error") or "")
 
     if source in BAD_SOURCES:
-        what = "failed" if source == "failed" else "returned nothing"
+        # Said about collection, not the site: "no declarations" can mean the
+        # site refused (Ohio's feed answered 406) or that it answered but none
+        # of its declarations could be read (New Hampshire on 2026-09-27 listed
+        # all 340 orders, but its six weather orders had no readable signing
+        # date, so none reached the join file).
+        what = "failed" if source == "failed" else "produced no declarations"
         retry = " and on the retry" if summary.get("retried") else ""
         runs = f", {streak} runs in a row" if streak > 1 else ""
         detail = f" ({error})" if error else ""
         shown = " The page is showing records saved from earlier runs." if count else ""
-        red.append(f"The state site {what} on this run{retry}{detail}{runs}.{shown}")
+        red.append(f"Collecting from the state source {what} on this run{retry}{detail}{runs}.{shown}")
     else:
         earlier = sum(1 for entry in history[-FLAKY_WINDOW:-1] if entry.get("source") in BAD_SOURCES)
         if earlier:
             runs = min(FLAKY_WINDOW, len(history)) - 1
             if runs == 1:
-                yellow.append("The source failed or returned nothing on the run before this one.")
+                yellow.append("Collection failed or produced no declarations on the run before this one.")
             else:
-                yellow.append(f"The source failed or returned nothing on {earlier} of the "
+                yellow.append(f"Collection failed or produced no declarations on {earlier} of the "
                               f"{runs} runs before this one.")
         if summary.get("retried") and summary.get("first_attempt"):
             notes.append("Failed on the first try this run and recovered on the retry.")
