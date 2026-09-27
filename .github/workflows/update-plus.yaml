@@ -11,6 +11,16 @@ permissions:
   contents: write
   issues: write
 
+# One Plus refresh at a time. On 2026-09-27 the weekly scheduled run (which
+# GitHub fires hours late, around 11:00 UTC) started four minutes after a
+# manual run; the scheduled one pushed first, and the manual one failed at
+# its commit after 48 minutes because the same files had changed under it.
+# The same happened on 2026-09-12. A run that starts while another is going
+# now waits for it, then refreshes on top of its results.
+concurrency:
+  group: refresh-plus-state-data
+  cancel-in-progress: false
+
 jobs:
   # ------------------------------------------------------------------
   # This replaces a per-state build matrix that had gone badly stale.
@@ -77,6 +87,48 @@ jobs:
             echo "found=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # Backstop for the keep-saved safeguard in build-plus.py: compare every
+      # protected state file with the last commit and put back any saved row
+      # this refresh dropped. It restores rather than fails, and its lines go
+      # into plus_build.log so each repair is on record.
+      - name: Put back any saved rows the refresh dropped
+        run: python -u scripts/check_plus_row_loss.py 2>&1 | tee -a plus_build.log
+
+      # Grades every state green, yellow or red with the reason, so a state
+      # that stops working shows up the same week instead of whenever someone
+      # happens to look at it. Writes plus/_health/ (committed below with the
+      # Plus data) and the text for the health issue. Runs even when the
+      # collection step failed, since that is when the report matters most.
+      - name: Check the health of every state
+        if: ${{ !cancelled() }}
+        run: |
+          python -u scripts/plus_health.py \
+            --issue-body-out "$RUNNER_TEMP/plus_health_issue.md" \
+            --changes-out "$RUNNER_TEMP/plus_health_changes.md" 2>&1 | tee -a plus_build.log
+
+      # Commit the scraped source data and Plus pages on their own, before
+      # the main-site regeneration below. A week of fresh state archive
+      # data is worth keeping even if a downstream site check later fails.
+      - name: Commit Plus data and pages if changed
+        id: commit_plus
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No Plus changes to commit."
+          else
+            git commit -m "Auto-refresh Plus state data $(date -u '+%Y-%m-%d')"
+            git pull --rebase origin main
+            git push
+          fi
+
+      # Both issues are updated after the Plus data commit, so they always
+      # describe what was committed. A run whose commit failed leaves them
+      # alone; on 2026-09-27 the failed run overwrote the health report with
+      # results that were never saved. The health issue still updates when
+      # collection itself failed, since that is when the report matters most.
+
       # One issue, kept current. It used to open a new issue every run, even
       # when the list had not changed, which left seven copies open by
       # 2026-09-26. Now the newest open one is updated with this run's list,
@@ -123,30 +175,11 @@ jobs:
                 issue_number: issue.number, state: 'closed' });
             }
 
-      # Backstop for the keep-saved safeguard in build-plus.py: compare every
-      # protected state file with the last commit and put back any saved row
-      # this refresh dropped. It restores rather than fails, and its lines go
-      # into plus_build.log so each repair is on record.
-      - name: Put back any saved rows the refresh dropped
-        run: python -u scripts/check_plus_row_loss.py 2>&1 | tee -a plus_build.log
-
-      # Grades every state green, yellow or red with the reason, so a state
-      # that stops working shows up the same week instead of whenever someone
-      # happens to look at it. Writes plus/_health/ (committed below with the
-      # Plus data) and the text for the health issue. Runs even when the
-      # collection step failed, since that is when the report matters most.
-      - name: Check the health of every state
-        if: ${{ !cancelled() }}
-        run: |
-          python -u scripts/plus_health.py \
-            --issue-body-out "$RUNNER_TEMP/plus_health_issue.md" \
-            --changes-out "$RUNNER_TEMP/plus_health_changes.md" 2>&1 | tee -a plus_build.log
-
       # One standing issue holds the current report. The body is replaced
       # every run; a comment is added only when a state changes grade, so a
       # notification means something changed.
       - name: Keep the Plus health issue current
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.commit_plus.outcome != 'failure' }}
         uses: actions/github-script@v7
         with:
           script: |
@@ -184,22 +217,6 @@ jobs:
               await github.rest.issues.createComment({ owner, repo, issue_number: number,
                 body: `${changes}\n\nRun: ${runUrl}` });
             }
-
-      # Commit the scraped source data and Plus pages on their own, before
-      # the main-site regeneration below. A week of fresh state archive
-      # data is worth keeping even if a downstream site check later fails.
-      - name: Commit Plus data and pages if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --staged --quiet; then
-            echo "No Plus changes to commit."
-          else
-            git commit -m "Auto-refresh Plus state data $(date -u '+%Y-%m-%d')"
-            git pull --rebase origin main
-            git push
-          fi
 
       # This workflow runs AFTER the main build (04:00 vs 06:00), because
       # the Plus join wants fresh federal data. The consequence is that the
