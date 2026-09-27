@@ -256,11 +256,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/connecticut/eo_storm_severity_summary.csv.tmp.
 
 CT: 9 actions, 43 federal declarations; 1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table
-Delaware: 0 actions, 0 relationships, 0 weather declarations
+Delaware: 6 actions, 3 relationships, 2 weather declarations
 
-DE: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/delaware/hazard_overrides.csv
 Wrote 8 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_matches.csv.tmp
 Wrote severity summary (8 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp
@@ -270,7 +267,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
-DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending; 2 saved records kept that this refresh's check of the state source did not return
+DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending
 FL: fl_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2022-218: no matching storm events found in the date window.
@@ -808,6 +805,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp.
 
 KY: 13 actions, 99 federal declarations; manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap; 1 saved record kept that this refresh's check of the state source did not return
+LA: la_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
+LA: la_order_relationships.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/louisiana/hazard_overrides.csv
 LA-EO-JML-26-68: no matching storm events found in the date window.
 LA-EO-JML-24-30: no matching storm events found in the date window.
@@ -901,8 +900,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 98 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 95 relationship(s), 4 original weather declaration(s).
 
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -2228,14 +2229,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
 
-Retrying 3 state(s) whose source failed or returned nothing, after 60s: DE, NH, OH
-Delaware: 0 actions, 0 relationships, 0 weather declarations
-
-DE: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-RETRY DE: still empty
-DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending; 2 saved records kept that this refresh's check of the state source did not return
+Retrying 2 state(s) whose source failed or returned nothing, after 60s: NH, OH
 New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
@@ -2255,18 +2249,19 @@ OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not 
 OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY OH: still empty
 OH: 7 actions, 60 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 1815s, storm join 65s. Slowest: NJ 244s+6s, TX 241s+1s, NC 225s+1s, CT 161s+0s, MA 100s+1s, SC 70s+2s, MI 66s+0s, VT 65s+0s, WA 62s+0s, CO 43s+19s
-WARNING kept saved records the state source did not return: DE (2), IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), OH (7), OK (1), TX (1)
+TIME total: collect 2561s, storm join 106s. Slowest: NJ 481s+11s, NC 428s+1s, TX 277s+1s, CT 214s+0s, MA 185s+2s, VT 101s+0s, PA 93s+0s, SC 84s+5s, CO 43s+40s, MI 74s+0s
+WARNING kept saved records the state source did not return: IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), OH (7), OK (1), TX (1)
 Row-loss check: no saved rows lost.
-Plus health: 27 green, 17 yellow, 6 red.
+Plus health: 29 green, 16 yellow, 5 red.
   RED AZ: No declarations on the page (since 2023).
-  RED DE: Collecting from the state source produced no declarations on this run and on the retry. The page is showing records saved from earlier runs. Only 2 declarations against 26 federal ones (since 2025), so the source is likely missing most of the record.
   RED IN: Only 9 of 21 declarations have a signing date, so the rest cannot be matched to storms. The source left out 5 of 21 saved records; they are shown from earlier runs.
-  RED NH: Collecting from the state source produced no declarations on this run and on the retry, 4 runs in a row. The page is showing records saved from earlier runs. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record.
-  RED OH: Collecting from the state source produced no declarations on this run and on the retry, 4 runs in a row. The page is showing records saved from earlier runs. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record.
+  RED NH: Collecting from the state source produced no declarations on this run and on the retry, 5 runs in a row. The page is showing records saved from earlier runs. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record.
+  RED OH: Collecting from the state source produced no declarations on this run and on the retry, 5 runs in a row. The page is showing records saved from earlier runs. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record.
   RED OR: Only 1 of 252 declarations has a signing date, so the rest cannot be matched to storms.
-Changes since the last run (2026-09-27 01:37 UTC):
+Changes since the last run (2026-09-27 11:52 UTC):
 
-- **Delaware** went from yellow to red. Collecting from the state source produced no declarations on this run and on the retry. The page is showing records saved from earlier runs.
+- **Delaware** went from red to yellow. Collection failed or produced no declarations on 1 of the 3 runs before this one.
+- **Nebraska** went from yellow to green.
+- **South Dakota** went from yellow to green.
 
-Now 27 green, 17 yellow, 6 red.
+Now 29 green, 16 yellow, 5 red.
