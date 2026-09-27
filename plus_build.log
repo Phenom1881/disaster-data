@@ -55,9 +55,32 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
 AK: 6 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.
-No matches found for any declaration. Wrote empty /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_matches.csv.tmp and /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_severity_summary.csv.tmp so no stale data from a prior run is left behind.
+Arizona news releases: read 50 page(s), 529 release(s) since 2023-01-02 (full archive); 6 new emergency declaration(s), 6 in all
 
-AZ: 0 actions, 120 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
+Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arizona/hazard_overrides.csv
+AZ-DECL-2025-05-governor-katie-hobbs-declares-state-emergency-over-greer-fire: no matching storm events found in the date window.
+Wrote 81 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_matches.csv.tmp
+Wrote severity summary (19 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_severity_summary.csv.tmp
+
+Areas with reported deaths, injuries, or damage:
+  AZ-DECL-2023-08-governor-katie-hobbs-declares-heat-state-emergency CENTRAL PHOENIX [NWS forecast zone]: deaths=8, injuries=0, damage=$0 (Heat)
+  AZ-DECL-2025-09-governor-katie-hobbs-declares-state-emergency-gila-county GILA [county/county-equivalent]: deaths=3, injuries=0, damage=$25,245,000 (Flash Flood)
+  AZ-DECL-2023-08-governor-katie-hobbs-declares-heat-state-emergency EAST VALLEY [NWS forecast zone]: deaths=3, injuries=0, damage=$0 (Heat)
+  AZ-DECL-2023-08-governor-katie-hobbs-declares-heat-state-emergency CENTRAL LA PAZ [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Heat)
+  AZ-DECL-2025-09-governor-katie-hobbs-declares-state-emergency-gila-county MARICOPA [county/county-equivalent]: deaths=1, injuries=0, damage=$440,000 (Flash Flood)
+  AZ-DECL-2023-08-governor-katie-hobbs-declares-heat-state-emergency TOHONO O ODHAM NATION [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Heat)
+  AZ-DECL-2023-08-governor-katie-hobbs-declares-heat-state-emergency EASTERN COCHISE COUNTY BELOW 5000 FEET [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Heat)
+  AZ-DECL-2023-08-governor-katie-hobbs-declares-heat-state-emergency NORTH PHOENIX/GLENDALE [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Heat)
+  AZ-DECL-2025-10-governor-katie-hobbs-declares-state-emergency-gila-and-maricopa COCONINO [county/county-equivalent]: deaths=0, injuries=2, damage=$0 (Lightning)
+  AZ-DECL-2025-09-governor-katie-hobbs-declares-state-emergency-gila-county PINAL [county/county-equivalent]: deaths=0, injuries=0, damage=$43,000 (Debris Flow, Flash Flood)
+  AZ-DECL-2025-09-governor-katie-hobbs-declares-state-emergency-gila-county COCHISE [county/county-equivalent]: deaths=0, injuries=0, damage=$32,000 (Flash Flood)
+  AZ-DECL-2025-09-governor-katie-hobbs-declares-state-emergency-gila-county PIMA [county/county-equivalent]: deaths=0, injuries=0, damage=$30,000 (Flash Flood)
+  AZ-DECL-2025-09-governor-katie-hobbs-declares-state-emergency-gila-county MOHAVE [county/county-equivalent]: deaths=0, injuries=0, damage=$18,000 (Flash Flood)
+  AZ-DECL-2025-10-governor-katie-hobbs-declares-state-emergency-gila-and-maricopa MARICOPA [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000 (Lightning)
+
+Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_severity_summary.csv.tmp.
+
+AZ: 6 actions, 120 federal declarations; 2023-present declarations from the Governor's news releases (dated by release) and executive orders; 2000-2022 gap disclosed
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arkansas/hazard_overrides.csv
 AR-POST-5133: no matching storm events found in the date window.
 AR-POST-5085: no matching storm events found in the date window.
@@ -268,7 +291,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
 DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending
-FL: fl_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2022-218: no matching storm events found in the date window.
 FL-EO-2022-54: no matching storm events found in the date window.
@@ -805,8 +827,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp.
 
 KY: 13 actions, 99 federal declarations; manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap; 1 saved record kept that this refresh's check of the state source did not return
-LA: la_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
-LA: la_order_relationships.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/louisiana/hazard_overrides.csv
 LA-EO-JML-26-68: no matching storm events found in the date window.
 LA-EO-JML-24-30: no matching storm events found in the date window.
@@ -900,10 +920,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 95 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 94 relationship(s), 4 original weather declaration(s).
 
 MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 4 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1638,14 +1658,133 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 OK: 4 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; 1 saved record kept that this refresh's check of the state source did not return
-Oregon: order PDFs not read: none; read but no signing date found: 326
+Oregon signing dates: 1 kept from earlier runs; 3 read from the PDF text; 191 read from the scan by OCR; 132 not found by OCR
 
 Applied 112 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oregon/hazard_overrides.csv
-Wrote 1 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_matches.csv.tmp
-Wrote severity summary (1 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp
+OR-EO-26-25: no matching storm events found in the date window.
+OR-EO-26-18: no matching storm events found in the date window.
+OR-EO-26-15: no matching storm events found in the date window.
+OR-EO-26-12: no matching storm events found in the date window.
+OR-EO-26-11: no matching storm events found in the date window.
+OR-EO-26-09: no matching storm events found in the date window.
+OR-EO-26-08: no matching storm events found in the date window.
+OR-EO-26-07: no matching storm events found in the date window.
+OR-EO-26-05: no matching storm events found in the date window.
+OR-EO-25-23: no matching storm events found in the date window.
+OR-EO-25-19: no matching storm events found in the date window.
+OR-EO-25-20: no matching storm events found in the date window.
+OR-EO-25-18: no matching storm events found in the date window.
+OR-EO-25-13: no matching storm events found in the date window.
+OR-EO-25-12: no matching storm events found in the date window.
+OR-EO-25-10: no matching storm events found in the date window.
+OR-EO-24-30: no matching storm events found in the date window.
+OR-EO-24-29: no matching storm events found in the date window.
+OR-EO-24-26: no matching storm events found in the date window.
+OR-EO-24-13: no matching storm events found in the date window.
+OR-EO-24-12: no matching storm events found in the date window.
+OR-EO-24-08: no matching storm events found in the date window.
+OR-EO-23-25: no matching storm events found in the date window.
+OR-EO-23-23: no matching storm events found in the date window.
+OR-EO-23-21: no matching storm events found in the date window.
+OR-EO-23-19: no matching storm events found in the date window.
+OR-EO-23-22: no matching storm events found in the date window.
+OR-EO-23-20: no matching storm events found in the date window.
+OR-EO-23-16: no matching storm events found in the date window.
+OR-EO-23-14: no matching storm events found in the date window.
+OR-EO-23-15: no matching storm events found in the date window.
+OR-EO-23-11: no matching storm events found in the date window.
+OR-EO-23-10: no matching storm events found in the date window.
+OR-EO-23-08: no matching storm events found in the date window.
+OR-EO-23-05: no matching storm events found in the date window.
+OR-EO-22-17: no matching storm events found in the date window.
+OR-EO-22-16: no matching storm events found in the date window.
+OR-EO-22-10: no matching storm events found in the date window.
+OR-EO-22-09: no matching storm events found in the date window.
+OR-EO-22-08: no matching storm events found in the date window.
+OR-EO-22-07: no matching storm events found in the date window.
+OR-EO-22-06: no matching storm events found in the date window.
+OR-EO-22-04: no matching storm events found in the date window.
+OR-EO-22-02: no matching storm events found in the date window.
+OR-EO-21-35: no matching storm events found in the date window.
+OR-EO-21-33: no matching storm events found in the date window.
+OR-EO-21-24: no matching storm events found in the date window.
+OR-EO-21-19: no matching storm events found in the date window.
+OR-EO-21-17: no matching storm events found in the date window.
+OR-EO-21-25: no matching storm events found in the date window.
+OR-EO-21-12: no matching storm events found in the date window.
+OR-EO-21-11: no matching storm events found in the date window.
+OR-EO-21-07: no matching storm events found in the date window.
+OR-EO-20-47: no matching storm events found in the date window.
+OR-EO-20-48: no matching storm events found in the date window.
+OR-EO-20-43: no matching storm events found in the date window.
+OR-EO-20-46: no matching storm events found in the date window.
+OR-EO-20-36: no matching storm events found in the date window.
+OR-EO-20-32: no matching storm events found in the date window.
+OR-EO-20-31: no matching storm events found in the date window.
+OR-EO-20-23: no matching storm events found in the date window.
+OR-EO-18-27: no matching storm events found in the date window.
+OR-EO-18-26: no matching storm events found in the date window.
+OR-EO-18-19: no matching storm events found in the date window.
+OR-EO-18-15: no matching storm events found in the date window.
+OR-EO-18-12: no matching storm events found in the date window.
+OR-EO-17-15: no matching storm events found in the date window.
+OR-EO-17-17: no matching storm events found in the date window.
+OR-EO-16-14: no matching storm events found in the date window.
+OR-EO-16-11: no matching storm events found in the date window.
+OR-EO-16-10: no matching storm events found in the date window.
+OR-EO-15-21: no matching storm events found in the date window.
+OR-EO-15-13: no matching storm events found in the date window.
+OR-EO-15-12: no matching storm events found in the date window.
+OR-EO-15-16: no matching storm events found in the date window.
+OR-EO-15-11: no matching storm events found in the date window.
+OR-EO-15-08: no matching storm events found in the date window.
+OR-EO-15-07: no matching storm events found in the date window.
+OR-EO-15-06: no matching storm events found in the date window.
+OR-EO-15-05: no matching storm events found in the date window.
+OR-EO-15-02: no matching storm events found in the date window.
+OR-EO-14-12: no matching storm events found in the date window.
+OR-EO-14-04: no matching storm events found in the date window.
+OR-EO-14-05: no matching storm events found in the date window.
+OR-EO-14-02: no matching storm events found in the date window.
+OR-EO-13-12: no matching storm events found in the date window.
+OR-EO-13-13: no matching storm events found in the date window.
+OR-EO-13-07: no matching storm events found in the date window.
+OR-EO-13-06: no matching storm events found in the date window.
+OR-EO-11-07: no matching storm events found in the date window.
+OR-EO-11-01: no matching storm events found in the date window.
+OR-EO-08-23: no matching storm events found in the date window.
+OR-EO-07-16: no matching storm events found in the date window.
+OR-EO-07-11: no matching storm events found in the date window.
+Wrote 702 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_matches.csv.tmp
+Wrote severity summary (458 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
-  None in the matched NCEI records.
+  OR-EO-20-39 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
+  OR-EO-20-40 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
+  OR-EO-20-44 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
+  OR-EO-20-51 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
+  OR-EO-20-52 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
+  OR-EO-20-45 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
+  OR-EO-20-41 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=5, injuries=0, damage=$2,000,000,000 (High Wind)
+  OR-EO-24-05 GREATER  PORTLAND METRO AREA [NWS forecast zone]: deaths=4, injuries=0, damage=$0 (Ice Storm)
+  OR-EO-20-39 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-EO-20-40 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-EO-20-44 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-EO-20-51 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-EO-20-52 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-EO-20-45 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-EO-20-39 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-39 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-40 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-40 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-44 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-44 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-51 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-51 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-52 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-52 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  OR-EO-20-45 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
+  Showing the 25 highest-consequence areas; all 112 are retained in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
@@ -2175,8 +2314,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin: 302 executive orders processed
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f70ee456dd0>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f70ee456dd0>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
 WI-EO-256: no matching storm events found in the date window.
 WI-EO-300: no matching storm events found in the date window.
@@ -2214,7 +2355,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
-WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
 {"actions": 63, "declarations": 4, "relationships": 19, "overrides": 4, "review": 5}
 
 WY: wy_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
@@ -2229,7 +2370,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
 
-Retrying 2 state(s) whose source failed or returned nothing, after 60s: NH, OH
+Retrying 3 state(s) whose source failed or returned nothing, after 60s: NH, OH, WI
 New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
@@ -2249,19 +2390,23 @@ OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not 
 OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY OH: still empty
 OH: 7 actions, 60 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 2561s, storm join 106s. Slowest: NJ 481s+11s, NC 428s+1s, TX 277s+1s, CT 214s+0s, MA 185s+2s, VT 101s+0s, PA 93s+0s, SC 84s+5s, CO 43s+40s, MI 74s+0s
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f61302a9310>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f61302a9310>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
+RETRY WI: still failed (Collection failed: Wisconsin adapter: scrape failed)
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+TIME total: collect 3280s, storm join 80s. Slowest: OR 757s+1s, NC 335s+1s, NJ 285s+7s, TX 276s+1s, CT 212s+0s, NM 180s+0s, MA 138s+1s, AZ 97s+0s, CO 67s+23s, WA 78s+1s
 WARNING kept saved records the state source did not return: IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), OH (7), OK (1), TX (1)
 Row-loss check: no saved rows lost.
-Plus health: 29 green, 16 yellow, 5 red.
-  RED AZ: No declarations on the page (since 2023).
+Plus health: 28 green, 21 yellow, 1 red.
   RED IN: Only 9 of 21 declarations have a signing date, so the rest cannot be matched to storms. The source left out 5 of 21 saved records; they are shown from earlier runs.
-  RED NH: Collecting from the state source produced no declarations on this run and on the retry, 5 runs in a row. The page is showing records saved from earlier runs. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record.
-  RED OH: Collecting from the state source produced no declarations on this run and on the retry, 5 runs in a row. The page is showing records saved from earlier runs. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record.
-  RED OR: Only 1 of 252 declarations has a signing date, so the rest cannot be matched to storms.
-Changes since the last run (2026-09-27 11:52 UTC):
+Changes since the last run (2026-09-27 13:57 UTC):
 
-- **Delaware** went from red to yellow. Collection failed or produced no declarations on 1 of the 3 runs before this one.
-- **Nebraska** went from yellow to green.
-- **South Dakota** went from yellow to green.
+- **Arizona** went from red to yellow. Only 6 declarations against 120 federal ones (since 2023), so the source is likely missing most of the record.
+- **New Hampshire** went from red to yellow. Collecting from the state source produced no declarations on this run and on the retry, 6 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks.
+- **Ohio** went from red to yellow. Collecting from the state source produced no declarations on this run and on the retry, 6 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks.
+- **Oregon** went from red to yellow. 82 of 252 declarations have no signing date.
+- **Wisconsin** went from green to yellow. Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed). The page is showing records saved from earlier runs; the last successful collection was 2026-09-27 (0 days ago). This turns red at four weeks.
 
-Now 29 green, 16 yellow, 5 red.
+Now 28 green, 21 yellow, 1 red.
