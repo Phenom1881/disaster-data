@@ -84,5 +84,27 @@ class NewHampshireTests(unittest.TestCase):
         self.assertEqual(nh.words_to_year("two thousand"), 2000)
         self.assertIsNone(nh.words_to_year("the independence"))
 
+    def _collect(self, pdf_text):
+        """collect() over two registry orders, with every fetch and PDF read faked."""
+        from unittest import mock
+        orders = [nh.Action("2013-08", "An Order Declaring a State of Emergency due to Severe Weather",
+                            "Margaret Wood Hassan", "https://x/2013-08.pdf"),
+                  nh.Action("2010-01", "An Order Declaring a State of Emergency Due to Severe Weather.",
+                            "John H. Lynch", "https://x/2010-01.pdf")]
+        with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="", content=b"")), \
+             mock.patch.object(nh, "parse_registry", return_value=orders), \
+             mock.patch.object(nh, "pdf_text", return_value=pdf_text):
+            return {a.number: a for a in nh.collect()}
+
+    def test_confirmed_date_fills_an_unreadable_pdf(self):
+        actions = self._collect("")
+        self.assertEqual(actions["2013-08"].date_signed, "2013-07-03")
+        self.assertTrue(actions["2013-08"].weather_related)
+        self.assertIsNone(actions["2010-01"].date_signed)   # no confirmed date: stays undated
+
+    def test_date_read_from_the_order_beats_the_confirmed_list(self):
+        actions = self._collect("Given under my hand this 2nd day of July, 2013.")
+        self.assertEqual(actions["2013-08"].date_signed, "2013-07-02")
+
 
 if __name__ == "__main__": unittest.main()
