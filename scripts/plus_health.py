@@ -7,7 +7,8 @@ state whose site refused every request still showed its saved records, and
 a state collecting the wrong list simply showed 0.
 
 Writes:
-  plus/_health/health.json   current grades and the last runs per state
+  plus/_health/health.json   current grades, the last runs per state, and when
+                             collecting from each state last worked
   plus/_health/HEALTH.md     the same as a readable report
   --issue-body-out PATH      the report, for the "Plus health report" issue
   --changes-out PATH         grade changes since the last run, for a comment
@@ -28,7 +29,7 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 
 GREEN, YELLOW, RED = "green", "yellow", "red"
@@ -36,6 +37,12 @@ HISTORY_LENGTH = 12
 FLAKY_WINDOW = 4          # runs looked at for a source that fails now and then
 THIN_BELOW = 10           # fewer declarations than this reads as a short coverage window
 BAD_SOURCES = ("empty", "failed")
+GOOD_SOURCES = ("ok", "partial")
+# A state site that refuses now and then (New Hampshire's registry, Ohio's
+# feed) is not an emergency while its page still shows the records saved from
+# the last good collection. It turns red once that collection is this old.
+STALE_AFTER_DAYS = 28
+LABEL_FORMAT = "%Y-%m-%d %H:%M UTC"
 SOURCE_WORDS = {
     "ok": "returned everything",
     "partial": "returned part",
@@ -47,13 +54,14 @@ SOURCE_WORDS = {
 RULES = """How grades are set
 
 Red, needs attention now:
-- collecting from the state source failed or produced no declarations, on this run and on the retry
+- collecting from the state source failed or produced no declarations, on this run and on the retry, and the last successful collection was 4 weeks ago or more (or no records are saved to show)
 - no declarations on the page
 - fewer than half the declarations have a signing date, so the rest cannot be matched to storms
 - declarations fell by more than a fifth since the last run
 - the page was not rebuilt on this run
 
 Yellow, working with gaps:
+- collecting failed or produced no declarations on this run and on the retry, but the page shows records saved from a successful collection less than 4 weeks ago
 - collection failed or produced no declarations on another of the last 4 runs
 - the source left out more than a tenth of the saved records, which are shown from earlier runs
 - fewer than 10 declarations, which usually means the source only covers recent years
@@ -128,21 +136,70 @@ def trailing_bad(history: list[dict]) -> int:
     return count
 
 
+def parse_label(label) -> datetime | None:
+    try:
+        return datetime.strptime(str(label), LABEL_FORMAT).replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def last_good_collection(prior: dict | None, history: list[dict]) -> str | None:
+    """When collecting from the state last worked, as a run label. Kept in
+    health.json from run to run, so it outlasts the 12-run history. history
+    includes this run's entry as its last item."""
+    for entry in reversed(history):
+        if entry.get("source") in GOOD_SOURCES and parse_label(entry.get("at")):
+            return entry["at"]
+    return (prior or {}).get("last_good_collection")
+
+
+def stale_source(count: int, last_good: str | None, history: list[dict], streak: int,
+                 now: datetime | None) -> tuple[bool, str]:
+    """For a source that failed on this run: whether that is red yet, and the
+    sentence saying how old the records on the page are."""
+    if not count:
+        return True, ""
+    good = parse_label(last_good)
+    if good and now:
+        days = (now - good).days
+        age = f"{days} day{'' if days == 1 else 's'} ago"
+        if days >= STALE_AFTER_DAYS:
+            return True, (f" The page is showing records saved from earlier runs; the last successful "
+                          f"collection was {good:%Y-%m-%d} ({age}), four weeks or more.")
+        return False, (f" The page is showing records saved from earlier runs; the last successful "
+                       f"collection was {good:%Y-%m-%d} ({age}). This turns red at four weeks.")
+    first_bad = parse_label(history[-streak].get("at")) if streak else None
+    if first_bad and now:
+        days = (now - first_bad).days
+        if days >= STALE_AFTER_DAYS:
+            return True, (f" The page is showing records saved from earlier runs. No successful "
+                          f"collection is on record, and collection has failed since at least "
+                          f"{first_bad:%Y-%m-%d} ({days} days), four weeks or more.")
+        return False, (f" The page is showing records saved from earlier runs. No successful collection "
+                       f"is on record, and collection has failed since at least {first_bad:%Y-%m-%d}. "
+                       "This turns red at four weeks.")
+    return False, " The page is showing records saved from earlier runs."
+
+
 def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[dict],
-                previous: dict | None, run_day, since: str) -> dict:
-    """Grade one state. history includes this run's entry as its last item."""
+                previous: dict | None, run_day, since: str, last_good: str | None = None,
+                now: datetime | None = None) -> dict:
+    """Grade one state. history includes this run's entry as its last item.
+    last_good is when collecting from this state last worked (a run label)."""
     red, yellow, notes = [], [], []
     name = state["name"]
     if summary is None:
         return {"grade": RED, "reasons": ["No page has been built for this state."], "notes": [],
                 "source": "unknown", "source_error": "", "bad_source_streak": 0,
-                "declarations": 0, "federal": 0, **numbers}
+                "declarations": 0, "federal": 0, "last_good_collection": last_good, **numbers}
 
     source = infer_source(summary)
     count = (summary.get("metrics") or {}).get("action_count") or 0
     federal = (summary.get("metrics") or {}).get("federal_declaration_count") or 0
     streak = trailing_bad(history)
     error = short_error(summary.get("retry_error") or summary.get("collection_error") or "")
+    if now is None and run_day:
+        now = datetime.combine(run_day, time(), tzinfo=timezone.utc)
 
     if source in BAD_SOURCES:
         # Said about collection, not the site: "no declarations" can mean the
@@ -154,8 +211,9 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
         retry = " and on the retry" if summary.get("retried") else ""
         runs = f", {streak} runs in a row" if streak > 1 else ""
         detail = f" ({error})" if error else ""
-        shown = " The page is showing records saved from earlier runs." if count else ""
-        red.append(f"Collecting from the state source {what} on this run{retry}{detail}{runs}.{shown}")
+        is_red, shown = stale_source(count, last_good, history, streak, now)
+        (red if is_red else yellow).append(
+            f"Collecting from the state source {what} on this run{retry}{detail}{runs}.{shown}")
     else:
         earlier = sum(1 for entry in history[-FLAKY_WINDOW:-1] if entry.get("source") in BAD_SOURCES)
         if earlier:
@@ -214,7 +272,7 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
     grade = RED if red else YELLOW if yellow else GREEN
     return {"grade": grade, "reasons": red + yellow, "notes": notes, "source": source,
             "source_error": error, "bad_source_streak": streak, "declarations": count,
-            "federal": federal, **numbers}
+            "federal": federal, "last_good_collection": last_good, **numbers}
 
 
 def plural(count: int, word: str) -> str:
@@ -420,9 +478,11 @@ def main() -> int:
                  "declarations": count}
         history = (past.get(ab, []) + [entry])[-HISTORY_LENGTH:]
         prior = (previous or {}).get("states", {}).get(ab)
+        last_good = last_good_collection(prior, history)
         if prior is None and len(history) > 1:
             prior = {"declarations": history[-2].get("declarations")}
-        graded = grade_state(state, summary, numbers, history, prior, run_day, since)
+        graded = grade_state(state, summary, numbers, history, prior, run_day, since,
+                             last_good=last_good, now=now)
         timing = (summary or {}).get("timing") or {}
         graded.update(name=state["name"], since=since, history=history,
                       collect_seconds=timing.get("collect_seconds"),
