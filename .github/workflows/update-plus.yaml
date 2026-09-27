@@ -130,6 +130,61 @@ jobs:
       - name: Put back any saved rows the refresh dropped
         run: python -u scripts/check_plus_row_loss.py 2>&1 | tee -a plus_build.log
 
+      # Grades every state green, yellow or red with the reason, so a state
+      # that stops working shows up the same week instead of whenever someone
+      # happens to look at it. Writes plus/_health/ (committed below with the
+      # Plus data) and the text for the health issue. Runs even when the
+      # collection step failed, since that is when the report matters most.
+      - name: Check the health of every state
+        if: ${{ !cancelled() }}
+        run: |
+          python -u scripts/plus_health.py \
+            --issue-body-out "$RUNNER_TEMP/plus_health_issue.md" \
+            --changes-out "$RUNNER_TEMP/plus_health_changes.md" 2>&1 | tee -a plus_build.log
+
+      # One standing issue holds the current report. The body is replaced
+      # every run; a comment is added only when a state changes grade, so a
+      # notification means something changed.
+      - name: Keep the Plus health issue current
+        if: ${{ !cancelled() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const temp = process.env.RUNNER_TEMP;
+            const bodyPath = `${temp}/plus_health_issue.md`;
+            if (!fs.existsSync(bodyPath)) {
+              core.warning('The health check did not write a report.');
+              return;
+            }
+            const body = fs.readFileSync(bodyPath, 'utf8');
+            const changesPath = `${temp}/plus_health_changes.md`;
+            const changes = fs.existsSync(changesPath) ? fs.readFileSync(changesPath, 'utf8').trim() : '';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = 'Plus health report';
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const open = (await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: 'open', per_page: 100,
+            })).filter(i => !i.pull_request && i.title === title)
+               .sort((a, b) => b.number - a.number);
+            let number;
+            if (open.length === 0) {
+              number = (await github.rest.issues.create({ owner, repo, title, body })).data.number;
+            } else {
+              number = open[0].number;
+              await github.rest.issues.update({ owner, repo, issue_number: number, body });
+              for (const extra of open.slice(1)) {
+                await github.rest.issues.createComment({ owner, repo, issue_number: extra.number,
+                  body: `Superseded by #${number}.` });
+                await github.rest.issues.update({ owner, repo, issue_number: extra.number, state: 'closed' });
+              }
+            }
+            if (changes) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: number,
+                body: `${changes}\n\nRun: ${runUrl}` });
+            }
+
       # Commit the scraped source data and Plus pages on their own, before
       # the main-site regeneration below. A week of fresh state archive
       # data is worth keeping even if a downstream site check later fails.
