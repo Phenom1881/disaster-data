@@ -65,6 +65,14 @@ jobs:
       - name: Install dependencies
         run: pip install pandas requests beautifulsoup4 lxml pdfplumber pypdf
 
+      # Oregon posts its orders as scanned images with no text layer, so the
+      # signing date can only be read with OCR (tesseract). If this install
+      # fails the refresh still runs; Oregon's undated orders wait for a
+      # later run.
+      - name: Install OCR for scanned orders
+        continue-on-error: true
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr
+
       - name: Collect state archives and run the storm join
         run: |
           set -o pipefail
