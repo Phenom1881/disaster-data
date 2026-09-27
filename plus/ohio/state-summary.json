@@ -6,7 +6,7 @@
   "collection_failed": false,
   "coverage": "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return",
   "coverage_base": "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index",
-  "generated_on": "2026-09-26",
+  "generated_on": "2026-09-27",
   "kept_saved_records": 7,
   "kept_saved_values": 0,
   "metrics": {
@@ -16,7 +16,13 @@
     "storm_match_rows": 137
   },
   "name": "Ohio",
+  "retried": true,
+  "retry_error": "",
+  "retry_status": "empty",
   "slug": "ohio",
+  "source_records_returned": 0,
+  "source_records_saved_before": 7,
+  "source_status": "empty",
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
 }
