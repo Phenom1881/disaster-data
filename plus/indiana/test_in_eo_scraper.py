@@ -219,3 +219,91 @@ class TestDanielsIndexFallback(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---------------------------------------------------------------- 2026-09-27
+# Dates: OCR through the tesseract program, the order's own year, saved
+# dates reused, and every failure counted.
+import io as _io
+import random as _random
+import requests as _requests
+import in_eo_scraper as _ies
+
+
+def _scanned(lines, dpi=200):
+    from PIL import Image, ImageDraw, ImageFont
+    _random.seed(3)
+    page = Image.new("L", (int(8.5 * dpi), int(11 * dpi)), 255)
+    draw = ImageDraw.Draw(page)
+    try:
+        font = ImageFont.truetype("DejaVuSerif.ttf", int(dpi * 0.15))
+    except OSError:
+        font = ImageFont.load_default(size=int(dpi * 0.15))
+    for i, line in enumerate(lines):
+        draw.text((dpi, dpi + i * int(dpi * 0.3)), line, font=font, fill=0)
+    out = _io.BytesIO()
+    page.rotate(0.5, fillcolor=255).save(out, "PDF", resolution=dpi)
+    return out.getvalue()
+
+
+class _Resp:
+    def __init__(self, status, content=b""):
+        self.status_code, self.content = status, content
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise _requests.HTTPError(f"{self.status_code}", response=self)
+
+
+class _Session:
+    def __init__(self, status=200, content=b""):
+        self.status, self.content, self.calls = status, content, 0
+
+    def get(self, url, headers=None, timeout=None):
+        self.calls += 1
+        return _Resp(self.status, self.content)
+
+
+ATTESTED = ["EXECUTIVE ORDER 18-01", "DECLARING A DISASTER EMERGENCY DUE TO FLOODING",
+            "WHEREAS, flooding began on February 20, 2018;", "",
+            "IN TESTIMONY WHEREOF, I have hereunto set my hand",
+            "this 24th day of February, 2018.", "", "Eric J. Holcomb, Governor"]
+
+
+class DateTests(unittest.TestCase):
+    def setUp(self):
+        _ies.DATE_PROBLEMS.clear()
+
+    @unittest.skipUnless(_ies.TESSERACT, "tesseract is not installed")
+    def test_scanned_order_is_dated_by_ocr_from_the_attestation(self):
+        date, via_ocr = _ies.fetch_signed_date(_Session(content=_scanned(ATTESTED)), "u", 2018)
+        self.assertEqual((date, via_ocr), ("2018-02-24", True))
+
+    @unittest.skipUnless(_ies.TESSERACT, "tesseract is not installed")
+    def test_a_date_outside_the_order_year_is_refused(self):
+        date, _ = _ies.fetch_signed_date(_Session(content=_scanned(ATTESTED)), "u", 2019)
+        self.assertEqual(date, "")
+        self.assertIn("read, but no signing date found (OCR)", _ies.DATE_PROBLEMS)
+
+    def test_without_ocr_a_scan_is_counted(self):
+        saved, _ies.TESSERACT = _ies.TESSERACT, None
+        try:
+            self.assertEqual(_ies.fetch_signed_date(_Session(content=_scanned(ATTESTED)), "u", 2018), ("", False))
+        finally:
+            _ies.TESSERACT = saved
+        self.assertEqual(_ies.DATE_PROBLEMS["scanned, OCR not installed"], 1)
+
+    def test_a_refused_download_is_retried_once_and_counted(self):
+        session = _Session(status=403)
+        self.assertEqual(_ies.fetch_signed_date(session, "u", 2018), ("", False))
+        self.assertEqual(session.calls, 2)
+        self.assertEqual(_ies.DATE_PROBLEMS["download failed (HTTPError 403)"], 1)
+
+    def test_saved_dates_are_read_from_the_join_file(self):
+        import tempfile
+        from pathlib import Path as _P
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _P(tmp) / "j.csv"
+            path.write_text("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+                            "IN-EO-26-21,G,26-21,Flood,2026-08-13,u\nIN-EO-26-08,G,26-08,Storm,,u\n")
+            self.assertEqual(_ies.load_saved_dates(path), {"26-21": "2026-08-13"})

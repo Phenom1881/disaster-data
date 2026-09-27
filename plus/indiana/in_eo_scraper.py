@@ -77,12 +77,20 @@ try:
 except ImportError:  # pragma: no cover - dependency documented in README
     pdfplumber = None
 
-try:
-    import pytesseract
-    from pdf2image import convert_from_bytes
-except ImportError:
-    pytesseract = None
-    convert_from_bytes = None
+import os
+import shutil
+import subprocess
+from collections import Counter
+
+# OCR runs the tesseract program directly (the Plus workflow installs it)
+# and renders pages with pypdfium2, which pdfplumber already installs. The
+# old route needed pytesseract, pdf2image and poppler, none of which the
+# workflow ever installed, so OCR never ran on GitHub: every run from
+# 2026-09-12 to 2026-09-27 logged "0 with a resolved date_signed (0 via OCR)".
+TESSERACT = shutil.which("tesseract")
+
+# Why each declaration's PDF gave no date on this run, reported in the log.
+DATE_PROBLEMS: Counter = Counter()
 
 STATE = "IN"
 GOVERNOR = "Indiana Governor"
@@ -110,6 +118,13 @@ MIN_YEAR = 2000  # standing 2000-present scoping rule for all new adapters
 
 HEADERS = {
     "User-Agent": "DisasterDataPlus-Adapter/1.0 (+https://disasterdata.io/plus/)"
+}
+# Order PDFs are requested the way a browser would ask. The listing pages
+# answer the adapter's own name, but no PDF has ever produced a date on a
+# GitHub run, and each failure was swallowed without a word.
+PDF_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)",
+    "Accept": "application/pdf,*/*",
 }
 
 WEATHER_KEYWORDS = {
@@ -364,30 +379,45 @@ MONTHS = {
 
 
 def _ocr_pdf_text(pdf_bytes: bytes, max_pages: int = 3, dpi: int = 300) -> str:
-    """Second attempt at getting text out of a PDF, used ONLY when native
-    pdfplumber extraction already returned nothing. Confirmed 2026-09-16
-    that at least Indiana's older EOs are scanned images with no text
-    layer (EO 18-01 checked directly against the live source).
-
-    Never guesses: returns "" if OCR isn't installed, the PDF can't be
-    rendered, or OCR itself produces no text. A blank result here flows
-    through exactly the same way a blank native-extraction result always
-    has -- date_signed stays blank, the declaration is correctly skipped
-    by eo_storm_join.py, same fail-closed behavior as before this existed.
+    """Text of a scanned PDF read with OCR: the first page and the last
+    max_pages pages, since the attestation ("IN TESTIMONY WHEREOF ...")
+    closes the order. Returns "" when tesseract is not installed or nothing
+    could be read, so an unreadable order stays undated rather than guessed.
     """
-    if pytesseract is None or convert_from_bytes is None:
+    if not TESSERACT:
         return ""
     try:
-        images = convert_from_bytes(pdf_bytes, dpi=dpi, first_page=1, last_page=max_pages)
+        import pypdfium2 as pdfium
+        from PIL import ImageFilter
+        document = pdfium.PdfDocument(pdf_bytes)
+        try:
+            count = len(document)
+            indexes = sorted({0, *range(max(count - max_pages, 0), count)})
+            images = []
+            for index in indexes:
+                page = document[index]
+                try:
+                    images.append(page.render(scale=dpi / 72, grayscale=True).to_pil().copy())
+                finally:
+                    page.close()
+        finally:
+            document.close()
     except Exception as exc:
         print(f"  OCR fallback: could not render PDF to images: {exc}", file=sys.stderr)
         return ""
     parts = []
     for image in images:
+        buffer = io.BytesIO()
+        image.convert("L").filter(ImageFilter.MedianFilter(3)).save(buffer, "PNG")
         try:
-            parts.append(pytesseract.image_to_string(image))
-        except Exception as exc:
+            result = subprocess.run([TESSERACT, "stdin", "stdout", "--psm", "3"], input=buffer.getvalue(),
+                                    capture_output=True, timeout=120,
+                                    env=dict(os.environ, OMP_THREAD_LIMIT="1"))
+        except (OSError, subprocess.SubprocessError) as exc:
             print(f"  OCR fallback: tesseract failed on a page: {exc}", file=sys.stderr)
+            continue
+        if result.returncode == 0:
+            parts.append(result.stdout.decode("utf-8", "replace"))
     return "\n".join(parts)
 
 
@@ -415,7 +445,8 @@ def _date_from_text(text: str) -> str:
     return ""
 
 
-def fetch_signed_date(session: requests.Session, pdf_url: str) -> tuple[str, bool]:
+def fetch_signed_date(session: requests.Session, pdf_url: str,
+                      expected_year: Optional[int] = None) -> tuple[str, bool]:
     """Extract the real signing date from the order's own PDF text.
 
     Never inferred from the EO number or file name -- read from the
@@ -440,12 +471,19 @@ def fetch_signed_date(session: requests.Session, pdf_url: str) -> tuple[str, boo
     the date came from the PDF's native text or from OCR.
     """
     if pdfplumber is None:
+        DATE_PROBLEMS["pdfplumber not installed"] += 1
         return "", False
-    try:
-        resp = session.get(pdf_url, headers=HEADERS, timeout=30)
-        resp.raise_for_status()
-    except requests.RequestException:
-        return "", False
+    resp = None
+    for attempt in (1, 2):
+        try:
+            resp = session.get(pdf_url, headers=PDF_HEADERS, timeout=30)
+            resp.raise_for_status()
+            break
+        except requests.RequestException as exc:
+            if attempt == 2:
+                status = getattr(getattr(exc, "response", None), "status_code", None)
+                DATE_PROBLEMS[f"download failed ({type(exc).__name__}{' ' + str(status) if status else ''})"] += 1
+                return "", False
 
     via_ocr = False
     text = ""
@@ -463,18 +501,25 @@ def fetch_signed_date(session: requests.Session, pdf_url: str) -> tuple[str, boo
         via_ocr = bool(text.strip())
 
     if not text.strip():
+        DATE_PROBLEMS["scanned, OCR not installed" if not TESSERACT else "scanned, OCR read nothing"] += 1
         return "", False
+
+    def plausible(date: str) -> str:
+        # An order is numbered by the year it is signed (EO 18-01 in 2018).
+        return date if date and (expected_year is None or date[:4] == str(expected_year)) else ""
 
     anchor = SIGNATURE_ANCHOR_RE.search(text)
     if anchor:
-        date = _date_from_text(text[anchor.end():])
+        date = plausible(_date_from_text(text[anchor.end():]))
         if date:
             return date, via_ocr
         # Anchor found but no date matched right after it (OCR garble on
         # exactly that line is plausible) -- fall through to the
         # whole-document search below rather than giving up immediately.
 
-    date = _date_from_text(text)
+    date = plausible(_date_from_text(text))
+    if not date:
+        DATE_PROBLEMS["read, but no signing date found" + (" (OCR)" if via_ocr else "")] += 1
     return date, via_ocr
 
 
@@ -502,8 +547,20 @@ def _fetch_current_governor_page(session: requests.Session) -> list[Action]:
     return []
 
 
-def scrape(session: Optional[requests.Session] = None) -> list[Action]:
+def load_saved_dates(join_path: Path) -> dict[str, str]:
+    """Signing dates already found, by EO number, from the saved join file,
+    so an order's PDF is read only until its date is known."""
+    try:
+        with Path(join_path).open(newline="", encoding="utf-8") as handle:
+            return {row["eo_number"]: row["date_signed"] for row in csv.DictReader(handle)
+                    if row.get("eo_number") and row.get("date_signed")}
+    except (OSError, csv.Error, KeyError):
+        return {}
+
+
+def scrape(session: Optional[requests.Session] = None, saved_dates: Optional[dict] = None) -> list[Action]:
     session = session or requests.Session()
+    saved_dates = saved_dates or {}
     all_actions: list[Action] = []
     pages_to_scrape = []
 
@@ -538,7 +595,13 @@ def scrape(session: Optional[requests.Session] = None) -> list[Action]:
                 action.title
             )
             if action.is_original_weather_declaration:
-                action.date_signed, action.date_via_ocr = fetch_signed_date(session, action.pdf_url)
+                year = _year_from_eo_number(action.eo_number)
+                saved = saved_dates.get(action.eo_number, "")
+                if saved and (year is None or saved[:4] == str(year)):
+                    action.date_signed = saved
+                    DATE_PROBLEMS["kept from earlier runs"] += 1
+                else:
+                    action.date_signed, action.date_via_ocr = fetch_signed_date(session, action.pdf_url, year)
             all_actions.append(action)
 
     # De-duplicate by EO number (the current-governor page and historical
@@ -609,12 +672,14 @@ def main() -> None:
     parser.add_argument("--join-out", required=True)
     args = parser.parse_args()
 
-    actions = scrape()
+    actions = scrape(saved_dates=load_saved_dates(Path(args.join_out)))
     write_outputs(actions, Path(args.actions_out), Path(args.relationships_out), Path(args.join_out))
     n_join = sum(1 for a in actions if a.is_original_weather_declaration)
     n_dated = sum(1 for a in actions if a.is_original_weather_declaration and a.date_signed)
     n_ocr = sum(1 for a in actions if a.date_via_ocr)
     print(f"Indiana: {len(actions)} actions scraped, {n_join} routed to join CSV, {n_dated} with a resolved date_signed ({n_ocr} via OCR).")
+    if DATE_PROBLEMS:
+        print("Indiana signing dates: " + "; ".join(f"{n} {why}" for why, n in DATE_PROBLEMS.most_common()))
 
 
 if __name__ == "__main__":
