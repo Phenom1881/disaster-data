@@ -48,7 +48,8 @@ class GradeTests(unittest.TestCase):
         result = grade(summary(source="empty", retried=True, retry_status="empty"),
                        hist=history("empty", "empty", "empty"))
         self.assertEqual(result["grade"], "red")
-        self.assertIn("returned nothing on this run and on the retry", result["reasons"][0])
+        self.assertIn("produced no declarations on this run and on the retry", result["reasons"][0])
+        self.assertNotIn("state site returned", result["reasons"][0])
         self.assertIn("3 runs in a row", result["reasons"][0])
         self.assertIn("saved from earlier runs", result["reasons"][0])
 
