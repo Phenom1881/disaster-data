@@ -625,6 +625,10 @@ def resolve_allowed_types(
     return None, True
 
 
+# Event types NCEI records as a long period rather than a moment.
+SPAN_MATCHED_TYPES = {"Drought"}
+
+
 def events_near_date(state, center_date, window_days, filenames, allowed_types):
     """Return NCEI events for a state within window_days of center_date.
 
@@ -650,10 +654,19 @@ def events_near_date(state, center_date, window_days, filenames, allowed_types):
     if not frames:
         return pd.DataFrame()
     events = pd.concat(frames, ignore_index=True)
-    mask = (
-        (events["BEGIN_DATE_TIME"].dt.date >= start)
-        & (events["BEGIN_DATE_TIME"].dt.date <= end)
-    )
+    begin = events["BEGIN_DATE_TIME"].dt.date
+    mask = (begin >= start) & (begin <= end)
+    # NCEI records drought as one row per zone per month, beginning on the
+    # 1st and ending on the last day (809 of 941 matched drought rows as of
+    # 2026-09-27). A drought order signed on the 28th was therefore never
+    # within 3 days of any drought row's start, and Idaho's 207 drought
+    # orders matched 2 storm records. For these slow-onset types, a row
+    # matches when the period it covers overlaps the window.
+    if "END_DATE_TIME" in events.columns:
+        finish = events["END_DATE_TIME"].dt.date.where(
+            events["END_DATE_TIME"].notna(), begin)
+        spanning = events["EVENT_TYPE"].isin(SPAN_MATCHED_TYPES)
+        mask = mask | (spanning & (begin <= end) & (finish >= start))
     matches = events.loc[mask]
     if allowed_types:
         matches = matches[matches["EVENT_TYPE"].isin(allowed_types)]

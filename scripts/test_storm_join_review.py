@@ -70,6 +70,41 @@ class EventDateOverrideTests(unittest.TestCase):
         self.assertEqual(len(join.load_overrides(path)), 1)
 
 
+class DroughtSpanTests(unittest.TestCase):
+    """NCEI records drought monthly (1st to last day); an order signed late
+    in the month must still match the month it falls in."""
+
+    def setUp(self):
+        import pandas as pd
+        self.pd = pd
+        self.frame = pd.DataFrame({
+            "STATE": ["IDAHO"] * 4,
+            "EVENT_TYPE": ["Drought", "Drought", "Flood", "Drought"],
+            "BEGIN_DATE_TIME": pd.to_datetime(["2001-05-01", "2001-06-01", "2001-05-01", "2001-03-01"]),
+            "END_DATE_TIME": pd.to_datetime(["2001-05-31", "2001-06-30", "2001-05-31", "2001-03-31"]),
+        })
+        self.original = join.get_year_events
+        join.get_year_events = lambda year, files, state: self.frame if year == 2001 else pd.DataFrame()
+
+    def tearDown(self):
+        join.get_year_events = self.original
+
+    def test_order_mid_month_matches_the_drought_month(self):
+        from datetime import date
+        got = join.events_near_date("IDAHO", date(2001, 5, 15), 3, {"2001": "f"}, {"Drought", "Flood"})
+        self.assertEqual(list(got["BEGIN_DATE_TIME"].dt.strftime("%Y-%m")), ["2001-05"])
+
+    def test_order_at_month_end_matches_both_months(self):
+        from datetime import date
+        got = join.events_near_date("IDAHO", date(2001, 5, 31), 3, {"2001": "f"}, {"Drought"})
+        self.assertEqual(sorted(got["BEGIN_DATE_TIME"].dt.strftime("%Y-%m")), ["2001-05", "2001-06"])
+
+    def test_other_types_still_need_to_begin_in_the_window(self):
+        from datetime import date
+        got = join.events_near_date("IDAHO", date(2001, 5, 15), 3, {"2001": "f"}, {"Flood"})
+        self.assertTrue(got.empty)
+
+
 class CopiesMatchReferenceTests(unittest.TestCase):
     def test_every_state_runs_the_reference_join(self):
         digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
