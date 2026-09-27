@@ -174,5 +174,23 @@ class FullRunTests(unittest.TestCase):
             shutil.rmtree(out, ignore_errors=True)
 
 
+class TimingReportTests(unittest.TestCase):
+    def test_slowest_states_are_listed_with_totals(self):
+        states = [{"abbreviation": ab, "name": ab} for ab in ("AA", "BB", "CC")]
+        result = {"states": {"AA": {"collect_seconds": 30.0, "storm_join_seconds": 5.0},
+                             "BB": {"collect_seconds": 400.0, "storm_join_seconds": 20.0},
+                             "CC": {"collect_seconds": None, "storm_join_seconds": None}}}
+        lines = health.render_timing(result, states)
+        text = "\n".join(lines)
+        self.assertIn("took 7.2 min in all", text)
+        self.assertIn("| BB | 6.7 min | 20 s |", text)
+        self.assertLess(text.index("| BB |"), text.index("| AA |"))
+        self.assertNotIn("| CC |", text)
+
+    def test_no_timing_means_no_section(self):
+        result = {"states": {"AA": {}}}
+        self.assertEqual(health.render_timing(result, [{"abbreviation": "AA", "name": "AA"}]), [])
+
+
 if __name__ == "__main__":
     unittest.main()
