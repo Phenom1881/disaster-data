@@ -59,6 +59,23 @@ class Action:
 
 RETRY_WAITS = (10, 30)   # seconds before the 2nd and 3rd tries of the registry page
 
+# Signing dates confirmed from dated coverage, used when an order's own PDF
+# yields no readable date. The registry lists every order but gives no dates,
+# and these weather orders' PDFs have produced no date on any run since
+# 2026-09-12, so without these none of them reached the join file. A date
+# read from the order itself still wins over this list.
+#
+# 2013-08 and 2008-12 correct the dates first saved on 2026-09-09
+# (2013-06-26 and 2008-12-11), which were the storms' start dates.
+# 2010-01 and 2003-09 are not listed: no dated source was found for them,
+# so their saved rows (2010-02-25, 2003-08-11) stand unconfirmed.
+CONFIRMED_DATES = {
+    "2015-01": "2015-01-26",  # blizzard; Patch (Concord), Jan 26 2015: "Governor Maggie Hassan today declared a State of Emergency"
+    "2013-08": "2013-07-03",  # flash flooding, Sullivan/Cheshire/Grafton; AP via Central Maine, Jul 3 2013: declared "on Wednesday"
+    "2013-03": "2013-02-08",  # blizzard; Patch (Concord), Feb 8 2013, effective 5 p.m.
+    "2008-12": "2008-12-12",  # ice storm; NH ice storm after-action report: declared "December 12, 2008, at 9:20 a.m."
+}
+
 
 def fetch(url: str, retries: tuple[int, ...] = ()) -> Optional[requests.Response]:
     """Fetch url, trying the bare sos.nh.gov host too. The registry page itself
@@ -227,6 +244,8 @@ def collect() -> list[Action]:
             if document is not None:
                 action.document_text = pdf_text(document.content)
                 action.date_signed = date_in_text(action.document_text, int(action.number[:4]))
+            if not action.date_signed:
+                action.date_signed = CONFIRMED_DATES.get(action.number)
         classify(action)
     return sorted(actions, key=lambda a: (a.date_signed or "", a.number), reverse=True)
 
