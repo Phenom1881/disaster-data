@@ -221,7 +221,8 @@ def before_cutoff(row: dict) -> bool:
 def drop_pre_cutoff_actions(state: dict, state_dir: Path) -> int:
     """Remove pre-1970 rows from the files the storm join and the pages read.
     Runs after keep_saved_actions(), so a saved copy cannot bring them back.
-    Raw archives are left whole as the record of what the source listed."""
+    That covers any raw archive a state lists in action_files (Massachusetts,
+    New Jersey and South Carolina do); other raw archives are left whole."""
     dropped = 0
     for name in candidate_action_files(state):
         path = state_dir / name

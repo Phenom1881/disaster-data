@@ -9,8 +9,8 @@ adapter that writes somewhere unexpected, or a bug in the merge itself.
 For every protected state file (declarations_for_join*, *emergency_actions*,
 *order_relationships*, state_actions.csv) it compares the working copy with
 the last commit, puts back any committed row the refresh dropped, and prints
-one line per file it repaired. Rows signed before 1970 are not put back,
-since the site leaves those off on purpose. It never fails the run; it only
+one line per file it repaired. Rows signed before 1970 are not put back
+into the files the site reads, since it leaves those off on purpose. It never fails the run; it only
 restores.
 
     python -u scripts/check_plus_row_loss.py [--repo-root .]
@@ -18,6 +18,8 @@ restores.
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import importlib.util
 import json
 import subprocess
@@ -68,9 +70,22 @@ def main() -> int:
             old = committed_bytes(repo_root, path)
             if not old:
                 continue
-            _, old_rows = bp._csv_rows_from_bytes(old)
-            kept_old = [r for r in old_rows if not bp.before_cutoff(r)]
-            if not kept_old:
+            old_fields, old_rows = bp._csv_rows_from_bytes(old)
+            cutoff_applies = path.name in bp.candidate_action_files(state)
+            if cutoff_applies and any(bp.before_cutoff(r) for r in old_rows):
+                # Rows before 1970 are left off on purpose, so they are not
+                # "lost". Compare against the committed copy without them;
+                # otherwise this reported them as put back on 2026-09-26
+                # even though the cutoff removed them again straight after.
+                kept_rows = [r for r in old_rows if not bp.before_cutoff(r)]
+                buffer = io.StringIO()
+                writer = csv.DictWriter(buffer, fieldnames=old_fields, restval="",
+                                        extrasaction="ignore", lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(kept_rows)
+                old = buffer.getvalue().encode("utf-8")
+                old_rows = kept_rows
+            if not old_rows:
                 continue
             try:
                 counts = bp._merge_saved_rows(path, old, state["abbreviation"])
@@ -81,9 +96,6 @@ def main() -> int:
                 repaired += 1
                 continue
             if counts["kept"]:
-                # The merge may have restored pre-1970 rows; drop them again.
-                if path.name in bp.candidate_action_files(state):
-                    bp.drop_pre_cutoff_actions(state, state_dir)
                 print(f"WARNING {state['abbreviation']}: {path.name}: put back "
                       f"{counts['kept']} committed row(s) this refresh dropped")
                 repaired += 1
