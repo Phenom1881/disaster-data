@@ -40,6 +40,7 @@ existing ``plus/virginia/virginia.py`` already follows that contract.
 from __future__ import annotations
 
 import argparse
+import atexit
 import csv
 import html
 import importlib.util
@@ -47,8 +48,10 @@ import io
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -537,11 +540,12 @@ def collect_with_safeguard(state: dict, state_dir: Path) -> dict:
     """Run one state's adapter inside the keep-saved safeguard and report
     what its source returned. Snapshot first, merge back after, even when
     the adapter raises partway through a write (see keep_saved_actions())."""
+    started = time.monotonic()
     adapter_path = adapter_path_for(state, state_dir)
     if not adapter_path.exists():
         return {"note": "", "error": "No state-source adapter is installed",
                 "kept": {"kept": 0, "filled": 0, "cleaned": 0},
-                "saved_rows": 0, "scraped_rows": 0, "status": SOURCE_FAILED}
+                "saved_rows": 0, "scraped_rows": 0, "status": SOURCE_FAILED, "seconds": 0.0}
     saved = snapshot_action_files(state, state_dir)
     primary = primary_action_name(state, state_dir, saved)
     saved_rows = 0
@@ -571,7 +575,8 @@ def collect_with_safeguard(state: dict, state_dir: Path) -> dict:
         drop_pre_cutoff_actions(state, state_dir)
     status = source_status(error, saved_rows, scraped_rows, kept["kept"])
     return {"note": note or "", "error": error, "kept": kept, "saved_rows": saved_rows,
-            "scraped_rows": scraped_rows, "status": status}
+            "scraped_rows": scraped_rows, "status": status,
+            "seconds": round(time.monotonic() - started, 1)}
 
 
 def load_federal_declarations(repo_root: Path, abbreviation: str) -> list[dict]:
@@ -1414,6 +1419,7 @@ def process_state(
     storm_note = ""
     storm_failed = False
     storm_pipeline_ran = False
+    join_started = time.monotonic()
     if join_storms:
         if dry_run:
             # --dry-run promises to validate and report without writing, but
@@ -1433,6 +1439,7 @@ def process_state(
         else:
             storm_note = "Storm join skipped: no state-action CSV is available"
 
+    join_seconds = round(time.monotonic() - join_started, 1) if join_storms else None
     federal_declarations = load_federal_declarations(repo_root, state["abbreviation"])
     if storm_pipeline_ran:
         # Read this run's own freshly-generated, verified outputs directly,
@@ -1487,6 +1494,9 @@ def process_state(
         "source_records_returned": collected["scraped_rows"] if collected else None,
         "source_records_saved_before": collected["saved_rows"] if collected else None,
         "retried": False,
+        # Seconds spent on this state, so each run shows where its time went.
+        "timing": {"collect_seconds": collected.get("seconds") if collected else None,
+                   "storm_join_seconds": join_seconds},
         "generated_on": date.today().isoformat(),
     }
     if not dry_run:
@@ -1516,6 +1526,7 @@ def process_state(
 # source failed or returned nothing gets one more try after the rest of the
 # run, and a state that recovers is rebuilt from what the retry collected.
 RETRY_DELAY_SECONDS = int(os.environ.get("PLUS_RETRY_DELAY", "60"))
+NCEI_CACHE_ENV = "PLUS_NCEI_CACHE_DIR"   # read by each state's eo_storm_join.py
 
 
 def retry_failed_sources(selected: list[dict], summaries: list[dict], repo_root: Path,
@@ -1534,7 +1545,8 @@ def retry_failed_sources(selected: list[dict], summaries: list[dict], repo_root:
         state = by_abbreviation[first["abbreviation"]]
         state_dir = repo_root / "plus" / state["slug"]
         result = collect_with_safeguard(state, state_dir)
-        first_attempt = {"status": first["source_status"], "error": first.get("collection_error", "")}
+        first_attempt = {"status": first["source_status"], "error": first.get("collection_error", ""),
+                         "seconds": (first.get("timing") or {}).get("collect_seconds")}
         if result["status"] in SOURCE_BAD:
             print(f"RETRY {state['abbreviation']}: still {result['status']}"
                   + (f" ({result['error']})" if result["error"] else ""))
@@ -1602,6 +1614,13 @@ def main() -> int:
     all_states = load_manifest(args.manifest)
     selected = select_states(all_states, args.states)
     repo_root = args.repo_root.resolve()
+    if args.join_storms and not os.environ.get(NCEI_CACHE_ENV):
+        # One folder for the whole run, so each yearly NOAA storm file is
+        # downloaded and parsed once instead of once per state (see
+        # NCEI_CACHE_ENV in eo_storm_join.py). Removed when the run ends.
+        shared = tempfile.mkdtemp(prefix="plus_ncei_")
+        os.environ[NCEI_CACHE_ENV] = shared
+        atexit.register(shutil.rmtree, shared, True)
     print(f"Repository root: {repo_root}")
     print(f"Selected states: {', '.join(state['abbreviation'] for state in selected)}")
 
@@ -1663,6 +1682,17 @@ def main() -> int:
             "Coverage pending for: " + ", ".join(incomplete)
             + ". Pages were generated with explicit incomplete-coverage notices."
         )
+
+    timed = sorted(
+        ((item["abbreviation"], (item.get("timing") or {}).get("collect_seconds") or 0,
+          (item.get("timing") or {}).get("storm_join_seconds") or 0) for item in summaries),
+        key=lambda row: row[1] + row[2], reverse=True)
+    recorded = any((item.get("timing") or {}).get(key) is not None for item in summaries
+                   for key in ("collect_seconds", "storm_join_seconds"))
+    if timed and recorded:
+        print("TIME total: collect %.0fs, storm join %.0fs. Slowest: %s" % (
+            sum(row[1] for row in timed), sum(row[2] for row in timed),
+            ", ".join("%s %.0fs+%.0fs" % row for row in timed[:10])))
 
     kept_states = [
         "%s (%d)" % (item["abbreviation"], item["kept_saved_records"])

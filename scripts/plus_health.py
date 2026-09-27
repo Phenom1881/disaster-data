@@ -264,6 +264,8 @@ def render_report(result: dict, states: list[dict]) -> str:
     if greens:
         lines.extend([f"## Green ({len(greens)})", "", ", ".join(greens), ""])
 
+    lines.extend(render_timing(result, states))
+
     lines.extend([
         "## Every state", "",
         "| State | Grade | Source this run | Failed runs in a row | Declarations | Federal "
@@ -280,6 +282,35 @@ def render_report(result: dict, states: list[dict]) -> str:
             f"| {cell(' '.join(row.get('notes', [])))} |")
     lines.extend(["", "<details><summary>How grades are set</summary>", "", RULES, "", "</details>", ""])
     return "\n".join(lines)
+
+
+def minutes(seconds: float) -> str:
+    return f"{seconds / 60:.1f} min" if seconds >= 60 else f"{seconds:.0f} s"
+
+
+def render_timing(result: dict, states: list[dict], top: int = 10) -> list[str]:
+    """Which states took the longest this run: collecting from the state
+    source, and matching storms. Empty when the run recorded no timing."""
+    rows = []
+    for state in states:
+        row = result["states"][state["abbreviation"]]
+        collect, join = row.get("collect_seconds"), row.get("storm_join_seconds")
+        if collect is None and join is None:
+            continue
+        rows.append((state["abbreviation"], collect or 0.0, join or 0.0))
+    if not rows:
+        return []
+    rows.sort(key=lambda item: item[1] + item[2], reverse=True)
+    total_collect = sum(item[1] for item in rows)
+    total_join = sum(item[2] for item in rows)
+    lines = ["## Where the time went", "",
+             f"Collecting from state sources took {minutes(total_collect)} in all, and matching "
+             f"storms took {minutes(total_join)}. The {min(top, len(rows))} slowest states:", "",
+             "| State | Collecting | Matching storms |", "|---|---:|---:|"]
+    for ab, collect, join in rows[:top]:
+        lines.append(f"| {ab} | {minutes(collect)} | {minutes(join)} |")
+    lines.append("")
+    return lines
 
 
 def render_changes(result: dict, previous: dict | None, states: list[dict]) -> str:
@@ -392,7 +423,10 @@ def main() -> int:
         if prior is None and len(history) > 1:
             prior = {"declarations": history[-2].get("declarations")}
         graded = grade_state(state, summary, numbers, history, prior, run_day, since)
-        graded.update(name=state["name"], since=since, history=history)
+        timing = (summary or {}).get("timing") or {}
+        graded.update(name=state["name"], since=since, history=history,
+                      collect_seconds=timing.get("collect_seconds"),
+                      storm_join_seconds=timing.get("storm_join_seconds"))
         result["states"][ab] = graded
 
     grades = [row["grade"] for row in result["states"].values()]

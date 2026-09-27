@@ -54,9 +54,15 @@ Usage:
 import argparse
 import gzip
 import io
+import json
+import os
 import re
+import shutil
 import sys
+import tempfile
 from datetime import timedelta
+from pathlib import Path
+from urllib.parse import quote
 
 import pandas as pd
 import requests
@@ -207,9 +213,77 @@ HAZARD_EVENT_TYPES = {
 
 _year_cache = {}
 
+# NCEI publishes one national details file per year, 6 to 16 MB compressed.
+# Each state's join runs as its own process, so without a shared cache every
+# state downloaded and parsed every year it needed: 396 downloads of 31
+# distinct files, about 4 GB, on the 2026-09-27 refresh. When this variable
+# names a folder (build-plus.py sets one for the whole run), the file index
+# is fetched once, each year's file is downloaded and parsed once and split by
+# state, and later states read only their own slice. File names carry NCEI's
+# revision date (_cYYYYMMDD), so a revised file is a new name and is fetched
+# fresh. Unset, nothing changes: each run downloads what it needs, as before.
+NCEI_CACHE_ENV = "PLUS_NCEI_CACHE_DIR"
+
+
+def _ncei_cache_dir():
+    value = os.environ.get(NCEI_CACHE_ENV, "").strip()
+    if not value:
+        return None
+    path = Path(value)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _state_slice_name(state):
+    return quote(state.upper(), safe="") + ".pkl"
+
+
+def _cached_state_year(filename, state):
+    """This state's rows of one yearly file from the shared cache, splitting
+    the file into per-state slices the first time any state asks for it.
+    Returns None when no cache folder is set."""
+    cache = _ncei_cache_dir()
+    if cache is None:
+        return None
+    split_dir = cache / (filename + ".by-state")
+    columns_file = split_dir / "_columns.pkl"
+    if not columns_file.exists():
+        frame = download_year_details(filename)
+        work = Path(tempfile.mkdtemp(dir=cache, prefix=".split-"))
+        try:
+            states = frame["STATE"].fillna("").str.upper()
+            for name, part in frame.groupby(states, sort=False):
+                if name:
+                    part.to_pickle(work / _state_slice_name(name))
+            frame.iloc[0:0].to_pickle(work / "_columns.pkl")
+            try:
+                os.rename(work, split_dir)
+            except OSError:
+                pass  # another process finished the same split first
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+    slice_file = split_dir / _state_slice_name(state)
+    if slice_file.exists():
+        return pd.read_pickle(slice_file)
+    return pd.read_pickle(columns_file)  # no rows for this state that year
+
 
 def get_latest_filenames_by_year():
-    """Return the most recently certified details filename for each year."""
+    """Return the most recently certified details filename for each year.
+    With a shared cache folder the index is fetched once per run."""
+    cache = _ncei_cache_dir()
+    index_file = cache / "index.json" if cache else None
+    if index_file is not None and index_file.exists():
+        return json.loads(index_file.read_text(encoding="utf-8"))
+    latest = _fetch_latest_filenames()
+    if index_file is not None:
+        partial = index_file.with_suffix(".tmp")
+        partial.write_text(json.dumps(latest, sort_keys=True), encoding="utf-8")
+        os.replace(partial, index_file)
+    return latest
+
+
+def _fetch_latest_filenames():
     response = requests.get(INDEX_URL, timeout=30)
     response.raise_for_status()
     latest = {}
@@ -245,10 +319,12 @@ def get_year_events(year, filenames, state):
         print(f"No NCEI file published yet for {year_text}.", file=sys.stderr)
         _year_cache[cache_key] = pd.DataFrame()
         return _year_cache[cache_key]
-    frame = download_year_details(filenames[year_text])
-    # Historical runs span more than two decades.  Retaining only the selected
-    # state's records keeps the cache small while still downloading each year once.
-    frame = frame[frame["STATE"].fillna("").str.upper() == state.upper()].copy()
+    frame = _cached_state_year(filenames[year_text], state)
+    if frame is None:
+        frame = download_year_details(filenames[year_text])
+        # Historical runs span more than two decades.  Retaining only the selected
+        # state's records keeps the cache small while still downloading each year once.
+        frame = frame[frame["STATE"].fillna("").str.upper() == state.upper()].copy()
     _year_cache[cache_key] = frame
     return _year_cache[cache_key]
 

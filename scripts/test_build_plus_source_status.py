@@ -151,5 +151,66 @@ class RetryTests(unittest.TestCase):
         self.assertFalse(after["retried"])
 
 
+FAKE_JOIN = """
+import argparse, os
+from pathlib import Path
+parser = argparse.ArgumentParser()
+for flag in ("--declarations", "--state", "--out", "--severity-out", "--overrides"):
+    parser.add_argument(flag)
+args, _ = parser.parse_known_args()
+folder = os.environ.get("PLUS_NCEI_CACHE_DIR", "")
+Path(args.out).with_name("seen_cache.txt").write_text(f"{folder}|{Path(folder).is_dir() if folder else False}")
+Path(args.out).write_text("declaration_id,EVENT_TYPE\\n")
+Path(args.severity_out).write_text("declaration_id\\n")
+"""
+
+
+class SharedStormFolderTests(unittest.TestCase):
+    """End to end through build-plus.py: every state's storm join in one run
+    sees the same NOAA folder, and the folder is gone when the run ends."""
+
+    def test_states_share_one_folder_that_is_removed_after_the_run(self):
+        import subprocess
+        root = Path(tempfile.mkdtemp(prefix="shared_join_"))
+        try:
+            for slug in ("delaware", "rhode-island"):
+                folder = root / "plus" / slug
+                folder.mkdir(parents=True)
+                (folder / "declarations_for_join.csv").write_text(SAVED, encoding="utf-8")
+                (folder / "eo_storm_join.py").write_text(FAKE_JOIN, encoding="utf-8")
+            env = dict(os.environ)
+            env.pop("PLUS_NCEI_CACHE_DIR", None)
+            result = subprocess.run(
+                [sys.executable, str(Path(__file__).parent / "build-plus.py"), "--repo-root", str(root),
+                 "--states", "DE,RI", "--join-storms"],
+                capture_output=True, text=True, env=env)
+            self.assertEqual(result.returncode, 0, result.stderr[-2000:])
+            seen = {(root / "plus" / slug / "seen_cache.txt").read_text() for slug in ("delaware", "rhode-island")}
+            self.assertEqual(len(seen), 1, seen)                 # the same folder for both states
+            folder, existed = seen.pop().split("|")
+            self.assertEqual(existed, "True")
+            self.assertFalse(Path(folder).exists())                # removed at the end of the run
+            summary = json.loads((root / "plus" / "delaware" / "state-summary.json").read_text())
+            self.assertIsNotNone(summary["timing"]["storm_join_seconds"])
+            self.assertIn("TIME total:", result.stdout)
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+
+class TimingTests(unittest.TestCase):
+    def test_collection_time_is_recorded(self):
+        root = Path(tempfile.mkdtemp(prefix="timing_"))
+        try:
+            state_dir = root / "plus" / STATE["slug"]
+            state_dir.mkdir(parents=True)
+            (state_dir / "declarations_for_join.csv").write_text(SAVED, encoding="utf-8")
+            (state_dir / "testland.py").write_text(textwrap.dedent(WRITES_EVERYTHING), encoding="utf-8")
+            summary = bp.process_state(STATE, root, collect=True, join_storms=False, dry_run=True)
+            self.assertGreaterEqual(summary["timing"]["collect_seconds"], 0)
+            self.assertIsNone(summary["timing"]["storm_join_seconds"])
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+
 if __name__ == "__main__":
     unittest.main()
