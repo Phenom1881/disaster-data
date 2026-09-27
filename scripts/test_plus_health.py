@@ -35,27 +35,70 @@ def history(*sources):
     return [{"at": f"run {i}", "source": s, "declarations": 40} for i, s in enumerate(sources)]
 
 
-def grade(summary_, numbers=GOOD, hist=None, previous=None, since="Since 2000"):
+def grade(summary_, numbers=GOOD, hist=None, previous=None, since="Since 2000", last_good=None):
     hist = hist if hist is not None else history(summary_.get("source_status", "ok"))
-    return health.grade_state(STATE, summary_, numbers, hist, previous, TODAY, since)
+    return health.grade_state(STATE, summary_, numbers, hist, previous, TODAY, since, last_good=last_good)
 
 
 class GradeTests(unittest.TestCase):
     def test_healthy_state_is_green(self):
         self.assertEqual(grade(summary())["grade"], "green")
 
-    def test_source_that_returned_nothing_is_red_even_with_a_full_page(self):
+    def test_source_that_returned_nothing_with_saved_records_is_yellow_for_four_weeks(self):
+        # New Hampshire's and Ohio's case: the site refuses now and then, and
+        # the page keeps showing what was saved from the last good run.
         result = grade(summary(source="empty", retried=True, retry_status="empty"),
-                       hist=history("empty", "empty", "empty"))
+                       hist=history("empty", "empty", "empty"), last_good="2026-09-20 11:12 UTC")
+        self.assertEqual(result["grade"], "yellow")
+        reason = result["reasons"][0]
+        self.assertIn("produced no declarations on this run and on the retry", reason)
+        self.assertNotIn("state site returned", reason)
+        self.assertIn("3 runs in a row", reason)
+        self.assertIn("saved from earlier runs; the last successful collection was 2026-09-20 (6 days ago)", reason)
+        self.assertIn("turns red at four weeks", reason)
+
+    def test_it_turns_red_four_weeks_after_the_last_good_collection(self):
+        result = grade(summary(source="failed"), hist=history("failed"), last_good="2026-08-30 00:00 UTC")
         self.assertEqual(result["grade"], "red")
-        self.assertIn("produced no declarations on this run and on the retry", result["reasons"][0])
-        self.assertNotIn("state site returned", result["reasons"][0])
-        self.assertIn("3 runs in a row", result["reasons"][0])
-        self.assertIn("saved from earlier runs", result["reasons"][0])
+        self.assertIn("was 2026-08-30 (28 days ago), four weeks or more", result["reasons"][0])
+
+    def test_with_no_success_on_record_the_count_starts_at_the_first_failure(self):
+        recent = [{"at": "2026-09-26 20:28 UTC", "source": "empty"}, {"at": "2026-09-27 13:57 UTC", "source": "empty"}]
+        result = grade(summary(source="empty"), hist=recent)
+        self.assertEqual(result["grade"], "yellow")
+        self.assertIn("No successful collection is on record, and collection has failed since at least "
+                      "2026-09-26. This turns red at four weeks.", result["reasons"][0])
+        old = [{"at": "2026-08-01 06:00 UTC", "source": "empty"}, {"at": "2026-09-27 13:57 UTC", "source": "failed"}]
+        result = grade(summary(source="failed"), hist=old)
+        self.assertEqual(result["grade"], "red")
+        self.assertIn("since at least 2026-08-01 (56 days), four weeks or more", result["reasons"][0])
+
+    def test_source_that_returned_nothing_with_nothing_saved_is_red(self):
+        result = grade(summary(source="empty", count=0), numbers=dict(GOOD, actions=0, dated=0, titled=0, linked=0),
+                       last_good="2026-09-20 11:12 UTC")
+        self.assertEqual(result["grade"], "red")
+        self.assertNotIn("saved from earlier runs", result["reasons"][0])
 
     def test_failed_source_names_the_error(self):
         result = grade(summary(source="failed", collection_error="Collection failed: 503 Server Error"))
         self.assertIn("(503 Server Error)", result["reasons"][0])
+
+
+class LastGoodCollectionTests(unittest.TestCase):
+    def test_a_good_run_is_the_last_good_collection(self):
+        hist = [{"at": "2026-09-26 20:28 UTC", "source": "failed"}, {"at": "2026-09-27 13:57 UTC", "source": "ok"}]
+        self.assertEqual(health.last_good_collection({"last_good_collection": "2026-09-01 06:00 UTC"}, hist),
+                         "2026-09-27 13:57 UTC")
+
+    def test_a_partial_return_counts_as_good(self):
+        hist = [{"at": "2026-09-26 20:28 UTC", "source": "partial"}, {"at": "2026-09-27 13:57 UTC", "source": "empty"}]
+        self.assertEqual(health.last_good_collection(None, hist), "2026-09-26 20:28 UTC")
+
+    def test_the_saved_value_outlasts_the_history(self):
+        hist = [{"at": "2026-09-27 13:57 UTC", "source": "failed"}]
+        self.assertEqual(health.last_good_collection({"last_good_collection": "2026-08-02 06:00 UTC"}, hist),
+                         "2026-08-02 06:00 UTC")
+        self.assertIsNone(health.last_good_collection(None, hist))
 
     def test_recovered_on_retry_is_green_with_a_note(self):
         result = grade(summary(source="ok", retried=True, retry_status="ok",
