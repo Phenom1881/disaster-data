@@ -1,10 +1,36 @@
-"""Collect Oregon executive orders from the Governor's official SharePoint list."""
+"""Collect Oregon executive orders from the Governor's official SharePoint list.
+
+Signing dates. Oregon posts each signed order as a scanned image with no text
+layer, so the date printed at the end of the order ("Done at Salem, Oregon,
+this 7th day of August, 2026.") cannot be read as text. Until 2026-09-27 that
+left 251 of Oregon's 252 declarations undated, and an undated declaration
+gets no storm search. Now:
+
+1. A date already found on an earlier run is reused (read from the saved
+   or_emergency_actions_all.csv), so each PDF is downloaded and read only
+   until its date is known, not every week.
+2. A PDF that does have a text layer is read as text.
+3. Otherwise its last pages are read with OCR (the tesseract program, which
+   the Plus workflow installs). OCR has a time limit per run; orders it does
+   not reach are read on the next run.
+
+A date is accepted only if it falls in the order's own year (EO 26-24 was
+signed in 2026) and is not in the future. Where each date came from is
+recorded in the date_source column. Weather declarations still undated after
+a run are listed in manual_or_ocr_review.csv with the reason.
+"""
 from __future__ import annotations
 
 import argparse
 import csv
+import difflib
 import io
+import os
 import re
+import shutil
+import subprocess
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import date
@@ -19,13 +45,53 @@ ARCHIVE = "https://www.oregon.gov/gov/Pages/executive-orders.aspx"
 API = "https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)", "Accept": "application/json;odata=verbose"}
 JOIN_FIELDS = ("declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url")
-ACTION_FIELDS = ("declaration_id", "state", "governor", "eo_number", "action_kind", "action_type", "event_description", "date_signed", "end_date", "weather_related", "source_scope", "document_format", "detail_url", "archive_record_url")
+ACTION_FIELDS = ("declaration_id", "state", "governor", "eo_number", "action_kind", "action_type", "event_description", "date_signed", "date_source", "end_date", "weather_related", "source_scope", "document_format", "detail_url", "archive_record_url")
 REL_FIELDS = ("source_order_id", "target_order_id", "relationship_type", "relationship_text", "relationship_source", "confidence")
+REVIEW_FIELDS = ("declaration_id", "eo_number", "event_description", "archive_record_url", "review_reason")
 HAZARD_RE = re.compile(r"\b(?:drought|wildfires?|wildland fires?|fires?|firefighting|conflagration|flood(?:ing)?|heavy rain|rain storms?|hurricanes?|tropical storms?|winter|snow|ice|blizzard|severe storms?|(?:severe|extreme) weather|atmospheric river|high winds?|windstorms?|tornado(?:es)?)\b", re.I)
 DECLARATION_RE = re.compile(r"\b(?:determination|declaration|proclamation) of (?:a )?state of (?:drought |winter )?emergency\b|\binvocation of (?:the )?emergency conflagration act\b", re.I)
 MODIFIER_RE = re.compile(r"\b(?:amend(?:s|ed|ing|ment)|extend(?:s|ed|ing)|extension|rescind(?:s|ed|ing)?|repeal(?:s|ed|ing)?|terminat(?:e|es|ed|ing|ion)|replacing)\b", re.I)
-DATE_RE = re.compile(r"(?:signed|done|dated)?\s*(?:at[^,]{0,80},?\s*)?(?:this\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+day of\s+([A-Za-z]+),?\s+(20\d{2})", re.I)
-MONTHS = {name.lower(): i for i, name in enumerate(("", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) if name}
+
+DATE_FROM_TEXT = "order text"
+DATE_FROM_OCR = "order scan (OCR)"
+
+# "this 7th day of August, 2026". OCR output is noisy, so the pattern allows
+# the usual misreadings: "lst" for "1st", "2O26" for "2026", "clay" for
+# "day", "ot" for "of", a split ordinal ("7t h"). The month is matched
+# loosely below ("Auqust", "Septernber").
+DAY_OF_RE = re.compile(
+    r"(?<![A-Za-z0-9])(?P<day>[0-9lIO]{1,2})\s*(?:[a-z]\s?[a-z]?)?\s*[.,]?\s*"
+    r"(?:day|dav|doy|clay)\s*(?:of|ot|0f|o\s+f)\s+"
+    r"(?P<month>[A-Za-z]{3,10})\.?,?\s*(?P<year>(?:19|2[0O])[0-9O]{2})",
+    re.I,
+)
+# "Done at Salem, Oregon, on August 7, 2026" (month first). Only accepted
+# after "done", "dated" or "signed", since order text cites other dates too.
+MONTH_FIRST_RE = re.compile(
+    r"\b(?:d[o0]ne|dated|signed)\b[^.]{0,80}?\b(?P<month>[A-Za-z]{3,10})\.?\s+"
+    r"(?P<day>[0-9lIO]{1,2}),?\s+(?P<year>(?:19|2[0O])[0-9O]{2})",
+    re.I,
+)
+SIGNED_CUE_RE = re.compile(r"\b(?:d[o0]ne|dated|signed)\b", re.I)
+MONTH_NAMES = ("january", "february", "march", "april", "may", "june", "july",
+               "august", "september", "october", "november", "december")
+_DIGIT_FIXES = str.maketrans({"l": "1", "I": "1", "i": "1", "L": "1", "O": "0", "o": "0"})
+
+# OCR settings. Each PDF's last pages are tried, newest page first, with up
+# to three image treatments; most scans read on the first try.
+TESSERACT = shutil.which("tesseract")
+OCR_LAST_PAGES = 3
+OCR_PASSES = ((300, "median"), (300, "threshold"), (200, "plain"))
+OCR_BUDGET_SECONDS = 15 * 60
+_PDFIUM_LOCK = threading.Lock()   # pdfium is not safe to call from two threads at once
+
+REVIEW_REASONS = {
+    "download": "The order PDF could not be downloaded on this run.",
+    "no_ocr": "The order PDF is a scan with no text layer, and OCR was not available on this run.",
+    "budget": "The order PDF is a scan; OCR ran out of time on this run and continues on the next.",
+    "ocr_error": "The order PDF is a scan and could not be converted to an image for OCR.",
+    "not_found": "The order PDF is a scan and OCR could not read a signing date in its last pages.",
+}
 
 
 @dataclass
@@ -37,6 +103,8 @@ class Action:
     created: str = ""
     text: str = ""
     signed: str = ""
+    date_source: str = ""
+    date_note: str = ""
 
     @property
     def eo_number(self) -> str:
@@ -48,25 +116,128 @@ class Action:
         return f"OR-EO-{self.eo_number}{suffix}"
 
 
-def pdf_text_and_date(url: str, session: requests.Session | None = None) -> tuple[str, str]:
-    session = session or requests.Session()
-    response = session.get(url, headers={"User-Agent": HEADERS["User-Agent"]}, timeout=60)
-    response.raise_for_status()
-    with pdfplumber.open(io.BytesIO(response.content)) as pdf:
-        text = " ".join((page.extract_text() or "") for page in pdf.pages)
-    text = re.sub(r"\s+", " ", text)
-    match = DATE_RE.search(text)
-    signed = ""
-    if match and match.group(2).lower() in MONTHS:
+# ---------------------------------------------------------------- signing date
+
+def _as_date(day: str, month: str, year: str, order_year: int | None, today: date) -> date | None:
+    found = difflib.get_close_matches(month.lower(), MONTH_NAMES, n=1, cutoff=0.75)
+    if not found:
+        return None
+    try:
+        value = date(int(year.translate(_DIGIT_FIXES)), MONTH_NAMES.index(found[0]) + 1,
+                     int(day.translate(_DIGIT_FIXES)))
+    except ValueError:
+        return None
+    if order_year and value.year != order_year:
+        return None
+    if value > today:
+        return None
+    return value
+
+
+def find_signing_date(text: str, order_year: int | None = None, today: date | None = None) -> str:
+    """The signing date in an order's text or OCR output, as YYYY-MM-DD, or ""
+    if none is found. A date right after "Done at ..." wins; otherwise the
+    last date in the text, since the signing line ends the order."""
+    today = today or date.today()
+    text = re.sub(r"\s+", " ", text or "")
+    found = []
+    for match in DAY_OF_RE.finditer(text):
+        value = _as_date(match.group("day"), match.group("month"), match.group("year"), order_year, today)
+        if value:
+            cued = bool(SIGNED_CUE_RE.search(text[max(0, match.start() - 120):match.start()]))
+            found.append((cued, match.start(), value))
+    for match in MONTH_FIRST_RE.finditer(text):
+        value = _as_date(match.group("day"), match.group("month"), match.group("year"), order_year, today)
+        if value:
+            found.append((True, match.start("month"), value))
+    if not found:
+        return ""
+    cued = [item for item in found if item[0]]
+    return max(cued or found, key=lambda item: item[1])[2].isoformat()
+
+
+def pdf_text(content: bytes) -> str:
+    with pdfplumber.open(io.BytesIO(content)) as pdf:
+        return re.sub(r"\s+", " ", " ".join((page.extract_text() or "") for page in pdf.pages))
+
+
+def render_pages(content: bytes, dpi: int, last: int = OCR_LAST_PAGES) -> list:
+    """Grayscale images of the last pages, newest page first."""
+    import pypdfium2 as pdfium
+    images = []
+    with _PDFIUM_LOCK:
+        document = pdfium.PdfDocument(content)
         try:
-            signed = date(int(match.group(3)), MONTHS[match.group(2).lower()], int(match.group(1))).isoformat()
-        except ValueError:
-            pass
-    return text, signed
+            count = len(document)
+            for index in range(count - 1, max(count - 1 - last, -1), -1):
+                page = document[index]
+                try:
+                    images.append(page.render(scale=dpi / 72, grayscale=True).to_pil().copy())
+                finally:
+                    page.close()
+        finally:
+            document.close()
+    return images
 
 
-def collect(session: requests.Session | None = None) -> list[Action]:
-    session = session or requests.Session()
+def prepare(image, treatment: str):
+    from PIL import ImageFilter
+    if treatment == "plain":
+        return image
+    cleaned = image.convert("L").filter(ImageFilter.MedianFilter(3))   # scanner speckle
+    if treatment == "threshold":
+        cleaned = cleaned.point(lambda value: 255 if value > 128 else 0)
+    return cleaned
+
+
+def run_tesseract(image) -> str:
+    buffer = io.BytesIO()
+    image.save(buffer, "PNG")
+    try:
+        result = subprocess.run(
+            [TESSERACT, "stdin", "stdout", "--psm", "3"], input=buffer.getvalue(),
+            capture_output=True, timeout=120, env=dict(os.environ, OMP_THREAD_LIMIT="1"))
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return result.stdout.decode("utf-8", "replace") if result.returncode == 0 else ""
+
+
+def ocr_signing_date(content: bytes, order_year: int | None, today: date | None = None,
+                     deadline: float | None = None) -> tuple[str, str, str]:
+    """Read a scanned order's signing date with OCR. Returns (date, text,
+    note); note is "" when a date was found, else why not."""
+    today = today or date.today()
+    texts = []
+    for dpi, treatment in OCR_PASSES:
+        try:
+            images = render_pages(content, dpi)
+        except Exception:
+            return "", " ".join(texts), "ocr_error"
+        for image in images:
+            if deadline is not None and time.monotonic() > deadline:
+                return "", " ".join(texts), "budget"
+            text = run_tesseract(prepare(image, treatment))
+            texts.append(text)
+            signed = find_signing_date(text, order_year, today)
+            if signed:
+                return signed, text, ""
+    return "", " ".join(texts), "not_found"
+
+
+# ---------------------------------------------------------------- collection
+
+def load_saved_dates(path) -> dict[str, tuple[str, str]]:
+    """Signing dates found on earlier runs, by declaration id."""
+    try:
+        with Path(path).open(newline="", encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+    except (OSError, csv.Error):
+        return {}
+    return {row["declaration_id"]: (row.get("date_signed") or "", row.get("date_source") or "")
+            for row in rows if row.get("declaration_id") and row.get("date_signed")}
+
+
+def list_orders(session: requests.Session) -> list[Action]:
     params = {"$top": "5000", "$expand": "File", "$select": "Title,Document_x0020_Description,Year,Number,Order0,Created,File/ServerRelativeUrl,File/Name"}
     response = session.get(API, params=params, headers=HEADERS, timeout=60)
     response.raise_for_status()
@@ -91,43 +262,111 @@ def collect(session: requests.Session | None = None) -> list[Action]:
         if year < 2000:
             continue
         actions.append(Action(year, number, re.sub(r"\s+", " ", item.get("Document_x0020_Description") or item.get("Title") or "").strip(), urljoin("https://www.oregon.gov", relative), item.get("Created", "")))
-
-    # Failures used to be swallowed here, which left 251 of 252 Oregon
-    # declarations without a signing date and no word in the log about why.
-    # Now each failure is counted by cause and reported, one retry is made,
-    # and fewer PDFs are requested at once.
-    failures: dict[str, int] = {}
-    no_date = [0]
-
-    def enrich(action: Action) -> Action:
-        if DECLARATION_RE.search(action.description) or MODIFIER_RE.search(action.description):
-            for attempt in (1, 2):
-                try:
-                    action.text, action.signed = pdf_text_and_date(action.pdf_url, session)
-                    if not action.signed:
-                        no_date[0] += 1
-                    break
-                except Exception as exc:
-                    if attempt == 2:
-                        cause = type(exc).__name__
-                        status = getattr(getattr(exc, "response", None), "status_code", None)
-                        if status:
-                            cause += f" {status}"
-                        failures[cause] = failures.get(cause, 0) + 1
-        return action
-
-    with ThreadPoolExecutor(max_workers=4) as pool:
-        actions = list(pool.map(enrich, actions))
-    if failures or no_date[0]:
-        print("Oregon: order PDFs not read: %s; read but no signing date found: %d"
-              % (", ".join(f"{k} x{v}" for k, v in sorted(failures.items())) or "none", no_date[0]))
-    unique = {}
+    # One row per order, keeping the fuller description, before any PDF is
+    # fetched, so a list entry that appears twice is not read twice.
+    unique: dict[str, Action] = {}
     for action in actions:
         previous = unique.get(action.stable_id)
         if not previous or len(action.description) > len(previous.description):
             unique[action.stable_id] = action
-    return sorted(unique.values(), key=lambda x: (x.signed, x.year, int(x.number)), reverse=True)
+    return list(unique.values())
 
+
+def collect(session: requests.Session | None = None, saved: dict | None = None,
+            today: date | None = None, ocr_budget: float = OCR_BUDGET_SECONDS) -> list[Action]:
+    session = session or requests.Session()
+    saved = saved or {}
+    today = today or date.today()
+    ocr_available = bool(TESSERACT)
+    deadline = time.monotonic() + ocr_budget
+    actions = list_orders(session)
+
+    counts: dict[str, int] = {}
+    failures: dict[str, int] = {}
+    lock = threading.Lock()
+
+    def count(key: str, table: dict | None = None) -> None:
+        with lock:
+            target = counts if table is None else table
+            target[key] = target.get(key, 0) + 1
+
+    def enrich(action: Action) -> Action:
+        if not (DECLARATION_RE.search(action.description) or MODIFIER_RE.search(action.description)):
+            return action
+        signed, source = saved.get(action.stable_id, ("", ""))
+        if signed[:4] == str(action.year):
+            action.signed, action.date_source = signed, source
+            count("saved")
+            return action
+        content = None
+        for attempt in (1, 2):
+            try:
+                response = session.get(action.pdf_url, headers={"User-Agent": HEADERS["User-Agent"]}, timeout=60)
+                response.raise_for_status()
+                content = response.content
+                break
+            except Exception as exc:
+                if attempt == 2:
+                    cause = type(exc).__name__
+                    status = getattr(getattr(exc, "response", None), "status_code", None)
+                    count(f"{cause} {status}" if status else cause, failures)
+                    action.date_note = "download"
+                    return action
+        try:
+            action.text = pdf_text(content)
+        except Exception:
+            action.text = ""
+        action.signed = find_signing_date(action.text, action.year, today)
+        if action.signed:
+            action.date_source = DATE_FROM_TEXT
+            count("text")
+            return action
+        if not ocr_available:
+            action.date_note = "no_ocr"
+            count("no_ocr")
+            return action
+        if time.monotonic() > deadline:
+            action.date_note = "budget"
+            count("budget")
+            return action
+        try:
+            signed, ocr_text, note = ocr_signing_date(content, action.year, today, deadline)
+        except Exception:
+            signed, ocr_text, note = "", "", "ocr_error"
+        action.text = action.text or ocr_text
+        if signed:
+            action.signed, action.date_source = signed, DATE_FROM_OCR
+            count("ocr")
+        else:
+            action.date_note = note
+            count(note)
+        return action
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        actions = list(pool.map(enrich, actions))
+    print(date_report(counts, failures))
+    return sorted(actions, key=lambda x: (x.signed, x.year, int(x.number)), reverse=True)
+
+
+def date_report(counts: dict, failures: dict) -> str:
+    parts = [
+        (counts.get("saved", 0), "kept from earlier runs"),
+        (counts.get("text", 0), "read from the PDF text"),
+        (counts.get("ocr", 0), "read from the scan by OCR"),
+        (counts.get("not_found", 0), "not found by OCR"),
+        (counts.get("ocr_error", 0), "not readable as an image"),
+        (counts.get("budget", 0), "left for the next run (OCR time limit)"),
+        (counts.get("no_ocr", 0), "not tried because OCR is not installed"),
+    ]
+    downloads = sum(failures.values())
+    text = "; ".join(f"{number} {label}" for number, label in parts if number)
+    if downloads:
+        causes = ", ".join(f"{cause} x{number}" for cause, number in sorted(failures.items()))
+        text += f"{'; ' if text else ''}{downloads} PDFs not downloaded ({causes})"
+    return f"Oregon signing dates: {text or 'no orders needed a date'}"
+
+
+# ---------------------------------------------------------------- output
 
 def governor(action: Action) -> str:
     marker = action.signed or f"{action.year:04d}-12-31"
@@ -151,13 +390,13 @@ def write_csv(path, fields, rows) -> None:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n"); writer.writeheader(); writer.writerows(rows)
 
 
-def write_outputs(actions, actions_out, relationships_out, join_out) -> None:
-    rows, relationships, joins = [], [], []
+def write_outputs(actions, actions_out, relationships_out, join_out, review_out=None) -> None:
+    rows, relationships, joins, review = [], [], [], []
     known = {a.eo_number: a.stable_id for a in actions if "AMENDED" not in a.stable_id}
     for action in actions:
         kind = classify(action)
         weather = bool(HAZARD_RE.search(action.description))
-        row = {"declaration_id": action.stable_id, "state": STATE, "governor": governor(action), "eo_number": action.eo_number, "action_kind": "emergency_declaration" if kind != "administrative" else "executive_order", "action_type": kind, "event_description": action.description, "date_signed": action.signed, "end_date": "", "weather_related": str(kind == "declaration" and weather).lower(), "source_scope": "oregon_governor_executive_order_list", "document_format": "pdf", "detail_url": action.pdf_url, "archive_record_url": action.pdf_url}
+        row = {"declaration_id": action.stable_id, "state": STATE, "governor": governor(action), "eo_number": action.eo_number, "action_kind": "emergency_declaration" if kind != "administrative" else "executive_order", "action_type": kind, "event_description": action.description, "date_signed": action.signed, "date_source": action.date_source if action.signed else "", "end_date": "", "weather_related": str(kind == "declaration" and weather).lower(), "source_scope": "oregon_governor_executive_order_list", "document_format": "pdf", "detail_url": action.pdf_url, "archive_record_url": action.pdf_url}
         rows.append(row)
         if kind in {"amendment", "extension", "termination"}:
             relation = {"amendment": "amends", "extension": "extends", "termination": "terminates"}[kind]
@@ -166,12 +405,22 @@ def write_outputs(actions, actions_out, relationships_out, join_out) -> None:
                     relationships.append({"source_order_id": action.stable_id, "target_order_id": known[target], "relationship_type": relation, "relationship_text": target, "relationship_source": action.pdf_url, "confidence": "high"})
         if kind == "declaration" and weather:
             joins.append({field: row[field] for field in JOIN_FIELDS})
+            if not action.signed:
+                review.append({"declaration_id": action.stable_id, "eo_number": action.eo_number, "event_description": action.description, "archive_record_url": action.pdf_url, "review_reason": REVIEW_REASONS.get(action.date_note, "No signing date was found for this order.")})
     write_csv(actions_out, ACTION_FIELDS, rows); write_csv(relationships_out, REL_FIELDS, relationships); write_csv(join_out, JOIN_FIELDS, joins)
+    if review_out:
+        write_csv(review_out, REVIEW_FIELDS, review)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(); parser.add_argument("--actions-out", required=True); parser.add_argument("--relationships-out", required=True); parser.add_argument("--join-out", required=True); args = parser.parse_args()
-    write_outputs(collect(), args.actions_out, args.relationships_out, args.join_out)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--actions-out", required=True)
+    parser.add_argument("--relationships-out", required=True)
+    parser.add_argument("--join-out", required=True)
+    parser.add_argument("--review-out", help="list of weather declarations still undated, with the reason")
+    args = parser.parse_args()
+    saved = load_saved_dates(args.actions_out)
+    write_outputs(collect(saved=saved), args.actions_out, args.relationships_out, args.join_out, args.review_out)
 
 
 if __name__ == "__main__": main()
