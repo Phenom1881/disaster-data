@@ -12,8 +12,8 @@
   "metrics": {
     "action_count": 6,
     "federal_declaration_count": 63,
-    "severity_rows": 58,
-    "storm_match_rows": 72
+    "severity_rows": 56,
+    "storm_match_rows": 75
   },
   "name": "New Hampshire",
   "retried": true,
@@ -24,5 +24,9 @@
   "source_records_saved_before": 6,
   "source_status": "empty",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+  "timing": {
+    "collect_seconds": 40.6,
+    "storm_join_seconds": 0.4
+  }
 }

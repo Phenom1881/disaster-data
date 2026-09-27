@@ -4,10 +4,10 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
+  "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending; 2 saved records kept that this refresh's check of the state source did not return",
   "coverage_base": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
   "generated_on": "2026-09-27",
-  "kept_saved_records": 0,
+  "kept_saved_records": 2,
   "kept_saved_values": 0,
   "metrics": {
     "action_count": 2,
@@ -16,11 +16,17 @@
     "storm_match_rows": 8
   },
   "name": "Delaware",
-  "retried": false,
+  "retried": true,
+  "retry_error": "",
+  "retry_status": "empty",
   "slug": "delaware",
-  "source_records_returned": 2,
+  "source_records_returned": 0,
   "source_records_saved_before": 2,
-  "source_status": "ok",
+  "source_status": "empty",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+  "timing": {
+    "collect_seconds": 60.2,
+    "storm_join_seconds": 0.3
+  }
 }

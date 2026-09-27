@@ -256,8 +256,11 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/connecticut/eo_storm_severity_summary.csv.tmp.
 
 CT: 9 actions, 43 federal declarations; 1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table
-Delaware: 6 actions, 3 relationships, 2 weather declarations
+Delaware: 0 actions, 0 relationships, 0 weather declarations
 
+DE: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/delaware/hazard_overrides.csv
 Wrote 8 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_matches.csv.tmp
 Wrote severity summary (8 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp
@@ -267,7 +270,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
-DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending
+DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending; 2 saved records kept that this refresh's check of the state source did not return
 FL: fl_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2022-218: no matching storm events found in the date window.
@@ -898,10 +901,8 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 761 action(s), 88 relationship(s), 4 original weather declaration(s).
+Done. 761 action(s), 98 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -972,9 +973,9 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/michigan/eo_storm_severity_summary.csv.tmp.
 
 MI: 23 actions, 46 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered by the current Governor source
-Minnesota archive scrape failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+Minnesota: 257 executive orders read from the Legislative Reference Library, 15 weather declarations
 
-WARNING MN: Collection failed: Minnesota adapter: scrape failed
+MN: mn_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/minnesota/hazard_overrides.csv
 MN-EO-26-08: no matching storm events found in the date window.
 Wrote 885 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_matches.csv.tmp
@@ -1010,7 +1011,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
 
-MN: 15 actions, 81 federal declarations; 2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered; Collection failed: Minnesota adapter: scrape failed
+MN: 15 actions, 81 federal declarations; 2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered
 Wrote 553 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_matches.csv.tmp
 Wrote severity summary (285 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp
 
@@ -1205,22 +1206,27 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 6 actions, 115 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed
-New Hampshire: 340 actions, 304 relationships, 0 weather declarations
+New Hampshire: 0 actions, 0 relationships, 0 weather declarations
+
+  WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
 
 NH: declarations_for_join.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 340 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 304 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
-Wrote 72 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
-Wrote severity summary (58 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
+Wrote 75 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
+Wrote severity summary (56 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
-  NH-2013-08 BELKNAP [county/county-equivalent]: deaths=0, injuries=30, damage=$0 (Lightning)
   NH-2003-09 HILLSBOROUGH [county/county-equivalent]: deaths=0, injuries=9, damage=$0 (Lightning)
   NH-2003-09 BELKNAP [county/county-equivalent]: deaths=0, injuries=4, damage=$0 (Lightning)
   NH-2003-09 CHESHIRE [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Flash Flood)
   NH-2008-12 EASTERN HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (Ice Storm)
   NH-2008-12 WESTERN AND CENTRAL HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$12,000,000 (Ice Storm)
   NH-2008-12 CHESHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$9,000,000 (Ice Storm)
+  NH-2013-08 GRAFTON [county/county-equivalent]: deaths=0, injuries=0, damage=$7,500,000 (Flash Flood)
+  NH-2013-08 SULLIVAN [county/county-equivalent]: deaths=0, injuries=0, damage=$2,575,000 (Flash Flood, Thunderstorm Wind)
   NH-2008-12 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$1,620,000 (Ice Storm)
   NH-2008-12 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,580,000 (Ice Storm)
   NH-2008-12 SULLIVAN [NWS forecast zone]: deaths=0, injuries=0, damage=$786,000 (Ice Storm)
@@ -1229,8 +1235,10 @@ Areas with reported deaths, injuries, or damage:
   NH-2008-12 SOUTHERN GRAFTON [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Ice Storm)
   NH-2008-12 SOUTHERN CARROLL [NWS forecast zone]: deaths=0, injuries=0, damage=$166,000 (Ice Storm)
   NH-2008-12 SOUTHERN COOS [NWS forecast zone]: deaths=0, injuries=0, damage=$110,000 (Winter Storm)
-  NH-2013-08 CHESHIRE [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flash Flood)
   NH-2008-12 NORTHERN COOS [NWS forecast zone]: deaths=0, injuries=0, damage=$55,000 (Winter Storm)
+  NH-2013-08 CHESHIRE [county/county-equivalent]: deaths=0, injuries=0, damage=$50,000 (Flash Flood)
+  NH-2013-08 ROCKINGHAM [county/county-equivalent]: deaths=0, injuries=0, damage=$25,000 (Flash Flood)
+  NH-2013-08 MERRIMACK [county/county-equivalent]: deaths=0, injuries=0, damage=$15,000 (Flash Flood)
   NH-2008-12 STRAFFORD [NWS forecast zone]: deaths=0, injuries=0, damage=$1,460 (Ice Storm)
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
@@ -2220,50 +2228,21 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
 
-Retrying 3 state(s) whose source failed or returned nothing, after 60s: MN, NH, OH
-Minnesota: 257 executive orders read from the Legislative Reference Library, 15 weather declarations
+Retrying 3 state(s) whose source failed or returned nothing, after 60s: DE, NH, OH
+Delaware: 0 actions, 0 relationships, 0 weather declarations
 
-MN: mn_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
-RETRY MN: recovered (ok, 15 records returned); rebuilding
-Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/minnesota/hazard_overrides.csv
-MN-EO-26-08: no matching storm events found in the date window.
-Wrote 885 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_matches.csv.tmp
-Wrote severity summary (616 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp
+DE: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+RETRY DE: still empty
+DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending; 2 saved records kept that this refresh's check of the state source did not return
+New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
-Areas with reported deaths, injuries, or damage:
-  MN-EO-22-23 WASHINGTON [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm, Winter Weather)
-  MN-EO-22-23 SCOTT [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
-  MN-EO-26-04 FILLMORE [NWS forecast zone]: deaths=0, injuries=1, damage=$15,000 (High Wind, Winter Storm)
-  MN-EO-22-23 KANDIYOHI [NWS forecast zone]: deaths=0, injuries=1, damage=$0 (Blizzard, Extreme Cold/Wind Chill, Winter Storm)
-  MN-EO-24-05 COTTONWOOD [county/county-equivalent]: deaths=0, injuries=0, damage=$20,700,000 (Flood)
-  MN-EO-24-05 NOBLES [county/county-equivalent]: deaths=0, injuries=0, damage=$3,600,000 (Flash Flood, Flood)
-  MN-EO-19-30 JACKSON [NWS forecast zone]: deaths=0, injuries=0, damage=$2,760,000 (Ice Storm)
-  MN-EO-24-05 MURRAY [county/county-equivalent]: deaths=0, injuries=0, damage=$2,300,000 (Flood)
-  MN-EO-24-05 ROCK [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000,000 (Flash Flood, Flood)
-  MN-EO-24-05 ST. LOUIS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,010,000 (Flood)
-  MN-EO-19-30 NOBLES [NWS forecast zone]: deaths=0, injuries=0, damage=$877,000 (Ice Storm)
-  MN-EO-19-30 DODGE [NWS forecast zone]: deaths=0, injuries=0, damage=$750,000 (Winter Weather)
-  MN-EO-19-30 MOWER [NWS forecast zone]: deaths=0, injuries=0, damage=$750,000 (Winter Weather)
-  MN-EO-19-30 MURRAY [NWS forecast zone]: deaths=0, injuries=0, damage=$648,000 (Blizzard)
-  MN-EO-19-30 ROCK [NWS forecast zone]: deaths=0, injuries=0, damage=$602,000 (Ice Storm)
-  MN-EO-19-30 OLMSTED [NWS forecast zone]: deaths=0, injuries=0, damage=$570,000 (Winter Storm)
-  MN-EO-19-30 HOUSTON [NWS forecast zone]: deaths=0, injuries=0, damage=$560,000 (Winter Weather)
-  MN-EO-19-30 PIPESTONE [NWS forecast zone]: deaths=0, injuries=0, damage=$485,000 (Blizzard)
-  MN-EO-19-30 COTTONWOOD [NWS forecast zone]: deaths=0, injuries=0, damage=$380,000 (Blizzard)
-  MN-EO-24-05 JACKSON [county/county-equivalent]: deaths=0, injuries=0, damage=$355,000 (Flood)
-  MN-EO-19-30 FREEBORN [NWS forecast zone]: deaths=0, injuries=0, damage=$250,000 (Winter Storm)
-  MN-EO-22-08 RED LAKE [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Flash Flood)
-  MN-EO-24-05 PIPESTONE [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Flood)
-  MN-EO-24-05 MOWER [county/county-equivalent]: deaths=0, injuries=0, damage=$205,000 (Flash Flood, Flood)
-  MN-EO-19-30 WINONA [NWS forecast zone]: deaths=0, injuries=0, damage=$190,000 (Winter Weather)
-  Showing the 25 highest-consequence areas; all 43 are retained in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
-
-Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
-
-MN: 15 actions, 81 federal declarations; 2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered
-New Hampshire: 340 actions, 304 relationships, 0 weather declarations
+  WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
 
 NH: declarations_for_join.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 340 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 304 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY NH: still empty
 NH: 6 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; 6 saved records kept that this refresh's check of the state source did not return
 Ohio: 0 bulletins scraped, 0 routed to join CSV.
@@ -2276,11 +2255,18 @@ OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not 
 OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY OH: still empty
 OH: 7 actions, 60 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-WARNING kept saved records the state source did not return: IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), OH (7), OK (1), TX (1)
+TIME total: collect 1815s, storm join 65s. Slowest: NJ 244s+6s, TX 241s+1s, NC 225s+1s, CT 161s+0s, MA 100s+1s, SC 70s+2s, MI 66s+0s, VT 65s+0s, WA 62s+0s, CO 43s+19s
+WARNING kept saved records the state source did not return: DE (2), IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), OH (7), OK (1), TX (1)
 Row-loss check: no saved rows lost.
-Plus health: 27 green, 18 yellow, 5 red.
+Plus health: 27 green, 17 yellow, 6 red.
   RED AZ: No declarations on the page (since 2023).
+  RED DE: Collecting from the state source produced no declarations on this run and on the retry. The page is showing records saved from earlier runs. Only 2 declarations against 26 federal ones (since 2025), so the source is likely missing most of the record.
   RED IN: Only 9 of 21 declarations have a signing date, so the rest cannot be matched to storms. The source left out 5 of 21 saved records; they are shown from earlier runs.
-  RED NH: The state site returned nothing on this run and on the retry, 3 runs in a row. The page is showing records saved from earlier runs. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record.
-  RED OH: The state site returned nothing on this run and on the retry, 3 runs in a row. The page is showing records saved from earlier runs. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record.
+  RED NH: Collecting from the state source produced no declarations on this run and on the retry, 4 runs in a row. The page is showing records saved from earlier runs. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record.
+  RED OH: Collecting from the state source produced no declarations on this run and on the retry, 4 runs in a row. The page is showing records saved from earlier runs. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record.
   RED OR: Only 1 of 252 declarations has a signing date, so the rest cannot be matched to storms.
+Changes since the last run (2026-09-27 01:37 UTC):
+
+- **Delaware** went from yellow to red. Collecting from the state source produced no declarations on this run and on the retry. The page is showing records saved from earlier runs.
+
+Now 27 green, 17 yellow, 6 red.

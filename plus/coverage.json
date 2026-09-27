@@ -25,7 +25,11 @@
       "source_records_saved_before": 30,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 0.5,
+        "storm_join_seconds": 12.7
+      }
     },
     {
       "abbreviation": "AK",
@@ -51,7 +55,11 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 14.4,
+        "storm_join_seconds": 1.7
+      }
     },
     {
       "abbreviation": "AZ",
@@ -77,7 +85,11 @@
       "source_records_saved_before": 0,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 4.8,
+        "storm_join_seconds": 0.3
+      }
     },
     {
       "abbreviation": "AR",
@@ -103,7 +115,11 @@
       "source_records_saved_before": 10,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 0.5,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "CA",
@@ -129,7 +145,11 @@
       "source_records_saved_before": 47,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 5.6,
+        "storm_join_seconds": 0.6
+      }
     },
     {
       "abbreviation": "CO",
@@ -155,7 +175,11 @@
       "source_records_saved_before": 120,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 43.2,
+        "storm_join_seconds": 18.7
+      }
     },
     {
       "abbreviation": "CT",
@@ -181,7 +205,11 @@
       "source_records_saved_before": 9,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 161.4,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "DE",
@@ -189,10 +217,10 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
+      "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending; 2 saved records kept that this refresh's check of the state source did not return",
       "coverage_base": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
       "generated_on": "2026-09-27",
-      "kept_saved_records": 0,
+      "kept_saved_records": 2,
       "kept_saved_values": 0,
       "metrics": {
         "action_count": 2,
@@ -201,13 +229,19 @@
         "storm_match_rows": 8
       },
       "name": "Delaware",
-      "retried": false,
+      "retried": true,
+      "retry_error": "",
+      "retry_status": "empty",
       "slug": "delaware",
-      "source_records_returned": 2,
+      "source_records_returned": 0,
       "source_records_saved_before": 2,
-      "source_status": "ok",
+      "source_status": "empty",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 60.2,
+        "storm_join_seconds": 0.3
+      }
     },
     {
       "abbreviation": "FL",
@@ -233,7 +267,11 @@
       "source_records_saved_before": 25,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 15.1,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "GA",
@@ -259,7 +297,11 @@
       "source_records_saved_before": 32,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 4.5,
+        "storm_join_seconds": 2.1
+      }
     },
     {
       "abbreviation": "HI",
@@ -285,7 +327,11 @@
       "source_records_saved_before": 8,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 18.1,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "ID",
@@ -311,7 +357,11 @@
       "source_records_saved_before": 208,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 40.7,
+        "storm_join_seconds": 0.7
+      }
     },
     {
       "abbreviation": "IL",
@@ -337,7 +387,11 @@
       "source_records_saved_before": 7,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 8.2,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "IN",
@@ -363,7 +417,11 @@
       "source_records_saved_before": 21,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 6.9,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "IA",
@@ -389,7 +447,11 @@
       "source_records_saved_before": 54,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 1.5,
+        "storm_join_seconds": 0.7
+      }
     },
     {
       "abbreviation": "KS",
@@ -415,7 +477,11 @@
       "source_records_saved_before": 52,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 0.5,
+        "storm_join_seconds": 0.6
+      }
     },
     {
       "abbreviation": "KY",
@@ -441,7 +507,11 @@
       "source_records_saved_before": 13,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 1.0,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "LA",
@@ -467,7 +537,11 @@
       "source_records_saved_before": 8,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 33.3,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "ME",
@@ -493,7 +567,11 @@
       "source_records_saved_before": 2,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 12.6,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "MD",
@@ -519,7 +597,11 @@
       "source_records_saved_before": 11,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 3.2,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "MA",
@@ -545,7 +627,11 @@
       "source_records_saved_before": 4,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 100.0,
+        "storm_join_seconds": 0.8
+      }
     },
     {
       "abbreviation": "MI",
@@ -571,7 +657,11 @@
       "source_records_saved_before": 23,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 65.6,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "MN",
@@ -581,10 +671,6 @@
       "collection_failed": false,
       "coverage": "2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered",
       "coverage_base": "2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered",
-      "first_attempt": {
-        "error": "Collection failed: Minnesota adapter: scrape failed",
-        "status": "failed"
-      },
       "generated_on": "2026-09-27",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
@@ -595,14 +681,17 @@
         "storm_match_rows": 885
       },
       "name": "Minnesota",
-      "retried": true,
-      "retry_status": "ok",
+      "retried": false,
       "slug": "minnesota",
       "source_records_returned": 15,
       "source_records_saved_before": 15,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 1.7,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "MS",
@@ -628,7 +717,11 @@
       "source_records_saved_before": 9,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 4.3,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "MO",
@@ -654,7 +747,11 @@
       "source_records_saved_before": 83,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 9.0,
+        "storm_join_seconds": 0.9
+      }
     },
     {
       "abbreviation": "MT",
@@ -680,7 +777,11 @@
       "source_records_saved_before": 19,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 21.9,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "NE",
@@ -706,7 +807,11 @@
       "source_records_saved_before": 60,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 0.5,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "NV",
@@ -732,7 +837,11 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 10.2,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "NH",
@@ -748,8 +857,8 @@
       "metrics": {
         "action_count": 6,
         "federal_declaration_count": 63,
-        "severity_rows": 58,
-        "storm_match_rows": 72
+        "severity_rows": 56,
+        "storm_match_rows": 75
       },
       "name": "New Hampshire",
       "retried": true,
@@ -760,7 +869,11 @@
       "source_records_saved_before": 6,
       "source_status": "empty",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 40.6,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "NJ",
@@ -786,7 +899,11 @@
       "source_records_saved_before": 150,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 243.5,
+        "storm_join_seconds": 5.8
+      }
     },
     {
       "abbreviation": "NM",
@@ -812,7 +929,11 @@
       "source_records_saved_before": 1,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 30.2,
+        "storm_join_seconds": 0.3
+      }
     },
     {
       "abbreviation": "NY",
@@ -838,7 +959,11 @@
       "source_records_saved_before": 25,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 36.5,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "NC",
@@ -864,7 +989,11 @@
       "source_records_saved_before": 34,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 225.1,
+        "storm_join_seconds": 0.6
+      }
     },
     {
       "abbreviation": "ND",
@@ -890,7 +1019,11 @@
       "source_records_saved_before": 34,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 7.7,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "OH",
@@ -918,7 +1051,11 @@
       "source_records_saved_before": 7,
       "source_status": "empty",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 0.6,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "OK",
@@ -944,7 +1081,11 @@
       "source_records_saved_before": 4,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 10.5,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "OR",
@@ -970,7 +1111,11 @@
       "source_records_saved_before": 252,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 26.7,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "PA",
@@ -996,7 +1141,11 @@
       "source_records_saved_before": 10,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 53.3,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "RI",
@@ -1022,7 +1171,11 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 11.9,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "SC",
@@ -1048,7 +1201,11 @@
       "source_records_saved_before": 50,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 70.1,
+        "storm_join_seconds": 2.3
+      }
     },
     {
       "abbreviation": "SD",
@@ -1074,7 +1231,11 @@
       "source_records_saved_before": 25,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 2.1,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "TN",
@@ -1100,7 +1261,11 @@
       "source_records_saved_before": 14,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 8.3,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "TX",
@@ -1126,7 +1291,11 @@
       "source_records_saved_before": 59,
       "source_status": "partial",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 240.6,
+        "storm_join_seconds": 0.8
+      }
     },
     {
       "abbreviation": "UT",
@@ -1152,7 +1321,11 @@
       "source_records_saved_before": 33,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 11.5,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "VT",
@@ -1178,7 +1351,11 @@
       "source_records_saved_before": 1,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 65.4,
+        "storm_join_seconds": 0.3
+      }
     },
     {
       "abbreviation": "VA",
@@ -1204,7 +1381,11 @@
       "source_records_saved_before": 75,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join and forecast-zone resolution completed"
+      "storm_pipeline_note": "Storm join and forecast-zone resolution completed",
+      "timing": {
+        "collect_seconds": 15.8,
+        "storm_join_seconds": 1.6
+      }
     },
     {
       "abbreviation": "WA",
@@ -1230,7 +1411,11 @@
       "source_records_saved_before": 38,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 61.6,
+        "storm_join_seconds": 0.5
+      }
     },
     {
       "abbreviation": "WV",
@@ -1256,7 +1441,11 @@
       "source_records_saved_before": 18,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 1.4,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "WI",
@@ -1282,7 +1471,11 @@
       "source_records_saved_before": 18,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 0.7,
+        "storm_join_seconds": 0.4
+      }
     },
     {
       "abbreviation": "WY",
@@ -1308,7 +1501,11 @@
       "source_records_saved_before": 4,
       "source_status": "ok",
       "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable"
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 1.3,
+        "storm_join_seconds": 0.3
+      }
     }
   ]
 }
