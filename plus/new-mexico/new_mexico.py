@@ -12,7 +12,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": True,
     "current_governor_source_available": True, "current_governor_source": "https://www.governor.state.nm.us/about-the-governor/executive-orders/",
     "current_governor_source_start": "2019-01-01", "manual_only": False,
-    "known_gaps": ["The current Governor's web archive begins in 2019; 2000-2018 is outside the delivered web coverage. Most posted PDFs are image-only and remain explicitly unclassified pending OCR."],
+    "known_gaps": ["The current Governor's web archive begins in 2019; 2000-2018 is outside the delivered web coverage. Most posted PDFs are image-only; they are read with OCR, and an order OCR cannot read stays unclassified."],
 }
 
 def collect(workdir=".", scripts_dir=None):
