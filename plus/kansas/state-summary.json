@@ -6,14 +6,14 @@
   "collection_failed": false,
   "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return",
   "coverage_base": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
-  "generated_on": "2026-09-27",
+  "generated_on": "2026-09-29",
   "kept_saved_records": 1,
   "kept_saved_values": 0,
   "metrics": {
     "action_count": 52,
     "federal_declaration_count": 96,
-    "severity_rows": 1250,
-    "storm_match_rows": 2635
+    "severity_rows": 1427,
+    "storm_match_rows": 2878
   },
   "name": "Kansas",
   "retried": false,
@@ -24,7 +24,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 0.9,
-    "storm_join_seconds": 0.8
+    "collect_seconds": 0.6,
+    "storm_join_seconds": 0.9
   }
 }
