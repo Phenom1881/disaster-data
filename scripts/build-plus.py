@@ -248,9 +248,48 @@ def drop_pre_cutoff_actions(state: dict, state_dir: Path) -> int:
     return dropped
 
 
+# A second source for thin states (see scripts/plus_fmcsa.py): FMCSA's copies
+# of state emergency declarations, written per state by write_fmcsa_supplement()
+# for states marked "fmcsa_supplement" in the manifest. Kept in its own file
+# so the state's own source is still judged on its own; shown on the page and
+# joined to storms together with it.
+FMCSA_SUPPLEMENT = "fmcsa_declarations.csv"
+_fmcsa_module = None
+
+
+def fmcsa():
+    global _fmcsa_module
+    if _fmcsa_module is None:
+        spec = importlib.util.spec_from_file_location(
+            "plus_fmcsa", str(Path(__file__).resolve().parent / "plus_fmcsa.py"))
+        _fmcsa_module = importlib.util.module_from_spec(spec)
+        sys.modules.setdefault("plus_fmcsa", _fmcsa_module)
+        spec.loader.exec_module(_fmcsa_module)
+    return _fmcsa_module
+
+
+def write_fmcsa_supplement(state: dict, state_dir: Path, repo_root: Path) -> int:
+    """Write this state's FMCSA declarations that its own source lacks.
+    Returns how many. Removes the file for states not marked for it."""
+    target = state_dir / FMCSA_SUPPLEMENT
+    if not state.get("fmcsa_supplement"):
+        target.unlink(missing_ok=True)
+        return 0
+    module = fmcsa()
+    entries = module.load_entries(repo_root / "plus" / "_fmcsa" / "entries.csv")
+    if not entries:
+        return count_rows(target if target.exists() else None)
+    own = read_csv_rows(locate_first(state_dir, candidate_action_files(state)))
+    rows = module.supplement_rows(state, own, entries)
+    module.write_csv(target, module.JOIN_FIELDS, rows)
+    return len(rows)
+
+
 def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(state_dir, candidate_action_files(state))
-    rows = [normalized_action(row, state["abbreviation"]) for row in read_csv_rows(path)
+    supplement = state_dir / FMCSA_SUPPLEMENT
+    raw = read_csv_rows(path) + (read_csv_rows(supplement) if supplement.exists() else [])
+    rows = [normalized_action(row, state["abbreviation"]) for row in raw
             if not before_cutoff(row)]
     unique = {}
     for row in rows:
@@ -293,6 +332,26 @@ def ensure_declaration_id_column(action_path: Path, abbreviation: str) -> Path:
         writer.writeheader()
         writer.writerows(rows)
     return enriched_path
+
+
+def with_fmcsa_supplement(action_path: Path, state_dir: Path) -> Path:
+    """The file handed to the storm join: the state's own declarations plus
+    its FMCSA supplement, when it has one. Written to a temporary folder so
+    it is never committed."""
+    supplement = state_dir / FMCSA_SUPPLEMENT
+    extra = read_csv_rows(supplement) if supplement.exists() else []
+    if not extra:
+        return action_path
+    rows = read_csv_rows(action_path) + extra
+    fields = list(dict.fromkeys(name for row in rows for name in row if name))
+    folder = Path(tempfile.mkdtemp(prefix="plus_join_"))
+    atexit.register(shutil.rmtree, folder, True)
+    combined = folder / f"{state_dir.name}_declarations_with_fmcsa.csv"
+    with combined.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, restval="", extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+    return combined
 
 
 def count_rows(path: Path | None) -> int:
@@ -1415,6 +1474,12 @@ def process_state(
         collection_note, collection_error = "", ""
         kept = {"kept": 0, "filled": 0, "cleaned": 0}
 
+    fmcsa_count = 0
+    if not dry_run:
+        try:
+            fmcsa_count = write_fmcsa_supplement(state, state_dir, repo_root)
+        except Exception as exc:  # the second source must never break a state
+            print(f"WARNING {state['abbreviation']}: FMCSA supplement not written ({exc})", file=sys.stderr)
     actions, action_path = load_state_actions(state, state_dir)
     storm_note = ""
     storm_failed = False
@@ -1431,6 +1496,7 @@ def process_state(
             storm_note = "Storm join skipped: --dry-run and --join-storms cannot be combined"
         elif action_path:
             storm_join_path = ensure_declaration_id_column(action_path, state["abbreviation"])
+            storm_join_path = with_fmcsa_supplement(storm_join_path, state_dir)
             storm_note, storm_failed, storm_pipeline_ran = run_storm_pipeline(
                 state, state_dir, storm_join_path)
         elif state.get("adapter_status") == "implemented":
@@ -1464,6 +1530,9 @@ def process_state(
     metrics = state_metrics(state, actions, federal_declarations, storm_rows, severity_rows)
     coverage_base = coverage_label(state, actions, collection_note)
     coverage = coverage_base
+    if fmcsa_count:
+        coverage += ("; plus %d weather declaration%s from FMCSA's archive of state emergency "
+                     "declarations (2017-present)" % (fmcsa_count, "" if fmcsa_count == 1 else "s"))
     if collection_error:
         coverage += "; " + collection_error
     if kept["kept"]:
@@ -1623,6 +1692,12 @@ def main() -> int:
         atexit.register(shutil.rmtree, shared, True)
     print(f"Repository root: {repo_root}")
     print(f"Selected states: {', '.join(state['abbreviation'] for state in selected)}")
+    if args.collect and not args.dry_run and any(state.get("fmcsa_supplement") for state in selected):
+        try:
+            print(fmcsa().refresh(repo_root, states={state["name"] for state in selected
+                                                      if state.get("fmcsa_supplement")}))
+        except Exception as exc:  # the saved entries are used instead
+            print(f"WARNING: FMCSA state declarations not refreshed ({exc})", file=sys.stderr)
 
     summaries = []
     incomplete = []
