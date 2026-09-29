@@ -4,8 +4,14 @@ from __future__ import annotations
 import argparse
 import csv
 import io
+import os
 import re
+import shutil
+import subprocess
+import time
 import zipfile
+from collections import Counter
+from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
@@ -28,6 +34,11 @@ MODIFIER_RE = re.compile(r"\b(renewal|renew(?:s|ed|ing)?|extend(?:s|ed|ing)?|ext
 OPERATIONAL_RE = re.compile(r"\b(evacuation|curfew|price gouging|leave with pay|suspension of|suspend\w*.{0,50}licens\w*|licensed bed capacity|elections?--rescheduled|waiver|office closings?)\b", re.I)
 DATE_RE = re.compile(r"(?:on\s+)?(?:this\s+)?(\d{1,2})\s*(?:st|nd|rd|th)?\s+day\s+of\s+([A-Za-z]+)\s*,?\s*(2\s*0\s*\d\s*\d)", re.I)
 HAZARD_OVERRIDES = {}  # Intentionally empty: titles/document text supply all hazard evidence.
+TESSERACT = shutil.which("tesseract")   # installed by the Plus workflow's OCR step
+# Why a declaration's document gave no date on this run, printed to the log.
+# Before 2026-09-28 every failure here was swallowed, and ten parallel
+# requests left weather declarations such as JML 24-89 undated every run.
+DATE_PROBLEMS: Counter = Counter()
 
 @dataclass(frozen=True)
 class Action:
@@ -46,14 +57,55 @@ class Action:
         return "Jeff Landry" if self.number.upper().startswith("JML") else "John Bel Edwards"
 
 def get(url):
-    response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-    response.raise_for_status()
-    return response
+    for attempt in (1, 2):
+        try:
+            response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+            response.raise_for_status()
+            return response
+        except requests.RequestException:
+            if attempt == 2:
+                raise
+            time.sleep(3)
 
 def _docx_text(blob):
     with zipfile.ZipFile(io.BytesIO(blob)) as archive:
         root = ElementTree.fromstring(archive.read("word/document.xml"))
     return " ".join(node.text or "" for node in root.iter() if node.tag.endswith("}t"))
+
+def _ocr_text(blob, dpi=300):
+    """Text of a scanned PDF's first and last two pages, read with the
+    tesseract program. "" when tesseract is not installed."""
+    if not TESSERACT:
+        return ""
+    try:
+        import pypdfium2 as pdfium
+        from PIL import ImageFilter
+        document = pdfium.PdfDocument(blob)
+        try:
+            count = len(document)
+            images = []
+            for index in sorted({0, 1, count - 2, count - 1} & set(range(count))):
+                page = document[index]
+                try:
+                    images.append(page.render(scale=dpi / 72, grayscale=True).to_pil().copy())
+                finally:
+                    page.close()
+        finally:
+            document.close()
+    except Exception:
+        return ""
+    parts = []
+    for image in images:
+        buffer = io.BytesIO()
+        image.convert("L").filter(ImageFilter.MedianFilter(3)).save(buffer, "PNG")
+        try:
+            result = subprocess.run([TESSERACT, "stdin", "stdout", "--psm", "3"], input=buffer.getvalue(),
+                                    capture_output=True, timeout=120, env=dict(os.environ, OMP_THREAD_LIMIT="1"))
+        except (OSError, subprocess.SubprocessError):
+            continue
+        if result.returncode == 0:
+            parts.append(result.stdout.decode("utf-8", "replace"))
+    return " ".join(parts)
 
 def _pdf_text(blob):
     try:
@@ -61,7 +113,11 @@ def _pdf_text(blob):
     except ImportError:
         return ""
     with pdfplumber.open(io.BytesIO(blob)) as pdf:
-        return " ".join((page.extract_text() or "") for page in pdf.pages)
+        text = " ".join((page.extract_text() or "") for page in pdf.pages)
+    if text.strip():
+        return text
+    DATE_PROBLEMS["scanned PDF, read with OCR" if TESSERACT else "scanned PDF, OCR not installed"] += 1
+    return _ocr_text(blob)
 
 def document_text(url):
     response = get(url)
@@ -119,20 +175,44 @@ def classify(action):
         return "declaration"
     return "administrative"
 
-def collect():
+def load_saved_dates(path):
+    """Dates already found, by order number, so a document is read only
+    until its date is known."""
+    try:
+        with open(path, newline="", encoding="utf-8") as handle:
+            return {row["eo_number"]: row["date_signed"] for row in csv.DictReader(handle)
+                    if row.get("eo_number") and row.get("date_signed")}
+    except (OSError, csv.Error, KeyError):
+        return {}
+
+def collect(saved_dates=None):
+    saved_dates = saved_dates or {}
     indexed = {}
     for url in (ARCHIVE_URL, CURRENT_URL):
         for action in parse_index(get(url).text, url):
             indexed[action.number] = action
     def enrich(action):
         likely_relevant = re.search(r"\b(emergency|disaster|hurricane|storm|tornado|flood|weather|drought|fire|heat|subsidence)\b", action.description, re.I)
+        is_document = re.search(r"\.(?:pdf|docx)(?:$|\?)", action.url, re.I)
+        if not (likely_relevant and is_document):
+            return Action(action.number, action.description, action.url, "", "")
         try:
-            is_document = re.search(r"\.(?:pdf|docx)(?:$|\?)", action.url, re.I)
-            text = document_text(action.url) if likely_relevant and is_document else ""
-        except (requests.RequestException, OSError, ValueError, zipfile.BadZipFile):
-            text = ""  # Keep the index record if an official document is temporarily unavailable.
-        return Action(action.number, action.description, action.url, extract_date(text), text)
-    with ThreadPoolExecutor(max_workers=10) as pool:
+            text = document_text(action.url)
+        except (requests.RequestException, OSError, ValueError, zipfile.BadZipFile) as exc:
+            # Keep the index record if an official document is temporarily unavailable.
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            DATE_PROBLEMS[f"document not downloaded ({type(exc).__name__}{' ' + str(status) if status else ''})"] += 1
+            text = ""
+        date = extract_date(text)
+        if not date and saved_dates.get(action.number):
+            date = saved_dates[action.number]
+            DATE_PROBLEMS["date kept from an earlier run"] += 1
+        elif not date and text:
+            DATE_PROBLEMS["read, but no signing date found"] += 1
+        return Action(action.number, action.description, action.url, date, text)
+    # Four at a time: ten parallel requests to the State Register left
+    # documents undated run after run.
+    with ThreadPoolExecutor(max_workers=4) as pool:
         enriched=list(pool.map(enrich,indexed.values()))
     return sorted(enriched, key=lambda item: (item.date, item.number), reverse=True)
 
@@ -165,7 +245,10 @@ def write_outputs(actions, actions_out, relationships_out, join_out):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--actions-out", required=True); parser.add_argument("--relationships-out", required=True); parser.add_argument("--join-out", required=True)
-    args = parser.parse_args(); write_outputs(collect(), args.actions_out, args.relationships_out, args.join_out)
+    args = parser.parse_args()
+    write_outputs(collect(load_saved_dates(args.actions_out)), args.actions_out, args.relationships_out, args.join_out)
+    if DATE_PROBLEMS:
+        print("Louisiana documents: " + "; ".join(f"{n} {why}" for why, n in DATE_PROBLEMS.most_common()))
 
 if __name__ == "__main__":
     main()

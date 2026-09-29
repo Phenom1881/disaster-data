@@ -18,3 +18,31 @@ class LouisianaTests(unittest.TestCase):
         self.assertEqual(la.classify(action),"extension")
 
 if __name__=="__main__": unittest.main()
+
+
+class DocumentDateTests(unittest.TestCase):
+    """2026-09-28: scanned PDFs are read with OCR and saved dates are kept."""
+
+    @unittest.skipUnless(la.TESSERACT, "tesseract is not installed")
+    def test_scanned_pdf_is_read_with_ocr(self):
+        import io
+        from PIL import Image, ImageDraw, ImageFont
+        page = Image.new("L", (1700, 2200), 255)
+        draw = ImageDraw.Draw(page)
+        try:
+            font = ImageFont.truetype("DejaVuSerif.ttf", 30)
+        except OSError:
+            font = ImageFont.load_default(size=30)
+        for i, line in enumerate(["EXECUTIVE ORDER NUMBER JML 24-89", "STATE OF EMERGENCY SEVERE STORMS AND TORNADOES",
+                                  "IN WITNESS WHEREOF, I have set my hand", "this 5th day of June, 2024."]):
+            draw.text((200, 200 + i * 60), line, font=font, fill=0)
+        out = io.BytesIO(); page.save(out, "PDF", resolution=200)
+        self.assertEqual(la.extract_date(la._pdf_text(out.getvalue())), "2024-06-05")
+
+    def test_saved_dates_are_loaded(self):
+        import tempfile, os
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "a.csv")
+            with open(path, "w") as handle:
+                handle.write("eo_number,date_signed\nJML 24-72,2024-05-20\nJML 24-89,\n")
+            self.assertEqual(la.load_saved_dates(path), {"JML 24-72": "2024-05-20"})
