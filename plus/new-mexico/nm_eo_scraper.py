@@ -16,12 +16,28 @@ import pdfplumber
 import requests
 from bs4 import BeautifulSoup
 
-try:
-    import pytesseract
-    from pdf2image import convert_from_bytes
-except ImportError:
-    pytesseract = None
-    convert_from_bytes = None
+import os
+import shutil
+import subprocess
+import threading
+from pathlib import Path
+
+# OCR runs the tesseract program directly (the Plus workflow installs it) and
+# renders pages with pypdfium2, which pdfplumber already installs. The old
+# route needed pytesseract, pdf2image and poppler, none of which the workflow
+# ever installed, so every run logged "0 recovered via OCR" and 1,178 of
+# 1,210 orders stayed "(text unavailable)".
+TESSERACT = shutil.which("tesseract")
+OCR_BUDGET_SECONDS = 20 * 60   # per run; orders not reached are read next run
+_PDFIUM_LOCK = threading.Lock()
+_DEADLINE = [None]
+_BUDGET_SKIPPED = [0]
+
+# Text read from each order, kept between runs so each PDF is downloaded and
+# read once. Written next to the actions file.
+CACHE_NAME = "nm_text_cache.csv"
+CACHE_FIELDS = ("eo_number", "via_ocr", "text")
+CACHE_TEXT_LIMIT = 4000
 
 CURRENT_URL = "https://www.governor.state.nm.us/about-the-governor/executive-orders/"
 ARCHIVE_URL = "https://www.governor.state.nm.us/about-the-governor/executive-orders/executive-orders-archive/"
@@ -128,33 +144,70 @@ def parse_index(html, base_url):
     return found
 
 
-def _ocr_pdf_text(data: bytes, max_pages: int = 3, dpi: int = 300) -> str:
-    """Second attempt at getting text out of a PDF, used ONLY when native
-    pdfplumber extraction already returned nothing. New Mexico's archive is
-    1,206 records, 1,205 of which are scanned images with no text layer
-    (confirmed directly against the live source, 2026-09-16); this is the
-    single largest reason so few of them currently reach the join file.
-
-    Never guesses: returns "" if OCR isn't installed, the PDF can't be
-    rendered, or OCR itself produces nothing. A blank result here flows
-    through exactly the same way a blank native-extraction result always
-    has -- the record stays in actions_out for visibility but is excluded
-    from the join, same as before this function existed.
-    """
-    if pytesseract is None or convert_from_bytes is None:
+def _ocr_pdf_text(data: bytes, max_pages: int = 2, dpi: int = 300) -> str:
+    """Text of a scanned order read with OCR: its first max_pages pages (the
+    title and WHEREAS clauses) and its last max_pages pages (the "WITNESS
+    MY HAND" attestation with the signing date), in page order. Returns ""
+    when tesseract is not installed, the run's OCR time is used up, or
+    nothing could be read, so an unreadable order stays unclassified
+    rather than guessed."""
+    if not TESSERACT:
+        return ""
+    if _DEADLINE[0] is not None and time.monotonic() > _DEADLINE[0]:
+        _BUDGET_SKIPPED[0] += 1
         return ""
     try:
-        images = convert_from_bytes(data, dpi=dpi, first_page=1, last_page=max_pages)
+        import pypdfium2 as pdfium
+        from PIL import ImageFilter
+        images = []
+        with _PDFIUM_LOCK:
+            document = pdfium.PdfDocument(data)
+            try:
+                count = len(document)
+                indexes = sorted(set(range(min(max_pages, count))) | set(range(max(count - max_pages, 0), count)))
+                for index in indexes:
+                    page = document[index]
+                    try:
+                        images.append(page.render(scale=dpi / 72, grayscale=True).to_pil().copy())
+                    finally:
+                        page.close()
+            finally:
+                document.close()
     except Exception as exc:
         print(f"  OCR fallback: could not render PDF to images: {exc}", file=sys.stderr)
         return ""
     parts = []
     for image in images:
+        buffer = io.BytesIO()
+        image.convert("L").filter(ImageFilter.MedianFilter(3)).save(buffer, "PNG")
         try:
-            parts.append(pytesseract.image_to_string(image))
-        except Exception as exc:
+            result = subprocess.run([TESSERACT, "stdin", "stdout", "--psm", "3"], input=buffer.getvalue(),
+                                    capture_output=True, timeout=120,
+                                    env=dict(os.environ, OMP_THREAD_LIMIT="1"))
+        except (OSError, subprocess.SubprocessError) as exc:
             print(f"  OCR fallback: tesseract failed on a page: {exc}", file=sys.stderr)
+            continue
+        if result.returncode == 0:
+            parts.append(result.stdout.decode("utf-8", "replace"))
     return re.sub(r"[ \t]+", " ", "\n".join(parts)).strip()
+
+
+def load_cache(path) -> dict:
+    csv.field_size_limit(10 ** 8)
+    try:
+        with open(path, newline="", encoding="utf-8") as handle:
+            return {row["eo_number"]: row for row in csv.DictReader(handle) if row.get("text")}
+    except (OSError, csv.Error, KeyError):
+        return {}
+
+
+def write_cache(path, actions) -> None:
+    def trimmed(text):
+        # Keep the start (title, WHEREAS) and the end (the dated attestation).
+        return text if len(text) <= CACHE_TEXT_LIMIT else text[:2500] + "\n...\n" + text[-1500:]
+    rows = [{"eo_number": a.number, "via_ocr": str(a.via_ocr).lower(), "text": trimmed(a.text)}
+            for a in sorted(actions, key=lambda item: item.number) if a.extraction_ok and a.text]
+    write_csv(path, CACHE_FIELDS, rows)
 
 
 def extract_pdf(data):
@@ -228,7 +281,12 @@ def extract_date(text, number):
     return datetime.strptime(f"{name} {day} {yr}", "%B %d %Y").strftime("%Y-%m-%d")
 
 
-def parse_document(number, url):
+def parse_document(number, url, cache=None):
+    cached = (cache or {}).get(number)
+    if cached:
+        text = cached["text"]
+        return Action(number, extract_title(text, number), extract_date(text, number), url, text, True, True,
+                      cached.get("via_ocr") == "true")
     try:
         response = get(url)
         retrieval_ok = response.content.startswith(b"%PDF")
@@ -238,13 +296,14 @@ def parse_document(number, url):
     return Action(number, extract_title(text, number), extract_date(text, number), url, text, ok, retrieval_ok, via_ocr)
 
 
-def collect():
+def collect(cache=None):
     pairs = []
     for source in (CURRENT_URL, ARCHIVE_URL):
         pairs.extend(parse_index(get(source).text, source))
     unique = dict(pairs)
+    _DEADLINE[0] = time.monotonic() + OCR_BUDGET_SECONDS
     with ThreadPoolExecutor(max_workers=4) as pool:
-        records = list(pool.map(lambda pair: parse_document(*pair), unique.items()))
+        records = list(pool.map(lambda pair: parse_document(*pair, cache=cache), unique.items()))
     return sorted(records, key=lambda item: item.number, reverse=True)
 
 
@@ -292,9 +351,10 @@ def write_outputs(actions, actions_out, relationships_out, join_out):
     for action in actions:
         evidence = action.title + " " + action.text
         kind = classify(action)
-        relevant = bool(RELEVANT_RE.search(evidence) or HAZARD_RE.search(evidence))
-        if not relevant and action.extraction_ok:
-            continue
+        # Every order is written, relevant or not. Dropping the ones read as
+        # irrelevant used to leave their old "(text unavailable)" rows in
+        # place for good, since the build keeps any saved row a scrape does
+        # not return.
         weather = kind == "declaration" and bool(HAZARD_RE.search(evidence))
         if action.extraction_ok and action.via_ocr:
             document_format = "pdf_ocr"
@@ -318,12 +378,20 @@ def main():
     parser.add_argument("--actions-out", required=True)
     parser.add_argument("--relationships-out", required=True)
     parser.add_argument("--join-out", required=True)
+    parser.add_argument("--cache", help="text read from each order on earlier runs (default: next to --actions-out)")
     args = parser.parse_args()
-    actions = collect()
+    cache_path = args.cache or str(Path(args.actions_out).with_name(CACHE_NAME))
+    cache = load_cache(cache_path)
+    actions = collect(cache)
     write_outputs(actions, args.actions_out, args.relationships_out, args.join_out)
+    write_cache(cache_path, actions)
     n_ocr = sum(1 for a in actions if a.via_ocr)
+    n_cached = sum(1 for a in actions if a.number in cache)
     n_still_blocked = sum(1 for a in actions if not a.extraction_ok and a.retrieval_ok)
-    print(f"New Mexico: {len(actions)} actions scraped, {n_ocr} recovered via OCR, {n_still_blocked} still image-only with no usable text.")
+    ocr_note = ("OCR is not installed" if not TESSERACT else
+                f"{_BUDGET_SKIPPED[0]} left for the next run (OCR time limit)" if _BUDGET_SKIPPED[0] else "")
+    print(f"New Mexico: {len(actions)} actions scraped, {n_ocr} read via OCR ({n_cached} from earlier runs), "
+          f"{n_still_blocked} still image-only with no usable text" + (f"; {ocr_note}." if ocr_note else "."))
 
 
 if __name__ == "__main__":

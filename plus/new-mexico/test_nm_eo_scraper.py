@@ -33,3 +33,59 @@ class NewMexicoTests(unittest.TestCase):
         self.assertEqual(nm.classify(action), "unclassified")
 
 if __name__ == "__main__": unittest.main()
+
+
+# ---------------------------------------------------------------- 2026-09-28
+# OCR through the tesseract program, and the text cache between runs.
+import io as _io
+import os as _os
+
+
+def _scan(lines, dpi=200):
+    from PIL import Image, ImageDraw, ImageFont
+    page = Image.new("L", (int(8.5 * dpi), int(11 * dpi)), 255)
+    draw = ImageDraw.Draw(page)
+    try:
+        font = ImageFont.truetype("DejaVuSerif.ttf", int(dpi * 0.14))
+    except OSError:
+        font = ImageFont.load_default(size=int(dpi * 0.14))
+    for i, line in enumerate(lines):
+        draw.text((dpi, dpi + i * int(dpi * 0.28)), line, font=font, fill=0)
+    out = _io.BytesIO()
+    page.rotate(0.4, fillcolor=255).save(out, "PDF", resolution=dpi)
+    return out.getvalue()
+
+
+ORDER = ["STATE OF NEW MEXICO", "EXECUTIVE ORDER 2025-104",
+         "DECLARING A STATE OF EMERGENCY DUE TO SEVERE FLOODING IN LINCOLN COUNTY",
+         "WHEREAS, severe flooding began on June 17, 2025;", "",
+         "DONE AT THE EXECUTIVE OFFICE THIS 19TH DAY OF JUNE 2025.",
+         "WITNESS MY HAND AND THE GREAT SEAL OF THE STATE OF NEW MEXICO."]
+
+
+class OcrAndCacheTests(unittest.TestCase):
+    @unittest.skipUnless(nm.TESSERACT, "tesseract is not installed")
+    def test_scanned_order_is_read_classified_and_joined(self):
+        text, ok, via_ocr = nm.extract_pdf(_scan(ORDER))
+        self.assertTrue(ok and via_ocr)
+        action = nm.Action("2025-104", nm.extract_title(text, "2025-104"), nm.extract_date(text, "2025-104"),
+                           "u", text, True, True, True)
+        self.assertTrue(action.title.upper().startswith("DECLARING A STATE OF EMERGENCY"), action.title)
+        self.assertEqual(action.date, "2025-06-19")
+        self.assertEqual(nm.classify(action), "declaration")
+
+    def test_cached_text_is_used_without_downloading(self):
+        text = "EXECUTIVE ORDER 2025-104 DECLARING A STATE OF EMERGENCY DUE TO FLOODING WHEREAS x " + "y " * 3000 + \
+               "DONE THIS 19TH DAY OF JUNE 2025. WITNESS MY HAND"
+        original = nm.get
+        nm.get = lambda url: (_ for _ in ()).throw(AssertionError("downloaded"))
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                path = _os.path.join(tmp, nm.CACHE_NAME)
+                nm.write_cache(path, [nm.Action("2025-104", "t", "", "u", text, True, True, True)])
+                action = nm.parse_document("2025-104", "u", nm.load_cache(path))
+        finally:
+            nm.get = original
+        self.assertEqual(action.date, "2025-06-19")          # the attestation survives trimming
+        self.assertEqual(nm.classify(action), "declaration")
+        self.assertTrue(action.via_ocr)
