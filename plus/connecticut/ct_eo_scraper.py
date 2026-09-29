@@ -27,12 +27,12 @@ EMERGENCY_ARCHIVE_URL = "https://portal.ct.gov/demhs/emergency-management/legal-
 TIMEOUT = 60
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0; +https://disasterdata.io/plus/)"}
 WEATHER_PATTERNS = (
-    re.compile(r"\bdrought\b", re.I), re.compile(r"\b(?:wildfire|forest fire|brush fire|fire weather)\b", re.I),
-    re.compile(r"\b(?:flash )?flood(?:ing|s)?\b|\brain ?storm\b", re.I),
-    re.compile(r"\b(?:hurricane|superstorm|tropical (?:storm|cyclone|depression))\b", re.I),
-    re.compile(r"\b(?:blizzard|winter (?:storm|weather)|snow(?:fall|storm)?|ice storm|nor['’]?easter)\b", re.I),
-    re.compile(r"\b(?:severe (?:storm|weather)|thunderstorm|tornado(?:es)?)\b", re.I),
-    re.compile(r"\b(?:wind storm|high winds?|damaging winds?|wind gusts?)\b", re.I),
+    re.compile(r"\bdrought\b", re.I), re.compile(r"\b(?:wildfires?|forest fires?|brush fires?|fire weather)\b", re.I),
+    re.compile(r"\b(?:flash )?flood(?:ing|s)?\b|\brain ?storms?\b", re.I),
+    re.compile(r"\b(?:hurricanes?|superstorms?|tropical (?:storms?|cyclones?|depressions?))\b", re.I),
+    re.compile(r"\b(?:blizzards?|winter (?:storms?|weather)|snow(?:fall|storms?)?|ice storms?|nor['’]?easters?)\b", re.I),
+    re.compile(r"\b(?:severe (?:storms?|weather)|thunderstorms?|tornado(?:e?s)?)\b", re.I),
+    re.compile(r"\b(?:wind ?storms?|high winds?|damaging winds?|wind gusts?)\b", re.I),
 )
 RELATIONSHIP_RE = re.compile(
     r"(?P<verb>amend(?:s|ed|ing)?|exten(?:d(?:s|ed|ing)?|sion)|continu(?:e|es|ed|ing)|reissu(?:e|es|ed|ing)|"
