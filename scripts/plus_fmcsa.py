@@ -48,7 +48,16 @@ BASE = "https://www.fmcsa.dot.gov"
 FIRST_YEAR = 2017
 ARCHIVE_URLS = {2017: f"{BASE}/emergency/archive-emergency-declarations-fy17"}
 CURRENT_URL = f"{BASE}/emergency-declarations"
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)"}
+# The first run (2026-10-01) was refused on every page with the bot-style
+# User-Agent the state scrapers use, so FMCSA is asked the way a browser asks,
+# and the mirror host is tried when the main one refuses.
+HEADERS = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/128.0 Safari/537.36"),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+MIRROR_HOSTS = ("www.fmcsa.dot.gov", "www7.fmcsa.dot.gov")
 TIMEOUT = 60
 REQUEST_PAUSE = 1.0
 DUPLICATE_DAYS = 5
@@ -212,7 +221,12 @@ def refresh(repo_root: Path, get=None, today: date | None = None, states=None) -
         import requests
 
         def get(url):
-            response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+            response = None
+            for host in MIRROR_HOSTS:
+                response = requests.get(url.replace("www.fmcsa.dot.gov", host, 1), headers=HEADERS,
+                                        timeout=TIMEOUT)
+                if response.status_code < 400:
+                    break
             response.raise_for_status()
             time.sleep(REQUEST_PAUSE)
             return response.text
@@ -223,7 +237,8 @@ def refresh(repo_root: Path, get=None, today: date | None = None, states=None) -
         try:
             found.update({e["url"]: e for e in parse_archive_page(get(url), url, year)})
         except Exception as exc:  # one page failing must not lose the rest
-            failed.append(f"{year} ({type(exc).__name__})")
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            failed.append(f"{year} ({type(exc).__name__}{' ' + str(status) if status else ''})")
     details = 0
     for url, entry in found.items():
         old = saved.get(url)

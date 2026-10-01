@@ -45,7 +45,7 @@ ARCHIVE = "https://www.oregon.gov/gov/Pages/executive-orders.aspx"
 API = "https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)", "Accept": "application/json;odata=verbose"}
 JOIN_FIELDS = ("declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url")
-ACTION_FIELDS = ("declaration_id", "state", "governor", "eo_number", "action_kind", "action_type", "event_description", "date_signed", "date_source", "end_date", "weather_related", "source_scope", "document_format", "detail_url", "archive_record_url")
+ACTION_FIELDS = ("declaration_id", "state", "governor", "eo_number", "action_kind", "action_type", "event_description", "date_signed", "date_source", "date_checked", "end_date", "weather_related", "source_scope", "document_format", "detail_url", "archive_record_url")
 REL_FIELDS = ("source_order_id", "target_order_id", "relationship_type", "relationship_text", "relationship_source", "confidence")
 REVIEW_FIELDS = ("declaration_id", "eo_number", "event_description", "archive_record_url", "review_reason")
 HAZARD_RE = re.compile(r"\b(?:drought|wildfires?|wildland fires?|fires?|firefighting|conflagration|flood(?:ing)?|heavy rain|rain storms?|hurricanes?|tropical storms?|winter|snow|ice|blizzard|severe storms?|(?:severe|extreme) weather|atmospheric river|high winds?|windstorms?|tornado(?:es)?)\b", re.I)
@@ -91,6 +91,7 @@ REVIEW_REASONS = {
     "budget": "The order PDF is a scan; OCR ran out of time on this run and continues on the next.",
     "ocr_error": "The order PDF is a scan and could not be converted to an image for OCR.",
     "not_found": "The order PDF is a scan and OCR could not read a signing date in its last pages.",
+    "recent_miss": "The order PDF is a scan and OCR could not read a signing date in its last pages; it is tried again every four weeks.",
 }
 
 
@@ -105,6 +106,7 @@ class Action:
     signed: str = ""
     date_source: str = ""
     date_note: str = ""
+    date_checked: str = ""
 
     @property
     def eo_number(self) -> str:
@@ -237,6 +239,31 @@ def load_saved_dates(path) -> dict[str, tuple[str, str]]:
             for row in rows if row.get("declaration_id") and row.get("date_signed")}
 
 
+# A scan OCR could not date is tried again after this many days rather than
+# every week. On 2026-10-01 re-reading 132 such scans took about 8 minutes
+# of a run that came within 6 minutes of the workflow's time limit.
+RECHECK_AFTER_DAYS = 28
+
+
+def load_recent_misses(path, today: date) -> set[str]:
+    """Orders whose scan was read without finding a date in the last
+    RECHECK_AFTER_DAYS days."""
+    try:
+        with Path(path).open(newline="", encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+    except (OSError, csv.Error):
+        return set()
+    recent = set()
+    for row in rows:
+        try:
+            checked = date.fromisoformat(row.get("date_checked") or "")
+        except ValueError:
+            continue
+        if not row.get("date_signed") and (today - checked).days < RECHECK_AFTER_DAYS:
+            recent.add(row["declaration_id"])
+    return recent
+
+
 def list_orders(session: requests.Session) -> list[Action]:
     params = {"$top": "5000", "$expand": "File", "$select": "Title,Document_x0020_Description,Year,Number,Order0,Created,File/ServerRelativeUrl,File/Name"}
     response = session.get(API, params=params, headers=HEADERS, timeout=60)
@@ -273,9 +300,11 @@ def list_orders(session: requests.Session) -> list[Action]:
 
 
 def collect(session: requests.Session | None = None, saved: dict | None = None,
-            today: date | None = None, ocr_budget: float = OCR_BUDGET_SECONDS) -> list[Action]:
+            today: date | None = None, ocr_budget: float = OCR_BUDGET_SECONDS,
+            recent_misses: set | None = None) -> list[Action]:
     session = session or requests.Session()
     saved = saved or {}
+    recent_misses = recent_misses or set()
     today = today or date.today()
     ocr_available = bool(TESSERACT)
     deadline = time.monotonic() + ocr_budget
@@ -297,6 +326,10 @@ def collect(session: requests.Session | None = None, saved: dict | None = None,
         if signed[:4] == str(action.year):
             action.signed, action.date_source = signed, source
             count("saved")
+            return action
+        if action.stable_id in recent_misses:
+            action.date_note = "recent_miss"
+            count("recent_miss")
             return action
         content = None
         for attempt in (1, 2):
@@ -340,6 +373,8 @@ def collect(session: requests.Session | None = None, saved: dict | None = None,
         else:
             action.date_note = note
             count(note)
+            if note == "not_found":
+                action.date_checked = today.isoformat()
         return action
 
     with ThreadPoolExecutor(max_workers=4) as pool:
@@ -354,6 +389,7 @@ def date_report(counts: dict, failures: dict) -> str:
         (counts.get("text", 0), "read from the PDF text"),
         (counts.get("ocr", 0), "read from the scan by OCR"),
         (counts.get("not_found", 0), "not found by OCR"),
+        (counts.get("recent_miss", 0), "not found by OCR in the last four weeks, not retried yet"),
         (counts.get("ocr_error", 0), "not readable as an image"),
         (counts.get("budget", 0), "left for the next run (OCR time limit)"),
         (counts.get("no_ocr", 0), "not tried because OCR is not installed"),
@@ -396,7 +432,7 @@ def write_outputs(actions, actions_out, relationships_out, join_out, review_out=
     for action in actions:
         kind = classify(action)
         weather = bool(HAZARD_RE.search(action.description))
-        row = {"declaration_id": action.stable_id, "state": STATE, "governor": governor(action), "eo_number": action.eo_number, "action_kind": "emergency_declaration" if kind != "administrative" else "executive_order", "action_type": kind, "event_description": action.description, "date_signed": action.signed, "date_source": action.date_source if action.signed else "", "end_date": "", "weather_related": str(kind == "declaration" and weather).lower(), "source_scope": "oregon_governor_executive_order_list", "document_format": "pdf", "detail_url": action.pdf_url, "archive_record_url": action.pdf_url}
+        row = {"declaration_id": action.stable_id, "state": STATE, "governor": governor(action), "eo_number": action.eo_number, "action_kind": "emergency_declaration" if kind != "administrative" else "executive_order", "action_type": kind, "event_description": action.description, "date_signed": action.signed, "date_source": action.date_source if action.signed else "", "date_checked": action.date_checked, "end_date": "", "weather_related": str(kind == "declaration" and weather).lower(), "source_scope": "oregon_governor_executive_order_list", "document_format": "pdf", "detail_url": action.pdf_url, "archive_record_url": action.pdf_url}
         rows.append(row)
         if kind in {"amendment", "extension", "termination"}:
             relation = {"amendment": "amends", "extension": "extends", "termination": "terminates"}[kind]
@@ -420,7 +456,8 @@ def main() -> None:
     parser.add_argument("--review-out", help="list of weather declarations still undated, with the reason")
     args = parser.parse_args()
     saved = load_saved_dates(args.actions_out)
-    write_outputs(collect(saved=saved), args.actions_out, args.relationships_out, args.join_out, args.review_out)
+    misses = load_recent_misses(args.actions_out, date.today())
+    write_outputs(collect(saved=saved, recent_misses=misses), args.actions_out, args.relationships_out, args.join_out, args.review_out)
 
 
 if __name__ == "__main__": main()

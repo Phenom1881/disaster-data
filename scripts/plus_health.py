@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import re
 import json
 import os
 import subprocess
@@ -38,6 +39,7 @@ FLAKY_WINDOW = 4          # runs looked at for a source that fails now and then
 THIN_BELOW = 10           # fewer declarations than this reads as a short coverage window
 BAD_SOURCES = ("empty", "failed")
 GOOD_SOURCES = ("ok", "partial")
+DROUGHT_RE = re.compile(r"\bdrought\b", re.I)
 # A state site that refuses now and then (New Hampshire's registry, Ohio's
 # feed) is not an emergency while its page still shows the records saved from
 # the last good collection. It turns red once that collection is this old.
@@ -118,12 +120,19 @@ def measure(bp, state: dict, state_dir: Path) -> dict:
     storm_rows, _ = bp.load_storm_match_rows(state_dir)
     matched_ids = {bp.clean(row.get("declaration_id")) for row in storm_rows}
     dated = [a for a in actions if a["date_signed"]]
+    # Drought orders are left out of the storm match rate. NOAA's storm
+    # database logs drought only in some months (Idaho's 207 county drought
+    # orders found drought entries in June 2001 and few other months), so a
+    # low rate there says nothing about whether the join works.
+    weather = [a for a in dated if not DROUGHT_RE.search(a["title"] or "")]
     return {
         "actions": len(actions),
         "dated": len(dated),
         "titled": sum(1 for a in actions if a["title"]),
         "linked": sum(1 for a in actions if a["source_url"].startswith("http")),
         "storm_matched": sum(1 for a in dated if a["declaration_id"] in matched_ids),
+        "dated_not_drought": len(weather),
+        "matched_not_drought": sum(1 for a in weather if a["declaration_id"] in matched_ids),
     }
 
 
@@ -260,9 +269,16 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
             window = f" ({since.lower()})" if since and since != "No data loaded" else ""
             yellow.append(f"Only {plural(count, 'declaration')} against {federal} federal ones"
                           f"{window}, so the source is likely missing most of the record.")
-        if numbers["dated"] >= THIN_BELOW and numbers["storm_matched"] < numbers["dated"] * 0.25:
-            yellow.append(f"Only {numbers['storm_matched']} of {numbers['dated']} dated "
-                          "declarations matched any storm record.")
+        rated = numbers.get("dated_not_drought", numbers["dated"])
+        matched = numbers.get("matched_not_drought", numbers["storm_matched"])
+        if rated >= THIN_BELOW and matched < rated * 0.25:
+            drought = numbers["dated"] - rated
+            yellow.append(f"Only {matched} of {rated} dated "
+                          + ("non-drought " if drought else "")
+                          + "declarations matched any storm record.")
+        elif numbers["dated"] - rated:
+            notes.append(f"{numbers['dated'] - rated} drought declaration(s) are not counted in the storm "
+                         "match rate; NOAA's storm database logs drought only in some months.")
 
     before = (previous or {}).get("declarations")
     if before and count < before:
