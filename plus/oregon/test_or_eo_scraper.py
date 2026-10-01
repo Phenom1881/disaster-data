@@ -253,3 +253,19 @@ class OcrTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RecheckTests(unittest.TestCase):
+    """2026-10-01: a scan OCR could not date is retried every four weeks, not weekly."""
+
+    def test_recent_misses_are_skipped_and_old_ones_retried(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "a.csv"
+            path.write_text("declaration_id,date_signed,date_checked\n"
+                            "OR-EO-26-24,,2026-09-20\nOR-EO-26-23,,2026-08-01\nOR-EO-26-22,2026-07-01,2026-09-20\n")
+            self.assertEqual(ore.load_recent_misses(path, TODAY), {"OR-EO-26-24"})
+        session = FakeSession([list_item(24), list_item(23)], {url(23): b"not a pdf"})
+        actions, log = run(session, recent_misses={"OR-EO-26-24"})
+        self.assertEqual(session.fetched, [url(23)])
+        self.assertIn("1 not found by OCR in the last four weeks", log)
+        self.assertEqual({a.stable_id: a.date_note for a in actions}["OR-EO-26-24"], "recent_miss")
