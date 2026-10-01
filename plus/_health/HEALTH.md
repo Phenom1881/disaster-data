@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-09-29 18:56 UTC after the refresh. **30 green, 20 yellow, 0 red.**
+Checked 2026-10-01 13:52 UTC after the refresh. **30 green, 20 yellow, 0 red.**
 
 ## Yellow: working with gaps (20)
 
@@ -8,7 +8,7 @@ Checked 2026-09-29 18:56 UTC after the refresh. **30 green, 20 yellow, 0 red.**
 |---|---:|---|
 | Alaska (AK) | 6 | Only 6 declarations against 95 federal ones (uneven coverage), so the source is likely missing most of the record. |
 | Arizona (AZ) | 6 | Only 6 declarations against 120 federal ones (since 2023), so the source is likely missing most of the record. |
-| Delaware (DE) | 2 | Collection failed or produced no declarations on 1 of the 3 runs before this one. Only 2 declarations against 26 federal ones (since 2025), so the source is likely missing most of the record. |
+| Delaware (DE) | 2 | Only 2 declarations against 26 federal ones (since 2025), so the source is likely missing most of the record. |
 | Hawaii (HI) | 8 | Only 8 declarations against 75 federal ones (uneven coverage), so the source is likely missing most of the record. |
 | Idaho (ID) | 208 | Only 14 of 208 dated declarations matched any storm record. |
 | Illinois (IL) | 7 | Only 7 declarations against 68 federal ones (since 2000), so the source is likely missing most of the record. |
@@ -18,13 +18,13 @@ Checked 2026-09-29 18:56 UTC after the refresh. **30 green, 20 yellow, 0 red.**
 | Massachusetts (MA) | 4 | Only 4 declarations against 59 federal ones (since 1970), so the source is likely missing most of the record. |
 | Mississippi (MS) | 9 | Only 9 declarations against 99 federal ones (since 2020), so the source is likely missing most of the record. |
 | Nevada (NV) | 6 | Only 6 declarations against 115 federal ones (since 2023), so the source is likely missing most of the record. |
-| New Hampshire (NH) | 6 | Collecting from the state source produced no declarations on this run and on the retry, 7 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record. |
-| Ohio (OH) | 7 | Collecting from the state source produced no declarations on this run and on the retry, 7 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record. |
+| New Hampshire (NH) | 6 | Collecting from the state source produced no declarations on this run and on the retry, 8 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record. |
+| Ohio (OH) | 7 | Collecting from the state source produced no declarations on this run and on the retry, 8 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 7 declarations against 60 federal ones (uneven coverage), so the source is likely missing most of the record. |
 | Oklahoma (OK) | 4 | The source left out 1 of 4 saved records; they are shown from earlier runs. Only 4 declarations against 259 federal ones (since 2016), so the source is likely missing most of the record. |
 | Oregon (OR) | 252 | 82 of 252 declarations have no signing date. |
 | Rhode Island (RI) | 7 | Only 7 declarations against 31 federal ones (since 2015), so the source is likely missing most of the record. |
 | Vermont (VT) | 1 | Only 1 declaration against 62 federal ones (since 2017), so the source is likely missing most of the record. |
-| Wisconsin (WI) | 18 | Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed), 2 runs in a row. The page is showing records saved from earlier runs; the last successful collection was 2026-09-27 (2 days ago). This turns red at four weeks. |
+| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 2 of the 3 runs before this one. |
 | Wyoming (WY) | 4 | Only 4 declarations against 45 federal ones (since 2019), so the source is likely missing most of the record. |
 
 ## Green (30)
@@ -33,20 +33,20 @@ AL, AR, CA, CO, CT, FL, GA, IA, KS, KY, MD, MI, MN, MO, MT, NE, NJ, NM, NY, NC, 
 
 ## Where the time went
 
-Collecting from state sources took 69.4 min in all, and matching storms took 1.3 min. The 10 slowest states:
+Collecting from state sources took 77.9 min in all, and matching storms took 2.0 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NM | 21.8 min | 0 s |
-| OR | 8.0 min | 1 s |
+| NM | 20.2 min | 1 s |
+| OR | 8.1 min | 1 s |
+| NJ | 7.8 min | 13 s |
+| NC | 7.7 min | 1 s |
+| CT | 4.9 min | 0 s |
 | TX | 4.7 min | 1 s |
-| NJ | 4.6 min | 7 s |
-| NC | 4.4 min | 1 s |
-| CT | 3.1 min | 0 s |
-| MA | 2.3 min | 1 s |
-| WA | 1.6 min | 1 s |
-| LA | 1.5 min | 0 s |
-| CO | 1.1 min | 22 s |
+| MA | 3.2 min | 2 s |
+| SC | 2.1 min | 6 s |
+| CO | 1.1 min | 40 s |
+| LA | 1.7 min | 0 s |
 
 ## Every state
 
@@ -80,13 +80,13 @@ Collecting from state sources took 69.4 min in all, and matching storms took 1.3
 | MT | green | returned part | 0 | 19 | 113 | 19 | 19 | 19 | 14 | The source left out 1 saved record(s); shown from earlier runs. |
 | NE | green | returned part | 0 | 60 | 88 | 60 | 60 | 60 | 16 | The source left out 2 saved record(s); shown from earlier runs. |
 | NV | yellow | returned everything | 0 | 6 | 115 | 6 | 6 | 6 | 5 |  |
-| NH | yellow | no declarations | 7 | 6 | 63 | 6 | 6 | 6 | 5 |  |
-| NJ | green | returned everything | 0 | 150 | 59 | 150 | 150 | 150 | 95 |  |
-| NM | green | returned everything | 0 | 16 | 126 | 16 | 16 | 16 | 9 |  |
+| NH | yellow | no declarations | 8 | 6 | 63 | 6 | 6 | 6 | 5 |  |
+| NJ | green | returned everything | 0 | 151 | 59 | 151 | 151 | 151 | 95 |  |
+| NM | green | returned everything | 0 | 41 | 126 | 41 | 41 | 41 | 20 |  |
 | NY | green | returned everything | 0 | 25 | 118 | 25 | 25 | 25 | 22 |  |
 | NC | green | returned everything | 0 | 34 | 85 | 34 | 34 | 34 | 32 |  |
 | ND | green | returned everything | 0 | 34 | 76 | 34 | 34 | 34 | 18 |  |
-| OH | yellow | no declarations | 7 | 7 | 60 | 7 | 7 | 7 | 3 |  |
+| OH | yellow | no declarations | 8 | 7 | 60 | 7 | 7 | 7 | 3 |  |
 | OK | yellow | returned part | 0 | 4 | 259 | 4 | 4 | 4 | 4 |  |
 | OR | yellow | returned everything | 0 | 252 | 174 | 170 | 252 | 252 | 76 |  |
 | PA | green | returned everything | 0 | 10 | 64 | 10 | 10 | 10 | 10 |  |
@@ -100,7 +100,7 @@ Collecting from state sources took 69.4 min in all, and matching storms took 1.3
 | VA | green | returned everything | 0 | 75 | 77 | 75 | 75 | 74 | 65 |  |
 | WA | green | returned everything | 0 | 38 | 223 | 38 | 38 | 38 | 24 |  |
 | WV | green | returned everything | 0 | 18 | 85 | 18 | 18 | 18 | 12 |  |
-| WI | yellow | failed | 2 | 18 | 56 | 18 | 18 | 18 | 15 |  |
+| WI | yellow | returned everything | 0 | 18 | 56 | 18 | 18 | 18 | 15 |  |
 | WY | yellow | returned everything | 0 | 4 | 45 | 4 | 4 | 4 | 4 |  |
 
 <details><summary>How grades are set</summary>
