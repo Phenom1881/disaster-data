@@ -1,28 +1,28 @@
 {
   "schemaVersion": 2,
-  "release": "2026.10.04.1",
+  "release": "2026.10.04.2",
   "status": "passed",
-  "builtAt": "2026-10-04T00:20:07Z",
-  "dataDate": "2026-10-01",
-  "fingerprint": "38a5668072124268f60c",
+  "builtAt": "2026-10-04T10:45:16Z",
+  "dataDate": "2026-10-04",
+  "fingerprint": "4b870926d3451ce49f27",
   "metrics": {
-    "dataDate": "2026-10-01",
-    "ageDays": 3,
-    "declarationsCurrent": 3536,
+    "dataDate": "2026-10-04",
+    "ageDays": 0,
+    "declarationsCurrent": 3537,
     "declarationsCompletedFY": 3536,
     "denials": 363,
     "statesTerritories": 57,
     "localities": 4195,
     "mapCounties": 3241,
-    "mapDeclarationEvents": 3536,
+    "mapDeclarationEvents": 3537,
     "eventCount": 3399,
     "mapEventCount": 3398,
     "statewideOnlyEvents": 1,
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 284469831382.37,
-    "paProjects": 823244,
+    "paTotalObligated": 284263149897.71,
+    "paProjects": 823333,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3265,
@@ -32,7 +32,7 @@
     "nriRelease": "2025"
   },
   "changesFromPreviousRelease": {
-    "declarationsCurrent": 0.0,
+    "declarationsCurrent": 1.0,
     "jurisdictionPages": 0.0,
     "mapCounties": 0.0,
     "eventCount": 0.0,
@@ -44,9 +44,9 @@
       "name": "FEMA Disaster Declarations Summaries",
       "status": "current",
       "file": "data.js",
-      "records": 3536,
+      "records": 3537,
       "release": "OpenFEMA v2",
-      "hash": "ca32b480381c158c",
+      "hash": "13827e93ae46dea7",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,7 +55,7 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "ca32b480381c158c",
+      "hash": "13827e93ae46dea7",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "ca32b480381c158c",
+      "hash": "13827e93ae46dea7",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "41460816c260dc50",
+      "hash": "609c16eccfb8b257",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,7 +91,7 @@
       "file": "ia.json",
       "records": 3265,
       "release": "OpenFEMA v2",
-      "hash": "87952aad537fe83f",
+      "hash": "8a41401276ab4d08",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
@@ -100,7 +100,7 @@
       "file": "events.json",
       "records": 3399,
       "release": "Derived",
-      "hash": "f9490d0fdeb5be9b",
+      "hash": "1db1aa415812f89b",
       "note": "National event index derived from the committed declaration index; named tropical systems are grouped by storm name and year."
     },
     {
@@ -140,7 +140,7 @@
         "category": "Declarations",
         "status": "pass",
         "severity": "error",
-        "detail": "Parsed 3,536 unique declarations",
+        "detail": "Parsed 3,537 unique declarations",
         "metrics": {}
       },
       {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-10-01",
+        "detail": "Data date: 2026-10-04",
         "metrics": {}
       },
       {
@@ -180,7 +180,7 @@
         "category": "Declarations",
         "status": "pass",
         "severity": "error",
-        "detail": "3,536 IDs; 0 duplicate(s); 0 blank ID(s)",
+        "detail": "3,537 IDs; 0 duplicate(s); 0 blank ID(s)",
         "metrics": {
           "duplicates": 0,
           "blankIds": 0
@@ -207,7 +207,7 @@
         "category": "Declarations",
         "status": "pass",
         "severity": "error",
-        "detail": "NATIONAL_TOTALS current=3,536; BROWSE=3,536",
+        "detail": "NATIONAL_TOTALS current=3,537; BROWSE=3,537",
         "metrics": {}
       },
       {
@@ -231,7 +231,7 @@
         "category": "Map",
         "status": "pass",
         "severity": "error",
-        "detail": "Map=3,536; BROWSE=3,536",
+        "detail": "Map=3,537; BROWSE=3,537",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-10-01",
+        "detail": "Homepage contains build date 2026-10-04",
         "metrics": {}
       },
       {
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 3 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
