@@ -696,13 +696,14 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected.
-Kansas: wrote 51 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
+Kansas: wrote 52 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
 
   NOTE: KS-PROC-4221 is under 2026 but its file name says 2023; left as saved
 
 KS: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kansas/hazard_overrides.csv
 KS-PROC-4326: no matching storm events found in the date window.
+KS-PROC-4366: no matching storm events found in the date window.
 KS-PROC-3653: no matching storm events found in the date window.
 KS-PROC-3722: no matching storm events found in the date window.
 KS-PROC-3733: no matching storm events found in the date window.
@@ -745,7 +746,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp.
 
-KS: 52 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return
+KS: 53 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return
 Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 12 weather state-of-emergency releases.
 
 KY: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -882,10 +883,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 85 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 86 relationship(s), 4 original weather declaration(s).
 
 MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 3 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 13 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 12 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 68 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1256,14 +1257,17 @@ New Jersey scraper: discovering administration pages...
   parsing Hughes [045hughes] (https://www.nj.gov/infobank/eo/045hughes/index.shtml)
     5 order(s) found
 New Jersey scraper: fetching document text for classification (this is the slow step)...
-  Recovered 178 blank archive-table description(s) from each order's own document text.
-  Described 39 untitled weather order(s) with the weather clause from their own text.
+  Recovered 177 blank archive-table description(s) from each order's own document text.
+  Described 28 untitled weather order(s) with the weather clause from their own text.
 New Jersey scraper: extracting order relationships...
-  147 relationship(s) extracted (after global dedup)
+  145 relationship(s) extracted (after global dedup)
 
-Done. 1257 total order(s), 182 weather-related, 151 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
+Done. 1257 total order(s), 148 weather-related, 119 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
 
 New Jersey adapter: coverage = 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+NJ: declarations_for_join.csv: kept 32 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NJ: nj_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 12 blank and 0 garbled field set(s)
+NJ: nj_order_relationships.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 NJ: nj_emergency_actions_all.csv: left off 5 declaration(s) signed before 1970
 Applied 72 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-jersey/hazard_overrides.csv
 NJ-SHERRILL-EO-26: no matching storm events found in the date window.
@@ -1277,10 +1281,6 @@ NJ-MURPHY-EO-380: no matching storm events found in the date window.
 NJ-MURPHY-EO-18: no matching storm events found in the date window.
 NJ-MURPHY-EO-15: no matching storm events found in the date window.
 NJ-CHRISTIE-EO-23: no matching storm events found in the date window.
-NJ-CHRISTIE-EO-109: no matching storm events found in the date window.
-NJ-CHRISTIE-EO-110: no matching storm events found in the date window.
-NJ-CHRISTIE-EO-113: no matching storm events found in the date window.
-NJ-CHRISTIE-EO-117: no matching storm events found in the date window.
 NJ-CHRISTIE-EO-186: no matching storm events found in the date window.
 NJ-CHRISTIE-EO-214: no matching storm events found in the date window.
 NJ-WHITMAN-EO-4: no matching storm events found in the date window.
@@ -1292,8 +1292,12 @@ NJ-FLORIO-EO-37: no matching storm events found in the date window.
 NJ-FLORIO-EO-46: no matching storm events found in the date window.
 NJ-FLORIO-EO-50: no matching storm events found in the date window.
 NJ-FLORIO-EO-74: no matching storm events found in the date window.
+NJ-CHRISTIE-EO-109: no matching storm events found in the date window.
+NJ-CHRISTIE-EO-110: no matching storm events found in the date window.
+NJ-CHRISTIE-EO-113: no matching storm events found in the date window.
+NJ-CHRISTIE-EO-117: no matching storm events found in the date window.
 
-30 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NJ-MURPHY-EO-317, NJ-MURPHY-EO-316, NJ-MURPHY-EO-315, NJ-MURPHY-EO-274, NJ-MURPHY-EO-264, NJ-MURPHY-EO-258, NJ-MURPHY-EO-251, NJ-MURPHY-EO-175, NJ-MURPHY-EO-166, NJ-MURPHY-EO-100, NJ-MURPHY-EO-94, NJ-MURPHY-EO-89, NJ-MURPHY-EO-47, NJ-MURPHY-EO-10, NJ-MURPHY-EO-7, NJ-CHRISTIE-EO-101, NJ-CHRISTIE-EO-116, NJ-CHRISTIE-EO-125, NJ-CHRISTIE-EO-126, NJ-CHRISTIE-EO-200, NJ-CHRISTIE-EO-222, NJ-CHRISTIE-EO-233, NJ-CHRISTIE-EO-238, NJ-CORZINE-EO-111, NJ-MCGREEVEY-EO-97, NJ-FLORIO-EO-33, NJ-FLORIO-EO-66, NJ-FLORIO-EO-91, NJ-FLORIO-EO-115, NJ-KEAN-EO-219
+30 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NJ-MURPHY-EO-317, NJ-MURPHY-EO-316, NJ-MURPHY-EO-315, NJ-MURPHY-EO-274, NJ-MURPHY-EO-264, NJ-MURPHY-EO-258, NJ-MURPHY-EO-251, NJ-MURPHY-EO-175, NJ-MURPHY-EO-166, NJ-MURPHY-EO-100, NJ-MURPHY-EO-94, NJ-MURPHY-EO-89, NJ-MURPHY-EO-47, NJ-MURPHY-EO-10, NJ-MURPHY-EO-7, NJ-CORZINE-EO-111, NJ-MCGREEVEY-EO-97, NJ-FLORIO-EO-33, NJ-FLORIO-EO-66, NJ-FLORIO-EO-91, NJ-FLORIO-EO-115, NJ-KEAN-EO-219, NJ-CHRISTIE-EO-101, NJ-CHRISTIE-EO-116, NJ-CHRISTIE-EO-125, NJ-CHRISTIE-EO-126, NJ-CHRISTIE-EO-200, NJ-CHRISTIE-EO-222, NJ-CHRISTIE-EO-233, NJ-CHRISTIE-EO-238
 Wrote 2417 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_matches.csv.tmp
 Wrote severity summary (1626 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp
 
@@ -1327,11 +1331,11 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
-NJ: 151 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
-New Mexico: 1215 actions scraped, 1183 read via OCR (1125 from earlier runs), 0 still image-only with no usable text.
+NJ: 151 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected; 32 saved records kept that this refresh's check of the state source did not return
+New Mexico: 1215 actions scraped, 1183 read via OCR (1215 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
-NM: nm_order_relationships.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NM: nm_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 NM-2026-077: no matching storm events found in the date window.
 NM-2026-076: no matching storm events found in the date window.
 NM-2026-075: no matching storm events found in the date window.
@@ -1387,17 +1391,17 @@ New York adapter: collecting executive orders...
 New York scraper: collecting current executive orders...
     current page 1: 100 row(s), 100 new
     current page 2: 100 row(s), 100 new
-    current page 3: 33 row(s), 33 new
+    current page 3: 34 row(s), 34 new
 New York scraper: collecting selected prior orders...
     selected prior: 97 row(s)
 New York scraper: fetching linked documents...
-    fetched 50/330
-    fetched 100/330
-    fetched 150/330
-    fetched 200/330
-    fetched 250/330
-    fetched 300/330
-Done. 330 total row(s): 233 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
+    fetched 50/331
+    fetched 100/331
+    fetched 150/331
+    fetched 200/331
+    fetched 250/331
+    fetched 300/331
+Done. 331 total row(s): 234 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
 
 New York adapter: coverage = 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 Applied 14 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-york/hazard_overrides.csv
@@ -1656,9 +1660,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 OK: 4 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; 1 saved record kept that this refresh's check of the state source did not return
-Oregon signing dates: 195 kept from earlier runs; 132 not found by OCR
+Oregon signing dates: 195 kept from earlier runs; 132 not found by OCR in the last four weeks, not retried yet
 
-OR: or_order_relationships.csv: kept 14 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 132 blank and 0 garbled field set(s)
+OR: or_order_relationships.csv: kept 109 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 112 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oregon/hazard_overrides.csv
 OR-EO-26-25: no matching storm events found in the date window.
 OR-EO-26-18: no matching storm events found in the date window.
@@ -2207,7 +2212,8 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 75 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
 WA-PROC-26-03: no matching storm events found in the date window.
 WA-PROC-26-02: no matching storm events found in the date window.
@@ -2255,7 +2261,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
 
-WA: 38 actions, 223 federal declarations; 2013-present structured Governor proclamation archive; 2000-2012 unavailable
+WA: 39 actions, 223 federal declarations; 2013-present structured Governor proclamation archive; 2000-2012 unavailable
 West Virginia: 22 actions, 0 relationships, 18 weather declarations
 
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/west-virginia/hazard_overrides.csv
@@ -2299,8 +2305,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f275897b850>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
-Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f275897b850>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7ffb2996f850>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7ffb2996f850>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
 WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
@@ -2375,18 +2381,18 @@ OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not 
 OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY OH: still empty
 OH: 7 actions, 60 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0afffe3810>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
-Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0afffe3810>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0b1da97e50>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0b1da97e50>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
 WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 RETRY WI: still failed (Collection failed: Wisconsin adapter: scrape failed)
 WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
-TIME total: collect 3377s, storm join 93s. Slowest: NJ 409s+10s, NC 402s+1s, OR 385s+1s, TX 371s+1s, MA 250s+1s, CT 238s+0s, NM 145s+0s, SC 98s+4s, LA 88s+0s, VT 86s+0s
-WARNING kept saved records the state source did not return: IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), OH (7), OK (1), TX (1)
+TIME total: collect 2350s, storm join 84s. Slowest: NJ 311s+8s, NC 275s+1s, TX 274s+1s, CT 217s+0s, MA 135s+1s, LA 93s+0s, CO 67s+23s, SC 83s+3s, WA 84s+1s, PA 79s+0s
+WARNING kept saved records the state source did not return: IN (5), KS (1), KY (1), MT (1), NE (2), NH (6), NJ (32), OH (7), OK (1), TX (1)
 Row-loss check: no saved rows lost.
-Plus health: 31 green, 19 yellow, 0 red.
-Changes since the last run (2026-10-01 13:52 UTC):
+Plus health: 30 green, 20 yellow, 0 red.
+Changes since the last run (2026-10-01 18:27 UTC):
 
-- **Idaho** went from yellow to green.
+- **New Jersey** went from green to yellow. The source left out 32 of 151 saved records; they are shown from earlier runs.
 
-Now 31 green, 19 yellow, 0 red.
+Now 30 green, 20 yellow, 0 red.
