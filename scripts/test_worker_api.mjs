@@ -9,9 +9,14 @@ import assert from "node:assert/strict";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 let siteDown = false;
 
+const DATA_PREFIX = "https://raw.githubusercontent.com/Phenom1881/disaster-data/main/";
+const fetched = [];
 globalThis.fetch = async (url) => {
+  fetched.push(String(url));
   if (siteDown) return new Response("down", { status: 503 });
-  const rel = new URL(url).pathname.replace(/^\//, "");
+  // The Worker must read from the repository, never through the site's domain.
+  assert.ok(String(url).startsWith(DATA_PREFIX), `unexpected fetch ${url}`);
+  const rel = String(url).slice(DATA_PREFIX.length).split("?")[0];
   try {
     return new Response(await readFile(path.join(ROOT, rel)), { status: 200 });
   } catch {
@@ -132,6 +137,12 @@ await test("site outage is a 502, not a crash", async () => {
 await test("only GET", async () => {
   const res = await worker.fetch(new Request("https://api.disasterdata.io/v1/states", { method: "POST" }), {});
   assert.equal(res.status, 405);
+});
+
+await test("robots.txt is plain text", async () => {
+  const res = await worker.fetch(new Request("https://api.disasterdata.io/robots.txt"), {});
+  assert.equal(res.status, 200);
+  assert.match(await res.text(), /User-agent: \*/);
 });
 
 console.log(`\n${passed} passed`);

@@ -1,5 +1,7 @@
 /**
- * DisasterData API worker (v1), served at https://api.disasterdata.io.
+ * DisasterData API worker (v1), served at
+ * https://disasterdata-api.disasterdata.workers.dev (api.disasterdata.io once
+ * the domain is added to the Cloudflare account; see wrangler.toml).
  *
  * A separate Worker from femaproxy (worker.js), which proxies OpenFEMA's own
  * endpoints. This one serves DisasterData's own cleaned and joined data as a
@@ -25,7 +27,17 @@
  * wrangler.toml (60 requests per minute per client IP by default).
  */
 
-const SITE_ORIGIN = "https://www.disasterdata.io";
+// Links in responses point readers at the public site.
+const SITE_ORIGIN = "https://disasterdata.io";
+
+// The data itself is read from the repository's main branch, the same
+// files GitHub Pages publishes. The first deploy read it through the site's
+// own domain and Cloudflare refused every request with a 526 (it would not
+// accept the site's certificate from inside a Worker), so the API does not
+// depend on the site's domain at all. Override with a DATA_ORIGIN variable
+// in wrangler.toml if the files ever move.
+const DEFAULT_DATA_ORIGIN = "https://raw.githubusercontent.com/Phenom1881/disaster-data/main";
+let dataOrigin = DEFAULT_DATA_ORIGIN;
 const API_VERSION = "v1";
 
 const ATTRIBUTION =
@@ -92,20 +104,20 @@ function errorResponse(status, message) {
 async function siteJson(path) {
   let response;
   try {
-    response = await fetch(`${SITE_ORIGIN}/${path}`, {
+    response = await fetch(`${dataOrigin}/${path}`, {
       cf: { cacheTtl: CACHE_SECONDS, cacheEverything: true },
     });
   } catch (err) {
-    throw new ApiError(502, `Could not reach the site for ${path}.`);
+    throw new ApiError(502, `Could not reach the data source for ${path}.`);
   }
   if (response.status === 404) return null;
   if (!response.ok) {
-    throw new ApiError(502, `The site answered ${response.status} for ${path}.`);
+    throw new ApiError(502, `The data source answered ${response.status} for ${path}.`);
   }
   try {
     return await response.json();
   } catch (err) {
-    throw new ApiError(502, `The site returned unreadable JSON for ${path}.`);
+    throw new ApiError(502, `The data source returned unreadable JSON for ${path}.`);
   }
 }
 
@@ -393,6 +405,7 @@ async function route(path, params) {
 
 export default {
   async fetch(request, env) {
+    dataOrigin = (env && env.DATA_ORIGIN) || DEFAULT_DATA_ORIGIN;
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -408,6 +421,13 @@ export default {
     }
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
+    if (path === "/robots.txt") {
+      // Plain text, so crawlers and link previewers read it instead of
+      // failing on a JSON 404.
+      return new Response("User-agent: *\nAllow: /\n", {
+        headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=86400" },
+      });
+    }
     if (path !== "/v1/health") {
       const limited = await enforceRateLimit(request, env);
       if (limited) return limited;
