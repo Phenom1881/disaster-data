@@ -134,4 +134,10 @@ await test("only GET", async () => {
   assert.equal(res.status, 405);
 });
 
+await test("robots.txt is plain text", async () => {
+  const res = await worker.fetch(new Request("https://api.disasterdata.io/robots.txt"), {});
+  assert.equal(res.status, 200);
+  assert.match(await res.text(), /User-agent: \*/);
+});
+
 console.log(`\n${passed} passed`);

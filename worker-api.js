@@ -410,6 +410,13 @@ export default {
     }
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
+    if (path === "/robots.txt") {
+      // Plain text, so crawlers and link previewers read it instead of
+      // failing on a JSON 404.
+      return new Response("User-agent: *\nAllow: /\n", {
+        headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=86400" },
+      });
+    }
     if (path !== "/v1/health") {
       const limited = await enforceRateLimit(request, env);
       if (limited) return limited;
