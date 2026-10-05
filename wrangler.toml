@@ -2,23 +2,21 @@ name = "disasterdata-api"
 main = "worker-api.js"
 compatibility_date = "2026-01-01"
 
-# Route this Worker at api.disasterdata.io, separate from the existing
-# femaproxy Worker's route. Requires api.disasterdata.io to be a DNS record
-# (proxied, orange-cloud) in the same Cloudflare account/zone as
-# disasterdata.io before this route can attach.
+# Serve this Worker at https://api.disasterdata.io as a Custom Domain.
+# Cloudflare creates the DNS record and certificate for it on deploy, as
+# long as disasterdata.io is a zone in the same Cloudflare account. A Custom
+# Domain takes a bare hostname: no path and no "/*" (wrangler rejects both).
 routes = [
-  { pattern = "api.disasterdata.io/*", custom_domain = true }
+  { pattern = "api.disasterdata.io", custom_domain = true }
 ]
 
 [observability]
 enabled = true
 
-# Native Cloudflare rate limiting, checked in worker-api.js's fetch handler
-# before any real work runs. namespace_id just needs to be unique among any
-# rate limiters this account defines elsewhere (femaproxy has none, so 1001
-# is free) - it is not a Cloudflare resource you create separately, wrangler
-# provisions it on deploy. 60 requests per 60 seconds per client IP: raise
-# or lower this here, no code change needed.
+# Native Cloudflare rate limiting, checked in worker-api.js before any real
+# work runs. namespace_id only has to be unique among this account's rate
+# limiters (femaproxy has none); wrangler sets it up on deploy. 60 requests
+# per 60 seconds per client IP: change the numbers here, no code change.
 [[ratelimits]]
 name = "API_RATE_LIMITER"
 namespace_id = "1001"

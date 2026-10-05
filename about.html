@@ -349,6 +349,51 @@ const local = states.VA.counties[<span class="s">'51161'</span>];</pre>
       </div>
     </section>
 
+    <section class="section" id="api">
+      <div class="eyebrow">For builders and analysts</div>
+      <h2>The DisasterData API.</h2>
+      <div class="prose">
+        <p>The same data as the files above, answered one question at a time: a state, a county, or a single declaration, already filtered and joined. Read only, JSON, no key. It is served from the files this site publishes, so an answer from the API always matches what the site shows, and it updates on the same weekly schedule.</p>
+      </div>
+      <div class="defs">
+        <div class="def">
+          <div class="def-t"><code class="path">/v1/states</code></div>
+          <div class="def-d">Every state and territory, with its count of federal declarations, localities, and state declarations.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">/v1/states/{ST}/declarations</code></div>
+          <div class="def-d">A state's federal declarations, newest first, with every county each one names. Filter with <code>type=DR</code>, <code>EM</code> or <code>FM</code>, and <code>since</code> or <code>until</code> as YYYY-MM-DD.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">/v1/counties/{FIPS}</code></div>
+          <div class="def-d">Every federal declaration that names one county, including statewide declarations. Takes the same filters.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">/v1/declarations/{DR-4898-TN}</code></div>
+          <div class="def-d">One federal declaration: dates, incident period, programs, and the named areas with their FIPS codes.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">/v1/states/{ST}/actions</code><span class="def-tag">50 states</span></div>
+          <div class="def-d">The state's own weather emergency declarations, with governor, signing date, and a link to the source record.</div>
+        </div>
+        <div class="def">
+          <div class="def-t"><code class="path">/v1/states/{ST}/crosswalk</code><span class="def-tag">50 states</span></div>
+          <div class="def-d">Each state declaration beside its closest federal declaration (an automated candidate within 21 days, not a confirmed link) and the NOAA storm report areas matched to it.</div>
+        </div>
+      </div>
+      <pre class="data-code"><span class="c">// Emergency declarations naming Roanoke County, Virginia, since 2020</span>
+const r = await fetch(<span class="s">'https://api.disasterdata.io/v1/counties/51161?type=EM&amp;since=2020-01-01'</span>);
+const { name, count, declarations } = await r.json();
+
+<span class="c">// Virginia's state declarations matched to federal ones</span>
+const crosswalk = await fetch(<span class="s">'https://api.disasterdata.io/v1/states/VA/crosswalk'</span>).then(r =&gt; r.json());</pre>
+      <div class="prose" style="margin-top:22px;">
+        <p><strong>Limits.</strong> 60 requests a minute per address, which covers a full state pull. Past that, the API answers 429 with a Retry-After header. Responses can be cached for an hour.</p>
+        <p><strong>The shape is stable.</strong> Fields may be added inside <code>/v1</code>. Nothing will be renamed or removed without a new version path. The list of endpoints is always at <a href="https://api.disasterdata.io/">api.disasterdata.io</a>.</p>
+        <p><strong>Building something larger?</strong> If you need more than the public limit or a feed built for your system, <a href="https://www.linkedin.com/in/reallyjosephreally" target="_blank" rel="noopener">get in touch</a>.</p>
+      </div>
+    </section>
+
     <section class="section">
       <div class="eyebrow">Beyond the dashboard</div>
       <h2>Lead Time, a training game.</h2>

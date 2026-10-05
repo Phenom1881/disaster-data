@@ -1,0 +1,157 @@
+{
+  "actions": [
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2023-09-15",
+      "declaration_id": "MA-PROC-2023-09-15-1f694eff",
+      "governor": "Maura Healey",
+      "source_url": "https://archives.lib.state.ma.us/entities/journalfile/1f694eff-422f-4bd4-a520-4e2bb8c69662",
+      "state": "MA",
+      "title": "Governor Healey Issues Emergency Declaration, Activates National Guard Ahead of Hurricane Lee"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2023-09-12",
+      "declaration_id": "MA-PROC-2023-09-12-5a06b71f",
+      "governor": "Maura Healey",
+      "source_url": "https://archives.lib.state.ma.us/entities/journalfile/5a06b71f-697e-4740-a072-d326b71be441",
+      "state": "MA",
+      "title": "Governor Healey Declares State of Emergency Over Catastrophic Flood Damage"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2018-03-03",
+      "declaration_id": "MA-PROC-2018-03-03-7107885f",
+      "governor": "Charlie Baker",
+      "source_url": "https://archives.lib.state.ma.us/entities/journalfile/7107885f-b681-4d08-9f60-7d73c3a882b5",
+      "state": "MA",
+      "title": "Governor Baker Declares State of Emergency for Winter Storm Riley"
+    },
+    {
+      "action_number": "366",
+      "action_type": "declaration",
+      "date_signed": "1994-03-08",
+      "declaration_id": "MA-EO-366",
+      "governor": "William Weld",
+      "source_url": "https://archives.lib.state.ma.us/entities/journalfile/cdfe8df3-2a93-4dc4-8b25-9d4bf57b7ad2",
+      "state": "MA",
+      "title": "Declaring a State of Emergency Resulting From Unprecedented Snowfall in the Commonwealth"
+    }
+  ],
+  "coverage": "1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending",
+  "crosswalk": [
+    {
+      "date_signed": "2023-09-15",
+      "declaration_id": "MA-PROC-2023-09-15-1f694eff",
+      "federal_declaration": {
+        "begin": "2023-09-15",
+        "date": "2023-09-15",
+        "end": "2023-09-17",
+        "id": "EM-3599",
+        "incidentType": "Hurricane",
+        "number": 3599,
+        "title": "HURRICANE LEE",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BARNSTABLE",
+        "BRISTOL"
+      ],
+      "noaa_match_count": 11,
+      "title": "Governor Healey Issues Emergency Declaration, Activates National Guard Ahead of Hurricane Lee"
+    },
+    {
+      "date_signed": "2023-09-12",
+      "declaration_id": "MA-PROC-2023-09-12-5a06b71f",
+      "federal_declaration": {
+        "begin": "2023-09-11",
+        "date": "2024-05-15",
+        "end": "2023-09-13",
+        "id": "DR-4780",
+        "incidentType": "Flood",
+        "number": 4780,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BARNSTABLE",
+        "BRISTOL",
+        "HAMPDEN",
+        "HAMPSHIRE",
+        "MIDDLESEX",
+        "NORFOLK",
+        "PLYMOUTH",
+        "WORCESTER"
+      ],
+      "noaa_match_count": 34,
+      "title": "Governor Healey Declares State of Emergency Over Catastrophic Flood Damage"
+    },
+    {
+      "date_signed": "2018-03-03",
+      "declaration_id": "MA-PROC-2018-03-03-7107885f",
+      "federal_declaration": {
+        "begin": "2018-03-02",
+        "date": "2018-06-25",
+        "end": "2018-03-03",
+        "id": "DR-4372",
+        "incidentType": "Severe Storm",
+        "number": 4372,
+        "title": "SEVERE WINTER STORM AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BARNSTABLE",
+        "DUKES",
+        "EASTERN ESSEX",
+        "EASTERN NORFOLK",
+        "EASTERN PLYMOUTH",
+        "NANTUCKET",
+        "NORTHERN BERKSHIRE",
+        "NORTHERN BRISTOL",
+        "SOUTHEAST MIDDLESEX",
+        "SOUTHERN BERKSHIRE",
+        "SOUTHERN BRISTOL",
+        "SOUTHERN PLYMOUTH",
+        "SOUTHERN WORCESTER",
+        "SUFFOLK",
+        "WESTERN ESSEX",
+        "WESTERN HAMPSHIRE",
+        "WESTERN MIDDLESEX",
+        "WESTERN NORFOLK",
+        "WESTERN PLYMOUTH"
+      ],
+      "noaa_match_count": 23,
+      "title": "Governor Baker Declares State of Emergency for Winter Storm Riley"
+    },
+    {
+      "date_signed": "1994-03-08",
+      "declaration_id": "MA-EO-366",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "title": "Declaring a State of Emergency Resulting From Unprecedented Snowfall in the Commonwealth"
+    }
+  ],
+  "federal_match_window_days": 21,
+  "generated_on": "2026-10-05",
+  "kept_saved_records": 0,
+  "metrics": {
+    "action_count": 4,
+    "federal_declaration_count": 59,
+    "severity_rows": 29,
+    "storm_match_rows": 68
+  },
+  "name": "Massachusetts",
+  "official_source_url": "https://archives.lib.state.ma.us/entities/aggregation/db64a731-fbc5-4ed7-ac61-5330b8b8e5ae",
+  "schema_version": 1,
+  "slug": "massachusetts",
+  "source_status": "ok",
+  "state": "MA"
+}
