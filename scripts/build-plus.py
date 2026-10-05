@@ -1452,6 +1452,59 @@ def write_json(path: Path, payload) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+# ---------------------------------------------------------------- public API file
+# plus/<slug>/api.json is what the DisasterData API (worker-api.js) serves for
+# a state's state declarations and crosswalk. It is written here, from the same
+# actions and crosswalk this run rendered the state page from, so the API and
+# the page can never disagree. The Worker only reads and routes it; it carries
+# no join logic of its own.
+API_FILE = "api.json"
+API_SCHEMA_VERSION = 1
+
+
+def federal_reference(declaration: dict | None) -> dict | None:
+    """The fields of a federal declaration an API caller needs to identify it,
+    without the full county list (that is at /v1/states/<abbr>/declarations)."""
+    if not declaration:
+        return None
+    keys = ("id", "number", "type", "title", "incidentType", "date", "begin", "end")
+    return {key: declaration.get(key) for key in keys if key in declaration}
+
+
+def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list[dict]) -> dict:
+    return {
+        "schema_version": API_SCHEMA_VERSION,
+        "state": state["abbreviation"],
+        "name": state["name"],
+        "slug": state["slug"],
+        "generated_on": summary.get("generated_on") or date.today().isoformat(),
+        "coverage": summary.get("coverage", ""),
+        "official_source_url": state.get("official_source_url", ""),
+        "source_status": summary.get("source_status"),
+        "kept_saved_records": summary.get("kept_saved_records", 0),
+        "federal_match_window_days": FEDERAL_MATCH_WINDOW_DAYS,
+        "metrics": summary.get("metrics", {}),
+        "actions": actions,
+        "crosswalk": [
+            {
+                "declaration_id": row["action"]["declaration_id"],
+                "date_signed": row["action"].get("date_signed", ""),
+                "title": row["action"].get("title", ""),
+                "noaa_match_count": row["noaa_match_count"],
+                "noaa_areas": row["noaa_areas"],
+                "federal_status": row["federal_status"],
+                "federal_declaration": federal_reference(row["federal_declaration"]),
+            }
+            for row in crosswalk
+        ],
+    }
+
+
+def write_api_file(state: dict, state_dir: Path, summary: dict,
+                   actions: list[dict], crosswalk: list[dict]) -> None:
+    write_json(state_dir / API_FILE, api_payload(state, summary, actions, crosswalk))
+
+
 def process_state(
     state: dict,
     repo_root: Path,
@@ -1586,6 +1639,11 @@ def process_state(
                 encoding="utf-8",
             )
             write_json(state_dir / "state-summary.json", summary)
+            try:
+                write_api_file(state, state_dir, summary, actions, crosswalk)
+            except Exception as exc:  # the API file must never break a state's page
+                print(f"WARNING {state['abbreviation']}: {API_FILE} not written ({exc})",
+                      file=sys.stderr)
     return summary
 
 

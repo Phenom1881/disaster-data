@@ -1,0 +1,79 @@
+{
+  "actions": [
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2026-02-22",
+      "declaration_id": "DE-SOE-2026-02-22-declaration-of-a-state-of-emergency-due-to-a-severe-wint",
+      "governor": "Matthew Meyer",
+      "source_url": "https://governor.delaware.gov/state-of-emergency/declaration-of-a-state-of-emergency-due-to-a-severe-winter-storm-02-22-26/",
+      "state": "DE",
+      "title": "Declaration of a State of Emergency Due to a Severe Winter Storm"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2026-01-23",
+      "declaration_id": "DE-SOE-2026-01-23-declaration-of-a-state-of-emergency-due-to-a-severe-wint",
+      "governor": "Matthew Meyer",
+      "source_url": "https://governor.delaware.gov/state-of-emergency/declaration-of-a-state-of-emergency-due-to-a-severe-winter-storm-01-23-26/",
+      "state": "DE",
+      "title": "Declaration of a State of Emergency Due to a Severe Winter Storm"
+    }
+  ],
+  "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
+  "crosswalk": [
+    {
+      "date_signed": "2026-02-22",
+      "declaration_id": "DE-SOE-2026-02-22-declaration-of-a-state-of-emergency-due-to-a-severe-wint",
+      "federal_declaration": {
+        "begin": "2026-02-22",
+        "date": "2026-05-29",
+        "end": "2026-02-23",
+        "id": "DR-4916",
+        "incidentType": "Winter Storm",
+        "number": 4916,
+        "title": "SEVERE WINTER STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "DELAWARE BEACHES",
+        "INLAND SUSSEX",
+        "KENT",
+        "NEW CASTLE"
+      ],
+      "noaa_match_count": 4,
+      "title": "Declaration of a State of Emergency Due to a Severe Winter Storm"
+    },
+    {
+      "date_signed": "2026-01-23",
+      "declaration_id": "DE-SOE-2026-01-23-declaration-of-a-state-of-emergency-due-to-a-severe-wint",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "DELAWARE BEACHES",
+        "INLAND SUSSEX",
+        "KENT",
+        "NEW CASTLE"
+      ],
+      "noaa_match_count": 4,
+      "title": "Declaration of a State of Emergency Due to a Severe Winter Storm"
+    }
+  ],
+  "federal_match_window_days": 21,
+  "generated_on": "2026-10-05",
+  "kept_saved_records": 0,
+  "metrics": {
+    "action_count": 2,
+    "federal_declaration_count": 26,
+    "severity_rows": 8,
+    "storm_match_rows": 8
+  },
+  "name": "Delaware",
+  "official_source_url": "https://governor.delaware.gov/state-of-emergency/",
+  "schema_version": 1,
+  "slug": "delaware",
+  "source_status": "ok",
+  "state": "DE"
+}

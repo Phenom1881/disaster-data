@@ -1,88 +1,39 @@
 /**
- * DisasterData API worker (v1).
+ * DisasterData API worker (v1), served at https://api.disasterdata.io.
  *
- * A new, separate Worker from femaproxy. femaproxy proxies OpenFEMA's own
- * PA/HMA endpoints; this Worker serves DisasterData's own cleaned, joined
- * data (federal declarations plus state weather declarations plus NOAA
- * evidence, cross referenced) as a stable, versioned API. It reads only
- * from files this site already publishes on GitHub Pages, no database and
- * no build step of its own, so it can never drift from what a person
- * browsing disasterdata.io/plus/ actually sees.
+ * A separate Worker from femaproxy (worker.js), which proxies OpenFEMA's own
+ * endpoints. This one serves DisasterData's own cleaned and joined data as a
+ * stable, versioned, read-only JSON API.
  *
- * Mirrors the join logic in scripts/build-plus.py deliberately, field for
- * field, so a result from this API and a result on the live Plus page for
- * the same state can never disagree:
- *   - normalizedAction(): same fallback field priority as normalized_action()
- *   - findFederalMatch(): same FEDERAL_MATCH_WINDOW_DAYS=21 date-proximity
- *     rule as find_federal_match()
- *   - declaration_id: the row's own value if present, otherwise the same
- *     "<ABBR>-<action_number>-<date_signed>" fallback formula. This has to
- *     match exactly, because eo_storm_matches.csv was built by running
- *     eo_storm_join.py against a CSV that build-plus.py's own
- *     ensure_declaration_id_column() pre-populated with this exact formula
- *     whenever the source file had no declaration_id column of its own. A
- *     different formula here would silently find zero NOAA matches for
- *     every action in any state whose source CSV lacks its own
- *     declaration_id column, even though real matches exist in the file.
+ * It has no database and no join logic of its own. Every response is read
+ * from files the weekly builds already publish on the site:
  *
- * If build-plus.py's FEDERAL_MATCH_WINDOW_DAYS or the declaration_id
- * fallback formula ever changes, change them here too, or this API's
- * crosswalk will quietly stop agreeing with the site's own generated pages.
+ *   data/decl-index/<ST>.json      federal declarations per state, with the
+ *                                  counties each one names ("gen decl index.py")
+ *   data/decl-index/manifest.json  which states and territories have one
+ *   plus/coverage.json             every Plus state's counts and coverage note
+ *   plus/<slug>/api.json           a state's own weather declarations and the
+ *                                  crosswalk to federal declarations and NOAA
+ *                                  storm reports, written by build-plus.py from
+ *                                  the same data it renders the state page from
  *
- * KNOWN GAP, ported from build-plus.py's own render tables and not yet
- * fixed here either: build-plus.py's federal_declaration_rows()/
- * noaa_event_rows() cap their HTML tables at 200/300 rows while the count
- * badge next to them shows the true uncapped total, so a state with more
- * records than the cap shows a badge that disagrees with its own table.
- * This Worker does NOT cap crosswalk rows or the federal/NOAA arrays it
- * returns (a JSON API has no reason to truncate the way an HTML table
- * does), so it does not reproduce that specific bug, but it is worth fixing
- * on the page side too since the two are meant to describe the same data.
+ * So the API can never disagree with the site. An earlier draft re-implemented
+ * build-plus.py's join here and had already drifted from it (it looked for
+ * CSV names the manifest no longer uses); reading api.json removes that risk.
  *
- * ASSUMPTION THAT NEEDS VERIFYING BEFORE THIS GOES LIVE: this Worker fetches
- * plus/<slug>/<action csv> and plus/<slug>/<matches csv> directly from the
- * live site (https://www.disasterdata.io/plus/<slug>/...csv). That only
- * works if those CSV files are actually included in the GitHub Pages build
- * output. If .gitignore or the Pages build excludes CSVs from plus/, these
- * fetches will 404 and every crosswalk response will come back with that
- * state's action list empty even though the real data exists in the repo.
- * Confirm by requesting one of these URLs directly in a browser before
- * wiring this up to anything real:
- *   https://www.disasterdata.io/plus/virginia/declarations_for_join_2002_present.csv
- *   https://www.disasterdata.io/plus/virginia/eo_storm_matches.csv
- *
- * Deploy as its own Worker (recommended, since its purpose and its data
- * source are both unrelated to femaproxy's OpenFEMA proxying):
- *
- *   wrangler.toml:
- *     name = "disasterdata-api"
- *     main = "worker-api.js"
- *     compatibility_date = "2026-01-01"
- *
- *   Route it at api.disasterdata.io/* separately from femaproxy's own route.
- *
- * Rate limiting: uses Cloudflare's native Rate Limiting binding (not a
- * hand-rolled counter, so it costs nothing extra and needs no storage of
- * its own). Keyed per client IP (CF-Connecting-IP), 60 requests per 60
- * seconds by default, generous enough for normal use and a real integrator
- * doing a full state pull, but enough to stop one runaway script from
- * hammering the free tier. The binding itself is declared in wrangler.toml,
- * not here, so raising or lowering the limit is a config change, not a
- * code change. A request over the limit gets a 429 with Retry-After, not a
- * silent drop, so a well-behaved client can back off correctly.
+ * Rate limiting uses Cloudflare's native Rate Limiting binding declared in
+ * wrangler.toml (60 requests per minute per client IP by default).
  */
 
 const SITE_ORIGIN = "https://www.disasterdata.io";
+const API_VERSION = "v1";
 
-// Kept identical to build-plus.py's own constant of the same name.
-const FEDERAL_MATCH_WINDOW_DAYS = 21;
+const ATTRIBUTION =
+  "DisasterData.IO, from OpenFEMA, NOAA NCEI Storm Events and state government sources. " +
+  "Not endorsed by or affiliated with FEMA or NOAA.";
 
-// Mirrors scripts/plus/state-manifest.json's slug field (state name,
-// lowercased, spaces replaced with hyphens). Kept as a plain map here
-// rather than fetched at request time, since it changes essentially never
-// and a network dependency for something this static would only add a
-// failure point. If a new state's slug is ever irregular, check the real
-// manifest rather than assuming this formula.
+// Plus state pages, by postal abbreviation. Same slugs as
+// scripts/plus/state-manifest.json (50 states; territories have federal data only).
 const STATE_SLUGS = {
   AL: "alabama", AK: "alaska", AZ: "arizona", AR: "arkansas", CA: "california",
   CO: "colorado", CT: "connecticut", DE: "delaware", FL: "florida", GA: "georgia",
@@ -98,472 +49,374 @@ const STATE_SLUGS = {
   WY: "wyoming",
 };
 
-// Same candidate order and names as candidate_action_files() in
-// build-plus.py, minus the per-state "action_files" override from the real
-// manifest (this Worker does not fetch the manifest at request time, see
-// note above; the state-general defaults below cover every state whose
-// CSV uses the standard naming, which is all of them as of this writing).
-const ACTION_CSV_CANDIDATES = (abbr) => [
-  "declarations_for_join_2002_present.csv",
-  "declarations_for_join.csv",
-  `${abbr.toLowerCase()}_weather_emergency_actions_2002_2026.csv`,
-  `${abbr.toLowerCase()}_weather_emergency_actions.csv`,
-  "state_actions.csv",
-];
-
-// Same candidate order as load_storm_match_rows() in build-plus.py
-// (filtered/resolved variant preferred over the raw matches file).
-const STORM_MATCH_CSV_CANDIDATES = [
-  "eo_storm_matches_2002_present_filtered.csv",
-  "eo_storm_matches.csv",
-  "matches.csv",
-];
-
-const JSON_HEADERS = {
-  "content-type": "application/json; charset=utf-8",
-  "access-control-allow-origin": "*",
-  "cache-control": "public, max-age=86400",
+// State FIPS code to postal abbreviation, for /v1/counties/<fips>.
+const FIPS_STATES = {
+  "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO", "09": "CT",
+  "10": "DE", "11": "DC", "12": "FL", "13": "GA", "15": "HI", "16": "ID", "17": "IL",
+  "18": "IN", "19": "IA", "20": "KS", "21": "KY", "22": "LA", "23": "ME", "24": "MD",
+  "25": "MA", "26": "MI", "27": "MN", "28": "MS", "29": "MO", "30": "MT", "31": "NE",
+  "32": "NV", "33": "NH", "34": "NJ", "35": "NM", "36": "NY", "37": "NC", "38": "ND",
+  "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI", "45": "SC", "46": "SD",
+  "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA", "54": "WV",
+  "55": "WI", "56": "WY", "60": "AS", "64": "FM", "66": "GU", "68": "MH", "69": "MP",
+  "70": "PW", "72": "PR", "78": "VI",
 };
 
-function jsonResponse(payload, status = 200) {
-  return new Response(JSON.stringify(payload, null, 2), {
-    status,
-    headers: JSON_HEADERS,
-  });
-}
+const BASE_HEADERS = {
+  "content-type": "application/json; charset=utf-8",
+  "access-control-allow-origin": "*",
+  "x-api-version": API_VERSION,
+};
 
-function errorResponse(message, status) {
-  return jsonResponse({ error: message }, status);
-}
+// The data changes once a week, so responses can be cached for an hour at
+// the edge and by clients without anyone seeing stale data for long.
+const CACHE_SECONDS = 3600;
 
-/**
- * Minimal RFC 4180 CSV parser. Handles quoted fields, escaped quotes
- * ("" inside a quoted field), and commas or newlines inside quotes, which a
- * naive split(",") would break on. NOAA's own episode/event narrative
- * fields routinely contain commas, so this matters here even though a
- * simpler split would look fine on a quick test against a short row.
- * Returns an array of objects keyed by the header row.
- */
-function parseCsv(text) {
-  const rows = [];
-  let row = [];
-  let field = "";
-  let inQuotes = false;
-  let i = 0;
-  const pushField = () => {
-    row.push(field);
-    field = "";
-  };
-  const pushRow = () => {
-    pushField();
-    rows.push(row);
-    row = [];
-  };
-  while (i < text.length) {
-    const char = text[i];
-    if (inQuotes) {
-      if (char === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i += 2;
-          continue;
-        }
-        inQuotes = false;
-        i += 1;
-        continue;
-      }
-      field += char;
-      i += 1;
-      continue;
-    }
-    if (char === '"') {
-      inQuotes = true;
-      i += 1;
-      continue;
-    }
-    if (char === ",") {
-      pushField();
-      i += 1;
-      continue;
-    }
-    if (char === "\r") {
-      i += 1;
-      continue;
-    }
-    if (char === "\n") {
-      pushRow();
-      i += 1;
-      continue;
-    }
-    field += char;
-    i += 1;
+class ApiError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
   }
-  // Final field/row if the file doesn't end with a trailing newline.
-  if (field.length > 0 || row.length > 0) {
-    pushRow();
-  }
-  if (rows.length === 0) {
-    return [];
-  }
-  const header = rows[0];
-  return rows.slice(1)
-    .filter((r) => r.length === header.length && r.some((cell) => cell !== ""))
-    .map((r) => Object.fromEntries(header.map((key, idx) => [key, r[idx]])));
 }
 
-function clean(value) {
-  return (value || "").toString().trim();
+function json(payload, status = 200, extraHeaders = {}) {
+  const headers = { ...BASE_HEADERS, ...extraHeaders };
+  if (status === 200) headers["cache-control"] = `public, max-age=${CACHE_SECONDS}`;
+  return new Response(JSON.stringify(payload, null, 2), { status, headers });
 }
 
-/**
- * Same fallback declaration_id formula as normalized_action() in
- * build-plus.py: the row's own declaration_id if present, otherwise
- * "<ABBR>-<action_number>-<date_signed>" joined with hyphens, skipping any
- * part that is empty.
- */
-function normalizedAction(row, abbreviation) {
-  const actionNumber = clean(
-    row.action_number || row.eo_number || row.order_number || row.proclamation_number
-  );
-  const signed = clean(row.date_signed || row.issued_date || row.date);
-  const title = clean(
-    row.event_description || row.title || row.subject || row.short_title
-  );
-  const sourceUrl = clean(
-    row.archive_record_url || row.source_url || row.detail_url || row.document_url
-  );
-  let declarationId = clean(row.declaration_id);
-  if (!declarationId) {
-    declarationId = [abbreviation, actionNumber, signed].filter(Boolean).join("-");
+function errorResponse(status, message) {
+  return json({ api_version: API_VERSION, error: message, status }, status);
+}
+
+async function siteJson(path) {
+  let response;
+  try {
+    response = await fetch(`${SITE_ORIGIN}/${path}`, {
+      cf: { cacheTtl: CACHE_SECONDS, cacheEverything: true },
+    });
+  } catch (err) {
+    throw new ApiError(502, `Could not reach the site for ${path}.`);
   }
-  return {
-    state: abbreviation,
-    declaration_id: declarationId,
-    action_number: actionNumber,
-    title,
-    date_signed: signed,
-    action_type: clean(row.action_type) || "declaration",
-    governor: clean(row.governor),
-    source_url: sourceUrl,
-  };
-}
-
-function parseIsoDate(value) {
-  const text = clean(value).slice(0, 10);
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
-  if (!match) {
-    return null;
-  }
-  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function daysBetween(a, b) {
-  return Math.round((a.getTime() - b.getTime()) / 86400000);
-}
-
-/**
- * Same date proximity rule as find_federal_match() in build-plus.py: the
- * closest federal declaration whose incident window falls within
- * FEDERAL_MATCH_WINDOW_DAYS of the action's signing date, or null if
- * nothing is close enough. This is an automated candidate match, not a
- * confirmed link, exactly as build-plus.py's own docstring says.
- */
-function findFederalMatch(action, federalDeclarations) {
-  const signed = parseIsoDate(action.date_signed);
-  if (!signed || federalDeclarations.length === 0) {
-    return null;
-  }
-  let best = null;
-  let bestGap = null;
-  for (const declaration of federalDeclarations) {
-    const begin = parseIsoDate(declaration.begin) || parseIsoDate(declaration.date);
-    const end = parseIsoDate(declaration.end) || begin;
-    if (!begin) {
-      continue;
-    }
-    const windowStart = new Date(begin.getTime() - FEDERAL_MATCH_WINDOW_DAYS * 86400000);
-    const windowEnd = new Date(end.getTime() + FEDERAL_MATCH_WINDOW_DAYS * 86400000);
-    if (signed >= windowStart && signed <= windowEnd) {
-      const gap = Math.min(Math.abs(daysBetween(signed, begin)), Math.abs(daysBetween(signed, end)));
-      if (bestGap === null || gap < bestGap) {
-        best = declaration;
-        bestGap = gap;
-      }
-    }
-  }
-  return best;
-}
-
-async function fetchFirstOk(urls) {
-  for (const url of urls) {
-    const response = await fetch(url, { cf: { cacheTtl: 3600, cacheEverything: true } });
-    if (response.ok) {
-      return { url, text: await response.text() };
-    }
-  }
-  return null;
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url, { cf: { cacheTtl: 3600, cacheEverything: true } });
+  if (response.status === 404) return null;
   if (!response.ok) {
-    return null;
+    throw new ApiError(502, `The site answered ${response.status} for ${path}.`);
   }
   try {
     return await response.json();
   } catch (err) {
-    return null;
+    throw new ApiError(502, `The site returned unreadable JSON for ${path}.`);
   }
 }
 
-async function loadFederalDeclarations(abbreviation) {
-  const payload = await fetchJson(`${SITE_ORIGIN}/data/decl-index/${abbreviation.toUpperCase()}.json`);
-  if (!payload) {
-    return [];
-  }
-  const records = Array.isArray(payload) ? payload : payload.declarations || [];
-  return records;
+function envelope(fields, sources) {
+  return {
+    api_version: API_VERSION,
+    ...fields,
+    sources: sources.map((path) => `${SITE_ORIGIN}/${path}`),
+    attribution: ATTRIBUTION,
+  };
 }
 
-async function loadStateActions(abbreviation, slug) {
-  const urls = ACTION_CSV_CANDIDATES(abbreviation).map((name) => `${SITE_ORIGIN}/plus/${slug}/${name}`);
-  const found = await fetchFirstOk(urls);
-  if (!found) {
-    return { actions: [], sourceUrl: null };
+function stateCode(raw) {
+  const code = String(raw || "").toUpperCase();
+  if (!/^[A-Z]{2}$/.test(code)) throw new ApiError(404, `Unknown state: ${raw}`);
+  return code;
+}
+
+// ------------------------------------------------------------ federal data
+
+async function federalIndex(code) {
+  const index = await siteJson(`data/decl-index/${code}.json`);
+  if (!index) throw new ApiError(404, `No federal declarations are published for ${code}.`);
+  return index;
+}
+
+function withFemaId(declaration, code) {
+  // decl-index ids omit the state ("DR-4898"); FEMA's own string adds it.
+  return { fema_id: `${declaration.id}-${code}`, ...declaration };
+}
+
+function filterDeclarations(declarations, params) {
+  const type = (params.get("type") || "").toUpperCase();
+  const since = params.get("since") || "";
+  const until = params.get("until") || "";
+  for (const [name, value] of [["since", since], ["until", until]]) {
+    if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      throw new ApiError(400, `${name} must be a date written YYYY-MM-DD.`);
+    }
   }
-  const rows = parseCsv(found.text).map((row) => normalizedAction(row, abbreviation));
-  const unique = new Map();
-  for (const row of rows) {
-    unique.set(row.declaration_id || JSON.stringify(row), row);
+  if (type && !["DR", "EM", "FM"].includes(type)) {
+    throw new ApiError(400, "type must be DR, EM or FM.");
   }
-  const actions = Array.from(unique.values()).sort((a, b) =>
-    (b.date_signed || "").localeCompare(a.date_signed || "")
+  return declarations.filter(
+    (d) =>
+      (!type || d.type === type) &&
+      (!since || (d.date || "") >= since) &&
+      (!until || (d.date || "") <= until)
   );
-  return { actions, sourceUrl: found.url };
 }
 
-async function loadStormMatches(slug) {
-  const urls = STORM_MATCH_CSV_CANDIDATES.map((name) => `${SITE_ORIGIN}/plus/${slug}/${name}`);
-  const found = await fetchFirstOk(urls);
-  if (!found) {
-    return { rows: [], sourceUrl: null };
+function newestFirst(a, b) {
+  return (b.date || "").localeCompare(a.date || "");
+}
+
+async function stateDeclarations(code, params) {
+  const index = await federalIndex(code);
+  const declarations = filterDeclarations(index.declarations || [], params)
+    .sort(newestFirst)
+    .map((d) => withFemaId(d, code));
+  return envelope(
+    {
+      state: code,
+      data_date: index.generated || null,
+      filters: Object.fromEntries(["type", "since", "until"].filter((k) => params.get(k)).map((k) => [k, params.get(k)])),
+      count: declarations.length,
+      note: "fips lists every county or equivalent the declaration names. statewide is true when FEMA designated the whole state.",
+      declarations,
+    },
+    [`data/decl-index/${code}.json`]
+  );
+}
+
+async function oneDeclaration(raw) {
+  const match = /^(DR|EM|FM)-(\d+)-([A-Z]{2})$/.exec(String(raw).toUpperCase());
+  if (!match) throw new ApiError(400, "Write a declaration as FEMA does, for example DR-4898-TN.");
+  const [, type, number, code] = match;
+  const index = await federalIndex(code);
+  const found = (index.declarations || []).find((d) => d.id === `${type}-${Number(number)}`);
+  if (!found) throw new ApiError(404, `${raw.toUpperCase()} is not in the published data.`);
+  const names = Object.fromEntries((index.jurisdictions || []).map((j) => [j.fips, `${j.name} ${j.type || ""}`.trim()]));
+  return envelope(
+    {
+      data_date: index.generated || null,
+      declaration: {
+        ...withFemaId(found, code),
+        areas: (found.fips || []).map((fips) => ({ fips, name: names[fips] || null })),
+      },
+    },
+    [`data/decl-index/${code}.json`]
+  );
+}
+
+async function countyDeclarations(fips, params) {
+  if (!/^\d{5}$/.test(fips)) throw new ApiError(400, "A county is five FIPS digits, for example 51770.");
+  const code = FIPS_STATES[fips.slice(0, 2)];
+  if (!code) throw new ApiError(404, `No state or territory has FIPS code ${fips.slice(0, 2)}.`);
+  const index = await federalIndex(code);
+  const place = (index.jurisdictions || []).find((j) => j.fips === fips) || null;
+  const naming = (index.declarations || []).filter(
+    (d) => d.statewide || (d.fips || []).includes(fips)
+  );
+  const declarations = filterDeclarations(naming, params)
+    .sort(newestFirst)
+    .map(({ fips: _all, ...rest }) => ({
+      ...withFemaId(rest, code),
+      designated: rest.statewide ? "statewide" : "county",
+    }));
+  if (!place && declarations.length === 0) {
+    throw new ApiError(404, `No federal declarations name county ${fips}.`);
   }
-  return { rows: parseCsv(found.text), sourceUrl: found.url };
+  return envelope(
+    {
+      fips,
+      state: code,
+      name: place ? `${place.name} ${place.type || ""}`.trim() : null,
+      data_date: index.generated || null,
+      count: declarations.length,
+      note: "Includes statewide declarations, which name every county in the state.",
+      declarations,
+    },
+    [`data/decl-index/${code}.json`]
+  );
 }
 
-function groupByDeclaration(rows) {
-  const grouped = new Map();
-  for (const row of rows) {
-    const key = clean(row.declaration_id);
-    if (!key) {
-      continue;
-    }
-    if (!grouped.has(key)) {
-      grouped.set(key, []);
-    }
-    grouped.get(key).push(row);
-  }
-  return grouped;
-}
+// ------------------------------------------------------------ state (Plus) data
 
-function buildCrosswalk(actions, federalDeclarations, stormRowsByDeclaration) {
-  return actions.map((action) => {
-    const matches = stormRowsByDeclaration.get(action.declaration_id) || [];
-    const areas = Array.from(
-      new Set(matches.map((row) => clean(row.CZ_NAME)).filter(Boolean))
-    ).sort();
-    const federal = findFederalMatch(action, federalDeclarations);
-    return {
-      state_action: action,
-      noaa_match_count: matches.length,
-      noaa_areas: areas,
-      federal_declaration: federal,
-      federal_status: federal ? "matched" : "no_federal_declaration_found",
-    };
-  });
-}
-
-async function handleCrosswalk(abbreviationRaw) {
-  const abbreviation = abbreviationRaw.toUpperCase();
-  const slug = STATE_SLUGS[abbreviation];
+async function plusFile(code) {
+  const slug = STATE_SLUGS[code];
   if (!slug) {
-    return errorResponse(`Unknown state abbreviation: ${abbreviationRaw}`, 404);
+    throw new ApiError(404, `${code} has no state declaration data; federal data is at /v1/states/${code}/declarations.`);
   }
+  const data = await siteJson(`plus/${slug}/api.json`);
+  if (!data) throw new ApiError(503, `State declaration data for ${code} is not published yet.`);
+  return { slug, data };
+}
 
-  const [federalDeclarations, actionResult, stormResult] = await Promise.all([
-    loadFederalDeclarations(abbreviation),
-    loadStateActions(abbreviation, slug),
-    loadStormMatches(slug),
+function plusMeta(code, slug, data) {
+  return {
+    state: code,
+    name: data.name,
+    generated_on: data.generated_on,
+    coverage: data.coverage,
+    official_source_url: data.official_source_url,
+    site_page: `${SITE_ORIGIN}/plus/${slug}/`,
+  };
+}
+
+async function stateActions(code) {
+  const { slug, data } = await plusFile(code);
+  return envelope(
+    { ...plusMeta(code, slug, data), count: data.actions.length, actions: data.actions },
+    [`plus/${slug}/api.json`]
+  );
+}
+
+async function stateCrosswalk(code) {
+  const { slug, data } = await plusFile(code);
+  return envelope(
+    {
+      ...plusMeta(code, slug, data),
+      federal_match_window_days: data.federal_match_window_days,
+      count: data.crosswalk.length,
+      note:
+        "federal_declaration is an automated candidate: the closest federal declaration whose " +
+        `incident period is within ${data.federal_match_window_days} days of the state signing date. ` +
+        "It is not a confirmed legal link. federal_status no_federal_declaration_found is a result, " +
+        "not missing data. noaa_areas are NOAA Storm Events zones and counties matched to the declaration.",
+      crosswalk: data.crosswalk,
+    },
+    [`plus/${slug}/api.json`]
+  );
+}
+
+async function stateSummary(code) {
+  const [index, coverage] = await Promise.all([
+    federalIndex(code),
+    STATE_SLUGS[code] ? siteJson("plus/coverage.json") : Promise.resolve(null),
   ]);
-
-  const stormRowsByDeclaration = groupByDeclaration(stormResult.rows);
-  const crosswalk = buildCrosswalk(actionResult.actions, federalDeclarations, stormRowsByDeclaration);
-
-  return jsonResponse({
-    state: abbreviation,
-    slug,
-    generated_at: new Date().toISOString(),
-    federal_match_window_days: FEDERAL_MATCH_WINDOW_DAYS,
-    counts: {
-      federal_declarations: federalDeclarations.length,
-      state_actions: actionResult.actions.length,
-      noaa_match_rows: stormResult.rows.length,
+  const plus = coverage ? (coverage.states || []).find((s) => s.abbreviation === code) : null;
+  const decls = index.declarations || [];
+  const byType = { DR: 0, EM: 0, FM: 0 };
+  for (const d of decls) byType[d.type] = (byType[d.type] || 0) + 1;
+  const links = { declarations: `/v1/states/${code}/declarations` };
+  if (plus) {
+    links.actions = `/v1/states/${code}/actions`;
+    links.crosswalk = `/v1/states/${code}/crosswalk`;
+    links.site_page = `${SITE_ORIGIN}/plus/${plus.slug}/`;
+  }
+  return envelope(
+    {
+      state: code,
+      name: plus ? plus.name : null,
+      data_date: index.generated || null,
+      federal: {
+        declarations: decls.length,
+        by_type: byType,
+        jurisdictions: (index.jurisdictions || []).length,
+        latest: decls.slice().sort(newestFirst).slice(0, 1).map((d) => withFemaId(d, code))[0] || null,
+      },
+      state_declarations: plus
+        ? {
+            count: plus.metrics ? plus.metrics.action_count : null,
+            noaa_match_rows: plus.metrics ? plus.metrics.storm_match_rows : null,
+            coverage: plus.coverage,
+            generated_on: plus.generated_on,
+          }
+        : null,
+      links,
     },
-    sources: {
-      federal_declarations: `${SITE_ORIGIN}/data/decl-index/${abbreviation}.json`,
-      state_actions: actionResult.sourceUrl,
-      noaa_matches: stormResult.sourceUrl,
-    },
-    note:
-      "federal_declaration is an automated date-proximity candidate match, " +
-      "not a confirmed legal link. A null federal_declaration with " +
-      "federal_status 'no_federal_declaration_found' is an explicit result, " +
-      "not a missing value.",
-    crosswalk,
-  });
+    [`data/decl-index/${code}.json`].concat(plus ? ["plus/coverage.json"] : [])
+  );
 }
 
-async function handleStateActions(abbreviationRaw) {
-  const abbreviation = abbreviationRaw.toUpperCase();
-  const slug = STATE_SLUGS[abbreviation];
-  if (!slug) {
-    return errorResponse(`Unknown state abbreviation: ${abbreviationRaw}`, 404);
-  }
-  const { actions, sourceUrl } = await loadStateActions(abbreviation, slug);
-  return jsonResponse({
-    state: abbreviation,
-    slug,
-    generated_at: new Date().toISOString(),
-    count: actions.length,
-    source: sourceUrl,
-    actions,
-  });
-}
-
-async function handleFederalDeclarations(abbreviationRaw) {
-  const abbreviation = abbreviationRaw.toUpperCase();
-  if (!STATE_SLUGS[abbreviation]) {
-    return errorResponse(`Unknown state abbreviation: ${abbreviationRaw}`, 404);
-  }
-  const declarations = await loadFederalDeclarations(abbreviation);
-  return jsonResponse({
-    state: abbreviation,
-    generated_at: new Date().toISOString(),
-    count: declarations.length,
-    source: `${SITE_ORIGIN}/data/decl-index/${abbreviation}.json`,
-    declarations,
-  });
-}
-
-async function handleStateSummary(abbreviationRaw) {
-  const abbreviation = abbreviationRaw.toUpperCase();
-  const slug = STATE_SLUGS[abbreviation];
-  if (!slug) {
-    return errorResponse(`Unknown state abbreviation: ${abbreviationRaw}`, 404);
-  }
-  const [federalDeclarations, actionResult, stormResult] = await Promise.all([
-    loadFederalDeclarations(abbreviation),
-    loadStateActions(abbreviation, slug),
-    loadStormMatches(slug),
+async function stateList() {
+  const [manifest, coverage] = await Promise.all([
+    siteJson("data/decl-index/manifest.json"),
+    siteJson("plus/coverage.json"),
   ]);
-  return jsonResponse({
-    state: abbreviation,
-    slug,
-    generated_at: new Date().toISOString(),
-    counts: {
-      federal_declarations: federalDeclarations.length,
-      state_actions: actionResult.actions.length,
-      noaa_match_rows: stormResult.rows.length,
-    },
-    sources: {
-      federal_declarations: `${SITE_ORIGIN}/data/decl-index/${abbreviation}.json`,
-      state_actions: actionResult.sourceUrl,
-      noaa_matches: stormResult.sourceUrl,
-    },
-    links: {
-      declarations: `/v1/states/${abbreviation}/declarations`,
-      actions: `/v1/states/${abbreviation}/actions`,
-      crosswalk: `/v1/states/${abbreviation}/crosswalk`,
-      site_page: `${SITE_ORIGIN}/plus/${slug}/`,
-    },
-  });
+  const plus = Object.fromEntries(((coverage && coverage.states) || []).map((s) => [s.abbreviation, s]));
+  const states = ((manifest && manifest.states) || []).map((s) => ({
+    state: s.state,
+    name: plus[s.state] ? plus[s.state].name : null,
+    federal_declarations: s.declarations,
+    jurisdictions: s.jurisdictions,
+    state_declarations: plus[s.state] && plus[s.state].metrics ? plus[s.state].metrics.action_count : null,
+    href: `/v1/states/${s.state}`,
+  }));
+  return envelope(
+    { data_date: manifest ? manifest.generated : null, count: states.length, states },
+    ["data/decl-index/manifest.json", "plus/coverage.json"]
+  );
 }
 
-/**
- * Applies the Rate Limiting binding, if one is configured, and returns a
- * 429 Response when the caller is over the limit, or null when the request
- * may proceed. Keyed per client IP so one noisy caller cannot exhaust the
- * limit for everyone else. If the binding is missing (e.g. running under
- * `wrangler dev` without ratelimits configured, or a deploy that hasn't
- * added it yet), this skips the check rather than failing the request,
- * since an unconfigured limiter is a deploy-config gap, not a reason to
- * take the whole API down.
- */
+function apiIndex() {
+  return {
+    api_version: API_VERSION,
+    name: "DisasterData API",
+    documentation: `${SITE_ORIGIN}/about.html#api`,
+    rate_limit: "60 requests per minute per IP address",
+    updated: "Weekly, with the site",
+    endpoints: {
+      "/v1/states": "Every state and territory with counts",
+      "/v1/states/{ST}": "One state's federal and state declaration summary",
+      "/v1/states/{ST}/declarations": "Federal declarations, with counties named. Filters: type=DR|EM|FM, since=YYYY-MM-DD, until=YYYY-MM-DD",
+      "/v1/states/{ST}/actions": "The state's own weather emergency declarations (50 states)",
+      "/v1/states/{ST}/crosswalk": "Each state declaration with its candidate federal declaration and matched NOAA storm areas",
+      "/v1/declarations/{DR-4898-TN}": "One federal declaration and the areas it names",
+      "/v1/counties/{FIPS}": "Federal declarations naming one county, including statewide ones. Same filters",
+      "/v1/health": "Service check",
+    },
+    attribution: ATTRIBUTION,
+  };
+}
+
+// ------------------------------------------------------------ routing
+
 async function enforceRateLimit(request, env) {
   const limiter = env && env.API_RATE_LIMITER;
-  if (!limiter) {
-    return null;
-  }
+  if (!limiter) return null; // unconfigured (local dev): never block
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const { success } = await limiter.limit({ key: ip });
-  if (success) {
-    return null;
-  }
-  return jsonResponse(
-    {
-      error: "Rate limit exceeded. Please slow down and retry shortly.",
-    },
-    429
+  if (success) return null;
+  return json(
+    { api_version: API_VERSION, error: "Rate limit exceeded. Wait a minute and retry.", status: 429 },
+    429,
+    { "retry-after": "60" }
   );
+}
+
+async function route(path, params) {
+  if (path === "/" || path === "/v1") return apiIndex();
+  if (path === "/v1/health") return { api_version: API_VERSION, status: "ok" };
+  if (path === "/v1/states") return stateList();
+
+  let m;
+  if ((m = /^\/v1\/states\/([^/]+)$/.exec(path))) return stateSummary(stateCode(m[1]));
+  if ((m = /^\/v1\/states\/([^/]+)\/declarations$/.exec(path))) return stateDeclarations(stateCode(m[1]), params);
+  if ((m = /^\/v1\/states\/([^/]+)\/actions$/.exec(path))) return stateActions(stateCode(m[1]));
+  if ((m = /^\/v1\/states\/([^/]+)\/crosswalk$/.exec(path))) return stateCrosswalk(stateCode(m[1]));
+  if ((m = /^\/v1\/declarations\/([^/]+)$/.exec(path))) return oneDeclaration(decodeURIComponent(m[1]));
+  if ((m = /^\/v1\/counties\/([^/]+)$/.exec(path))) return countyDeclarations(m[1], params);
+  throw new ApiError(404, "Not found. See / for the list of endpoints.");
 }
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
-    const path = url.pathname.replace(/\/+$/, "") || "/";
-
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
         headers: {
           "access-control-allow-origin": "*",
           "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-max-age": "86400",
         },
       });
     }
-
-    if (path === "/v1/health") {
-      return jsonResponse({ status: "ok" });
+    if (request.method !== "GET" && request.method !== "HEAD") {
+      return errorResponse(405, "Only GET is supported.");
     }
-
-    const limited = await enforceRateLimit(request, env);
-    if (limited) {
-      return limited;
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, "") || "/";
+    if (path !== "/v1/health") {
+      const limited = await enforceRateLimit(request, env);
+      if (limited) return limited;
     }
-
-    let match;
-
-    match = /^\/v1\/states\/([A-Za-z]{2})$/.exec(path);
-    if (match) {
-      return handleStateSummary(match[1]);
+    try {
+      return json(await route(path, url.searchParams));
+    } catch (err) {
+      if (err instanceof ApiError) return errorResponse(err.status, err.message);
+      return errorResponse(500, "Unexpected error.");
     }
-
-    match = /^\/v1\/states\/([A-Za-z]{2})\/declarations$/.exec(path);
-    if (match) {
-      return handleFederalDeclarations(match[1]);
-    }
-
-    match = /^\/v1\/states\/([A-Za-z]{2})\/actions$/.exec(path);
-    if (match) {
-      return handleStateActions(match[1]);
-    }
-
-    match = /^\/v1\/states\/([A-Za-z]{2})\/crosswalk$/.exec(path);
-    if (match) {
-      return handleCrosswalk(match[1]);
-    }
-
-    return errorResponse("Not found", 404);
   },
 };
