@@ -1,5 +1,7 @@
 /**
- * DisasterData API worker (v1), served at https://api.disasterdata.io.
+ * DisasterData API worker (v1), served at
+ * https://disasterdata-api.disasterdata.workers.dev (api.disasterdata.io once
+ * the domain is added to the Cloudflare account; see wrangler.toml).
  *
  * A separate Worker from femaproxy (worker.js), which proxies OpenFEMA's own
  * endpoints. This one serves DisasterData's own cleaned and joined data as a
