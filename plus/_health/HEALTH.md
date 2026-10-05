@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-10-04 12:26 UTC after the refresh. **31 green, 19 yellow, 0 red.**
+Checked 2026-10-05 01:28 UTC after the refresh. **31 green, 19 yellow, 0 red.**
 
 ## Yellow: working with gaps (19)
 
@@ -17,13 +17,13 @@ Checked 2026-10-04 12:26 UTC after the refresh. **31 green, 19 yellow, 0 red.**
 | Massachusetts (MA) | 4 | Only 4 declarations against 59 federal ones (since 1970), so the source is likely missing most of the record. |
 | Mississippi (MS) | 9 | Only 9 declarations against 99 federal ones (since 2020), so the source is likely missing most of the record. |
 | Nevada (NV) | 6 | Only 6 declarations against 115 federal ones (since 2023), so the source is likely missing most of the record. |
-| New Hampshire (NH) | 6 | Collecting from the state source produced no declarations on this run and on the retry, 11 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record. |
-| Ohio (OH) | 7 | Collecting from the state source produced no declarations on this run and on the retry, 11 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 7 declarations against 61 federal ones (uneven coverage), so the source is likely missing most of the record. |
+| New Hampshire (NH) | 6 | Collecting from the state source produced no declarations on this run and on the retry, 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record. |
+| Ohio (OH) | 7 | Collecting from the state source produced no declarations on this run and on the retry, 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 7 declarations against 61 federal ones (uneven coverage), so the source is likely missing most of the record. |
 | Oklahoma (OK) | 4 | The source left out 1 of 4 saved records; they are shown from earlier runs. Only 4 declarations against 259 federal ones (since 2016), so the source is likely missing most of the record. |
 | Oregon (OR) | 252 | 82 of 252 declarations have no signing date. |
 | Rhode Island (RI) | 7 | Only 7 declarations against 31 federal ones (since 2015), so the source is likely missing most of the record. |
 | Vermont (VT) | 1 | Only 1 declaration against 62 federal ones (since 2017), so the source is likely missing most of the record. |
-| Wisconsin (WI) | 18 | Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed), 3 runs in a row. The page is showing records saved from earlier runs; the last successful collection was 2026-10-01 (2 days ago). This turns red at four weeks. |
+| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 3 of the 3 runs before this one. |
 | Wyoming (WY) | 4 | Only 4 declarations against 45 federal ones (since 2019), so the source is likely missing most of the record. |
 
 ## Green (31)
@@ -32,20 +32,20 @@ AL, AR, CA, CO, CT, FL, GA, ID, IA, KS, KY, MD, MI, MN, MO, MT, NE, NJ, NM, NY, 
 
 ## Where the time went
 
-Collecting from state sources took 37.1 min in all, and matching storms took 1.4 min. The 10 slowest states:
+Collecting from state sources took 55.3 min in all, and matching storms took 1.7 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NJ | 4.8 min | 8 s |
-| TX | 4.8 min | 1 s |
-| NC | 4.1 min | 1 s |
+| NC | 11.0 min | 1 s |
+| NJ | 10.5 min | 11 s |
+| TX | 8.4 min | 1 s |
 | CT | 3.7 min | 0 s |
-| MA | 1.7 min | 1 s |
+| MA | 3.3 min | 1 s |
+| VT | 1.7 min | 0 s |
+| SC | 1.5 min | 5 s |
 | LA | 1.5 min | 0 s |
-| CO | 1.1 min | 22 s |
-| WA | 1.3 min | 1 s |
-| SC | 1.2 min | 3 s |
-| VT | 1.2 min | 0 s |
+| CO | 50 s | 35 s |
+| PA | 1.4 min | 0 s |
 
 ## Every state
 
@@ -79,13 +79,13 @@ Collecting from state sources took 37.1 min in all, and matching storms took 1.4
 | MT | green | returned part | 0 | 19 | 113 | 19 | 19 | 19 | 14 | The source left out 1 saved record(s); shown from earlier runs. 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NE | green | returned part | 0 | 60 | 88 | 60 | 60 | 60 | 16 | The source left out 2 saved record(s); shown from earlier runs. 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NV | yellow | returned everything | 0 | 6 | 115 | 6 | 6 | 6 | 5 |  |
-| NH | yellow | no declarations | 11 | 6 | 63 | 6 | 6 | 6 | 5 |  |
+| NH | yellow | no declarations | 12 | 6 | 63 | 6 | 6 | 6 | 5 |  |
 | NJ | green | returned everything | 0 | 151 | 59 | 151 | 151 | 151 | 95 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NM | green | returned everything | 0 | 44 | 126 | 44 | 44 | 44 | 22 |  |
 | NY | green | returned everything | 0 | 25 | 118 | 25 | 25 | 25 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NC | green | returned everything | 0 | 34 | 85 | 34 | 34 | 34 | 32 |  |
 | ND | green | returned everything | 0 | 34 | 76 | 34 | 34 | 34 | 18 | 7 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| OH | yellow | no declarations | 11 | 7 | 61 | 7 | 7 | 7 | 3 |  |
+| OH | yellow | no declarations | 12 | 7 | 61 | 7 | 7 | 7 | 3 |  |
 | OK | yellow | returned part | 0 | 4 | 259 | 4 | 4 | 4 | 4 |  |
 | OR | yellow | returned everything | 0 | 252 | 174 | 170 | 252 | 252 | 76 | 64 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | PA | green | returned everything | 0 | 10 | 64 | 10 | 10 | 10 | 10 |  |
@@ -99,7 +99,7 @@ Collecting from state sources took 37.1 min in all, and matching storms took 1.4
 | VA | green | returned everything | 0 | 75 | 77 | 75 | 75 | 74 | 65 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | WA | green | returned everything | 0 | 39 | 223 | 39 | 39 | 39 | 24 |  |
 | WV | green | returned everything | 0 | 18 | 85 | 18 | 18 | 18 | 12 |  |
-| WI | yellow | failed | 3 | 18 | 56 | 18 | 18 | 18 | 15 |  |
+| WI | yellow | returned everything | 0 | 18 | 56 | 18 | 18 | 18 | 15 |  |
 | WY | yellow | returned everything | 0 | 4 | 45 | 4 | 4 | 4 | 4 |  |
 
 <details><summary>How grades are set</summary>
