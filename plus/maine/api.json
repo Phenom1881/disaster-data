@@ -3,6 +3,26 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2024-01-11",
+      "declaration_id": "ME-FMCSA-A1EC8B6A316A",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/maine-proclamation-state-civil-emergency",
+      "state": "ME",
+      "title": "Maine Proclamation of State of Civil Emergency. From FMCSA's copy: the State of Maine has experienced a severe winter storm with heavy rains and high winds causing widespread coastal flooding and damage to infrastructure"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2023-09-14",
+      "declaration_id": "ME-FMCSA-131504B78FF3",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/maine-proclamation-emergency-hurricane-lee",
+      "state": "ME",
+      "title": "Maine Proclamation of Emergency for Hurricane Lee"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2012-10-26",
       "declaration_id": "ME-ACTION-2012-10-26-state-of-maine-governor-s-emergency-procla",
       "governor": "Paul R. LePage",
@@ -21,8 +41,97 @@
       "title": "State of Emergency Declaration"
     }
   ],
-  "coverage": "2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending",
+  "coverage": "2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
+    {
+      "date_signed": "2024-01-11",
+      "declaration_id": "ME-FMCSA-A1EC8B6A316A",
+      "federal_declaration": {
+        "begin": "2024-01-09",
+        "date": "2024-03-20",
+        "end": "2024-01-13",
+        "id": "DR-4764",
+        "incidentType": "Severe Storm",
+        "number": 4764,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CENTRAL PENOBSCOT",
+        "CENTRAL PISCATAQUIS",
+        "CENTRAL SOMERSET",
+        "CENTRAL WASHINGTON",
+        "COASTAL CUMBERLAND",
+        "COASTAL HANCOCK",
+        "COASTAL WALDO",
+        "COASTAL WASHINGTON",
+        "COASTAL YORK",
+        "CUMBERLAND",
+        "INTERIOR CUMBERLAND HIGHLANDS",
+        "INTERIOR HANCOCK",
+        "INTERIOR YORK",
+        "KENNEBEC",
+        "KNOX",
+        "LINCOLN",
+        "NORTHEAST AROOSTOOK",
+        "NORTHERN FRANKLIN",
+        "NORTHERN OXFORD",
+        "NORTHERN PENOBSCOT",
+        "NORTHERN PISCATAQUIS",
+        "NORTHERN SOMERSET",
+        "NORTHERN WASHINGTON",
+        "NORTHWEST AROOSTOOK",
+        "SAGADAHOC",
+        "SOUTHEAST AROOSTOOK",
+        "SOUTHERN FRANKLIN",
+        "SOUTHERN OXFORD",
+        "SOUTHERN PENOBSCOT",
+        "SOUTHERN PISCATAQUIS",
+        "SOUTHERN SOMERSET",
+        "YORK"
+      ],
+      "noaa_match_count": 69,
+      "title": "Maine Proclamation of State of Civil Emergency. From FMCSA's copy: the State of Maine has experienced a severe winter storm with heavy rains and high winds causing widespread coastal flooding and damage to infrastructure"
+    },
+    {
+      "date_signed": "2023-09-14",
+      "declaration_id": "ME-FMCSA-131504B78FF3",
+      "federal_declaration": {
+        "begin": "2023-09-15",
+        "date": "2023-09-14",
+        "end": "2023-09-17",
+        "id": "EM-3598",
+        "incidentType": "Hurricane",
+        "number": 3598,
+        "title": "HURRICANE LEE",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CENTRAL PENOBSCOT",
+        "CENTRAL PISCATAQUIS",
+        "CENTRAL WASHINGTON",
+        "COASTAL HANCOCK",
+        "COASTAL WALDO",
+        "COASTAL WASHINGTON",
+        "FRANKLIN",
+        "INTERIOR HANCOCK",
+        "INTERIOR WALDO",
+        "KNOX",
+        "LINCOLN",
+        "NORTHEAST AROOSTOOK",
+        "NORTHERN PENOBSCOT",
+        "NORTHERN WASHINGTON",
+        "SAGADAHOC",
+        "SOUTHEAST AROOSTOOK",
+        "SOUTHERN PENOBSCOT",
+        "SOUTHERN PISCATAQUIS",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 24,
+      "title": "Maine Proclamation of Emergency for Hurricane Lee"
+    },
     {
       "date_signed": "2012-10-26",
       "declaration_id": "ME-ACTION-2012-10-26-state-of-maine-governor-s-emergency-procla",
@@ -109,13 +218,13 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
+  "generated_on": "2026-10-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 2,
+    "action_count": 4,
     "federal_declaration_count": 71,
-    "severity_rows": 57,
-    "storm_match_rows": 73
+    "severity_rows": 108,
+    "storm_match_rows": 166
   },
   "name": "Maine",
   "official_source_url": "https://www.maine.gov/governor/mills/official_documents",

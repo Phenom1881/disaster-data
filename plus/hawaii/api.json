@@ -63,6 +63,16 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2024-05-15",
+      "declaration_id": "HI-FMCSA-181FDF60FACA",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/hawaii-kona-low-emergency-proclamation",
+      "state": "HI",
+      "title": "Hawaii Kona Low Emergency Proclamation. From FMCSA's copy: WHEREAS, the National Weather Service has forecast that starting on the afternoon of May 15, 2024, a \"Kona Low\" weather event will bring heavy and sustained rainfall to the State"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2023-08-08",
       "declaration_id": "HI-PROC-0716FAFE28103EE1",
       "governor": "Sylvia Luke (Acting Governor)",
@@ -79,9 +89,29 @@
       "source_url": "https://governor.hawaii.gov/wp-content/uploads/2023/07/2307076.pdf",
       "state": "HI",
       "title": "Proclamation Relating to Tropical Storm Calvin"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2021-12-06",
+      "declaration_id": "HI-FMCSA-48CEAAE540E9",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/hawaii-2112024-atg-heavy-rains-and-flooding-proclamation-distribution",
+      "state": "HI",
+      "title": "Hawaii 2112024-ATG Heavy Rains and Flooding Proclamation Distribution"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2018-08-21",
+      "declaration_id": "HI-FMCSA-DA96ABBA08B6",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/state-hawaii-proclamation-august-2018",
+      "state": "HI",
+      "title": "State of Hawai'i Proclamation August 2018. From FMCSA's copy: Hawai'i is in danger of a disaster occurrence of high winds, heavy rains, high surf, storm surge, and flooding"
     }
   ],
-  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.",
+  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-08-22",
@@ -180,6 +210,17 @@
       "title": "Proclamation Relating to Tropical Storm Hone"
     },
     {
+      "date_signed": "2024-05-15",
+      "declaration_id": "HI-FMCSA-181FDF60FACA",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "HONOLULU"
+      ],
+      "noaa_match_count": 11,
+      "title": "Hawaii Kona Low Emergency Proclamation. From FMCSA's copy: WHEREAS, the National Weather Service has forecast that starting on the afternoon of May 15, 2024, a \"Kona Low\" weather event will bring heavy and sustained rainfall to the State"
+    },
+    {
       "date_signed": "2023-08-08",
       "declaration_id": "HI-PROC-0716FAFE28103EE1",
       "federal_declaration": {
@@ -231,16 +272,62 @@
       ],
       "noaa_match_count": 4,
       "title": "Proclamation Relating to Tropical Storm Calvin"
+    },
+    {
+      "date_signed": "2021-12-06",
+      "declaration_id": "HI-FMCSA-48CEAAE540E9",
+      "federal_declaration": {
+        "begin": "2021-12-05",
+        "date": "2022-02-15",
+        "end": "2021-12-10",
+        "id": "DR-4639",
+        "incidentType": "Severe Storm",
+        "number": 4639,
+        "title": "SEVERE STORMS, FLOODING, AND LANDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "HAWAII",
+        "HONOLULU",
+        "MAUI"
+      ],
+      "noaa_match_count": 14,
+      "title": "Hawaii 2112024-ATG Heavy Rains and Flooding Proclamation Distribution"
+    },
+    {
+      "date_signed": "2018-08-21",
+      "declaration_id": "HI-FMCSA-DA96ABBA08B6",
+      "federal_declaration": {
+        "begin": "2018-08-22",
+        "date": "2018-09-27",
+        "end": "2018-08-29",
+        "id": "DR-4395",
+        "incidentType": "Hurricane",
+        "number": 4395,
+        "title": "HURRICANE LANE",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "HAWAII",
+        "HONOLULU",
+        "KAUAI",
+        "MAUI",
+        "OAHU SOUTH SHORE"
+      ],
+      "noaa_match_count": 10,
+      "title": "State of Hawai'i Proclamation August 2018. From FMCSA's copy: Hawai'i is in danger of a disaster occurrence of high winds, heavy rains, high surf, storm surge, and flooding"
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
+  "generated_on": "2026-10-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 8,
+    "action_count": 11,
     "federal_declaration_count": 75,
-    "severity_rows": 27,
-    "storm_match_rows": 36
+    "severity_rows": 36,
+    "storm_match_rows": 71
   },
   "name": "Hawaii",
   "official_source_url": "https://governor.hawaii.gov/category/newsroom/emergency-proclamations/",

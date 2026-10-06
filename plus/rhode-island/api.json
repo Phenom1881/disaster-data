@@ -61,6 +61,16 @@
       "title": "Declaration of Disaster Emergency: Executive Order 21-88 Declaration of Disaster Emergency August 20, 2021 WHEREAS, there is a potential emergency posed by the arrival of Hurricane Henri;"
     },
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2017-12-28",
+      "declaration_id": "RI-FMCSA-348365A98810",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/state-rhode-island-and-providence-plantations",
+      "state": "RI",
+      "title": "State of Rhode Island and Providence Plantations. From FMCSA's copy: Rhode Island and the New England region is experiencing prolonged below average cold temperatures and below zero wind chill values forecast for the coming week"
+    },
+    {
       "action_number": "15-02",
       "action_type": "declaration",
       "date_signed": "2015-01-26",
@@ -71,7 +81,7 @@
       "title": "Declaration of Disaster Emergency"
     }
   ],
-  "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending",
+  "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-02-22",
@@ -211,6 +221,17 @@
       "title": "Declaration of Disaster Emergency: Executive Order 21-88 Declaration of Disaster Emergency August 20, 2021 WHEREAS, there is a potential emergency posed by the arrival of Hurricane Henri;"
     },
     {
+      "date_signed": "2017-12-28",
+      "declaration_id": "RI-FMCSA-348365A98810",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "BLOCK ISLAND"
+      ],
+      "noaa_match_count": 1,
+      "title": "State of Rhode Island and Providence Plantations. From FMCSA's copy: Rhode Island and the New England region is experiencing prolonged below average cold temperatures and below zero wind chill values forecast for the coming week"
+    },
+    {
       "date_signed": "2015-01-26",
       "declaration_id": "RI-EO-15-02",
       "federal_declaration": {
@@ -239,13 +260,13 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
+  "generated_on": "2026-10-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 7,
+    "action_count": 8,
     "federal_declaration_count": 31,
-    "severity_rows": 50,
-    "storm_match_rows": 58
+    "severity_rows": 51,
+    "storm_match_rows": 59
   },
   "name": "Rhode Island",
   "official_source_url": "https://governor.ri.gov/executive-order-archive",

@@ -9,9 +9,59 @@
       "source_url": "https://governor.vermont.gov/document/executive-order-03-23-emergency-declaration",
       "state": "VT",
       "title": "Executive Order No. 03-23 Declaration of State of Emergency"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2018-01-03",
+      "declaration_id": "VT-FMCSA-7EB12A53B354",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/state-vermont-declaration-emergency-notice-title-49-cfr-39023",
+      "state": "VT",
+      "title": "State of vermont Declaration Of Emergency Notice 49 CFR 390.23. From FMCSA's copy: below average cold temperatures, continued weather activities and high demands for fuel regionally"
+    },
+    {
+      "action_number": "05-15",
+      "action_type": "declaration",
+      "date_signed": "2015-07-20",
+      "declaration_id": "VT-EO-05-15",
+      "governor": "Peter Shumlin",
+      "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00050",
+      "state": "VT",
+      "title": "Executive Order No. 05-15 State of Emergency in Washington County due to excessive rainfall, Guard Call-Out"
+    },
+    {
+      "action_number": "11-12",
+      "action_type": "declaration",
+      "date_signed": "2012-10-29",
+      "declaration_id": "VT-EO-11-12",
+      "governor": "Peter Shumlin",
+      "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00046",
+      "state": "VT",
+      "title": "Executive Order No. 11-12 Declaration of State of Emergency due to Storm Sandy"
+    },
+    {
+      "action_number": "11-11",
+      "action_type": "declaration",
+      "date_signed": "2011-08-27",
+      "declaration_id": "VT-EO-11-11",
+      "governor": "Peter Shumlin",
+      "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00041",
+      "state": "VT",
+      "title": "Executive Order No. 11-11 Declaration of State of Emergency and Guard Call-Out: extremely high winds, excessive rain and flooding from Hurricane Irene and related storms"
+    },
+    {
+      "action_number": "03-11",
+      "action_type": "declaration",
+      "date_signed": "2011-05-05",
+      "declaration_id": "VT-EO-03-11",
+      "governor": "Peter Shumlin",
+      "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00038",
+      "state": "VT",
+      "title": "Executive Order No. 03-11 Declaration of Emergency: excessive wind and rainfall combined with water runoff and resulting damages beginning April 23, 2011"
     }
   ],
-  "coverage": "2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending",
+  "coverage": "2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present); 4 saved records kept that this refresh's check of the state source did not return",
   "crosswalk": [
     {
       "date_signed": "2023-07-09",
@@ -40,21 +90,151 @@
       ],
       "noaa_match_count": 34,
       "title": "Executive Order No. 03-23 Declaration of State of Emergency"
+    },
+    {
+      "date_signed": "2018-01-03",
+      "declaration_id": "VT-FMCSA-7EB12A53B354",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "BENNINGTON",
+        "CALEDONIA",
+        "EASTERN ADDISON",
+        "EASTERN CHITTENDEN",
+        "EASTERN FRANKLIN",
+        "EASTERN RUTLAND",
+        "EASTERN WINDHAM",
+        "ESSEX",
+        "GRAND ISLE",
+        "LAMOILLE",
+        "ORANGE",
+        "ORLEANS",
+        "WASHINGTON",
+        "WESTERN ADDISON",
+        "WESTERN CHITTENDEN",
+        "WESTERN FRANKLIN",
+        "WESTERN RUTLAND",
+        "WESTERN WINDHAM",
+        "WINDSOR"
+      ],
+      "noaa_match_count": 28,
+      "title": "State of vermont Declaration Of Emergency Notice 49 CFR 390.23. From FMCSA's copy: below average cold temperatures, continued weather activities and high demands for fuel regionally"
+    },
+    {
+      "date_signed": "2015-07-20",
+      "declaration_id": "VT-EO-05-15",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "ADDISON",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 2,
+      "title": "Executive Order No. 05-15 State of Emergency in Washington County due to excessive rainfall, Guard Call-Out"
+    },
+    {
+      "date_signed": "2012-10-29",
+      "declaration_id": "VT-EO-11-12",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "BENNINGTON",
+        "CALEDONIA",
+        "EASTERN ADDISON",
+        "EASTERN CHITTENDEN",
+        "EASTERN FRANKLIN",
+        "EASTERN RUTLAND",
+        "EASTERN WINDHAM",
+        "ESSEX",
+        "GRAND ISLE",
+        "LAMOILLE",
+        "ORANGE",
+        "ORLEANS",
+        "WASHINGTON",
+        "WESTERN ADDISON",
+        "WESTERN CHITTENDEN",
+        "WESTERN FRANKLIN",
+        "WESTERN RUTLAND",
+        "WESTERN WINDHAM",
+        "WINDSOR"
+      ],
+      "noaa_match_count": 19,
+      "title": "Executive Order No. 11-12 Declaration of State of Emergency due to Storm Sandy"
+    },
+    {
+      "date_signed": "2011-08-27",
+      "declaration_id": "VT-EO-11-11",
+      "federal_declaration": {
+        "begin": "2011-08-27",
+        "date": "2011-09-01",
+        "end": "2011-09-02",
+        "id": "DR-4022",
+        "incidentType": "Hurricane",
+        "number": 4022,
+        "title": "TROPICAL STORM IRENE",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ADDISON",
+        "BENNINGTON",
+        "CALEDONIA",
+        "CHITTENDEN",
+        "EASTERN ADDISON",
+        "EASTERN CHITTENDEN",
+        "EASTERN FRANKLIN",
+        "EASTERN WINDHAM",
+        "ESSEX",
+        "FRANKLIN",
+        "GRAND ISLE",
+        "LAMOILLE",
+        "ORANGE",
+        "ORLEANS",
+        "RUTLAND",
+        "WASHINGTON",
+        "WESTERN ADDISON",
+        "WESTERN CHITTENDEN",
+        "WESTERN FRANKLIN",
+        "WESTERN RUTLAND",
+        "WESTERN WINDHAM",
+        "WINDHAM",
+        "WINDSOR"
+      ],
+      "noaa_match_count": 47,
+      "title": "Executive Order No. 11-11 Declaration of State of Emergency and Guard Call-Out: extremely high winds, excessive rain and flooding from Hurricane Irene and related storms"
+    },
+    {
+      "date_signed": "2011-05-05",
+      "declaration_id": "VT-EO-03-11",
+      "federal_declaration": {
+        "begin": "2011-04-23",
+        "date": "2011-06-15",
+        "end": "2011-05-09",
+        "id": "DR-1995",
+        "incidentType": "Severe Storm",
+        "number": 1995,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "title": "Executive Order No. 03-11 Declaration of Emergency: excessive wind and rainfall combined with water runoff and resulting damages beginning April 23, 2011"
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
-  "kept_saved_records": 0,
+  "generated_on": "2026-10-06",
+  "kept_saved_records": 4,
   "metrics": {
-    "action_count": 1,
+    "action_count": 6,
     "federal_declaration_count": 62,
-    "severity_rows": 9,
-    "storm_match_rows": 34
+    "severity_rows": 80,
+    "storm_match_rows": 130
   },
   "name": "Vermont",
   "official_source_url": "https://governor.vermont.gov/document-types/executive-orders",
   "schema_version": 1,
   "slug": "vermont",
-  "source_status": "ok",
+  "source_status": "partial",
   "state": "VT"
 }

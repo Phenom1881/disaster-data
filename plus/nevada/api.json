@@ -1,6 +1,26 @@
 {
   "actions": [
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2026-08-23",
+      "declaration_id": "NV-FMCSA-8B831DE305DF",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/nevada-declaration-emergency-08-23-2026",
+      "state": "NV",
+      "title": "Nevada Declaration of Emergency 08-23-2026. From FMCSA's copy: the State of Nevada is experiencing widespread fire activity, which has been exacerbated by dry conditions, high temperatures, and severe winds"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2026-08-10",
+      "declaration_id": "NV-FMCSA-45C7AF84A8B8",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/nevada-declaration-emergency-08-10-2026",
+      "state": "NV",
+      "title": "Nevada Declaration of Emergency 08-10-2026. From FMCSA's copy: the State of Nevada is experiencing widespread fire activity, which has been exacerbated by dry conditions, high temperatures, and severe winds"
+    },
+    {
       "action_number": "EMERGENCY-EO-TEMPLATE",
       "action_type": "declaration",
       "date_signed": "2024-09-08",
@@ -59,10 +79,56 @@
       "source_url": "https://www.gov.nv.gov/proclamations/proclamation-declaring-a-liquid-petroleum-gas-delivery-emergency/",
       "state": "NV",
       "title": "Proclamation Declaring a Liquid Petroleum Gas Delivery Emergency"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2021-07-23",
+      "declaration_id": "NV-FMCSA-29D3FB2B7B94",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/nevada-declaration-emergency-tamarack-wildfire",
+      "state": "NV",
+      "title": "Nevada Declaration of Emergency for the Tamarack Wildfire"
     }
   ],
-  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed",
+  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
+    {
+      "date_signed": "2026-08-23",
+      "declaration_id": "NV-FMCSA-8B831DE305DF",
+      "federal_declaration": {
+        "begin": "2026-08-22",
+        "date": "2026-09-01",
+        "end": "2026-09-09",
+        "id": "EM-3653",
+        "incidentType": "Fire",
+        "number": 3653,
+        "title": "HAWK FIRE",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "title": "Nevada Declaration of Emergency 08-23-2026. From FMCSA's copy: the State of Nevada is experiencing widespread fire activity, which has been exacerbated by dry conditions, high temperatures, and severe winds"
+    },
+    {
+      "date_signed": "2026-08-10",
+      "declaration_id": "NV-FMCSA-45C7AF84A8B8",
+      "federal_declaration": {
+        "begin": "2026-08-10",
+        "date": "2026-08-11",
+        "end": "2026-08-17",
+        "id": "FM-5668",
+        "incidentType": "Fire",
+        "number": 5668,
+        "title": "STALLION FIRE",
+        "type": "FM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "title": "Nevada Declaration of Emergency 08-10-2026. From FMCSA's copy: the State of Nevada is experiencing widespread fire activity, which has been exacerbated by dry conditions, high temperatures, and severe winds"
+    },
     {
       "date_signed": "2024-09-08",
       "declaration_id": "NV-EMERGENCY-EO-TEMPLATE",
@@ -201,16 +267,37 @@
       ],
       "noaa_match_count": 37,
       "title": "Proclamation Declaring a Liquid Petroleum Gas Delivery Emergency"
+    },
+    {
+      "date_signed": "2021-07-23",
+      "declaration_id": "NV-FMCSA-29D3FB2B7B94",
+      "federal_declaration": {
+        "begin": "2021-07-22",
+        "date": "2021-07-22",
+        "end": "2021-07-29",
+        "id": "FM-5402",
+        "incidentType": "Fire",
+        "number": 5402,
+        "title": "TAMARACK FIRE",
+        "type": "FM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "NORTHWESTERN NYE",
+        "WHITE PINE"
+      ],
+      "noaa_match_count": 3,
+      "title": "Nevada Declaration of Emergency for the Tamarack Wildfire"
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
+  "generated_on": "2026-10-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 6,
+    "action_count": 9,
     "federal_declaration_count": 115,
-    "severity_rows": 36,
-    "storm_match_rows": 87
+    "severity_rows": 38,
+    "storm_match_rows": 90
   },
   "name": "Nevada",
   "official_source_url": "https://www.gov.nv.gov/executive-actions/",

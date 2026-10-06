@@ -381,6 +381,16 @@
       "title": "DECLARING AN EMERGENCY IN DONA ANA COUNTY DUE TO FLOODING AND AUTHORIZING EMERGENCY FUNDS FOR THE DEPARTMENT OF HOMELAND SECURITY AND EMERGENCY MANAGEMENT"
     },
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2021-02-15",
+      "declaration_id": "NM-FMCSA-497DF733C969",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/new-mexico-declaration-emergency-notice",
+      "state": "NM",
+      "title": "New Mexico Declaration of Emergency Notice. From FMCSA's copy: Such emergency declaration is in response to the severe weather conditions in the State of New Mexico."
+    },
+    {
       "action_number": "2020-079",
       "action_type": "declaration",
       "date_signed": "2020-11-05",
@@ -441,7 +451,7 @@
       "title": "DECLARING A DISASTER IN RIO ARRIBA AND SANDOVAL COUNTIES DUE TO FLOODING AND SEVERE STORMS"
     }
   ],
-  "coverage": "2019-present structured current-Governor archive; 2000-2018 gap disclosed",
+  "coverage": "2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-09-30",
@@ -1168,6 +1178,26 @@
       "title": "DECLARING AN EMERGENCY IN DONA ANA COUNTY DUE TO FLOODING AND AUTHORIZING EMERGENCY FUNDS FOR THE DEPARTMENT OF HOMELAND SECURITY AND EMERGENCY MANAGEMENT"
     },
     {
+      "date_signed": "2021-02-15",
+      "declaration_id": "NM-FMCSA-497DF733C969",
+      "federal_declaration": {
+        "begin": "2020-01-20",
+        "date": "2020-04-05",
+        "end": "2023-05-11",
+        "id": "DR-4529",
+        "incidentType": "Biological",
+        "number": 4529,
+        "title": "COVID-19 PANDEMIC",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BERNALILLO"
+      ],
+      "noaa_match_count": 1,
+      "title": "New Mexico Declaration of Emergency Notice. From FMCSA's copy: Such emergency declaration is in response to the severe weather conditions in the State of New Mexico."
+    },
+    {
       "date_signed": "2020-11-05",
       "declaration_id": "NM-2020-079",
       "federal_declaration": {
@@ -1348,13 +1378,13 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
+  "generated_on": "2026-10-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 44,
+    "action_count": 45,
     "federal_declaration_count": 126,
-    "severity_rows": 260,
-    "storm_match_rows": 347
+    "severity_rows": 261,
+    "storm_match_rows": 348
   },
   "name": "New Mexico",
   "official_source_url": "https://www.governor.state.nm.us/about-the-governor/executive-orders/",

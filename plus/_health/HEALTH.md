@@ -1,104 +1,102 @@
 # Plus health report
 
-Checked 2026-10-05 01:28 UTC after the refresh. **31 green, 19 yellow, 0 red.**
+Checked 2026-10-06 11:56 UTC after the refresh. **33 green, 17 yellow, 0 red.**
 
-## Yellow: working with gaps (19)
+## Yellow: working with gaps (17)
 
 | State | Declarations | Why |
 |---|---:|---|
-| Alaska (AK) | 6 | Only 6 declarations against 95 federal ones (uneven coverage), so the source is likely missing most of the record. |
+| Alaska (AK) | 9 | Only 9 declarations against 95 federal ones (uneven coverage), so the source is likely missing most of the record. |
 | Arizona (AZ) | 6 | Only 6 declarations against 120 federal ones (since 2023), so the source is likely missing most of the record. |
 | Delaware (DE) | 2 | Only 2 declarations against 26 federal ones (since 2025), so the source is likely missing most of the record. |
-| Hawaii (HI) | 8 | Only 8 declarations against 75 federal ones (uneven coverage), so the source is likely missing most of the record. |
 | Illinois (IL) | 7 | Only 7 declarations against 68 federal ones (since 2000), so the source is likely missing most of the record. |
 | Indiana (IN) | 21 | The source left out 5 of 21 saved records; they are shown from earlier runs. 3 of 21 declarations have no signing date. |
-| Louisiana (LA) | 9 | Only 9 declarations against 111 federal ones (since 2016), so the source is likely missing most of the record. |
-| Maine (ME) | 2 | Only 2 declarations against 71 federal ones (since 2011), so the source is likely missing most of the record. |
-| Massachusetts (MA) | 4 | Only 4 declarations against 59 federal ones (since 1970), so the source is likely missing most of the record. |
-| Mississippi (MS) | 9 | Only 9 declarations against 99 federal ones (since 2020), so the source is likely missing most of the record. |
-| Nevada (NV) | 6 | Only 6 declarations against 115 federal ones (since 2023), so the source is likely missing most of the record. |
-| New Hampshire (NH) | 6 | Collecting from the state source produced no declarations on this run and on the retry, 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 6 declarations against 63 federal ones (since 1990), so the source is likely missing most of the record. |
+| Kansas (KS) | 53 | Collecting from the state source failed on this run and on the retry (Kansas adapter: scrape failed). The page is showing records saved from earlier runs; the last successful collection was 2026-10-05 (1 day ago). This turns red at four weeks. |
+| Maine (ME) | 4 | Only 4 declarations against 71 federal ones (since 2011), so the source is likely missing most of the record. |
+| Massachusetts (MA) | 8 | Only 8 declarations against 59 federal ones (since 1970), so the source is likely missing most of the record. |
+| Nevada (NV) | 9 | Only 9 declarations against 115 federal ones (since 2023), so the source is likely missing most of the record. |
+| New Hampshire (NH) | 12 | Collecting from the state source produced no declarations on this run and on the retry, 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. |
+| New York (NY) | 25 | The source left out 23 of 25 saved records; they are shown from earlier runs. |
 | Ohio (OH) | 7 | Collecting from the state source produced no declarations on this run and on the retry, 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-09-26. This turns red at four weeks. Only 7 declarations against 61 federal ones (uneven coverage), so the source is likely missing most of the record. |
-| Oklahoma (OK) | 4 | The source left out 1 of 4 saved records; they are shown from earlier runs. Only 4 declarations against 259 federal ones (since 2016), so the source is likely missing most of the record. |
 | Oregon (OR) | 252 | 82 of 252 declarations have no signing date. |
-| Rhode Island (RI) | 7 | Only 7 declarations against 31 federal ones (since 2015), so the source is likely missing most of the record. |
-| Vermont (VT) | 1 | Only 1 declaration against 62 federal ones (since 2017), so the source is likely missing most of the record. |
-| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 3 of the 3 runs before this one. |
+| Rhode Island (RI) | 8 | Only 8 declarations against 31 federal ones (since 2015), so the source is likely missing most of the record. |
+| Vermont (VT) | 6 | The source left out 4 of 6 saved records; they are shown from earlier runs. Only 6 declarations against 62 federal ones (since 2017), so the source is likely missing most of the record. |
+| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 2 of the 3 runs before this one. |
 | Wyoming (WY) | 4 | Only 4 declarations against 45 federal ones (since 2019), so the source is likely missing most of the record. |
 
-## Green (31)
+## Green (33)
 
-AL, AR, CA, CO, CT, FL, GA, ID, IA, KS, KY, MD, MI, MN, MO, MT, NE, NJ, NM, NY, NC, ND, PA, SC, SD, TN, TX, UT, VA, WA, WV
+AL, AR, CA, CO, CT, FL, GA, HI, ID, IA, KY, LA, MD, MI, MN, MS, MO, MT, NE, NJ, NM, NC, ND, OK, PA, SC, SD, TN, TX, UT, VA, WA, WV
 
 ## Where the time went
 
-Collecting from state sources took 55.3 min in all, and matching storms took 1.7 min. The 10 slowest states:
+Collecting from state sources took 47.8 min in all, and matching storms took 2.3 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NC | 11.0 min | 1 s |
-| NJ | 10.5 min | 11 s |
-| TX | 8.4 min | 1 s |
-| CT | 3.7 min | 0 s |
-| MA | 3.3 min | 1 s |
-| VT | 1.7 min | 0 s |
-| SC | 1.5 min | 5 s |
-| LA | 1.5 min | 0 s |
-| CO | 50 s | 35 s |
-| PA | 1.4 min | 0 s |
+| NJ | 7.4 min | 20 s |
+| NC | 7.6 min | 1 s |
+| TX | 5.2 min | 1 s |
+| CT | 5.1 min | 0 s |
+| MA | 3.1 min | 2 s |
+| SC | 2.1 min | 6 s |
+| CO | 1.1 min | 44 s |
+| LA | 1.7 min | 1 s |
+| VT | 1.6 min | 1 s |
+| PA | 1.4 min | 1 s |
 
 ## Every state
 
 | State | Grade | Source this run | Failed runs in a row | Declarations | Federal | Dated | Titled | Linked | Storm matched | Notes |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | AL | green | returned everything | 0 | 30 | 102 | 30 | 30 | 30 | 29 |  |
-| AK | yellow | returned everything | 0 | 6 | 95 | 6 | 6 | 6 | 3 |  |
+| AK | yellow | returned everything | 0 | 9 | 95 | 9 | 9 | 9 | 4 |  |
 | AZ | yellow | returned everything | 0 | 6 | 120 | 6 | 6 | 6 | 6 |  |
 | AR | green | returned everything | 0 | 10 | 89 | 10 | 10 | 10 | 8 |  |
 | CA | green | returned everything | 0 | 47 | 397 | 47 | 47 | 47 | 43 |  |
 | CO | green | returned everything | 0 | 120 | 112 | 120 | 120 | 120 | 94 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| CT | green | returned everything | 0 | 10 | 43 | 10 | 10 | 10 | 10 |  |
+| CT | green | returned everything | 0 | 14 | 43 | 14 | 14 | 14 | 14 |  |
 | DE | yellow | returned everything | 0 | 2 | 26 | 2 | 2 | 2 | 2 |  |
 | FL | green | returned everything | 0 | 25 | 188 | 25 | 25 | 25 | 22 |  |
 | GA | green | returned everything | 0 | 32 | 81 | 32 | 32 | 32 | 31 |  |
-| HI | yellow | returned everything | 0 | 8 | 75 | 8 | 8 | 8 | 5 |  |
+| HI | green | returned everything | 0 | 11 | 75 | 11 | 11 | 11 | 8 |  |
 | ID | green | returned everything | 0 | 208 | 61 | 208 | 208 | 208 | 14 | 206 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | IL | yellow | returned everything | 0 | 7 | 68 | 7 | 7 | 7 | 5 |  |
 | IN | yellow | returned part | 0 | 21 | 56 | 18 | 21 | 21 | 12 |  |
 | IA | green | returned everything | 0 | 54 | 79 | 54 | 54 | 54 | 46 |  |
-| KS | green | returned part | 0 | 53 | 96 | 53 | 53 | 53 | 45 | The source left out 1 saved record(s); shown from earlier runs. 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| KS | yellow | failed | 1 | 53 | 96 | 53 | 53 | 53 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned part | 0 | 13 | 99 | 13 | 13 | 13 | 11 | The source left out 1 saved record(s); shown from earlier runs. |
-| LA | yellow | returned everything | 0 | 9 | 111 | 9 | 9 | 9 | 7 |  |
-| ME | yellow | returned everything | 0 | 2 | 71 | 2 | 2 | 2 | 2 |  |
+| LA | green | returned everything | 0 | 26 | 111 | 26 | 26 | 26 | 21 |  |
+| ME | yellow | returned everything | 0 | 4 | 71 | 4 | 4 | 4 | 4 |  |
 | MD | green | returned everything | 0 | 11 | 38 | 11 | 11 | 11 | 11 |  |
-| MA | yellow | returned everything | 0 | 4 | 59 | 4 | 4 | 4 | 3 |  |
+| MA | yellow | returned everything | 0 | 8 | 59 | 8 | 8 | 8 | 7 |  |
 | MI | green | returned everything | 0 | 23 | 46 | 23 | 23 | 23 | 17 |  |
 | MN | green | returned everything | 0 | 15 | 81 | 15 | 15 | 15 | 14 |  |
-| MS | yellow | returned everything | 0 | 9 | 99 | 9 | 9 | 9 | 9 |  |
+| MS | green | returned everything | 0 | 14 | 99 | 14 | 14 | 14 | 14 |  |
 | MO | green | returned everything | 0 | 83 | 88 | 83 | 83 | 83 | 62 | 5 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | MT | green | returned part | 0 | 19 | 113 | 19 | 19 | 19 | 14 | The source left out 1 saved record(s); shown from earlier runs. 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NE | green | returned part | 0 | 60 | 88 | 60 | 60 | 60 | 16 | The source left out 2 saved record(s); shown from earlier runs. 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| NV | yellow | returned everything | 0 | 6 | 115 | 6 | 6 | 6 | 5 |  |
-| NH | yellow | no declarations | 12 | 6 | 63 | 6 | 6 | 6 | 5 |  |
+| NV | yellow | returned everything | 0 | 9 | 115 | 9 | 9 | 9 | 6 |  |
+| NH | yellow | no declarations | 12 | 12 | 63 | 12 | 12 | 12 | 9 |  |
 | NJ | green | returned everything | 0 | 151 | 59 | 151 | 151 | 151 | 95 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| NM | green | returned everything | 0 | 44 | 126 | 44 | 44 | 44 | 22 |  |
-| NY | green | returned everything | 0 | 25 | 118 | 25 | 25 | 25 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| NM | green | returned everything | 0 | 45 | 126 | 45 | 45 | 45 | 23 |  |
+| NY | yellow | returned part | 0 | 25 | 118 | 25 | 25 | 25 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NC | green | returned everything | 0 | 34 | 85 | 34 | 34 | 34 | 32 |  |
 | ND | green | returned everything | 0 | 34 | 76 | 34 | 34 | 34 | 18 | 7 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | OH | yellow | no declarations | 12 | 7 | 61 | 7 | 7 | 7 | 3 |  |
-| OK | yellow | returned part | 0 | 4 | 259 | 4 | 4 | 4 | 4 |  |
+| OK | green | returned part | 0 | 11 | 259 | 11 | 11 | 11 | 9 | The source left out 1 saved record(s); shown from earlier runs. 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | OR | yellow | returned everything | 0 | 252 | 174 | 170 | 252 | 252 | 76 | 64 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | PA | green | returned everything | 0 | 10 | 64 | 10 | 10 | 10 | 10 |  |
-| RI | yellow | returned everything | 0 | 7 | 31 | 7 | 7 | 7 | 7 |  |
+| RI | yellow | returned everything | 0 | 8 | 31 | 8 | 8 | 8 | 8 |  |
 | SC | green | returned everything | 0 | 50 | 51 | 50 | 50 | 50 | 37 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | SD | green | returned everything | 0 | 25 | 98 | 25 | 25 | 25 | 16 | 4 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | TN | green | returned everything | 0 | 14 | 97 | 14 | 14 | 14 | 9 |  |
 | TX | green | returned part | 0 | 59 | 392 | 59 | 59 | 59 | 57 | The source left out 1 saved record(s); shown from earlier runs. 14 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | UT | green | returned everything | 0 | 33 | 61 | 33 | 33 | 33 | 20 | 11 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| VT | yellow | returned everything | 0 | 1 | 62 | 1 | 1 | 1 | 1 |  |
+| VT | yellow | returned part | 0 | 6 | 62 | 6 | 6 | 6 | 5 |  |
 | VA | green | returned everything | 0 | 75 | 77 | 75 | 75 | 74 | 65 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | WA | green | returned everything | 0 | 39 | 223 | 39 | 39 | 39 | 24 |  |
-| WV | green | returned everything | 0 | 18 | 85 | 18 | 18 | 18 | 12 |  |
+| WV | green | returned part | 0 | 18 | 85 | 18 | 18 | 18 | 12 | The source left out 1 saved record(s); shown from earlier runs. |
 | WI | yellow | returned everything | 0 | 18 | 56 | 18 | 18 | 18 | 15 |  |
 | WY | yellow | returned everything | 0 | 4 | 45 | 4 | 4 | 4 | 4 |  |
 

@@ -3,6 +3,36 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2024-08-19",
+      "declaration_id": "CT-FMCSA-90BCE7673E3C",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/connecticut-declaration-civil-preparedness-emergency-08192024",
+      "state": "CT",
+      "title": "Connecticut Declaration of Civil Preparedness Emergency 08192024. From FMCSA's copy: Yesterday, August 18, Connecticut experienced historic flooding due to severe rainstorms in portions of the state."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2021-09-02",
+      "declaration_id": "CT-FMCSA-8B677F053A64",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/connecticut-20210902-ida-declaration-civil-preparedness-emergency",
+      "state": "CT",
+      "title": "Connecticut 20210902-Ida-declaration-of-civil-preparedness-emergency. From FMCSA's copy: As a result of the severe flooding throughout the State caused by heavy rain from the remnants of Hurricane Ida, which has caused widespread damage, interfered with transportation, and which continues to pose significant potential risk to public safety"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2021-02-12",
+      "declaration_id": "CT-FMCSA-BE7D0324CAB6",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/connecticut-hos-notice-emergency-exemption-2-12-2021",
+      "state": "CT",
+      "title": "Connecticut HOS Notice of Emergency Exemption 2-12-2021. From FMCSA's copy: the recent extreme cold weather and the long-duration snowstorm that we are currently experiencing"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2020-08-28",
       "declaration_id": "CT-PROC-2020-08-28",
       "governor": "Ned Lamont",
@@ -39,6 +69,16 @@
       "source_url": "https://portal.ct.gov/demhs/-/media/demhs/_docs/program-and-unit-forms---advisories/legal/governors-declarations/govdec88-007-winterstorm2018-highway-ban.pdf",
       "state": "CT",
       "title": "Winter Storm 2018 (Highway Ban)"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2017-12-28",
+      "declaration_id": "CT-FMCSA-A8DE0C7835D2",
+      "governor": "",
+      "source_url": "https://www.fmcsa.dot.gov/emergency/notice-emergency-exemption-hours-service-drivers-0",
+      "state": "CT",
+      "title": "Notice Of Emergency Exemption From Hours Of Service Of Drivers. From FMCSA's copy: emergency conditions resulting from extreme cold temperatures that began December 25th"
     },
     {
       "action_number": "",
@@ -101,8 +141,77 @@
       "title": "Hurricane Irene"
     }
   ],
-  "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table",
+  "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
+    {
+      "date_signed": "2024-08-19",
+      "declaration_id": "CT-FMCSA-90BCE7673E3C",
+      "federal_declaration": {
+        "begin": "2024-08-18",
+        "date": "2024-09-20",
+        "end": "2024-08-19",
+        "id": "DR-4820",
+        "incidentType": "Severe Storm",
+        "number": 4820,
+        "title": "SEVERE STORM, FLOODING, LANDSLIDES, AND MUDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "FAIRFIELD",
+        "HARTFORD",
+        "LITCHFIELD",
+        "NEW HAVEN"
+      ],
+      "noaa_match_count": 49,
+      "title": "Connecticut Declaration of Civil Preparedness Emergency 08192024. From FMCSA's copy: Yesterday, August 18, Connecticut experienced historic flooding due to severe rainstorms in portions of the state."
+    },
+    {
+      "date_signed": "2021-09-02",
+      "declaration_id": "CT-FMCSA-8B677F053A64",
+      "federal_declaration": {
+        "begin": "2021-09-01",
+        "date": "2021-10-30",
+        "end": "2021-09-02",
+        "id": "DR-4629",
+        "incidentType": "Hurricane",
+        "number": 4629,
+        "title": "REMNANTS OF HURRICANE IDA",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "FAIRFIELD",
+        "HARTFORD",
+        "LITCHFIELD",
+        "MIDDLESEX",
+        "NEW HAVEN",
+        "NEW LONDON"
+      ],
+      "noaa_match_count": 33,
+      "title": "Connecticut 20210902-Ida-declaration-of-civil-preparedness-emergency. From FMCSA's copy: As a result of the severe flooding throughout the State caused by heavy rain from the remnants of Hurricane Ida, which has caused widespread damage, interfered with transportation, and which continues to pose significant potential risk to public safety"
+    },
+    {
+      "date_signed": "2021-02-12",
+      "declaration_id": "CT-FMCSA-BE7D0324CAB6",
+      "federal_declaration": {
+        "begin": "2020-01-20",
+        "date": "2020-03-28",
+        "end": "2023-05-11",
+        "id": "DR-4500",
+        "incidentType": "Biological",
+        "number": 4500,
+        "title": "COVID-19 PANDEMIC",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "NORTHERN LITCHFIELD",
+        "SOUTHERN LITCHFIELD"
+      ],
+      "noaa_match_count": 2,
+      "title": "Connecticut HOS Notice of Emergency Exemption 2-12-2021. From FMCSA's copy: the recent extreme cold weather and the long-duration snowstorm that we are currently experiencing"
+    },
     {
       "date_signed": "2020-08-28",
       "declaration_id": "CT-PROC-2020-08-28",
@@ -210,6 +319,18 @@
       ],
       "noaa_match_count": 13,
       "title": "Winter Storm 2018 (Highway Ban)"
+    },
+    {
+      "date_signed": "2017-12-28",
+      "declaration_id": "CT-FMCSA-A8DE0C7835D2",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [
+        "NORTHERN LITCHFIELD",
+        "SOUTHERN LITCHFIELD"
+      ],
+      "noaa_match_count": 4,
+      "title": "Notice Of Emergency Exemption From Hours Of Service Of Drivers. From FMCSA's copy: emergency conditions resulting from extreme cold temperatures that began December 25th"
     },
     {
       "date_signed": "2017-03-13",
@@ -393,13 +514,13 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-05",
+  "generated_on": "2026-10-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 10,
+    "action_count": 14,
     "federal_declaration_count": 43,
-    "severity_rows": 119,
-    "storm_match_rows": 243
+    "severity_rows": 133,
+    "storm_match_rows": 331
   },
   "name": "Connecticut",
   "official_source_url": "https://portal.ct.gov/governor/governors-actions/executive-orders",
