@@ -2,9 +2,9 @@
   "abbreviation": "WI",
   "action_file": "declarations_for_join.csv",
   "adapter_status": "implemented",
-  "collection_error": "",
-  "collection_failed": false,
-  "coverage": "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR",
+  "collection_error": "Collection failed: Wisconsin adapter: scrape failed",
+  "collection_failed": true,
+  "coverage": "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed",
   "coverage_base": "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR",
   "generated_on": "2026-10-06",
   "kept_saved_records": 0,
@@ -16,15 +16,17 @@
     "storm_match_rows": 1138
   },
   "name": "Wisconsin",
-  "retried": false,
+  "retried": true,
+  "retry_error": "Collection failed: Wisconsin adapter: scrape failed",
+  "retry_status": "failed",
   "slug": "wisconsin",
   "source_records_returned": 18,
   "source_records_saved_before": 18,
-  "source_status": "ok",
+  "source_status": "failed",
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 1.0,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 50.9,
+    "storm_join_seconds": 0.4
   }
 }

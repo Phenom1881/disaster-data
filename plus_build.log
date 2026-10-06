@@ -269,7 +269,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
 DE: 2 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending
-FL: fl_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2022-218: no matching storm events found in the date window.
 FL-EO-2022-54: no matching storm events found in the date window.
@@ -701,9 +700,11 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected.
-Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
+Kansas: wrote 52 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
 
-WARNING KS: Collection failed: Kansas adapter: scrape failed
+  NOTE: KS-PROC-4221 is under 2026 but its file name says 2023; left as saved
+
+KS: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kansas/hazard_overrides.csv
 KS-PROC-4326: no matching storm events found in the date window.
 KS-PROC-4366: no matching storm events found in the date window.
@@ -749,7 +750,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp.
 
-KS: 53 actions, 96 federal declarations; 2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed
+KS: 53 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return
 Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 12 weather state-of-emergency releases.
 
 KY: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -898,10 +899,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 75 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 89 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 6 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 25 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 2 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 11 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 156 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1020,40 +1021,43 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
 
 MN: 15 actions, 81 federal declarations; 2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered
-Wrote 784 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_matches.csv.tmp
-Wrote severity summary (450 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp
+MS: declarations_for_join.csv: kept 16 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/mississippi/hazard_overrides.csv
+MS-EO-991: no matching storm events found in the date window.
+Wrote 1839 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_matches.csv.tmp
+Wrote severity summary (1054 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  MS-EO-939 HARRISON [NWS forecast zone]: deaths=97, injuries=0, damage=$8,570,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
+  MS-EO-939 HANCOCK [NWS forecast zone]: deaths=56, injuries=0, damage=$4,850,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe SHARKEY [county/county-equivalent]: deaths=14, injuries=150, damage=$83,136,000 (Tornado)
+  MS-EO-939 JACKSON [NWS forecast zone]: deaths=13, injuries=0, damage=$3,350,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
+  MS-EO-939 JONES [NWS forecast zone]: deaths=10, injuries=0, damage=$830,000,000 (Hurricane (Typhoon))
+  MS-EO-1036 CHOCTAW [county/county-equivalent]: deaths=5, injuries=35, damage=$96,000,000 (Tornado)
+  MS-EO-1036 YAZOO [county/county-equivalent]: deaths=4, injuries=53, damage=$144,000,000 (Tornado)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe HUMPHREYS [county/county-equivalent]: deaths=3, injuries=15, damage=$13,378,200 (Tornado)
   MS-ACTION-2021-08-29-governor-reeves-issues-state-of-emergency-ahead-of-hurrica GEORGE [county/county-equivalent]: deaths=3, injuries=7, damage=$1,800,000 (Flash Flood)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe CARROLL [county/county-equivalent]: deaths=3, injuries=5, damage=$9,441,000 (Flash Flood, Tornado)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe MONROE [county/county-equivalent]: deaths=2, injuries=55, damage=$80,020,000 (Thunderstorm Wind, Tornado)
+  MS-EO-853 MADISON [county/county-equivalent]: deaths=2, injuries=21, damage=$12,185,000 (Flash Flood, Hail, Tornado)
+  MS-EO-853 QUITMAN [county/county-equivalent]: deaths=2, injuries=16, damage=$5,000,000 (Tornado)
+  MS-EO-1036 HOLMES [county/county-equivalent]: deaths=1, injuries=40, damage=$64,000,000 (Tornado)
+  MS-EO-853 PANOLA [county/county-equivalent]: deaths=1, injuries=12, damage=$2,005,000 (Thunderstorm Wind, Tornado)
+  MS-EO-939 LAUDERDALE [NWS forecast zone]: deaths=1, injuries=10, damage=$500,000,000 (Hurricane (Typhoon))
+  MS-EO-942 HUMPHREYS [county/county-equivalent]: deaths=1, injuries=5, damage=$2,913,000 (Tornado)
   MS-ACTION-2023-04-04-governor-reeves-issues-state-of-emergency-following-severe PONTOTOC [county/county-equivalent]: deaths=1, injuries=5, damage=$0 (Tornado)
   MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- HINDS [NWS forecast zone]: deaths=1, injuries=2, damage=$0 (Extreme Cold/Wind Chill, Ice Storm)
-  MS-FMCSA-6AD195ABCC7C HOLMES [county/county-equivalent]: deaths=1, injuries=0, damage=$4,360,000 (Thunderstorm Wind, Tornado)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- TISHOMINGO [NWS forecast zone]: deaths=1, injuries=0, damage=$1,000,000 (Ice Storm)
-  MS-ACTION-2024-01-14-governor-reeves-issues-state-of-emergency-ahead-of-winter- RANKIN [NWS forecast zone]: deaths=1, injuries=0, damage=$300,000 (Cold/Wind Chill, Winter Weather)
-  MS-ACTION-2024-01-14-governor-reeves-issues-state-of-emergency-ahead-of-winter- SHARKEY [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Winter Storm)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- WARREN [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Ice Storm)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- WASHINGTON [NWS forecast zone]: deaths=0, injuries=11, damage=$0 (Ice Storm)
-  MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe UNION [county/county-equivalent]: deaths=0, injuries=1, damage=$80,000 (Thunderstorm Wind, Tornado)
-  MS-FMCSA-6AD195ABCC7C JEFFERSON DAVIS [county/county-equivalent]: deaths=0, injuries=1, damage=$25,000 (Lightning)
-  MS-ACTION-2023-04-04-governor-reeves-issues-state-of-emergency-following-severe LEE [county/county-equivalent]: deaths=0, injuries=0, damage=$105,000,000 (Tornado)
-  MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe HINDS [county/county-equivalent]: deaths=0, injuries=0, damage=$11,331,000 (Flash Flood, Hail, Thunderstorm Wind)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- LAFAYETTE [NWS forecast zone]: deaths=0, injuries=0, damage=$8,000,000 (Cold/Wind Chill, Ice Storm)
-  MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe RANKIN [county/county-equivalent]: deaths=0, injuries=0, damage=$7,212,000 (Flash Flood, Hail, Thunderstorm Wind)
-  MS-FMCSA-6AD195ABCC7C MONTGOMERY [county/county-equivalent]: deaths=0, injuries=0, damage=$6,930,000 (Thunderstorm Wind, Tornado)
-  MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe MONTGOMERY [county/county-equivalent]: deaths=0, injuries=0, damage=$5,670,000 (Tornado)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- TIPPAH [NWS forecast zone]: deaths=0, injuries=0, damage=$5,500,000 (Cold/Wind Chill, Ice Storm)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- ALCORN [NWS forecast zone]: deaths=0, injuries=0, damage=$4,000,000 (Cold/Wind Chill, Ice Storm)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- TATE [NWS forecast zone]: deaths=0, injuries=0, damage=$4,000,000 (Cold/Wind Chill, Winter Storm)
-  MS-FMCSA-6AD195ABCC7C YAZOO [county/county-equivalent]: deaths=0, injuries=0, damage=$3,201,000 (Flash Flood, Thunderstorm Wind, Tornado)
-  Showing the 25 highest-consequence areas; all 266 are retained in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
+  MS-EO-841 HOLMES [county/county-equivalent]: deaths=1, injuries=1, damage=$550,000 (Thunderstorm Wind, Tornado)
+  MS-EO-939 HINDS [NWS forecast zone]: deaths=1, injuries=0, damage=$520,000,000 (Hurricane (Typhoon))
+  MS-EO-939 SIMPSON [NWS forecast zone]: deaths=1, injuries=0, damage=$140,000,000 (Hurricane (Typhoon))
+  MS-EO-939 LEAKE [NWS forecast zone]: deaths=1, injuries=0, damage=$130,000,000 (Hurricane (Typhoon))
+  MS-EO-939 WARREN [NWS forecast zone]: deaths=1, injuries=0, damage=$120,000,000 (Hurricane (Typhoon))
+  MS-EO-860 HARRISON [NWS forecast zone]: deaths=1, injuries=0, damage=$6,250,000 (Tropical Storm)
+  Showing the 25 highest-consequence areas; all 771 are retained in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
 
-MS: 14 actions, 99 federal declarations; January 2020-present structured Governor archive; 2000-2019 gap disclosed; plus 5 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+MS: 30 actions, 99 federal declarations; January 2020-present structured Governor archive; 2000-2019 gap disclosed; plus 5 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 16 saved records kept that this refresh's check of the state source did not return
 {"actions": 620, "declarations": 83, "relationships": 215, "overrides": 15, "review": 49}
 
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/missouri/hazard_overrides.csv
@@ -1211,7 +1215,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
-NV: 9 actions, 115 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+NV: 9 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
@@ -1414,16 +1418,21 @@ NM: 45 actions, 126 federal declarations; 2019-present structured current-Govern
 New York adapter: collecting executive orders...
   running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-york/declarations_for_join.csv
 New York scraper: collecting current executive orders...
+    current page 1: 100 row(s), 100 new
+    current page 2: 100 row(s), 100 new
+    current page 3: 35 row(s), 35 new
 New York scraper: collecting selected prior orders...
     selected prior: 97 row(s)
 New York scraper: fetching linked documents...
-    fetched 50/97
-Done. 97 total row(s): 0 complete current, 97 selected prior; 2 weather-related; 2 written to join file.
+    fetched 50/332
+    fetched 100/332
+    fetched 150/332
+    fetched 200/332
+    fetched 250/332
+    fetched 300/332
+Done. 332 total row(s): 235 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
 
 New York adapter: coverage = 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
-NY: declarations_for_join.csv: kept 23 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NY: ny_emergency_actions_all.csv: kept 234 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NY: ny_order_relationships.csv: kept 173 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 14 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-york/hazard_overrides.csv
 NY-KATHYHOCHUL-EO-63: no matching storm events found in the date window.
 NY-KATHYHOCHUL-EO-39: no matching storm events found in the date window.
@@ -1462,7 +1471,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-york/eo_storm_severity_summary.csv.tmp.
 
-NY: 25 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled; 23 saved records kept that this refresh's check of the state source did not return
+NY: 25 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 North Carolina adapter: collecting official Executive Orders...
   running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/declarations_for_join.csv
 North Carolina scraper: walking official Executive Orders archive...
@@ -1644,44 +1653,44 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 OH: 7 actions, 61 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
 Oklahoma: wrote 3 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/declarations_for_join.csv
 
-OK: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
+OK: declarations_for_join.csv: kept 48 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oklahoma/hazard_overrides.csv
-OK-FMCSA-CDC07C8E7629: no matching storm events found in the date window.
+OK-SOE-2018-12-06: no matching storm events found in the date window.
 OK-FMCSA-E27631B95F35: no matching storm events found in the date window.
-Wrote 788 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_matches.csv.tmp
-Wrote severity summary (406 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp
+Wrote 5150 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_matches.csv.tmp
+Wrote severity summary (2183 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  OK-SOE-2013-05-19 CLEVELAND [county/county-equivalent]: deaths=24, injuries=211, damage=$2,000,000,000 (Hail, Tornado)
+  OK-SOE-2009-02-11 CARTER [county/county-equivalent]: deaths=8, injuries=46, damage=$3,000,000 (Hail, Thunderstorm Wind, Tornado)
+  OK-SOE-2011-05-25 CANADIAN [county/county-equivalent]: deaths=7, injuries=112, damage=$0 (Hail, Thunderstorm Wind, Tornado)
+  OK-SOE-2012-04-15 WOODWARD [county/county-equivalent]: deaths=6, injuries=29, damage=$0 (Hail, Tornado)
+  OK-SOE-2011-04-15 ATOKA [county/county-equivalent]: deaths=2, injuries=40, damage=$120,000 (Tornado)
+  OK-SOE-2010-05-11 OKLAHOMA [county/county-equivalent]: deaths=2, injuries=29, damage=$0 (Hail, Tornado)
+  OK-SOE-2011-05-25 LOGAN [county/county-equivalent]: deaths=2, injuries=23, damage=$0 (Hail, Thunderstorm Wind, Tornado)
+  OK-SOE-2019-05-01 BRYAN [county/county-equivalent]: deaths=2, injuries=11, damage=$300,000 (Flash Flood, Hail, Tornado)
+  OK-SOE-2013-05-19 POTTAWATOMIE [county/county-equivalent]: deaths=2, injuries=6, damage=$0 (Thunderstorm Wind, Tornado)
   OK-EO-2026-11 OKMULGEE [county/county-equivalent]: deaths=2, injuries=2, damage=$3,000,000 (Tornado)
+  OK-SOE-2022-11-05 ADAIR [county/county-equivalent]: deaths=2, injuries=2, damage=$0 (Flash Flood)
   OK-EO-2026-11 MAJOR [county/county-equivalent]: deaths=2, injuries=0, damage=$125,000 (Thunderstorm Wind, Tornado)
+  OK-SOE-2015-03-26 MUSKOGEE [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Flash Flood)
+  OK-SOE-2010-05-11 CLEVELAND [county/county-equivalent]: deaths=1, injuries=55, damage=$500 (Hail, Thunderstorm Wind, Tornado)
+  OK-SOE-2011-05-25 GRADY [county/county-equivalent]: deaths=1, injuries=48, damage=$0 (Tornado)
+  OK-SOE-2015-03-26 TULSA [county/county-equivalent]: deaths=1, injuries=30, damage=$2,865,000 (Flash Flood, Hail, Thunderstorm Wind, Tornado)
+  OK-SOE-2014-04-28 OTTAWA [county/county-equivalent]: deaths=1, injuries=12, damage=$3,000,000 (Tornado)
+  OK-SOE-2022-11-05 MCCURTAIN [county/county-equivalent]: deaths=1, injuries=7, damage=$35,300,000 (Tornado)
+  OK-SOE-2023-06-19 CREEK [county/county-equivalent]: deaths=1, injuries=3, damage=$766,000 (Thunderstorm Wind)
   OK-FMCSA-30A0D9779BB1 ROGER MILLS [county/county-equivalent]: deaths=1, injuries=3, damage=$250,000 (Tornado)
+  OK-SOE-2018-04-13 DEWEY [NWS forecast zone]: deaths=1, injuries=3, damage=$0 (Drought, Wildfire)
+  OK-SOE-2023-04-20 MCCLAIN [county/county-equivalent]: deaths=1, injuries=2, damage=$4,084,000 (Hail, Tornado)
+  OK-SOE-2018-04-13 ROGER MILLS [NWS forecast zone]: deaths=1, injuries=1, damage=$0 (Drought, Wildfire)
   OK-EO-2025-06 PAWNEE [NWS forecast zone]: deaths=1, injuries=0, damage=$10,020,000 (High Wind, Wildfire)
-  OK-EO-2025-06 HASKELL [NWS forecast zone]: deaths=1, injuries=0, damage=$65,000 (Wildfire)
-  OK-FMCSA-18E54E581A7E OKLAHOMA [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Cold/Wind Chill, Heavy Snow)
-  OK-FMCSA-30A0D9779BB1 CLEVELAND [county/county-equivalent]: deaths=0, injuries=12, damage=$50,033,000 (Hail, Thunderstorm Wind, Tornado)
-  OK-EO-2026-11 MCCURTAIN [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Thunderstorm Wind, Tornado)
-  OK-EO-2026-09 BEAVER [NWS forecast zone]: deaths=0, injuries=1, damage=$101,000 (High Wind, Wildfire)
-  OK-EO-2026-17 GARFIELD [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Hail, Thunderstorm Wind, Tornado)
-  OK-EO-2025-06 LOGAN [NWS forecast zone]: deaths=0, injuries=0, damage=$23,000,000 (High Wind, Wildfire)
-  OK-EO-2025-06 PAYNE [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (High Wind, Wildfire)
-  OK-EO-2025-06 OKLAHOMA [NWS forecast zone]: deaths=0, injuries=0, damage=$8,010,000 (High Wind, Wildfire)
-  OK-EO-2026-11 TULSA [county/county-equivalent]: deaths=0, injuries=0, damage=$7,150,000 (Flash Flood, Hail, Tornado)
-  OK-EO-2025-06 CLEVELAND [NWS forecast zone]: deaths=0, injuries=0, damage=$3,300,000 (High Wind, Wildfire)
-  OK-EO-2026-11 ROGERS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,150,000 (Thunderstorm Wind, Tornado)
-  OK-EO-2026-11 WAGONER [county/county-equivalent]: deaths=0, injuries=0, damage=$1,040,000 (Tornado)
-  OK-EO-2026-09 TEXAS [NWS forecast zone]: deaths=0, injuries=0, damage=$626,000 (High Wind, Wildfire)
-  OK-EO-2025-06 DEWEY [NWS forecast zone]: deaths=0, injuries=0, damage=$400,000 (High Wind, Wildfire)
-  OK-EO-2026-11 ALFALFA [county/county-equivalent]: deaths=0, injuries=0, damage=$400,000 (Tornado)
-  OK-EO-2026-17 LE FLORE [county/county-equivalent]: deaths=0, injuries=0, damage=$385,000 (Hail)
-  OK-FMCSA-30A0D9779BB1 POTTAWATOMIE [county/county-equivalent]: deaths=0, injuries=0, damage=$325,000 (Thunderstorm Wind, Tornado)
-  OK-EO-2026-17 PITTSBURG [county/county-equivalent]: deaths=0, injuries=0, damage=$280,000 (Hail, Tornado)
-  OK-EO-2026-11 GRANT [county/county-equivalent]: deaths=0, injuries=0, damage=$270,000 (Thunderstorm Wind, Tornado)
-  OK-FMCSA-30A0D9779BB1 CANADIAN [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Thunderstorm Wind, Tornado)
-  Showing the 25 highest-consequence areas; all 67 are retained in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
+  OK-SOE-2009-04-29 MAYES [county/county-equivalent]: deaths=1, injuries=0, damage=$201,000 (Flash Flood, Flood, Hail, Thunderstorm Wind)
+  Showing the 25 highest-consequence areas; all 557 are retained in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
-OK: 11 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; plus 7 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 1 saved record kept that this refresh's check of the state source did not return
+OK: 55 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 48 saved records kept that this refresh's check of the state source did not return
 Oregon signing dates: 195 kept from earlier runs; 132 not found by OCR in the last four weeks, not retried yet
 
 OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 132 blank and 0 garbled field set(s)
@@ -2348,8 +2357,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending; 1 saved record kept that this refresh's check of the state source did not return
-Wisconsin: 302 executive orders processed
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f9349297d90>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f9349297d90>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
 WI-EO-256: no matching storm events found in the date window.
 WI-EO-300: no matching storm events found in the date window.
@@ -2387,7 +2398,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
-WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
 {"actions": 63, "declarations": 4, "relationships": 19, "overrides": 4, "review": 5}
 
 WY: wy_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
@@ -2402,12 +2413,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
 
-Retrying 3 state(s) whose source failed or returned nothing, after 60s: KS, NH, OH
-Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
-
-WARNING KS: Collection failed: Kansas adapter: scrape failed
-RETRY KS: still failed (Collection failed: Kansas adapter: scrape failed)
-KS: 53 actions, 96 federal declarations; 2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed
+Retrying 3 state(s) whose source failed or returned nothing, after 60s: NH, OH, WI
 New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
@@ -2427,17 +2433,20 @@ OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not 
 OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY OH: still empty
 OH: 7 actions, 61 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 2871s, storm join 138s. Slowest: NJ 444s+20s, NC 455s+1s, TX 309s+1s, CT 305s+0s, MA 188s+2s, SC 125s+6s, CO 68s+44s, LA 99s+1s, VT 96s+1s, PA 86s+1s
-WARNING kept saved records the state source did not return: IN (5), KY (1), MT (1), NE (2), NH (6), NY (23), OH (7), OK (1), TX (1), VT (4), WV (1)
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fe9eb6131d0>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fe9eb6131d0>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
+RETRY WI: still failed (Collection failed: Wisconsin adapter: scrape failed)
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+TIME total: collect 2819s, storm join 101s. Slowest: NJ 455s+11s, NC 439s+1s, TX 296s+1s, CT 239s+0s, MA 190s+1s, SC 119s+5s, MI 103s+0s, VT 99s+0s, NY 86s+0s, LA 82s+0s
+WARNING kept saved records the state source did not return: IN (5), KS (1), KY (1), MS (16), MT (1), NE (2), NH (6), OH (7), OK (48), TX (1), VT (4), WV (1)
 Row-loss check: no saved rows lost.
-Plus health: 33 green, 17 yellow, 0 red.
-Changes since the last run (2026-10-05 01:28 UTC):
+Plus health: 32 green, 18 yellow, 0 red.
+Changes since the last run (2026-10-06 11:56 UTC):
 
-- **Hawaii** went from yellow to green.
-- **Kansas** went from green to yellow. Collecting from the state source failed on this run and on the retry (Kansas adapter: scrape failed). The page is showing records saved from earlier runs; the last successful collection was 2026-10-05 (1 day ago). This turns red at four weeks.
-- **Louisiana** went from yellow to green.
-- **Mississippi** went from yellow to green.
-- **New York** went from green to yellow. The source left out 23 of 25 saved records; they are shown from earlier runs.
-- **Oklahoma** went from yellow to green.
+- **Mississippi** went from green to yellow. The source left out 16 of 30 saved records; they are shown from earlier runs.
+- **New York** went from yellow to green.
+- **Oklahoma** went from green to yellow. The source left out 48 of 55 saved records; they are shown from earlier runs.
 
-Now 33 green, 17 yellow, 0 red.
+Now 32 green, 18 yellow, 0 red.
