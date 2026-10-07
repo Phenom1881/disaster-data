@@ -210,6 +210,17 @@ def document_to_row(document, governor, administration, governor_key, collection
     }
 
 
+def current_title(eo_number, year, description):
+    """"EO-11", "2026", "Declaring State of Emergency Due to Winter Weather" ->
+    "Executive Order 11 (2026) Declaration of a State of Emergency Due to Winter Weather"."""
+    number = re.sub(r"^EO-?", "", str(eo_number).strip(), flags=re.I)
+    text = re.sub(r"\s+", " ", str(description or "")).strip()
+    if re.match(r"^executive order\b", text, re.I):
+        return text
+    text = re.sub(r"^declaring\s+(?:a\s+)?state of emergency", "Declaration of a State of Emergency", text, flags=re.I)
+    return f"Executive Order {number} ({year}) {text}".strip()
+
+
 def current_rows(path):
     if not path:
         return pd.DataFrame()
@@ -220,6 +231,12 @@ def current_rows(path):
         raise ValueError("Current CSV is missing: " + ", ".join(sorted(missing)))
     frame = frame.copy()
     frame["year"] = frame["date_signed"].astype(str).str[:4]
+    # Name current orders the way the Library of Virginia names past ones:
+    # "Executive Order 45 (2025) Declaration of a State of Emergency Due to ...".
+    frame["event_description"] = [
+        current_title(number, year, description)
+        for number, year, description in zip(frame["eo_number"], frame["year"], frame["event_description"])
+    ]
     frame["declaration_id"] = (
         "VA-SPANBERGER-" + frame["eo_number"].astype(str) + "-" + frame["year"]
     ).str.upper()
@@ -227,7 +244,9 @@ def current_rows(path):
     frame["action_type"] = "declaration"
     frame["external_assistance_only"] = False
     frame["version_count"] = 1
-    frame["archive_record_url"] = ""
+    frame["archive_record_url"] = (
+        frame["detail_url"].fillna("").astype(str) if "detail_url" in frame.columns else ""
+    )
     return frame[
         [
             "declaration_id",

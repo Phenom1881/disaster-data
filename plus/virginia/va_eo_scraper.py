@@ -221,7 +221,8 @@ def main():
     weather = candidates[
         candidates["weather_related"] & candidates["date_signed"].notna()
     ]
-    weather[["eo_number", "event_description", "date_signed"]].to_csv(
+    # detail_url rides along so the merge step can link the signed order.
+    weather[["eo_number", "event_description", "date_signed", "detail_url"]].to_csv(
         args.join_out, index=False
     )
     print(
