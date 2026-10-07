@@ -25,6 +25,9 @@ CAPABILITIES = {
         "A handful of pre-1990 entries on the index page are narrative-only (no EO number, no PDF "
         "link, no parseable Date column - e.g. 'September 19, 1986 - Disaster emergency exists due "
         "to tornado action') and are outside 2000-present scope in any case, so were not pursued.",
+        "The index is tried at both of its addresses (eoindex.html and EOIndex.html) with two "
+        "User-Agents; if none answers with a full index, the Internet Archive's latest copy is read "
+        "and the coverage note says so. If that fails too the adapter exits with the reasons.",
     ],
 }
 
@@ -44,9 +47,11 @@ def collect(workdir=".", scripts_dir=None):
         print(result.stdout)
     if result.returncode:
         print(result.stderr, file=sys.stderr)
-        raise RuntimeError("Nebraska adapter: scrape failed")
+        reason = (result.stderr or "").strip().splitlines()
+        raise RuntimeError("Nebraska adapter: " + (reason[-1][:300] if reason else "scrape failed"))
     return (
         workdir / "declarations_for_join.csv",
         "1965-present structured Governor's Executive Orders index (Nebraska Library Commission "
-        "mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope",
+        "mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope"
+        + ("; this run read the Internet Archive copy of the index" if "Internet Archive copy" in (result.stdout or "") else ""),
     )

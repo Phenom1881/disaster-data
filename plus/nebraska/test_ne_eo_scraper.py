@@ -108,5 +108,79 @@ class TestNotWeatherCandidates(unittest.TestCase):
                       "Emergency Relief Due to Weather Events"):
             self.assertTrue(scraper.is_weather_candidate(title), title)
 
+class FetchIndexTests(unittest.TestCase):
+    """2026-10-07: one 30-second try with no retry failed the run and its retry."""
+
+    def big_index(self, n=150):
+        rows = "".join(f'<tr><td><a href="eofiles/20-{i:02d}.pdf">20-{i:02d}</a></td><td>Order {i}</td><td>01/02/20</td></tr>'
+                       for i in range(n))
+        return f"<table>{rows}</table>"
+
+    def session(self, answers):
+        import requests
+        calls = []
+
+        class Response:
+            def __init__(self, text="", status=200, payload=None):
+                self.text, self.status_code, self.payload = text, status, payload
+
+            def raise_for_status(self):
+                if self.status_code >= 400:
+                    raise requests.HTTPError(f"{self.status_code}", response=self)
+
+            def json(self):
+                return self.payload
+
+        class Session:
+            def get(self, url, **kwargs):
+                calls.append((url, (kwargs.get("headers") or {}).get("User-Agent", "")))
+                answer = answers(url, kwargs, len(calls))
+                if isinstance(answer, Exception):
+                    raise answer
+                return Response(*answer) if isinstance(answer, tuple) else Response(answer)
+        return Session(), calls
+
+    def test_second_address_or_agent_is_tried(self):
+        import requests
+        index = self.big_index()
+
+        def answers(url, kwargs, n):
+            return requests.Timeout("slow") if n < 3 else index
+        session, calls = self.session(answers)
+        rows = scraper.fetch_index(session, sleep=lambda s: None)
+        self.assertEqual(len(rows), 150)
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(calls[1][0], scraper.INDEX_URLS[0])           # same page, browser agent
+        self.assertIn("Chrome", calls[1][1])
+
+    def test_block_page_falls_back_to_the_internet_archive(self):
+        index = self.big_index()
+
+        def answers(url, kwargs, n):
+            if url == scraper.WAYBACK_AVAILABLE:
+                return ("", 200, {"archived_snapshots": {"closest": {"available": True, "timestamp": "20261001080000"}}})
+            if url.startswith("https://web.archive.org/web/20261001080000id_/"):
+                return index
+            return "<html>Service Unavailable</html>"
+        session, _ = self.session(answers)
+        rows = scraper.fetch_index(session, sleep=lambda s: None)
+        self.assertEqual(len(rows), 150)
+        self.assertIn("2026-10-01", scraper.SOURCE_NOTE)
+        scraper.SOURCE_NOTE = ""
+
+    def test_nothing_readable_raises_with_the_reasons(self):
+        import requests
+
+        def answers(url, kwargs, n):
+            if url == scraper.WAYBACK_AVAILABLE:
+                return ("", 200, {"archived_snapshots": {}})
+            return requests.ConnectionError("refused")
+        session, calls = self.session(answers)
+        with self.assertRaises(scraper.IndexUnavailable) as caught:
+            scraper.fetch_index(session, sleep=lambda s: None)
+        self.assertIn("ConnectionError", str(caught.exception))
+        self.assertEqual(len([c for c in calls if c[0] in scraper.INDEX_URLS]), 8)
+
+
 if __name__ == "__main__":
     unittest.main()

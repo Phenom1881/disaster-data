@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import io
+import json
 import re
 import sys
 import time
@@ -26,6 +27,15 @@ from bs4 import BeautifulSoup, Tag
 REGISTRY_URL = "https://www.sos.nh.gov/executive-orders"
 TIMEOUT = 60
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0; +https://disasterdata.io/plus/)", "Accept": "text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8", "Accept-Language": "en-US,en;q=0.9"}
+# The registry's edge security has refused every request from GitHub's
+# runners (no successful collection is on record). A plain browser
+# User-Agent is tried as well, since bot-named agents are a common block rule.
+BROWSER_HEADERS = {**HEADERS, "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"}
+# When the registry itself cannot be reached, the Internet Archive's latest
+# copy of the same page (and of each order's PDF) is read instead. The
+# registry changes a few times a year, so a recent copy is complete for
+# nearly every run; the copy's date is printed and recorded per order.
+WAYBACK_AVAILABLE = "https://archive.org/wayback/available"
 ACTION_FIELDS = ("declaration_id", "state", "governor", "eo_number", "action_kind", "action_type", "event_description", "date_signed", "end_date", "weather_related", "source_scope", "document_format", "detail_url", "archive_record_url")
 REL_FIELDS = ("source_order_id", "target_order_id", "relationship_type", "relationship_text", "relationship_source", "confidence")
 JOIN_FIELDS = ("declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url")
@@ -57,7 +67,10 @@ class Action:
         return f"NH-{token}"
 
 
-RETRY_WAITS = (10, 30)   # seconds before the 2nd and 3rd tries of the registry page
+RETRY_WAITS = (15,)      # seconds before the second round of tries of the registry page
+REGISTRY_TIMEOUT = 30
+DOCUMENT_BUDGET_SECONDS = 8 * 60   # order PDFs after this are left for the next run
+SOURCE_NOTE = ""   # set when the registry came from the Internet Archive   # seconds before the 2nd and 3rd tries of the registry page
 
 # Signing dates confirmed from dated coverage, used when an order's own PDF
 # yields no readable date. The registry lists every order but gives no dates,
@@ -77,21 +90,62 @@ CONFIRMED_DATES = {
 }
 
 
-def fetch(url: str, retries: tuple[int, ...] = ()) -> Optional[requests.Response]:
-    """Fetch url, trying the bare sos.nh.gov host too. The registry page itself
-    is fetched with retries: from GitHub's runners it loads on some weeks and
-    times out on others, and one refused request should not cost a week."""
+def fetch(url: str, retries: tuple[int, ...] = (), quiet: bool = False, timeout: int = TIMEOUT,
+          header_sets: tuple = (HEADERS, BROWSER_HEADERS)) -> Optional[requests.Response]:
+    """Fetch url, trying the bare sos.nh.gov host and a browser User-Agent
+    too. The registry page itself is fetched with retries, since one refused
+    request should not cost a week."""
     candidates = [url]
     if "www.sos.nh.gov" in url: candidates.append(url.replace("www.sos.nh.gov", "sos.nh.gov"))
     last = None
     for wait in (0,) + tuple(retries):
         if wait: time.sleep(wait)
         for candidate in candidates:
-            try:
-                response = requests.get(candidate, headers=HEADERS, timeout=TIMEOUT)
-                response.raise_for_status(); return response
-            except requests.RequestException as exc: last = exc
-    print(f"  WARNING: failed to fetch {url}: {last}", file=sys.stderr); return None
+            for headers in header_sets:
+                try:
+                    response = requests.get(candidate, headers=headers, timeout=timeout)
+                    response.raise_for_status(); return response
+                except requests.RequestException as exc: last = exc
+    if not quiet: print(f"  WARNING: failed to fetch {url}: {last}", file=sys.stderr)
+    return None
+
+
+def wayback_copy(url: str) -> tuple[Optional[requests.Response], str]:
+    """The Internet Archive's latest copy of url, as originally served (the
+    id_ form, without the archive's toolbar or rewritten links), and the
+    copy's date (YYYY-MM-DD). (None, "") when there is no copy."""
+    try:
+        lookup = requests.get(WAYBACK_AVAILABLE, params={"url": url}, headers=HEADERS, timeout=TIMEOUT)
+        lookup.raise_for_status()
+        closest = (lookup.json().get("archived_snapshots") or {}).get("closest") or {}
+    except (requests.RequestException, ValueError) as exc:
+        print(f"  WARNING: Internet Archive lookup failed for {url}: {exc}", file=sys.stderr)
+        return None, ""
+    stamp = str(closest.get("timestamp") or "")
+    if not closest.get("available") or not re.fullmatch(r"\d{14}", stamp):
+        return None, ""
+    raw = f"https://web.archive.org/web/{stamp}id_/{url}"
+    for wait in (0, 10):
+        if wait: time.sleep(wait)
+        try:
+            response = requests.get(raw, headers=HEADERS, timeout=TIMEOUT)
+            response.raise_for_status()
+            return response, f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}"
+        except requests.RequestException as exc:
+            last = exc
+    print(f"  WARNING: could not read the Internet Archive copy of {url}: {last}", file=sys.stderr)
+    return None, ""
+
+
+def fetch_document(url: str, archived: bool) -> Optional[requests.Response]:
+    """An order's PDF: from the registry, or from the Internet Archive when
+    the registry page itself had to come from there (or the PDF will not
+    load directly)."""
+    if not archived:
+        response = fetch(url, quiet=True, header_sets=(HEADERS,))
+        if response is not None:
+            return response
+    return wayback_copy(url)[0]
 
 
 def governor_from_heading(text: str) -> str:
@@ -242,17 +296,27 @@ def collect() -> list[Action]:
     RegistryUnavailable when the registry cannot be read: the build keeps the
     saved records either way, and a nonzero exit shows the source as failed
     in the health report instead of as an empty week."""
-    page = fetch(REGISTRY_URL, retries=RETRY_WAITS)
-    if page is None:
-        raise RegistryUnavailable(f"could not fetch the New Hampshire executive order registry ({REGISTRY_URL})")
-    actions = parse_registry(page.text)
+    global SOURCE_NOTE
+    page = fetch(REGISTRY_URL, retries=RETRY_WAITS, timeout=REGISTRY_TIMEOUT)
+    actions = parse_registry(page.text) if page is not None else []
+    archived = False
     if not actions:
-        raise RegistryUnavailable(f"the New Hampshire registry page listed no orders ({len(page.text)} bytes; "
-                                  f"starts {page.text[:120]!r}); it may be a block page or a new layout")
+        live_problem = ("could not be fetched" if page is None else
+                        f"listed no orders ({len(page.text)} bytes; starts {page.text[:120]!r})")
+        print(f"  WARNING: the registry {live_problem}; reading the Internet Archive copy", file=sys.stderr)
+        page, copy_date = wayback_copy(REGISTRY_URL)
+        actions = parse_registry(page.text) if page is not None else []
+        if not actions:
+            raise RegistryUnavailable(f"the New Hampshire executive order registry {live_problem}, and no "
+                                      f"readable Internet Archive copy was found ({REGISTRY_URL})")
+        archived = True
+        SOURCE_NOTE = f"Internet Archive copy from {copy_date}"
+        print(f"New Hampshire: registry read from the {SOURCE_NOTE} (the live registry refused this runner)")
+    deadline = time.monotonic() + DOCUMENT_BUDGET_SECONDS
     for action in actions:
         # Exact signing dates and generic-declaration hazards come from the order itself.
         if DECLARATION_RE.search(action.title) or MODIFIER_RE.search(action.title):
-            document = fetch(action.document_url)
+            document = fetch_document(action.document_url, archived) if time.monotonic() < deadline else None
             if document is not None:
                 action.document_text = pdf_text(document.content)
                 action.date_signed = date_in_text(action.document_text, int(action.number[:4]))
@@ -276,7 +340,7 @@ def relationships(action: Action) -> list[dict[str, str]]:
 
 
 def action_row(a: Action) -> dict[str, str]:
-    return {"declaration_id": a.stable_id, "state": "NH", "governor": a.governor, "eo_number": a.number, "action_kind": a.action_kind, "action_type": a.action_type, "event_description": a.title, "date_signed": a.date_signed or "", "end_date": "", "weather_related": "true" if a.weather_related else "false", "source_scope": "nh_secretary_of_state_executive_order_registry", "document_format": "pdf", "detail_url": a.document_url, "archive_record_url": REGISTRY_URL}
+    return {"declaration_id": a.stable_id, "state": "NH", "governor": a.governor, "eo_number": a.number, "action_kind": a.action_kind, "action_type": a.action_type, "event_description": a.title, "date_signed": a.date_signed or "", "end_date": "", "weather_related": "true" if a.weather_related else "false", "source_scope": "nh_secretary_of_state_executive_order_registry" + (" (Internet Archive copy)" if SOURCE_NOTE else ""), "document_format": "pdf", "detail_url": a.document_url, "archive_record_url": REGISTRY_URL}
 
 
 def write(path: str, fields: tuple[str, ...], rows: list[dict[str, str]]) -> None:

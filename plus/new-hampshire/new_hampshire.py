@@ -12,7 +12,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": True,
     "current_governor_source_available": True, "current_governor_source": "https://www.sos.nh.gov/executive-orders",
     "current_governor_source_start": "2025-01-09", "manual_only": False,
-    "known_gaps": ["The historical Governor registry is now maintained by the Secretary of State; some clients are blocked by the registry's edge security.", "Many older PDFs are marked non-ADA archival documents and may require manual or OCR review when they contain no extractable text.", "The registry notes that EO 1990-06 was never received from the Governor's Office; 1990-05 and 1990-02 were not used.", "Most New Hampshire weather emergencies were declared without an executive order, so they are not in the registry. Those with a confirmed date were added by hand from news coverage (NH-PROC ids) and are written back on every run.", "When the registry cannot be fetched the adapter exits with an error, so a blocked registry shows as failed in the health report, not as an empty week."],
+    "known_gaps": ["The historical Governor registry is now maintained by the Secretary of State; some clients are blocked by the registry's edge security.", "Many older PDFs are marked non-ADA archival documents and may require manual or OCR review when they contain no extractable text.", "The registry notes that EO 1990-06 was never received from the Governor's Office; 1990-05 and 1990-02 were not used.", "Most New Hampshire weather emergencies were declared without an executive order, so they are not in the registry. Those with a confirmed date were added by hand from news coverage (NH-PROC ids) and are written back on every run.", "The registry refuses requests from GitHub's runners. When it cannot be read, the Internet Archive's latest copy of the registry page and of each order's PDF is read instead; the copy's date is shown in the coverage note. If neither can be read the adapter exits with an error, so the health report shows the source as failed."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -27,4 +27,8 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         reason = (result.stderr or "").strip().splitlines()
         raise RuntimeError("New Hampshire adapter: " + (reason[-1] if reason else "scrape failed"))
-    return workdir / "declarations_for_join.csv", "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR"
+    note = "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR"
+    archived = next((line for line in (result.stdout or "").splitlines() if "Internet Archive copy from" in line), "")
+    if archived:
+        note += "; this run read the " + archived.split("read from the ", 1)[-1]
+    return workdir / "declarations_for_join.csv", note
