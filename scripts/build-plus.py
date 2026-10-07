@@ -844,6 +844,53 @@ def run_storm_pipeline(state: dict, state_dir: Path, action_path: Path) -> tuple
     return note, failed, not failed
 
 
+def preflight_overrides(states: list[dict], repo_root: Path) -> list[str]:
+    """Check every selected state's reviewed hazard overrides before anything
+    is collected, and return one message per problem.
+
+    A malformed override fails that state's storm join, and a failed storm
+    join fails the whole build. That check used to happen state by state
+    after collection, so one bad cell (a blank hazard_category_override in
+    plus/ohio/hazard_overrides.csv, 2026-10-07) failed the run 44 minutes in
+    and nothing was committed. The same loader the join uses runs here, in
+    seconds, before the first state is collected."""
+    problems = []
+    for state in states:
+        state_dir = repo_root / "plus" / state["slug"]
+        join_script = state_dir / "eo_storm_join.py"
+        if not join_script.is_file():
+            continue
+        name = "disasterdata_plus_join_" + state["slug"].replace("-", "_")
+        try:
+            spec = importlib.util.spec_from_file_location(name, join_script)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+        except Exception as exc:
+            problems.append(f"{state['abbreviation']}: eo_storm_join.py does not load ({exc})")
+            continue
+        overrides = state_dir / "hazard_overrides.csv"
+        if overrides.is_file():
+            try:
+                module.load_overrides(str(overrides))
+            except Exception as exc:
+                problems.append(f"{state['abbreviation']}: {overrides.relative_to(repo_root)}: {exc}")
+        # Inline overrides in the declarations file itself.
+        for file_name in candidate_action_files(state):
+            path = state_dir / file_name
+            if not path.is_file():
+                continue
+            try:
+                with path.open(newline="", encoding="utf-8") as handle:
+                    for row in csv.DictReader(handle):
+                        value = (row.get("hazard_category_override") or "").strip()
+                        if value:
+                            module.resolve_override(value)
+            except Exception as exc:
+                problems.append(f"{state['abbreviation']}: {path.relative_to(repo_root)}: {exc}")
+            break
+    return problems
+
+
 def _run_storm_join(state: dict, state_dir: Path, action_path: Path) -> tuple[str, bool]:
     """Run eo_storm_join.py for one state, applying its reviewed sidecar
     overrides automatically when present.
@@ -1789,6 +1836,12 @@ def main() -> int:
     all_states = load_manifest(args.manifest)
     selected = select_states(all_states, args.states)
     repo_root = args.repo_root.resolve()
+    if args.join_storms or args.dry_run:
+        problems = preflight_overrides(selected, repo_root)
+        if problems:
+            print("Stopping before collection: these hazard overrides would fail the storm join "
+                  "and with it the whole build:\n  " + "\n  ".join(problems), file=sys.stderr)
+            return 1
     global NOAA_DATA_THROUGH
     NOAA_DATA_THROUGH = noaa_data_through(repo_root)
     if args.join_storms and not os.environ.get(NCEI_CACHE_ENV):
