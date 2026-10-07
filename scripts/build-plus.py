@@ -66,6 +66,38 @@ DEFAULT_MANIFEST = SCRIPT_DIR / "plus" / "state-manifest.json"
 # is often filed weeks after the state emergency that preceded it.
 FEDERAL_MATCH_WINDOW_DAYS = 21
 
+# NOAA publishes Storm Events months after the fact, so a declaration signed
+# after the newest published record cannot have a match yet. Showing those
+# as "0 matches" reads as "no storm happened". The newest event date any
+# state has matched stands in for how far NOAA's data runs; it is set once
+# per run by noaa_data_through() and is "" when nothing has matched yet.
+NOAA_DATA_THROUGH = ""
+
+
+def noaa_data_through(repo_root: Path) -> str:
+    """The latest NOAA event date (YYYY-MM-DD) found in any state's
+    eo_storm_matches.csv, or "" when there are none."""
+    latest = ""
+    for path in sorted((repo_root / "plus").glob("*/eo_storm_matches.csv")):
+        try:
+            with path.open(newline="", encoding="utf-8") as handle:
+                for row in csv.DictReader(handle):
+                    value = (row.get("BEGIN_DATE_TIME") or "")[:10]
+                    if len(value) == 10 and value > latest:
+                        latest = value
+        except (OSError, csv.Error):
+            continue
+    return latest
+
+
+def noaa_status(match_count: int, date_signed: str, through: str) -> str:
+    """matched, pending (signed after NOAA's published data ends), or none."""
+    if match_count:
+        return "matched"
+    if through and (date_signed or "")[:10] > through:
+        return "pending"
+    return "none"
+
 
 def load_manifest(path: Path) -> list[dict]:
     with path.open(encoding="utf-8") as handle:
@@ -740,6 +772,8 @@ def build_crosswalk(
             {
                 "action": action,
                 "noaa_match_count": len(matches),
+                "noaa_status": noaa_status(len(matches), action.get("date_signed", ""),
+                                           NOAA_DATA_THROUGH),
                 "noaa_areas": areas,
                 "federal_declaration": federal,
                 "federal_status": (
@@ -1052,6 +1086,10 @@ def crosswalk_rows(crosswalk: list[dict]) -> str:
         action = row["action"]
         title = esc(action["title"] or "Untitled action")
         areas = ", ".join(row["noaa_areas"][:8]) if row["noaa_areas"] else "None matched"
+        count_cell = str(row["noaa_match_count"])
+        if row.get("noaa_status") == "pending":
+            count_cell = '<span class="empty">Pending</span>'
+            areas = "NOAA has not published storm data for this date yet"
         if row["federal_status"] == "matched":
             federal = row["federal_declaration"]
             federal_cell = esc(federal.get("number") or federal.get("id"))
@@ -1060,7 +1098,7 @@ def crosswalk_rows(crosswalk: list[dict]) -> str:
         output.append(
             "<tr>"
             f"<td>{esc(action['date_signed'])} &middot; {title}</td>"
-            f"<td>{row['noaa_match_count']}</td>"
+            f"<td>{count_cell}</td>"
             f"<td>{esc(areas)}</td>"
             f"<td>{federal_cell}</td>"
             "</tr>"
@@ -1239,6 +1277,14 @@ def brand_header(breadcrumb: str) -> str:
     return f'<script src="/nav.js"></script><nav class="dd-breadcrumb">{breadcrumb}</nav>'
 
 
+def noaa_through_note() -> str:
+    if not NOAA_DATA_THROUGH:
+        return ""
+    return (f" NOAA's published Storm Events data used here runs through about "
+            f"{esc(NOAA_DATA_THROUGH)}; declarations signed after that show as pending "
+            "until NOAA publishes those months.")
+
+
 def render_state_page(
     state: dict,
     actions: list[dict],
@@ -1310,7 +1356,7 @@ def render_state_page(
 </details>
 
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
-<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. The federal crosswalk match uses a wider {FEDERAL_MATCH_WINDOW_DAYS} day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
+<p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation.{noaa_through_note()} The federal crosswalk match uses a wider {FEDERAL_MATCH_WINDOW_DAYS} day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
 <footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>{table_script()}</body></html>"""
@@ -1483,6 +1529,7 @@ def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list
         "source_status": summary.get("source_status"),
         "kept_saved_records": summary.get("kept_saved_records", 0),
         "federal_match_window_days": FEDERAL_MATCH_WINDOW_DAYS,
+        "noaa_data_through": NOAA_DATA_THROUGH,
         "metrics": summary.get("metrics", {}),
         "actions": actions,
         "crosswalk": [
@@ -1491,6 +1538,7 @@ def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list
                 "date_signed": row["action"].get("date_signed", ""),
                 "title": row["action"].get("title", ""),
                 "noaa_match_count": row["noaa_match_count"],
+                "noaa_status": row.get("noaa_status", ""),
                 "noaa_areas": row["noaa_areas"],
                 "federal_status": row["federal_status"],
                 "federal_declaration": federal_reference(row["federal_declaration"]),
@@ -1741,6 +1789,8 @@ def main() -> int:
     all_states = load_manifest(args.manifest)
     selected = select_states(all_states, args.states)
     repo_root = args.repo_root.resolve()
+    global NOAA_DATA_THROUGH
+    NOAA_DATA_THROUGH = noaa_data_through(repo_root)
     if args.join_storms and not os.environ.get(NCEI_CACHE_ENV):
         # One folder for the whole run, so each yearly NOAA storm file is
         # downloaded and parsed once instead of once per state (see
