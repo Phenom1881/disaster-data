@@ -77,5 +77,14 @@ class NewJerseyRoundThreeTests(unittest.TestCase):
         self.assertIsNone(nj.weather_clause_from_text("EXECUTIVE ORDER No. 5 WHEREAS, the budget is late"))
 
 
+    def test_untitled_order_gets_a_name_and_full_governor(self):
+        clause = "From the order text: a severe coastal storm, including high winds and coastal flooding"
+        self.assertEqual(
+            nj.titled_from_clause("26", "2026-09-29", clause),
+            "Executive Order No. 26 (2026): Coastal Storm. " + clause)
+        self.assertEqual(nj.governor_display("Murphy"), "Philip D. Murphy")
+        self.assertEqual(nj.governor_display("Mcgreevey"), "James E. McGreevey")
+        self.assertEqual(nj.governor_display("Unknown"), "Unknown")
+
 if __name__ == "__main__":
     unittest.main()
