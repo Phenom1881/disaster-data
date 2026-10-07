@@ -708,6 +708,46 @@ NOT_WEATHER_TITLE = re.compile(
 )
 
 
+# The archive links name governors by surname ("Murphy"); pages show the
+# full name, as every other state does. Display only: declaration ids are
+# still built from the archive label (see _gov_code), so they do not change.
+GOVERNOR_FULL_NAMES = {
+    "sherrill": "Mikie Sherrill",
+    "murphy": "Philip D. Murphy",
+    "christie": "Chris Christie",
+    "corzine": "Jon S. Corzine",
+    "codey": "Richard J. Codey",
+    "mcgreevey": "James E. McGreevey",
+    "difrancesco": "Donald T. DiFrancesco",
+    "bennett": "John O. Bennett",
+    "whitman": "Christine Todd Whitman",
+    "florio": "James J. Florio",
+    "kean": "Thomas H. Kean",
+    "byrne": "Brendan T. Byrne",
+}
+
+
+def governor_display(label: str) -> str:
+    key = re.sub(r"[^a-z]", "", (label or "").lower())
+    return GOVERNOR_FULL_NAMES.get(key, label)
+
+
+def titled_from_clause(order_number: str, date_issued: str, clause: str) -> str:
+    """A name for an order the archive left untitled, ahead of the quote:
+    "Executive Order No. 26 (2026): Coastal Storm. From the order text: ..."."""
+    label = ""
+    for pattern in WEATHER_PATTERNS:
+        match = pattern.search(clause)
+        if match:
+            label = match.group(0).strip()
+            label = label[:1].upper() + label[1:]
+            label = re.sub(r"\b([a-z])", lambda m: m.group(1).upper(), label)
+            break
+    year = (date_issued or "")[:4]
+    head = f"Executive Order No. {order_number}" + (f" ({year})" if year else "")
+    return f"{head}: {label}. {clause}" if label else f"{head}. {clause}"
+
+
 def is_weather_related(order: NJOrder) -> bool:
     if NOT_WEATHER_TITLE.search(order.description or ""):
         return False
@@ -823,7 +863,7 @@ def write_actions_csv(orders: list[NJOrder], path: str) -> None:
             writer.writerow({
                 "declaration_id": order.stable_id,
                 "state": "NJ",
-                "governor": order.governor,
+                "governor": governor_display(order.governor),
                 "eo_number": order.order_number,
                 "action_type": order.action_type,
                 "event_description": order.description,
@@ -869,7 +909,7 @@ def write_join_csv(orders: list[NJOrder], path: str) -> None:
                 continue
             writer.writerow({
                 "declaration_id": order.stable_id,
-                "governor": order.governor,
+                "governor": governor_display(order.governor),
                 "eo_number": order.order_number,
                 "event_description": order.description,
                 "date_signed": order.date_issued,
@@ -960,7 +1000,7 @@ def main() -> None:
         if order.weather_related and not order.description.strip():
             clause = weather_clause_from_text(order.document_text)
             if clause:
-                order.description = clause
+                order.description = titled_from_clause(order.order_number, order.date_issued, clause)
                 quoted += 1
     if quoted:
         print(f"  Described {quoted} untitled weather order(s) with the weather "
