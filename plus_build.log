@@ -923,7 +923,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 93 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 104 relationship(s), 4 original weather declaration(s).
 
 MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
 MA: ma_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1045,43 +1045,48 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
 
 MN: 15 actions, 81 federal declarations; 2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered
+Mississippi SOS orders 2008-2019: 203 listed, 203 read this run, 0 left for the next run, 23 weather emergencies, 23 added to the join file
+
 MS: declarations_for_join.csv: kept 16 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/mississippi/hazard_overrides.csv
+MS-EO-1062: no matching storm events found in the date window.
+MS-EO-1063: no matching storm events found in the date window.
+MS-EO-1068: no matching storm events found in the date window.
 MS-EO-991: no matching storm events found in the date window.
-Wrote 1839 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_matches.csv.tmp
-Wrote severity summary (1054 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp
+Wrote 2561 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_matches.csv.tmp
+Wrote severity summary (1438 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   MS-EO-939 HARRISON [NWS forecast zone]: deaths=97, injuries=0, damage=$8,570,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
   MS-EO-939 HANCOCK [NWS forecast zone]: deaths=56, injuries=0, damage=$4,850,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
+  MS-EO-1049 MONROE [county/county-equivalent]: deaths=17, injuries=40, damage=$4,250,000 (Thunderstorm Wind, Tornado)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe SHARKEY [county/county-equivalent]: deaths=14, injuries=150, damage=$83,136,000 (Tornado)
   MS-EO-939 JACKSON [NWS forecast zone]: deaths=13, injuries=0, damage=$3,350,000,000 (Hurricane (Typhoon), Storm Surge/Tide)
   MS-EO-939 JONES [NWS forecast zone]: deaths=10, injuries=0, damage=$830,000,000 (Hurricane (Typhoon))
   MS-EO-1036 CHOCTAW [county/county-equivalent]: deaths=5, injuries=35, damage=$96,000,000 (Tornado)
+  MS-EO-1037 CHOCTAW [county/county-equivalent]: deaths=5, injuries=35, damage=$96,000,000 (Tornado)
+  MS-EO-1393 FORREST [county/county-equivalent]: deaths=4, injuries=56, damage=$9,064,500 (Flash Flood, Hail, Tornado)
   MS-EO-1036 YAZOO [county/county-equivalent]: deaths=4, injuries=53, damage=$144,000,000 (Tornado)
+  MS-EO-1037 YAZOO [county/county-equivalent]: deaths=4, injuries=53, damage=$144,000,000 (Tornado)
+  MS-EO-1049 CLARKE [county/county-equivalent]: deaths=4, injuries=14, damage=$1,700,000 (Tornado)
+  MS-EO-1049 CHICKASAW [county/county-equivalent]: deaths=3, injuries=27, damage=$2,250,000 (Hail, Thunderstorm Wind, Tornado)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe HUMPHREYS [county/county-equivalent]: deaths=3, injuries=15, damage=$13,378,200 (Tornado)
   MS-ACTION-2021-08-29-governor-reeves-issues-state-of-emergency-ahead-of-hurrica GEORGE [county/county-equivalent]: deaths=3, injuries=7, damage=$1,800,000 (Flash Flood)
+  MS-EO-1049 KEMPER [county/county-equivalent]: deaths=3, injuries=6, damage=$1,011,000 (Thunderstorm Wind, Tornado)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe CARROLL [county/county-equivalent]: deaths=3, injuries=5, damage=$9,441,000 (Flash Flood, Tornado)
   MS-ACTION-2023-03-25-governor-reeves-issues-state-of-emergency-following-severe MONROE [county/county-equivalent]: deaths=2, injuries=55, damage=$80,020,000 (Thunderstorm Wind, Tornado)
   MS-EO-853 MADISON [county/county-equivalent]: deaths=2, injuries=21, damage=$12,185,000 (Flash Flood, Hail, Tornado)
   MS-EO-853 QUITMAN [county/county-equivalent]: deaths=2, injuries=16, damage=$5,000,000 (Tornado)
+  MS-EO-1049 JASPER [county/county-equivalent]: deaths=2, injuries=0, damage=$1,700,000 (Tornado)
   MS-EO-1036 HOLMES [county/county-equivalent]: deaths=1, injuries=40, damage=$64,000,000 (Tornado)
+  MS-EO-1037 HOLMES [county/county-equivalent]: deaths=1, injuries=40, damage=$64,000,000 (Tornado)
+  MS-EO-1049 WEBSTER [county/county-equivalent]: deaths=1, injuries=20, damage=$4,920,000 (Hail, Tornado)
   MS-EO-853 PANOLA [county/county-equivalent]: deaths=1, injuries=12, damage=$2,005,000 (Thunderstorm Wind, Tornado)
-  MS-EO-939 LAUDERDALE [NWS forecast zone]: deaths=1, injuries=10, damage=$500,000,000 (Hurricane (Typhoon))
-  MS-EO-942 HUMPHREYS [county/county-equivalent]: deaths=1, injuries=5, damage=$2,913,000 (Tornado)
-  MS-ACTION-2023-04-04-governor-reeves-issues-state-of-emergency-following-severe PONTOTOC [county/county-equivalent]: deaths=1, injuries=5, damage=$0 (Tornado)
-  MS-ACTION-2026-01-22-governor-reeves-issues-state-of-emergency-ahead-of-severe- HINDS [NWS forecast zone]: deaths=1, injuries=2, damage=$0 (Extreme Cold/Wind Chill, Ice Storm)
-  MS-EO-841 HOLMES [county/county-equivalent]: deaths=1, injuries=1, damage=$550,000 (Thunderstorm Wind, Tornado)
-  MS-EO-939 HINDS [NWS forecast zone]: deaths=1, injuries=0, damage=$520,000,000 (Hurricane (Typhoon))
-  MS-EO-939 SIMPSON [NWS forecast zone]: deaths=1, injuries=0, damage=$140,000,000 (Hurricane (Typhoon))
-  MS-EO-939 LEAKE [NWS forecast zone]: deaths=1, injuries=0, damage=$130,000,000 (Hurricane (Typhoon))
-  MS-EO-939 WARREN [NWS forecast zone]: deaths=1, injuries=0, damage=$120,000,000 (Hurricane (Typhoon))
-  MS-EO-860 HARRISON [NWS forecast zone]: deaths=1, injuries=0, damage=$6,250,000 (Tropical Storm)
-  Showing the 25 highest-consequence areas; all 771 are retained in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 1046 are retained in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
 
-MS: 30 actions, 99 federal declarations; January 2020-present structured Governor archive; 2000-2019 gap disclosed; plus 5 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 16 saved records kept that this refresh's check of the state source did not return
+MS: 52 actions, 99 federal declarations; January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 16 saved records kept that this refresh's check of the state source did not return
 {"actions": 620, "declarations": 83, "relationships": 215, "overrides": 15, "review": 49}
 
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/missouri/hazard_overrides.csv
@@ -1281,7 +1286,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 NH: 12 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 6 saved records kept that this refresh's check of the state source did not return
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
-  running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
+  running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
   found 14 administration page(s)
   parsing Sherrill [057sherrill] (https://www.nj.gov/infobank/eo/057sherrill/approved/eo_archive.shtml)
@@ -1440,7 +1445,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 NM: 45 actions, 126 federal declarations; 2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
 New York adapter: collecting executive orders...
-  running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-york/declarations_for_join.csv
+  running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-york/declarations_for_join.csv
 New York scraper: collecting current executive orders...
     current page 1: 100 row(s), 100 new
     current page 2: 100 row(s), 100 new
@@ -1497,7 +1502,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 NY: 25 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 North Carolina adapter: collecting official Executive Orders...
-  running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/declarations_for_join.csv
+  running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/declarations_for_join.csv
 North Carolina scraper: walking official Executive Orders archive...
     page 1: 20 candidate(s), 20 new
     page 2: 20 candidate(s), 20 new
@@ -1715,10 +1720,23 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 OK: 55 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 48 saved records kept that this refresh's check of the state source did not return
-Oregon signing dates: 195 kept from earlier runs; 132 not found by OCR in the last four weeks, not retried yet
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 463, in <module>
+    if __name__ == "__main__": main()
+                               ^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 460, in main
+    write_outputs(collect(saved=saved, recent_misses=misses), args.actions_out, args.relationships_out, args.join_out, args.review_out)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 311, in collect
+    actions = list_orders(session)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 270, in list_orders
+    response.raise_for_status()
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=Title%2CDocument_x0020_Description%2CYear%2CNumber%2COrder0%2CCreated%2CFile%2FServerRelativeUrl%2CFile%2FName
 
-OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 132 blank and 0 garbled field set(s)
-OR: or_order_relationships.csv: kept 109 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WARNING OR: Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)
 Applied 112 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oregon/hazard_overrides.csv
 OR-EO-26-25: no matching storm events found in the date window.
 OR-EO-26-18: no matching storm events found in the date window.
@@ -1847,9 +1865,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
-OR: 252 actions, 174 federal declarations; 2003-present structured Governor archive; 2000-2002 unavailable in live source
+OR: 252 actions, 174 federal declarations; 2003-present structured Governor archive; 2000-2002 unavailable in live source; Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)
 Pennsylvania adapter: collecting official state actions...
-  running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/declarations_for_join.csv
+  running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/declarations_for_join.csv
 Pennsylvania scraper: collecting Office of Administration issuances...
     Office of Administration: 138 row(s)
 Pennsylvania scraper: collecting PEMA emergency proclamations...
@@ -2186,7 +2204,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 VT: 6 actions, 62 federal declarations; 2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present); 4 saved records kept that this refresh's check of the state source did not return
 Virginia adapter: collecting current-administration declarations...
-  running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_scraper.py --raw-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
+  running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_scraper.py --raw-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
 https://www.governor.virginia.gov/executive-actions/: parsed 50 order links
 Wrote 25 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
 Wrote 1 emergency declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv
@@ -2194,7 +2212,7 @@ Wrote 1 weather declarations to /home/runner/work/disaster-data/disaster-data/pl
   EO-11: 2026-01-22 — Declaring State of Emergency Due to Winter Weather
 
 Virginia adapter: collecting historical declarations (2002-2026)...
-  running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_historical_eo_scraper.py --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_archive_all.csv --emergency-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_actions_2002_2026.csv --weather-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_weather_emergency_actions_2002_2026.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join_2002_present.csv --current-csv /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
+  running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_historical_eo_scraper.py --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_archive_all.csv --emergency-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_actions_2002_2026.csv --weather-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_weather_emergency_actions_2002_2026.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join_2002_present.csv --current-csv /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
 Mark R. Warner (2002-2006): fetched 117 of 117 items
 Timothy M. Kaine (2006-2010): fetched 120 of 120 items
 Robert F. McDonnell (2010-2014): fetched 75 of 75 items
@@ -2435,7 +2453,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 4 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
 
-Retrying 2 state(s) whose source failed or returned nothing, after 60s: NH, OH
+Retrying 3 state(s) whose source failed or returned nothing, after 60s: NH, OH, OR
 New Hampshire: 0 actions, 0 relationships, 0 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
@@ -2455,7 +2473,26 @@ OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not 
 OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY OH: still empty
 OH: 7 actions, 61 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 2388s, storm join 91s. Slowest: NJ 315s+8s, NC 305s+1s, TX 231s+1s, CT 191s+0s, VT 143s+0s, MA 138s+1s, SC 128s+3s, WA 92s+1s, LA 90s+1s, CO 66s+9s
+Traceback (most recent call last):
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 463, in <module>
+    if __name__ == "__main__": main()
+                               ^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 460, in main
+    write_outputs(collect(saved=saved, recent_misses=misses), args.actions_out, args.relationships_out, args.join_out, args.review_out)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 311, in collect
+    actions = list_orders(session)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/disaster-data/disaster-data/plus/oregon/or_eo_scraper.py", line 270, in list_orders
+    response.raise_for_status()
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=Title%2CDocument_x0020_Description%2CYear%2CNumber%2COrder0%2CCreated%2CFile%2FServerRelativeUrl%2CFile%2FName
+
+WARNING OR: Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)
+RETRY OR: still failed (Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=))
+OR: 252 actions, 174 federal declarations; 2003-present structured Governor archive; 2000-2002 unavailable in live source; Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)
+TIME total: collect 3209s, storm join 100s. Slowest: MS 478s+1s, NJ 435s+11s, NC 439s+1s, MA 280s+2s, TX 237s+1s, CT 220s+0s, NY 121s+0s, SC 107s+5s, VT 100s+0s, PA 83s+0s
 WARNING kept saved records the state source did not return: AZ (53), IN (5), KS (1), KY (1), MS (16), MT (1), NE (2), NH (6), OH (7), OK (48), TX (1), VT (4), WV (1)
 Row-loss check: no saved rows lost.
 Plus health: 32 green, 18 yellow, 0 red.
