@@ -28,6 +28,7 @@ import argparse
 import csv
 import re
 import sys
+import time
 from datetime import datetime
 from urllib.parse import urljoin
 
@@ -35,6 +36,28 @@ import requests
 
 STATE = "NE"
 SOURCE_URL = "https://govdocs.nebraska.gov/docs/pilot/pubs/eoindex.html"
+# The Library Commission links the index as EOIndex.html, over http, so
+# both spellings are tried when the usual one fails.
+INDEX_URLS = (
+    SOURCE_URL,
+    "https://govdocs.nebraska.gov/docs/pilot/pubs/EOIndex.html",
+    "http://govdocs.nebraska.gov/docs/pilot/pubs/EOIndex.html",
+)
+HEADER_SETS = (
+    {"User-Agent": "DisasterData.io research crawler"},
+    {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"},
+)
+RETRY_WAITS = (0, 20)    # seconds before each round of tries
+TIMEOUT = 30
+# The index lists about 300 orders since 1965; a page with far fewer rows is
+# an error or block page, or a cut-off download, not the index.
+MIN_INDEX_ROWS = 100
+WAYBACK_AVAILABLE = "https://archive.org/wayback/available"
+SOURCE_NOTE = ""   # set when the index came from the Internet Archive
+
+
+class IndexUnavailable(RuntimeError):
+    """Neither the index nor an archived copy of it could be read."""
 SCOPE_START = datetime(2000, 1, 1)
 
 GOVERNOR_BY_DATE = [
@@ -93,9 +116,68 @@ def governor_for(date_obj):
 
 
 def fetch(url, session):
-    resp = session.get(url, timeout=30, headers={"User-Agent": "DisasterData.io research crawler"})
+    resp = session.get(url, timeout=TIMEOUT, headers=HEADER_SETS[0])
     resp.raise_for_status()
     return resp.text
+
+
+def wayback_copy(url, session):
+    """(html, YYYY-MM-DD) of the Internet Archive's latest copy of url, as
+    originally served, or (None, "")."""
+    try:
+        lookup = session.get(WAYBACK_AVAILABLE, params={"url": url}, headers=HEADER_SETS[0], timeout=TIMEOUT)
+        lookup.raise_for_status()
+        closest = (lookup.json().get("archived_snapshots") or {}).get("closest") or {}
+        stamp = str(closest.get("timestamp") or "")
+        if not closest.get("available") or not re.fullmatch(r"\d{14}", stamp):
+            return None, ""
+        resp = session.get(f"https://web.archive.org/web/{stamp}id_/{url}", headers=HEADER_SETS[0], timeout=TIMEOUT)
+        resp.raise_for_status()
+        return resp.text, f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}"
+    except (requests.RequestException, ValueError) as exc:
+        print(f"warning: Internet Archive copy of {url} not read: {exc}", file=sys.stderr)
+        return None, ""
+
+
+def fetch_index(session, sleep=time.sleep):
+    """The index's rows, from the live page or, failing that, the Internet
+    Archive's latest copy. Raises IndexUnavailable with what went wrong.
+
+    The live page is tried at both of its addresses, with the crawler's
+    User-Agent and a browser's, then the usual address again 20 seconds
+    later. On
+    2026-10-07 one 30-second try with no retry failed the run and its retry,
+    and the health report said only "scrape failed"."""
+    global SOURCE_NOTE
+    problems = []
+    for wait in RETRY_WAITS:
+        if wait:
+            sleep(wait)
+        # Every address on the first round; the usual one again on the
+        # second. At most 8 tries of 30 seconds, since the build retries a
+        # failed state once more and the whole run has a time limit.
+        for url in (INDEX_URLS if not wait else INDEX_URLS[:1]):
+            for headers in HEADER_SETS:
+                try:
+                    resp = session.get(url, timeout=TIMEOUT, headers=headers)
+                    resp.raise_for_status()
+                except requests.RequestException as exc:
+                    problems.append(f"{url}: {type(exc).__name__} {getattr(getattr(exc, 'response', None), 'status_code', '') or ''}".strip())
+                    continue
+                rows = parse_index_table(resp.text)
+                if len(rows) >= MIN_INDEX_ROWS:
+                    return rows
+                problems.append(f"{url}: only {len(rows)} rows ({len(resp.text)} bytes)")
+    for url in INDEX_URLS[:2]:
+        html, copy_date = wayback_copy(url, session)
+        rows = parse_index_table(html) if html else []
+        if len(rows) >= MIN_INDEX_ROWS:
+            SOURCE_NOTE = f"Internet Archive copy from {copy_date}"
+            print(f"Nebraska: index read from the {SOURCE_NOTE} (the live index could not be read)")
+            return rows
+    seen = list(dict.fromkeys(problems))
+    raise IndexUnavailable("Nebraska executive order index not read: " + "; ".join(seen[:4])
+                           + "; no usable Internet Archive copy")
 
 
 def parse_date(date_text):
@@ -151,8 +233,7 @@ def parse_index_table(html):
 
 def collect(actions_out, relationships_out, join_out):
     session = requests.Session()
-    html = fetch(SOURCE_URL, session)
-    all_rows = parse_index_table(html)
+    all_rows = fetch_index(session)
 
     actions = []
     relationships = []
@@ -218,7 +299,10 @@ def main():
     parser.add_argument("--join-out", required=True)
     args = parser.parse_args()
 
-    n = collect(args.actions_out, args.relationships_out, args.join_out)
+    try:
+        n = collect(args.actions_out, args.relationships_out, args.join_out)
+    except IndexUnavailable as exc:
+        raise SystemExit(str(exc))
     print(f"Nebraska: wrote {n} declaration(s) to {args.join_out}")
 
 

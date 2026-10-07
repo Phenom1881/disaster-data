@@ -108,15 +108,46 @@ class NewHampshireTests(unittest.TestCase):
 
     def test_unreachable_registry_raises(self):
         from unittest import mock
-        with mock.patch.object(nh, "fetch", return_value=None):
+        with mock.patch.object(nh, "fetch", return_value=None), \
+             mock.patch.object(nh, "wayback_copy", return_value=(None, "")):
             with self.assertRaises(nh.RegistryUnavailable):
                 nh.collect()
 
     def test_block_page_with_no_orders_raises(self):
         from unittest import mock
-        with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="<html>Access denied</html>", content=b"")):
+        with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="<html>Access denied</html>", content=b"")), \
+             mock.patch.object(nh, "wayback_copy", return_value=(mock.Mock(text="<html>Access denied</html>"), "2026-09-01")):
             with self.assertRaises(nh.RegistryUnavailable):
                 nh.collect()
+
+    def test_blocked_registry_is_read_from_the_internet_archive(self):
+        from unittest import mock
+        archive = {nh.REGISTRY_URL: (mock.Mock(text=REGISTRY), "2026-09-30"),
+                   nh.urljoin(nh.REGISTRY_URL, "/hassan-2015-1.pdf"): (mock.Mock(content=b"pdf"), "2026-09-30"),
+                   nh.urljoin(nh.REGISTRY_URL, "/hassan-2015-2.pdf"): (mock.Mock(content=b"pdf"), "2026-09-30")}
+        with mock.patch.object(nh, "fetch", return_value=None) as live, \
+             mock.patch.object(nh, "wayback_copy", side_effect=lambda url: archive.get(url, (None, ""))), \
+             mock.patch.object(nh, "pdf_text", return_value="Given under my hand this 26th day of January, 2015."), \
+             mock.patch.object(nh, "SOURCE_NOTE", ""):
+            actions = {a.number: a for a in nh.collect()}
+            self.assertEqual(live.call_count, 1)                    # PDFs go straight to the archive
+            self.assertEqual(actions["2015-01"].date_signed, "2015-01-26")
+            self.assertTrue(actions["2015-01"].weather_related)
+            self.assertIn("2026-09-30", nh.SOURCE_NOTE)
+            self.assertIn("Internet Archive", nh.action_row(actions["2015-01"])["source_scope"])
+
+    def test_wayback_lookup_builds_the_original_copy_url(self):
+        from unittest import mock
+        lookup = mock.Mock(json=lambda: {"archived_snapshots": {"closest": {
+            "available": True, "timestamp": "20260930120000", "url": "http://web.archive.org/web/20260930120000/x"}}})
+        lookup.raise_for_status = lambda: None
+        page = mock.Mock(); page.raise_for_status = lambda: None
+        with mock.patch.object(nh.requests, "get", side_effect=[lookup, page]) as get:
+            response, when = nh.wayback_copy(nh.REGISTRY_URL)
+        self.assertIs(response, page)
+        self.assertEqual(when, "2026-09-30")
+        self.assertEqual(get.call_args_list[1].args[0],
+                         "https://web.archive.org/web/20260930120000id_/" + nh.REGISTRY_URL)
 
     def test_saved_rows_the_registry_does_not_produce_are_written_back(self):
         order = nh.Action("2015-01", "An Order Declaring a State of Emergency Due to Severe Winter Storm",
