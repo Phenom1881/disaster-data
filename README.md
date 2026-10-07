@@ -1,4 +1,4 @@
-Copyright (c) 2026 Joseph Moore (DisasterData.IO). All rights reserved. This repository is not open source; see LICENSE. No part of it may be copied or reused without written permission.
+Copyright (c) 2026 DisasterData.IO. All rights reserved. This repository is not open source; see LICENSE. No part of it may be copied or reused without written permission.
 
 FEMA Daily Ops Briefing Archive
 Captures FEMA's Daily Operations Briefing PDF and keeps a permanent, browsable archive on DisasterData.IO.

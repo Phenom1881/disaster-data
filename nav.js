@@ -33,7 +33,7 @@
   /* -------------------------------------------------------------------------- */
 
   /* ---- the copyright line at the foot of every page. ----------------------- */
-  var COPYRIGHT_OWNER = "Joseph Moore, DisasterData.IO";
+  var COPYRIGHT_OWNER = "DisasterData.IO";
   var COPYRIGHT_START = 2026;
   var COPYRIGHT_TEXT = "All rights reserved. The site's code, design, analysis and compiled " +
     "datasets may not be copied or reused without permission. The underlying federal and " +
