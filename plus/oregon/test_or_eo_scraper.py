@@ -231,7 +231,9 @@ class OcrTests(unittest.TestCase):
         actions, log = run(session)
         dated = {a.stable_id: (a.signed, a.date_source, a.date_note) for a in actions}
         self.assertEqual(dated["OR-EO-26-24"], ("2026-08-07", ore.DATE_FROM_OCR, ""))
-        self.assertEqual(dated["OR-EO-26-23"], ("", "", "not_found"))
+        # OCR found no date on 26-23; it was posted the day 26-24 was
+        # signed, which fits, so it takes its posted date until OCR reads it.
+        self.assertEqual(dated["OR-EO-26-23"], ("2026-08-07", ore.DATE_FROM_POSTED, "not_found"))
         self.assertIn("1 read from the scan by OCR", log)
         self.assertIn("1 not found by OCR", log)
         with tempfile.TemporaryDirectory() as tmp:
@@ -241,18 +243,15 @@ class OcrTests(unittest.TestCase):
                 rows = {row["declaration_id"]: row for row in csv.DictReader(handle)}
             self.assertEqual(rows["OR-EO-26-24"]["date_source"], ore.DATE_FROM_OCR)
             self.assertEqual(rows["OR-EO-26-24"]["governor"], "Tina Kotek")
+            self.assertEqual(rows["OR-EO-26-23"]["date_checked"], TODAY.isoformat())
             with (root / "review.csv").open() as handle:
-                self.assertEqual([r["declaration_id"] for r in csv.DictReader(handle)], ["OR-EO-26-23"])
+                self.assertEqual([r["declaration_id"] for r in csv.DictReader(handle)], [])
 
     def test_time_limit_leaves_the_rest_for_the_next_run(self):
         session = FakeSession([list_item(24)], {url(24): scanned_order(SIGNED_ORDER)})
         actions, log = run(session, ocr_budget=0)
         self.assertEqual(actions[0].date_note, "budget")
         self.assertIn("1 left for the next run (OCR time limit)", log)
-
-
-if __name__ == "__main__":
-    unittest.main()
 
 
 class RecheckTests(unittest.TestCase):
@@ -269,3 +268,72 @@ class RecheckTests(unittest.TestCase):
         self.assertEqual(session.fetched, [url(23)])
         self.assertIn("1 not found by OCR in the last four weeks", log)
         self.assertEqual({a.stable_id: a.date_note for a in actions}["OR-EO-26-24"], "recent_miss")
+
+
+class FallbackDateTests(unittest.TestCase):
+    """2026-10-07: 82 of 252 declarations were still undated after OCR."""
+
+    def item(self, number, created):
+        entry = list_item(number)
+        entry["Created"] = created
+        return entry
+
+    def test_confirmed_dates_win_and_skip_the_download(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "c.csv"
+            path.write_text("declaration_id,date_signed,source_kind,source_url,note\n"
+                            "OR-EO-26-24,2026-08-06,governor newsroom,https://x,\n"
+                            "OR-EO-26-23,not a date,news,https://y,\n", encoding="utf-8")
+            confirmed = ore.load_confirmed_dates(path)
+        self.assertEqual(confirmed, {"OR-EO-26-24": ("2026-08-06", "confirmed: governor newsroom")})
+        session = FakeSession([list_item(24)], {})
+        [action], log = run(session, confirmed=confirmed,
+                            saved={"OR-EO-26-24": ("2026-08-07", ore.DATE_FROM_OCR)})
+        self.assertEqual(session.fetched, [])
+        self.assertEqual(action.signed, "2026-08-06")
+        self.assertIn("1 from confirmed_signing_dates.csv", log)
+
+    def test_posted_date_is_pacific_time(self):
+        self.assertEqual(ore.posted_date("2026-08-08T03:10:00Z"), "2026-08-07")
+        self.assertEqual(ore.posted_date("2026-08-07T22:03:19Z"), "2026-08-07")
+        self.assertEqual(ore.posted_date(""), "")
+
+    def test_posted_date_must_fit_between_dated_neighbors(self):
+        saved = {"OR-EO-26-20": ("2026-07-01", ore.DATE_FROM_OCR), "OR-EO-26-24": ("2026-08-07", ore.DATE_FROM_OCR)}
+        items = [self.item(20, "2026-07-01T18:00:00Z"), self.item(22, "2026-07-15T18:00:00Z"),
+                 self.item(23, "2026-09-02T18:00:00Z"), self.item(24, "2026-08-07T18:00:00Z")]
+        session = FakeSession(items, {url(22): b"not a pdf", url(23): b"not a pdf"})
+        actions, log = run(session, saved=saved)
+        dated = {a.stable_id: (a.signed, a.date_source) for a in actions}
+        self.assertEqual(dated["OR-EO-26-22"], ("2026-07-15", ore.DATE_FROM_POSTED))
+        self.assertEqual(dated["OR-EO-26-23"], ("", ""))           # posted after 26-24 was signed: refused
+        self.assertIn("1 of those undated, dated by when they were posted", log)
+
+    def test_posted_date_needs_a_dated_neighbor_and_the_orders_year(self):
+        items = [self.item(22, "2026-07-15T18:00:00Z")]
+        [action], _ = run(FakeSession(items, {url(22): b"not a pdf"}))
+        self.assertEqual(action.signed, "")
+        saved = {"OR-EO-26-20": ("2026-01-05", ore.DATE_FROM_OCR)}
+        items = [self.item(20, "2026-01-05T18:00:00Z"), self.item(22, "2027-01-02T18:00:00Z")]
+        actions, _ = run(FakeSession(items, {url(22): b"not a pdf"}), saved=saved)
+        self.assertEqual({a.stable_id: a.signed for a in actions}["OR-EO-26-22"], "")
+
+    def test_a_posted_date_is_not_kept_as_a_saved_date(self):
+        saved = {"OR-EO-26-24": ("2026-08-07", ore.DATE_FROM_POSTED)}
+        session = FakeSession([list_item(24)], {url(24): b"not a pdf"})
+        run(session, saved=saved)
+        self.assertEqual(session.fetched, [url(24)])
+
+    def test_recheck_date_survives_a_skipped_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "a.csv"
+            path.write_text("declaration_id,date_signed,date_source,date_checked\n"
+                            "OR-EO-26-24,2026-08-07,%s,2026-09-20\n" % ore.DATE_FROM_POSTED, encoding="utf-8")
+            self.assertEqual(ore.load_recent_misses(path, TODAY), {"OR-EO-26-24"})
+            checked = ore.load_checked_dates(path)
+        [action], _ = run(FakeSession([list_item(24)], {}), recent_misses={"OR-EO-26-24"}, checked=checked)
+        self.assertEqual(action.date_checked, "2026-09-20")
+
+
+if __name__ == "__main__":
+    unittest.main()

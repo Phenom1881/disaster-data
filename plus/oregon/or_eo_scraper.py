@@ -18,6 +18,20 @@ A date is accepted only if it falls in the order's own year (EO 26-24 was
 signed in 2026) and is not in the future. Where each date came from is
 recorded in the date_source column. Weather declarations still undated after
 a run are listed in manual_or_ocr_review.csv with the reason.
+
+Two fallbacks, added 2026-10-07 when 82 of 252 declarations were still
+undated after OCR:
+
+4. confirmed_signing_dates.csv: dates checked by hand against the order
+   itself, the Governor's newsroom or dated news coverage, with the source.
+   These win over everything else and need no download.
+5. The date the order was posted to the Governor's list (the SharePoint
+   "Created" field, in Pacific time), when OCR cannot read the scan. Orders
+   are numbered in signing order, so a posted date is used only when it
+   falls between the signing dates of the nearest dated orders before and
+   after it that year, and at least one of those exists. A posted date is
+   not kept between runs: OCR gets another try each time it is due, and a
+   date it reads replaces the posted one.
 """
 from __future__ import annotations
 
@@ -33,8 +47,9 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from urllib.parse import urljoin
 
 import pdfplumber
@@ -54,6 +69,10 @@ MODIFIER_RE = re.compile(r"\b(?:amend(?:s|ed|ing|ment)|extend(?:s|ed|ing)|extens
 
 DATE_FROM_TEXT = "order text"
 DATE_FROM_OCR = "order scan (OCR)"
+DATE_FROM_POSTED = "date posted to the Governor's order list (approximate)"
+DATE_CONFIRMED_PREFIX = "confirmed: "
+CONFIRMED_DATES_FILE = Path(__file__).with_name("confirmed_signing_dates.csv")
+PACIFIC = ZoneInfo("America/Los_Angeles")
 
 # "this 7th day of August, 2026". OCR output is noisy, so the pattern allows
 # the usual misreadings: "lst" for "1st", "2O26" for "2026", "clay" for
@@ -245,23 +264,93 @@ def load_saved_dates(path) -> dict[str, tuple[str, str]]:
 RECHECK_AFTER_DAYS = 28
 
 
-def load_recent_misses(path, today: date) -> set[str]:
-    """Orders whose scan was read without finding a date in the last
-    RECHECK_AFTER_DAYS days."""
+def load_checked_dates(path) -> dict[str, str]:
+    """When each order's scan was last read by OCR without finding a date,
+    for orders still undated or dated only by when they were posted."""
     try:
         with Path(path).open(newline="", encoding="utf-8") as handle:
             rows = list(csv.DictReader(handle))
     except (OSError, csv.Error):
-        return set()
-    recent = set()
+        return {}
+    checked = {}
     for row in rows:
+        if row.get("declaration_id") and row.get("date_checked") and (
+                not row.get("date_signed") or row.get("date_source") == DATE_FROM_POSTED):
+            checked[row["declaration_id"]] = row["date_checked"]
+    return checked
+
+
+def load_recent_misses(path, today: date) -> set[str]:
+    """Orders whose scan was read without finding a date in the last
+    RECHECK_AFTER_DAYS days."""
+    recent = set()
+    for declaration_id, value in load_checked_dates(path).items():
         try:
-            checked = date.fromisoformat(row.get("date_checked") or "")
+            checked = date.fromisoformat(value)
         except ValueError:
             continue
-        if not row.get("date_signed") and (today - checked).days < RECHECK_AFTER_DAYS:
-            recent.add(row["declaration_id"])
+        if (today - checked).days < RECHECK_AFTER_DAYS:
+            recent.add(declaration_id)
     return recent
+
+
+def load_confirmed_dates(path=CONFIRMED_DATES_FILE) -> dict[str, tuple[str, str]]:
+    """Hand-checked signing dates by declaration id: (date, date_source)."""
+    try:
+        with Path(path).open(newline="", encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+    except (OSError, csv.Error):
+        return {}
+    confirmed = {}
+    for row in rows:
+        try:
+            date.fromisoformat(row.get("date_signed") or "")
+        except ValueError:
+            continue
+        confirmed[row["declaration_id"]] = (row["date_signed"], DATE_CONFIRMED_PREFIX + (row.get("source_kind") or "hand check"))
+    return confirmed
+
+
+def posted_date(created: str) -> str:
+    """The SharePoint Created timestamp ("2026-08-07T22:03:19Z") as a Pacific
+    calendar date, or "" if it cannot be read."""
+    try:
+        moment = datetime.fromisoformat((created or "").replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if moment.tzinfo is None:
+        return moment.date().isoformat()
+    return moment.astimezone(PACIFIC).date().isoformat()
+
+
+def fill_posted_dates(actions: list[Action], today: date) -> int:
+    """Date still-undated orders by when they were posted, where the posted
+    date fits between the nearest dated orders of the same year (see the
+    module notes). Returns how many were dated this way."""
+    by_year: dict[int, list[Action]] = {}
+    for action in actions:
+        by_year.setdefault(action.year, []).append(action)
+    filled = 0
+    for year, group in by_year.items():
+        group = sorted(group, key=lambda a: int(a.number))
+        dated = [(int(a.number), a.signed) for a in group if a.signed and a.date_source != DATE_FROM_POSTED]
+        for action in group:
+            if action.signed or not (DECLARATION_RE.search(action.description) or MODIFIER_RE.search(action.description)):
+                continue
+            posted = posted_date(action.created)
+            if not posted or posted[:4] != str(year) or posted > today.isoformat():
+                continue
+            number = int(action.number)
+            before = [signed for n, signed in dated if n < number]
+            after = [signed for n, signed in dated if n > number]
+            low, high = (max(before) if before else None), (min(after) if after else None)
+            if low is None and high is None:
+                continue
+            if (low and posted < low) or (high and posted > high):
+                continue
+            action.signed, action.date_source = posted, DATE_FROM_POSTED
+            filled += 1
+    return filled
 
 
 def list_orders(session: requests.Session) -> list[Action]:
@@ -301,9 +390,12 @@ def list_orders(session: requests.Session) -> list[Action]:
 
 def collect(session: requests.Session | None = None, saved: dict | None = None,
             today: date | None = None, ocr_budget: float = OCR_BUDGET_SECONDS,
-            recent_misses: set | None = None) -> list[Action]:
+            recent_misses: set | None = None, confirmed: dict | None = None,
+            checked: dict | None = None) -> list[Action]:
     session = session or requests.Session()
     saved = saved or {}
+    confirmed = confirmed or {}
+    checked = checked or {}
     recent_misses = recent_misses or set()
     today = today or date.today()
     ocr_available = bool(TESSERACT)
@@ -322,12 +414,22 @@ def collect(session: requests.Session | None = None, saved: dict | None = None,
     def enrich(action: Action) -> Action:
         if not (DECLARATION_RE.search(action.description) or MODIFIER_RE.search(action.description)):
             return action
-        signed, source = saved.get(action.stable_id, ("", ""))
+        signed, source = confirmed.get(action.stable_id, ("", ""))
         if signed[:4] == str(action.year):
+            action.signed, action.date_source = signed, source
+            count("confirmed")
+            return action
+        signed, source = saved.get(action.stable_id, ("", ""))
+        # A posted date is only a stand-in until OCR reads the order, and a
+        # hand-confirmed date that has since been removed is not kept either.
+        if signed[:4] == str(action.year) and source != DATE_FROM_POSTED and not source.startswith(DATE_CONFIRMED_PREFIX):
             action.signed, action.date_source = signed, source
             count("saved")
             return action
         if action.stable_id in recent_misses:
+            # Keep the day it was last read, so it is retried four weeks
+            # after that read rather than the week after this run.
+            action.date_checked = checked.get(action.stable_id, "")
             action.date_note = "recent_miss"
             count("recent_miss")
             return action
@@ -379,12 +481,14 @@ def collect(session: requests.Session | None = None, saved: dict | None = None,
 
     with ThreadPoolExecutor(max_workers=4) as pool:
         actions = list(pool.map(enrich, actions))
+    counts["posted"] = fill_posted_dates(actions, today)
     print(date_report(counts, failures))
     return sorted(actions, key=lambda x: (x.signed, x.year, int(x.number)), reverse=True)
 
 
 def date_report(counts: dict, failures: dict) -> str:
     parts = [
+        (counts.get("confirmed", 0), "from confirmed_signing_dates.csv"),
         (counts.get("saved", 0), "kept from earlier runs"),
         (counts.get("text", 0), "read from the PDF text"),
         (counts.get("ocr", 0), "read from the scan by OCR"),
@@ -393,6 +497,7 @@ def date_report(counts: dict, failures: dict) -> str:
         (counts.get("ocr_error", 0), "not readable as an image"),
         (counts.get("budget", 0), "left for the next run (OCR time limit)"),
         (counts.get("no_ocr", 0), "not tried because OCR is not installed"),
+        (counts.get("posted", 0), "of those undated, dated by when they were posted"),
     ]
     downloads = sum(failures.values())
     text = "; ".join(f"{number} {label}" for number, label in parts if number)
@@ -457,7 +562,8 @@ def main() -> None:
     args = parser.parse_args()
     saved = load_saved_dates(args.actions_out)
     misses = load_recent_misses(args.actions_out, date.today())
-    write_outputs(collect(saved=saved, recent_misses=misses), args.actions_out, args.relationships_out, args.join_out, args.review_out)
+    write_outputs(collect(saved=saved, recent_misses=misses, confirmed=load_confirmed_dates(),
+                          checked=load_checked_dates(args.actions_out)), args.actions_out, args.relationships_out, args.join_out, args.review_out)
 
 
 if __name__ == "__main__": main()
