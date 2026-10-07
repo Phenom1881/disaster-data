@@ -106,5 +106,35 @@ class NewHampshireTests(unittest.TestCase):
         actions = self._collect("Given under my hand this 2nd day of July, 2013.")
         self.assertEqual(actions["2013-08"].date_signed, "2013-07-02")
 
+    def test_unreachable_registry_raises(self):
+        from unittest import mock
+        with mock.patch.object(nh, "fetch", return_value=None):
+            with self.assertRaises(nh.RegistryUnavailable):
+                nh.collect()
+
+    def test_block_page_with_no_orders_raises(self):
+        from unittest import mock
+        with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="<html>Access denied</html>", content=b"")):
+            with self.assertRaises(nh.RegistryUnavailable):
+                nh.collect()
+
+    def test_saved_rows_the_registry_does_not_produce_are_written_back(self):
+        order = nh.Action("2015-01", "An Order Declaring a State of Emergency Due to Severe Winter Storm",
+                          "Margaret Wood Hassan", "https://x/2015-01.pdf", date_signed="2015-01-26")
+        nh.classify(order)
+        undated = nh.Action("2010-01", "An Order Declaring a State of Emergency Due to Severe Weather.",
+                            "John H. Lynch", "https://x/2010-01.pdf")
+        nh.classify(undated)
+        saved = [{"declaration_id": "NH-PROC-2012-10-29", "governor": "John H. Lynch", "eo_number": "",
+                  "event_description": "Sandy", "date_signed": "2012-10-29", "archive_record_url": "u"},
+                 {"declaration_id": "NH-2010-01", "governor": "John H. Lynch", "eo_number": "2010-01",
+                  "event_description": "Severe weather", "date_signed": "2010-02-25", "archive_record_url": "u"},
+                 {"declaration_id": "NH-2015-01", "governor": "x", "eo_number": "2015-01",
+                  "event_description": "old text", "date_signed": "2015-01-20", "archive_record_url": "u"}]
+        rows = {r["declaration_id"]: r for r in nh.join_rows([order, undated], saved)}
+        self.assertEqual(set(rows), {"NH-2015-01", "NH-PROC-2012-10-29", "NH-2010-01"})
+        self.assertEqual(rows["NH-2015-01"]["date_signed"], "2015-01-26")   # the registry's own row wins
+        self.assertEqual(rows["NH-2010-01"]["date_signed"], "2010-02-25")
+
 
 if __name__ == "__main__": unittest.main()

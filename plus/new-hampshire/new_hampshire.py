@@ -12,7 +12,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": True,
     "current_governor_source_available": True, "current_governor_source": "https://www.sos.nh.gov/executive-orders",
     "current_governor_source_start": "2025-01-09", "manual_only": False,
-    "known_gaps": ["The historical Governor registry is now maintained by the Secretary of State; some clients are blocked by the registry's edge security.", "Many older PDFs are marked non-ADA archival documents and may require manual or OCR review when they contain no extractable text.", "The registry notes that EO 1990-06 was never received from the Governor's Office; 1990-05 and 1990-02 were not used."],
+    "known_gaps": ["The historical Governor registry is now maintained by the Secretary of State; some clients are blocked by the registry's edge security.", "Many older PDFs are marked non-ADA archival documents and may require manual or OCR review when they contain no extractable text.", "The registry notes that EO 1990-06 was never received from the Governor's Office; 1990-05 and 1990-02 were not used.", "Most New Hampshire weather emergencies were declared without an executive order, so they are not in the registry. Those with a confirmed date were added by hand from news coverage (NH-PROC ids) and are written back on every run.", "When the registry cannot be fetched the adapter exits with an error, so a blocked registry shows as failed in the health report, not as an empty week."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -24,5 +24,7 @@ def collect(workdir=".", scripts_dir=None):
     # block page). They go to stderr, which used to be printed only when the
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
-    if result.returncode: raise RuntimeError("New Hampshire adapter: scrape failed")
+    if result.returncode:
+        reason = (result.stderr or "").strip().splitlines()
+        raise RuntimeError("New Hampshire adapter: " + (reason[-1] if reason else "scrape failed"))
     return workdir / "declarations_for_join.csv", "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR"

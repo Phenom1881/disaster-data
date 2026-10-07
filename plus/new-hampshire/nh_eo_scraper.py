@@ -233,10 +233,22 @@ def classify(action: Action) -> None:
     action.weather_related = action.action_type in {"declaration", "amendment", "extension", "termination"} and bool(HAZARD_RE.search(evidence))
 
 
+class RegistryUnavailable(RuntimeError):
+    """The registry page could not be fetched, or listed no orders."""
+
+
 def collect() -> list[Action]:
+    """Every order in the registry, classified and dated. Raises
+    RegistryUnavailable when the registry cannot be read: the build keeps the
+    saved records either way, and a nonzero exit shows the source as failed
+    in the health report instead of as an empty week."""
     page = fetch(REGISTRY_URL, retries=RETRY_WAITS)
-    if page is None: return []
+    if page is None:
+        raise RegistryUnavailable(f"could not fetch the New Hampshire executive order registry ({REGISTRY_URL})")
     actions = parse_registry(page.text)
+    if not actions:
+        raise RegistryUnavailable(f"the New Hampshire registry page listed no orders ({len(page.text)} bytes; "
+                                  f"starts {page.text[:120]!r}); it may be a block page or a new layout")
     for action in actions:
         # Exact signing dates and generic-declaration hazards come from the order itself.
         if DECLARATION_RE.search(action.title) or MODIFIER_RE.search(action.title):
@@ -272,12 +284,39 @@ def write(path: str, fields: tuple[str, ...], rows: list[dict[str, str]]) -> Non
         writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader(); writer.writerows(rows)
 
 
+def read_saved(path: str) -> list[dict[str, str]]:
+    try:
+        with open(path, newline="", encoding="utf-8") as handle:
+            return list(csv.DictReader(handle))
+    except (OSError, csv.Error):
+        return []
+
+
+def join_rows(actions: list[Action], saved: list[dict[str, str]]) -> list[dict[str, str]]:
+    """The registry's dated weather declarations, plus every saved row the
+    registry did not produce. Those are declarations made without an
+    executive order (Sandy in 2012, the 2005 Alstead flood), added by hand
+    from news coverage, and registry orders whose PDF gives no readable date
+    but whose saved row has one (2010-01, 2003-09)."""
+    rows = {a.stable_id: {field: action_row(a)[field] for field in JOIN_FIELDS}
+            for a in actions if a.action_type == "declaration" and a.weather_related and a.date_signed}
+    for row in saved:
+        sid = row.get("declaration_id", "")
+        if sid and sid not in rows and row.get("date_signed"):
+            rows[sid] = {field: row.get(field, "") for field in JOIN_FIELDS}
+    return sorted(rows.values(), key=lambda r: (r["date_signed"], r["declaration_id"]), reverse=True)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(); parser.add_argument("--actions-out", required=True); parser.add_argument("--relationships-out", required=True); parser.add_argument("--join-out", required=True); args = parser.parse_args()
-    actions = collect(); rows = [action_row(a) for a in actions]
+    try:
+        actions = collect()
+    except RegistryUnavailable as exc:
+        raise SystemExit(str(exc))
+    rows = [action_row(a) for a in actions]
     write(args.actions_out, ACTION_FIELDS, rows)
     rels = list({(r["source_order_id"], r["target_order_id"], r["relationship_type"]): r for a in actions for r in relationships(a)}.values()); write(args.relationships_out, REL_FIELDS, rels)
-    joins = [{field: action_row(a)[field] for field in JOIN_FIELDS} for a in actions if a.action_type == "declaration" and a.weather_related and a.date_signed]; write(args.join_out, JOIN_FIELDS, joins)
+    joins = join_rows(actions, read_saved(args.join_out)); write(args.join_out, JOIN_FIELDS, joins)
     print(f"New Hampshire: {len(actions)} actions, {len(rels)} relationships, {len(joins)} weather declarations")
 
 
