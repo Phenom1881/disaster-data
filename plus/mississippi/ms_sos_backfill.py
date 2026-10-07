@@ -50,9 +50,13 @@ BUDGET_SECONDS = 8 * 60
 TESSERACT = shutil.which("tesseract")
 OCR_PAGES = 2
 MIN_TEXT = 200                # fewer characters than this means a scan
+# Bumped whenever classify() changes. A cached order marked as a weather
+# emergency under an older version is read again, so a tighter rule can
+# take back an order the old one let through.
+CLASSIFIER_VERSION = "2"
 
 CACHE_FIELDS = ("order_number", "governor", "date_signed", "pdf_url", "text_source",
-                "weather_declaration", "hazards", "summary", "checked_on")
+                "weather_declaration", "hazards", "summary", "checked_on", "classifier")
 JOIN_FIELDS = ("declaration_id", "governor", "eo_number", "event_description",
                "date_signed", "archive_record_url")
 
@@ -66,6 +70,13 @@ EMERGENCY_RE = re.compile(r"\bstate of emergency\b|\bemergency\b|\bnational guar
 NOT_WEATHER_RE = re.compile(
     r"half[- ]staff|\bflags?\b[^.;]{0,60}\b(?:flown|lowered|fly)\b|\bpardon|\bburn(?:ing)? bans?\b",
     re.I)
+# Clemency orders: Barbour suspended the sentences of inmates who worked on
+# storm cleanup (orders 1048, 1056-1063 and 1068 in 2011-2012). They describe
+# the storm in their first clause but declare nothing. Storm orders can
+# mention inmate labor too, so both halves must appear.
+INMATES_RE = re.compile(r"\binmates?\b|\boffenders?\b", re.I)
+CLEMENCY_RE = re.compile(r"\bsentences?\b|\bclemency\b|\bcommut(?:e|ed|ation)\b|\bsuspen(?:d|ded|sion)\b|"
+                         r"\breleased?\b|\bparole\b", re.I)
 MODIFIES_RE = re.compile(
     r"\bhereby\s+(?:rescind|rescinds|terminate|terminates|extend|extends|amend|amends)\b|"
     r"\b(?:rescinding|terminating|extending|amending)\s+executive order\b", re.I)
@@ -164,7 +175,9 @@ def ocr_text(content: bytes, deadline: float) -> str:
 
 def summarize(text: str) -> str:
     """The order's first WHEREAS clause, which says what the order is about."""
-    match = re.search(r"\bWHEREAS\b[,:]?\s*(.+?)(?:;|\bWHEREAS\b|\bNOW,? THEREFORE\b)", text, re.I | re.S)
+    # OCR reads WHEREAS as "WI:IEREAS", "WHERBAS" and the like.
+    whereas = r"\bW\S{0,3}E\S{0,2}AS\b"
+    match = re.search(whereas + r"[,:.]?\s*(.+?)(?:;|" + whereas + r"|\bNOW,? THEREFORE\b)", text, re.I | re.S)
     clause = clean(match.group(1)) if match else clean(text)[:240]
     if len(clause) > 280:
         clause = clause[:280].rsplit(" ", 1)[0] + "..."
@@ -182,8 +195,9 @@ def hazards_named(text: str) -> list[str]:
 
 def classify(text: str) -> tuple[bool, list[str]]:
     hazards = hazards_named(text)
+    clemency = bool(INMATES_RE.search(text) and CLEMENCY_RE.search(text))
     weather = bool(hazards and EMERGENCY_RE.search(text) and not NOT_WEATHER_RE.search(text)
-                   and not MODIFIES_RE.search(text))
+                   and not MODIFIES_RE.search(text) and not clemency)
     return weather, hazards
 
 
@@ -191,7 +205,7 @@ def read_order(row: dict, session, deadline: float) -> dict:
     out = {"order_number": row["order_number"], "governor": governor_for(int(row["order_number"])),
            "date_signed": row["date_signed"], "pdf_url": row["pdf_url"], "text_source": "error",
            "weather_declaration": "false", "hazards": "", "summary": "",
-           "checked_on": date.today().isoformat()}
+           "checked_on": date.today().isoformat(), "classifier": CLASSIFIER_VERSION}
     try:
         response = session.get(row["pdf_url"], headers=HEADERS, timeout=TIMEOUT)
         response.raise_for_status()
@@ -282,7 +296,9 @@ def run(cache_path: Path, join_path: Path, budget: float = BUDGET_SECONDS, sessi
     deadline = time.monotonic() + budget
     for row in listing:
         done = cache.get(row["order_number"])
-        if done and done.get("text_source") in ("text", "ocr"):
+        if done and done.get("text_source") in ("text", "ocr") and not (
+                done.get("weather_declaration") == "true"
+                and done.get("classifier") != CLASSIFIER_VERSION):
             continue
         if time.monotonic() > deadline:
             stats["left"] += 1

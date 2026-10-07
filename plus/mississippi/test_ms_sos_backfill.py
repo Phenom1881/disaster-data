@@ -33,6 +33,10 @@ FLAGS = ("WHEREAS, the victims of the tornado that struck Yazoo County will be r
 EXTEND = ("WHEREAS, Executive Order 1300 declared a state of emergency for Hurricane Isaac; NOW, THEREFORE, "
           "I do hereby extend the state of emergency.")
 APPOINT = "WHEREAS, the Board of Health requires a new member; NOW, THEREFORE, I appoint the following."
+CLEMENCY = ("WHEREAS, in April, 2011, areas of the State of Mississippi were affected by a severe weather system "
+            "which included severe thunderstorms and tornadoes; WHEREAS, the inmates listed below satisfactorily "
+            "performed services for the citizens of Mississippi during the disaster; NOW, THEREFORE, the "
+            "sentences of the inmates are suspended.")
 
 
 def make_pdf(text: str) -> bytes:
@@ -92,11 +96,19 @@ class ClassifyTests(unittest.TestCase):
         self.assertIn("tropical storm", hazards)
 
     def test_flags_extension_and_appointment_are_not(self):
-        for text in (FLAGS, EXTEND, APPOINT):
+        for text in (FLAGS, EXTEND, APPOINT, CLEMENCY):
             self.assertFalse(sos.classify(text)[0], text[:40])
+
+    def test_storm_order_using_inmate_labor_is_still_weather(self):
+        text = BONNIE + " State agencies, including inmate work crews, shall assist with debris removal."
+        self.assertTrue(sos.classify(text)[0])
 
     def test_summary_is_first_whereas_clause(self):
         self.assertTrue(sos.summarize(BONNIE).startswith("Tropical Storm Bonnie is forecast"))
+
+    def test_summary_survives_ocr_spellings_of_whereas(self):
+        text = "STATE OF MISSISSIPPI EXECUTIVE ORDER NO. 1040 WI:IEREAS, the State is expecting a storm; NOW"
+        self.assertEqual(sos.summarize(text), "the State is expecting a storm")
 
 
 class RunTests(unittest.TestCase):
@@ -124,6 +136,23 @@ class RunTests(unittest.TestCase):
             again = FakeSession(pdfs)
             stats = sos.run(root / "cache.csv", join, session=again, listing_html=LISTING)
             self.assertEqual((stats["read"], again.calls), (0, []))
+
+    def test_weather_rows_from_an_older_classifier_are_read_again(self):
+        url = "https://www.sos.ms.gov/sites/default/files/executive-orders/bryant.ex.order.1291.pdf"
+        old = {"order_number": "1291", "governor": "Phil Bryant", "date_signed": "2012-04-30", "pdf_url": url,
+               "text_source": "ocr", "weather_declaration": "true", "hazards": "tornadoes", "summary": "s",
+               "checked_on": "2026-10-06", "classifier": ""}
+        listing = '<table><tr><td>1291</td><td><a href="%s">PDF</a></td><td></td><td>04/30/2012</td></tr></table>' % url
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sos.write_csv(root / "cache.csv", sos.CACHE_FIELDS, [old])
+            sos.write_csv(root / "j.csv", sos.JOIN_FIELDS, [])
+            session = FakeSession({url: make_pdf(CLEMENCY * 2)})
+            stats = sos.run(root / "cache.csv", root / "j.csv", session=session, listing_html=listing)
+            self.assertEqual((stats["read"], stats["weather"], stats["added"]), (1, 0, 0))
+            again = FakeSession({})
+            self.assertEqual(sos.run(root / "cache.csv", root / "j.csv", session=again,
+                                     listing_html=listing)["read"], 0)
 
     def test_hand_saved_rows_are_left_alone(self):
         cache = [{"order_number": "1036", "governor": "Haley Barbour", "date_signed": "2010-04-24",
