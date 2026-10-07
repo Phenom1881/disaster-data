@@ -2,9 +2,9 @@
   "abbreviation": "OR",
   "action_file": "declarations_for_join.csv",
   "adapter_status": "implemented",
-  "collection_error": "Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)",
-  "collection_failed": true,
-  "coverage": "2003-present structured Governor archive; 2000-2002 unavailable in live source; Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)",
+  "collection_error": "",
+  "collection_failed": false,
+  "coverage": "2003-present structured Governor archive; 2000-2002 unavailable in live source",
   "coverage_base": "2003-present structured Governor archive; 2000-2002 unavailable in live source",
   "generated_on": "2026-10-07",
   "kept_saved_records": 0,
@@ -16,17 +16,15 @@
     "storm_match_rows": 702
   },
   "name": "Oregon",
-  "retried": true,
-  "retry_error": "Collection failed: Oregon adapter: scrape failed (requests.exceptions.HTTPError: 503 Server Error: Service Unavailable for url: https://www.oregon.gov/gov/_api/web/lists/GetByTitle(%27Executive%20Orders%27)/items?%24top=5000&%24expand=File&%24select=)",
-  "retry_status": "failed",
+  "retried": false,
   "slug": "oregon",
   "source_records_returned": 252,
   "source_records_saved_before": 252,
-  "source_status": "failed",
+  "source_status": "ok",
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 0.6,
-    "storm_join_seconds": 0.9
+    "collect_seconds": 1.0,
+    "storm_join_seconds": 1.3
   }
 }
