@@ -159,6 +159,99 @@ class TestSavedRowsKept(unittest.TestCase):
         self.assertEqual(rows[0]["archive_record_url"], "https://governor.ohio.gov/x")
 
 
+class TestCollectionHealth(unittest.TestCase):
+    """The feed lists only recent bulletins, so most weeks it has no new
+    proclamation. That used to empty the join file, and the health report
+    showed Ohio's source as empty for weeks at a time; a feed that could not
+    be fetched looked the same."""
+
+    SAVED = ("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+             "OH-PROC-2012-06-30,John Kasich,,Statewide state of emergency after the derecho,2012-06-30,https://woub.org/x\n"
+             "OH-PROC-2026-09-22,Mike DeWine,,21 counties after significant flooding,2026-09-22,https://governor.ohio.gov/x\n")
+
+    def run_outputs(self, actions):
+        import csv, tempfile
+        from pathlib import Path
+        from oh_eo_scraper import write_outputs
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            join = tmp / "j.csv"
+            join.write_text(self.SAVED, encoding="utf-8")
+            added = write_outputs(actions, tmp / "a.csv", tmp / "r.csv", join)
+            with join.open(encoding="utf-8") as f:
+                return added, list(csv.DictReader(f))
+
+    def test_quiet_week_keeps_every_saved_record(self):
+        from oh_eo_scraper import BulletinAction
+        news = BulletinAction("Governor DeWine Announces New Workforce Grants",
+                              "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/n", "2026-10-06")
+        added, rows = self.run_outputs([news])
+        self.assertEqual(added, 0)
+        self.assertEqual([r["declaration_id"] for r in rows], ["OH-PROC-2012-06-30", "OH-PROC-2026-09-22"])
+
+    def test_new_proclamation_is_added_beside_the_saved_ones(self):
+        from oh_eo_scraper import BulletinAction
+        a = BulletinAction("Governor DeWine Declares State of Emergency in Allen County Following Tornado",
+                           "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins/t", "2026-10-06",
+                           hazard_guess="severe_storm", is_original_weather_declaration=True)
+        added, rows = self.run_outputs([a])
+        self.assertEqual(added, 1)
+        self.assertEqual(len(rows), 3)
+        self.assertEqual((rows[-1]["declaration_id"], rows[-1]["governor"]), ("OH-PROC-2026-10-06", "Mike DeWine"))
+
+    def test_unreachable_feed_raises(self):
+        import requests
+        from oh_eo_scraper import FeedUnavailable, scrape
+
+        class Broken:
+            calls = 0
+
+            def get(self, *_, **__):
+                Broken.calls += 1
+                raise requests.ConnectionError("refused")
+
+        with self.assertRaises(FeedUnavailable):
+            scrape(Broken())
+        self.assertEqual(Broken.calls, 2)
+
+    def test_headline_without_a_hazard_is_classified_from_the_bulletin(self):
+        from oh_eo_scraper import scrape
+
+        class Response:
+            def __init__(self, body, status=200):
+                self.content, self.text, self.status_code = body.encode(), body, status
+                self.headers = {}
+
+            def raise_for_status(self):
+                pass
+
+        feed = ("<rss><channel><item><title>Governor DeWine Signs Proclamation Declaring State of Emergency in "
+                "Perry, Muskingum Counties</title><link>https://content.govdelivery.com/accounts/OHIOGOVERNOR/"
+                "bulletins/p</link><pubDate>Tue, 11 Aug 2026 16:00:00 -0400</pubDate></item></channel></rss>")
+        page = "<html><body>The proclamation was issued due to severe flooding.</body></html>"
+
+        class Session:
+            def get(self, url, **_):
+                return Response(feed if url.endswith(".rss") else page)
+
+        [action] = scrape(Session())
+        self.assertEqual(action.hazard_guess, "flood")
+        self.assertTrue(action.is_original_weather_declaration)
+
+    def test_governor_by_date(self):
+        from oh_eo_scraper import governor_for
+        self.assertEqual(governor_for("2004-12-28"), "Bob Taft")
+        self.assertEqual(governor_for("2008-09-15"), "Ted Strickland")
+        self.assertEqual(governor_for("2018-02-24"), "John Kasich")
+        self.assertEqual(governor_for("2019-01-14"), "Mike DeWine")
+
+    def test_tour_headline_that_declares_is_a_declaration(self):
+        from oh_eo_scraper import is_original_declaration
+        self.assertTrue(is_original_declaration(
+            "Governor DeWine Tours Mahoning County Storm Damage, Declares State of Emergency"))
+        self.assertFalse(is_original_declaration("Governor DeWine Amends State of Emergency to Add Franklin County"))
+
+
 class TestFeedParsing(unittest.TestCase):
     def test_real_fixture_parses(self):
         root = ET.fromstring(REAL_FEED_FIXTURE)

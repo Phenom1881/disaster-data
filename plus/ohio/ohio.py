@@ -11,8 +11,8 @@ CAPABILITIES = {
     "structured_archive_coverage_start": None, "structured_archive_coverage_end": None,
     "pdf_text_available": False, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss",
-    "current_governor_source_start": "unknown - GovDelivery feed retention window not confirmed", "manual_only": True,
-    "known_gaps": ["No confirmed pre-2020 coverage: the GovDelivery bulletin feed's retention window was not verified in this batch, and Ohio's numbered EO archive (which IS reachable per-order once a slug is known) was not enumerable without a working index, so it could not be used to backfill.", "Because Ohio's declarations are proclamations rather than filed/numbered orders, there is no eo_number to populate in declarations_for_join.csv; that field is intentionally left blank for every OH row.", "This adapter should be treated as manual_only / needs-verification, not on par with the 17 states with a genuine structured archive, until a real static index (or a working session-free path into the WebSphere content API) is found."],
+    "current_governor_source_start": "rolling - the GovDelivery feed lists only the most recent bulletins, so it adds new proclamations as they are announced", "manual_only": True,
+    "known_gaps": ["Proclamations from 2003 to 2026 were added by hand from news coverage and governor press releases (Taft, Strickland, Kasich, DeWine). No complete list of Ohio proclamations is published, so the backfill covers the declarations that were reported, not necessarily all of them.", "The feed adds new proclamations only; saved records are written back on every run, so a week with no proclamation leaves the data as it was. If the feed cannot be fetched the adapter exits with an error, so a blocked source shows as failed in the health report.", "Because Ohio's declarations are proclamations rather than filed/numbered orders, there is no eo_number to populate in declarations_for_join.csv; that field is intentionally left blank for every OH row.", "This adapter should be treated as manual_only / needs-verification, not on par with the 17 states with a genuine structured archive, until a real static index (or a working session-free path into the WebSphere content API) is found."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -24,5 +24,7 @@ def collect(workdir=".", scripts_dir=None):
     # block page). They go to stderr, which used to be printed only when the
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
-    if result.returncode: raise RuntimeError("Ohio adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index"
+    if result.returncode:
+        reason = (result.stderr or "").strip().splitlines()
+        raise RuntimeError("Ohio adapter: " + (reason[-1] if reason else "scrape failed"))
+    return workdir / "declarations_for_join.csv", "manual_only - proclamations from 2003 on added by hand from news coverage; the GovDelivery bulletin feed adds new ones as they are announced"

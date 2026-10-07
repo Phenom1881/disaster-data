@@ -59,7 +59,20 @@ import requests
 from bs4 import BeautifulSoup
 
 STATE = "OH"
-GOVERNOR = "Ohio Governor"
+# Who signed a proclamation, by the date it was signed (inauguration days).
+GOVERNORS = (
+    ("2019-01-14", "Mike DeWine"),
+    ("2011-01-10", "John Kasich"),
+    ("2007-01-08", "Ted Strickland"),
+    ("1999-01-11", "Bob Taft"),
+)
+
+
+def governor_for(date_signed: str) -> str:
+    for start, name in GOVERNORS:
+        if (date_signed or "") >= start:
+            return name
+    return "Ohio Governor"
 
 BULLETIN_FEED = "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss"
 MIN_YEAR = 2000
@@ -95,13 +108,20 @@ WEATHER_KEYWORDS = {
 }
 
 DECLARATION_TITLE_RE = re.compile(
-    r"declares? (?:a )?state of emergency|issues? (?:a )?proclamation.*state of emergency",
+    r"declar(?:es?|ing) (?:a )?state of emergency|(?:issues?|signs?) (?:a )?proclamation.*state of emergency",
     re.IGNORECASE,
 )
+# The governor saying outright that he declares one ("Governor DeWine Tours
+# Mahoning County Storm Damage, Declares State of Emergency") is a
+# declaration even when the headline also mentions a tour or an update.
+DECLARES_RE = re.compile(r"\bdeclares? (?:a )?state of emergency", re.IGNORECASE)
 NON_DECLARATION_RE = re.compile(
-    r"\bupdat(?:e|es|ed|ing)\b|\btours?\b|\bviews?\b|week in review|media advisory",
+    r"\bupdat(?:e|es|ed|ing)\b|\btours?\b|\bviews?\b|\bamend(?:s|ed|ing)?\b|\bextend(?:s|ed|ing)?\b",
     re.IGNORECASE,
 )
+# A resent bulletin ("UPDATED: Governor DeWine Declares ...") repeats one
+# already counted.
+NEVER_DECLARATION_RE = re.compile(r"^\W*updated?\b|week in review|media advisory", re.IGNORECASE)
 # Ohio's 88 counties, to tell two proclamations a day apart from each other.
 OHIO_COUNTIES = set("""adams allen ashland ashtabula athens auglaize belmont brown butler carroll champaign clark
 clermont clinton columbiana coshocton crawford cuyahoga darke defiance delaware erie fairfield fayette franklin fulton
@@ -154,6 +174,10 @@ def classify_title(title: str) -> Optional[str]:
 
 
 def is_original_declaration(title: str) -> bool:
+    if NEVER_DECLARATION_RE.search(title):
+        return False
+    if DECLARES_RE.search(title):
+        return True
     if NON_DECLARATION_RE.search(title):
         return False
     return bool(DECLARATION_TITLE_RE.search(title))
@@ -202,47 +226,80 @@ def fetch_bulletin_feed(session: requests.Session) -> list[BulletinAction]:
     return items
 
 
-def enrich_with_county_list(session: requests.Session, action: BulletinAction) -> str:
-    """Best-effort: pull the county list / event description out of the
-    bulletin body itself, so the join CSV's event_description reflects
-    the declaration's own text rather than just its headline."""
+def bulletin_text(session: requests.Session, url: str) -> str:
+    """The bulletin's own text, or "" when it cannot be read."""
     try:
-        resp = session.get(action.url, headers=HEADERS, timeout=30)
+        resp = session.get(url, headers=HEADERS, timeout=30)
         resp.raise_for_status()
-    except requests.RequestException:
-        return action.title
-    soup = BeautifulSoup(resp.text, "html.parser")
-    text = soup.get_text(" ", strip=True)
-    # Keep this lightweight -- the point is a real event description, not a
-    # full-text scrape; fall back to the title if nothing better is found.
-    m = re.search(r"(declared?|issued?)[^.]{0,400}", text, re.IGNORECASE)
-    return m.group(0).strip() if m else action.title
+    except requests.RequestException as exc:
+        print(f"warning: could not read Ohio bulletin {url}: {exc}", file=sys.stderr)
+        return ""
+    return BeautifulSoup(resp.text, "html.parser").get_text(" ", strip=True)
 
 
-def scrape(session: Optional[requests.Session] = None) -> list[BulletinAction]:
+class FeedUnavailable(RuntimeError):
+    """The bulletin feed could not be fetched or read."""
+
+
+def scrape(session: Optional[requests.Session] = None, attempts: int = 2) -> list[BulletinAction]:
+    """Every bulletin in the feed, classified. Raises FeedUnavailable when the
+    feed cannot be fetched, so a blocked source shows up as a failed run
+    rather than as a quiet week.
+
+    A declaration headline that names no hazard ("Governor DeWine Signs
+    Proclamation Declaring State of Emergency in Perry, Muskingum Counties")
+    is classified from the bulletin's own text."""
     session = session or requests.Session()
-    try:
-        items = fetch_bulletin_feed(session)
-    except (requests.RequestException, ET.ParseError) as exc:
-        print(f"warning: could not fetch Ohio GovDelivery bulletin feed: {exc}", file=sys.stderr)
-        return []
+    last = None
+    for _ in range(attempts):
+        try:
+            items = fetch_bulletin_feed(session)
+            break
+        except (requests.RequestException, ET.ParseError) as exc:
+            last = exc
+    else:
+        raise FeedUnavailable(f"could not fetch Ohio GovDelivery bulletin feed: {last}")
 
     actions = []
     for item in items:
         item.hazard_guess = classify_title(item.title)
-        item.is_original_weather_declaration = bool(item.hazard_guess) and is_original_declaration(item.title)
+        declaration = is_original_declaration(item.title)
+        if declaration and not item.hazard_guess and item.url:
+            item.hazard_guess = classify_title(bulletin_text(session, item.url))
+        item.is_original_weather_declaration = bool(item.hazard_guess) and declaration
         actions.append(item)
     return actions
 
 
-def write_outputs(actions: list[BulletinAction], actions_out: Path, relationships_out: Path, join_out: Path) -> None:
+ACTION_FIELDS = ["title", "pub_date", "hazard_guess", "is_original_weather_declaration", "source_url"]
+JOIN_FIELDS = ["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"]
+
+
+def write_outputs(actions: list[BulletinAction], actions_out: Path, relationships_out: Path, join_out: Path) -> int:
+    """Write the saved records plus whatever the feed adds; return how many
+    join rows are new.
+
+    The feed holds only the most recent few weeks of bulletins, so most runs
+    find no new proclamation. The saved records (including the ones added by
+    hand from news coverage, back to 2003) are written back as they were, so
+    a quiet week leaves the files as they were rather than empty."""
     actions_out.parent.mkdir(parents=True, exist_ok=True)
 
+    weather = [a for a in actions if a.hazard_guess]
+    saved_actions = saved_join_rows(actions_out)
+    seen_urls = {r.get("source_url", "") for r in saved_actions}
+    action_rows = [{k: r.get(k, "") for k in ACTION_FIELDS} for r in saved_actions]
+    for a in weather:
+        if a.url in seen_urls:
+            continue
+        seen_urls.add(a.url)
+        action_rows.append(dict(zip(ACTION_FIELDS, [a.title, a.pub_date, a.hazard_guess or "",
+                                                     a.is_original_weather_declaration, a.url])))
+    action_rows.sort(key=lambda r: (r.get("pub_date", ""), r.get("title", "")))
     with actions_out.open("w", newline="\n", encoding="utf-8") as f:
-        writer = csv.writer(f, lineterminator="\n")
-        writer.writerow(["title", "pub_date", "hazard_guess", "is_original_weather_declaration", "source_url"])
-        for a in actions:
-            writer.writerow([a.title, a.pub_date, a.hazard_guess or "", a.is_original_weather_declaration, a.url])
+        writer = csv.DictWriter(f, fieldnames=ACTION_FIELDS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(action_rows)
 
     # Ohio's proclamations are not numbered/filed the way other states' EOs
     # are, so there is no order-to-order relationship graph to extract from
@@ -257,25 +314,23 @@ def write_outputs(actions: list[BulletinAction], actions_out: Path, relationship
     # a placeholder id, so it stays out of the join (it is still listed in
     # the actions file above).
     originals = [a for a in actions if a.is_original_weather_declaration and a.pub_date]
-    saved = saved_join_rows(join_out)
-    saved_by_id = {r["declaration_id"]: r for r in saved if r.get("declaration_id")}
+    saved = [r for r in saved_join_rows(join_out) if r.get("declaration_id")]
     ids = assign_ids(originals, saved)
-    fields = ["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"]
+    rows = {r["declaration_id"]: {k: r.get(k, "") for k in JOIN_FIELDS} for r in saved}
+    added = 0
+    for a in originals:
+        sid = ids[id(a)]
+        if sid in rows:
+            # A saved record is reviewed text (county list, hazards); a
+            # bulletin headline is not, so the saved row stays as it was.
+            continue
+        rows[sid] = dict(zip(JOIN_FIELDS, [sid, governor_for(a.pub_date), "", a.title, a.pub_date, a.url]))
+        added += 1
     with join_out.open("w", newline="\n", encoding="utf-8") as f:
-        writer = csv.writer(f, lineterminator="\n")
-        writer.writerow(fields)
-        written = set()
-        for a in originals:
-            sid = ids[id(a)]
-            if sid in written:
-                continue
-            written.add(sid)
-            if sid in saved_by_id:
-                # A saved record is reviewed text (county list, hazards); a
-                # bulletin headline is not, so the saved row is written back.
-                writer.writerow([saved_by_id[sid].get(k, "") for k in fields])
-            else:
-                writer.writerow([sid, GOVERNOR, "", a.title, a.pub_date, a.url])
+        writer = csv.DictWriter(f, fieldnames=JOIN_FIELDS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(sorted(rows.values(), key=lambda r: (r["date_signed"], r["declaration_id"])))
+    return added
 
 
 def saved_join_rows(join_out: Path) -> list[dict]:
@@ -342,18 +397,17 @@ def main() -> None:
     parser.add_argument("--join-out", required=True)
     args = parser.parse_args()
 
-    actions = scrape()
-    write_outputs(actions, Path(args.actions_out), Path(args.relationships_out), Path(args.join_out))
+    try:
+        actions = scrape()
+    except FeedUnavailable as exc:
+        # Exit nonzero: the saved records are kept by the build either way,
+        # and the health report then shows the source as failed, not empty.
+        raise SystemExit(str(exc))
+    added = write_outputs(actions, Path(args.actions_out), Path(args.relationships_out), Path(args.join_out))
     n_join = sum(1 for a in actions if a.is_original_weather_declaration)
-    print(f"Ohio: {len(actions)} bulletins scraped, {n_join} routed to join CSV.")
+    print(f"Ohio: {len(actions)} bulletins in the feed, {n_join} weather declarations, {added} new.")
     if not actions:
-        print(
-            "Ohio: zero bulletins retrieved. This likely means the GovDelivery feed "
-            "was unreachable or its retention window doesn't reach far enough back -- "
-            "NOT that Ohio had no weather declarations. Do not treat an empty result "
-            "as 'no declarations exist'.",
-            file=sys.stderr,
-        )
+        print("warning: Ohio bulletin feed was fetched but listed no bulletins.", file=sys.stderr)
 
 
 if __name__ == "__main__":
