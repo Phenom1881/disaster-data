@@ -697,7 +697,20 @@ def weather_clause_from_text(text: str) -> Optional[str]:
     return None
 
 
+# Orders whose own title shows they are not a weather declaration, even when
+# their body text mentions a storm: flag-lowering memorials (EO 260 honors
+# Ida's victims), COVID-19 orders, and Treasury tax directives (EO 116 after
+# Sandy). Checked against the description only, never the document text.
+NOT_WEATHER_TITLE = re.compile(
+    r"half[- ]staff|\bflags?\b[^,;]{0,40}\b(?:fly|flown|lower(?:ed|ing)?)\b|\blowering of\b[^,;]{0,40}\bflags?\b|"
+    r"\bcovid|\bcoronavirus|\bdivision of taxation\b",
+    re.I,
+)
+
+
 def is_weather_related(order: NJOrder) -> bool:
+    if NOT_WEATHER_TITLE.search(order.description or ""):
+        return False
     text = f"{order.description} {order.document_text}"
     return any(pattern.search(text) for pattern in WEATHER_PATTERNS)
 

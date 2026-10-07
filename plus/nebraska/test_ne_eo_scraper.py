@@ -92,5 +92,21 @@ class TestNebraskaScraper(unittest.TestCase):
         self.assertIsNone(undated[0]["date"])
 
 
+
+class TestNotWeatherCandidates(unittest.TestCase):
+    def test_covid_and_plain_fuel_shortages_dropped(self):
+        for title in ("Coronavirus - Emergency Unemployment Insurance Benefit Relief",
+                      "Emergency Relief Due to COVID-19",
+                      "Emergency Relief Due to Fuel Supply Shortages",
+                      "Easing Propane Supply Shortages",
+                      "Supplemental emergency relief: Hurricane impact on fuel supply"):
+            self.assertFalse(scraper.is_weather_candidate(title), title)
+
+    def test_weather_caused_shortage_and_storms_kept(self):
+        for title in ("Emergency Relief for Fuel Supply Shortages Due to Extreme Cold Temperatures",
+                      "Emergency Relief Due to Power Outages Caused by Winter Storm",
+                      "Emergency Relief Due to Weather Events"):
+            self.assertTrue(scraper.is_weather_candidate(title), title)
+
 if __name__ == "__main__":
     unittest.main()
