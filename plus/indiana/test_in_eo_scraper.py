@@ -307,3 +307,33 @@ class DateTests(unittest.TestCase):
             path.write_text("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
                             "IN-EO-26-21,G,26-21,Flood,2026-08-13,u\nIN-EO-26-08,G,26-08,Storm,,u\n")
             self.assertEqual(_ies.load_saved_dates(path), {"26-21": "2026-08-13"})
+
+
+class ListingFormsTests(unittest.TestCase):
+    """2026-10-07: "Executive Order 23- 6" was not read, so seven 2023 orders
+    were missing; Daniels-era links read only "Executive Order 12-01"."""
+
+    def test_spaced_and_numbered_headings(self):
+        html = """<ul>
+        <li>Executive Order 23- 6 <a href="/dA/x/Executive-Order-23-06.pdf">DECLARING DISASTER EMERGENCIES IN DUBOIS,
+        WASHINGTON, AND ORANGE COUNTIES DUE TO SEVERE WEATHER</a></li>
+        <li>Executive Order No. 18-01 <a href="/dA/y/EO_18-01.pdf">DECLARING A DISASTER EMERGENCY DUE TO FLOODING</a></li>
+        </ul>"""
+        actions = {a.eo_number: a for a in in_eo_scraper._parse_listing_page(html, "https://www.in.gov/x/")}
+        self.assertEqual(set(actions), {"23-6", "18-01"})
+        self.assertTrue(in_eo_scraper.is_original_declaration(actions["23-6"].title))
+
+    def test_daniels_title_comes_from_the_file_name(self):
+        html = """<ul><li><a href="files/EO_12-01_Disaster_Declaration_for_Severe_Storms_and_Tornados.pdf">Executive Order 12-01</a></li>
+        <li><a href="files/20120314134421549.pdf">Executive Order 12-03</a></li></ul>"""
+        actions = {a.eo_number: a for a in in_eo_scraper._parse_listing_page(html, "https://www.in.gov/governorhistory/mitchdaniels/2419.htm")}
+        self.assertEqual(actions["12-01"].title, "Disaster Declaration for Severe Storms and Tornados")
+        self.assertEqual(in_eo_scraper.classify_title(actions["12-01"].title), "severe_storm")
+        self.assertEqual(actions["12-03"].title, "Executive Order 12-03")      # nothing better to read
+
+    def test_governor_by_date(self):
+        self.assertEqual(in_eo_scraper.governor_for("2012-03-03"), "Mitch Daniels")
+        self.assertEqual(in_eo_scraper.governor_for("", 2013), "Mike Pence")
+        self.assertEqual(in_eo_scraper.governor_for("2023-04-05"), "Eric J. Holcomb")
+        self.assertEqual(in_eo_scraper.governor_for("2025-06-01"), "Mike Braun")
+

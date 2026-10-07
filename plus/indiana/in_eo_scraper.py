@@ -67,7 +67,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
-from urllib.parse import urljoin
+from urllib.parse import unquote, urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -94,6 +94,32 @@ DATE_PROBLEMS: Counter = Counter()
 
 STATE = "IN"
 GOVERNOR = "Indiana Governor"
+# Inauguration days. An order is credited by its signing date, or, when that
+# is unknown, by the last day of the year in its number.
+GOVERNORS = (
+    ("2025-01-13", "Mike Braun"),
+    ("2017-01-09", "Eric J. Holcomb"),
+    ("2013-01-14", "Mike Pence"),
+    ("2005-01-10", "Mitch Daniels"),
+    ("1997-01-13", "Frank O'Bannon"),
+)
+
+
+# Signing dates confirmed from dated coverage, used only when the order's own
+# PDF yields no date. A date read from the order wins.
+CONFIRMED_DATES = {
+    # Flooding, 11 counties. 95.3 MNC, Feb 24 2018: "Gov. Holcomb declares
+    # disaster emergency for 11 counties"; the PDF is named "..._2-24-18.pdf".
+    "18-01": "2018-02-24",
+}
+
+
+def governor_for(date_signed: str, year: Optional[int] = None) -> str:
+    marker = date_signed or (f"{year:04d}-12-31" if year else "")
+    for start, name in GOVERNORS:
+        if marker >= start:
+            return name
+    return GOVERNOR
 
 BASE = "https://www.in.gov"
 
@@ -165,7 +191,27 @@ NON_ORIGINAL_PATTERNS = [
 ]
 NON_ORIGINAL_RE = re.compile("|".join(NON_ORIGINAL_PATTERNS), re.IGNORECASE)
 
-EO_HEADING_RE = re.compile(r"Executive Order\s+([0-9]{2,4}-[0-9]{1,3})", re.IGNORECASE)
+# "Executive Order 23-6", and the forms the listing pages also use:
+# "Executive Order 23- 6" (every 2023 order but 23-1 was written that way and
+# none of them was read, found 2026-10-07), "Executive Order No. 18-01".
+EO_HEADING_RE = re.compile(r"Executive Order\s+(?:No\.?\s*)?([0-9]{2,4})\s*[-\u2013]\s*([0-9]{1,3})\b", re.IGNORECASE)
+
+
+def heading_number(text: str) -> Optional[str]:
+    m = EO_HEADING_RE.search(text or "")
+    return f"{m.group(1)}-{m.group(2)}" if m else None
+
+
+def title_from_file(url: str) -> str:
+    """A Daniels-era link reads only "Executive Order 12-01"; its file is
+    named for the order ("EO_12-01_Disaster_Declaration_for_Severe_Storms_
+    and_Tornados.pdf"), so the title comes from there."""
+    name = unquote(url.rsplit("/", 1)[-1].split("?", 1)[0])
+    name = re.sub(r"\.pdf$", "", name, flags=re.I)
+    name = re.sub(r"^(?:EO|Executive[-_ ]Order)[-_ ]*[0-9]{2,4}[-_][0-9]{1,3}[-_ ]*", "", name, flags=re.I)
+    if not re.search(r"[A-Za-z]{3}", name) or re.fullmatch(r"[0-9_ -]+", name):
+        return ""
+    return re.sub(r"\s+", " ", name.replace("_", " ")).strip()
 
 # Every shape of an ORIGINAL disaster declaration title seen on Indiana's own
 # pages. The earlier fixed-phrase check only knew "declaring a disaster
@@ -245,10 +291,9 @@ def _parse_listing_page(html: str, page_url: str) -> list[Action]:
     actions: list[Action] = []
     for li in soup.find_all("li"):
         text = li.get_text(" ", strip=True)
-        m = EO_HEADING_RE.search(text)
-        if not m:
+        eo_number = heading_number(text)
+        if not eo_number:
             continue
-        eo_number = m.group(1)
         link = li.find("a", href=True)
         if not link:
             continue
@@ -256,6 +301,11 @@ def _parse_listing_page(html: str, page_url: str) -> list[Action]:
         if not title or "REPORTS" in title.upper() and len(title) < 12:
             continue
         pdf_url = urljoin(page_url, link["href"])
+        if heading_number(title) and len(EO_HEADING_RE.sub("", title).strip(" :-")) < 4:
+            # The link is only the heading; the title is the rest of the
+            # item's text, or else the file's name.
+            rest = re.sub(r"\s+", " ", EO_HEADING_RE.sub("", text)).strip(" :-")
+            title = rest if len(rest) >= 8 else (title_from_file(pdf_url) or title)
         year = _year_from_eo_number(eo_number)
         if year is None:
             continue
@@ -602,6 +652,9 @@ def scrape(session: Optional[requests.Session] = None, saved_dates: Optional[dic
                     DATE_PROBLEMS["kept from earlier runs"] += 1
                 else:
                     action.date_signed, action.date_via_ocr = fetch_signed_date(session, action.pdf_url, year)
+                    if not action.date_signed and action.eo_number in CONFIRMED_DATES:
+                        action.date_signed = CONFIRMED_DATES[action.eo_number]
+                        DATE_PROBLEMS["from the confirmed-date list"] += 1
             all_actions.append(action)
 
     # De-duplicate by EO number (the current-governor page and historical
@@ -656,7 +709,7 @@ def write_outputs(actions: list[Action], actions_out: Path, relationships_out: P
             writer.writerow(
                 [
                     declaration_id,
-                    GOVERNOR,
+                    governor_for(a.date_signed, a.year),
                     a.eo_number,
                     a.title,
                     a.date_signed,
