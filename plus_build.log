@@ -981,11 +981,11 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 11 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 75 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 71 relationship(s), 4 original weather declaration(s).
 
 MA: declarations_for_join.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 13 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 97 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 101 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 436 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1308,24 +1308,25 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 13 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 5 saved records kept that this refresh's check of the state source did not return
-New Hampshire: 0 actions, 0 relationships, 0 weather declarations
-
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
+could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)
 
-NH: declarations_for_join.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 340 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 304 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WARNING NH: Collection failed: New Hampshire adapter: could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
 NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
 NH-FMCSA-D74D3C13CBE5: no matching storm events found in the date window.
-Wrote 126 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
-Wrote severity summary (107 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
+Wrote 173 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
+Wrote severity summary (139 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  NH-PROC-2005-10-09 CHESHIRE [county/county-equivalent]: deaths=2, injuries=0, damage=$10,000,000 (Flash Flood)
+  NH-PROC-2005-10-09 SULLIVAN [NWS forecast zone]: deaths=2, injuries=0, damage=$3,250,000 (Flood)
+  NH-PROC-2012-10-29 GRAFTON [county/county-equivalent]: deaths=1, injuries=0, damage=$9,000 (Debris Flow, Flood, Heavy Rain, Thunderstorm Wind)
   NH-2003-09 HILLSBOROUGH [county/county-equivalent]: deaths=0, injuries=9, damage=$0 (Lightning)
   NH-2003-09 BELKNAP [county/county-equivalent]: deaths=0, injuries=4, damage=$0 (Lightning)
   NH-2003-09 CHESHIRE [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Flash Flood)
+  NH-PROC-2012-10-29 MERRIMACK [NWS forecast zone]: deaths=0, injuries=1, damage=$106,000 (High Wind)
   NH-2008-12 EASTERN HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (Ice Storm)
   NH-2008-12 WESTERN AND CENTRAL HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$12,000,000 (Ice Storm)
   NH-2008-12 CHESHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$9,000,000 (Ice Storm)
@@ -1333,21 +1334,22 @@ Areas with reported deaths, injuries, or damage:
   NH-2013-08 SULLIVAN [county/county-equivalent]: deaths=0, injuries=0, damage=$2,575,000 (Flash Flood, Thunderstorm Wind)
   NH-2008-12 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$1,620,000 (Ice Storm)
   NH-2008-12 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,580,000 (Ice Storm)
+  NH-PROC-2005-10-09 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,010,000 (Flood)
+  NH-PROC-2005-10-09 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Flood)
   NH-2008-12 SULLIVAN [NWS forecast zone]: deaths=0, injuries=0, damage=$786,000 (Ice Storm)
+  NH-PROC-2012-10-29 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$387,000 (High Wind)
   NH-2008-12 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$359,000 (Ice Storm)
   NH-2008-12 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$326,000 (Ice Storm)
   NH-2008-12 SOUTHERN GRAFTON [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Ice Storm)
+  NH-PROC-2012-10-29 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Coastal Flood, High Wind)
+  NH-PROC-2005-10-09 STRAFFORD [NWS forecast zone]: deaths=0, injuries=0, damage=$200,000 (Flood)
+  NH-PROC-2012-10-29 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$184,000 (High Wind)
   NH-2008-12 SOUTHERN CARROLL [NWS forecast zone]: deaths=0, injuries=0, damage=$166,000 (Ice Storm)
-  NH-2008-12 SOUTHERN COOS [NWS forecast zone]: deaths=0, injuries=0, damage=$110,000 (Winter Storm)
-  NH-2008-12 NORTHERN COOS [NWS forecast zone]: deaths=0, injuries=0, damage=$55,000 (Winter Storm)
-  NH-2013-08 CHESHIRE [county/county-equivalent]: deaths=0, injuries=0, damage=$50,000 (Flash Flood)
-  NH-2013-08 ROCKINGHAM [county/county-equivalent]: deaths=0, injuries=0, damage=$25,000 (Flash Flood)
-  NH-2013-08 MERRIMACK [county/county-equivalent]: deaths=0, injuries=0, damage=$15,000 (Flash Flood)
-  NH-2008-12 STRAFFORD [NWS forecast zone]: deaths=0, injuries=0, damage=$1,460 (Ice Storm)
+  Showing the 25 highest-consequence areas; all 51 are retained in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 12 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 6 saved records kept that this refresh's check of the state source did not return
+NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
@@ -1381,31 +1383,28 @@ New Jersey scraper: discovering administration pages...
   parsing Hughes [045hughes] (https://www.nj.gov/infobank/eo/045hughes/index.shtml)
     5 order(s) found
 New Jersey scraper: fetching document text for classification (this is the slow step)...
-  Recovered 178 blank archive-table description(s) from each order's own document text.
-  Described 39 untitled weather order(s) with the weather clause from their own text.
+  Recovered 177 blank archive-table description(s) from each order's own document text.
+  Described 26 untitled weather order(s) with the weather clause from their own text.
 New Jersey scraper: extracting order relationships...
-  147 relationship(s) extracted (after global dedup)
+  145 relationship(s) extracted (after global dedup)
 
-Done. 1257 total order(s), 176 weather-related, 145 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
+Done. 1257 total order(s), 140 weather-related, 112 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
 
 New Jersey adapter: coverage = 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+NJ: declarations_for_join.csv: kept 33 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NJ: nj_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
+NJ: nj_order_relationships.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 NJ: nj_emergency_actions_all.csv: left off 5 declaration(s) signed before 1970
 Applied 81 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-jersey/hazard_overrides.csv
 NJ-SHERRILL-EO-26: no matching storm events found in the date window.
 NJ-SHERRILL-EO-25: no matching storm events found in the date window.
 NJ-MURPHY-EO-415: no matching storm events found in the date window.
-NJ-MURPHY-EO-407: searching around the reviewed event date 2025-12-01 (signed 2025-12-09)
 NJ-MURPHY-EO-397: searching around the reviewed event date 2025-08-21 (signed 2025-08-27)
 NJ-MURPHY-EO-395: searching around the reviewed event date 2025-07-14 (signed 2025-08-08)
 NJ-MURPHY-EO-388: searching around the reviewed event date 2025-04-23 (signed 2025-05-13)
-NJ-MURPHY-EO-380: searching around the reviewed event date 2025-01-18 (signed 2025-01-27)
 NJ-MURPHY-EO-18: no matching storm events found in the date window.
 NJ-MURPHY-EO-15: searching around the reviewed event date 2018-03-04 (signed 2018-03-13)
 NJ-CHRISTIE-EO-23: no matching storm events found in the date window.
-NJ-CHRISTIE-EO-109: searching around the reviewed event date 2012-10-29 (signed 2012-11-03)
-NJ-CHRISTIE-EO-110: no matching storm events found in the date window.
-NJ-CHRISTIE-EO-113: searching around the reviewed event date 2012-10-29 (signed 2012-11-16)
-NJ-CHRISTIE-EO-117: searching around the reviewed event date 2012-10-29 (signed 2012-11-03)
 NJ-CHRISTIE-EO-186: no matching storm events found in the date window.
 NJ-CHRISTIE-EO-214: no matching storm events found in the date window.
 NJ-WHITMAN-EO-4: no matching storm events found in the date window.
@@ -1417,8 +1416,14 @@ NJ-FLORIO-EO-37: no matching storm events found in the date window.
 NJ-FLORIO-EO-46: no matching storm events found in the date window.
 NJ-FLORIO-EO-50: no matching storm events found in the date window.
 NJ-FLORIO-EO-74: no matching storm events found in the date window.
+NJ-MURPHY-EO-407: searching around the reviewed event date 2025-12-01 (signed 2025-12-09)
+NJ-MURPHY-EO-380: searching around the reviewed event date 2025-01-18 (signed 2025-01-27)
+NJ-CHRISTIE-EO-109: searching around the reviewed event date 2012-10-29 (signed 2012-11-03)
+NJ-CHRISTIE-EO-110: no matching storm events found in the date window.
+NJ-CHRISTIE-EO-113: searching around the reviewed event date 2012-10-29 (signed 2012-11-16)
+NJ-CHRISTIE-EO-117: searching around the reviewed event date 2012-10-29 (signed 2012-11-03)
 
-25 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NJ-MURPHY-EO-317, NJ-MURPHY-EO-316, NJ-MURPHY-EO-315, NJ-MURPHY-EO-274, NJ-MURPHY-EO-264, NJ-MURPHY-EO-251, NJ-MURPHY-EO-175, NJ-MURPHY-EO-100, NJ-MURPHY-EO-89, NJ-MURPHY-EO-10, NJ-MURPHY-EO-7, NJ-CHRISTIE-EO-101, NJ-CHRISTIE-EO-125, NJ-CHRISTIE-EO-126, NJ-CHRISTIE-EO-200, NJ-CHRISTIE-EO-222, NJ-CHRISTIE-EO-233, NJ-CHRISTIE-EO-238, NJ-CORZINE-EO-111, NJ-MCGREEVEY-EO-97, NJ-FLORIO-EO-33, NJ-FLORIO-EO-66, NJ-FLORIO-EO-91, NJ-FLORIO-EO-115, NJ-KEAN-EO-219
+25 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NJ-MURPHY-EO-316, NJ-MURPHY-EO-315, NJ-MURPHY-EO-274, NJ-MURPHY-EO-264, NJ-MURPHY-EO-251, NJ-MURPHY-EO-175, NJ-MURPHY-EO-100, NJ-MURPHY-EO-89, NJ-MURPHY-EO-10, NJ-MURPHY-EO-7, NJ-CHRISTIE-EO-222, NJ-CHRISTIE-EO-233, NJ-CHRISTIE-EO-238, NJ-CORZINE-EO-111, NJ-MCGREEVEY-EO-97, NJ-FLORIO-EO-33, NJ-FLORIO-EO-66, NJ-FLORIO-EO-91, NJ-FLORIO-EO-115, NJ-KEAN-EO-219, NJ-MURPHY-EO-317, NJ-CHRISTIE-EO-101, NJ-CHRISTIE-EO-125, NJ-CHRISTIE-EO-126, NJ-CHRISTIE-EO-200
 Wrote 2747 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_matches.csv.tmp
 Wrote severity summary (1822 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp
 
@@ -1452,7 +1457,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
-NJ: 145 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+NJ: 145 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected; 33 saved records kept that this refresh's check of the state source did not return
 New Mexico: 1215 actions scraped, 1183 read via OCR (1215 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
@@ -1702,49 +1707,54 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp.
 
 ND: 34 actions, 76 federal declarations; 2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending
-Ohio: 0 bulletins scraped, 0 routed to join CSV.
-
 warning: Ohio bulletin feed answered 406; retrying with Accept: */*
-warning: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
-Ohio: zero bulletins retrieved. This likely means the GovDelivery feed was unreachable or its retention window doesn't reach far enough back -- NOT that Ohio had no weather declarations. Do not treat an empty result as 'no declarations exist'.
+warning: Ohio bulletin feed answered 406; retrying with Accept: */*
+could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
 
-OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-OH-PROC-2019-001: no matching storm events found in the date window.
-OH-PROC-2024-003: no matching storm events found in the date window.
+WARNING OH: Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
+Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/ohio/hazard_overrides.csv
+OH-PROC-2004-12-28: searching around the reviewed event date 2004-12-23 (signed 2004-12-28)
+OH-PROC-2008-09-15: searching around the reviewed event date 2008-09-14 (signed 2008-09-15)
+OH-PROC-2019-03-11: searching around the reviewed event date 2019-02-09 (signed 2019-03-11)
+OH-PROC-2019-001: searching around the reviewed event date 2019-02-09 (signed 2019-03-20)
+OH-PROC-2024-003: searching around the reviewed event date 2024-09-27 (signed 2024-10-02)
 OH-PROC-2026-07-07: no matching storm events found in the date window.
+OH-PROC-2026-08-11: no matching storm events found in the date window.
 OH-PROC-2026-09-22: no matching storm events found in the date window.
-Wrote 137 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_matches.csv.tmp
-Wrote severity summary (92 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_severity_summary.csv.tmp
+Wrote 1296 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_matches.csv.tmp
+Wrote severity summary (603 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   OH-PROC-2024-001 LOGAN [county/county-equivalent]: deaths=3, injuries=25, damage=$5,000,000 (Hail, Tornado)
+  OH-PROC-2012-03-03 CLERMONT [county/county-equivalent]: deaths=3, injuries=13, damage=$5,660,000 (Hail, Tornado)
+  OH-PROC-2012-06-30 LICKING [NWS forecast zone]: deaths=3, injuries=0, damage=$0 (Heat)
+  OH-PROC-2012-06-30 MUSKINGUM [county/county-equivalent]: deaths=2, injuries=1, damage=$140,000 (Lightning, Thunderstorm Wind)
+  OH-PROC-2008-09-15 PREBLE [NWS forecast zone]: deaths=2, injuries=0, damage=$5,000,000 (High Wind)
+  OH-PROC-2019-05-28 MERCER [county/county-equivalent]: deaths=1, injuries=8, damage=$15,000,000 (Tornado)
+  OH-PROC-2012-03-03 ADAMS [county/county-equivalent]: deaths=1, injuries=2, damage=$2,280,000 (Thunderstorm Wind, Tornado)
+  OH-PROC-2008-09-15 LORAIN [NWS forecast zone]: deaths=1, injuries=1, damage=$15,500,000 (High Wind)
+  OH-PROC-2019-07-22 WYANDOT [county/county-equivalent]: deaths=1, injuries=1, damage=$150,000 (Flash Flood)
+  OH-PROC-2008-09-15 HAMILTON [NWS forecast zone]: deaths=1, injuries=0, damage=$96,600,000 (High Wind)
+  OH-PROC-2008-09-15 FAIRFIELD [NWS forecast zone]: deaths=1, injuries=0, damage=$16,500,000 (High Wind)
+  OH-PROC-2008-09-15 MAHONING [NWS forecast zone]: deaths=1, injuries=0, damage=$3,000,000 (High Wind)
+  OH-PROC-2019-03-11 MEIGS [county/county-equivalent]: deaths=1, injuries=0, damage=$17,000 (Flood)
+  OH-PROC-2019-001 MEIGS [county/county-equivalent]: deaths=1, injuries=0, damage=$17,000 (Flood)
+  OH-PROC-2019-03-11 PIKE [county/county-equivalent]: deaths=1, injuries=0, damage=$5,000 (Flood)
+  OH-PROC-2019-001 PIKE [county/county-equivalent]: deaths=1, injuries=0, damage=$5,000 (Flood)
+  OH-PROC-2019-05-28 MONTGOMERY [county/county-equivalent]: deaths=0, injuries=166, damage=$501,550,000 (Hail, Tornado)
+  OH-PROC-2008-09-15 CUYAHOGA [NWS forecast zone]: deaths=0, injuries=2, damage=$25,000,000 (High Wind)
+  OH-PROC-2008-09-15 PORTAGE [NWS forecast zone]: deaths=0, injuries=2, damage=$5,000,000 (High Wind)
+  OH-PROC-2008-09-15 WAYNE [NWS forecast zone]: deaths=0, injuries=2, damage=$4,750,000 (High Wind)
   OH-PROC-2024-001 AUGLAIZE [county/county-equivalent]: deaths=0, injuries=2, damage=$1,250,000 (Tornado)
   OH-PROC-2024-001 DARKE [county/county-equivalent]: deaths=0, injuries=2, damage=$500,000 (Tornado)
-  OH-PROC-2024-002 SUMMIT [county/county-equivalent]: deaths=0, injuries=0, damage=$2,180,000 (Flash Flood)
-  OH-PROC-2024-001 DELAWARE [county/county-equivalent]: deaths=0, injuries=0, damage=$1,050,000 (Hail, Tornado)
-  OH-PROC-2024-002 WAYNE [county/county-equivalent]: deaths=0, injuries=0, damage=$860,000 (Flash Flood)
-  OH-PROC-2024-001 MERCER [county/county-equivalent]: deaths=0, injuries=0, damage=$751,000 (Hail, Tornado)
-  OH-PROC-2024-001 MIAMI [county/county-equivalent]: deaths=0, injuries=0, damage=$750,000 (Tornado)
-  OH-PROC-2024-001 LICKING [county/county-equivalent]: deaths=0, injuries=0, damage=$500,000 (Hail, Tornado)
-  OH-PROC-2024-001 UNION [county/county-equivalent]: deaths=0, injuries=0, damage=$500,000 (Hail, Tornado)
-  OH-PROC-2024-001 CRAWFORD [county/county-equivalent]: deaths=0, injuries=0, damage=$300,000 (Tornado)
-  OH-PROC-2024-001 RICHLAND [county/county-equivalent]: deaths=0, injuries=0, damage=$150,000 (Tornado)
-  OH-PROC-2024-001 HANCOCK [county/county-equivalent]: deaths=0, injuries=0, damage=$75,000 (Hail, Tornado)
-  OH-PROC-2024-001 PUTNAM [county/county-equivalent]: deaths=0, injuries=0, damage=$16,000 (Hail, Thunderstorm Wind)
-  OH-PROC-2024-001 BROWN [county/county-equivalent]: deaths=0, injuries=0, damage=$8,000 (Hail, Thunderstorm Wind)
-  OH-PROC-2024-001 VAN WERT [county/county-equivalent]: deaths=0, injuries=0, damage=$8,000 (Thunderstorm Wind)
-  OH-PROC-2024-001 HURON [county/county-equivalent]: deaths=0, injuries=0, damage=$6,000 (Flash Flood, Hail, Thunderstorm Wind)
-  OH-PROC-2024-001 WARREN [county/county-equivalent]: deaths=0, injuries=0, damage=$6,000 (Thunderstorm Wind)
-  OH-PROC-2024-001 FRANKLIN [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Thunderstorm Wind)
-  OH-PROC-2024-001 MORGAN [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Thunderstorm Wind)
-  OH-PROC-2024-001 CLERMONT [county/county-equivalent]: deaths=0, injuries=0, damage=$3,000 (Thunderstorm Wind)
-  OH-PROC-2024-001 PERRY [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000 (Thunderstorm Wind)
-  OH-PROC-2024-001 WYANDOT [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000 (Thunderstorm Wind)
+  OH-PROC-2012-06-30 AUGLAIZE [county/county-equivalent]: deaths=0, injuries=2, damage=$76,000 (Hail, Thunderstorm Wind)
+  OH-PROC-2012-06-30 MERCER [county/county-equivalent]: deaths=0, injuries=2, damage=$45,000 (Hail, Thunderstorm Wind)
+  OH-PROC-2008-09-15 WARREN [NWS forecast zone]: deaths=0, injuries=1, damage=$23,700,000 (High Wind)
+  Showing the 25 highest-consequence areas; all 356 are retained in /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/ohio/eo_storm_severity_summary.csv.tmp.
 
-OH: 7 actions, 61 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
+OH: 18 actions, 61 federal declarations; manual_only - Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on were added by hand from news coverage and governor press releases; the GovDelivery bulletin feed adds new ones as they are announced.; Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
 Oklahoma: wrote 3 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/declarations_for_join.csv
 
 OK: declarations_for_join.csv: kept 48 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
@@ -1785,20 +1795,32 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 OK: 55 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 48 saved records kept that this refresh's check of the state source did not return
-Oregon signing dates: 195 kept from earlier runs; 132 not found by OCR in the last four weeks, not retried yet
+Oregon signing dates: 13 from confirmed_signing_dates.csv; 195 kept from earlier runs; 119 not found by OCR in the last four weeks, not retried yet; 61 of those undated, dated by when they were posted
 
-OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 132 blank and 0 garbled field set(s)
+OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 13 blank and 0 garbled field set(s)
 OR: or_order_relationships.csv: kept 109 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 112 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oregon/hazard_overrides.csv
 OR-EO-26-25: no matching storm events found in the date window.
+OR-EO-26-24: no matching storm events found in the date window.
+OR-EO-26-23: no matching storm events found in the date window.
+OR-EO-26-22: no matching storm events found in the date window.
+OR-EO-26-21: no matching storm events found in the date window.
+OR-EO-26-20: no matching storm events found in the date window.
+OR-EO-26-19: no matching storm events found in the date window.
 OR-EO-26-18: no matching storm events found in the date window.
+OR-EO-26-17: no matching storm events found in the date window.
+OR-EO-26-16: no matching storm events found in the date window.
 OR-EO-26-15: no matching storm events found in the date window.
+OR-EO-26-14: no matching storm events found in the date window.
+OR-EO-26-13: no matching storm events found in the date window.
 OR-EO-26-12: no matching storm events found in the date window.
 OR-EO-26-11: no matching storm events found in the date window.
+OR-EO-26-10: no matching storm events found in the date window.
 OR-EO-26-09: no matching storm events found in the date window.
 OR-EO-26-08: no matching storm events found in the date window.
 OR-EO-26-07: no matching storm events found in the date window.
 OR-EO-26-05: no matching storm events found in the date window.
+OR-EO-25-32: no matching storm events found in the date window.
 OR-EO-25-23: no matching storm events found in the date window.
 OR-EO-25-19: no matching storm events found in the date window.
 OR-EO-25-20: no matching storm events found in the date window.
@@ -1806,12 +1828,18 @@ OR-EO-25-18: no matching storm events found in the date window.
 OR-EO-25-13: no matching storm events found in the date window.
 OR-EO-25-12: no matching storm events found in the date window.
 OR-EO-25-10: no matching storm events found in the date window.
+OR-EO-25-03: no matching storm events found in the date window.
 OR-EO-24-30: no matching storm events found in the date window.
 OR-EO-24-29: no matching storm events found in the date window.
+OR-EO-24-27: no matching storm events found in the date window.
 OR-EO-24-26: no matching storm events found in the date window.
+OR-EO-24-22: no matching storm events found in the date window.
 OR-EO-24-13: no matching storm events found in the date window.
 OR-EO-24-12: no matching storm events found in the date window.
+OR-EO-24-11: no matching storm events found in the date window.
+OR-EO-24-09: no matching storm events found in the date window.
 OR-EO-24-08: no matching storm events found in the date window.
+OR-EO-24-01: no matching storm events found in the date window.
 OR-EO-23-25: no matching storm events found in the date window.
 OR-EO-23-23: no matching storm events found in the date window.
 OR-EO-23-21: no matching storm events found in the date window.
@@ -1827,6 +1855,7 @@ OR-EO-23-08: no matching storm events found in the date window.
 OR-EO-23-05: no matching storm events found in the date window.
 OR-EO-22-17: no matching storm events found in the date window.
 OR-EO-22-16: no matching storm events found in the date window.
+OR-EO-22-12: no matching storm events found in the date window.
 OR-EO-22-10: no matching storm events found in the date window.
 OR-EO-22-09: no matching storm events found in the date window.
 OR-EO-22-08: no matching storm events found in the date window.
@@ -1834,6 +1863,7 @@ OR-EO-22-07: no matching storm events found in the date window.
 OR-EO-22-06: no matching storm events found in the date window.
 OR-EO-22-04: no matching storm events found in the date window.
 OR-EO-22-02: no matching storm events found in the date window.
+OR-EO-22-01: no matching storm events found in the date window.
 OR-EO-21-35: no matching storm events found in the date window.
 OR-EO-21-33: no matching storm events found in the date window.
 OR-EO-21-24: no matching storm events found in the date window.
@@ -1850,14 +1880,23 @@ OR-EO-20-46: no matching storm events found in the date window.
 OR-EO-20-36: no matching storm events found in the date window.
 OR-EO-20-32: no matching storm events found in the date window.
 OR-EO-20-31: no matching storm events found in the date window.
+OR-EO-20-26: no matching storm events found in the date window.
 OR-EO-20-23: no matching storm events found in the date window.
+OR-EO-20-21: no matching storm events found in the date window.
+OR-EO-20-02: no matching storm events found in the date window.
 OR-EO-18-27: no matching storm events found in the date window.
 OR-EO-18-26: no matching storm events found in the date window.
+OR-EO-18-25: no matching storm events found in the date window.
+OR-EO-18-20: no matching storm events found in the date window.
 OR-EO-18-19: no matching storm events found in the date window.
 OR-EO-18-15: no matching storm events found in the date window.
 OR-EO-18-12: no matching storm events found in the date window.
+OR-EO-18-10: no matching storm events found in the date window.
+OR-EO-18-09: no matching storm events found in the date window.
 OR-EO-17-15: no matching storm events found in the date window.
 OR-EO-17-17: no matching storm events found in the date window.
+OR-EO-17-06: no matching storm events found in the date window.
+OR-EO-17-05: no matching storm events found in the date window.
 OR-EO-16-14: no matching storm events found in the date window.
 OR-EO-16-11: no matching storm events found in the date window.
 OR-EO-16-10: no matching storm events found in the date window.
@@ -1871,6 +1910,7 @@ OR-EO-15-07: no matching storm events found in the date window.
 OR-EO-15-06: no matching storm events found in the date window.
 OR-EO-15-05: no matching storm events found in the date window.
 OR-EO-15-02: no matching storm events found in the date window.
+OR-EO-14-15: no matching storm events found in the date window.
 OR-EO-14-12: no matching storm events found in the date window.
 OR-EO-14-04: no matching storm events found in the date window.
 OR-EO-14-05: no matching storm events found in the date window.
@@ -1884,8 +1924,8 @@ OR-EO-11-01: no matching storm events found in the date window.
 OR-EO-08-23: no matching storm events found in the date window.
 OR-EO-07-16: no matching storm events found in the date window.
 OR-EO-07-11: no matching storm events found in the date window.
-Wrote 702 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_matches.csv.tmp
-Wrote severity summary (458 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp
+Wrote 935 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_matches.csv.tmp
+Wrote severity summary (619 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   OR-EO-20-39 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
@@ -1895,6 +1935,7 @@ Areas with reported deaths, injuries, or damage:
   OR-EO-20-52 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
   OR-EO-20-45 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
   OR-EO-20-41 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=5, injuries=0, damage=$2,000,000,000 (High Wind)
+  OR-EO-24-04 GREATER  PORTLAND METRO AREA [NWS forecast zone]: deaths=4, injuries=0, damage=$0 (Ice Storm)
   OR-EO-24-05 GREATER  PORTLAND METRO AREA [NWS forecast zone]: deaths=4, injuries=0, damage=$0 (Ice Storm)
   OR-EO-20-39 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
   OR-EO-20-40 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
@@ -1912,8 +1953,7 @@ Areas with reported deaths, injuries, or damage:
   OR-EO-20-51 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
   OR-EO-20-52 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
   OR-EO-20-52 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
-  OR-EO-20-45 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
-  Showing the 25 highest-consequence areas; all 112 are retained in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 127 are retained in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
@@ -2184,7 +2224,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
 TX: 59 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 1 saved record kept that this refresh's check of the state source did not return
-{"actions": 558, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
+{"actions": 560, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
 UT-PROC-E1536D0F537ACA7F: no matching storm events found in the date window.
@@ -2375,7 +2415,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 75 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2469,8 +2509,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin: 302 executive orders processed
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f56afb23f10>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f56afb23f10>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
 WI-EO-256: no matching storm events found in the date window.
 WI-EO-300: no matching storm events found in the date window.
@@ -2508,8 +2550,8 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
-WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR
-{"actions": 63, "declarations": 4, "relationships": 19, "overrides": 4, "review": 5}
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+{"actions": 64, "declarations": 4, "relationships": 20, "overrides": 4, "review": 5}
 
 WY: declarations_for_join.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 WY: wy_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
@@ -2536,34 +2578,33 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 7 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.; 3 saved records kept that this refresh's check of the state source did not return
 
-Retrying 2 state(s) whose source failed or returned nothing, after 60s: NH, OH
-New Hampshire: 0 actions, 0 relationships, 0 weather declarations
-
+Retrying 3 state(s) whose source failed or returned nothing, after 60s: NH, OH, WI
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
+could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)
 
-NH: declarations_for_join.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 340 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 304 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-RETRY NH: still empty
-NH: 12 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 6 saved records kept that this refresh's check of the state source did not return
-Ohio: 0 bulletins scraped, 0 routed to join CSV.
-
+WARNING NH: Collection failed: New Hampshire adapter: could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)
+RETRY NH: still failed (Collection failed: New Hampshire adapter: could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders))
+NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)
 warning: Ohio bulletin feed answered 406; retrying with Accept: */*
-warning: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
-Ohio: zero bulletins retrieved. This likely means the GovDelivery feed was unreachable or its retention window doesn't reach far enough back -- NOT that Ohio had no weather declarations. Do not treat an empty result as 'no declarations exist'.
+warning: Ohio bulletin feed answered 406; retrying with Accept: */*
+could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
 
-OH: declarations_for_join.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-OH: oh_emergency_actions_all.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-RETRY OH: still empty
-OH: 7 actions, 61 federal declarations; manual_only - GovDelivery bulletin feed proxy, no structured filed-order archive found; needs a follow-up round to find a real index; 7 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 3151s, storm join 102s. Slowest: NJ 662s+11s, NC 498s+1s, MA 326s+2s, TX 292s+1s, CT 240s+0s, MI 112s+0s, VT 101s+0s, SC 83s+5s, LA 85s+0s, WA 81s+0s
-WARNING kept saved records the state source did not return: AK (14), AZ (53), DE (13), IL (8), IN (5), KS (1), KY (1), ME (6), MA (8), MS (30), MT (1), NV (5), NH (6), OH (7), OK (48), PA (7), RI (5), TX (1), VT (4), WY (3)
+WARNING OH: Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
+RETRY OH: still failed (Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss)
+OH: 18 actions, 61 federal declarations; manual_only - Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on were added by hand from news coverage and governor press releases; the GovDelivery bulletin feed adds new ones as they are announced.; Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fb68fab0fd0>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fb68fab0fd0>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
+RETRY WI: still failed (Collection failed: Wisconsin adapter: scrape failed)
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+TIME total: collect 3789s, storm join 124s. Slowest: NJ 1191s+13s, NC 488s+1s, TX 312s+1s, MA 286s+2s, CT 254s+0s, LA 103s+1s, PA 102s+1s, VT 96s+0s, SC 87s+6s, MI 84s+1s
+WARNING kept saved records the state source did not return: AK (14), AZ (53), DE (13), IL (8), IN (5), KS (1), KY (1), ME (6), MA (8), MS (30), MT (1), NV (5), NJ (33), OK (48), PA (7), RI (5), TX (1), VT (4), WY (3)
 Row-loss check: no saved rows lost.
-Plus health: 31 green, 18 yellow, 1 red.
-  RED NE: Declarations fell from 60 to 33 since the last run.
-Changes since the last run (2026-10-07 17:26 UTC):
+Plus health: 31 green, 19 yellow, 0 red.
+Changes since the last run (2026-10-07 18:50 UTC):
 
-- **Nebraska** went from green to red. Declarations fell from 60 to 33 since the last run.
-- **New Jersey** went from green to yellow. Declarations fell from 151 to 145 since the last run.
+- **Nebraska** went from red to green.
+- **Wisconsin** went from green to yellow. Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed). The page is showing records saved from earlier runs; the last successful collection was 2026-10-07 (0 days ago). This turns red at four weeks.
 
-Now 31 green, 18 yellow, 1 red.
+Now 31 green, 19 yellow, 0 red.

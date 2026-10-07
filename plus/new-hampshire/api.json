@@ -91,6 +91,16 @@
       "title": "An Order declaring a State of Emergency due to Severe Winter Storm"
     },
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2012-10-29",
+      "declaration_id": "NH-PROC-2012-10-29",
+      "governor": "John H. Lynch",
+      "source_url": "https://www.nashuatelegraph.com/news/local-news/2012/10/29/gov-lynch-declares-state-of-emergency-for-new-hampshire/",
+      "state": "NH",
+      "title": "Governor Lynch declares a state of emergency for New Hampshire ahead of Hurricane Sandy, expected to bring high winds, heavy rain, flooding and power outages"
+    },
+    {
       "action_number": "2010-01",
       "action_type": "declaration",
       "date_signed": "2010-02-25",
@@ -111,6 +121,16 @@
       "title": "An Order Declaring a State of Emergency Due to Severe Weather and Ice Storm"
     },
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2005-10-09",
+      "declaration_id": "NH-PROC-2005-10-09",
+      "governor": "John H. Lynch",
+      "source_url": "https://spokesman.com/stories/2005/oct/10/flooding-in-east-causes-evacuations",
+      "state": "NH",
+      "title": "Governor Lynch declares a state of emergency for severe flooding in southwestern New Hampshire (Alstead, Keene, Unity) after heavy rain"
+    },
+    {
       "action_number": "2003-09",
       "action_type": "declaration",
       "date_signed": "2003-08-11",
@@ -121,7 +141,7 @@
       "title": "An order declaring a limited state of emergency"
     }
   ],
-  "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 6 saved records kept that this refresh's check of the state source did not return",
+  "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: could not fetch the New Hampshire executive order registry (https://www.sos.nh.gov/executive-orders)",
   "crosswalk": [
     {
       "date_signed": "2025-12-12",
@@ -353,6 +373,44 @@
       "title": "An Order declaring a State of Emergency due to Severe Winter Storm"
     },
     {
+      "date_signed": "2012-10-29",
+      "declaration_id": "NH-PROC-2012-10-29",
+      "federal_declaration": {
+        "begin": "2012-10-26",
+        "date": "2012-10-30",
+        "end": "2012-10-31",
+        "id": "EM-3360",
+        "incidentType": "Hurricane",
+        "number": 3360,
+        "title": "HURRICANE SANDY",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BELKNAP",
+        "CARROLL",
+        "CHESHIRE",
+        "COASTAL ROCKINGHAM",
+        "COOS",
+        "EASTERN HILLSBOROUGH",
+        "GRAFTON",
+        "INTERIOR ROCKINGHAM",
+        "MERRIMACK",
+        "NORTHERN CARROLL",
+        "NORTHERN COOS",
+        "NORTHERN GRAFTON",
+        "SOUTHERN CARROLL",
+        "SOUTHERN COOS",
+        "SOUTHERN GRAFTON",
+        "STRAFFORD",
+        "SULLIVAN",
+        "WESTERN AND CENTRAL HILLSBOROUGH"
+      ],
+      "noaa_match_count": 30,
+      "noaa_status": "matched",
+      "title": "Governor Lynch declares a state of emergency for New Hampshire ahead of Hurricane Sandy, expected to bring high winds, heavy rain, flooding and power outages"
+    },
+    {
       "date_signed": "2010-02-25",
       "declaration_id": "NH-2010-01",
       "federal_declaration": {
@@ -407,6 +465,37 @@
       "title": "An Order Declaring a State of Emergency Due to Severe Weather and Ice Storm"
     },
     {
+      "date_signed": "2005-10-09",
+      "declaration_id": "NH-PROC-2005-10-09",
+      "federal_declaration": {
+        "begin": "2005-10-07",
+        "date": "2005-10-26",
+        "end": "2005-10-18",
+        "id": "DR-1610",
+        "incidentType": "Severe Storm",
+        "number": 1610,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BELKNAP",
+        "CHESHIRE",
+        "COASTAL ROCKINGHAM",
+        "INTERIOR ROCKINGHAM",
+        "MERRIMACK",
+        "NORTHERN CARROLL",
+        "NORTHERN GRAFTON",
+        "SOUTHERN CARROLL",
+        "SOUTHERN GRAFTON",
+        "STRAFFORD",
+        "SULLIVAN"
+      ],
+      "noaa_match_count": 17,
+      "noaa_status": "matched",
+      "title": "Governor Lynch declares a state of emergency for severe flooding in southwestern New Hampshire (Alstead, Keene, Unity) after heavy rain"
+    },
+    {
       "date_signed": "2003-08-11",
       "declaration_id": "NH-2003-09",
       "federal_declaration": {
@@ -434,18 +523,18 @@
   ],
   "federal_match_window_days": 21,
   "generated_on": "2026-10-07",
-  "kept_saved_records": 6,
+  "kept_saved_records": 0,
   "metrics": {
-    "action_count": 12,
+    "action_count": 14,
     "federal_declaration_count": 63,
-    "severity_rows": 107,
-    "storm_match_rows": 126
+    "severity_rows": 139,
+    "storm_match_rows": 173
   },
   "name": "New Hampshire",
   "noaa_data_through": "2026-06-29",
   "official_source_url": "https://www.sos.nh.gov/executive-orders",
   "schema_version": 1,
   "slug": "new-hampshire",
-  "source_status": "empty",
+  "source_status": "failed",
   "state": "NH"
 }
