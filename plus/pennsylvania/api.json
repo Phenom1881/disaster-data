@@ -200,6 +200,7 @@
         "YORK"
       ],
       "noaa_match_count": 21,
+      "noaa_status": "matched",
       "title": "A complex winter storm system is expected to impact multiple counties with dangerous weather, including heavy snow and strong winds."
     },
     {
@@ -285,6 +286,7 @@
         "YORK"
       ],
       "noaa_match_count": 85,
+      "noaa_status": "matched",
       "title": "A severe winter storm is forecasted to impact the entire Commonwealth of Pennsylvania, causing dangerous weather conditions."
     },
     {
@@ -298,6 +300,7 @@
         "MONROE"
       ],
       "noaa_match_count": 4,
+      "noaa_status": "matched",
       "title": "Severe winter event brings dangerous conditions, including heavy snowfall and high winds, to Erie County."
     },
     {
@@ -341,6 +344,7 @@
         "WYOMING"
       ],
       "noaa_match_count": 108,
+      "noaa_status": "matched",
       "title": "Remnants of Tropical Storm Debby bring dangerous conditions, including flash and rivervine flooding."
     },
     {
@@ -392,6 +396,7 @@
         "YORK"
       ],
       "noaa_match_count": 128,
+      "noaa_status": "matched",
       "title": "Hurricane Ida after-effects bring heavy rains and a serious threat of flash and riverine flooding to Pennsylvania."
     },
     {
@@ -478,6 +483,7 @@
         "YORK"
       ],
       "noaa_match_count": 126,
+      "noaa_status": "matched",
       "title": "A winter event including snow, ice, and high winds with potential for significant adverse impacts through Pennsylvania."
     },
     {
@@ -570,6 +576,7 @@
         "YORK"
       ],
       "noaa_match_count": 73,
+      "noaa_status": "matched",
       "title": "Severe winter event expected to bring dangerous conditions including snow, ice, and flooding."
     },
     {
@@ -622,6 +629,7 @@
         "WYOMING"
       ],
       "noaa_match_count": 53,
+      "noaa_status": "matched",
       "title": "A severe winter event is expected to cause dangerous winter weather conditions, including snow, ice, and flooding."
     },
     {
@@ -648,6 +656,7 @@
         "WYOMING"
       ],
       "noaa_match_count": 19,
+      "noaa_status": "matched",
       "title": "Slow-moving storms with record-breaking rainfall and flash flooding."
     },
     {
@@ -667,6 +676,7 @@
         "YORK"
       ],
       "noaa_match_count": 24,
+      "noaa_status": "matched",
       "title": "Nearly continuous storms for the first four months of 2018 caused a rapid buildup of water."
     },
     {
@@ -730,6 +740,7 @@
         "YORK"
       ],
       "noaa_match_count": 67,
+      "noaa_status": "matched",
       "title": "Proclamation of disaster emergency for a severe winter weather event with snow and ice accumulation (terminated March 23, 2017)."
     },
     {
@@ -737,8 +748,15 @@
       "declaration_id": "PA-PROC-2016-11-16",
       "federal_declaration": null,
       "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
+      "noaa_areas": [
+        "BRADFORD",
+        "CENTRE",
+        "LYCOMING",
+        "MERCER",
+        "SULLIVAN"
+      ],
+      "noaa_match_count": 12,
+      "noaa_status": "matched",
       "title": "Proclamation of disaster emergency for severe flash flooding from heavy rainfall on October 20-21, 2016 in Bradford, Centre, Lycoming and Sullivan counties."
     },
     {
@@ -804,6 +822,7 @@
         "YORK"
       ],
       "noaa_match_count": 46,
+      "noaa_status": "matched",
       "title": "Proclamation of disaster emergency for a severe winter weather event with snow and ice accumulation (terminated March 23, 2016)."
     },
     {
@@ -898,6 +917,7 @@
         "YORK"
       ],
       "noaa_match_count": 102,
+      "noaa_status": "matched",
       "title": "Proclamation of disaster emergency for an ice and snow storm that damaged infrastructure and caused widespread power outages."
     },
     {
@@ -981,6 +1001,7 @@
         "YORK"
       ],
       "noaa_match_count": 80,
+      "noaa_status": "matched",
       "title": "Statewide proclamation of disaster emergency for Hurricane Sandy."
     },
     {
@@ -1005,6 +1026,7 @@
         "WESTMORELAND RIDGES"
       ],
       "noaa_match_count": 14,
+      "noaa_status": "matched",
       "title": "Proclamation of emergency for a winter storm with substantial snow and ice accumulations."
     },
     {
@@ -1054,6 +1076,7 @@
         "YORK"
       ],
       "noaa_match_count": 64,
+      "noaa_status": "matched",
       "title": "Proclamation of disaster emergency ahead of Hurricane Irene, with heavy rain, flash flooding and high winds expected."
     }
   ],
@@ -1063,10 +1086,11 @@
   "metrics": {
     "action_count": 17,
     "federal_declaration_count": 64,
-    "severity_rows": 664,
-    "storm_match_rows": 1014
+    "severity_rows": 669,
+    "storm_match_rows": 1026
   },
   "name": "Pennsylvania",
+  "noaa_data_through": "2026-06-29",
   "official_source_url": "https://www.pa.gov/agencies/pema/resources/emergency-proclamations",
   "schema_version": 1,
   "slug": "pennsylvania",

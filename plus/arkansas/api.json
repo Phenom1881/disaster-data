@@ -117,8 +117,21 @@
         "type": "FM"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
+      "noaa_areas": [
+        "BOONE",
+        "CONWAY",
+        "FAULKNER",
+        "MARION",
+        "POPE",
+        "PULASKI",
+        "SEARCY",
+        "VAN BUREN",
+        "WHITE",
+        "WOODRUFF",
+        "YELL"
+      ],
+      "noaa_match_count": 16,
+      "noaa_status": "matched",
       "title": "Sanders Declares Disaster Area From Severe Storms and Flooding on or About May 28, 2026"
     },
     {
@@ -137,6 +150,7 @@
       "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
+      "noaa_status": "pending",
       "title": "Sanders Declares State of Emergency in Response to Wildfires"
     },
     {
@@ -225,6 +239,7 @@
         "YELL COUNTY EXCLUDING NORTHWEST"
       ],
       "noaa_match_count": 105,
+      "noaa_status": "matched",
       "title": "Sanders Declares Emergency for Severe Winter Weather Expected On or About January 23, 2026"
     },
     {
@@ -305,6 +320,7 @@
         "YELL"
       ],
       "noaa_match_count": 253,
+      "noaa_status": "matched",
       "title": "EO 25-07: EXECUTIVE ORDER TO PROVIDE FUNDING, AS AUTHORIZED BY ARK. CODE ANN. \u00a7\u00a7 12-75-114, AS AMENDED, FROM THE GOVERNOR\u2019S DISASTER RESPONSE AND RECOVERY FUND"
     },
     {
@@ -333,6 +349,7 @@
         "POINSETT"
       ],
       "noaa_match_count": 32,
+      "noaa_status": "matched",
       "title": "EO 25-05: EXECUTIVE ORDER TO PROVIDE FUNDING, AS AUTHORIZED BY ARK. CODE ANN. \u00a7\u00a7 12-75-114, AS AMENDED, FROM THE GOVERNOR\u2019S DISASTER RESPONSE AND RECOVERY FUND"
     },
     {
@@ -417,6 +434,7 @@
         "YELL COUNTY EXCLUDING NORTHWEST"
       ],
       "noaa_match_count": 76,
+      "noaa_status": "matched",
       "title": "EO 25-01: EXECUTIVE ORDER TO PROVIDE FUNDING, AS AUTHORIZED BY ARK. CODE ANN. \u00a7 12-75-114, AS AMENDED, FROM THE GOVERNOR\u2019S DISASTER RESPONSE AND RECOVERY FUND"
     },
     {
@@ -477,6 +495,7 @@
         "WOODRUFF"
       ],
       "noaa_match_count": 142,
+      "noaa_status": "matched",
       "title": "EO 24-07:\u200b EXECUTIVE ORDER TO DECLARE AN EMERGENCY AND AUTHORIZE FUNDS FOR SEVERE STORMS, TORNADOES, AND FLOODING ON OR ABOUT MAY 24, 2024, AND CONTINUING"
     },
     {
@@ -516,6 +535,7 @@
         "WOODRUFF"
       ],
       "noaa_match_count": 30,
+      "noaa_status": "matched",
       "title": "EXECUTIVE ORDER TO PROVIDE FUNDING, AS AUTHORIZED BY ARK. CODE ANN. \u00a7\u00a7 12-75-114, AS AMENDED, FROM THE GOVERNOR\u2019S DISASTER RESPONSE AND RECOVERY FUND"
     },
     {
@@ -570,6 +590,7 @@
         "YELL"
       ],
       "noaa_match_count": 72,
+      "noaa_status": "matched",
       "title": "EXECUTIVE ORDER TO PROVIDE FUNDING FROM THE GOVERNOR\u2019S DISASTER RESPONSE AND RECOVERY FUND AS AUTHORIZED BY ARK. CODE ANN. \u00a7\u00a7 12-75-114, AS AMENDED."
     },
     {
@@ -656,6 +677,7 @@
         "YELL COUNTY EXCLUDING NORTHWEST"
       ],
       "noaa_match_count": 108,
+      "noaa_status": "matched",
       "title": "EXECUTIVE ORDER TO PROVIDE FUNDING, AS AUTHORIZED BY ARK. CODE ANN. \u00a7\u00a7 12-75-114, AS AMENDED, FROM THE GOVERNOR\u2019S DISASTER RESPONSE AND RECOVERY FUND"
     }
   ],
@@ -665,10 +687,11 @@
   "metrics": {
     "action_count": 10,
     "federal_declaration_count": 89,
-    "severity_rows": 376,
-    "storm_match_rows": 818
+    "severity_rows": 387,
+    "storm_match_rows": 834
   },
   "name": "Arkansas",
+  "noaa_data_through": "2026-06-29",
   "official_source_url": "https://governor.arkansas.gov/executive-orders/",
   "schema_version": 1,
   "slug": "arkansas",
