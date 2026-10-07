@@ -83,15 +83,55 @@
     {
       "action_number": "",
       "action_type": "declaration",
-      "date_signed": "2021-07-23",
-      "declaration_id": "NV-FMCSA-29D3FB2B7B94",
-      "governor": "",
-      "source_url": "https://www.fmcsa.dot.gov/emergency/nevada-declaration-emergency-tamarack-wildfire",
+      "date_signed": "2021-08-30",
+      "declaration_id": "NV-SOE-2021-08-30",
+      "governor": "Steve Sisolak",
+      "source_url": "https://mynews4.com/news/local/gov-sisolak-declares-state-of-emergency-for-caldor-fire",
       "state": "NV",
-      "title": "Nevada Declaration of Emergency for the Tamarack Wildfire"
+      "title": "State of emergency for the Caldor wildfire as it approached the Lake Tahoe basin."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2021-07-23",
+      "declaration_id": "NV-SOE-2021-07-23",
+      "governor": "Steve Sisolak",
+      "source_url": "https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/2021-07/Nevada%20Declaration%20of%20Emergency%20Tamarack%20Wildfire.pdf",
+      "state": "NV",
+      "title": "Declaration of emergency for the Tamarack wildfire threatening homes in Douglas County."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2017-02-10",
+      "declaration_id": "NV-SOE-2017-02-10",
+      "governor": "Brian Sandoval",
+      "source_url": "https://www.fox13now.com/2017/02/10/nevada-governor-declares-state-of-emergency-for-elko-county-amid-flooding",
+      "state": "NV",
+      "title": "State of emergency for flooding in Elko County, with the National Guard activated."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2017-01-07",
+      "declaration_id": "NV-SOE-2017-01-07",
+      "governor": "Brian Sandoval",
+      "source_url": "https://nnbw.com/news/2017/jan/07/sandoval-declares-state-of-emergency",
+      "state": "NV",
+      "title": "State of emergency for a severe weather system with expected flooding in Washoe, Douglas, Lyon and Storey counties, Carson City, the Reno-Sparks Indian Colony and the Pyramid Lake Paiute Tribe."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2014-09-09",
+      "declaration_id": "NV-SOE-2014-09-09",
+      "governor": "Brian Sandoval",
+      "source_url": "https://m.lasvegassun.com/news/2014/sep/09/sandoval-declares-state-emergency-clark-county/",
+      "state": "NV",
+      "title": "State of emergency for flash flooding that damaged Interstate 15, homes and infrastructure in Clark County and on the Moapa Band of Paiutes Reservation."
     }
   ],
-  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 5 saved records kept that this refresh's check of the state source did not return",
   "crosswalk": [
     {
       "date_signed": "2026-08-23",
@@ -269,8 +309,26 @@
       "title": "Proclamation Declaring a Liquid Petroleum Gas Delivery Emergency"
     },
     {
+      "date_signed": "2021-08-30",
+      "declaration_id": "NV-SOE-2021-08-30",
+      "federal_declaration": {
+        "begin": "2020-01-20",
+        "date": "2020-04-04",
+        "end": "2023-05-11",
+        "id": "DR-4523",
+        "incidentType": "Biological",
+        "number": 4523,
+        "title": "COVID-19 PANDEMIC",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "title": "State of emergency for the Caldor wildfire as it approached the Lake Tahoe basin."
+    },
+    {
       "date_signed": "2021-07-23",
-      "declaration_id": "NV-FMCSA-29D3FB2B7B94",
+      "declaration_id": "NV-SOE-2021-07-23",
       "federal_declaration": {
         "begin": "2021-07-22",
         "date": "2021-07-22",
@@ -287,22 +345,89 @@
         "WHITE PINE"
       ],
       "noaa_match_count": 3,
-      "title": "Nevada Declaration of Emergency for the Tamarack Wildfire"
+      "title": "Declaration of emergency for the Tamarack wildfire threatening homes in Douglas County."
+    },
+    {
+      "date_signed": "2017-02-10",
+      "declaration_id": "NV-SOE-2017-02-10",
+      "federal_declaration": {
+        "begin": "2017-02-05",
+        "date": "2017-03-27",
+        "end": "2017-02-22",
+        "id": "DR-4307",
+        "incidentType": "Severe Storm",
+        "number": 4307,
+        "title": "SEVERE WINTER STORMS, FLOODING, AND MUDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ELKO",
+        "HUMBOLDT",
+        "WASHOE"
+      ],
+      "noaa_match_count": 5,
+      "title": "State of emergency for flooding in Elko County, with the National Guard activated."
+    },
+    {
+      "date_signed": "2017-01-07",
+      "declaration_id": "NV-SOE-2017-01-07",
+      "federal_declaration": {
+        "begin": "2017-01-05",
+        "date": "2017-02-17",
+        "end": "2017-01-14",
+        "id": "DR-4303",
+        "incidentType": "Severe Storm",
+        "number": 4303,
+        "title": "SEVERE WINTER STORMS, FLOODING, AND MUDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "DOUGLAS",
+        "LYON",
+        "STOREY",
+        "WASHOE"
+      ],
+      "noaa_match_count": 7,
+      "title": "State of emergency for a severe weather system with expected flooding in Washoe, Douglas, Lyon and Storey counties, Carson City, the Reno-Sparks Indian Colony and the Pyramid Lake Paiute Tribe."
+    },
+    {
+      "date_signed": "2014-09-09",
+      "declaration_id": "NV-SOE-2014-09-09",
+      "federal_declaration": {
+        "begin": "2014-09-07",
+        "date": "2014-11-05",
+        "end": "2014-09-09",
+        "id": "DR-4202",
+        "incidentType": "Flood",
+        "number": 4202,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CLARK",
+        "LINCOLN",
+        "NYE"
+      ],
+      "noaa_match_count": 16,
+      "title": "State of emergency for flash flooding that damaged Interstate 15, homes and infrastructure in Clark County and on the Moapa Band of Paiutes Reservation."
     }
   ],
   "federal_match_window_days": 21,
   "generated_on": "2026-10-07",
-  "kept_saved_records": 0,
+  "kept_saved_records": 5,
   "metrics": {
-    "action_count": 9,
+    "action_count": 13,
     "federal_declaration_count": 116,
-    "severity_rows": 38,
-    "storm_match_rows": 90
+    "severity_rows": 48,
+    "storm_match_rows": 118
   },
   "name": "Nevada",
   "official_source_url": "https://www.gov.nv.gov/executive-actions/",
   "schema_version": 1,
   "slug": "nevada",
-  "source_status": "ok",
+  "source_status": "partial",
   "state": "NV"
 }

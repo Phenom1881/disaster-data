@@ -79,9 +79,59 @@
       "source_url": "https://governor.ri.gov/executive-orders/executive-order-15-02",
       "state": "RI",
       "title": "Declaration of Disaster Emergency"
+    },
+    {
+      "action_number": "13-02",
+      "action_type": "declaration",
+      "date_signed": "2013-02-08",
+      "declaration_id": "RI-EO-13-02",
+      "governor": "Lincoln D. Chafee",
+      "source_url": "https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/docs/RI-emergency-declaration-13-02-08-508.pdf",
+      "state": "RI",
+      "title": "Executive Order 13-02, Declaration of Disaster Emergency for a winter storm with heavy snow, blizzard conditions and hurricane force winds."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2012-10-28",
+      "declaration_id": "RI-SOE-2012-10-28",
+      "governor": "Lincoln D. Chafee",
+      "source_url": "https://www.ri.gov/press/view/17751",
+      "state": "RI",
+      "title": "Declaration of Disaster Emergency ahead of Hurricane Sandy."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2011-08-26",
+      "declaration_id": "RI-SOE-2011-08-26",
+      "governor": "Lincoln D. Chafee",
+      "source_url": "https://www.ri.gov/press/view/14589",
+      "state": "RI",
+      "title": "Declaration of Disaster Emergency ahead of Hurricane Irene."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2005-10-15",
+      "declaration_id": "RI-SOE-2005-10-15",
+      "governor": "Donald L. Carcieri",
+      "source_url": "https://www.ri.gov/press/view/694",
+      "state": "RI",
+      "title": "State of emergency for a weekend storm with heavy rain and flooding."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2005-01-24",
+      "declaration_id": "RI-SOE-2005-01-24",
+      "governor": "Donald L. Carcieri",
+      "source_url": "https://www.reed.senate.gov/news/releases/rhode-island-receives-emergency-declaration-for-blizzard-of-2005",
+      "state": "RI",
+      "title": "Statewide state of emergency for the Blizzard of 2005 (heavy snow), with state and municipal offices closed Monday, January 24."
     }
   ],
-  "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present); 5 saved records kept that this refresh's check of the state source did not return",
   "crosswalk": [
     {
       "date_signed": "2026-02-22",
@@ -257,21 +307,149 @@
       ],
       "noaa_match_count": 9,
       "title": "Declaration of Disaster Emergency"
+    },
+    {
+      "date_signed": "2013-02-08",
+      "declaration_id": "RI-EO-13-02",
+      "federal_declaration": {
+        "begin": "2013-02-08",
+        "date": "2013-03-22",
+        "end": "2013-02-09",
+        "id": "DR-4107",
+        "incidentType": "Severe Storm",
+        "number": 4107,
+        "title": "SEVERE WINTER STORM AND SNOWSTORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BRISTOL",
+        "EASTERN KENT",
+        "NEWPORT",
+        "NORTHWEST PROVIDENCE",
+        "SOUTHEAST PROVIDENCE",
+        "WASHINGTON",
+        "WESTERN KENT"
+      ],
+      "noaa_match_count": 12,
+      "title": "Executive Order 13-02, Declaration of Disaster Emergency for a winter storm with heavy snow, blizzard conditions and hurricane force winds."
+    },
+    {
+      "date_signed": "2012-10-28",
+      "declaration_id": "RI-SOE-2012-10-28",
+      "federal_declaration": {
+        "begin": "2012-10-26",
+        "date": "2012-11-03",
+        "end": "2012-10-31",
+        "id": "DR-4089",
+        "incidentType": "Hurricane",
+        "number": 4089,
+        "title": "HURRICANE SANDY",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BLOCK ISLAND",
+        "BRISTOL",
+        "EASTERN KENT",
+        "NEWPORT",
+        "NORTHWEST PROVIDENCE",
+        "SOUTHEAST PROVIDENCE",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 10,
+      "title": "Declaration of Disaster Emergency ahead of Hurricane Sandy."
+    },
+    {
+      "date_signed": "2011-08-26",
+      "declaration_id": "RI-SOE-2011-08-26",
+      "federal_declaration": {
+        "begin": "2011-08-26",
+        "date": "2011-08-27",
+        "end": "2011-08-29",
+        "id": "EM-3334",
+        "incidentType": "Hurricane",
+        "number": 3334,
+        "title": "HURRICANE IRENE",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BRISTOL",
+        "EASTERN KENT",
+        "NEWPORT",
+        "NORTHWEST PROVIDENCE",
+        "SOUTHEAST PROVIDENCE",
+        "WASHINGTON",
+        "WESTERN KENT"
+      ],
+      "noaa_match_count": 9,
+      "title": "Declaration of Disaster Emergency ahead of Hurricane Irene."
+    },
+    {
+      "date_signed": "2005-10-15",
+      "declaration_id": "RI-SOE-2005-10-15",
+      "federal_declaration": {
+        "begin": "2005-08-29",
+        "date": "2005-09-19",
+        "end": "2005-10-01",
+        "id": "EM-3255",
+        "incidentType": "Hurricane",
+        "number": 3255,
+        "title": "HURRICANE KATRINA EVACUATION",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "EASTERN KENT",
+        "NORTHWEST PROVIDENCE",
+        "SOUTHEAST PROVIDENCE",
+        "WASHINGTON",
+        "WESTERN KENT"
+      ],
+      "noaa_match_count": 18,
+      "title": "State of emergency for a weekend storm with heavy rain and flooding."
+    },
+    {
+      "date_signed": "2005-01-24",
+      "declaration_id": "RI-SOE-2005-01-24",
+      "federal_declaration": {
+        "begin": "2005-01-22",
+        "date": "2005-02-17",
+        "end": "2005-01-23",
+        "id": "EM-3203",
+        "incidentType": "Snowstorm",
+        "number": 3203,
+        "title": "RECORD SNOW",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BRISTOL",
+        "EASTERN KENT",
+        "NEWPORT",
+        "NORTHWEST PROVIDENCE",
+        "SOUTHEAST PROVIDENCE",
+        "WASHINGTON",
+        "WESTERN KENT"
+      ],
+      "noaa_match_count": 7,
+      "title": "Statewide state of emergency for the Blizzard of 2005 (heavy snow), with state and municipal offices closed Monday, January 24."
     }
   ],
   "federal_match_window_days": 21,
   "generated_on": "2026-10-07",
-  "kept_saved_records": 0,
+  "kept_saved_records": 5,
   "metrics": {
-    "action_count": 8,
+    "action_count": 13,
     "federal_declaration_count": 31,
-    "severity_rows": 51,
-    "storm_match_rows": 59
+    "severity_rows": 84,
+    "storm_match_rows": 115
   },
   "name": "Rhode Island",
   "official_source_url": "https://governor.ri.gov/executive-order-archive",
   "schema_version": 1,
   "slug": "rhode-island",
-  "source_status": "ok",
+  "source_status": "partial",
   "state": "RI"
 }

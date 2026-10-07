@@ -4,27 +4,27 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 5 saved records kept that this refresh's check of the state source did not return",
   "coverage_base": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed",
   "generated_on": "2026-10-07",
-  "kept_saved_records": 0,
+  "kept_saved_records": 5,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 9,
+    "action_count": 13,
     "federal_declaration_count": 116,
-    "severity_rows": 38,
-    "storm_match_rows": 90
+    "severity_rows": 48,
+    "storm_match_rows": 118
   },
   "name": "Nevada",
   "retried": false,
   "slug": "nevada",
   "source_records_returned": 6,
-  "source_records_saved_before": 6,
-  "source_status": "ok",
+  "source_records_saved_before": 11,
+  "source_status": "partial",
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 9.2,
+    "collect_seconds": 14.6,
     "storm_join_seconds": 0.5
   }
 }
