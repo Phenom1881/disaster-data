@@ -127,5 +127,23 @@ class WeatherClassificationTests(unittest.TestCase):
         self.assertLess(elapsed, 1.0)
 
 
+
+class NotWeatherTitleTests(unittest.TestCase):
+    def test_flags_covid_and_tax_orders_are_not_weather(self):
+        for title in (
+            "Governor Murphy Directs U.S. and New Jersey Flags to Fly at Half-Staff to Honor Those Who Lost Their Lives to Tropical Storm Ida",
+            "Governor Murphy Directs the Lowering of U.S. and New Jersey Flags in Honor of President George H.W. Bush",
+            "Governor Murphy Signs Executive Order Creating Greater Oversight and Accountability for Federal COVID-19 Resources",
+            "The Director of the Division of Taxation, in the Department of the Treasury, is directed to take all appropriate actions",
+        ):
+            o = order(title)
+            o.document_text = "Hurricane Sandy flooding storm"
+            self.assertFalse(MODULE.is_weather_related(o), title)
+
+    def test_storm_declaration_still_weather(self):
+        o = order("Declaring a State of Emergency")
+        o.document_text = "a winter storm with heavy snow, high winds and coastal flooding"
+        self.assertTrue(MODULE.is_weather_related(o))
+
 if __name__ == "__main__":
     unittest.main()

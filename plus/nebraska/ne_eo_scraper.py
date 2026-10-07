@@ -57,6 +57,25 @@ DECLARATION_KEYWORDS_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Candidates that are not weather emergencies in Nebraska: COVID-19 orders,
+# and fuel/propane supply shortages unless the title names a Nebraska
+# weather cause (EO 24-01 "Fuel Supply Shortages Due to Extreme Cold
+# Temperatures" stays; EO 05-8 "Hurricane impact on fuel supply" is an
+# out-of-state hurricane and goes).
+NOT_WEATHER_RE = re.compile(r"coronavirus|covid|pandemic|unemployment insurance", re.IGNORECASE)
+SUPPLY_RE = re.compile(r"supply shortage|fuel shortage|fuel supply|propane|heating fuel|gasoline|diesel", re.IGNORECASE)
+WEATHER_CAUSE_RE = re.compile(r"extreme cold|winter storm|blizzard|ice storm|flood|tornado|severe weather", re.IGNORECASE)
+
+
+def is_weather_candidate(description):
+    text = description or ""
+    if not DECLARATION_KEYWORDS_RE.search(text) or NOT_WEATHER_RE.search(text):
+        return False
+    if SUPPLY_RE.search(text) and not WEATHER_CAUSE_RE.search(text):
+        return False
+    return True
+
+
 ROW_RE = re.compile(
     r'<tr[^>]*>\s*<td[^>]*>\s*(?:<a[^>]+href="([^"]+)"[^>]*>)?\s*([^<]+?)\s*(?:</a>)?\s*</td>\s*'
     r'<td[^>]*>\s*(?:<a[^>]+href="[^"]+"[^>]*>)?\s*(.*?)\s*(?:</a>)?\s*</td>\s*'
@@ -140,7 +159,7 @@ def collect(actions_out, relationships_out, join_out):
     declarations = []
 
     for row in all_rows:
-        is_candidate = bool(DECLARATION_KEYWORDS_RE.search(row["description"] or ""))
+        is_candidate = is_weather_candidate(row["description"])
         actions.append({
             "eo_number": row["eo_number"],
             "description": row["description"],
