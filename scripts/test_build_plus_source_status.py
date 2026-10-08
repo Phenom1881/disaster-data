@@ -100,6 +100,30 @@ class SourceStatusTests(unittest.TestCase):
         self.assertEqual(summary["source_status"], "failed")
         self.assertIn("503", summary["collection_error"])
 
+    def test_state_kept_by_hand_reports_manual_not_failed(self):
+        # Ohio's case: the feed answers 406; its records are kept by hand.
+        (self.state_dir / "testland.py").write_text(textwrap.dedent(RAISES), encoding="utf-8")
+        summary = bp.process_state(dict(STATE, manual_source=True), self.root, collect=True,
+                                   join_storms=False, dry_run=True)
+        self.assertEqual(summary["source_status"], "manual")
+        self.assertEqual(summary["metrics"]["action_count"], 2)
+        self.assertIn("503", summary["collection_error"])
+
+    def test_state_kept_by_hand_still_reports_a_working_source(self):
+        (self.state_dir / "testland.py").write_text(textwrap.dedent(WRITES_EVERYTHING), encoding="utf-8")
+        summary = bp.process_state(dict(STATE, manual_source=True), self.root, collect=True,
+                                   join_storms=False, dry_run=True)
+        self.assertEqual(summary["source_status"], "ok")
+
+    def test_hand_added_rows_show_but_do_not_count_against_the_source(self):
+        # manual_declarations.csv rows are on the page, but the source is
+        # judged only on its own file, so it still returned everything.
+        (self.state_dir / "manual_declarations.csv").write_text(
+            HEADER + "XX-SOE-2011-05-27,Gov,,FLOODING BY HAND,2011-05-27,https://news/x\n", encoding="utf-8")
+        summary = self.run_with(WRITES_EVERYTHING)
+        self.assertEqual(summary["source_status"], "ok")
+        self.assertEqual(summary["metrics"]["action_count"], 3)
+
     def test_adapter_calling_sys_exit_fails_its_state_not_the_build(self):
         summary = self.run_with(EXITS)
         self.assertEqual(summary["source_status"], "failed")

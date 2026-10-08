@@ -48,7 +48,7 @@
       "slug": "arkansas",
       "adapter_status": "implemented",
       "adapter_file": "arkansas.py",
-      "coverage_note": "January 2023-present structured current-Governor archive; 2000-2022 gap disclosed",
+      "coverage_note": "January 2023-present structured current-Governor archive; 2000-2022 gap disclosed. Plus 23 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://governor.arkansas.gov/executive-orders/",
       "action_files": [
         "declarations_for_join.csv",
@@ -87,7 +87,7 @@
       "slug": "connecticut",
       "adapter_status": "implemented",
       "adapter_file": "connecticut.py",
-      "coverage_note": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table",
+      "coverage_note": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 6 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://portal.ct.gov/governor/governors-actions/executive-orders",
       "action_files": [
         "declarations_for_join.csv",
@@ -141,7 +141,7 @@
       "slug": "hawaii",
       "adapter_status": "implemented",
       "adapter_file": "hawaii.py",
-      "coverage_note": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.",
+      "coverage_note": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 26 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://governor.hawaii.gov/category/newsroom/emergency-proclamations/",
       "action_files": [
         "declarations_for_join.csv",
@@ -247,7 +247,7 @@
       "slug": "maine",
       "adapter_status": "implemented",
       "adapter_file": "maine.py",
-      "coverage_note": "2011-present Governor executive-order archives (LePage and Mills), plus storm emergency proclamations from 2013-2024 taken from the Governor's proclamations and news releases; the adapter does not yet read the Mills proclamations listing, and pre-2011 (Baldacci) declarations are not listed",
+      "coverage_note": "2011-present Governor executive-order archives (LePage and Mills), plus storm emergency proclamations from 2013-2024 taken from the Governor's proclamations and news releases; the adapter does not yet read the Mills proclamations listing, and pre-2011 (Baldacci) declarations are not listed. Plus 16 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://www.maine.gov/governor/mills/official_documents",
       "action_files": [
         "declarations_for_join.csv",
@@ -261,7 +261,7 @@
       "slug": "maryland",
       "adapter_status": "implemented",
       "adapter_file": "maryland.py",
-      "coverage_note": "2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage",
+      "coverage_note": "2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage. Plus 12 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://governor.maryland.gov/official-actions/executive-orders",
       "action_files": [
         "declarations_for_join.csv",
@@ -458,13 +458,14 @@
       "slug": "ohio",
       "adapter_status": "implemented",
       "adapter_file": "ohio.py",
-      "coverage_note": "manual_only - Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on were added by hand from news coverage and governor press releases; the GovDelivery bulletin feed adds new ones as they are announced.",
+      "coverage_note": "manual_only - Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on are added by hand from the Governor's announcements and news coverage. The Governor's GovDelivery feed answers 406 to every request on record, so it adds nothing automatically.",
       "official_source_url": "https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss",
       "action_files": [
         "declarations_for_join.csv",
         "oh_emergency_actions_all.csv"
       ],
-      "fmcsa_supplement": true
+      "fmcsa_supplement": true,
+      "manual_source": true
     },
     {
       "abbreviation": "OK",
@@ -550,7 +551,7 @@
       "slug": "tennessee",
       "adapter_status": "implemented",
       "adapter_file": "tennessee.py",
-      "coverage_note": "2000-present SOS catalog via state-university mirror; legacy exact-date review pending",
+      "coverage_note": "2000-present SOS catalog via state-university mirror; legacy exact-date review pending. Plus 10 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://sos.tn.gov/products/division-publications/executive-orders",
       "action_files": [
         "declarations_for_join.csv",
@@ -589,7 +590,7 @@
       "slug": "vermont",
       "adapter_status": "implemented",
       "adapter_file": "vermont.py",
-      "coverage_note": "2017-present structured Governor archive, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and their text is no longer published",
+      "coverage_note": "2017-present structured Governor archive, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and their text is no longer published. Plus 5 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://governor.vermont.gov/document-types/executive-orders",
       "action_files": [
         "declarations_for_join.csv",
@@ -656,7 +657,7 @@
       "slug": "wyoming",
       "adapter_status": "implemented",
       "adapter_file": "wyoming.py",
-      "coverage_note": "2019-present Governor CMS executive-order archive, plus three Mead-era flooding declarations (2011, 2015, 2017) dated from news coverage; most 2000-2018 declarations are not listed because no archive of them was found.",
+      "coverage_note": "2019-present Governor CMS executive-order archive, plus three Mead-era flooding declarations (2011, 2015, 2017) dated from news coverage; most 2000-2018 declarations are not listed because no archive of them was found. Plus 6 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "official_source_url": "https://governor.wyo.gov/state-government/executive-orders",
       "action_files": [
         "declarations_for_join.csv",

@@ -286,6 +286,12 @@ def drop_pre_cutoff_actions(state: dict, state_dir: Path) -> int:
 # so the state's own source is still judged on its own; shown on the page and
 # joined to storms together with it.
 FMCSA_SUPPLEMENT = "fmcsa_declarations.csv"
+# Declarations added by hand from official announcements and dated news
+# coverage, for events a state's own source does not list (older years, or
+# emergencies declared without a numbered order). Never written by collection.
+# Kept out of the state's action file so the source is judged only on what it
+# returns: a hand-added row there reads as a record the source "left out".
+MANUAL_SUPPLEMENT = "manual_declarations.csv"
 _fmcsa_module = None
 
 
@@ -312,6 +318,10 @@ def write_fmcsa_supplement(state: dict, state_dir: Path, repo_root: Path) -> int
     if not entries:
         return count_rows(target if target.exists() else None)
     own = read_csv_rows(locate_first(state_dir, candidate_action_files(state)))
+    manual = state_dir / MANUAL_SUPPLEMENT
+    # A hand-added declaration counts as one the state already has, so FMCSA's
+    # copy of the same event is not listed twice.
+    own = own + (read_csv_rows(manual) if manual.exists() else [])
     rows = module.supplement_rows(state, own, entries)
     module.write_csv(target, module.JOIN_FIELDS, rows)
     return len(rows)
@@ -319,8 +329,10 @@ def write_fmcsa_supplement(state: dict, state_dir: Path, repo_root: Path) -> int
 
 def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(state_dir, candidate_action_files(state))
-    supplement = state_dir / FMCSA_SUPPLEMENT
-    raw = read_csv_rows(path) + (read_csv_rows(supplement) if supplement.exists() else [])
+    raw = read_csv_rows(path)
+    for name in (MANUAL_SUPPLEMENT, FMCSA_SUPPLEMENT):
+        supplement = state_dir / name
+        raw += read_csv_rows(supplement) if supplement.exists() else []
     rows = [normalized_action(row, state["abbreviation"]) for row in raw
             if not before_cutoff(row)]
     unique = {}
@@ -368,10 +380,12 @@ def ensure_declaration_id_column(action_path: Path, abbreviation: str) -> Path:
 
 def with_fmcsa_supplement(action_path: Path, state_dir: Path) -> Path:
     """The file handed to the storm join: the state's own declarations plus
-    its FMCSA supplement, when it has one. Written to a temporary folder so
-    it is never committed."""
-    supplement = state_dir / FMCSA_SUPPLEMENT
-    extra = read_csv_rows(supplement) if supplement.exists() else []
+    its hand-added and FMCSA supplements, when it has them. Written to a
+    temporary folder so it is never committed."""
+    extra = []
+    for name in (MANUAL_SUPPLEMENT, FMCSA_SUPPLEMENT):
+        supplement = state_dir / name
+        extra += read_csv_rows(supplement) if supplement.exists() else []
     if not extra:
         return action_path
     rows = read_csv_rows(action_path) + extra
@@ -593,6 +607,12 @@ SOURCE_PARTIAL = "partial"          # returned some records; saved ones it misse
 SOURCE_EMPTY = "empty"              # returned nothing although records were saved
 SOURCE_FAILED = "failed"            # the adapter raised or is missing
 SOURCE_NOT_COLLECTED = "not_collected"  # this run did not collect (no --collect)
+# A state marked "manual_source" in the manifest has no automatic source that
+# works (Ohio's governor feed answers 406 to every request on record), so its
+# records are kept by hand. A failed or empty collection there is expected and
+# is reported as "manual", not counted as a broken source; when the automatic
+# source does answer, its result is reported as usual.
+SOURCE_MANUAL = "manual"
 SOURCE_BAD = (SOURCE_EMPTY, SOURCE_FAILED)
 
 
@@ -665,6 +685,8 @@ def collect_with_safeguard(state: dict, state_dir: Path) -> dict:
         kept = keep_saved_actions(state, saved)
         drop_pre_cutoff_actions(state, state_dir)
     status = source_status(error, saved_rows, scraped_rows, kept["kept"])
+    if state.get("manual_source") and status in SOURCE_BAD:
+        status = SOURCE_MANUAL
     return {"note": note or "", "error": error, "kept": kept, "saved_rows": saved_rows,
             "scraped_rows": scraped_rows, "status": status,
             "seconds": round(time.monotonic() - started, 1)}
@@ -860,34 +882,43 @@ def preflight_overrides(states: list[dict], repo_root: Path) -> list[str]:
         join_script = state_dir / "eo_storm_join.py"
         if not join_script.is_file():
             continue
+        overrides = state_dir / "hazard_overrides.csv"
+        inline = []
+        for file_name in candidate_action_files(state):
+            path = state_dir / file_name
+            if path.is_file():
+                try:
+                    with path.open(newline="", encoding="utf-8") as handle:
+                        inline = [(path, (row.get("hazard_category_override") or "").strip())
+                                  for row in csv.DictReader(handle)]
+                except (OSError, csv.Error):
+                    inline = []
+                inline = [item for item in inline if item[1]]
+                break
+        if not overrides.is_file() and not inline:
+            continue   # nothing to check, so the join script is not loaded
         name = "disasterdata_plus_join_" + state["slug"].replace("-", "_")
         try:
             spec = importlib.util.spec_from_file_location(name, join_script)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
         except Exception as exc:
-            problems.append(f"{state['abbreviation']}: eo_storm_join.py does not load ({exc})")
+            # Not an override problem; the storm join reports it in its own run.
+            print(f"WARNING {state['abbreviation']}: overrides not checked, eo_storm_join.py "
+                  f"does not load here ({exc})", file=sys.stderr)
             continue
-        overrides = state_dir / "hazard_overrides.csv"
         if overrides.is_file():
             try:
                 module.load_overrides(str(overrides))
             except Exception as exc:
                 problems.append(f"{state['abbreviation']}: {overrides.relative_to(repo_root)}: {exc}")
         # Inline overrides in the declarations file itself.
-        for file_name in candidate_action_files(state):
-            path = state_dir / file_name
-            if not path.is_file():
-                continue
+        for path, value in inline:
             try:
-                with path.open(newline="", encoding="utf-8") as handle:
-                    for row in csv.DictReader(handle):
-                        value = (row.get("hazard_category_override") or "").strip()
-                        if value:
-                            module.resolve_override(value)
+                module.resolve_override(value)
             except Exception as exc:
                 problems.append(f"{state['abbreviation']}: {path.relative_to(repo_root)}: {exc}")
-            break
+                break
     return problems
 
 
