@@ -32,16 +32,19 @@ def _ids(path: Path) -> list[str]:
 def collect(workdir=".", scripts_dir=None):
     workdir = Path(workdir); scripts_dir = Path(scripts_dir) if scripts_dir else Path(__file__).resolve().parents[2]; workdir.mkdir(parents=True, exist_ok=True)
     join = workdir / "declarations_for_join.csv"
-    hand_saved = [i for i in _ids(join) if i.startswith("MS-EO-")]
+    # Orders added by hand from the 2000-2010 compilations live in
+    # manual_declarations.csv (shown and joined by build-plus.py, not counted
+    # against the source); the Secretary of State step must not add them again.
+    hand_saved = [i for i in _ids(workdir / "manual_declarations.csv") if i.startswith("MS-EO-")]
     cmd = [sys.executable, str(scripts_dir / "ms_eo_scraper.py"), "--actions-out", str(workdir / "ms_emergency_actions_all.csv"), "--relationships-out", str(workdir / "ms_order_relationships.csv"), "--join-out", str(join)]
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Mississippi adapter: scrape failed")
     # 2008-2019 from the Secretary of State. A failure here never fails the
     # state: the Reeves scrape above is already written, and orders read on
-    # earlier runs are in the cache. Pre-2020 rows already saved (the hand
-    # backfill, and orders this step added on earlier runs) are skipped; the
-    # keep-saved merge in build-plus.py puts them back exactly as saved.
+    # earlier runs are in the cache, so every weather order read so far is
+    # written back each run and counts as returned by the source. Orders added
+    # by hand are skipped.
     skip = [i for i in hand_saved if i[6:].isdigit() and int(i[6:]) < 1456]
     backfill = [sys.executable, str(scripts_dir / "ms_sos_backfill.py"), "--cache", str(workdir / "ms_sos_orders.csv"), "--join-out", str(join), "--skip-ids", ",".join(skip)]
     try:
