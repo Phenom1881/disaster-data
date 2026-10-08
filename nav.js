@@ -24,11 +24,13 @@
     ["Map",      "/map.html"],
     ["Compare",  "/compare.html"],
     ["States",   "/states/"],
+    ["Plus",     "/plus/"],
     ["Local",    "/jurisdiction.html"],
     ["Funding",  "/public-assistance-projects.html"],
     ["Mitigation", "/mitigation.html"],
     ["Denials",  "/denials.html"],
-    ["About",    "/about.html"]
+    ["About",    "/about.html"],
+    ["Ops Briefing", "/ops-briefings/"]
   ];
   /* -------------------------------------------------------------------------- */
 
