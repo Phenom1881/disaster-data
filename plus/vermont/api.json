@@ -1,6 +1,16 @@
 {
   "actions": [
     {
+      "action_number": "03-23 (amended and restated)",
+      "action_type": "declaration",
+      "date_signed": "2024-07-10",
+      "declaration_id": "VT-EO-03-23-AR-2024-07-10",
+      "governor": "Philip B. Scott",
+      "source_url": "https://governor.vermont.gov/document/amended-and-restated-executive-order-no-03-23",
+      "state": "VT",
+      "title": "Statewide state of emergency, Guard call-out and emergency plan activation ahead of the remnants of Hurricane Beryl"
+    },
+    {
       "action_number": "03-23",
       "action_type": "declaration",
       "date_signed": "2023-07-09",
@@ -51,6 +61,16 @@
       "title": "Executive Order No. 11-11 Declaration of State of Emergency and Guard Call-Out: extremely high winds, excessive rain and flooding from Hurricane Irene and related storms"
     },
     {
+      "action_number": "06-11",
+      "action_type": "declaration",
+      "date_signed": "2011-05-27",
+      "declaration_id": "VT-EO-06-11",
+      "governor": "Peter Shumlin",
+      "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-40/",
+      "state": "VT",
+      "title": "Emergency and Guard call-out for flash flooding in Washington, Orange, Essex, Lamoille, Caledonia, Rutland, Orleans and Chittenden counties"
+    },
+    {
       "action_number": "03-11",
       "action_type": "declaration",
       "date_signed": "2011-05-05",
@@ -59,10 +79,68 @@
       "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00038",
       "state": "VT",
       "title": "Executive Order No. 03-11 Declaration of Emergency: excessive wind and rainfall combined with water runoff and resulting damages beginning April 23, 2011"
+    },
+    {
+      "action_number": "05-08",
+      "action_type": "declaration",
+      "date_signed": "2008-12-15",
+      "declaration_id": "VT-EO-05-08",
+      "governor": "James H. Douglas",
+      "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-37/",
+      "state": "VT",
+      "title": "State of emergency for the ice storm in Bennington, Orange, Windham and Windsor counties"
+    },
+    {
+      "action_number": "04-07",
+      "action_type": "declaration",
+      "date_signed": "2007-04-17",
+      "declaration_id": "VT-EO-04-07",
+      "governor": "James H. Douglas",
+      "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-34/",
+      "state": "VT",
+      "title": "Statewide state of emergency for the April 2007 nor'easter: rain, snow, high winds, flooding and outages"
+    },
+    {
+      "action_number": "05-02",
+      "action_type": "declaration",
+      "date_signed": "2002-06-12",
+      "declaration_id": "VT-EO-05-02",
+      "governor": "Howard Dean",
+      "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-28/",
+      "state": "VT",
+      "title": "State of emergency for Caledonia County flooding"
     }
   ],
-  "coverage": "2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present); 4 saved records kept that this refresh's check of the state source did not return",
+  "coverage": "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
+    {
+      "date_signed": "2024-07-10",
+      "declaration_id": "VT-EO-03-23-AR-2024-07-10",
+      "federal_declaration": {
+        "begin": "2024-07-09",
+        "date": "2024-08-20",
+        "end": "2024-07-11",
+        "id": "DR-4810",
+        "incidentType": "Severe Storm",
+        "number": 4810,
+        "title": "SEVERE STORM, FLOODING, LANDSLIDES, AND MUDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ADDISON",
+        "CALEDONIA",
+        "CHITTENDEN",
+        "ESSEX",
+        "LAMOILLE",
+        "ORANGE",
+        "ORLEANS",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 33,
+      "noaa_status": "matched",
+      "title": "Statewide state of emergency, Guard call-out and emergency plan activation ahead of the remnants of Hurricane Beryl"
+    },
     {
       "date_signed": "2023-07-09",
       "declaration_id": "VT-EO-03-23",
@@ -209,6 +287,31 @@
       "title": "Executive Order No. 11-11 Declaration of State of Emergency and Guard Call-Out: extremely high winds, excessive rain and flooding from Hurricane Irene and related storms"
     },
     {
+      "date_signed": "2011-05-27",
+      "declaration_id": "VT-EO-06-11",
+      "federal_declaration": {
+        "begin": "2011-05-26",
+        "date": "2011-07-08",
+        "end": "2011-05-27",
+        "id": "DR-4001",
+        "incidentType": "Severe Storm",
+        "number": 4001,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ADDISON",
+        "CALEDONIA",
+        "ESSEX",
+        "ORANGE",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 9,
+      "noaa_status": "matched",
+      "title": "Emergency and Guard call-out for flash flooding in Washington, Orange, Essex, Lamoille, Caledonia, Rutland, Orleans and Chittenden counties"
+    },
+    {
       "date_signed": "2011-05-05",
       "declaration_id": "VT-EO-03-11",
       "federal_declaration": {
@@ -236,22 +339,126 @@
       "noaa_match_count": 10,
       "noaa_status": "matched",
       "title": "Executive Order No. 03-11 Declaration of Emergency: excessive wind and rainfall combined with water runoff and resulting damages beginning April 23, 2011"
+    },
+    {
+      "date_signed": "2008-12-15",
+      "declaration_id": "VT-EO-05-08",
+      "federal_declaration": {
+        "begin": "2008-12-11",
+        "date": "2009-01-14",
+        "end": "2008-12-18",
+        "id": "DR-1816",
+        "incidentType": "Severe Ice Storm",
+        "number": 1816,
+        "title": "SEVERE WINTER STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BENNINGTON",
+        "CALEDONIA",
+        "EASTERN ADDISON",
+        "EASTERN CHITTENDEN",
+        "EASTERN FRANKLIN",
+        "EASTERN RUTLAND",
+        "EASTERN WINDHAM",
+        "ESSEX",
+        "GRAND ISLE",
+        "LAMOILLE",
+        "ORANGE",
+        "ORLEANS",
+        "WASHINGTON",
+        "WESTERN ADDISON",
+        "WESTERN CHITTENDEN",
+        "WESTERN FRANKLIN",
+        "WESTERN RUTLAND",
+        "WESTERN WINDHAM",
+        "WINDSOR"
+      ],
+      "noaa_match_count": 19,
+      "noaa_status": "matched",
+      "title": "State of emergency for the ice storm in Bennington, Orange, Windham and Windsor counties"
+    },
+    {
+      "date_signed": "2007-04-17",
+      "declaration_id": "VT-EO-04-07",
+      "federal_declaration": {
+        "begin": "2007-04-15",
+        "date": "2007-05-04",
+        "end": "2007-04-21",
+        "id": "DR-1698",
+        "incidentType": "Severe Storm",
+        "number": 1698,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BENNINGTON",
+        "CALEDONIA",
+        "EASTERN ADDISON",
+        "EASTERN CHITTENDEN",
+        "EASTERN FRANKLIN",
+        "EASTERN RUTLAND",
+        "ESSEX",
+        "GRAND ISLE",
+        "LAMOILLE",
+        "ORANGE",
+        "ORLEANS",
+        "WASHINGTON",
+        "WESTERN ADDISON",
+        "WESTERN CHITTENDEN",
+        "WESTERN FRANKLIN",
+        "WESTERN RUTLAND",
+        "WESTERN WINDHAM",
+        "WINDHAM",
+        "WINDSOR"
+      ],
+      "noaa_match_count": 37,
+      "noaa_status": "matched",
+      "title": "Statewide state of emergency for the April 2007 nor'easter: rain, snow, high winds, flooding and outages"
+    },
+    {
+      "date_signed": "2002-06-12",
+      "declaration_id": "VT-EO-05-02",
+      "federal_declaration": {
+        "begin": "2002-06-05",
+        "date": "2002-07-12",
+        "end": "2002-06-13",
+        "id": "DR-1428",
+        "incidentType": "Severe Storm",
+        "number": 1428,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CALEDONIA",
+        "CHITTENDEN",
+        "ESSEX",
+        "FRANKLIN",
+        "LAMOILLE",
+        "ORLEANS"
+      ],
+      "noaa_match_count": 6,
+      "noaa_status": "matched",
+      "title": "State of emergency for Caledonia County flooding"
     }
   ],
   "federal_match_window_days": 21,
   "generated_on": "2026-10-08",
-  "kept_saved_records": 4,
+  "kept_saved_records": 0,
   "metrics": {
-    "action_count": 6,
+    "action_count": 11,
     "federal_declaration_count": 62,
-    "severity_rows": 89,
-    "storm_match_rows": 140
+    "severity_rows": 147,
+    "storm_match_rows": 244
   },
   "name": "Vermont",
   "noaa_data_through": "2026-06-29",
   "official_source_url": "https://governor.vermont.gov/document-types/executive-orders",
   "schema_version": 1,
   "slug": "vermont",
-  "source_status": "partial",
+  "source_status": "ok",
   "state": "VT"
 }
