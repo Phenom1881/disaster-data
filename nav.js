@@ -7,6 +7,10 @@
 
    Add it to a page as the first thing inside <body>:
      <script src="/nav.js"></script>
+
+   It also adds the site's copyright line as the last thing on every page
+   (see COPYRIGHT below), so the notice is the same everywhere and needs no
+   change to any page generator.
 ---------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -26,6 +30,14 @@
     ["Denials",  "/denials.html"],
     ["About",    "/about.html"]
   ];
+  /* -------------------------------------------------------------------------- */
+
+  /* ---- the copyright line at the foot of every page. ----------------------- */
+  var COPYRIGHT_OWNER = "DisasterData.IO";
+  var COPYRIGHT_START = 2026;
+  var COPYRIGHT_TEXT = "All rights reserved. The site's code, design, analysis and compiled " +
+    "datasets may not be copied or reused without permission. The underlying federal and " +
+    "state records are public.";
   /* -------------------------------------------------------------------------- */
 
   var CSS = [
@@ -52,7 +64,8 @@
     "#ddmenu a{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#1d1813;text-decoration:none;padding:11px 12px;border-radius:8px;}",
     "#ddmenu a:hover{background:#f1ead9;text-decoration:none;}",
     "#ddmenu a[aria-current=\"page\"]{color:#004c53;background:#d7e9ea;font-weight:600;}",
-    "}"
+    "}",
+    "#ddcopy{box-sizing:border-box;width:100%;margin:0;padding:14px clamp(16px,4vw,48px) 18px;border-top:1px solid #e0d8c5;background:#f6f1e7;font-family:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;line-height:1.5;color:#5b5346;text-align:center;}"
   ].join("\n");
 
   /* Normalize a path so /states/index.html, /states/ and states/ all compare
@@ -131,6 +144,20 @@
     document.body.insertBefore(nav, menu);
   }
 
+  /* The copyright line goes after everything else on the page, so it waits
+     for the page to finish loading (this script runs at the top of <body>). */
+  function addCopyright() {
+    if (document.getElementById("ddcopy")) { return; }
+    var year = new Date().getFullYear();
+    var years = year > COPYRIGHT_START ? COPYRIGHT_START + "-" + year : String(COPYRIGHT_START);
+    var p = document.createElement("p");
+    p.id = "ddcopy";
+    p.appendChild(document.createTextNode("\u00a9 " + years + " " + COPYRIGHT_OWNER + ". " + COPYRIGHT_TEXT));
+    document.body.appendChild(p);
+  }
+
   if (document.body) { build(); }
   else { document.addEventListener("DOMContentLoaded", build); }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", addCopyright); }
+  else { addCopyright(); }
 })();
