@@ -337,3 +337,12 @@ class ListingFormsTests(unittest.TestCase):
         self.assertEqual(in_eo_scraper.governor_for("2023-04-05"), "Eric J. Holcomb")
         self.assertEqual(in_eo_scraper.governor_for("2025-06-01"), "Mike Braun")
 
+
+
+class EventDateTests(unittest.TestCase):
+    """2026-10-08: ten Daniels-era scans have no readable signing date."""
+
+    def test_event_dates_stay_in_the_orders_year(self):
+        for number, day in in_eo_scraper.EVENT_DATES.items():
+            self.assertEqual(day[2:4], number[:2], number)
+        self.assertNotIn("12-04", in_eo_scraper.EVENT_DATES)   # 2011 floods, signed in 2012
