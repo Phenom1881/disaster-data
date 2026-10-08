@@ -113,6 +113,25 @@ CONFIRMED_DATES = {
     "18-01": "2018-02-24",
 }
 
+# Daniels-era orders whose scans carry no readable signing date. Each order
+# names the event it declares, so its first day stands in for the signing
+# date until the signed date is read (a date read from the order, or one in
+# CONFIRMED_DATES, replaces it). Read from the order scans on 2026-10-08.
+# Not listed: EO 12-04, signed in 2012 for the April 2011 floods, since the
+# event date would put it in the wrong year.
+EVENT_DATES = {
+    "07-04": "2007-02-12",   # severe winter weather, February 12 to 14, 2007
+    "07-11": "2007-07-26",   # storms and flooding, northern Indiana, July 26 to August 27, 2007
+    "07-19": "2007-10-18",   # tornado, Marshall, Kosciusko and Elkhart counties, October 18, 2007
+    "08-03": "2008-01-07",   # heavy rains in nine northern counties, January 7, 2008
+    "08-10": "2008-06-06",   # flooding June 6 to 7, 2008; the order is effective June 6, 2008
+    "08-11": "2008-06-06",   # added counties, flooding June 6 to 8, 2008
+    "09-03": "2009-01-26",   # winter storm, January 26 to February 6, 2009
+    "09-04": "2009-03-08",   # tornadoes, high winds and torrential rain, March 8, 2009
+    "09-06": "2009-08-04",   # tornado, straight-line winds and flooding, August 4, 2009
+    "12-01": "2012-03-02",   # severe storms and tornadoes (Henryville), March 2, 2012
+}
+
 
 def governor_for(date_signed: str, year: Optional[int] = None) -> str:
     marker = date_signed or (f"{year:04d}-12-31" if year else "")
@@ -647,14 +666,19 @@ def scrape(session: Optional[requests.Session] = None, saved_dates: Optional[dic
             if action.is_original_weather_declaration:
                 year = _year_from_eo_number(action.eo_number)
                 saved = saved_dates.get(action.eo_number, "")
-                if saved and (year is None or saved[:4] == str(year)):
+                if action.eo_number in CONFIRMED_DATES:
+                    # A confirmed signing date wins over a saved one, which
+                    # may be an event date standing in for it.
+                    action.date_signed = CONFIRMED_DATES[action.eo_number]
+                    DATE_PROBLEMS["from the confirmed-date list"] += 1
+                elif saved and (year is None or saved[:4] == str(year)):
                     action.date_signed = saved
                     DATE_PROBLEMS["kept from earlier runs"] += 1
                 else:
                     action.date_signed, action.date_via_ocr = fetch_signed_date(session, action.pdf_url, year)
-                    if not action.date_signed and action.eo_number in CONFIRMED_DATES:
-                        action.date_signed = CONFIRMED_DATES[action.eo_number]
-                        DATE_PROBLEMS["from the confirmed-date list"] += 1
+                    if not action.date_signed and action.eo_number in EVENT_DATES:
+                        action.date_signed = EVENT_DATES[action.eo_number]
+                        DATE_PROBLEMS["event date named in the order (signing date not readable)"] += 1
             all_actions.append(action)
 
     # De-duplicate by EO number (the current-governor page and historical
