@@ -51,6 +51,7 @@ SOURCE_WORDS = {
     "empty": "no declarations",
     "failed": "failed",
     "not_collected": "not collected",
+    "manual": "maintained by hand",
     "unknown": "not recorded",
 }
 RULES = """How grades are set
@@ -71,7 +72,11 @@ Yellow, working with gaps:
 - fewer than a quarter of the dated declarations matched any storm record
 - declarations fell since the last run
 
-Green: none of the above."""
+Green: none of the above.
+
+A state marked as maintained by hand (its automatic source does not work, so
+its records are added by hand from official announcements and news coverage)
+is not graded on collection; the other checks still apply."""
 
 
 def load_builder(repo_root: Path):
@@ -210,7 +215,11 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
     if now is None and run_day:
         now = datetime.combine(run_day, time(), tzinfo=timezone.utc)
 
-    if source in BAD_SOURCES:
+    if source == "manual":
+        detail = f" This run's automatic source attempt: {error}." if error else ""
+        notes.append("Maintained by hand: no automatic source works for this state, so declarations "
+                     "are added from official announcements and news coverage." + detail)
+    elif source in BAD_SOURCES:
         # Said about collection, not the site: "no declarations" can mean the
         # site refused (Ohio's feed answered 406) or that it answered but none
         # of its declarations could be read (New Hampshire on 2026-09-27 listed

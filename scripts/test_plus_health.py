@@ -73,6 +73,14 @@ class GradeTests(unittest.TestCase):
         self.assertEqual(result["grade"], "red")
         self.assertIn("since at least 2026-08-01 (56 days), four weeks or more", result["reasons"][0])
 
+    def test_state_maintained_by_hand_is_not_graded_on_collection(self):
+        result = grade(summary("manual", collection_error="Collection failed: 406 Client Error"),
+                       hist=history("failed", "failed", "manual"))
+        self.assertEqual(result["grade"], "green")
+        self.assertEqual(result["bad_source_streak"], 0)
+        self.assertTrue(any("Maintained by hand" in note for note in result["notes"]))
+        self.assertEqual(health.SOURCE_WORDS["manual"], "maintained by hand")
+
     def test_source_that_returned_nothing_with_nothing_saved_is_red(self):
         result = grade(summary(source="empty", count=0), numbers=dict(GOOD, actions=0, dated=0, titled=0, linked=0),
                        last_good="2026-09-20 11:12 UTC")
