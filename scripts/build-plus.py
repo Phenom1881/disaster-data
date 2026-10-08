@@ -1463,8 +1463,16 @@ _COVERAGE_START_OVERRIDES = {
     "CO": "2000",
     "KY": "2019",
     "VA": "2002",
+    # Alaska: 2004-2024 state disasters dated from news coverage. Hawaii:
+    # partial 2014-2022 procurement mirror. Ohio: proclamations from 2003.
+    # Vermont: 2011-2015 orders from the statutes appendix sit before the
+    # 2017-present Governor archive the note leads with.
+    "AK": "2004",
+    "HI": "2014",
+    "OH": "2003",
+    "VT": "2011",
 }
-_COVERAGE_START_NO_CLEAN_YEAR = {"AK", "HI", "OH"}
+_COVERAGE_START_NO_CLEAN_YEAR = set()
 
 
 def extract_coverage_start_label(abbreviation: str, coverage_note: str, action_count: int) -> str:
@@ -1492,6 +1500,15 @@ def extract_coverage_start_label(abbreviation: str, coverage_note: str, action_c
         # claims an earlier start than the page can back up.
         return f"Since {max(int(match.group(1)), EARLIEST_ACTION_YEAR)}"
     return "See coverage note"
+
+
+def public_note(text: str) -> str:
+    """Card text for visitors: no file names or internal source labels."""
+    text = re.sub(r"^manual_only\s*-\s*", "", text or "")
+    text = re.sub(r"\s*The Governor's GovDelivery feed[^.]*\.", "", text)
+    text = re.sub(r",?\s*kept in manual_declarations\.csv", "", text)
+    text = re.sub(r"\s*\(manual_declarations\.csv\)", "", text)
+    return text.strip()
 
 
 def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
@@ -1535,7 +1552,7 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
             status_display = "Latest update unsuccessful"
             status_title = f"{coverage_base}; {collection_error}" if coverage_base else collection_error
         else:
-            status_display = coverage_base
+            status_display = public_note(coverage_base)
             status_title = ""
         title_attr = f' title="{esc(status_title)}"' if status_title else ""
         cards.append(
