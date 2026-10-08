@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "release": "2026.10.08.1",
+  "release": "2026.10.08.2",
   "status": "passed",
-  "builtAt": "2026-10-08T00:04:31Z",
-  "dataDate": "2026-10-07",
-  "fingerprint": "64aed789a23a7b979e15",
+  "builtAt": "2026-10-08T00:42:38Z",
+  "dataDate": "2026-10-08",
+  "fingerprint": "cb0bb92eceddd57e9a86",
   "metrics": {
-    "dataDate": "2026-10-07",
-    "ageDays": 1,
+    "dataDate": "2026-10-08",
+    "ageDays": 0,
     "declarationsCurrent": 3538,
     "declarationsCompletedFY": 3536,
     "denials": 363,
@@ -46,7 +46,7 @@
       "file": "data.js",
       "records": 3538,
       "release": "OpenFEMA v2",
-      "hash": "6b88f785ecd1d2c9",
+      "hash": "d0bc16271de22c41",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,7 +55,7 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "6b88f785ecd1d2c9",
+      "hash": "d0bc16271de22c41",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "6b88f785ecd1d2c9",
+      "hash": "d0bc16271de22c41",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "62254116b9f77179",
+      "hash": "ec7ce837773218c1",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,7 +91,7 @@
       "file": "ia.json",
       "records": 3265,
       "release": "OpenFEMA v2",
-      "hash": "1ecdf017a7de67ae",
+      "hash": "b3abc3b5a2ad7a17",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-10-07",
+        "detail": "Data date: 2026-10-08",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-10-07",
+        "detail": "Homepage contains build date 2026-10-08",
         "metrics": {}
       },
       {
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 1 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
