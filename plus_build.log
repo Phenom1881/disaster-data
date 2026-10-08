@@ -1004,10 +1004,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 23 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 37 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 81 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 33 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 135 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 11 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 91 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 436 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1328,17 +1328,11 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 13 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
-New Hampshire: 339 actions, 117 relationships, 8 weather declarations
-
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
   WARNING: the registry could not be fetched; reading the Internet Archive copy
-  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-08.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200253id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-08.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
-  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-05.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200303id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-05.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7fa07863f550>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 
-NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 4 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 19 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 190 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WARNING NH: Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
 NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
@@ -1376,7 +1370,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
@@ -2446,7 +2440,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 75 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 9 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2540,8 +2534,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin: 302 executive orders processed
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f15fca08e50>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f15fca08e50>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
 WI-EO-256: no matching storm events found in the date window.
 WI-EO-300: no matching storm events found in the date window.
@@ -2579,7 +2575,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
-WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
 {"actions": 64, "declarations": 4, "relationships": 20, "overrides": 4, "review": 5}
 
 WY: wy_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
@@ -2608,26 +2604,65 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
-TIME total: collect 3632s, storm join 129s. Slowest: NH 531s+1s, NJ 487s+12s, NC 484s+1s, MA 393s+2s, TX 268s+1s, CT 242s+1s, VT 106s+1s, SC 100s+5s, LA 103s+1s, PA 87s+1s
+
+Retrying 2 state(s) whose source failed or returned nothing, after 60s: NH, WI
+New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
+New Hampshire: 339 actions, 250 relationships, 8 weather declarations
+
+  WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
+  WARNING: the registry could not be fetched; reading the Internet Archive copy
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-88.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200308id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-88.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f0101c74c10>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2014-6.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064419id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2014-6.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f010359b8d0>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+
+NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 4 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 22 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 57 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+RETRY NH: recovered (ok, 8 records returned); rebuilding
+Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
+NH-2010-01: no matching storm events found in the date window.
+NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
+NH-FMCSA-D74D3C13CBE5: no matching storm events found in the date window.
+Wrote 173 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
+Wrote severity summary (139 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
+
+Areas with reported deaths, injuries, or damage:
+  NH-PROC-2005-10-09 CHESHIRE [county/county-equivalent]: deaths=2, injuries=0, damage=$10,000,000 (Flash Flood)
+  NH-PROC-2005-10-09 SULLIVAN [NWS forecast zone]: deaths=2, injuries=0, damage=$3,250,000 (Flood)
+  NH-PROC-2012-10-29 GRAFTON [county/county-equivalent]: deaths=1, injuries=0, damage=$9,000 (Debris Flow, Flood, Heavy Rain, Thunderstorm Wind)
+  NH-2003-09 HILLSBOROUGH [county/county-equivalent]: deaths=0, injuries=9, damage=$0 (Lightning)
+  NH-2003-09 BELKNAP [county/county-equivalent]: deaths=0, injuries=4, damage=$0 (Lightning)
+  NH-2003-09 CHESHIRE [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Flash Flood)
+  NH-PROC-2012-10-29 MERRIMACK [NWS forecast zone]: deaths=0, injuries=1, damage=$106,000 (High Wind)
+  NH-2008-12 EASTERN HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (Ice Storm)
+  NH-2008-12 WESTERN AND CENTRAL HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$12,000,000 (Ice Storm)
+  NH-2008-12 CHESHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$9,000,000 (Ice Storm)
+  NH-2013-08 GRAFTON [county/county-equivalent]: deaths=0, injuries=0, damage=$7,500,000 (Flash Flood)
+  NH-2013-08 SULLIVAN [county/county-equivalent]: deaths=0, injuries=0, damage=$2,575,000 (Flash Flood, Thunderstorm Wind)
+  NH-2008-12 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$1,620,000 (Ice Storm)
+  NH-2008-12 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,580,000 (Ice Storm)
+  NH-PROC-2005-10-09 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,010,000 (Flood)
+  NH-PROC-2005-10-09 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Flood)
+  NH-2008-12 SULLIVAN [NWS forecast zone]: deaths=0, injuries=0, damage=$786,000 (Ice Storm)
+  NH-PROC-2012-10-29 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$387,000 (High Wind)
+  NH-2008-12 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$359,000 (Ice Storm)
+  NH-2008-12 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$326,000 (Ice Storm)
+  NH-2008-12 SOUTHERN GRAFTON [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Ice Storm)
+  NH-PROC-2012-10-29 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Coastal Flood, High Wind)
+  NH-PROC-2005-10-09 STRAFFORD [NWS forecast zone]: deaths=0, injuries=0, damage=$200,000 (Flood)
+  NH-PROC-2012-10-29 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$184,000 (High Wind)
+  NH-2008-12 SOUTHERN CARROLL [NWS forecast zone]: deaths=0, injuries=0, damage=$166,000 (Ice Storm)
+  Showing the 25 highest-consequence areas; all 51 are retained in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
+
+Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
+
+NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fab756dae90>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fab756dae90>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+
+WARNING WI: Collection failed: Wisconsin adapter: scrape failed
+RETRY WI: still failed (Collection failed: Wisconsin adapter: scrape failed)
+WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+TIME total: collect 2987s, storm join 92s. Slowest: NH 580s+1s, NJ 293s+8s, NC 274s+1s, TX 240s+1s, CT 205s+1s, MA 199s+1s, CA 116s+1s, WA 103s+1s, LA 94s+1s, MI 93s+1s
 WARNING kept saved records the state source did not return: KS (1), KY (1), MT (1), OK (48), TX (1)
 Row-loss check: no saved rows lost.
 Plus health: 48 green, 2 yellow, 0 red.
-Changes since the last run (2026-10-08 12:22 UTC):
-
-- **Alaska** went from yellow to green.
-- **Arizona** went from yellow to green.
-- **Delaware** went from yellow to green.
-- **Illinois** went from yellow to green.
-- **Indiana** went from yellow to green.
-- **Maine** went from yellow to green.
-- **Massachusetts** went from yellow to green.
-- **Mississippi** went from yellow to green.
-- **Nevada** went from yellow to green.
-- **New Hampshire** went from yellow to green.
-- **Ohio** went from yellow to green.
-- **Pennsylvania** went from yellow to green.
-- **Rhode Island** went from yellow to green.
-- **Vermont** went from yellow to green.
-- **Wyoming** went from yellow to green.
-
-Now 48 green, 2 yellow, 0 red.

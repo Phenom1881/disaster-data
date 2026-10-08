@@ -1,13 +1,13 @@
 # Plus health report
 
-Checked 2026-10-08 15:34 UTC after the refresh. **48 green, 2 yellow, 0 red.**
+Checked 2026-10-08 17:14 UTC after the refresh. **48 green, 2 yellow, 0 red.**
 
 ## Yellow: working with gaps (2)
 
 | State | Declarations | Why |
 |---|---:|---|
 | Oklahoma (OK) | 55 | The source left out 48 of 55 saved records; they are shown from earlier runs. |
-| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 2 of the 3 runs before this one. |
+| Wisconsin (WI) | 18 | Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed). The page is showing records saved from earlier runs; the last successful collection was 2026-10-08 (0 days ago). This turns red at four weeks. |
 
 ## Green (48)
 
@@ -15,20 +15,20 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, 
 
 ## Where the time went
 
-Collecting from state sources took 60.5 min in all, and matching storms took 2.2 min. The 10 slowest states:
+Collecting from state sources took 49.8 min in all, and matching storms took 1.5 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NH | 8.8 min | 1 s |
-| NJ | 8.1 min | 12 s |
-| NC | 8.1 min | 1 s |
-| MA | 6.6 min | 2 s |
-| TX | 4.5 min | 1 s |
-| CT | 4.0 min | 1 s |
-| VT | 1.8 min | 1 s |
-| SC | 1.7 min | 5 s |
-| LA | 1.7 min | 1 s |
-| PA | 1.5 min | 1 s |
+| NH | 9.7 min | 1 s |
+| NJ | 4.9 min | 8 s |
+| NC | 4.6 min | 1 s |
+| TX | 4.0 min | 1 s |
+| CT | 3.4 min | 1 s |
+| MA | 3.3 min | 1 s |
+| CA | 1.9 min | 1 s |
+| WA | 1.7 min | 1 s |
+| LA | 1.6 min | 1 s |
+| MI | 1.5 min | 1 s |
 
 ## Every state
 
@@ -62,7 +62,7 @@ Collecting from state sources took 60.5 min in all, and matching storms took 2.2
 | MT | green | returned part | 0 | 19 | 113 | 19 | 19 | 19 | 14 | The source left out 1 saved record(s); shown from earlier runs. 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NE | green | returned everything | 0 | 33 | 88 | 33 | 33 | 33 | 14 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NV | green | returned everything | 0 | 13 | 116 | 13 | 13 | 13 | 9 |  |
-| NH | green | returned everything | 0 | 14 | 63 | 14 | 14 | 14 | 11 |  |
+| NH | green | returned everything | 0 | 14 | 63 | 14 | 14 | 14 | 11 | Failed on the first try this run and recovered on the retry. |
 | NJ | green | returned everything | 0 | 145 | 59 | 145 | 145 | 145 | 103 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NM | green | returned everything | 0 | 45 | 126 | 45 | 45 | 45 | 25 |  |
 | NY | green | returned everything | 0 | 25 | 118 | 25 | 25 | 25 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
@@ -82,7 +82,7 @@ Collecting from state sources took 60.5 min in all, and matching storms took 2.2
 | VA | green | returned everything | 0 | 75 | 77 | 75 | 75 | 75 | 65 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | WA | green | returned everything | 0 | 39 | 223 | 39 | 39 | 39 | 26 |  |
 | WV | green | returned everything | 0 | 18 | 85 | 18 | 18 | 18 | 12 |  |
-| WI | yellow | returned everything | 0 | 18 | 56 | 18 | 18 | 18 | 15 |  |
+| WI | yellow | failed | 1 | 18 | 56 | 18 | 18 | 18 | 15 |  |
 | WY | green | returned everything | 0 | 13 | 45 | 13 | 13 | 13 | 12 |  |
 
 <details><summary>How grades are set</summary>
