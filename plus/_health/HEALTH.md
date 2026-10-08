@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-10-08 02:06 UTC after the refresh. **33 green, 17 yellow, 0 red.**
+Checked 2026-10-08 12:22 UTC after the refresh. **33 green, 17 yellow, 0 red.**
 
 ## Yellow: working with gaps (17)
 
@@ -15,13 +15,13 @@ Checked 2026-10-08 02:06 UTC after the refresh. **33 green, 17 yellow, 0 red.**
 | Massachusetts (MA) | 16 | The source left out 8 of 16 saved records; they are shown from earlier runs. |
 | Mississippi (MS) | 43 | The source left out 30 of 43 saved records; they are shown from earlier runs. |
 | Nevada (NV) | 13 | The source left out 5 of 13 saved records; they are shown from earlier runs. |
-| New Hampshire (NH) | 14 | Collection failed or produced no declarations on 2 of the 3 runs before this one. |
-| Ohio (OH) | 18 | Collecting from the state source failed on this run and on the retry (Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/a...), 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-10-04. This turns red at four weeks. |
+| New Hampshire (NH) | 14 | Collection failed or produced no declarations on 1 of the 3 runs before this one. |
+| Ohio (OH) | 18 | Collecting from the state source failed on this run and on the retry (Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/a...), 12 runs in a row. The page is showing records saved from earlier runs. No successful collection is on record, and collection has failed since at least 2026-10-05. This turns red at four weeks. |
 | Oklahoma (OK) | 55 | The source left out 48 of 55 saved records; they are shown from earlier runs. |
 | Pennsylvania (PA) | 17 | The source left out 7 of 17 saved records; they are shown from earlier runs. |
 | Rhode Island (RI) | 13 | The source left out 5 of 13 saved records; they are shown from earlier runs. |
 | Vermont (VT) | 6 | The source left out 4 of 6 saved records; they are shown from earlier runs. Only 6 declarations against 62 federal ones (since 2017), so the source is likely missing most of the record. |
-| Wisconsin (WI) | 18 | Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed). The page is showing records saved from earlier runs; the last successful collection was 2026-10-08 (0 days ago). This turns red at four weeks. |
+| Wisconsin (WI) | 18 | Collecting from the state source failed on this run and on the retry (Wisconsin adapter: scrape failed), 2 runs in a row. The page is showing records saved from earlier runs; the last successful collection was 2026-10-08 (0 days ago). This turns red at four weeks. |
 | Wyoming (WY) | 7 | The source left out 3 of 7 saved records; they are shown from earlier runs. Only 7 declarations against 45 federal ones (since 2019), so the source is likely missing most of the record. |
 
 ## Green (33)
@@ -30,26 +30,26 @@ AL, AR, CA, CO, CT, FL, GA, HI, ID, IA, KS, KY, LA, MD, MI, MN, MO, MT, NE, NJ, 
 
 ## Where the time went
 
-Collecting from state sources took 48.8 min in all, and matching storms took 1.4 min. The 10 slowest states:
+Collecting from state sources took 81.7 min in all, and matching storms took 2.1 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NH | 8.4 min | 0 s |
-| TX | 6.5 min | 1 s |
-| NC | 4.2 min | 1 s |
-| NJ | 4.1 min | 7 s |
-| CT | 3.4 min | 0 s |
-| MA | 2.7 min | 1 s |
-| SC | 1.7 min | 3 s |
-| LA | 1.5 min | 1 s |
-| WA | 1.4 min | 1 s |
-| NY | 1.3 min | 1 s |
+| TX | 25.3 min | 1 s |
+| NH | 9.8 min | 0 s |
+| NJ | 8.3 min | 14 s |
+| NC | 7.9 min | 1 s |
+| MA | 4.6 min | 2 s |
+| CT | 4.6 min | 0 s |
+| SC | 1.7 min | 6 s |
+| PA | 1.7 min | 1 s |
+| LA | 1.6 min | 1 s |
+| VT | 1.5 min | 0 s |
 
 ## Every state
 
 | State | Grade | Source this run | Failed runs in a row | Declarations | Federal | Dated | Titled | Linked | Storm matched | Notes |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| AL | green | returned everything | 0 | 30 | 102 | 30 | 30 | 30 | 29 |  |
+| AL | green | returned everything | 0 | 31 | 102 | 31 | 31 | 31 | 29 |  |
 | AK | yellow | returned part | 0 | 23 | 95 | 23 | 23 | 23 | 17 |  |
 | AZ | yellow | returned part | 0 | 59 | 120 | 59 | 59 | 59 | 54 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | AR | green | returned everything | 0 | 10 | 89 | 10 | 10 | 10 | 9 |  |
@@ -91,13 +91,13 @@ Collecting from state sources took 48.8 min in all, and matching storms took 1.4
 | SC | green | returned everything | 0 | 50 | 51 | 50 | 50 | 50 | 37 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | SD | green | returned everything | 0 | 25 | 98 | 25 | 25 | 25 | 16 | 4 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | TN | green | returned everything | 0 | 14 | 97 | 14 | 14 | 14 | 9 |  |
-| TX | green | returned part | 0 | 59 | 392 | 59 | 59 | 59 | 57 | The source left out 1 saved record(s); shown from earlier runs. 14 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| TX | green | returned part | 0 | 59 | 392 | 59 | 59 | 59 | 57 | The source left out 4 saved record(s); shown from earlier runs. 14 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | UT | green | returned everything | 0 | 33 | 61 | 33 | 33 | 33 | 20 | 11 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | VT | yellow | returned part | 0 | 6 | 62 | 6 | 6 | 6 | 6 |  |
 | VA | green | returned everything | 0 | 75 | 77 | 75 | 75 | 75 | 65 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | WA | green | returned everything | 0 | 39 | 223 | 39 | 39 | 39 | 26 |  |
 | WV | green | returned everything | 0 | 18 | 85 | 18 | 18 | 18 | 12 |  |
-| WI | yellow | failed | 1 | 18 | 56 | 18 | 18 | 18 | 15 |  |
+| WI | yellow | failed | 2 | 18 | 56 | 18 | 18 | 18 | 15 |  |
 | WY | yellow | returned part | 0 | 7 | 45 | 7 | 7 | 7 | 7 |  |
 
 <details><summary>How grades are set</summary>
