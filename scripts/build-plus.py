@@ -1565,8 +1565,6 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
             f'<span class="status"{title_attr}>{esc(status_display)}</span>'
             "</article>"
         )
-    loaded = sum(1 for item in summaries if item["metrics"]["action_count"] > 0)
-    implemented = sum(1 for state in all_states if state["adapter_status"] == "implemented")
     breadcrumb = '<a href="/">DisasterData.IO</a> / Plus'
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -1579,11 +1577,6 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
 <main><div class="eyebrow">DisasterData Plus</div><h1>State weather emergency declarations</h1>
 <p class="lede">State declarations, executive actions, proclamations, and observed weather evidence supplementing the federal disaster record.</p>
 <div class="notice">Coverage varies by state. A generated page is not evidence that its state-action archive is complete.</div>
-<section class="metrics">
-  <div class="metric"><strong>50</strong>states covered</div>
-  <div class="metric"><strong>{implemented}</strong>data sources set up</div>
-  <div class="metric"><strong>{loaded}</strong>states with records loaded right now</div>
-</section>
 <h2>Browse by state</h2><section class="states">{''.join(cards)}</section>
 <footer>Generated {date.today().isoformat()} &middot; DisasterData.IO &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main></body></html>"""
