@@ -1554,12 +1554,12 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Disaster Data | State Emergency Evidence</title>
+<title>Disaster Data | State Weather Emergency Declarations</title>
 <meta name="description" content="State emergency actions and observed hazard evidence across the United States.">
 {brand_fonts()}
 <style>{shared_css()}</style></head>
 <body>{brand_header(breadcrumb)}
-<main><div class="eyebrow">DisasterData Plus</div><h1>State emergency evidence</h1>
+<main><div class="eyebrow">DisasterData Plus</div><h1>State weather emergency declarations</h1>
 <p class="lede">State declarations, executive actions, proclamations, and observed weather evidence supplementing the federal disaster record.</p>
 <div class="notice">Coverage varies by state. A generated page is not evidence that its state-action archive is complete.</div>
 <section class="metrics">
