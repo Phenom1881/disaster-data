@@ -911,16 +911,6 @@
       "title": "Executive Order No. 113 (2012): Hurricane. From the order text: beginning on October 28, 2012, and continuing through October 30, 2012, Hurricane Sandy struck the State of New Jersey"
     },
     {
-      "action_number": "111",
-      "action_type": "declaration",
-      "date_signed": "2012-11-05",
-      "declaration_id": "NJ-CHRISTIE-EO-111",
-      "governor": "Chris Christie",
-      "source_url": "https://www.nj.gov/infobank/circular/eocc111.pdf",
-      "state": "NJ",
-      "title": "A local Government Unit has established a snow removal fund [pdf 55kB]"
-    },
-    {
       "action_number": "105",
       "action_type": "declaration",
       "date_signed": "2012-11-05",
@@ -929,6 +919,16 @@
       "source_url": "https://www.nj.gov/infobank/circular/eocc105.pdf",
       "state": "NJ",
       "title": "Executive Order No. 105 (2012): Hurricane. From the order text: New Jersey has suffered substantial damage from Hurricane Sandy including significant disruption of the power generation necessary to maintain our State\u2019s water supply"
+    },
+    {
+      "action_number": "111",
+      "action_type": "declaration",
+      "date_signed": "2012-11-05",
+      "declaration_id": "NJ-CHRISTIE-EO-111",
+      "governor": "Chris Christie",
+      "source_url": "https://www.nj.gov/infobank/circular/eocc111.pdf",
+      "state": "NJ",
+      "title": "A local Government Unit has established a snow removal fund [pdf 55kB]"
     },
     {
       "action_number": "109",
@@ -1451,7 +1451,7 @@
       "title": "Order and direct State entities to take steps to reduce emissions of climate-affecting gases"
     }
   ],
-  "coverage": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected; 33 saved records kept that this refresh's check of the state source did not return",
+  "coverage": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected",
   "crosswalk": [
     {
       "date_signed": "2026-09-29",
@@ -3817,6 +3817,36 @@
     },
     {
       "date_signed": "2012-11-05",
+      "declaration_id": "NJ-CHRISTIE-EO-105",
+      "federal_declaration": {
+        "begin": "2012-10-26",
+        "date": "2012-10-30",
+        "end": "2012-11-08",
+        "id": "DR-4086",
+        "incidentType": "Hurricane",
+        "number": 4086,
+        "title": "HURRICANE SANDY",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "EASTERN ATLANTIC",
+        "EASTERN CAPE MAY",
+        "EASTERN MONMOUTH",
+        "EASTERN OCEAN",
+        "SOUTHEASTERN BURLINGTON",
+        "SUSSEX",
+        "WESTERN ATLANTIC",
+        "WESTERN CAPE MAY",
+        "WESTERN MONMOUTH",
+        "WESTERN OCEAN"
+      ],
+      "noaa_match_count": 10,
+      "noaa_status": "matched",
+      "title": "Executive Order No. 105 (2012): Hurricane. From the order text: New Jersey has suffered substantial damage from Hurricane Sandy including significant disruption of the power generation necessary to maintain our State\u2019s water supply"
+    },
+    {
+      "date_signed": "2012-11-05",
       "declaration_id": "NJ-CHRISTIE-EO-111",
       "federal_declaration": {
         "begin": "2012-10-26",
@@ -3859,36 +3889,6 @@
       "noaa_match_count": 33,
       "noaa_status": "matched",
       "title": "A local Government Unit has established a snow removal fund [pdf 55kB]"
-    },
-    {
-      "date_signed": "2012-11-05",
-      "declaration_id": "NJ-CHRISTIE-EO-105",
-      "federal_declaration": {
-        "begin": "2012-10-26",
-        "date": "2012-10-30",
-        "end": "2012-11-08",
-        "id": "DR-4086",
-        "incidentType": "Hurricane",
-        "number": 4086,
-        "title": "HURRICANE SANDY",
-        "type": "DR"
-      },
-      "federal_status": "matched",
-      "noaa_areas": [
-        "EASTERN ATLANTIC",
-        "EASTERN CAPE MAY",
-        "EASTERN MONMOUTH",
-        "EASTERN OCEAN",
-        "SOUTHEASTERN BURLINGTON",
-        "SUSSEX",
-        "WESTERN ATLANTIC",
-        "WESTERN CAPE MAY",
-        "WESTERN MONMOUTH",
-        "WESTERN OCEAN"
-      ],
-      "noaa_match_count": 10,
-      "noaa_status": "matched",
-      "title": "Executive Order No. 105 (2012): Hurricane. From the order text: New Jersey has suffered substantial damage from Hurricane Sandy including significant disruption of the power generation necessary to maintain our State\u2019s water supply"
     },
     {
       "date_signed": "2012-11-03",
@@ -5319,8 +5319,8 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-07",
-  "kept_saved_records": 33,
+  "generated_on": "2026-10-08",
+  "kept_saved_records": 0,
   "metrics": {
     "action_count": 145,
     "federal_declaration_count": 59,
@@ -5332,6 +5332,6 @@
   "official_source_url": "https://www.nj.gov/infobank/eo/",
   "schema_version": 1,
   "slug": "new-jersey",
-  "source_status": "partial",
+  "source_status": "ok",
   "state": "NJ"
 }
