@@ -27,4 +27,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         reason = (result.stderr or "").strip().splitlines()
         raise RuntimeError("Ohio adapter: " + (reason[-1] if reason else "scrape failed"))
-    return workdir / "declarations_for_join.csv", "manual_only - proclamations from 2003 on added by hand from news coverage; the GovDelivery bulletin feed adds new ones as they are announced"
+    return workdir / "declarations_for_join.csv", "Maintained by hand: proclamations from 2003 on are added from the Governor's announcements and news coverage. The Governor's GovDelivery feed answers 406 to every request on record, so nothing is added automatically"
