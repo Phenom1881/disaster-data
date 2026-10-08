@@ -21,4 +21,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Vermont adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2017-present structured Governor archive; pre-2017 statutory-appendix backfill pending"
+    return workdir / "declarations_for_join.csv", "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv"
