@@ -4,13 +4,13 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected",
-  "coverage_base": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected",
-  "generated_on": "2026-10-08",
+  "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented",
+  "coverage_base": "1990-present provisional structured coverage; 1962-1989 selectively represented",
+  "generated_on": "2026-10-09",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 145,
+    "action_count": 120,
     "federal_declaration_count": 59,
     "severity_rows": 1822,
     "storm_match_rows": 2747
@@ -18,13 +18,13 @@
   "name": "New Jersey",
   "retried": false,
   "slug": "new-jersey",
-  "source_records_returned": 145,
-  "source_records_saved_before": 145,
-  "source_status": "ok",
+  "source_records_returned": null,
+  "source_records_saved_before": null,
+  "source_status": "not_collected",
   "storm_pipeline_failed": false,
-  "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+  "storm_pipeline_note": "",
   "timing": {
-    "collect_seconds": 293.3,
-    "storm_join_seconds": 7.7
+    "collect_seconds": null,
+    "storm_join_seconds": null
   }
 }

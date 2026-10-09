@@ -83,9 +83,9 @@
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>Oklahoma: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; plus 4 weather declarations from FMCSA&#x27;s archive of state emergency declarations (2017-present); 48 saved records kept that this refresh&#x27;s check of the state source did not return. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<div class="notice"><strong>Coverage:</strong> 2006-present governor emergency declarations reviewed from Oklahoma Emergency Management&#x27;s event archive and the Governor&#x27;s releases (SOS EO index blocks automated requests); manual-only curation; 2000-2005 not covered (OEM&#x27;s 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA&#x27;s archive of state emergency declarations (2017-present). Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>259</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>260</strong>federal FEMA declarations</div>
   <div class="metric"><strong>55</strong>original state weather declarations</div>
   <div class="metric"><strong>5,150</strong>matched NOAA event rows</div>
 </section>
@@ -216,11 +216,12 @@
 </div>
 
 <details class="layer">
-<summary><span>Federal FEMA declarations</span><span class="count-badge">259 records</span></summary>
+<summary><span>Federal FEMA declarations</span><span class="count-badge">260 records</span></summary>
 <div class="details-body"><p class="note">DR, EM, and FM declarations for Oklahoma from the site's national FEMA dataset.</p>
 <div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-08-13</td><td>5669</td><td>FM</td><td>TRAIN TRESTLE FIRE</td><td>Fire</td><td>2026-08-13 to 2026-08-16</td></tr>
+<tbody><tr><td>2026-10-07</td><td>4950</td><td>DR</td><td>SEVERE STORM AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2026-07-04 to 2026-07-04</td></tr>
+<tr><td>2026-08-13</td><td>5669</td><td>FM</td><td>TRAIN TRESTLE FIRE</td><td>Fire</td><td>2026-08-13 to 2026-08-16</td></tr>
 <tr><td>2026-03-22</td><td>5628</td><td>FM</td><td>JUMPING JUNIPER FIRE</td><td>Fire</td><td>2026-03-22 to </td></tr>
 <tr><td>2026-03-22</td><td>5627</td><td>FM</td><td>DIBBLE CREEK FIRE</td><td>Fire</td><td>2026-03-22 to </td></tr>
 <tr><td>2026-03-19</td><td>5626</td><td>FM</td><td>BUCK HORN FIRE</td><td>Fire</td><td>2026-03-19 to </td></tr>
@@ -418,8 +419,7 @@
 <tr><td>2003-07-22</td><td>2482</td><td>FM</td><td>OK - BIG ROCK FIRE - 07/18/03</td><td>Fire</td><td>2003-07-18 to 2003-07-22</td></tr>
 <tr><td>2003-05-10</td><td>1465</td><td>DR</td><td>SEVERE STORMS AND TORNADOES</td><td>Severe Storm</td><td>2003-05-08 to 2003-05-30</td></tr>
 <tr><td>2003-02-04</td><td>1452</td><td>DR</td><td>SEVERE ICE STORM</td><td>Severe Ice Storm</td><td>2002-12-03 to 2002-12-04</td></tr>
-<tr><td>2002-02-01</td><td>1401</td><td>DR</td><td>SEVERE WINTER ICE STORM</td><td>Severe Ice Storm</td><td>2002-01-30 to 2002-02-11</td></tr>
-<tr><td>2001-10-25</td><td>1395</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND TORNADOES</td><td>Severe Storm</td><td>2001-10-09 to 2001-10-10</td></tr></tbody></table></div></div>
+<tr><td>2002-02-01</td><td>1401</td><td>DR</td><td>SEVERE WINTER ICE STORM</td><td>Severe Ice Storm</td><td>2002-01-30 to 2002-02-11</td></tr></tbody></table></div></div>
 </details>
 
 <details class="layer">
@@ -732,7 +732,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-08 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-09 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

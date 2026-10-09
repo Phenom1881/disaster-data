@@ -55,5 +55,6 @@ def collect(workdir=".", scripts_dir=None):
     return (
         workdir / "declarations_for_join.csv",
         "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO "
-        "index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending",
+        "index), with governor declarations back to 2006 reviewed by hand from OEM event pages and "
+        "Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations)",
     )
