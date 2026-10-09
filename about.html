@@ -389,7 +389,7 @@ const { name, count, declarations } = await r.json();
 const crosswalk = await fetch(<span class="s">'https://disasterdata-api.disasterdata.workers.dev/v1/states/VA/crosswalk'</span>).then(r =&gt; r.json());</pre>
       <div class="prose" style="margin-top:22px;">
         <p><strong>Full reference.</strong> Every endpoint, parameter, example response and error is on the <a href="/api.html">API page</a>.</p>
-        <p><strong>Limits.</strong> 60 requests a minute per address, which covers a full state pull. Past that, the API answers 429 with a Retry-After header. Responses can be cached for an hour.</p>
+        <p><strong>Limits.</strong> 10 requests a minute per address. Past that, the API answers 429 with a Retry-After header. Responses can be cached for an hour.</p>
         <p><strong>The shape is stable.</strong> Fields may be added inside <code>/v1</code>. Nothing will be renamed or removed without a new version path. The list of endpoints is always at <a href="https://disasterdata-api.disasterdata.workers.dev/">disasterdata-api.disasterdata.workers.dev</a>.</p>
         <p><strong>Building something larger?</strong> If you need more than the public limit or a feed built for your system, <a href="https://www.linkedin.com/in/reallyjosephreally" target="_blank" rel="noopener">get in touch</a>.</p>
       </div>
