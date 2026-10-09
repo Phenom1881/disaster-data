@@ -181,16 +181,6 @@
       "title": "Drought (May 12 - Current (Drought))"
     },
     {
-      "action_number": "3741",
-      "action_type": "declaration",
-      "date_signed": "2025-04-30",
-      "declaration_id": "KS-PROC-3741",
-      "governor": "Laura Kelly",
-      "source_url": "https://www.kansastag.gov/DocumentCenter/View/3741/Fuel-shortage-disaster-proclamation",
-      "state": "KS",
-      "title": "Fuel Shortage (April 30 - May 13 (Fuel Shortage))"
-    },
-    {
       "action_number": "3722",
       "action_type": "declaration",
       "date_signed": "2025-04-14",
@@ -531,7 +521,7 @@
       "title": "Fires (March 22nd and continuing (Fires))"
     }
   ],
-  "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return",
+  "coverage": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending",
   "crosswalk": [
     {
       "date_signed": "2026-09-30",
@@ -1290,25 +1280,6 @@
       "noaa_match_count": 0,
       "noaa_status": "none",
       "title": "Drought (May 12 - Current (Drought))"
-    },
-    {
-      "date_signed": "2025-04-30",
-      "declaration_id": "KS-PROC-3741",
-      "federal_declaration": {
-        "begin": "2025-05-18",
-        "date": "2025-07-22",
-        "end": "2025-05-19",
-        "id": "DR-4883",
-        "incidentType": "Severe Storm",
-        "number": 4883,
-        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING",
-        "type": "DR"
-      },
-      "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
-      "title": "Fuel Shortage (April 30 - May 13 (Fuel Shortage))"
     },
     {
       "date_signed": "2025-04-14",
@@ -2825,10 +2796,10 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-08",
-  "kept_saved_records": 1,
+  "generated_on": "2026-10-09",
+  "kept_saved_records": 0,
   "metrics": {
-    "action_count": 53,
+    "action_count": 52,
     "federal_declaration_count": 96,
     "severity_rows": 1427,
     "storm_match_rows": 2878
@@ -2838,6 +2809,6 @@
   "official_source_url": "https://www.kansastag.gov/388/Kansas-Disaster-Declarations",
   "schema_version": 1,
   "slug": "kansas",
-  "source_status": "partial",
+  "source_status": "not_collected",
   "state": "KS"
 }

@@ -327,6 +327,18 @@ def write_fmcsa_supplement(state: dict, state_dir: Path, repo_root: Path) -> int
     return len(rows)
 
 
+def excluded_declaration_ids(state_dir: Path) -> set[str]:
+    """Declaration ids a reviewer marked "exclude" in hazard_overrides.csv."""
+    path = state_dir / "hazard_overrides.csv"
+    if not path.exists():
+        return set()
+    return {
+        (row.get("declaration_id") or "").strip()
+        for row in read_csv_rows(path)
+        if (row.get("hazard_category_override") or "").strip().lower() == "exclude"
+    } - {""}
+
+
 def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
     path = locate_first(state_dir, candidate_action_files(state))
     raw = read_csv_rows(path)
@@ -335,6 +347,12 @@ def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path |
         raw += read_csv_rows(supplement) if supplement.exists() else []
     rows = [normalized_action(row, state["abbreviation"]) for row in raw
             if not before_cutoff(row)]
+    # A record reviewed as not a weather event (hazard_category_override
+    # "exclude") is dropped from the storm join. It is dropped from the page,
+    # the count and the API here too, so the list is weather declarations only.
+    excluded = excluded_declaration_ids(state_dir)
+    if excluded:
+        rows = [row for row in rows if row["declaration_id"] not in excluded]
     unique = {}
     for row in rows:
         key = row["declaration_id"] or json.dumps(row, sort_keys=True)
