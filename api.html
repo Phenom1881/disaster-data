@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Disaster Data | API</title>
+<meta name="description" content="A free, read-only JSON API for federal disaster declarations by state, county and declaration, and for state weather emergency declarations matched to federal declarations and NOAA storm reports.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --h1:#efddb9;--h2:#e6c089;--h3:#d98c4e;--h4:#c85c2e;--h5:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+.wrap{position:relative;z-index:1;}
+
+/* ---- nav (matches dashboard) ---- */
+nav{position:sticky;top:0;z-index:50;background:rgba(246,241,231,.86);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:60px;}
+a.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:inherit;}
+.brand .mark{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.4px;color:var(--accent);}
+.navlinks{display:flex;align-items:center;gap:4px;}
+.navlinks a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:6px;transition:.15s;letter-spacing:.2px;}
+.navlinks a:hover{color:var(--ink);background:var(--paper-3);}
+.navlinks a.on{color:var(--accent);background:var(--accent-soft);}
+.navmeta{font-size:11px;color:var(--ink-3);letter-spacing:.5px;font-variant-numeric:tabular-nums;}
+@media(max-width:720px){.navlinks a:not(.on){display:none;}.navmeta{display:none;}}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+/* ---- masthead ---- */
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,40px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,64px);line-height:1.03;letter-spacing:-1.5px;max-width:18ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:60ch;margin-top:24px;line-height:1.55;}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(30px,4vw,42px);}
+.fact{background:var(--paper-2);padding:20px 22px;}
+.fact .n{font-family:var(--serif);font-weight:500;font-size:clamp(22px,3vw,32px);line-height:1;letter-spacing:-.8px;}
+.fact .l{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+@media(max-width:560px){.facts{grid-template-columns:1fr;}}
+
+/* ---- sections ---- */
+main{display:block;}
+.section{padding:clamp(34px,5vw,58px) 0;border-top:1px solid var(--rule);}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;}
+.section h2{font-family:var(--serif);font-weight:500;font-size:clamp(23px,3.3vw,33px);letter-spacing:-.8px;line-height:1.1;max-width:22ch;margin-bottom:18px;}
+.prose{max-width:64ch;color:var(--ink-2);font-size:clamp(15px,1.6vw,17px);line-height:1.7;}
+.prose p+p{margin-top:14px;}
+.prose strong{color:var(--ink);font-weight:600;}
+.prose a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);transition:border-color .15s;}
+.prose a:hover{border-bottom-color:var(--accent);}
+
+/* ---- declaration types ---- */
+.dtypes{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px;}
+.dtype{flex:1 1 220px;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;}
+.dt-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.swatch{width:13px;height:13px;border-radius:3px;flex:none;}
+.dt-code{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:-.2px;}
+.dt-name{font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-3);}
+.dtype p{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+
+/* ---- hazard families ---- */
+.families{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:24px;}
+.fam{background:var(--paper-2);padding:22px 22px 20px;}
+.fam-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:-.2px;margin-bottom:7px;}
+.fam-desc{font-size:13px;color:var(--ink-2);line-height:1.5;margin-bottom:14px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;}
+.type-tag{font-family:var(--sans);font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--paper-3);border:1px solid var(--rule-2);border-radius:5px;padding:3px 9px;letter-spacing:.2px;}
+@media(max-width:720px){.families{grid-template-columns:1fr;}}
+
+/* ---- term definitions ---- */
+.defs{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:24px;max-width:780px;}
+.def{background:var(--paper-2);padding:16px 20px;}
+.def-t{font-family:var(--serif);font-weight:600;font-size:15px;margin-bottom:4px;}
+.def-d{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+.def-t code.path{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:500;color:var(--accent);}
+.def-tag{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-3);margin-left:8px;vertical-align:middle;}
+.data-code{margin-top:24px;max-width:820px;background:var(--paper-3);color:var(--ink);border:1px solid var(--rule-2);border-radius:10px;padding:16px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre;}
+.data-code .c{color:var(--ink-3);}
+.data-code .s{color:var(--accent-2);}
+
+/* ---- cta ---- */
+.cta-band{padding:clamp(44px,6vw,76px) 0;border-top:1px solid var(--rule);text-align:center;}
+.cta-band h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.6vw,38px);letter-spacing:-1px;margin-bottom:22px;max-width:20ch;margin-left:auto;margin-right:auto;}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:14px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:12px 22px;text-decoration:none;transition:.15s;}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2);}
+
+/* ---- footer (matches dashboard) ---- */
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
+
+/* ---- mobile hamburger (desktop unchanged) ---- */
+.navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px;border-radius:8px;}
+.navburger span{display:block;height:2px;width:100%;background:var(--ink);border-radius:2px;transition:.2s;}
+.navburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.navburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.navburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobilemenu{display:none;}
+@media(max-width:720px){
+  nav{flex-direction:row;align-items:center;justify-content:space-between;height:60px;}
+  .navlinks{display:none !important;}
+  .navburger{display:flex;}
+  .mobilemenu:not([hidden]){display:flex;flex-direction:column;gap:2px;padding:10px clamp(18px,4vw,48px) 18px;background:var(--paper);border-bottom:1px solid var(--rule);position:sticky;top:60px;z-index:49;}
+  .mobilemenu > a{font-size:15px;font-weight:500;color:var(--ink);text-decoration:none;padding:11px 12px;border-radius:8px;}
+  .mobilemenu > a.on{color:var(--accent);background:var(--accent-soft);}
+  .mm-section{display:flex;flex-direction:column;gap:2px;padding:6px 0;margin:2px 0;border-top:1px solid var(--rule);}
+  .mm-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);padding:6px 12px 2px;}
+  .mm-section a{font-size:15px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:10px 12px 10px 22px;border-radius:8px;}
+  .mm-section a:hover,.mm-section a.on{color:var(--accent);background:var(--accent-soft);}
+}
+
+/* ---- api page ---- */
+.ep{margin-top:26px;border:1px solid var(--rule);border-radius:10px;background:var(--paper-2);overflow:hidden;max-width:860px;}
+.ep-h{padding:15px 20px;border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;}
+.ep-h .verb{font-size:10.5px;font-weight:700;letter-spacing:.8px;color:#fff;background:var(--accent);border-radius:4px;padding:2px 7px;}
+.ep-h code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:500;color:var(--accent);word-break:break-all;}
+.ep-b{padding:16px 20px 18px;}
+.ep-b p{font-size:14px;color:var(--ink-2);line-height:1.6;}
+.ep-b > * + *{margin-top:12px;}
+.ep-b pre{background:var(--paper-3);border:1px solid var(--rule-2);border-radius:8px;padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.7;overflow-x:auto;white-space:pre;}
+.ep-b a{color:var(--accent);word-break:break-all;}
+table.params{width:100%;border-collapse:collapse;font-size:13px;}
+table.params th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-3);padding:6px 10px 6px 0;border-bottom:1px solid var(--rule);}
+table.params td{padding:8px 10px 8px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2);}
+table.params td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);white-space:nowrap;}
+table.params tr:last-child td{border-bottom:0;}
+.base{margin-top:22px;max-width:860px;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:16px 20px;}
+.base .l{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;}
+.base code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;color:var(--accent);word-break:break-all;}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;}
+.toc a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;border:1px solid var(--rule-2);border-radius:999px;padding:5px 13px;background:var(--paper-2);}
+.toc a:hover{color:var(--accent);border-color:var(--accent);}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<div class="wrap">
+<div class="container">
+
+  <header class="masthead">
+    <div class="kicker">For builders and analysts</div>
+    <h1 class="headline">The DisasterData <em>API</em></h1>
+    <p class="standfirst">Federal disaster declarations by state, county and declaration number, and each state's own weather emergency declarations matched to federal declarations and NOAA storm reports. Free, read-only JSON. No key, no sign-up.</p>
+    <div class="base"><div class="l">Base address</div><code>https://disasterdata-api.disasterdata.workers.dev</code></div>
+    <div class="toc" role="navigation" aria-label="On this page"><a href="#start">Quick start</a><a href="#states">States</a><a href="#declarations">Declarations</a><a href="#county">Counties</a><a href="#actions">State declarations</a><a href="#crosswalk">Crosswalk</a><a href="#responses">Responses</a><a href="#limits">Limits</a><a href="#data">About the data</a></div>
+  </header>
+
+  <main>
+    <section class="section" id="start">
+      <div class="eyebrow">Quick start</div>
+      <h2>One request, one answer.</h2>
+      <div class="prose">
+        <p>Everything is a GET request that returns JSON. Declarations naming Roanoke County, Virginia, since 2020:</p>
+      </div>
+      <pre class="data-code"><span class="c">// JavaScript</span>
+const r = await fetch(<span class="s">'https://disasterdata-api.disasterdata.workers.dev/v1/counties/51161?type=EM&amp;since=2020-01-01'</span>);
+const { name, count, declarations } = await r.json();
+
+<span class="c"># curl</span>
+curl <span class="s">'https://disasterdata-api.disasterdata.workers.dev/v1/states/VA/crosswalk'</span>
+
+<span class="c"># Python</span>
+import requests
+data = requests.get(<span class="s">'https://disasterdata-api.disasterdata.workers.dev/v1/states/FL/actions'</span>).json()</pre>
+      <div class="prose" style="margin-top:20px;">
+        <p>The root address lists every endpoint. The API reads the same files this site publishes, so an answer from it always matches what the site shows, and it updates on the same weekly schedule.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Endpoints</div>
+      <h2>What you can ask.</h2>
+      <div class="prose"><p>Replace {ST} with a postal code such as VA. Federal data covers the states, the District of Columbia and the territories. State weather declarations cover the 50 states.</p></div>
+      <div class="ep" id="states"><div class="ep-h"><span class="verb">GET</span><code>/v1/states</code></div><div class="ep-b"><p>Every state and territory with its count of federal declarations, its number of localities, and, for the 50 states, its count of state weather declarations.</p><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/states" target="_blank" rel="noopener">/v1/states</a></p><pre>{
+  "api_version": "v1",
+  "data_date": "2026-10-08",
+  "count": 56,
+  "states": [
+    { "state": "AK", "name": "Alaska", "federal_declarations": 95,
+      "jurisdictions": 32, "state_declarations": 23, "href": "/v1/states/AK" }
+  ],
+  "sources": ["https://disasterdata.io/data/decl-index/manifest.json"],
+  "attribution": "..."
+}</pre></div></div><div class="ep" id="state"><div class="ep-h"><span class="verb">GET</span><code>/v1/states/{ST}</code></div><div class="ep-b"><p>One state in a single answer: federal declaration totals by type, its most recent federal declaration, and how many state weather declarations it has, with the coverage note that goes with them. Includes links to the other endpoints for that state.</p><table class="params"><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td>{ST}</td><td>Two letter postal code, for example VA.</td></tr></tbody></table><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/states/VA" target="_blank" rel="noopener">/v1/states/VA</a></p></div></div><div class="ep" id="declarations"><div class="ep-h"><span class="verb">GET</span><code>/v1/states/{ST}/declarations</code></div><div class="ep-b"><p>A state's federal declarations, newest first. Each lists every county or equivalent it names, by FIPS code, and whether FEMA designated the whole state.</p><table class="params"><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td>{ST}</td><td>Two letter postal code, for example VA.</td></tr><tr><td>type</td><td>DR, EM or FM: major disaster, emergency, or fire management assistance.</td></tr><tr><td>since</td><td>Only declarations on or after this date, written YYYY-MM-DD.</td></tr><tr><td>until</td><td>Only declarations on or before this date, written YYYY-MM-DD.</td></tr></tbody></table><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/states/VA/declarations?type=EM&amp;since=2020-01-01" target="_blank" rel="noopener">/v1/states/VA/declarations?type=EM&amp;since=2020-01-01</a></p><pre>{
+  "state": "VA",
+  "count": 12,
+  "filters": { "type": "EM", "since": "2020-01-01" },
+  "declarations": [
+    { "fema_id": "DR-4863-VA", "id": "DR-4863", "type": "DR",
+      "title": "SEVERE WINTER STORMS AND FLOODING",
+      "incidentType": "Severe Storm",
+      "date": "2025-04-04", "begin": "2025-02-10", "end": "2025-02-18",
+      "statewide": false, "programs": ["PA"],
+      "fips": ["51007", "51011", "..."] }
+  ]
+}</pre><p>date is the declaration date. begin and end are the incident period.</p></div></div><div class="ep" id="declaration"><div class="ep-h"><span class="verb">GET</span><code>/v1/declarations/{id}</code></div><div class="ep-b"><p>One federal declaration, written the way FEMA writes it: type, number, then state. Returns its dates, incident period, programs, and the named areas with their FIPS codes and names.</p><table class="params"><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td>{id}</td><td>For example DR-4898-TN or EM-3592-FL: type, number, two letter state.</td></tr></tbody></table><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/declarations/DR-4863-VA" target="_blank" rel="noopener">/v1/declarations/DR-4863-VA</a></p></div></div><div class="ep" id="county"><div class="ep-h"><span class="verb">GET</span><code>/v1/counties/{FIPS}</code></div><div class="ep-b"><p>Every federal declaration that names one county, including statewide declarations, which name every county in the state. Each is marked county or statewide.</p><table class="params"><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td>{FIPS}</td><td>Five digit county FIPS code. 51161 is Roanoke County, Virginia.</td></tr><tr><td>type</td><td>DR, EM or FM: major disaster, emergency, or fire management assistance.</td></tr><tr><td>since</td><td>Only declarations on or after this date, written YYYY-MM-DD.</td></tr><tr><td>until</td><td>Only declarations on or before this date, written YYYY-MM-DD.</td></tr></tbody></table><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/counties/51161?type=EM&amp;since=2020-01-01" target="_blank" rel="noopener">/v1/counties/51161?type=EM&amp;since=2020-01-01</a></p></div></div><div class="ep" id="actions"><div class="ep-h"><span class="verb">GET</span><code>/v1/states/{ST}/actions</code></div><div class="ep-b"><p>The state's own weather emergency declarations: the governor, the signing date, the order number and a link to the source record. The response also carries the coverage note, which says how far back that state's archive goes and what is missing.</p><table class="params"><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td>{ST}</td><td>Two letter postal code of one of the 50 states.</td></tr></tbody></table><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/states/FL/actions" target="_blank" rel="noopener">/v1/states/FL/actions</a></p><pre>{
+  "state": "FL",
+  "name": "Florida",
+  "generated_on": "2026-10-08",
+  "coverage": "2020-present structured Governor archive; ...",
+  "count": 26,
+  "actions": [
+    { "declaration_id": "FL-EO-2026-202",
+      "governor": "Ron DeSantis",
+      "action_number": "2026-202",
+      "date_signed": "2026-10-06",
+      "title": "#2026-202 re: Emergency Management: Tropical Depression Nine",
+      "source_url": "https://www.flgov.com/eog/news/executive-orders" }
+  ]
+}</pre><p>Only original weather declarations are listed. Extensions, amendments, administrative orders and records reviewed as not a weather event are left out.</p></div></div><div class="ep" id="crosswalk"><div class="ep-h"><span class="verb">GET</span><code>/v1/states/{ST}/crosswalk</code></div><div class="ep-b"><p>Each state declaration beside its closest federal declaration and the NOAA Storm Events zones and counties matched to it. This is the join behind the Plus pages.</p><table class="params"><thead><tr><th>Parameter</th><th>Meaning</th></tr></thead><tbody><tr><td>{ST}</td><td>Two letter postal code of one of the 50 states.</td></tr></tbody></table><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/states/FL/crosswalk" target="_blank" rel="noopener">/v1/states/FL/crosswalk</a></p><pre>{
+  "declaration_id": "FL-EO-2026-33",
+  "date_signed": "2026-02-09",
+  "federal_status": "no_federal_declaration_found",
+  "federal_declaration": null,
+  "noaa_status": "matched",
+  "noaa_match_count": 128,
+  "noaa_areas": ["BAKER", "COASTAL BAY", "..."]
+}</pre><p>federal_declaration is an automated candidate: the closest federal declaration whose incident period falls within 21 days of the state signing date. It is not a confirmed legal link. A federal_status of no_federal_declaration_found is a result, not missing data. A declaration signed after the NOAA data ends shows no storm match yet.</p></div></div><div class="ep" id="health"><div class="ep-h"><span class="verb">GET</span><code>/v1/health</code></div><div class="ep-b"><p>A service check. Not rate limited.</p><p>Try it: <a href="https://disasterdata-api.disasterdata.workers.dev/v1/health" target="_blank" rel="noopener">/v1/health</a></p><pre>{ "api_version": "v1", "status": "ok" }</pre></div></div>
+    </section>
+
+    <section class="section" id="responses">
+      <div class="eyebrow">Reference</div>
+      <h2>Every response has the same frame.</h2>
+      <div class="prose">
+        <p><strong>api_version</strong> is v1. <strong>data_date</strong> or <strong>generated_on</strong> says when the underlying file was built. <strong>sources</strong> lists the published files the answer came from. <strong>attribution</strong> carries the credit line, which you should keep with the data if you republish it.</p>
+        <p><strong>Errors</strong> are JSON with an error message and the status:</p>
+      </div>
+      <div class="defs">
+        <div class="def"><div class="def-t"><code class="path">400</code></div><div class="def-d">A parameter is malformed: a date not written YYYY-MM-DD, a type other than DR, EM or FM, a declaration id not written like DR-4898-TN, or a county that is not five digits.</div></div>
+        <div class="def"><div class="def-t"><code class="path">404</code></div><div class="def-d">Nothing there: an unknown state, a county no declaration names, or a declaration that is not in the published data.</div></div>
+        <div class="def"><div class="def-t"><code class="path">429</code></div><div class="def-d">Rate limit reached. Wait a minute. The Retry-After header says how long.</div></div>
+        <div class="def"><div class="def-t"><code class="path">502 and 503</code></div><div class="def-d">The data file could not be read, or a state's declaration data is not published yet. Try again shortly.</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="eyebrow">Using it</div>
+      <h2>Limits and good manners.</h2>
+      <div class="prose">
+        <p><strong>Rate limit.</strong> 60 requests a minute per IP address, which covers pulling every state. Past that the API answers 429.</p>
+        <p><strong>Caching.</strong> Data changes once a week. Responses can be cached for an hour, and you are welcome to cache longer.</p>
+        <p><strong>Browsers.</strong> Cross-origin requests are allowed, so you can call the API from a web page. GET only.</p>
+        <p><strong>Stability.</strong> Fields may be added inside /v1. Nothing will be renamed or removed without a new version path.</p>
+        <p><strong>Need more?</strong> If you need more than the public limit, or a feed built for your system, <a href="https://www.linkedin.com/in/reallyjosephreally" target="_blank" rel="noopener">get in touch</a>.</p>
+      </div>
+    </section>
+
+    <section class="section" id="data">
+      <div class="eyebrow">About the data</div>
+      <h2>Read this before you build on it.</h2>
+      <div class="prose">
+        <p><strong>Federal declarations</strong> come from OpenFEMA's Disaster Declarations Summaries, with the counties each declaration names.</p>
+        <p><strong>State declarations</strong> are collected from each state's own records. Coverage varies by state, and a missing declaration is not evidence that none was signed. Each state's response carries a coverage note that says how far back its archive goes and what is not covered. The <a href="/plus/">Plus pages</a> show the same notes.</p>
+        <p><strong>Storm matches</strong> use NOAA's Storm Events database, which runs about two months behind. A recent declaration shows no storm match until the data catches up.</p>
+        <p><strong>Candidate matches are not legal links.</strong> The federal match for a state declaration is an automated candidate based on dates.</p>
+        <p>DisasterData.IO uses OpenFEMA and NOAA data and is not endorsed by or affiliated with FEMA or NOAA. If something looks wrong, <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">report a data issue</a>.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="disc">Built from OpenFEMA's Disaster Declarations Summaries and NOAA NCEI Storm Events, plus state government sources. Counts reflect declaration records, not official financial or loss reporting.</div>
+      <div style="text-align:right;"><a href="/about.html">About</a><br><a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

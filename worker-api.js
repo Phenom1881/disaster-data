@@ -356,7 +356,7 @@ function apiIndex() {
   return {
     api_version: API_VERSION,
     name: "DisasterData API",
-    documentation: `${SITE_ORIGIN}/about.html#api`,
+    documentation: `${SITE_ORIGIN}/api.html`,
     rate_limit: "60 requests per minute per IP address",
     updated: "Weekly, with the site",
     endpoints: {
