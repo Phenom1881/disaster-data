@@ -24,7 +24,7 @@
  * CSV names the manifest no longer uses); reading api.json removes that risk.
  *
  * Rate limiting uses Cloudflare's native Rate Limiting binding declared in
- * wrangler.toml (60 requests per minute per client IP by default).
+ * wrangler.toml (10 requests per minute per client IP by default).
  */
 
 // Links in responses point readers at the public site.
@@ -357,7 +357,7 @@ function apiIndex() {
     api_version: API_VERSION,
     name: "DisasterData API",
     documentation: `${SITE_ORIGIN}/api.html`,
-    rate_limit: "60 requests per minute per IP address",
+    rate_limit: "10 requests per minute per IP address",
     updated: "Weekly, with the site",
     endpoints: {
       "/v1/states": "Every state and territory with counts",
