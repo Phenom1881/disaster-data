@@ -24,7 +24,12 @@ def collect(workdir=".", scripts_dir=None):
     # block page). They go to stderr, which used to be printed only when the
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
-    if result.returncode: raise RuntimeError("Wisconsin adapter: scrape failed")
+    if result.returncode:
+        # Say why: which of the two sources failed and how. Without this the
+        # status page only read "scrape failed" and the cause was in the log.
+        lines = [l.strip() for l in (result.stderr or "").splitlines() if l.strip()]
+        reason = lines[-1][:400] if lines else ""
+        raise RuntimeError("Wisconsin adapter: scrape failed" + (f" ({reason})" if reason else ""))
     note = "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR"
     if "read from the Governor's press releases" in (result.stdout or ""):
         # evers.wi.gov did not answer this run; the scraper read the
