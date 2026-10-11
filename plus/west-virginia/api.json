@@ -206,8 +206,17 @@
     {
       "date_signed": "2026-08-18",
       "declaration_id": "WV-PROC-2026-08-18-declares-state-of-emergency-following-new-round-of-severe-st",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2026-08-14",
+        "date": "2026-10-07",
+        "end": "2026-08-18",
+        "id": "DR-4953",
+        "incidentType": "Severe Storm",
+        "number": 4953,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
       "noaa_status": "pending",
@@ -901,11 +910,11 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-08",
+  "generated_on": "2026-10-11",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 18,
-    "federal_declaration_count": 85,
+    "federal_declaration_count": 86,
     "severity_rows": 434,
     "storm_match_rows": 982
   },

@@ -266,8 +266,17 @@
     {
       "date_signed": "2026-10-06",
       "declaration_id": "FL-EO-2026-202",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2026-10-06",
+        "date": "2026-10-09",
+        "end": "",
+        "id": "EM-3655",
+        "incidentType": "Tropical Storm",
+        "number": 3655,
+        "title": "HURRICANE ISAIAS",
+        "type": "EM"
+      },
+      "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
       "noaa_status": "pending",
@@ -1309,11 +1318,11 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-08",
+  "generated_on": "2026-10-11",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 26,
-    "federal_declaration_count": 188,
+    "federal_declaration_count": 189,
     "severity_rows": 612,
     "storm_match_rows": 1156
   },

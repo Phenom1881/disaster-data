@@ -1,7 +1,8 @@
 Repository root: /home/runner/work/disaster-data/disaster-data
 Selected states: AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
 FMCSA state declarations: 0 entries read from 0 page(s), 0 declaration page(s) read, 570 saved in all; pages not read: 2017 (HTTPError 403), 2018 (HTTPError 403), 2019 (HTTPError 403), 2020 (HTTPError 403), 2021 (HTTPError 403), 2022 (HTTPError 403), 2023 (HTTPError 403), 2024 (HTTPError 403), 2025 (HTTPError 403), 2026 (HTTPError 403), 2026 (HTTPError 403)
-AL: al_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+AL: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+AL: al_emergency_actions_all.csv: kept 4 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alabama/hazard_overrides.csv
 AL-SOE-2026-10-07-state-of-emergency-tropical-storm-isaias: no matching storm events found in the date window.
 AL-SOE-2020-10-06-state-of-emergency-hurricane-delta: no matching storm events found in the date window.
@@ -38,7 +39,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp.
 
-AL: 31 actions, 102 federal declarations; April 2017-present structured Governor archive; 2000-April 2017 gap disclosed
+AL: 31 actions, 103 federal declarations; April 2017-present structured Governor archive; 2000-April 2017 gap disclosed; 1 saved record kept that this refresh's check of the state source did not return
 {"actions": 556, "declarations": 6, "relationships": 6, "overrides": 3, "review": 146}
 
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alaska/hazard_overrides.csv
@@ -267,7 +268,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp.
 
-CO: 120 actions, 112 federal declarations; 2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.
+CO: 112 actions, 112 federal declarations; 2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.
 Connecticut scraper: fetching 241 official document(s)...
     fetched 50/241
     fetched 100/241
@@ -378,8 +379,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/florida/eo_storm_severity_summary.csv.tmp.
 
-FL: 26 actions, 188 federal declarations; 2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending
+FL: 26 actions, 189 federal declarations; 2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/georgia/hazard_overrides.csv
+GA-EO-10-08-26-01: no matching storm events found in the date window.
 GA-EO-09-12-18-01: no matching storm events found in the date window.
 Wrote 2292 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_matches.csv.tmp
 Wrote severity summary (1483 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp
@@ -414,7 +416,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp.
 
-GA: 32 actions, 81 federal declarations; 2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill
+GA: 33 actions, 81 federal declarations; 2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill
 {"actions": 226, "declarations": 8, "relationships": 102, "overrides": 4, "review": 15}
 
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/hawaii/hazard_overrides.csv
@@ -457,7 +459,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp.
 
-HI: 37 actions, 75 federal declarations; Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+HI: 37 actions, 77 federal declarations; Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 {"actions": 412, "declarations": 208, "relationships": 21, "overrides": 1, "review": 6}
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/idaho/hazard_overrides.csv
@@ -843,10 +845,10 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp.
 
-KS: 53 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return
-Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 12 weather state-of-emergency releases.
+KS: 52 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); 1 saved record kept that this refresh's check of the state source did not return
+Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 11 weather state-of-emergency releases.
 
-KY: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+KY: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 KY: ky_emergency_actions_all.csv: kept 10 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kentucky/hazard_overrides.csv
 KY-SOE-2023-11-09: no matching storm events found in the date window.
@@ -884,7 +886,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp.
 
-KY: 13 actions, 99 federal declarations; manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap; 1 saved record kept that this refresh's check of the state source did not return
+KY: 13 actions, 99 federal declarations; manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap; 2 saved records kept that this refresh's check of the state source did not return
 Louisiana documents: 47 read, but no signing date found; 24 scanned PDF, read with OCR
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/louisiana/hazard_overrides.csv
@@ -965,7 +967,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/maine/eo_storm_severity_summary.csv.tmp.
 
 ME: 24 actions, 71 federal declarations; 2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending
-Maryland: 109 actions, 21 relationships, 11 weather declarations
+Maryland: 110 actions, 21 relationships, 11 weather declarations
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/maryland/hazard_overrides.csv
 Wrote 937 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/maryland/eo_storm_matches.csv.tmp
@@ -1004,10 +1006,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 23 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 81 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 83 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 11 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 91 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 10 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 89 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 436 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1208,8 +1210,8 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
 
-MO: 83 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text.
-Montana: 192 orders scraped, 18 written as declarations.
+MO: 68 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text.
+Montana: 193 orders scraped, 18 written as declarations.
 
 NOTE: 6 declarations need hazard_overrides.csv entries (boilerplate title, no hazard keyword): ['MT-EO-11-2025', 'MT-EO-9-2025', 'MT-EO-8-2024', 'MT-EO-2-2023', 'MT-EO-1-2023', 'MT-EO-4-2022']
 
@@ -1254,7 +1256,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp.
 
-MT: 19 actions, 113 federal declarations; 2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending; 1 saved record kept that this refresh's check of the state source did not return
+MT: 16 actions, 113 federal declarations; 2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending; 1 saved record kept that this refresh's check of the state source did not return
 Nebraska: wrote 33 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/nebraska/declarations_for_join.csv
 
 NE: ne_emergency_actions_all.csv: kept 4 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1298,7 +1300,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_severity_summary.csv.tmp.
 
-NE: 33 actions, 88 federal declarations; 1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope
+NE: 19 actions, 88 federal declarations; 1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nevada/hazard_overrides.csv
 NV-PROCLAMATION-2023-05-29-DECLARATION-OF-EMERGENCY: no matching storm events found in the date window.
 NV-SOE-2021-08-30: no matching storm events found in the date window.
@@ -1370,13 +1372,13 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
   found 14 administration page(s)
   parsing Sherrill [057sherrill] (https://www.nj.gov/infobank/eo/057sherrill/approved/eo_archive.shtml)
-    26 order(s) found
+    27 order(s) found
   parsing Murphy [056murphy] (https://www.nj.gov/infobank/eo/056murphy/approved/eo_archive.shtml)
     415 order(s) found
   parsing Christie [055christie] (https://www.nj.gov/infobank/eo/055christie/index.shtml)
@@ -1409,7 +1411,7 @@ New Jersey scraper: fetching document text for classification (this is the slow 
 New Jersey scraper: extracting order relationships...
   147 relationship(s) extracted (after global dedup)
 
-Done. 1257 total order(s), 176 weather-related, 145 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
+Done. 1258 total order(s), 176 weather-related, 145 original declarations written to the join file (excludes extensions, amendments, terminations, and undated rows).
 
 New Jersey adapter: coverage = 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
 NJ: nj_emergency_actions_all.csv: left off 5 declaration(s) signed before 1970
@@ -1475,8 +1477,8 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
-NJ: 145 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
-New Mexico: 1215 actions scraped, 1183 read via OCR (1215 from earlier runs), 0 still image-only with no usable text.
+NJ: 120 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+New Mexico: 1216 actions scraped, 1184 read via OCR (1215 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 NM: nm_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1531,23 +1533,23 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp.
 
-NM: 45 actions, 126 federal declarations; 2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
+NM: 45 actions, 127 federal declarations; 2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
 New York adapter: collecting executive orders...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-york/declarations_for_join.csv
 New York scraper: collecting current executive orders...
     current page 1: 100 row(s), 100 new
     current page 2: 100 row(s), 100 new
-    current page 3: 35 row(s), 35 new
+    current page 3: 36 row(s), 36 new
 New York scraper: collecting selected prior orders...
     selected prior: 97 row(s)
 New York scraper: fetching linked documents...
-    fetched 50/332
-    fetched 100/332
-    fetched 150/332
-    fetched 200/332
-    fetched 250/332
-    fetched 300/332
-Done. 332 total row(s): 235 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
+    fetched 50/333
+    fetched 100/333
+    fetched 150/333
+    fetched 200/333
+    fetched 250/333
+    fetched 300/333
+Done. 333 total row(s): 236 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
 
 New York adapter: coverage = 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 Applied 14 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-york/hazard_overrides.csv
@@ -1588,7 +1590,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-york/eo_storm_severity_summary.csv.tmp.
 
-NY: 25 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
+NY: 24 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 North Carolina adapter: collecting official Executive Orders...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/declarations_for_join.csv
 North Carolina scraper: walking official Executive Orders archive...
@@ -1775,7 +1777,7 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 OH: 18 actions, 61 federal declarations; manual_only - Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on are added by hand from the Governor's announcements and news coverage. The Governor's GovDelivery feed answers 406 to every request on record, so it adds nothing automatically.; Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
 Oklahoma: wrote 3 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/oklahoma/declarations_for_join.csv
 
-OK: declarations_for_join.csv: kept 48 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
+OK: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oklahoma/hazard_overrides.csv
 OK-SOE-2018-12-06: no matching storm events found in the date window.
 OK-FMCSA-E27631B95F35: no matching storm events found in the date window.
@@ -1812,7 +1814,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
-OK: 55 actions, 259 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index); 2003-2015 archive page not exhaustively walked; 2000-2002 backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present); 48 saved records kept that this refresh's check of the state source did not return
+OK: 55 actions, 260 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 Oregon signing dates: 38 from confirmed_signing_dates.csv; 190 kept from earlier runs; 99 not found by OCR in the last four weeks, not retried yet; 61 of those undated, dated by when they were posted
 
 OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 33 blank and 0 garbled field set(s)
@@ -2167,7 +2169,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp.
 
-SD: 25 actions, 98 federal declarations; 2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending
+SD: 22 actions, 98 federal declarations; 2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending
 TN-BILLLEE-EO-107: no matching storm events found in the date window.
 TN-BILLLEE-EO-99: no matching storm events found in the date window.
 TN-BILLLEE-EO-96: no matching storm events found in the date window.
@@ -2249,7 +2251,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 59 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 1 saved record kept that this refresh's check of the state source did not return
+TX: 58 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 1 saved record kept that this refresh's check of the state source did not return
 {"actions": 560, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
@@ -2300,7 +2302,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/utah/eo_storm_severity_summary.csv.tmp.
 
-UT: 33 actions, 61 federal declarations; 2000-present Office of Administrative Rules executive-document indexes and legal texts.
+UT: 32 actions, 62 federal declarations; 2000-present Office of Administrative Rules executive-document indexes and legal texts.
 Vermont: 123 actions, 55 relationships, 1 weather declarations
 
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/vermont/hazard_overrides.csv
@@ -2440,7 +2442,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 75 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 9 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2533,9 +2535,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
-WV: 18 actions, 85 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f15fca08e50>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
-Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f15fca08e50>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+WV: 18 actions, 86 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fb4497c0690>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fb4497c0690>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
 WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
@@ -2575,7 +2577,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
-WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+WI: 18 actions, 57 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
 {"actions": 64, "declarations": 4, "relationships": 20, "overrides": 4, "review": 5}
 
 WY: wy_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
@@ -2607,16 +2609,18 @@ WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-ord
 
 Retrying 2 state(s) whose source failed or returned nothing, after 60s: NH, WI
 New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
-New Hampshire: 339 actions, 250 relationships, 8 weather declarations
+New Hampshire: 339 actions, 253 relationships, 8 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
   WARNING: the registry could not be fetched; reading the Internet Archive copy
-  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-88.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200308id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-88.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f0101c74c10>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
-  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2014-6.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064419id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2014-6.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f010359b8d0>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-15.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200232id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-15.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-13.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200239id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-13.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-10.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200245id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-10.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f8d6539f050>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-09.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Read timed out. (read timeout=60)
 
 NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 4 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 22 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 57 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 20 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 55 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY NH: recovered (ok, 8 records returned); rebuilding
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
@@ -2655,14 +2659,31 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 63 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fab756dae90>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
-Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7fab756dae90>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+Wisconsin archive not reachable (HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0905c77990>, 'Connection to evers.wi.gov timed out. (connect timeout=20)'))); reading the Governor's press releases instead
+Wisconsin archive scrape failed: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f0905c77990>, 'Connection to evers.wi.gov timed out. (connect timeout=20)')); press releases not read either: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
 
 WARNING WI: Collection failed: Wisconsin adapter: scrape failed
 RETRY WI: still failed (Collection failed: Wisconsin adapter: scrape failed)
-WI: 18 actions, 56 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
-TIME total: collect 2987s, storm join 92s. Slowest: NH 580s+1s, NJ 293s+8s, NC 274s+1s, TX 240s+1s, CT 205s+1s, MA 199s+1s, CA 116s+1s, WA 103s+1s, LA 94s+1s, MI 93s+1s
-WARNING kept saved records the state source did not return: KS (1), KY (1), MT (1), OK (48), TX (1)
+WI: 18 actions, 57 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; Collection failed: Wisconsin adapter: scrape failed
+TIME total: collect 2776s, storm join 84s. Slowest: NH 509s+0s, TX 340s+1s, NJ 275s+7s, NC 263s+1s, CT 185s+0s, MA 128s+1s, LA 91s+1s, SC 85s+3s, WA 83s+1s, MI 76s+1s
+WARNING kept saved records the state source did not return: AL (1), KS (1), KY (2), MT (1), TX (1)
 Row-loss check: no saved rows lost.
-Plus health: 48 green, 2 yellow, 0 red.
+Plus health: 38 green, 11 yellow, 1 red.
+  RED NE: Declarations fell from 33 to 19 since the last run.
+Changes since the last run (2026-10-08 17:14 UTC):
+
+- **Colorado** went from green to yellow. Declarations fell from 120 to 112 since the last run.
+- **Kansas** went from green to yellow. Declarations fell from 53 to 52 since the last run.
+- **Kentucky** went from green to yellow. The source left out 2 of 13 saved records; they are shown from earlier runs.
+- **Missouri** went from green to yellow. Declarations fell from 83 to 68 since the last run.
+- **Montana** went from green to yellow. Declarations fell from 19 to 16 since the last run.
+- **Nebraska** went from green to red. Declarations fell from 33 to 19 since the last run.
+- **New Jersey** went from green to yellow. Declarations fell from 145 to 120 since the last run.
+- **New York** went from green to yellow. Declarations fell from 25 to 24 since the last run.
+- **Oklahoma** went from yellow to green.
+- **South Dakota** went from green to yellow. Declarations fell from 25 to 22 since the last run.
+- **Texas** went from green to yellow. Declarations fell from 59 to 58 since the last run.
+- **Utah** went from green to yellow. Declarations fell from 33 to 32 since the last run.
+
+Now 38 green, 11 yellow, 1 red.

@@ -186,8 +186,17 @@
     {
       "date_signed": "2026-08-03",
       "declaration_id": "WI-EO-301",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2026-07-27",
+        "date": "2026-10-07",
+        "end": "2026-07-27",
+        "id": "DR-4949",
+        "incidentType": "Tornado",
+        "number": 4949,
+        "title": "SEVERE STORMS AND TORNADOES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
       "noaa_status": "pending",
@@ -196,8 +205,17 @@
     {
       "date_signed": "2026-07-28",
       "declaration_id": "WI-EO-300",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2026-07-27",
+        "date": "2026-10-07",
+        "end": "2026-07-27",
+        "id": "DR-4949",
+        "incidentType": "Tornado",
+        "number": 4949,
+        "title": "SEVERE STORMS AND TORNADOES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
       "noaa_status": "pending",
@@ -882,11 +900,11 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-08",
+  "generated_on": "2026-10-11",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 18,
-    "federal_declaration_count": 56,
+    "federal_declaration_count": 57,
     "severity_rows": 421,
     "storm_match_rows": 1138
   },

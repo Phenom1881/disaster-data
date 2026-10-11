@@ -83,9 +83,9 @@
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>Alabama: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> April 2017-present structured Governor archive; 2000-April 2017 gap disclosed. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<div class="notice"><strong>Coverage:</strong> April 2017-present structured Governor archive; 2000-April 2017 gap disclosed; 1 saved record kept that this refresh&#x27;s check of the state source did not return. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
-  <div class="metric"><strong>102</strong>federal FEMA declarations</div>
+  <div class="metric"><strong>103</strong>federal FEMA declarations</div>
   <div class="metric"><strong>31</strong>original state weather declarations</div>
   <div class="metric"><strong>1,583</strong>matched NOAA event rows</div>
 </section>
@@ -134,7 +134,7 @@
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-10-07 &middot; State of Emergency: Tropical Storm Isaias</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tbody><tr><td>2026-10-07 &middot; State of Emergency: Tropical Storm Isaias</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>3656</td></tr>
 <tr><td>2026-01-22 &middot; State of Emergency: Winter Weather</td><td>11</td><td>COLBERT, CULLMAN, FRANKLIN, LAUDERDALE, LAWRENCE, LIMESTONE, MADISON, MARION</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2025-03-14 &middot; State of Emergency: Severe Weather</td><td>64</td><td>AUTAUGA, BIBB, BULLOCK, CALHOUN, CHAMBERS, CHILTON, CLARKE, CLEBURNE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2025-01-20 &middot; State of Emergency: Winter Weather</td><td>64</td><td>BALDWIN CENTRAL, BALDWIN COASTAL, BALDWIN INLAND, BARBOUR, BULLOCK, BUTLER, CHAMBERS, CHOCTAW</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
@@ -168,11 +168,12 @@
 </div>
 
 <details class="layer">
-<summary><span>Federal FEMA declarations</span><span class="count-badge">102 records</span></summary>
+<summary><span>Federal FEMA declarations</span><span class="count-badge">103 records</span></summary>
 <div class="details-body"><p class="note">DR, EM, and FM declarations for Alabama from the site's national FEMA dataset.</p>
 <div class="table-tools"><label for="filter-federal-table">Filter federal declarations</label><input id="filter-federal-table" class="table-search" data-table="federal-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="federal-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2024-09-26</td><td>3618</td><td>EM</td><td>HURRICANE HELENE</td><td>Hurricane</td><td>2024-09-22 to 2024-09-29</td></tr>
+<tbody><tr><td>2026-10-09</td><td>3656</td><td>EM</td><td>HURRICANE ISAIAS</td><td>Hurricane</td><td>2026-10-07 to </td></tr>
+<tr><td>2024-09-26</td><td>3618</td><td>EM</td><td>HURRICANE HELENE</td><td>Hurricane</td><td>2024-09-22 to 2024-09-29</td></tr>
 <tr><td>2023-05-05</td><td>4710</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES</td><td>Severe Storm</td><td>2023-03-24 to 2023-03-27</td></tr>
 <tr><td>2023-01-15</td><td>4684</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES</td><td>Severe Storm</td><td>2023-01-12 to 2023-01-12</td></tr>
 <tr><td>2021-12-21</td><td>4632</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2021-10-06 to 2021-10-07</td></tr>
@@ -586,7 +587,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-08 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-11 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

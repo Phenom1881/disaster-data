@@ -311,13 +311,22 @@
       "title": "State of Emergency: Tropical Storm Cindy"
     }
   ],
-  "coverage": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed",
+  "coverage": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed; 1 saved record kept that this refresh's check of the state source did not return",
   "crosswalk": [
     {
       "date_signed": "2026-10-07",
       "declaration_id": "AL-SOE-2026-10-07-state-of-emergency-tropical-storm-isaias",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2026-10-07",
+        "date": "2026-10-09",
+        "end": "",
+        "id": "EM-3656",
+        "incidentType": "Hurricane",
+        "number": 3656,
+        "title": "HURRICANE ISAIAS",
+        "type": "EM"
+      },
+      "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
       "noaa_status": "pending",
@@ -1524,11 +1533,11 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-08",
-  "kept_saved_records": 0,
+  "generated_on": "2026-10-11",
+  "kept_saved_records": 1,
   "metrics": {
     "action_count": 31,
-    "federal_declaration_count": 102,
+    "federal_declaration_count": 103,
     "severity_rows": 723,
     "storm_match_rows": 1583
   },
@@ -1537,6 +1546,6 @@
   "official_source_url": "https://governor.alabama.gov/newsroom/category/state-of-emergency/",
   "schema_version": 1,
   "slug": "alabama",
-  "source_status": "ok",
+  "source_status": "partial",
   "state": "AL"
 }
