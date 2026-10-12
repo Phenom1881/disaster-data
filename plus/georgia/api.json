@@ -336,8 +336,17 @@
     {
       "date_signed": "2026-10-08",
       "declaration_id": "GA-EO-10-08-26-01",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2026-10-08",
+        "date": "2026-10-09",
+        "end": "",
+        "id": "EM-3657",
+        "incidentType": "Tropical Storm",
+        "number": 3657,
+        "title": "HURRICANE ISAIAS",
+        "type": "EM"
+      },
+      "federal_status": "matched",
       "noaa_areas": [],
       "noaa_match_count": 0,
       "noaa_status": "pending",
@@ -2353,7 +2362,7 @@
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 33,
-    "federal_declaration_count": 81,
+    "federal_declaration_count": 82,
     "severity_rows": 1483,
     "storm_match_rows": 2292
   },
