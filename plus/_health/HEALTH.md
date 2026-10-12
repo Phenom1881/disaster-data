@@ -1,12 +1,12 @@
 # Plus health report
 
-Checked 2026-10-12 16:38 UTC after the refresh. **49 green, 1 yellow, 0 red.**
+Checked 2026-10-12 21:34 UTC after the refresh. **49 green, 1 yellow, 0 red.**
 
 ## Yellow: working with gaps (1)
 
 | State | Declarations | Why |
 |---|---:|---|
-| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 2 of the 3 runs before this one. |
+| Wisconsin (WI) | 18 | Collection failed or produced no declarations on 1 of the 3 runs before this one. |
 
 ## Green (49)
 
@@ -14,20 +14,20 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, 
 
 ## Where the time went
 
-Collecting from state sources took 60.5 min in all, and matching storms took 2.3 min. The 10 slowest states:
+Collecting from state sources took 58.0 min in all, and matching storms took 2.2 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NC | 8.8 min | 1 s |
-| NH | 8.4 min | 0 s |
-| NJ | 7.7 min | 13 s |
-| TX | 7.7 min | 1 s |
-| CT | 4.5 min | 1 s |
-| MA | 3.6 min | 2 s |
-| SC | 1.8 min | 6 s |
+| NH | 8.8 min | 0 s |
+| NJ | 7.8 min | 13 s |
+| NC | 7.8 min | 1 s |
+| TX | 6.0 min | 1 s |
+| CT | 4.6 min | 1 s |
+| MA | 3.4 min | 2 s |
+| SC | 1.7 min | 6 s |
 | LA | 1.6 min | 1 s |
-| MI | 1.6 min | 1 s |
-| WA | 1.5 min | 1 s |
+| VT | 1.5 min | 0 s |
+| PA | 1.5 min | 1 s |
 
 ## Every state
 
@@ -50,7 +50,7 @@ Collecting from state sources took 60.5 min in all, and matching storms took 2.3
 | IA | green | returned everything | 0 | 54 | 79 | 54 | 54 | 54 | 46 |  |
 | KS | green | returned part | 0 | 52 | 96 | 52 | 52 | 52 | 45 | The source left out 1 saved record(s); shown from earlier runs. 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 13 | 99 | 13 | 13 | 13 | 11 |  |
-| LA | green | returned everything | 0 | 26 | 111 | 26 | 26 | 26 | 21 | Failed on the first try this run and recovered on the retry. |
+| LA | green | returned everything | 0 | 26 | 111 | 26 | 26 | 26 | 21 |  |
 | ME | green | returned everything | 0 | 24 | 71 | 24 | 24 | 24 | 23 |  |
 | MD | green | returned everything | 0 | 30 | 38 | 30 | 30 | 30 | 27 |  |
 | MA | green | returned everything | 0 | 16 | 59 | 16 | 16 | 16 | 15 |  |
