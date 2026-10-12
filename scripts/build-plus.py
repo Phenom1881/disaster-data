@@ -339,7 +339,9 @@ def excluded_declaration_ids(state_dir: Path) -> set[str]:
     } - {""}
 
 
-def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
+def all_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
+    """Every record in the state's files, before records reviewed as not
+    weather events are dropped. The health check counts those drops."""
     path = locate_first(state_dir, candidate_action_files(state))
     raw = read_csv_rows(path)
     for name in (MANUAL_SUPPLEMENT, FMCSA_SUPPLEMENT):
@@ -347,6 +349,11 @@ def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path |
         raw += read_csv_rows(supplement) if supplement.exists() else []
     rows = [normalized_action(row, state["abbreviation"]) for row in raw
             if not before_cutoff(row)]
+    return rows, path
+
+
+def load_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
+    rows, path = all_state_actions(state, state_dir)
     # A record reviewed as not a weather event (hazard_category_override
     # "exclude") is dropped from the storm join. It is dropped from the page,
     # the count and the API here too, so the list is weather declarations only.

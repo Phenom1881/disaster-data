@@ -47,6 +47,8 @@ class ExcludedRecordsTests(unittest.TestCase):
                      "action_files": ["declarations_for_join.csv"]}
             actions, _ = bp.load_state_actions(state, folder)
             self.assertEqual([a["declaration_id"] for a in actions], ["KS-1"])
+            every, _ = bp.all_state_actions(state, folder)
+            self.assertEqual(sorted(a["declaration_id"] for a in every), ["KS-1", "KS-2"])
 
 
 if __name__ == "__main__":

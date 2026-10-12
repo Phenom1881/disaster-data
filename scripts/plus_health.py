@@ -72,6 +72,9 @@ Yellow, working with gaps:
 - fewer than a quarter of the dated declarations matched any storm record
 - declarations fell since the last run
 
+A fall is not counted against a state when records a reviewer excluded as not
+weather events (hazard_overrides.csv) explain it; the report notes it instead.
+
 Green: none of the above.
 
 A state marked as maintained by hand (its automatic source does not work, so
@@ -130,6 +133,12 @@ def measure(bp, state: dict, state_dir: Path) -> dict:
     # orders found drought entries in June 2001 and few other months), so a
     # low rate there says nothing about whether the join works.
     weather = [a for a in dated if not DROUGHT_RE.search(a["title"] or "")]
+    # Records a reviewer marked "exclude" in hazard_overrides.csv are left off
+    # the page on purpose. Counted so a fall they explain is not flagged.
+    reviewed_out = bp.excluded_declaration_ids(state_dir)
+    if reviewed_out:
+        every, _ = bp.all_state_actions(state, state_dir)
+        reviewed_out &= {row["declaration_id"] for row in every}
     return {
         "actions": len(actions),
         "dated": len(dated),
@@ -138,6 +147,7 @@ def measure(bp, state: dict, state_dir: Path) -> dict:
         "storm_matched": sum(1 for a in dated if a["declaration_id"] in matched_ids),
         "dated_not_drought": len(weather),
         "matched_not_drought": sum(1 for a in weather if a["declaration_id"] in matched_ids),
+        "excluded": len(reviewed_out),
     }
 
 
@@ -291,8 +301,29 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
 
     before = (previous or {}).get("declarations")
     if before and count < before:
-        message = f"Declarations fell from {before} to {count} since the last run."
-        (red if count < before * 0.8 else yellow).append(message)
+        # Records newly excluded on review explain part or all of a fall. A
+        # run with no excluded count saved from before (the first run that
+        # records one) is read as no change, so nothing is excused unseen.
+        excluded_now = numbers.get("excluded")
+        excluded_before = (previous or {}).get("excluded")
+        if excluded_now is None:
+            reviewed = 0
+        else:
+            if excluded_before is None:
+                excluded_before = excluded_now
+            reviewed = min(max(0, excluded_now - excluded_before), before - count)
+        unexplained = before - count - reviewed
+        if unexplained:
+            message = f"Declarations fell from {before} to {count} since the last run."
+            if reviewed:
+                message += (f" {plural(reviewed, 'record')} of that {'was' if reviewed == 1 else 'were'} "
+                            f"excluded on review; {unexplained} {'is' if unexplained == 1 else 'are'} "
+                            "not explained.")
+            (red if count + reviewed < before * 0.8 else yellow).append(message)
+        else:
+            notes.append(f"Declarations fell from {before} to {count} because "
+                         f"{plural(reviewed, 'record')} reviewed as not weather events "
+                         f"{'was' if reviewed == 1 else 'were'} excluded.")
 
     grade = RED if red else YELLOW if yellow else GREEN
     return {"grade": grade, "reasons": red + yellow, "notes": notes, "source": source,
