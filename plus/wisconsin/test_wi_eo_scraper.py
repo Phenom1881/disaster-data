@@ -1,5 +1,6 @@
 import json, unittest
-from wi_eo_scraper import parse_archive
+import requests
+from wi_eo_scraper import parse_archive, scrape
 
 
 class WisconsinScraperTests(unittest.TestCase):
@@ -100,6 +101,38 @@ class WisconsinPressReleaseFallbackTests(unittest.TestCase):
         self.assertFalse(ok("Press Release: Gov. Evers Extends State of Emergency for Flood-Damaged Counties"))
         self.assertFalse(ok("Press Release: Gov. Evers Orders Flags to Half-Staff"))
         self.assertFalse(ok("Press Release: Gov. Evers Signs Bill to Support Emergency Responders After Tornadoes"))
+
+
+class _Resp:
+    def __init__(self,text="",status=200): self.text=text; self.status_code=status
+    def raise_for_status(self):
+        if self.status_code>=400: raise requests.HTTPError(f"{self.status_code}")
+
+
+class _Session:
+    def __init__(self,*steps): self.steps=list(steps); self.calls=0
+    def get(self,url,**kw):
+        self.calls+=1; step=self.steps.pop(0)
+        if isinstance(step,Exception): raise step
+        return step
+
+
+class ArchiveRetryTests(unittest.TestCase):
+    PAGE="<script>var WPQ1ListData = { \"Row\" :\n"+json.dumps([{"Title2":"Executive Order 5, Relating to Declaring a State of Emergency","URL":"/eo5.pdf","Date":"1/28/2019"}])+"};</script>"
+
+    def test_second_try_succeeds_after_a_connect_timeout(self):
+        s=_Session(requests.ConnectTimeout("t"),_Resp(self.PAGE)); log=[]
+        rows=scrape(s,waits=(0,0,0),attempts_log=log)
+        self.assertEqual(len(rows),1); self.assertEqual(s.calls,2); self.assertEqual(log,["try 1: ConnectTimeout"])
+
+    def test_error_status_and_missing_table_are_retried(self):
+        s=_Session(_Resp("",503),_Resp("<html></html>"),_Resp(self.PAGE))
+        self.assertEqual(len(scrape(s,waits=(0,0,0))),1); self.assertEqual(s.calls,3)
+
+    def test_gives_up_after_the_last_try_and_reports_each(self):
+        s=_Session(*[requests.ConnectTimeout("t")]*3); log=[]
+        with self.assertRaises(requests.RequestException): scrape(s,waits=(0,0,0),attempts_log=log)
+        self.assertEqual(s.calls,3); self.assertEqual(len(log),3)
 
 
 if __name__=="__main__": unittest.main()

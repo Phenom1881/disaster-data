@@ -35,9 +35,13 @@ ARCHIVE_URL="https://evers.wi.gov/pages/newsroom/executive-orders.aspx"
 RELEASE_FEED="https://content.govdelivery.com/accounts/WIGOV/bulletins.rss"
 HEADERS={"User-Agent":"Mozilla/5.0 (compatible; DisasterDataPlus-Adapter/1.0)"}
 FEED_HEADERS={**HEADERS,"Accept":"application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5"}
-# The archive either answers or the connection times out; waiting 45 s twice
-# only delayed the fallback. One short try is enough to tell.
-ARCHIVE_TIMEOUT=20
+# (connect, read) seconds for one archive try. Connecting to evers.wi.gov from
+# GitHub's runners sometimes hangs and sometimes works, so a try is short and
+# the archive gets ARCHIVE_ATTEMPTS of them, spaced by ARCHIVE_WAITS, before
+# the press releases are read instead. A run that reached the archive on the
+# second try is a clean run; one failed try used to fail the whole state.
+ARCHIVE_TIMEOUT=(10,30)
+ARCHIVE_WAITS=(0,6,18)
 HAZARDS={"drought":r"\bdrought\b","fire":r"\bwildfires?\b","flood":r"\bflood(?:ing)?\b","tropical":r"\bhurricanes?\b|\btropical storm\b","winter":r"\bwinter\b|\bsnow\b|\bice\b|\bwind chill\b","severe_storm":r"\bsevere weather\b|\btornado(?:es)?\b|\bthunderstorms?\b|\bsevere storms?\b","wind":r"\bdamaging winds?\b|\bhigh winds?\b"}
 # EO 5's archive label omits the hazard, but its own official PDF heading says
 # "in Response to Severe Winter Weather." This is description enrichment, not inference.
@@ -72,8 +76,22 @@ def parse_archive(page: str) -> list[Action]:
         out.append(Action(eo,title,date_text,url,typ,hazard))
     return sorted(out,key=lambda x:(x.date_signed,int(x.eo_number)))
 
-def scrape(session=None):
-    session=session or requests.Session(); r=session.get(ARCHIVE_URL,headers=HEADERS,timeout=ARCHIVE_TIMEOUT); r.raise_for_status(); return parse_archive(r.text)
+def scrape(session=None,waits=None,attempts_log=None):
+    """The archive's orders. Each try is a fresh connection; a try that cannot
+    connect, times out, answers with an error status or returns a page without
+    the embedded table is logged and retried after the next wait."""
+    session=session or requests.Session()
+    waits=ARCHIVE_WAITS if waits is None else waits
+    log=[] if attempts_log is None else attempts_log
+    last=None
+    for n,wait in enumerate(waits,1):
+        if wait: time.sleep(wait)
+        try:
+            r=session.get(ARCHIVE_URL,headers=HEADERS,timeout=ARCHIVE_TIMEOUT); r.raise_for_status()
+            return parse_archive(r.text)
+        except (requests.RequestException,ValueError) as exc:
+            last=exc; log.append(f"try {n}: {type(exc).__name__}")
+    raise last
 
 # ---------------------------------------------------------------- press releases
 _FOLLOW_UP=r"(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remain\w*|likely|possible|consider\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|terminat\w*)"
@@ -207,15 +225,16 @@ def write_outputs(rows, actions_out, relationships_out, join_out):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument("--actions-out",required=True);p.add_argument("--relationships-out",required=True);p.add_argument("--join-out",required=True);a=p.parse_args()
+    tries=[]
     try:
-        rows=scrape()
+        rows=scrape(attempts_log=tries)
     except (requests.RequestException,ValueError) as archive_exc:
-        print(f"Wisconsin archive not reachable ({archive_exc}); reading the Governor's press releases instead",file=sys.stderr)
+        print(f"Wisconsin archive not reachable after {len(tries)} tries ({'; '.join(tries)}; last: {archive_exc}); reading the Governor's press releases instead",file=sys.stderr)
         review=[]
         try:
             releases=scrape_releases(review=review)
         except (requests.RequestException,ET.ParseError) as exc:
-            raise SystemExit(f"Wisconsin archive scrape failed: {archive_exc}; press releases not read either: {exc}")
+            raise SystemExit(f"Wisconsin archive scrape failed after {len(tries)} tries: {type(archive_exc).__name__}; press releases not read either: {type(exc).__name__}: {exc}")
         for line in review:
             print(f"  REVIEW: Wisconsin release not recorded automatically: {line}",file=sys.stderr)
         added=write_release_outputs(releases,Path(a.actions_out),Path(a.relationships_out),Path(a.join_out))
