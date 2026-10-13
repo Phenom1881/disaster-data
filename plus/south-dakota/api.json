@@ -698,9 +698,12 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "noaa_areas": [
+        "SANBORN",
+        "SPINK"
+      ],
+      "noaa_match_count": 2,
+      "noaa_status": "matched",
       "title": "Operation of Farming Vehicles on State Trunk Highway System During Emergency"
     },
     {
@@ -1021,13 +1024,13 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-12",
+  "generated_on": "2026-10-13",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 22,
     "federal_declaration_count": 98,
-    "severity_rows": 430,
-    "storm_match_rows": 1057
+    "severity_rows": 432,
+    "storm_match_rows": 1059
   },
   "name": "South Dakota",
   "noaa_data_through": "2026-06-29",
