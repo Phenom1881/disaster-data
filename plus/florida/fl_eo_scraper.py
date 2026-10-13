@@ -17,6 +17,15 @@ JOIN_FIELDS = ("declaration_id","governor","eo_number","event_description","date
 HAZARD_RE = re.compile(r"\b(drought|wildfires?|forest fires?|brush fires?|fire weather|flood(?:ing)?|rainfall|heavy rain|mudslide|landslide|hurricanes?|tropical storms?|tropical depressions?|tropical weather|cyclone|blizzard|winter storms?|winter weather|snow(?:fall|storm)?|ice|icing|sleet|cold|freeze|freezing|nor['’]?easter|severe storms?|severe weather|thunderstorms?|tornado(?:es)?|hail|lightning|wind storms?|high winds?|damaging winds?|wind gusts?)\b", re.I)
 MODIFIER_RE = re.compile(r"\b(rescind(?:s|ed|ing)?|termination|terminate[sd]?|extend(?:s|ed|ing)?|extension|renew(?:s|ed|ing)?|amend(?:s|ed|ing)?|amendment)\b", re.I)
 EO_RE = re.compile(r"\b(?:executive order\s*)?(\d{2,4}-\d{1,3})\b", re.I)
+# Orders signed before the storm had its name. The archive keeps the name the
+# storm had when the order was signed; the listed title adds the name it is
+# known by. Order number: (words in the archive title, words that replace them).
+STORM_NAMES = {
+    # Signed Oct 6, 2026 for Tropical Depression Nine, which became Tropical
+    # Storm Isaias that day and a hurricane on Oct 7 (NPR, Oct 7, 2026:
+    # "Isaias strengthens into the first hurricane of the Atlantic season").
+    "2026-202": ("Tropical Depression Nine", "Tropical Depression Nine (later Hurricane Isaias)"),
+}
 
 @dataclass
 class Action:
@@ -63,6 +72,13 @@ def relationships(a,kind):
         if target!=a.stable_id: rows.append({"source_order_id":a.stable_id,"target_order_id":target,"relationship_type":rel,"relationship_text":n,"relationship_source":"official_archive_title","confidence":"high"})
     return rows
 
+def listed_title(a):
+    """The archive title, with the storm's later name added where it is known.
+    Classification still reads the archive title as published."""
+    words,label=STORM_NAMES.get(a.number,("",""))
+    if words and words in a.title and label not in a.title: return a.title.replace(words,label,1)
+    return a.title
+
 def write_csv(path,fields,rows):
     with open(path,"w",newline="",encoding="utf-8") as h:
         w=csv.DictWriter(h,fieldnames=fields,lineterminator="\n"); w.writeheader(); w.writerows([{k:(v.replace("\r","") if isinstance(v,str) else v) for k,v in row.items()} for row in rows])
@@ -71,7 +87,7 @@ def write_outputs(actions,actions_out,relationships_out,join_out):
     rows=[]; rel=[]; joins=[]
     for a in actions:
         kind=classify(a); weather=bool(HAZARD_RE.search(a.title) or (kind=="declaration" and re.search(r"\b(?:Invest \d+[A-Z]|Subtropical Storm)\b",a.title,re.I))); action_kind="emergency_declaration" if kind!="administrative" else "executive_order"
-        row={"declaration_id":a.stable_id,"state":"FL","governor":"Ron DeSantis","eo_number":a.number,"action_kind":action_kind,"action_type":kind,"event_description":a.title,"date_signed":a.date,"end_date":"","weather_related":str(weather and kind!="administrative").lower(),"source_scope":"florida_governor_2020_present","document_format":"pdf","detail_url":a.document_url,"archive_record_url":ARCHIVE_URL}
+        row={"declaration_id":a.stable_id,"state":"FL","governor":"Ron DeSantis","eo_number":a.number,"action_kind":action_kind,"action_type":kind,"event_description":listed_title(a),"date_signed":a.date,"end_date":"","weather_related":str(weather and kind!="administrative").lower(),"source_scope":"florida_governor_2020_present","document_format":"pdf","detail_url":a.document_url,"archive_record_url":ARCHIVE_URL}
         rows.append(row); rel.extend(relationships(a,kind))
         if kind=="declaration" and weather: joins.append({f:row[f] for f in JOIN_FIELDS})
     write_csv(actions_out,ACTION_FIELDS,rows); write_csv(relationships_out,REL_FIELDS,rel); write_csv(join_out,JOIN_FIELDS,joins)

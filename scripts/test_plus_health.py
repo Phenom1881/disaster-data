@@ -162,6 +162,31 @@ class LastGoodCollectionTests(unittest.TestCase):
         self.assertEqual(grade(summary(count=38), previous={"declarations": 40})["grade"], "yellow")
         self.assertEqual(grade(summary(count=20), previous={"declarations": 40})["grade"], "red")
 
+    def test_drop_explained_by_records_excluded_on_review_is_a_note(self):
+        result = grade(summary(count=38), numbers={**GOOD, "excluded": 2},
+                       previous={"declarations": 40, "excluded": 0})
+        self.assertEqual(result["grade"], "green")
+        self.assertIn("2 records reviewed as not weather events were excluded", " ".join(result["notes"]))
+
+    def test_drop_only_partly_explained_is_still_flagged(self):
+        result = grade(summary(count=30), numbers={**GOOD, "excluded": 2},
+                       previous={"declarations": 40, "excluded": 0})
+        self.assertEqual(result["grade"], "yellow")
+        self.assertIn("2 records of that were excluded on review; 8 are not explained", result["reasons"][0])
+        self.assertEqual(grade(summary(count=20), numbers={**GOOD, "excluded": 1},
+                               previous={"declarations": 40, "excluded": 0})["grade"], "red")
+
+    def test_exclusions_already_counted_last_run_excuse_nothing(self):
+        result = grade(summary(count=38), numbers={**GOOD, "excluded": 2},
+                       previous={"declarations": 40, "excluded": 2})
+        self.assertEqual(result["grade"], "yellow")
+
+    def test_first_run_with_no_saved_excluded_count_is_read_as_no_change(self):
+        result = grade(summary(count=38), numbers={**GOOD, "excluded": 2}, previous={"declarations": 40})
+        self.assertEqual(result["grade"], "yellow")
+        self.assertEqual(grade(summary(count=38), previous={"declarations": 40, "excluded": 0})["grade"],
+                         "yellow")
+
     def test_page_not_rebuilt_this_run_is_red(self):
         result = grade(summary(generated_on="2026-09-20"))
         self.assertEqual(result["grade"], "red")
