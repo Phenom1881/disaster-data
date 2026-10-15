@@ -106,6 +106,56 @@ class NewHampshireTests(unittest.TestCase):
         actions = self._collect("Given under my hand this 2nd day of July, 2013.")
         self.assertEqual(actions["2013-08"].date_signed, "2013-07-02")
 
+    def _collect_saved(self, saved, pdf_text=""):
+        """collect() over three orders with saved rows from an earlier run."""
+        from unittest import mock
+        orders = [nh.Action("2013-08", "An Order Declaring a State of Emergency due to Severe Weather",
+                            "Margaret Wood Hassan", "https://x/2013-08.pdf"),
+                  nh.Action("2010-01", "An Order Declaring a State of Emergency Due to Severe Weather.",
+                            "John H. Lynch", "https://x/2010-01.pdf"),
+                  nh.Action("2014-06", "Declaration of State of Emergency", "Margaret Wood Hassan",
+                            "https://x/2014-06.pdf")]
+        with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="", content=b"")), \
+             mock.patch.object(nh, "parse_registry", return_value=orders), \
+             mock.patch.object(nh, "fetch_document", return_value=mock.Mock(content=b"pdf")) as read, \
+             mock.patch.object(nh, "pdf_text", return_value=pdf_text), \
+             mock.patch("builtins.print"):
+            actions = {a.number: a for a in nh.collect(saved)}
+        return actions, [c.args[0] for c in read.call_args_list]
+
+    def test_orders_dated_on_an_earlier_run_are_not_read_again(self):
+        saved = {"NH-2013-08": {"date_signed": "2013-07-03", "weather_related": "true"},
+                 "NH-2014-06": {"date_signed": "2014-11-26", "weather_related": "true"}}
+        actions, read = self._collect_saved(saved)
+        self.assertEqual(read, ["https://x/2010-01.pdf"])      # only the order with no date yet
+        self.assertEqual(actions["2014-06"].date_signed, "2014-11-26")
+        # A generic title has no hazard word; the earlier read of its PDF found one.
+        self.assertTrue(actions["2014-06"].weather_related)
+        self.assertTrue(actions["2013-08"].weather_related)
+
+    def test_a_confirmed_date_still_wins_over_a_saved_one(self):
+        actions, read = self._collect_saved({"NH-2013-08": {"date_signed": "2013-06-26", "weather_related": "true"}})
+        self.assertEqual(actions["2013-08"].date_signed, "2013-07-03")
+        self.assertNotIn("https://x/2013-08.pdf", read)
+
+    def test_without_saved_rows_every_order_is_read(self):
+        actions, read = self._collect_saved({}, "Given under my hand this 2nd day of July, 2013.")
+        self.assertEqual(len(read), 3)
+        self.assertFalse(actions["2014-06"].weather_related)   # nothing found: no hazard
+
+    def test_archive_requests_are_spaced(self):
+        from unittest import mock
+        # Times read: before call 1, after it, before call 2 (2 s later), after it.
+        clock = iter([100.0, 101.0, 103.0, 109.0])
+        with mock.patch.object(nh.requests, "get", return_value="ok"), \
+             mock.patch.object(nh.time, "monotonic", side_effect=lambda: next(clock)), \
+             mock.patch.object(nh.time, "sleep") as sleep, \
+             mock.patch.object(nh, "_ia_last", float("-inf")):
+            nh.ia_get("https://web.archive.org/a")
+            nh.ia_get("https://web.archive.org/b")
+        sleep.assert_called_once()
+        self.assertAlmostEqual(sleep.call_args.args[0], nh.IA_MIN_INTERVAL - 2.0)   # waits out the rest
+
     def test_unreachable_registry_raises(self):
         from unittest import mock
         with mock.patch.object(nh, "fetch", return_value=None), \
@@ -142,7 +192,8 @@ class NewHampshireTests(unittest.TestCase):
             "available": True, "timestamp": "20260930120000", "url": "http://web.archive.org/web/20260930120000/x"}}})
         lookup.raise_for_status = lambda: None
         page = mock.Mock(); page.raise_for_status = lambda: None
-        with mock.patch.object(nh.requests, "get", side_effect=[lookup, page]) as get:
+        with mock.patch.object(nh.requests, "get", side_effect=[lookup, page]) as get, \
+             mock.patch.object(nh, "IA_MIN_INTERVAL", 0):
             response, when = nh.wayback_copy(nh.REGISTRY_URL)
         self.assertIs(response, page)
         self.assertEqual(when, "2026-09-30")

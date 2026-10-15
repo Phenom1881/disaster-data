@@ -60,6 +60,7 @@ class Action:
     action_type: str = "administrative"
     action_kind: str = "executive_order"
     weather_related: bool = False
+    saved_weather: bool = False   # an earlier run's read of this order's PDF found a hazard
 
     @property
     def stable_id(self) -> str:
@@ -110,12 +111,35 @@ def fetch(url: str, retries: tuple[int, ...] = (), quiet: bool = False, timeout:
     return None
 
 
+# The Internet Archive allows about 15 requests a minute from one machine and
+# refuses connections for a while after more. Reading every order's PDF from
+# it took about 150 requests in a few minutes, and on 2026-10-15 the archive
+# was refusing this runner partway through. A refusal there would also stop
+# Wisconsin, which reads the archive later in the same run when its own site
+# does not answer. So requests are spaced, and an order's PDF is read only
+# until it has given a date (see collect()).
+IA_MIN_INTERVAL = 5.0
+_ia_last = float("-inf")
+
+
+def ia_get(url: str, **kwargs) -> requests.Response:
+    """requests.get for the Internet Archive, at most one every IA_MIN_INTERVAL seconds."""
+    global _ia_last
+    wait = _ia_last + IA_MIN_INTERVAL - time.monotonic()
+    if wait > 0:
+        time.sleep(wait)
+    try:
+        return requests.get(url, **kwargs)
+    finally:
+        _ia_last = time.monotonic()
+
+
 def wayback_copy(url: str) -> tuple[Optional[requests.Response], str]:
     """The Internet Archive's latest copy of url, as originally served (the
     id_ form, without the archive's toolbar or rewritten links), and the
     copy's date (YYYY-MM-DD). (None, "") when there is no copy."""
     try:
-        lookup = requests.get(WAYBACK_AVAILABLE, params={"url": url}, headers=HEADERS, timeout=TIMEOUT)
+        lookup = ia_get(WAYBACK_AVAILABLE, params={"url": url}, headers=HEADERS, timeout=TIMEOUT)
         lookup.raise_for_status()
         closest = (lookup.json().get("archived_snapshots") or {}).get("closest") or {}
     except (requests.RequestException, ValueError) as exc:
@@ -128,7 +152,7 @@ def wayback_copy(url: str) -> tuple[Optional[requests.Response], str]:
     for wait in (0, 10):
         if wait: time.sleep(wait)
         try:
-            response = requests.get(raw, headers=HEADERS, timeout=TIMEOUT)
+            response = ia_get(raw, headers=HEADERS, timeout=TIMEOUT)
             response.raise_for_status()
             return response, f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}"
         except requests.RequestException as exc:
@@ -284,19 +308,31 @@ def classify(action: Action) -> None:
         action.action_type = "declaration"; action.action_kind = "emergency_declaration"
     evidence = action.title
     if action.action_type == "declaration" and not HAZARD_RE.search(evidence): evidence = action.document_text
-    action.weather_related = action.action_type in {"declaration", "amendment", "extension", "termination"} and bool(HAZARD_RE.search(evidence))
+    action.weather_related = action.action_type in {"declaration", "amendment", "extension", "termination"} and (
+        bool(HAZARD_RE.search(evidence)) or action.saved_weather)
 
 
 class RegistryUnavailable(RuntimeError):
     """The registry page could not be fetched, or listed no orders."""
 
 
-def collect() -> list[Action]:
+def collect(saved: Optional[dict[str, dict[str, str]]] = None) -> list[Action]:
     """Every order in the registry, classified and dated. Raises
     RegistryUnavailable when the registry cannot be read: the build keeps the
     saved records either way, and a nonzero exit shows the source as failed
-    in the health report instead of as an empty week."""
+    in the health report instead of as an empty week.
+
+    `saved` is the last run's action rows by declaration id. An order whose
+    saved row already has a signing date is not read again: its text does not
+    change, so a second read only repeats the answer, and reading all 73
+    every run from the Internet Archive was what got this runner refused.
+    Its saved date and hazard finding are used instead, and a date in
+    CONFIRMED_DATES still wins. Orders with no date yet are read as before.
+    To read an order again (after a change to the date reader), blank its
+    saved date."""
     global SOURCE_NOTE
+    saved = saved or {}
+    reread = reused = 0
     page = fetch(REGISTRY_URL, retries=RETRY_WAITS, timeout=REGISTRY_TIMEOUT)
     actions = parse_registry(page.text) if page is not None else []
     archived = False
@@ -316,13 +352,21 @@ def collect() -> list[Action]:
     for action in actions:
         # Exact signing dates and generic-declaration hazards come from the order itself.
         if DECLARATION_RE.search(action.title) or MODIFIER_RE.search(action.title):
-            document = fetch_document(action.document_url, archived) if time.monotonic() < deadline else None
-            if document is not None:
-                action.document_text = pdf_text(document.content)
-                action.date_signed = date_in_text(action.document_text, int(action.number[:4]))
-            if not action.date_signed:
-                action.date_signed = CONFIRMED_DATES.get(action.number)
+            known = saved.get(action.stable_id) or {}
+            if known.get("date_signed"):
+                action.date_signed = CONFIRMED_DATES.get(action.number) or known["date_signed"]
+                action.saved_weather = known.get("weather_related") == "true"
+                reused += 1
+            else:
+                document = fetch_document(action.document_url, archived) if time.monotonic() < deadline else None
+                reread += 1
+                if document is not None:
+                    action.document_text = pdf_text(document.content)
+                    action.date_signed = date_in_text(action.document_text, int(action.number[:4]))
+                if not action.date_signed:
+                    action.date_signed = CONFIRMED_DATES.get(action.number)
         classify(action)
+    print(f"New Hampshire: {reread} order PDFs read, {reused} dated on an earlier run and not read again")
     return sorted(actions, key=lambda a: (a.date_signed or "", a.number), reverse=True)
 
 
@@ -374,7 +418,7 @@ def join_rows(actions: list[Action], saved: list[dict[str, str]]) -> list[dict[s
 def main() -> None:
     parser = argparse.ArgumentParser(); parser.add_argument("--actions-out", required=True); parser.add_argument("--relationships-out", required=True); parser.add_argument("--join-out", required=True); args = parser.parse_args()
     try:
-        actions = collect()
+        actions = collect({row.get("declaration_id", ""): row for row in read_saved(args.actions_out)})
     except RegistryUnavailable as exc:
         raise SystemExit(str(exc))
     rows = [action_row(a) for a in actions]
