@@ -24,6 +24,7 @@ never fails the run.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import re
 import json
@@ -45,6 +46,13 @@ DROUGHT_RE = re.compile(r"\bdrought\b", re.I)
 # the last good collection. It turns red once that collection is this old.
 STALE_AFTER_DAYS = 28
 LABEL_FORMAT = "%Y-%m-%d %H:%M UTC"
+# Every state runs its own copy of the storm classifier, and the copies must
+# be identical, or one state's storm matches are not made the same way as the
+# others'. plus/eo_storm_join.py is the shared copy they are compared with.
+# It fell three versions behind the state copies (2026-09-26 to 2026-10-15)
+# without anything noticing, and on 2026-09-11 eight state copies had been
+# stale or missing. A state whose copy differs is flagged.
+CLASSIFIER = "eo_storm_join.py"
 SOURCE_WORDS = {
     "ok": "returned everything",
     "partial": "returned part",
@@ -69,6 +77,7 @@ Yellow, working with gaps:
 - the source left out more than a tenth of the saved records, which are shown from earlier runs
 - fewer than 10 declarations, which usually means the source only covers recent years
 - more than a tenth of the declarations have no signing date, title or working link
+- its storm classifier (eo_storm_join.py) differs from the shared copy in plus/
 - fewer than a quarter of the dated declarations matched any storm record
 - declarations fell since the last run
 
@@ -120,6 +129,13 @@ def infer_source(summary: dict) -> str:
 def short_error(text: str) -> str:
     text = (text or "").replace("Collection failed: ", "").strip()
     return text if len(text) <= 140 else text[:137] + "..."
+
+
+def file_hash(path: Path) -> str | None:
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        return None
 
 
 def measure(bp, state: dict, state_dir: Path) -> dict:
@@ -298,6 +314,10 @@ def grade_state(state: dict, summary: dict | None, numbers: dict, history: list[
         elif numbers["dated"] - rated:
             notes.append(f"{numbers['dated'] - rated} drought declaration(s) are not counted in the storm "
                          "match rate; NOAA's storm database logs drought only in some months.")
+
+    if numbers.get("classifier_same") is False:
+        yellow.append(f"Its storm classifier ({CLASSIFIER}) differs from the shared copy in plus/, so its "
+                      "storm matches are not made the same way as other states'.")
 
     before = (previous or {}).get("declarations")
     if before and count < before:
@@ -517,6 +537,8 @@ def main() -> int:
                   for s in summaries.values() if s and s.get("generated_on")]
     run_day = max(built_days) if built_days else None
 
+    shared_classifier = file_hash(repo_root / "plus" / CLASSIFIER)
+
     result = {"generated_at": now.isoformat(timespec="minutes"),
               "generated_at_label": run_label(now), "states": {}}
     for state in states:
@@ -528,6 +550,11 @@ def main() -> int:
         except Exception as exc:  # a broken file must not stop the report
             numbers = {"actions": 0, "dated": 0, "titled": 0, "linked": 0, "storm_matched": 0}
             print(f"WARNING {ab}: could not read its files ({exc})", file=sys.stderr)
+        own = file_hash(state_dir / CLASSIFIER)
+        # None when either copy is missing: a state without its own copy
+        # already fails its storm join, and no shared copy means nothing to
+        # compare with.
+        numbers["classifier_same"] = (own == shared_classifier) if own and shared_classifier else None
         count = ((summary or {}).get("metrics") or {}).get("action_count") or 0
         since = bp.extract_coverage_start_label(ab, (summary or {}).get("coverage", ""), count)
         entry = {"at": run_label(now), "source": infer_source(summary) if summary else "unknown",

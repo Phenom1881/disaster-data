@@ -54,9 +54,15 @@ Usage:
 import argparse
 import gzip
 import io
+import json
+import os
 import re
+import shutil
 import sys
+import tempfile
 from datetime import timedelta
+from pathlib import Path
+from urllib.parse import quote
 
 import pandas as pd
 import requests
@@ -79,7 +85,11 @@ DEFAULT_UNMATCHED_HAZARD_POLICY = "skip"
 EXCLUDE_SENTINEL = "exclude"
 
 REQUIRED_OVERRIDE_COLUMNS = {"declaration_id", "hazard_category_override"}
-OPTIONAL_OVERRIDE_COLUMNS = ["review_note", "source_url"]
+# event_date (YYYY-MM-DD) is for an order signed well after its event, such
+# as a state Individual Assistance declaration made weeks or months later
+# (North Carolina EO 174 was signed 2020-10-30 for flooding on 2020-05-18).
+# When set, the NCEI search window is centered on it instead of date_signed.
+OPTIONAL_OVERRIDE_COLUMNS = ["review_note", "source_url", "event_date"]
 
 AREA_TYPE_LABELS = {
     "C": "county/county-equivalent",
@@ -183,6 +193,9 @@ HAZARD_EVENT_TYPES = {
     # "water" remains available below as a category name for that override,
     # for the genuinely drought/water-supply cases.
     "water": {"Flood", "Flash Flood", "Heavy Rain", "Drought"},
+    # Heat waves had no category, so a "Heat Wave" declaration (Nebraska EO
+    # 23-15) could only be skipped. NCEI records them as these two types.
+    "heat": {"Heat", "Excessive Heat"},
     "winter": {
         "Winter Storm",
         "Winter Weather",
@@ -200,9 +213,77 @@ HAZARD_EVENT_TYPES = {
 
 _year_cache = {}
 
+# NCEI publishes one national details file per year, 6 to 16 MB compressed.
+# Each state's join runs as its own process, so without a shared cache every
+# state downloaded and parsed every year it needed: 396 downloads of 31
+# distinct files, about 4 GB, on the 2026-09-27 refresh. When this variable
+# names a folder (build-plus.py sets one for the whole run), the file index
+# is fetched once, each year's file is downloaded and parsed once and split by
+# state, and later states read only their own slice. File names carry NCEI's
+# revision date (_cYYYYMMDD), so a revised file is a new name and is fetched
+# fresh. Unset, nothing changes: each run downloads what it needs, as before.
+NCEI_CACHE_ENV = "PLUS_NCEI_CACHE_DIR"
+
+
+def _ncei_cache_dir():
+    value = os.environ.get(NCEI_CACHE_ENV, "").strip()
+    if not value:
+        return None
+    path = Path(value)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _state_slice_name(state):
+    return quote(state.upper(), safe="") + ".pkl"
+
+
+def _cached_state_year(filename, state):
+    """This state's rows of one yearly file from the shared cache, splitting
+    the file into per-state slices the first time any state asks for it.
+    Returns None when no cache folder is set."""
+    cache = _ncei_cache_dir()
+    if cache is None:
+        return None
+    split_dir = cache / (filename + ".by-state")
+    columns_file = split_dir / "_columns.pkl"
+    if not columns_file.exists():
+        frame = download_year_details(filename)
+        work = Path(tempfile.mkdtemp(dir=cache, prefix=".split-"))
+        try:
+            states = frame["STATE"].fillna("").str.upper()
+            for name, part in frame.groupby(states, sort=False):
+                if name:
+                    part.to_pickle(work / _state_slice_name(name))
+            frame.iloc[0:0].to_pickle(work / "_columns.pkl")
+            try:
+                os.rename(work, split_dir)
+            except OSError:
+                pass  # another process finished the same split first
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+    slice_file = split_dir / _state_slice_name(state)
+    if slice_file.exists():
+        return pd.read_pickle(slice_file)
+    return pd.read_pickle(columns_file)  # no rows for this state that year
+
 
 def get_latest_filenames_by_year():
-    """Return the most recently certified details filename for each year."""
+    """Return the most recently certified details filename for each year.
+    With a shared cache folder the index is fetched once per run."""
+    cache = _ncei_cache_dir()
+    index_file = cache / "index.json" if cache else None
+    if index_file is not None and index_file.exists():
+        return json.loads(index_file.read_text(encoding="utf-8"))
+    latest = _fetch_latest_filenames()
+    if index_file is not None:
+        partial = index_file.with_suffix(".tmp")
+        partial.write_text(json.dumps(latest, sort_keys=True), encoding="utf-8")
+        os.replace(partial, index_file)
+    return latest
+
+
+def _fetch_latest_filenames():
     response = requests.get(INDEX_URL, timeout=30)
     response.raise_for_status()
     latest = {}
@@ -238,10 +319,12 @@ def get_year_events(year, filenames, state):
         print(f"No NCEI file published yet for {year_text}.", file=sys.stderr)
         _year_cache[cache_key] = pd.DataFrame()
         return _year_cache[cache_key]
-    frame = download_year_details(filenames[year_text])
-    # Historical runs span more than two decades.  Retaining only the selected
-    # state's records keeps the cache small while still downloading each year once.
-    frame = frame[frame["STATE"].fillna("").str.upper() == state.upper()].copy()
+    frame = _cached_state_year(filenames[year_text], state)
+    if frame is None:
+        frame = download_year_details(filenames[year_text])
+        # Historical runs span more than two decades.  Retaining only the selected
+        # state's records keeps the cache small while still downloading each year once.
+        frame = frame[frame["STATE"].fillna("").str.upper() == state.upper()].copy()
     _year_cache[cache_key] = frame
     return _year_cache[cache_key]
 
@@ -273,11 +356,17 @@ def compatible_event_types(description):
     categories = []
     if "drought" in text:
         categories.append("drought")
-    if re.search(r"\b(?:wildfire|forest fire|brush fire)s?\b", text):
+    # "Wildland fire", "grass fire" and a red-flag (fire weather) warning all
+    # name fire hazards; Kansas titles use them (2026-09-26 review).
+    if re.search(r"\b(?:wildfire|forest fire|brush fire|wildland fire|grass ?fire|"
+                 r"range fire|prairie fire)s?\b|\bred flag warning|\bfire weather\b", text):
         categories.append("fire")
     if re.search(r"\b(?:flood|flooding|rainfall|heavy rain|mudslide|landslide)", text):
         categories.append("flood")
-    if re.search(r"\b(?:hurricane|tropical storm|tropical depression|tropical weather)", text):
+    # "Potential Tropical Cyclone Nine" (Florida) and "Superstorm Sandy"
+    # (Connecticut) name tropical systems without any of the older words.
+    if re.search(r"\b(?:hurricane|tropical storm|tropical depression|tropical weather|"
+                 r"tropical cyclone|post-tropical|superstorm)", text):
         categories.append("tropical")
     if re.search(r"\b(?:winter|snow|ice|icing|sleet|blizzard|cold|freeze|freezing)", text):
         categories.append("winter")
@@ -285,6 +374,8 @@ def compatible_event_types(description):
         categories.append("severe_storm")
     if re.search(r"\b(?:wind|winds|wind damage)", text):
         categories.append("wind")
+    if re.search(r"\b(?:heat wave|heatwave|excessive heat|extreme heat|heat emergency)", text):
+        categories.append("heat")
     if not categories:
         generic_storm = re.search(
             r"\bstorms?\b|storm[- ]related|nor['\u2019]?\s?easter|noreaster", text
@@ -371,7 +462,8 @@ def load_overrides(path):
 
     Required columns: declaration_id, hazard_category_override.
     Optional columns: review_note, source_url - audit trail only, never
-    used for matching logic.
+    used for matching logic. event_date - when filled, the day the NCEI
+    search window is centered on in place of date_signed.
 
     hazard_category_override accepts everything resolve_override() accepts
     (comma-separated HAZARD_EVENT_TYPES category names and/or literal
@@ -440,6 +532,12 @@ def load_overrides(path):
             # Validate now, regardless of whether this id matches anything
             # in the current declarations CSV - see docstring above.
             resolve_override(value)
+        event_date = row.get("event_date", "")
+        if event_date and pd.isna(pd.to_datetime(event_date, format="%Y-%m-%d", errors="coerce")):
+            raise ValueError(
+                f"Overrides file {path}, declaration_id {row['declaration_id']!r}: "
+                f"event_date {event_date!r} is not YYYY-MM-DD"
+            )
 
     return overrides
 
@@ -462,6 +560,7 @@ def apply_overrides(declarations, overrides):
         declarations["hazard_category_override"] = ""
     declarations["override_review_note"] = ""
     declarations["override_source_url"] = ""
+    declarations["override_event_date"] = ""
 
     known_ids = set(declarations["declaration_id"])
     unmatched = []
@@ -474,6 +573,7 @@ def apply_overrides(declarations, overrides):
         declarations.loc[mask, "hazard_category_override"] = row["hazard_category_override"]
         declarations.loc[mask, "override_review_note"] = row["review_note"]
         declarations.loc[mask, "override_source_url"] = row["source_url"]
+        declarations.loc[mask, "override_event_date"] = row.get("event_date", "") or ""
 
     if unmatched:
         print(
@@ -525,6 +625,10 @@ def resolve_allowed_types(
     return None, True
 
 
+# Event types NCEI records as a long period rather than a moment.
+SPAN_MATCHED_TYPES = {"Drought"}
+
+
 def events_near_date(state, center_date, window_days, filenames, allowed_types):
     """Return NCEI events for a state within window_days of center_date.
 
@@ -550,10 +654,19 @@ def events_near_date(state, center_date, window_days, filenames, allowed_types):
     if not frames:
         return pd.DataFrame()
     events = pd.concat(frames, ignore_index=True)
-    mask = (
-        (events["BEGIN_DATE_TIME"].dt.date >= start)
-        & (events["BEGIN_DATE_TIME"].dt.date <= end)
-    )
+    begin = events["BEGIN_DATE_TIME"].dt.date
+    mask = (begin >= start) & (begin <= end)
+    # NCEI records drought as one row per zone per month, beginning on the
+    # 1st and ending on the last day (809 of 941 matched drought rows as of
+    # 2026-09-27). A drought order signed on the 28th was therefore never
+    # within 3 days of any drought row's start, and Idaho's 207 drought
+    # orders matched 2 storm records. For these slow-onset types, a row
+    # matches when the period it covers overlaps the window.
+    if "END_DATE_TIME" in events.columns:
+        finish = events["END_DATE_TIME"].dt.date.where(
+            events["END_DATE_TIME"].notna(), begin)
+        spanning = events["EVENT_TYPE"].isin(SPAN_MATCHED_TYPES)
+        mask = mask | (spanning & (begin <= end) & (finish >= start))
     matches = events.loc[mask]
     if allowed_types:
         matches = matches[matches["EVENT_TYPE"].isin(allowed_types)]
@@ -775,9 +888,15 @@ def main():
                     file=sys.stderr,
                 )
 
+        center_date = declaration["date_signed"]
+        event_date = str(declaration.get("override_event_date", "") or "").strip()
+        if event_date and event_date.lower() != "nan":
+            center_date = pd.to_datetime(event_date, format="%Y-%m-%d").date()
+            print(f"{declaration['declaration_id']}: searching around the reviewed "
+                  f"event date {event_date} (signed {declaration['date_signed']})")
         matches = events_near_date(
             args.state,
-            declaration["date_signed"],
+            center_date,
             args.window_days,
             filenames,
             allowed_types,
