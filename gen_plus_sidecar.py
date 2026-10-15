@@ -62,7 +62,7 @@ Output shape (state-declarations.json, repo root):
           "name": "Virginia",
           "slug": "virginia",
           "coverage": "<coverage note from Plus>",
-          "total": 75,                    # state declarations on record
+          "total": 75,                    # state declarations on record, as the state page counts them
           "counties": {
             "51161": [
               {
@@ -211,10 +211,30 @@ def load_plus_coverage():
     return doc.get("generated_on", ""), {s.get("slug"): s for s in states if s.get("slug")}
 
 
+def state_total(summary: dict, state_dir: str) -> int:
+    """How many state declarations are on record for this state: the same
+    count the state's own Plus page shows (build-plus.py's metrics, written
+    to state-summary.json). Used for the 'N of M' framing on the page so a
+    county's matched count is never mistaken for the state total.
+
+    This used to count the rows of the join file alone. That file leaves out
+    hand-added declarations (manual_declarations.csv) and FMCSA's copies
+    (fmcsa_declarations.csv), and still lists records a reviewer excluded as
+    not weather, so 32 states' locality pages disagreed with the state page,
+    and 128 county pages said more declarations matched there than the state
+    had on record (Maricopa County: 23 matched of "6 statewide"; the Arizona
+    page counts 59). The storm matches behind N come from that same full set,
+    so M must too. Falls back to the join file only for a summary written
+    before the count was recorded."""
+    count = (summary.get("metrics") or {}).get("action_count")
+    if isinstance(count, int) and not isinstance(count, bool) and count >= 0:
+        return count
+    return count_declarations(state_dir, summary.get("action_file", ""))
+
+
 def count_declarations(state_dir: str, action_file: str) -> int:
-    """How many state declarations are on record for this state, from the
-    join file Plus actually used. Used for the 'N of M' framing on the page
-    so a county's matched count is never mistaken for the state total."""
+    """Rows in the join file Plus used: the fallback for state_total() when a
+    state's summary has no recorded count."""
     for candidate in (action_file, "declarations_for_join.csv"):
         if not candidate:
             continue
@@ -337,7 +357,7 @@ def collect_state(slug, state_dir, cover, by_name, by_squash, stats):
         "name": summary.get("name") or record.get("name") or state_ab,
         "slug": slug,
         "coverage": summary.get("coverage") or record.get("coverage") or "",
-        "total": count_declarations(state_dir, summary.get("action_file", "")),
+        "total": state_total(summary, state_dir),
         "counties": counties,
     }
 
