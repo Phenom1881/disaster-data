@@ -30,8 +30,8 @@ def parse_post(post,scope):
     title=clean(post["title"]["rendered"]); content=BeautifulSoup(post["content"]["rendered"],"html.parser"); links=[urljoin(post["link"],a["href"]) for a in content.select('a[href$=".pdf"]')]
     anchor=next((clean(a.get_text(" ",strip=True)) for a in content.select('a[href$=".pdf"]') if clean(a.get_text(" ",strip=True)).lower()!="download"),"")
     desc=title if re.search(r"state of emergency|Executive Order",title,re.I) else anchor or title
-    if re.fullmatch(r"Executive Order (?:No\. )?\d+",title,re.I) and anchor: desc=f"{title} — {anchor}"
-    if title in OFFICIAL_DESCRIPTION_ENRICHMENTS: desc=f"{title} — {OFFICIAL_DESCRIPTION_ENRICHMENTS[title]}"
+    if re.fullmatch(r"Executive Order (?:No\. )?\d+",title,re.I) and anchor: desc=f"{title}: {anchor}"
+    if title in OFFICIAL_DESCRIPTION_ENRICHMENTS: desc=f"{title} ({OFFICIAL_DESCRIPTION_ENRICHMENTS[title]})"
     m=re.search(r"Executive Order(?: No\.)?\s*(\d+)",title+" "+anchor,re.I); number=m.group(1) if m else ""
     date=post["date"][:10]
     embedded=re.search(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s+(20\d{2})\b",title)
@@ -40,11 +40,36 @@ def parse_post(post,scope):
     sid=f"AL-EO-{number}" if number else f"AL-SOE-{date}-{slug}"
     return Action(sid,number,desc,date,post["link"],links[0] if links else post["link"],scope)
 
-def collect():
-    out=[]
+# The API returns at most 100 posts a page. Only the first page used to be
+# read, so once the state-of-emergency category passed 100 posts (October
+# 2026) its oldest posts, from 2017, dropped out of every run and were kept
+# only from saved copies. Every page is read now.
+PER_PAGE=100
+MAX_PAGES=50   # a guard against a page loop that never ends, far above any category's size
+
+def category_posts(category,session=None):
+    """Every post in one category, newest first, page after page."""
+    session=session or requests
+    posts=[]; total=None
+    for page in range(1,MAX_PAGES+1):
+        r=session.get(API_URL,params={"categories":category,"per_page":PER_PAGE,"page":page,"orderby":"date","order":"desc"},headers=HEADERS,timeout=TIMEOUT)
+        # WordPress answers 400 to a page past the last one.
+        if page>1 and r.status_code==400: break
+        r.raise_for_status()
+        batch=r.json(); posts.extend(batch)
+        headers=getattr(r,"headers",None) or {}
+        pages=int(headers.get("X-WP-TotalPages") or 0); total=int(headers.get("X-WP-Total") or 0) or total
+        if not batch or (pages and page>=pages) or (not pages and len(batch)<PER_PAGE): break
+    if total and len(posts)<total:
+        raise RuntimeError(f"Alabama category {category}: read {len(posts)} of the {total} posts the site lists")
+    return posts
+
+def collect(session=None):
+    out=[]; counts=[]
     for category,scope in ((19,"state_of_emergency"),(11,"executive_orders")):
-        r=requests.get(API_URL,params={"categories":category,"per_page":100,"orderby":"date","order":"desc"},headers=HEADERS,timeout=TIMEOUT); r.raise_for_status()
-        out.extend(parse_post(x,scope) for x in r.json())
+        posts=category_posts(category,session); counts.append(f"{len(posts)} {scope.replace('_',' ')} posts")
+        out.extend(parse_post(x,scope) for x in posts)
+    print("Alabama: read "+" and ".join(counts))
     return sorted({a.stable_id:a for a in out}.values(),key=lambda a:(a.date,a.stable_id),reverse=True)
 
 def classify(a):
