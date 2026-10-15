@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-10-15 13:01 UTC after the refresh. **50 green, 0 yellow, 0 red.**
+Checked 2026-10-15 15:03 UTC after the refresh. **50 green, 0 yellow, 0 red.**
 
 ## Green (50)
 
@@ -8,26 +8,26 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, 
 
 ## Where the time went
 
-Collecting from state sources took 59.5 min in all, and matching storms took 2.1 min. The 10 slowest states:
+Collecting from state sources took 51.0 min in all, and matching storms took 1.9 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NH | 9.5 min | 0 s |
-| NC | 8.6 min | 1 s |
-| NJ | 7.9 min | 13 s |
-| TX | 6.0 min | 1 s |
-| CT | 4.3 min | 0 s |
-| SC | 1.7 min | 5 s |
-| NY | 1.7 min | 1 s |
+| NJ | 8.0 min | 11 s |
+| NC | 7.2 min | 1 s |
+| NH | 6.7 min | 1 s |
+| TX | 4.3 min | 1 s |
+| CT | 3.7 min | 1 s |
+| MI | 2.1 min | 1 s |
 | LA | 1.7 min | 1 s |
-| PA | 1.7 min | 1 s |
+| SC | 1.5 min | 5 s |
 | VT | 1.6 min | 0 s |
+| PA | 1.5 min | 1 s |
 
 ## Every state
 
 | State | Grade | Source this run | Failed runs in a row | Declarations | Federal | Dated | Titled | Linked | Storm matched | Notes |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| AL | green | returned part | 0 | 31 | 103 | 31 | 31 | 31 | 29 | The source left out 1 saved record(s); shown from earlier runs. |
+| AL | green | returned everything | 0 | 31 | 103 | 31 | 31 | 31 | 29 |  |
 | AK | green | returned everything | 0 | 23 | 95 | 23 | 23 | 23 | 17 |  |
 | AZ | green | returned everything | 0 | 59 | 120 | 59 | 59 | 59 | 54 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | AR | green | returned everything | 0 | 36 | 89 | 36 | 36 | 36 | 32 |  |
@@ -42,7 +42,7 @@ Collecting from state sources took 59.5 min in all, and matching storms took 2.1
 | IL | green | returned everything | 0 | 15 | 68 | 15 | 15 | 15 | 13 |  |
 | IN | green | returned everything | 0 | 35 | 56 | 34 | 35 | 35 | 27 |  |
 | IA | green | returned everything | 0 | 54 | 79 | 54 | 54 | 54 | 46 |  |
-| KS | green | returned part | 0 | 51 | 96 | 51 | 51 | 51 | 45 | The source left out 1 saved record(s); shown from earlier runs. 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| KS | green | returned everything | 0 | 51 | 96 | 51 | 51 | 51 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 16 | 99 | 16 | 16 | 16 | 14 |  |
 | LA | green | returned everything | 0 | 26 | 111 | 26 | 26 | 26 | 21 |  |
 | ME | green | returned everything | 0 | 24 | 71 | 24 | 24 | 24 | 23 |  |
@@ -52,7 +52,7 @@ Collecting from state sources took 59.5 min in all, and matching storms took 2.1
 | MN | green | returned everything | 0 | 15 | 81 | 15 | 15 | 15 | 14 |  |
 | MS | green | returned everything | 0 | 43 | 99 | 43 | 43 | 43 | 42 |  |
 | MO | green | returned everything | 0 | 68 | 88 | 68 | 68 | 68 | 62 | 5 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| MT | green | returned part | 0 | 16 | 113 | 16 | 16 | 16 | 14 | The source left out 1 saved record(s); shown from earlier runs. 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| MT | green | returned everything | 0 | 16 | 113 | 16 | 16 | 16 | 14 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NE | green | returned everything | 0 | 19 | 88 | 19 | 19 | 19 | 14 |  |
 | NV | green | returned everything | 0 | 13 | 116 | 13 | 13 | 13 | 9 |  |
 | NH | green | returned everything | 0 | 14 | 64 | 14 | 14 | 14 | 11 |  |
@@ -67,9 +67,9 @@ Collecting from state sources took 59.5 min in all, and matching storms took 2.1
 | PA | green | returned everything | 0 | 17 | 64 | 17 | 17 | 17 | 17 |  |
 | RI | green | returned everything | 0 | 13 | 31 | 13 | 13 | 13 | 13 |  |
 | SC | green | returned everything | 0 | 50 | 51 | 50 | 50 | 50 | 37 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| SD | green | returned everything | 0 | 22 | 98 | 22 | 22 | 22 | 17 | 4 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| SD | green | returned everything | 0 | 22 | 98 | 22 | 22 | 22 | 17 | Failed on the first try this run and recovered on the retry. 4 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | TN | green | returned everything | 0 | 30 | 97 | 30 | 30 | 30 | 20 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| TX | green | returned part | 0 | 58 | 392 | 58 | 58 | 58 | 57 | The source left out 1 saved record(s); shown from earlier runs. 14 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| TX | green | returned everything | 0 | 58 | 392 | 58 | 58 | 58 | 57 | 14 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | UT | green | returned everything | 0 | 32 | 62 | 32 | 32 | 32 | 20 | 11 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | VT | green | returned everything | 0 | 11 | 62 | 11 | 11 | 11 | 11 |  |
 | VA | green | returned everything | 0 | 75 | 77 | 75 | 75 | 75 | 65 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
@@ -95,6 +95,7 @@ Yellow, working with gaps:
 - the source left out more than a tenth of the saved records, which are shown from earlier runs
 - fewer than 10 declarations, which usually means the source only covers recent years
 - more than a tenth of the declarations have no signing date, title or working link
+- its storm classifier (eo_storm_join.py) differs from the shared copy in plus/
 - fewer than a quarter of the dated declarations matched any storm record
 - declarations fell since the last run
 

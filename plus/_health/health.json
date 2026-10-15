@@ -4,13 +4,14 @@
     "red": 0,
     "yellow": 0
   },
-  "generated_at": "2026-10-15T13:01+00:00",
-  "generated_at_label": "2026-10-15 13:01 UTC",
+  "generated_at": "2026-10-15T15:03+00:00",
+  "generated_at_label": "2026-10-15 15:03 UTC",
   "states": {
     "AK": {
       "actions": 23,
       "bad_source_streak": 0,
-      "collect_seconds": 20.5,
+      "classifier_same": true,
+      "collect_seconds": 21.4,
       "dated": 23,
       "dated_not_drought": 23,
       "declarations": 23,
@@ -19,11 +20,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 23,
-          "source": "partial"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 23,
           "source": "partial"
@@ -77,9 +73,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 23,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 23,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 23,
       "matched_not_drought": 17,
       "name": "Alaska",
@@ -88,14 +89,15 @@
       "since": "Since 2004",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 23.1,
+      "storm_join_seconds": 20.5,
       "storm_matched": 17,
       "titled": 23
     },
     "AL": {
       "actions": 31,
       "bad_source_streak": 0,
-      "collect_seconds": 4.4,
+      "classifier_same": true,
+      "collect_seconds": 4.1,
       "dated": 31,
       "dated_not_drought": 31,
       "declarations": 31,
@@ -104,11 +106,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 30,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 30,
           "source": "ok"
@@ -162,27 +159,31 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 31,
           "source": "partial"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 31,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 31,
       "matched_not_drought": 29,
       "name": "Alabama",
-      "notes": [
-        "The source left out 1 saved record(s); shown from earlier runs."
-      ],
+      "notes": [],
       "reasons": [],
       "since": "Since 2017",
-      "source": "partial",
+      "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 24.9,
+      "storm_join_seconds": 21.5,
       "storm_matched": 29,
       "titled": 31
     },
     "AR": {
       "actions": 36,
       "bad_source_streak": 0,
-      "collect_seconds": 1.9,
+      "classifier_same": true,
+      "collect_seconds": 2.6,
       "dated": 36,
       "dated_not_drought": 36,
       "declarations": 36,
@@ -191,11 +192,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 10,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 10,
           "source": "ok"
@@ -249,9 +245,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 36,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 36,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 36,
       "matched_not_drought": 32,
       "name": "Arkansas",
@@ -267,7 +268,8 @@
     "AZ": {
       "actions": 59,
       "bad_source_streak": 0,
-      "collect_seconds": 50.9,
+      "classifier_same": true,
+      "collect_seconds": 57.6,
       "dated": 59,
       "dated_not_drought": 58,
       "declarations": 59,
@@ -275,11 +277,6 @@
       "federal": 120,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 59,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 59,
@@ -334,9 +331,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 59,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 59,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 59,
       "matched_not_drought": 54,
       "name": "Arizona",
@@ -347,14 +349,15 @@
       "since": "Since 2023",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 14.9,
+      "storm_join_seconds": 13.1,
       "storm_matched": 54,
       "titled": 59
     },
     "CA": {
       "actions": 47,
       "bad_source_streak": 0,
-      "collect_seconds": 40.4,
+      "classifier_same": true,
+      "collect_seconds": 39.5,
       "dated": 47,
       "dated_not_drought": 47,
       "declarations": 47,
@@ -362,11 +365,6 @@
       "federal": 397,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 47,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 47,
@@ -421,9 +419,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 47,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 47,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 47,
       "matched_not_drought": 43,
       "name": "California",
@@ -439,7 +442,8 @@
     "CO": {
       "actions": 112,
       "bad_source_streak": 0,
-      "collect_seconds": 67.7,
+      "classifier_same": true,
+      "collect_seconds": 67.6,
       "dated": 112,
       "dated_not_drought": 110,
       "declarations": 112,
@@ -447,11 +451,6 @@
       "federal": 112,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 120,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 120,
@@ -506,9 +505,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 112,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 112,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 112,
       "matched_not_drought": 92,
       "name": "Colorado",
@@ -519,14 +523,15 @@
       "since": "Since 2000",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 8.4,
+      "storm_join_seconds": 7.3,
       "storm_matched": 94,
       "titled": 112
     },
     "CT": {
       "actions": 20,
       "bad_source_streak": 0,
-      "collect_seconds": 260.0,
+      "classifier_same": true,
+      "collect_seconds": 222.6,
       "dated": 20,
       "dated_not_drought": 19,
       "declarations": 20,
@@ -534,11 +539,6 @@
       "federal": 43,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 14,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 14,
@@ -593,9 +593,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 20,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 20,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 20,
       "matched_not_drought": 19,
       "name": "Connecticut",
@@ -606,14 +611,15 @@
       "since": "Since 1971",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.5,
+      "storm_join_seconds": 0.6,
       "storm_matched": 19,
       "titled": 20
     },
     "DE": {
       "actions": 15,
       "bad_source_streak": 0,
-      "collect_seconds": 0.9,
+      "classifier_same": true,
+      "collect_seconds": 0.8,
       "dated": 15,
       "dated_not_drought": 14,
       "declarations": 15,
@@ -621,11 +627,6 @@
       "federal": 26,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 15,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 15,
@@ -680,9 +681,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 15,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 15,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 15,
       "matched_not_drought": 14,
       "name": "Delaware",
@@ -700,7 +706,8 @@
     "FL": {
       "actions": 26,
       "bad_source_streak": 0,
-      "collect_seconds": 55.5,
+      "classifier_same": true,
+      "collect_seconds": 20.7,
       "dated": 26,
       "dated_not_drought": 26,
       "declarations": 26,
@@ -709,11 +716,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 26,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 26,
           "source": "ok"
@@ -767,9 +769,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 26,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 26,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 26,
       "matched_not_drought": 22,
       "name": "Florida",
@@ -778,14 +785,15 @@
       "since": "Since 2020",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.6,
+      "storm_join_seconds": 0.7,
       "storm_matched": 22,
       "titled": 26
     },
     "GA": {
       "actions": 33,
       "bad_source_streak": 0,
-      "collect_seconds": 13.1,
+      "classifier_same": true,
+      "collect_seconds": 9.3,
       "dated": 33,
       "dated_not_drought": 33,
       "declarations": 33,
@@ -793,11 +801,6 @@
       "federal": 82,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 32,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 32,
@@ -852,9 +855,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 33,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 33,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 33,
       "matched_not_drought": 31,
       "name": "Georgia",
@@ -870,7 +878,8 @@
     "HI": {
       "actions": 37,
       "bad_source_streak": 0,
-      "collect_seconds": 37.8,
+      "classifier_same": true,
+      "collect_seconds": 32.1,
       "dated": 37,
       "dated_not_drought": 36,
       "declarations": 37,
@@ -878,11 +887,6 @@
       "federal": 77,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 11,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 11,
@@ -937,9 +941,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 37,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 37,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 37,
       "matched_not_drought": 30,
       "name": "Hawaii",
@@ -957,6 +966,7 @@
     "IA": {
       "actions": 54,
       "bad_source_streak": 0,
+      "classifier_same": true,
       "collect_seconds": 2.0,
       "dated": 54,
       "dated_not_drought": 54,
@@ -965,11 +975,6 @@
       "federal": 79,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 54,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 54,
@@ -1024,9 +1029,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 54,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 54,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 54,
       "matched_not_drought": 46,
       "name": "Iowa",
@@ -1042,7 +1052,8 @@
     "ID": {
       "actions": 208,
       "bad_source_streak": 0,
-      "collect_seconds": 52.4,
+      "classifier_same": true,
+      "collect_seconds": 53.0,
       "dated": 208,
       "dated_not_drought": 2,
       "declarations": 208,
@@ -1050,11 +1061,6 @@
       "federal": 61,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 208,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 208,
@@ -1109,9 +1115,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 208,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 208,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 208,
       "matched_not_drought": 1,
       "name": "Idaho",
@@ -1122,14 +1133,15 @@
       "since": "Since 2000",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 1.1,
+      "storm_join_seconds": 1.2,
       "storm_matched": 14,
       "titled": 208
     },
     "IL": {
       "actions": 15,
       "bad_source_streak": 0,
-      "collect_seconds": 11.8,
+      "classifier_same": true,
+      "collect_seconds": 12.2,
       "dated": 15,
       "dated_not_drought": 15,
       "declarations": 15,
@@ -1137,11 +1149,6 @@
       "federal": 68,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 15,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 15,
@@ -1196,9 +1203,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 15,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 15,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 15,
       "matched_not_drought": 13,
       "name": "Illinois",
@@ -1214,7 +1226,8 @@
     "IN": {
       "actions": 35,
       "bad_source_streak": 0,
-      "collect_seconds": 6.3,
+      "classifier_same": true,
+      "collect_seconds": 6.7,
       "dated": 34,
       "dated_not_drought": 34,
       "declarations": 35,
@@ -1222,11 +1235,6 @@
       "federal": 56,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 21,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 35,
@@ -1281,9 +1289,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 35,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 35,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 35,
       "matched_not_drought": 27,
       "name": "Indiana",
@@ -1299,7 +1312,8 @@
     "KS": {
       "actions": 51,
       "bad_source_streak": 0,
-      "collect_seconds": 0.6,
+      "classifier_same": true,
+      "collect_seconds": 0.9,
       "dated": 51,
       "dated_not_drought": 49,
       "declarations": 51,
@@ -1307,11 +1321,6 @@
       "federal": 96,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 53,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 53,
@@ -1366,19 +1375,23 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 51,
           "source": "partial"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 51,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 51,
       "matched_not_drought": 44,
       "name": "Kansas",
       "notes": [
-        "The source left out 1 saved record(s); shown from earlier runs.",
         "2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months."
       ],
       "reasons": [],
       "since": "Since 2009",
-      "source": "partial",
+      "source": "ok",
       "source_error": "",
       "storm_join_seconds": 0.9,
       "storm_matched": 45,
@@ -1387,7 +1400,8 @@
     "KY": {
       "actions": 16,
       "bad_source_streak": 0,
-      "collect_seconds": 1.7,
+      "classifier_same": true,
+      "collect_seconds": 1.4,
       "dated": 16,
       "dated_not_drought": 16,
       "declarations": 16,
@@ -1395,11 +1409,6 @@
       "federal": 99,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 13,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 13,
@@ -1454,9 +1463,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 16,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 16,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 16,
       "matched_not_drought": 14,
       "name": "Kentucky",
@@ -1472,7 +1486,8 @@
     "LA": {
       "actions": 26,
       "bad_source_streak": 0,
-      "collect_seconds": 102.6,
+      "classifier_same": true,
+      "collect_seconds": 104.3,
       "dated": 26,
       "dated_not_drought": 26,
       "declarations": 26,
@@ -1480,11 +1495,6 @@
       "federal": 111,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 26,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 26,
@@ -1539,9 +1549,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 26,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 26,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 26,
       "matched_not_drought": 21,
       "name": "Louisiana",
@@ -1557,7 +1572,8 @@
     "MA": {
       "actions": 16,
       "bad_source_streak": 0,
-      "collect_seconds": 79.3,
+      "classifier_same": true,
+      "collect_seconds": 69.0,
       "dated": 16,
       "dated_not_drought": 16,
       "declarations": 16,
@@ -1566,11 +1582,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 16,
-          "source": "partial"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 16,
           "source": "partial"
@@ -1624,9 +1635,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 16,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 16,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 16,
       "matched_not_drought": 15,
       "name": "Massachusetts",
@@ -1635,14 +1651,15 @@
       "since": "Since 1970",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 1.7,
+      "storm_join_seconds": 1.6,
       "storm_matched": 15,
       "titled": 16
     },
     "MD": {
       "actions": 31,
       "bad_source_streak": 0,
-      "collect_seconds": 6.2,
+      "classifier_same": true,
+      "collect_seconds": 5.4,
       "dated": 31,
       "dated_not_drought": 31,
       "declarations": 31,
@@ -1651,11 +1668,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 11,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 11,
           "source": "ok"
@@ -1709,9 +1721,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 31,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 31,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 31,
       "matched_not_drought": 28,
       "name": "Maryland",
@@ -1720,14 +1737,15 @@
       "since": "Since 2023",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 2.5,
+      "storm_join_seconds": 2.1,
       "storm_matched": 28,
       "titled": 31
     },
     "ME": {
       "actions": 24,
       "bad_source_streak": 0,
-      "collect_seconds": 37.3,
+      "classifier_same": true,
+      "collect_seconds": 28.6,
       "dated": 24,
       "dated_not_drought": 24,
       "declarations": 24,
@@ -1735,11 +1753,6 @@
       "federal": 71,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 8,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 8,
@@ -1794,9 +1807,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 24,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 24,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 24,
       "matched_not_drought": 23,
       "name": "Maine",
@@ -1812,7 +1830,8 @@
     "MI": {
       "actions": 23,
       "bad_source_streak": 0,
-      "collect_seconds": 93.7,
+      "classifier_same": true,
+      "collect_seconds": 127.0,
       "dated": 23,
       "dated_not_drought": 23,
       "declarations": 23,
@@ -1821,11 +1840,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 23,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 23,
           "source": "ok"
@@ -1879,9 +1893,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 23,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 23,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 23,
       "matched_not_drought": 23,
       "name": "Michigan",
@@ -1890,14 +1909,15 @@
       "since": "Since 2019",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.6,
+      "storm_join_seconds": 0.7,
       "storm_matched": 23,
       "titled": 23
     },
     "MN": {
       "actions": 15,
       "bad_source_streak": 0,
-      "collect_seconds": 2.2,
+      "classifier_same": true,
+      "collect_seconds": 1.6,
       "dated": 15,
       "dated_not_drought": 15,
       "declarations": 15,
@@ -1906,11 +1926,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 15,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 15,
           "source": "ok"
@@ -1964,9 +1979,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 15,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 15,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 15,
       "matched_not_drought": 14,
       "name": "Minnesota",
@@ -1975,14 +1995,15 @@
       "since": "Since 2019",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.6,
+      "storm_join_seconds": 0.7,
       "storm_matched": 14,
       "titled": 15
     },
     "MO": {
       "actions": 68,
       "bad_source_streak": 0,
-      "collect_seconds": 14.4,
+      "classifier_same": true,
+      "collect_seconds": 14.3,
       "dated": 68,
       "dated_not_drought": 63,
       "declarations": 68,
@@ -1990,11 +2011,6 @@
       "federal": 88,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 83,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 83,
@@ -2049,9 +2065,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 68,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 68,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 68,
       "matched_not_drought": 57,
       "name": "Missouri",
@@ -2069,7 +2090,8 @@
     "MS": {
       "actions": 43,
       "bad_source_streak": 0,
-      "collect_seconds": 8.3,
+      "classifier_same": true,
+      "collect_seconds": 6.5,
       "dated": 43,
       "dated_not_drought": 43,
       "declarations": 43,
@@ -2078,11 +2100,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 43,
-          "source": "partial"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 43,
           "source": "partial"
@@ -2136,9 +2153,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 43,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 43,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 43,
       "matched_not_drought": 42,
       "name": "Mississippi",
@@ -2147,14 +2169,15 @@
       "since": "Since 2020",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.8,
+      "storm_join_seconds": 0.9,
       "storm_matched": 42,
       "titled": 43
     },
     "MT": {
       "actions": 16,
       "bad_source_streak": 0,
-      "collect_seconds": 22.4,
+      "classifier_same": true,
+      "collect_seconds": 22.8,
       "dated": 16,
       "dated_not_drought": 13,
       "declarations": 16,
@@ -2163,11 +2186,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 19,
-          "source": "partial"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 19,
           "source": "partial"
@@ -2221,19 +2239,23 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 16,
           "source": "partial"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 16,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 16,
       "matched_not_drought": 12,
       "name": "Montana",
       "notes": [
-        "The source left out 1 saved record(s); shown from earlier runs.",
         "3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months."
       ],
       "reasons": [],
       "since": "Since 2021",
-      "source": "partial",
+      "source": "ok",
       "source_error": "",
       "storm_join_seconds": 0.6,
       "storm_matched": 14,
@@ -2242,7 +2264,8 @@
     "NC": {
       "actions": 34,
       "bad_source_streak": 0,
-      "collect_seconds": 516.5,
+      "classifier_same": true,
+      "collect_seconds": 431.2,
       "dated": 34,
       "dated_not_drought": 34,
       "declarations": 34,
@@ -2250,11 +2273,6 @@
       "federal": 85,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 34,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 34,
@@ -2309,9 +2327,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 34,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 34,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 34,
       "matched_not_drought": 32,
       "name": "North Carolina",
@@ -2327,7 +2350,8 @@
     "ND": {
       "actions": 34,
       "bad_source_streak": 0,
-      "collect_seconds": 9.9,
+      "classifier_same": true,
+      "collect_seconds": 8.2,
       "dated": 34,
       "dated_not_drought": 27,
       "declarations": 34,
@@ -2335,11 +2359,6 @@
       "federal": 76,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 34,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 34,
@@ -2394,9 +2413,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 34,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 34,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 34,
       "matched_not_drought": 17,
       "name": "North Dakota",
@@ -2414,7 +2438,8 @@
     "NE": {
       "actions": 19,
       "bad_source_streak": 0,
-      "collect_seconds": 0.6,
+      "classifier_same": true,
+      "collect_seconds": 0.5,
       "dated": 19,
       "dated_not_drought": 19,
       "declarations": 19,
@@ -2423,11 +2448,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 33,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 33,
           "source": "ok"
@@ -2481,9 +2501,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 19,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 19,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 19,
       "matched_not_drought": 14,
       "name": "Nebraska",
@@ -2492,14 +2517,15 @@
       "since": "Since 1970",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.6,
+      "storm_join_seconds": 0.7,
       "storm_matched": 14,
       "titled": 19
     },
     "NH": {
       "actions": 14,
       "bad_source_streak": 0,
-      "collect_seconds": 567.7,
+      "classifier_same": true,
+      "collect_seconds": 400.2,
       "dated": 14,
       "dated_not_drought": 14,
       "declarations": 14,
@@ -2508,11 +2534,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 14,
-          "source": "failed"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 14,
           "source": "ok"
@@ -2566,9 +2587,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 14,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 14,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 14,
       "matched_not_drought": 11,
       "name": "New Hampshire",
@@ -2577,14 +2603,15 @@
       "since": "Since 1990",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.5,
+      "storm_join_seconds": 0.6,
       "storm_matched": 11,
       "titled": 14
     },
     "NJ": {
       "actions": 120,
       "bad_source_streak": 0,
-      "collect_seconds": 472.1,
+      "classifier_same": true,
+      "collect_seconds": 478.2,
       "dated": 120,
       "dated_not_drought": 118,
       "declarations": 120,
@@ -2592,11 +2619,6 @@
       "federal": 59,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 145,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 145,
@@ -2651,9 +2673,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 120,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 120,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 120,
       "matched_not_drought": 102,
       "name": "New Jersey",
@@ -2664,14 +2691,15 @@
       "since": "Since 1990",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 12.8,
+      "storm_join_seconds": 11.3,
       "storm_matched": 103,
       "titled": 120
     },
     "NM": {
       "actions": 43,
       "bad_source_streak": 0,
-      "collect_seconds": 2.3,
+      "classifier_same": true,
+      "collect_seconds": 2.7,
       "dated": 43,
       "dated_not_drought": 43,
       "declarations": 43,
@@ -2680,11 +2708,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 45,
-          "source": "ok"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 45,
           "source": "ok"
@@ -2738,9 +2761,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 43,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 43,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 43,
       "matched_not_drought": 30,
       "name": "New Mexico",
@@ -2749,14 +2777,15 @@
       "since": "Since 2019",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.7,
+      "storm_join_seconds": 0.8,
       "storm_matched": 30,
       "titled": 43
     },
     "NV": {
       "actions": 13,
       "bad_source_streak": 0,
-      "collect_seconds": 9.0,
+      "classifier_same": true,
+      "collect_seconds": 18.9,
       "dated": 13,
       "dated_not_drought": 13,
       "declarations": 13,
@@ -2764,11 +2793,6 @@
       "federal": 116,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 13,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 13,
@@ -2823,9 +2847,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 13,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 13,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 13,
       "matched_not_drought": 9,
       "name": "Nevada",
@@ -2841,7 +2870,8 @@
     "NY": {
       "actions": 24,
       "bad_source_streak": 0,
-      "collect_seconds": 103.9,
+      "classifier_same": true,
+      "collect_seconds": 85.3,
       "dated": 24,
       "dated_not_drought": 23,
       "declarations": 24,
@@ -2849,11 +2879,6 @@
       "federal": 118,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 25,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 25,
@@ -2908,9 +2933,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 24,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 24,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 24,
       "matched_not_drought": 21,
       "name": "New York",
@@ -2921,14 +2951,15 @@
       "since": "Since 2021",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 0.7,
+      "storm_join_seconds": 0.8,
       "storm_matched": 22,
       "titled": 24
     },
     "OH": {
       "actions": 18,
       "bad_source_streak": 0,
-      "collect_seconds": 0.7,
+      "classifier_same": true,
+      "collect_seconds": 1.5,
       "dated": 18,
       "dated_not_drought": 18,
       "declarations": 18,
@@ -2936,11 +2967,6 @@
       "federal": 61,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 18,
-          "source": "failed"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 18,
@@ -2993,6 +3019,11 @@
         },
         {
           "at": "2026-10-15 13:01 UTC",
+          "declarations": 18,
+          "source": "manual"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
           "declarations": 18,
           "source": "manual"
         }
@@ -3015,7 +3046,8 @@
     "OK": {
       "actions": 55,
       "bad_source_streak": 0,
-      "collect_seconds": 22.3,
+      "classifier_same": true,
+      "collect_seconds": 18.5,
       "dated": 55,
       "dated_not_drought": 49,
       "declarations": 55,
@@ -3023,11 +3055,6 @@
       "federal": 260,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 55,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 55,
@@ -3082,9 +3109,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 55,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 55,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 55,
       "matched_not_drought": 47,
       "name": "Oklahoma",
@@ -3095,14 +3127,15 @@
       "since": "Since 2016",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 1.0,
+      "storm_join_seconds": 1.1,
       "storm_matched": 53,
       "titled": 55
     },
     "OR": {
       "actions": 252,
       "bad_source_streak": 0,
-      "collect_seconds": 1.0,
+      "classifier_same": true,
+      "collect_seconds": 0.8,
       "dated": 237,
       "dated_not_drought": 159,
       "declarations": 252,
@@ -3110,11 +3143,6 @@
       "federal": 174,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 252,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 252,
@@ -3169,9 +3197,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 252,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 252,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 252,
       "matched_not_drought": 96,
       "name": "Oregon",
@@ -3182,14 +3215,15 @@
       "since": "Since 2003",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 1.6,
+      "storm_join_seconds": 1.7,
       "storm_matched": 106,
       "titled": 252
     },
     "PA": {
       "actions": 17,
       "bad_source_streak": 0,
-      "collect_seconds": 99.7,
+      "classifier_same": true,
+      "collect_seconds": 88.2,
       "dated": 17,
       "dated_not_drought": 17,
       "declarations": 17,
@@ -3197,11 +3231,6 @@
       "federal": 64,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 17,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 17,
@@ -3256,9 +3285,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 17,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 17,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 17,
       "matched_not_drought": 17,
       "name": "Pennsylvania",
@@ -3274,7 +3308,8 @@
     "RI": {
       "actions": 13,
       "bad_source_streak": 0,
-      "collect_seconds": 12.5,
+      "classifier_same": true,
+      "collect_seconds": 17.9,
       "dated": 13,
       "dated_not_drought": 13,
       "declarations": 13,
@@ -3282,11 +3317,6 @@
       "federal": 31,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 13,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 13,
@@ -3341,9 +3371,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 13,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 13,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 13,
       "matched_not_drought": 13,
       "name": "Rhode Island",
@@ -3359,7 +3394,8 @@
     "SC": {
       "actions": 50,
       "bad_source_streak": 0,
-      "collect_seconds": 103.9,
+      "classifier_same": true,
+      "collect_seconds": 90.5,
       "dated": 50,
       "dated_not_drought": 49,
       "declarations": 50,
@@ -3367,11 +3403,6 @@
       "federal": 51,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 50,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 50,
@@ -3426,9 +3457,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 50,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 50,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 50,
       "matched_not_drought": 37,
       "name": "South Carolina",
@@ -3439,14 +3475,15 @@
       "since": "Since 1970",
       "source": "ok",
       "source_error": "",
-      "storm_join_seconds": 5.4,
+      "storm_join_seconds": 4.7,
       "storm_matched": 37,
       "titled": 50
     },
     "SD": {
       "actions": 22,
       "bad_source_streak": 0,
-      "collect_seconds": 1.0,
+      "classifier_same": true,
+      "collect_seconds": 3.5,
       "dated": 22,
       "dated_not_drought": 18,
       "declarations": 22,
@@ -3454,11 +3491,6 @@
       "federal": 98,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 25,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 25,
@@ -3513,13 +3545,19 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 22,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 22,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 22,
       "matched_not_drought": 14,
       "name": "South Dakota",
       "notes": [
+        "Failed on the first try this run and recovered on the retry.",
         "4 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months."
       ],
       "reasons": [],
@@ -3533,7 +3571,8 @@
     "TN": {
       "actions": 30,
       "bad_source_streak": 0,
-      "collect_seconds": 8.4,
+      "classifier_same": true,
+      "collect_seconds": 10.3,
       "dated": 30,
       "dated_not_drought": 27,
       "declarations": 30,
@@ -3541,11 +3580,6 @@
       "federal": 97,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 14,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 14,
@@ -3600,9 +3634,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 30,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 30,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 30,
       "matched_not_drought": 18,
       "name": "Tennessee",
@@ -3620,7 +3659,8 @@
     "TX": {
       "actions": 58,
       "bad_source_streak": 0,
-      "collect_seconds": 359.2,
+      "classifier_same": true,
+      "collect_seconds": 257.5,
       "dated": 58,
       "dated_not_drought": 44,
       "declarations": 58,
@@ -3629,11 +3669,6 @@
       "grade": "green",
       "history": [
         {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 59,
-          "source": "partial"
-        },
-        {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 59,
           "source": "partial"
@@ -3687,19 +3722,23 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 58,
           "source": "partial"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 58,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 58,
       "matched_not_drought": 43,
       "name": "Texas",
       "notes": [
-        "The source left out 1 saved record(s); shown from earlier runs.",
         "14 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months."
       ],
       "reasons": [],
       "since": "Since 2015",
-      "source": "partial",
+      "source": "ok",
       "source_error": "",
       "storm_join_seconds": 1.2,
       "storm_matched": 57,
@@ -3708,7 +3747,8 @@
     "UT": {
       "actions": 32,
       "bad_source_streak": 0,
-      "collect_seconds": 16.4,
+      "classifier_same": true,
+      "collect_seconds": 16.6,
       "dated": 32,
       "dated_not_drought": 21,
       "declarations": 32,
@@ -3716,11 +3756,6 @@
       "federal": 62,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 33,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 33,
@@ -3775,9 +3810,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 32,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 32,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 32,
       "matched_not_drought": 15,
       "name": "Utah",
@@ -3795,7 +3835,8 @@
     "VA": {
       "actions": 75,
       "bad_source_streak": 0,
-      "collect_seconds": 14.1,
+      "classifier_same": true,
+      "collect_seconds": 16.3,
       "dated": 75,
       "dated_not_drought": 72,
       "declarations": 75,
@@ -3803,11 +3844,6 @@
       "federal": 77,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 75,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 75,
@@ -3862,9 +3898,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 75,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 75,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 75,
       "matched_not_drought": 65,
       "name": "Virginia",
@@ -3882,7 +3923,8 @@
     "VT": {
       "actions": 11,
       "bad_source_streak": 0,
-      "collect_seconds": 96.6,
+      "classifier_same": true,
+      "collect_seconds": 93.3,
       "dated": 11,
       "dated_not_drought": 11,
       "declarations": 11,
@@ -3890,11 +3932,6 @@
       "federal": 62,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 6,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 6,
@@ -3949,9 +3986,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 11,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 11,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 11,
       "matched_not_drought": 11,
       "name": "Vermont",
@@ -3967,7 +4009,8 @@
     "WA": {
       "actions": 39,
       "bad_source_streak": 0,
-      "collect_seconds": 93.3,
+      "classifier_same": true,
+      "collect_seconds": 78.5,
       "dated": 39,
       "dated_not_drought": 39,
       "declarations": 39,
@@ -3975,11 +4018,6 @@
       "federal": 223,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 39,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 39,
@@ -4034,9 +4072,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 39,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 39,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 39,
       "matched_not_drought": 26,
       "name": "Washington",
@@ -4052,7 +4095,8 @@
     "WI": {
       "actions": 18,
       "bad_source_streak": 0,
-      "collect_seconds": 1.1,
+      "classifier_same": true,
+      "collect_seconds": 1.0,
       "dated": 18,
       "dated_not_drought": 18,
       "declarations": 18,
@@ -4060,11 +4104,6 @@
       "federal": 57,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 18,
-          "source": "failed"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 18,
@@ -4119,9 +4158,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 18,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 18,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 18,
       "matched_not_drought": 15,
       "name": "Wisconsin",
@@ -4137,7 +4181,8 @@
     "WV": {
       "actions": 18,
       "bad_source_streak": 0,
-      "collect_seconds": 14.5,
+      "classifier_same": true,
+      "collect_seconds": 3.3,
       "dated": 18,
       "dated_not_drought": 18,
       "declarations": 18,
@@ -4145,11 +4190,6 @@
       "federal": 86,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 18,
-          "source": "ok"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 18,
@@ -4204,9 +4244,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 18,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 18,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 18,
       "matched_not_drought": 12,
       "name": "West Virginia",
@@ -4222,7 +4267,8 @@
     "WY": {
       "actions": 13,
       "bad_source_streak": 0,
-      "collect_seconds": 51.3,
+      "classifier_same": true,
+      "collect_seconds": 1.7,
       "dated": 13,
       "dated_not_drought": 13,
       "declarations": 13,
@@ -4230,11 +4276,6 @@
       "federal": 45,
       "grade": "green",
       "history": [
-        {
-          "at": "2026-10-07 22:11 UTC",
-          "declarations": 7,
-          "source": "partial"
-        },
         {
           "at": "2026-10-08 00:04 UTC",
           "declarations": 7,
@@ -4289,9 +4330,14 @@
           "at": "2026-10-15 13:01 UTC",
           "declarations": 13,
           "source": "ok"
+        },
+        {
+          "at": "2026-10-15 15:03 UTC",
+          "declarations": 13,
+          "source": "ok"
         }
       ],
-      "last_good_collection": "2026-10-15 13:01 UTC",
+      "last_good_collection": "2026-10-15 15:03 UTC",
       "linked": 13,
       "matched_not_drought": 12,
       "name": "Wyoming",
