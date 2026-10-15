@@ -120,11 +120,31 @@ class TestKansasPageLayouts(unittest.TestCase):
                 n = scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
             with open(join, encoding="utf-8") as f:
                 rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
-        self.assertNotIn("KS-PROC-4221", rows)                  # file name says 2023, tab says 2026
+        self.assertEqual(rows["KS-PROC-4221"]["date_signed"], "2026-04-11")   # file name says 2023; reviewed as 2026
         self.assertNotIn("KS-PROC-4250", rows)                  # hantavirus is not weather
         self.assertEqual(rows["KS-PROC-4023"]["date_signed"], "2025-09-09")   # reviewed date kept
         self.assertEqual(rows["KS-PROC-4126"]["date_signed"], "2026-01-24")
         self.assertEqual(n, len(rows))
+
+    def test_an_unreviewed_file_name_year_conflict_is_left_as_saved(self):
+        import csv as _csv, tempfile, os
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with open(join, "w", encoding="utf-8") as f:
+                f.write("declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n")
+            # Without the review, which year is right cannot be told, so the
+            # entry is not written; with it filed under another year than the
+            # reviewed one, it is not written either.
+            for reviewed in ({}, {"4221": 2023}):
+                with mock.patch.object(scraper, "fetch", return_value=TABS_HTML), \
+                     mock.patch.object(scraper, "REVIEWED_YEARS", reviewed), \
+                     mock.patch("sys.stderr") as err:
+                    scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+                with open(join, encoding="utf-8") as f:
+                    self.assertNotIn("KS-PROC-4221", {r["declaration_id"] for r in _csv.DictReader(f)})
+                self.assertIn("KS-PROC-4221 is under 2026 but its file name says 2023",
+                              "".join(str(c) for c in err.write.call_args_list))
 
     def test_collect_stops_when_nothing_parses_and_the_news_feed_fails(self):
         import tempfile, os

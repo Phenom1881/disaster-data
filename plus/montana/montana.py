@@ -42,12 +42,12 @@ CAPABILITIES = {
         "their PDFs, not by reading the listing page start-to-finish. A "
         "production run of this scraper must implement and verify real "
         "pagination (?page=N) before treating any single fetch as complete.",
-        "MT-EO-4-2021 ('Energy Emergency', Feb 12 2021, during the same week "
-        "as the historic central-US cold snap) could plausibly be a winter-"
-        "weather-driven declaration but was left OUT of hazard_overrides.csv "
-        "in this pass because no independent citation was found confirming "
-        "the cause - it is correctly left unclassified/ambiguous rather than "
-        "guessed. Worth a follow-up PDF read.",
+        "MT-EO-4-2021 ('Energy Emergency', Feb 12 2021) is a winter-weather "
+        "declaration: the governor's press release ties it to harsh winter "
+        "weather, record cold and deep snow delaying propane and heating-oil "
+        "deliveries (hazard_overrides.csv, winter). The scraper does not count "
+        "energy emergencies as declarations, so this one is kept in "
+        "manual_declarations.csv.",
     ],
 }
 
