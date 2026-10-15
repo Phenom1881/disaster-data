@@ -2,7 +2,7 @@ Repository root: /home/runner/work/disaster-data/disaster-data
 Selected states: AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
 FMCSA state declarations: 0 entries read from 0 page(s), 0 declaration page(s) read, 570 saved in all; pages not read: 2017 (HTTPError 403), 2018 (HTTPError 403), 2019 (HTTPError 403), 2020 (HTTPError 403), 2021 (HTTPError 403), 2022 (HTTPError 403), 2023 (HTTPError 403), 2024 (HTTPError 403), 2025 (HTTPError 403), 2026 (HTTPError 403), 2026 (HTTPError 403)
 AL: declarations_for_join.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-AL: al_emergency_actions_all.csv: kept 4 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+AL: al_emergency_actions_all.csv: kept 5 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alabama/hazard_overrides.csv
 AL-SOE-2026-10-07-state-of-emergency-tropical-storm-isaias: no matching storm events found in the date window.
 AL-SOE-2020-10-06-state-of-emergency-hurricane-delta: no matching storm events found in the date window.
@@ -848,40 +848,40 @@ KY: ky_emergency_actions_all.csv: kept 10 saved record(s) this run's scrape did 
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kentucky/hazard_overrides.csv
 KY-SOE-2023-11-09: no matching storm events found in the date window.
 KY-SOE-2024-01-10: no matching storm events found in the date window.
-Wrote 1366 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_matches.csv.tmp
-Wrote severity summary (679 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp
+Wrote 1785 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_matches.csv.tmp
+Wrote severity summary (867 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  KY-SOE-2021-12-11 GRAVES [county/county-equivalent]: deaths=24, injuries=210, damage=$0 (Hail, Tornado)
   KY-EO-2025-305 LAUREL [county/county-equivalent]: deaths=17, injuries=0, damage=$48,000 (Thunderstorm Wind, Tornado)
+  KY-SOE-2021-12-11 WARREN [county/county-equivalent]: deaths=16, injuries=63, damage=$0 (Thunderstorm Wind, Tornado)
+  KY-EO-2022-457 KNOTT [county/county-equivalent]: deaths=16, injuries=0, damage=$0 (Flash Flood)
+  KY-SOE-2021-12-11 HOPKINS [county/county-equivalent]: deaths=15, injuries=200, damage=$0 (Tornado)
+  KY-SOE-2021-12-11 MUHLENBERG [county/county-equivalent]: deaths=11, injuries=25, damage=$100,000 (Tornado)
+  KY-EO-2022-457 BREATHITT [county/county-equivalent]: deaths=10, injuries=0, damage=$0 (Flash Flood, Flood)
+  KY-EO-2022-457 PERRY [county/county-equivalent]: deaths=7, injuries=0, damage=$0 (Flash Flood, Flood)
+  KY-SOE-2021-12-11 CALDWELL [county/county-equivalent]: deaths=4, injuries=11, damage=$0 (Tornado)
+  KY-EO-2022-457 CLAY [county/county-equivalent]: deaths=3, injuries=0, damage=$0 (Flash Flood)
+  KY-EO-2022-457 LETCHER [county/county-equivalent]: deaths=3, injuries=0, damage=$0 (Flash Flood, Flood)
   KY-EO-2026-400 MADISON [county/county-equivalent]: deaths=3, injuries=0, damage=$0 (Flash Flood)
   KY-EO-2015-118 FAYETTE [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Cold/Wind Chill, Heavy Snow)
+  KY-SOE-2021-12-11 MARSHALL [county/county-equivalent]: deaths=1, injuries=54, damage=$0 (Tornado)
+  KY-SOE-2021-12-11 TAYLOR [county/county-equivalent]: deaths=1, injuries=30, damage=$0 (Tornado)
+  KY-SOE-2021-12-11 FULTON [county/county-equivalent]: deaths=1, injuries=5, damage=$0 (Hail, Tornado)
+  KY-SOE-2021-12-11 LYON [county/county-equivalent]: deaths=1, injuries=5, damage=$0 (Tornado)
+  KY-SOE-2021-02-11 HART [NWS forecast zone]: deaths=1, injuries=2, damage=$0 (Ice Storm, Winter Storm)
   KY-EO-2025-210 BULLITT [county/county-equivalent]: deaths=1, injuries=1, damage=$20,000 (Flash Flood, Thunderstorm Wind, Tornado)
   KY-EO-2015-118 BULLITT [NWS forecast zone]: deaths=1, injuries=1, damage=$0 (Cold/Wind Chill, Heavy Snow)
+  KY-SOE-2021-02-11 HARDIN [NWS forecast zone]: deaths=1, injuries=1, damage=$0 (Ice Storm, Winter Storm)
   KY-EO-2025-210 NELSON [county/county-equivalent]: deaths=1, injuries=0, damage=$10,000 (Flash Flood, Thunderstorm Wind, Tornado)
   KY-EO-2025-305 PULASKI [county/county-equivalent]: deaths=1, injuries=0, damage=$7,000 (Thunderstorm Wind, Tornado)
   KY-SOE-2024-01-14 DAVIESS [NWS forecast zone]: deaths=1, injuries=0, damage=$1,000 (Cold/Wind Chill, Strong Wind, Winter Weather)
   KY-EO-2015-118 MADISON [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Cold/Wind Chill, Heavy Snow)
-  KY-EO-2015-118 LOGAN [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Cold/Wind Chill, Heavy Snow)
-  KY-EO-2015-118 WAYNE [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
-  KY-EO-2015-118 KNOX [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
-  KY-EO-2015-118 CLAY [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
-  KY-SOE-2023-07-25 NICHOLAS [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flash Flood)
-  KY-EO-2025-210 CASEY [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flash Flood, Lightning, Thunderstorm Wind)
-  KY-EO-2025-210 FRANKLIN [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flash Flood, Thunderstorm Wind)
-  KY-SOE-2024-04-02 JEFFERSON [county/county-equivalent]: deaths=0, injuries=22, damage=$0 (Hail, Tornado)
-  KY-EO-2025-305 UNION [county/county-equivalent]: deaths=0, injuries=4, damage=$15,100,000 (Hail, Tornado)
-  KY-SOE-2024-03-15 TRIMBLE [county/county-equivalent]: deaths=0, injuries=2, damage=$0 (Hail, Tornado)
-  KY-EO-2025-210 TAYLOR [county/county-equivalent]: deaths=0, injuries=2, damage=$0 (Flash Flood, Tornado)
-  KY-SOE-2024-04-02 UNION [county/county-equivalent]: deaths=0, injuries=1, damage=$735,000 (Thunderstorm Wind, Tornado)
-  KY-SOE-2024-04-02 FAYETTE [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Thunderstorm Wind)
-  KY-EO-2025-210 BARREN [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Flash Flood, Thunderstorm Wind, Tornado)
-  KY-EO-2025-210 JEFFERSON [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Flash Flood, Thunderstorm Wind, Tornado)
-  KY-EO-2025-305 CALDWELL [county/county-equivalent]: deaths=0, injuries=0, damage=$2,100,000 (Hail, Thunderstorm Wind)
-  Showing the 25 highest-consequence areas; all 183 are retained in /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 229 are retained in /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kentucky/eo_storm_severity_summary.csv.tmp.
 
-KY: 13 actions, 99 federal declarations; manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap
+KY: 16 actions, 99 federal declarations; manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap
 Louisiana documents: 47 read, but no signing date found; 24 scanned PDF, read with OCR
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/louisiana/hazard_overrides.csv
@@ -1329,18 +1329,25 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 NV: 13 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
-New Hampshire: 339 actions, 264 relationships, 8 weather declarations
+New Hampshire: 339 actions, 280 relationships, 8 weather declarations
 
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
   WARNING: the registry could not be fetched; reading the Internet Archive copy
-  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-88.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200308id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-88.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f090aeec2d0>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-10.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200245id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-10.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-09.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200249id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-09.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-08.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200253id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-08.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-05.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200303id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-05.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-89.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250603200306id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2020-04-89.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f5050181a10>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2018-2.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064340id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2018-2.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2017-5.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064350id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/sununu-2017-5.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
   WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2016-9.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064357id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2016-9.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2016-3.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064406id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2016-3.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
   WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2015-2.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064413id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2015-2.pdf (Caused by NewConnectionError("HTTPSConnection(host='web.archive.org', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
-  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2015-1.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064414id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2015-1.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f0900b88710>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
+  WARNING: could not read the Internet Archive copy of https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2015-1.pdf: HTTPSConnectionPool(host='web.archive.org', port=443): Max retries exceeded with url: /web/20250606064414id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/hassan-2015-1.pdf (Caused by ConnectTimeoutError(<HTTPSConnection(host='web.archive.org', port=443) at 0x7f50509a0250>, 'Connection to web.archive.org timed out. (connect timeout=60)'))
 
 NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 4 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 18 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 44 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 28 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
 NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
@@ -2350,8 +2357,8 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 VT: 11 actions, 62 federal declarations; 2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
 Virginia adapter: collecting current-administration declarations...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/virginia/va_eo_scraper.py --raw-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv --all-out /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv
-https://www.governor.virginia.gov/executive-actions/: parsed 50 order links
-Wrote 25 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
+https://www.governor.virginia.gov/executive-actions/: parsed 52 order links
+Wrote 26 unique orders to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_all_orders_raw.csv
 Wrote 1 emergency declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/va_emergency_declarations_all.csv
 Wrote 1 weather declarations to /home/runner/work/disaster-data/disaster-data/plus/virginia/declarations_for_join.csv (ready for eo_storm_join.py)
   EO-11: 2026-01-22 — Declaring State of Emergency Due to Winter Weather
@@ -2449,7 +2456,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 75 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2612,14 +2619,13 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending.
-TIME total: collect 3274s, storm join 95s. Slowest: NH 572s+0s, TX 460s+1s, NC 370s+1s, NJ 359s+8s, CT 210s+1s, VT 148s+0s, SC 136s+3s, FL 102s+1s, LA 90s+1s, NY 82s+1s
+TIME total: collect 3572s, storm join 125s. Slowest: NH 568s+0s, NC 516s+1s, NJ 472s+13s, TX 359s+1s, CT 260s+0s, SC 104s+5s, NY 104s+1s, LA 103s+1s, PA 100s+1s, VT 97s+0s
 WARNING kept saved records the state source did not return: AL (1), KS (1), MT (1), TX (1)
 Row-loss check: no saved rows lost.
-Plus health: 48 green, 2 yellow, 0 red.
-Changes since the last run (2026-10-12 21:34 UTC):
+Plus health: 50 green, 0 yellow, 0 red.
+Changes since the last run (2026-10-13 18:23 UTC):
 
-- **Kansas** went from green to yellow. Declarations fell from 52 to 51 since the last run.
-- **New Mexico** went from green to yellow. Declarations fell from 45 to 43 since the last run.
-- **Wisconsin** went from yellow to green.
+- **Kansas** went from yellow to green.
+- **New Mexico** went from yellow to green.
 
-Now 48 green, 2 yellow, 0 red.
+Now 50 green, 0 yellow, 0 red.
