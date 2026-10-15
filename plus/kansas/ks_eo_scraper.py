@@ -65,6 +65,18 @@ NON_WEATHER_OR_SUSPECT_SLUGS = {
 # mis-attributing a heading).
 MODERN_FORMAT_MIN_YEAR = 2016
 
+# Entries whose PDF file name gives a different year from the tab they sit
+# under, settled by review: document id -> the year it belongs to. The entry
+# is read normally when it sits under that year's tab.
+#   4221, "April 11 - April 26 (Wildland Fire)" under 2026, file
+#   SOK-Apr-11--Apr-26-2023-Wildland-Fire: the 2026 fire. KDEM numbers its
+#   documents in upload order, and 4221 falls between 4196 (April 13, 2026)
+#   and 4223 (May 14, 2026). 2023's April fires are 2840 (March 31 to April
+#   11) and 2836 (April 12 to 26); none ran April 11 to 26, so the 2023 in
+#   the file name is a typo. NOAA logged drought and high wind across Kansas
+#   that April. Reviewed 2026-10-15.
+REVIEWED_YEARS = {"4221": 2026}
+
 DOC_LINK_RE = re.compile(r"/DocumentCenter/View/(\d+)", re.IGNORECASE)
 YEAR_RE = re.compile(r"(?:19|20)\d{2}")
 # A declaration's heading: its dates and a hazard in parentheses, e.g.
@@ -491,9 +503,11 @@ def collect(actions_out, relationships_out, join_out):
             continue
         # A year written in the PDF's own file name must agree with the tab
         # the entry sits under. When it does not, which of the two is wrong
-        # cannot be told from here, so the saved record stands.
+        # cannot be told from here, so the saved record stands, unless a
+        # review has settled it (REVIEWED_YEARS).
         years_in_name = slug_years(rec["pdf_url"])
-        if years_in_name and int(rec["year"]) not in years_in_name:
+        if (years_in_name and int(rec["year"]) not in years_in_name
+                and REVIEWED_YEARS.get(rec["doc_id"]) != int(rec["year"])):
             print("  NOTE: KS-PROC-%s is under %s but its file name says %s; left as saved"
                   % (rec["doc_id"], rec["year"], "/".join(map(str, sorted(years_in_name)))), file=sys.stderr)
             continue
