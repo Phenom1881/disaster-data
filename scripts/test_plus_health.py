@@ -187,6 +187,13 @@ class LastGoodCollectionTests(unittest.TestCase):
         self.assertEqual(grade(summary(count=38), previous={"declarations": 40, "excluded": 0})["grade"],
                          "yellow")
 
+    def test_a_state_whose_storm_classifier_differs_is_yellow(self):
+        result = grade(summary(), numbers=dict(GOOD, classifier_same=False))
+        self.assertEqual(result["grade"], "yellow")
+        self.assertIn("storm classifier (eo_storm_join.py) differs from the shared copy", result["reasons"][0])
+        self.assertEqual(grade(summary(), numbers=dict(GOOD, classifier_same=True))["grade"], "green")
+        self.assertEqual(grade(summary(), numbers=dict(GOOD, classifier_same=None))["grade"], "green")   # nothing to compare
+
     def test_page_not_rebuilt_this_run_is_red(self):
         result = grade(summary(generated_on="2026-09-20"))
         self.assertEqual(result["grade"], "red")
@@ -245,6 +252,9 @@ class FullRunTests(unittest.TestCase):
             rows = [line for line in table.splitlines() if line.startswith("|")]
             self.assertEqual(len(rows), 52)                    # header, rule, 50 states
             self.assertEqual({row.count("|") for row in rows}, {12})
+            # Every state's storm classifier is the shared copy in plus/.
+            differ = sorted(ab for ab, row in data["states"].items() if row.get("classifier_same") is not True)
+            self.assertEqual(differ, [])
             self.assertNotIn("—", report)
             self.assertNotIn("–", report)
         finally:
