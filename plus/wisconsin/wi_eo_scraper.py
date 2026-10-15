@@ -4,22 +4,37 @@ Primary source: the Governor's executive-order archive,
 https://evers.wi.gov/pages/newsroom/executive-orders.aspx, a SharePoint page
 that embeds every order (number, title, date, PDF) as JSON.
 
-evers.wi.gov does not answer GitHub's servers at all (every request from the
-weekly job timed out connecting, Sep 2026), so the archive could not be
-refreshed. When it cannot be reached, the scraper falls back to the
-Governor's press releases, published through GovDelivery:
-https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
-Each state of emergency the Governor declares is announced there ("Gov. Evers
-Declares State of Emergency in Response to Severe Storms throughout Eastern
-Wisconsin"). Only a release that names the executive order it announces
-becomes a record, WI-EO-<number>, the same id the archive gives that order,
-so the archive and the releases can never produce two records for one
-declaration. A release that names no order, or orders that amend or extend
-another, is listed in the run log for review and not written. Saved archive
-records are never replaced by a release: a saved row is written back as it was.
+evers.wi.gov does not answer every one of GitHub's servers. Since September
+2026 about a third of the refresh runs could not even connect to it (connect
+timeouts), while the rest read it in about a second. The build's own retry of
+a failed state, minutes later on the same machine, never got through (0 of 11
+runs from 2026-09-27 to 2026-10-11), so it is the machine a run lands on that
+decides, not the minute. When the archive cannot be reached, it is read from
+there instead, in this order:
+
+1. The Internet Archive's copy of the same page, if one was made in the last
+   day, or a new copy this run asks the Internet Archive to make now (Save
+   Page Now). The Internet Archive's crawler reaches the page, and a copy is
+   the page exactly as the site served it, so the orders, titles, dates and
+   links are the same as a direct read. A copy older than a day is never
+   used: a run that cannot get a current copy goes on to step 2 and, if that
+   fails too, fails as before, so the health report still says so.
+2. The Governor's press releases, published through GovDelivery:
+   https://content.govdelivery.com/accounts/WIGOV/bulletins.rss
+   Each state of emergency the Governor declares is announced there ("Gov.
+   Evers Declares State of Emergency in Response to Severe Storms throughout
+   Eastern Wisconsin"). Only a release that names the executive order it
+   announces becomes a record, WI-EO-<number>, the same id the archive gives
+   that order, so the archive and the releases can never produce two records
+   for one declaration. A release that names no order, or orders that amend
+   or extend another, is listed in the run log for review and not written.
+   Saved archive records are never replaced by a release: a saved row is
+   written back as it was. GovDelivery has answered 406 to every request
+   from GitHub's servers on record (the same answer Ohio's feed gives), so
+   this step only helps when the scraper runs somewhere else.
 """
 from __future__ import annotations
-import argparse, csv, html as html_lib, json, re, sys, time
+import argparse, csv, html as html_lib, json, re, socket, sys, time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
@@ -35,11 +50,10 @@ ARCHIVE_URL="https://evers.wi.gov/pages/newsroom/executive-orders.aspx"
 RELEASE_FEED="https://content.govdelivery.com/accounts/WIGOV/bulletins.rss"
 HEADERS={"User-Agent":"Mozilla/5.0 (compatible; DisasterDataPlus-Adapter/1.0)"}
 FEED_HEADERS={**HEADERS,"Accept":"application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5"}
-# (connect, read) seconds for one archive try. Connecting to evers.wi.gov from
-# GitHub's runners sometimes hangs and sometimes works, so a try is short and
-# the archive gets ARCHIVE_ATTEMPTS of them, spaced by ARCHIVE_WAITS, before
-# the press releases are read instead. A run that reached the archive on the
-# second try is a clean run; one failed try used to fail the whole state.
+# (connect, read) seconds for one archive try, and the waits before each try.
+# A machine the site does not answer has never been answered on a later try,
+# so the tries are kept short; the Internet Archive copy below is what covers
+# such a run.
 ARCHIVE_TIMEOUT=(10,30)
 ARCHIVE_WAITS=(0,6,18)
 HAZARDS={"drought":r"\bdrought\b","fire":r"\bwildfires?\b","flood":r"\bflood(?:ing)?\b","tropical":r"\bhurricanes?\b|\btropical storm\b","winter":r"\bwinter\b|\bsnow\b|\bice\b|\bwind chill\b","severe_storm":r"\bsevere weather\b|\btornado(?:es)?\b|\bthunderstorms?\b|\bsevere storms?\b","wind":r"\bdamaging winds?\b|\bhigh winds?\b"}
@@ -92,6 +106,124 @@ def scrape(session=None,waits=None,attempts_log=None):
         except (requests.RequestException,ValueError) as exc:
             last=exc; log.append(f"try {n}: {type(exc).__name__}")
     raise last
+
+def network_note(host="evers.wi.gov",session=None):
+    """One log line on where this run is and what the site's name resolved
+    to, so the logs show over time which machines the site does not answer.
+    Never raises: it is only there to help read a failure."""
+    parts=[]
+    try:
+        found=sorted({info[4][0] for info in socket.getaddrinfo(host,443,proto=socket.IPPROTO_TCP)})
+        parts.append(f"{host} resolved to {', '.join(found)}")
+    except OSError as exc:
+        parts.append(f"{host} did not resolve ({exc})")
+    try:
+        r=(session or requests).get("https://www.cloudflare.com/cdn-cgi/trace",timeout=5)
+        info=dict(line.split("=",1) for line in r.text.splitlines() if "=" in line)
+        parts.append(f"this machine is in {info.get('loc','?')}, nearest Cloudflare site {info.get('colo','?')}")
+    except Exception:
+        parts.append("this machine's location could not be read")
+    return "; ".join(parts)
+
+# --------------------------------------------------- Internet Archive copy
+IA_CDX="https://web.archive.org/cdx/search/cdx"
+IA_SAVE="https://web.archive.org/save/"
+IA_HEADERS={"User-Agent":"DisasterDataPlus-Adapter/1.0 (+https://disasterdata.io/plus/)"}
+COPY_FRESH_HOURS=24          # a copy made within this many hours stands in for a direct read
+IA_TIMEOUT=(10,60)
+SAVE_TIMEOUT=(10,120)        # Save Page Now usually answers once the copy is made
+SAVE_CHECKS=(10,10,15,20)    # seconds before each look for the new copy, when the answer does not name it
+COPY_SLACK=timedelta(minutes=5)   # the archive's clock and this machine's may differ a little
+
+class CopyUnavailable(RuntimeError):
+    """No current Internet Archive copy of the archive page could be read."""
+
+def stamp_time(stamp):
+    return datetime.strptime(stamp,"%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
+
+def stamp_label(stamp):
+    return stamp_time(stamp).strftime("%Y-%m-%d %H:%M UTC")
+
+def ia_copies(session,since):
+    """Timestamps of the Internet Archive's copies of the archive page made
+    since `since` that the site served normally (status 200), newest first.
+    A redirect or error the archive recorded is not a copy of the page."""
+    params={"url":ARCHIVE_URL.split("://",1)[1],"fl":"timestamp,statuscode","from":since.strftime("%Y%m%d%H%M%S")}
+    r=session.get(IA_CDX,params=params,headers=IA_HEADERS,timeout=IA_TIMEOUT); r.raise_for_status()
+    return sorted({m.group(1) for m in re.finditer(r"^(\d{14})\s+200\s*$",r.text,re.M)},reverse=True)
+
+def ia_copy_rows(session,stamp,oldest):
+    """(orders, timestamp) as the Internet Archive's copy made at `stamp`
+    shows them. The id_ address returns the page exactly as the site served
+    it, without the archive's toolbar or rewritten links, so the order links
+    still point at evers.wi.gov. When the archive has no copy at that exact
+    time it redirects to the nearest one, which may be older; a copy made
+    before `oldest` is refused (ValueError), never read as a current one."""
+    r=session.get(f"https://web.archive.org/web/{stamp}id_/{ARCHIVE_URL}",headers=IA_HEADERS,timeout=IA_TIMEOUT); r.raise_for_status()
+    served=re.search(r"/web/(\d{14})id_/",getattr(r,"url","") or "")
+    stamp=served.group(1) if served else stamp
+    if stamp_time(stamp)<oldest: raise ValueError(f"the archive served its copy from {stamp_label(stamp)} instead")
+    if "charset" not in ((getattr(r,"headers",None) or {}).get("Content-Type") or "").lower(): r.encoding="utf-8"
+    return parse_archive(r.text),stamp
+
+def named_copy(response):
+    """The timestamp of the copy a Save Page Now answer points to: its
+    Content-Location, its memento link, or the address it redirected to.
+    '' when it names none (the copy may still be in progress)."""
+    headers=getattr(response,"headers",None) or {}
+    places=[headers.get("Content-Location") or ""]
+    link=headers.get("Link") or ""
+    if link: places+=[l.get("url","") for l in requests.utils.parse_header_links(link) if l.get("rel")=="memento"]
+    places.append(getattr(response,"url","") or "")
+    for place in places:
+        m=re.search(r"/web/(\d{14})(?:id_)?/",place)
+        if m: return m.group(1)
+    return ""
+
+def ia_save(session,now,sleep=time.sleep):
+    """Ask the Internet Archive to copy the archive page now. Returns the new
+    copy's timestamp, or '' when no copy turns up within the checks. Raises
+    CopyUnavailable when the archive refuses."""
+    r=session.get(IA_SAVE+ARCHIVE_URL,headers=IA_HEADERS,timeout=SAVE_TIMEOUT)
+    refusal=(getattr(r,"headers",None) or {}).get("X-Archive-Wayback-Runtime-Error")
+    if refusal or r.status_code>=400:
+        raise CopyUnavailable(f"Save Page Now answered {r.status_code}"+(f" ({refusal})" if refusal else ""))
+    stamp=named_copy(r)
+    if stamp and stamp_time(stamp)>=now-timedelta(hours=COPY_FRESH_HOURS): return stamp
+    for wait in SAVE_CHECKS:
+        sleep(wait)
+        try: found=ia_copies(session,now-COPY_SLACK)
+        except requests.RequestException: continue
+        if found: return found[0]
+    return ""
+
+def archive_from_copy(session=None,now=None,sleep=time.sleep):
+    """(orders, timestamp) from a current Internet Archive copy of the archive
+    page: the newest one made in the last COPY_FRESH_HOURS, else a new one
+    asked for now. Raises CopyUnavailable saying what went wrong; an older
+    copy is never used."""
+    session=session or requests.Session()
+    now=now or datetime.now(timezone.utc)
+    oldest=now-timedelta(hours=COPY_FRESH_HOURS)
+    problems=[]
+    try:
+        stamps=ia_copies(session,oldest)
+    except requests.RequestException as exc:
+        stamps=[]; problems.append(f"copy lookup failed ({type(exc).__name__})")
+    for stamp in stamps[:2]:
+        try: return ia_copy_rows(session,stamp,oldest)
+        except (requests.RequestException,ValueError) as exc: problems.append(f"copy {stamp} not readable ({type(exc).__name__})")
+    if not stamps and not problems: problems.append(f"no copy in the last {COPY_FRESH_HOURS} hours")
+    try:
+        stamp=ia_save(session,now,sleep)
+    except (requests.RequestException,CopyUnavailable) as exc:
+        detail=str(exc) if isinstance(exc,CopyUnavailable) else f"{type(exc).__name__}: {exc}"
+        problems.append(f"new copy not made ({detail[:140]})"); raise CopyUnavailable("; ".join(problems))
+    if not stamp:
+        problems.append("new copy asked for but not found in time"); raise CopyUnavailable("; ".join(problems))
+    try: return ia_copy_rows(session,stamp,oldest)
+    except (requests.RequestException,ValueError) as exc:
+        problems.append(f"new copy {stamp} not readable ({type(exc).__name__})"); raise CopyUnavailable("; ".join(problems))
 
 # ---------------------------------------------------------------- press releases
 _FOLLOW_UP=r"(?:extend\w*|extension|renew\w*|amend\w*|expand\w*|updat\w*|remain\w*|likely|possible|consider\w*|lift\w*|end(?:s|ed|ing)?|rescind\w*|terminat\w*)"
@@ -225,20 +357,31 @@ def write_outputs(rows, actions_out, relationships_out, join_out):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument("--actions-out",required=True);p.add_argument("--relationships-out",required=True);p.add_argument("--join-out",required=True);a=p.parse_args()
+    outputs=(Path(a.actions_out),Path(a.relationships_out),Path(a.join_out))
     tries=[]
     try:
         rows=scrape(attempts_log=tries)
     except (requests.RequestException,ValueError) as archive_exc:
-        print(f"Wisconsin archive not reachable after {len(tries)} tries ({'; '.join(tries)}; last: {archive_exc}); reading the Governor's press releases instead",file=sys.stderr)
+        print(f"Wisconsin archive not reachable after {len(tries)} tries ({'; '.join(tries)}; last: {archive_exc})",file=sys.stderr)
+        print(f"  {network_note()}",file=sys.stderr)
+        try:
+            rows,stamp=archive_from_copy()
+        except CopyUnavailable as copy_exc:
+            copy_problem=str(copy_exc)
+            print(f"  No current Internet Archive copy: {copy_problem}; reading the Governor's press releases instead",file=sys.stderr)
+        else:
+            write_outputs(rows,*outputs)
+            print(f"Wisconsin: {len(rows)} executive orders processed (read from the Internet Archive's copy made {stamp_label(stamp)}; the Governor's site did not answer this run)")
+            return
         review=[]
         try:
             releases=scrape_releases(review=review)
         except (requests.RequestException,ET.ParseError) as exc:
-            raise SystemExit(f"Wisconsin archive scrape failed after {len(tries)} tries: {type(archive_exc).__name__}; press releases not read either: {type(exc).__name__}: {exc}")
+            raise SystemExit(f"Wisconsin archive scrape failed after {len(tries)} tries: {type(archive_exc).__name__}; no current Internet Archive copy ({copy_problem[:120]}); press releases not read either: {type(exc).__name__}: {exc}")
         for line in review:
             print(f"  REVIEW: Wisconsin release not recorded automatically: {line}",file=sys.stderr)
-        added=write_release_outputs(releases,Path(a.actions_out),Path(a.relationships_out),Path(a.join_out))
+        added=write_release_outputs(releases,*outputs)
         print(f"Wisconsin: archive not reachable; {len(releases)} weather emergency press releases read, {added} new declarations added (read from the Governor's press releases)")
         return
-    write_outputs(rows,Path(a.actions_out),Path(a.relationships_out),Path(a.join_out));print(f"Wisconsin: {len(rows)} executive orders processed")
+    write_outputs(rows,*outputs);print(f"Wisconsin: {len(rows)} executive orders processed")
 if __name__=="__main__":main()
