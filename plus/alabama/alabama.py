@@ -20,5 +20,9 @@ def collect(workdir=".", scripts_dir=None):
     cmd = [sys.executable, str(scripts_dir / "al_eo_scraper.py"), "--actions-out", str(workdir / "al_emergency_actions_all.csv"), "--relationships-out", str(workdir / "al_order_relationships.csv"), "--join-out", str(workdir / "declarations_for_join.csv")]
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
-    if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Alabama adapter: scrape failed")
+    if result.returncode:
+        print(result.stderr, file=sys.stderr)
+        # Say why, so the health report's status line names the cause.
+        lines = [l.strip() for l in (result.stderr or "").splitlines() if l.strip()]
+        raise RuntimeError("Alabama adapter: scrape failed" + (f" ({lines[-1][:400]})" if lines else ""))
     return workdir / "declarations_for_join.csv", "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed"
