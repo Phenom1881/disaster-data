@@ -62,7 +62,24 @@ EO_57 = (  # Christie storm order: no "declare" in its operative part
     "the State Director of Emergency Management to activate those elements of the State Emergency Operations Plan")
 WHITMAN_45_PAGE = (
     "State of New Jersey Executive Order #45 Governor Christine Todd Whitman Return to EO Index This executive order "
-    "terminated by EO #46 Whitman WHEREAS, a severe winter storm with blizzard conditions ...")
+    "terminated by EO #46 Whitman. WHEREAS, severe weather conditions of January 7, 1996 caused by snow and blizzard "
+    "conditions, including ...")
+WHITMAN_45 = WHITMAN_45_PAGE + (  # the January 1996 blizzard: grants the emergency powers, never says "declare"
+    " NOW THEREFORE, in accordance with the Laws of 1963 Chapter 109 (N.J.S.A. 38A:2-4), I hereby authorize the "
+    "Adjutant General of the New Jersey National Guard to order to active duty such members of the New Jersey National "
+    "Guard that, in his judgement, are necessary to provide aid to those localities where there is a threat or danger "
+    "to the public health, safety, and welfare. ... FURTHERMORE, in accordance with the Laws of 1942, Chapter 251 as "
+    "supplemented and amended, I hereby empower the Superintendent of the Division of State Police, who is the State's "
+    "Director of Emergency ... GIVEN, under my hand and seal this 7th day of January ...")
+FLORIO_85 = (  # the March 1993 blizzard
+    "State of New Jersey Executive Order #85 Governor James J. Florio Return to EO Index This executive order has been "
+    "rescinded by Order No. 86 (Florio). WHEREAS, severe weather conditions of March 13, 1993, including snow, heavy "
+    "rains, winds and high tides have created ... THEREFORE, I, JAMES J. FLORIO, Governor of the State of New "
+    "Jersey, in order to protect the health, safety and welfare of the people of the State of New Jersey do declare and "
+    "proclaim that a limited State of Emergency has and presently exists throughout the State ... I hereby authorize "
+    "the Adjutant General of the New Jersey National Guard to order to active duty such members ... I hereby empower the "
+    "Superintendent of the Division of State Police, who is the State's Director of Emergency Management, ... GIVEN, "
+    "under my hand and seal this 15th day of March ...")
 WHITMAN_46 = (
     "State of New Jersey Executive Order #46 Governor Christine Todd Whitman Return to EO Index WHEREAS, Executive "
     "Order No. 45, declaring a state of emergency, was issued on January 8, 1996 because of severe weather "
@@ -116,7 +133,9 @@ class OperativeTextTests(unittest.TestCase):
             ("EO 114", EO_114, "termination"),
             ("EO 109", EO_109, "administrative"),
             ("EO 57", EO_57, "declaration"),
+            ("Whitman EO 45", WHITMAN_45, "declaration"),
             ("Whitman EO 46", WHITMAN_46, "termination"),
+            ("Florio EO 85", FLORIO_85, "declaration"),
             ("Whitman EO 102", WHITMAN_102, "termination"),
             ("Florio EO 23", FLORIO_23, "declaration"),
             ("Whitman EO 61", WHITMAN_61, "declaration"),
@@ -156,15 +175,19 @@ class OperativeTextTests(unittest.TestCase):
 
 class ArchiveBannerTests(unittest.TestCase):
     def test_a_note_about_a_later_order_is_not_the_orders_title(self):
-        # Whitman EO 45, the Blizzard of 1996 declaration, read as a termination.
+        # Whitman EO 45 and Florio EO 85, two blizzard declarations, read as terminations.
         self.assertIsNone(nj.recover_title_from_document(WHITMAN_45_PAGE + " " + "x" * 300))
-        banner = "Governor Christine Todd Whitman Return to EO Index This executive order terminated by EO #46 Whitman"
-        self.assertEqual(nj.clean_archive_text(banner), "")
-        self.assertEqual(nj.classify_action_type(order("45", banner, text=WHITMAN_46.replace("#46", "#45")
-                                                       .replace("announce that the state of emergency is hereby "
-                                                                "terminated", "do declare and proclaim that a State "
-                                                                "of Emergency exists"), governor="Whitman")),
-                         "declaration")
+        for number, governor, banner, text in (
+            ("45", "Whitman", "Governor Christine Todd Whitman Return to EO Index This executive order terminated by "
+                              "EO #46 Whitman", WHITMAN_45),
+            ("85", "Florio", "Governor James J. Florio Return to EO Index This executive order has been rescinded by "
+                             "Order No. 86 (Florio)", FLORIO_85),
+        ):
+            with self.subTest(governor):
+                self.assertEqual(nj.clean_archive_text(banner), "")
+                self.assertEqual(nj.classify_action_type(order(number, banner, text=text, governor=governor)),
+                                 "declaration")
+                self.assertTrue(nj.is_weather_related(order(number, text=text, governor=governor)))
 
     def test_what_the_order_itself_did_is_kept(self):
         note = ("Governor Jon S. Corzine Return to EO Index This Executive Order extended EO #208 (Kean), EO #35 and "

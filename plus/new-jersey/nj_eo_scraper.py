@@ -244,9 +244,13 @@ _OPERATIVE_RE = re.compile(
 # the emergency it declares after it ("hereby declare a State of Emergency"):
 # Whitman's orders open "do hereby DECLARE, ORDER and DIRECT, as follows:"
 # whatever they do, and his EO 102 used those words to end EO 98's drought
-# emergency. Christie's storm orders (EO 57, EO 80) never use the word
-# "declare" in their operative part; they open with the grant to the State
-# Director of Emergency Management.
+# emergency. Some declarations never use the word "declare" in their
+# operative part; they open with the emergency powers instead. Christie's
+# storm orders (EO 57, EO 80) "authorize and empower the State Director of
+# Emergency Management"; older ones "hereby empower the Superintendent of the
+# Division of State Police" under the Disaster Control Act (Whitman EO 45,
+# the January 1996 blizzard, which EO 46 calls "Executive Order No. 45,
+# declaring a state of emergency").
 _DECLARES_RE = re.compile(
     r"\bdeclare\s+and\s+proclaim\b"
     r"|\bdeclare,?\s+(?:that\s+)?(?:the\s+existence\s+of\s+)?an?\s+(?:[\w-]+\s+){0,4}?(?:emergency|disaster)\b"
@@ -256,6 +260,7 @@ _DECLARES_RE = re.compile(
     r"|\b(?:ratif|memorializ)\w*\b.{0,100}?\bdeclaration\b"
     r"|\bdeclaration\b.{0,150}?\b(?:is|are)\s+hereby\s+ratified\b"
     r"|\bauthorize\s+and\s+empower\s+the\s+State\s+Director\s+of\s+Emergency\s+Management\b"
+    r"|\bhereby\s+empower\s+the\s+Superintendent\s+of\s+(?:the\s+)?(?:Division\s+of\s+)?State\s+Police\b"
     r"|\bthe\s+declaration\s+of\s+emergency\s+applies\b",
     re.I,
 )
@@ -337,17 +342,18 @@ def ended_orders(text: str) -> list[tuple[str, Optional[str]]]:
 # Text the archive's old HTML pages carry above an order, which title recovery
 # used to take as the order's own description: the page header ("Governor
 # Christine Todd Whitman Return to EO Index") and notes on what LATER orders
-# did to this one ("This executive order terminated by EO #46 Whitman").
-# Whitman EO 45, the Blizzard of 1996 declaration, was classified as a
-# termination from that note, while EO 46, which ended it, counted as the
-# declaration.
+# did to this one ("This executive order terminated by EO #46 Whitman", "This
+# executive order has been rescinded by Order No. 86 (Florio)"). Whitman EO
+# 45, the January 1996 blizzard declaration, and Florio EO 85, the March 1993
+# blizzard declaration, were classified as terminations from those notes;
+# EO 46, which ended the first, counted as its declaration.
 _PAGE_HEADER_RE = re.compile(
     r"(?:Acting\s+)?Governor\s+[A-Z][\w.'\s-]{2,60}?\s+Return\s+to\s+EO\s+Index", re.I)
 _LATER_ORDER_NOTE_RE = re.compile(
     r"(?:\band\s+)?(?:This\s+(?:executive\s+)?order\s+)?(?:(?:is|was|has\s+been)\s+)?"
     r"(?:terminated|rescinded|extended|amended|superseded|modified|continued|revoked)"
     r"(?:\s+(?:or|and)\s+(?:terminated|rescinded|extended|amended|superseded|modified|continued))?"
-    r"\s+by\s+(?:EO|E\.O\.|Executive\s+Orders?)\s*(?:Nos?\.?\s*)?#?\s*\d+[^.;]*[.;]?",
+    r"\s+by\s+(?:EO|E\.O\.|(?:Executive\s+)?Orders?)\s*(?:Nos?\.?\s*)?#?\s*\d+[^.;]*[.;]?",
     re.I,
 )
 
