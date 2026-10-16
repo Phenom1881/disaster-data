@@ -34,6 +34,19 @@ MODIFIER_RE = re.compile(r"\b(renewal|renew(?:s|ed|ing)?|extend(?:s|ed|ing)?|ext
 OPERATIONAL_RE = re.compile(r"\b(evacuation|curfew|price gouging|leave with pay|suspension of|suspend\w*.{0,50}licens\w*|licensed bed capacity|elections?--rescheduled|waiver|office closings?)\b", re.I)
 DATE_RE = re.compile(r"(?:on\s+)?(?:this\s+)?(\d{1,2})\s*(?:st|nd|rd|th)?\s+day\s+of\s+([A-Za-z]+)\s*,?\s*(2\s*0\s*\d\s*\d)", re.I)
 HAZARD_OVERRIDES = {}  # Intentionally empty: titles/document text supply all hazard evidence.
+# Signing dates read from the Louisiana Register for declarations whose own
+# document has given no readable date on any run. The Office of the State
+# Register prints every executive order, signature line included, in a
+# monthly issue of the Register. A date here is used ahead of one read from
+# the document.
+REVIEWED_DATES = {
+    # Louisiana Register, February 2024 (doa.la.gov/media/baxaqsie/2402.pdf):
+    # "on this 12th day of January, 2024"; in effect from Friday, January 12.
+    "JML 24-04": "2024-01-12",
+    # Louisiana Register, February 2025 (doa.la.gov/media/gbrj52nd/2502.pdf):
+    # "on this 18th day of January 2025"; in effect from Saturday, January 18.
+    "JML 25-12": "2025-01-18",
+}
 TESSERACT = shutil.which("tesseract")   # installed by the Plus workflow's OCR step
 # Why a declaration's document gave no date on this run, printed to the log.
 # Before 2026-09-28 every failure here was swallowed, and ten parallel
@@ -195,7 +208,7 @@ def collect(saved_dates=None):
         likely_relevant = re.search(r"\b(emergency|disaster|hurricane|storm|tornado|flood|weather|drought|fire|heat|subsidence)\b", action.description, re.I)
         is_document = re.search(r"\.(?:pdf|docx)(?:$|\?)", action.url, re.I)
         if not (likely_relevant and is_document):
-            return Action(action.number, action.description, action.url, "", "")
+            return Action(action.number, action.description, action.url, REVIEWED_DATES.get(action.number, ""), "")
         try:
             text = document_text(action.url)
         except (requests.RequestException, OSError, ValueError, zipfile.BadZipFile) as exc:
@@ -203,7 +216,7 @@ def collect(saved_dates=None):
             status = getattr(getattr(exc, "response", None), "status_code", None)
             DATE_PROBLEMS[f"document not downloaded ({type(exc).__name__}{' ' + str(status) if status else ''})"] += 1
             text = ""
-        date = extract_date(text)
+        date = REVIEWED_DATES.get(action.number) or extract_date(text)
         if not date and saved_dates.get(action.number):
             date = saved_dates[action.number]
             DATE_PROBLEMS["date kept from an earlier run"] += 1
