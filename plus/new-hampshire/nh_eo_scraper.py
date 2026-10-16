@@ -73,22 +73,48 @@ REGISTRY_TIMEOUT = 30
 DOCUMENT_BUDGET_SECONDS = 8 * 60   # order PDFs after this are left for the next run
 SOURCE_NOTE = ""   # set when the registry came from the Internet Archive   # seconds before the 2nd and 3rd tries of the registry page
 
-# Signing dates confirmed from dated coverage, used when an order's own PDF
-# yields no readable date. The registry lists every order but gives no dates,
-# and these weather orders' PDFs have produced no date on any run since
-# 2026-09-12, so without these none of them reached the join file. A date
-# read from the order itself still wins over this list.
+# Signing dates for orders whose PDF yields no readable date, used when the
+# order's own text gives none. The registry lists every order but gives no
+# dates. Without a date a weather declaration never reaches the join file, and
+# an undated order's PDF is downloaded again on every run, from the Internet
+# Archive when the registry refuses the runner. A date read from the order
+# itself still wins over this list.
 #
-# 2013-08 and 2008-12 correct the dates first saved on 2026-09-09
-# (2013-06-26 and 2008-12-11), which were the storms' start dates.
-# 2010-01 and 2003-09 are not listed: no dated source was found for them,
-# so their saved rows (2010-02-25, 2003-08-11) stand unconfirmed.
+# Weather orders confirmed from dated coverage. 2013-08 and 2008-12 correct
+# the dates first saved on 2026-09-09 (2013-06-26 and 2008-12-11), which were
+# the storms' start dates.
 CONFIRMED_DATES = {
     "2015-01": "2015-01-26",  # blizzard; Patch (Concord), Jan 26 2015: "Governor Maggie Hassan today declared a State of Emergency"
     "2013-08": "2013-07-03",  # flash flooding, Sullivan/Cheshire/Grafton; AP via Central Maine, Jul 3 2013: declared "on Wednesday"
     "2013-03": "2013-02-08",  # blizzard; Patch (Concord), Feb 8 2013, effective 5 p.m.
     "2008-12": "2008-12-12",  # ice storm; NH ice storm after-action report: declared "December 12, 2008, at 9:20 a.m."
 }
+# Read by eye from the signature block of each order's own PDF in the registry,
+# on 2026-10-16. These were the 17 orders read again on every run without ever
+# giving a date: 15 are scans with no text, and the text in the other two
+# splits the day ("1 0 1 h day of April", 2018-02) or gives it in words
+# ("eleventh day of August", 2003-09). 2010-01 was saved as 2010-02-25, the
+# storm's first day; the order was signed the next day. 2014-06 is a public
+# health emergency, not weather.
+CONFIRMED_DATES.update({
+    "2020-04 #72": "2020-11-14",  # extends Emergency Order #52 to January 15, 2021; travel guidance
+    "2020-04 #61": "2020-07-31",  # extends Emergency Order #52 to September 1, 2020
+    "2020-04 #32": "2020-04-16",  # extends Emergency Orders #1 and #19 (remote instruction)
+    "2018-02": "2018-04-10",      # extends Executive Order 2017-03
+    "2017-05": "2017-09-14",      # amends Executive Order 2017-04
+    "2016-09": "2016-12-29",      # amends Executive Order 2013-05
+    "2016-03": "2016-05-06",      # state government energy efficiency
+    "2015-02": "2015-01-28",      # ends the January 26, 2015 blizzard emergency (2015-01)
+    "2014-06": "2014-08-14",      # overdoses from the synthetic drug "Smacked"
+    "2013-09": "2013-07-12",      # ends the July 3, 2013 severe weather emergency (2013-08)
+    "2013-04": "2013-02-12",      # ends the February 8, 2013 blizzard emergency (2013-03)
+    "2012-03": "2012-12-20",      # amends Executive Order 2011-03
+    "2012-02": "2012-11-14",      # amends Executive Order 2006-11
+    "2011-06": "2011-10-11",      # amends Executive Order 2005-2
+    "2011-01": "2011-04-15",      # state government energy efficiency
+    "2010-01": "2010-02-26",      # winter storm of February 25 and 26, 2010
+    "2003-09": "2003-08-11",      # limited emergency, flooding from torrential rains (Routes 12 and 63 closed)
+})
 
 
 def fetch(url: str, retries: tuple[int, ...] = (), quiet: bool = False, timeout: int = TIMEOUT,
@@ -404,8 +430,9 @@ def join_rows(actions: list[Action], saved: list[dict[str, str]]) -> list[dict[s
     """The registry's dated weather declarations, plus every saved row the
     registry did not produce. Those are declarations made without an
     executive order (Sandy in 2012, the 2005 Alstead flood), added by hand
-    from news coverage, and registry orders whose PDF gives no readable date
-    but whose saved row has one (2010-01, 2003-09)."""
+    from news coverage, and registry orders a run could not date or could
+    not tell were weather (2003-09, whose PDF names the flooding only when
+    it can be read)."""
     rows = {a.stable_id: {field: action_row(a)[field] for field in JOIN_FIELDS}
             for a in actions if a.action_type == "declaration" and a.weather_related and a.date_signed}
     for row in saved:
