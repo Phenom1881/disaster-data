@@ -38,6 +38,18 @@ _BUDGET_SKIPPED = [0]
 CACHE_NAME = "nm_text_cache.csv"
 CACHE_FIELDS = ("eo_number", "via_ocr", "text")
 CACHE_TEXT_LIMIT = 4000
+# Signing dates read by eye from each order's own signature block, for
+# weather declarations whose date OCR cannot read. The day is handwritten on
+# the 2019 orders, and the typed "5TH" on 2020-077 comes out of OCR as
+# "STH". Without a date a declaration never reaches the join, so these three
+# were missing from the page. A reviewed date wins over the one OCR reads:
+# it was checked against the signed document itself. Reviewed 2026-10-16
+# against the PDFs on governor.state.nm.us.
+REVIEWED_DATES = {
+    "2019-008": "2019-04-22",   # "THIS 22 DAY OF APRIL 2019"; severe winter storms, Dec 23, 2018 to Jan 2, 2019
+    "2019-009": "2019-04-22",   # "THIS 22 DAY OF APRIL 2019"; wind, tornadoes and hail, March 12 to 14, 2019
+    "2020-077": "2020-11-05",   # "THIS 5TH DAY OF NOVEMBER 2020"; Williamsburg flooding, July 24 to 26, 2020
+}
 
 CURRENT_URL = "https://www.governor.state.nm.us/about-the-governor/executive-orders/"
 ARCHIVE_URL = "https://www.governor.state.nm.us/about-the-governor/executive-orders/executive-orders-archive/"
@@ -281,11 +293,17 @@ def extract_date(text, number):
     return datetime.strptime(f"{name} {day} {yr}", "%B %d %Y").strftime("%Y-%m-%d")
 
 
+def signing_date(text, number):
+    """The order's signing date: a reviewed one if there is one, else what
+    the text gives."""
+    return REVIEWED_DATES.get(number) or extract_date(text, number)
+
+
 def parse_document(number, url, cache=None):
     cached = (cache or {}).get(number)
     if cached:
         text = cached["text"]
-        return Action(number, extract_title(text, number), extract_date(text, number), url, text, True, True,
+        return Action(number, extract_title(text, number), signing_date(text, number), url, text, True, True,
                       cached.get("via_ocr") == "true")
     try:
         response = get(url)
@@ -293,7 +311,7 @@ def parse_document(number, url, cache=None):
         text, ok, via_ocr = extract_pdf(response.content) if retrieval_ok else ("", False, False)
     except requests.RequestException:
         text, ok, via_ocr, retrieval_ok = "", False, False, False
-    return Action(number, extract_title(text, number), extract_date(text, number), url, text, ok, retrieval_ok, via_ocr)
+    return Action(number, extract_title(text, number), signing_date(text, number), url, text, ok, retrieval_ok, via_ocr)
 
 
 def collect(cache=None):
