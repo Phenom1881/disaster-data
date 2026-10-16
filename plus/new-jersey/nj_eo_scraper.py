@@ -55,7 +55,9 @@ were found and patched here:
     the ORIGINAL declaration as a termination. Fixed by classifying
     action_type from the table description only; document_text is still
     used for relationship extraction, where that exact banner text is the
-    useful signal.
+    useful signal. (2026-10-16: when the description says nothing, the
+    order's own operative part, after "NOW, THEREFORE", decides; see
+    action_from_operative_text().)
   - The PDF low-yield warning threshold was raised from <50 to <250
     characters: real text-selectable PDFs extracted 7,700-20,000+
     characters, and 50 was shown to be too loose a bar to reliably catch a
@@ -221,6 +223,183 @@ TERMINATED_BY_PATTERN = re.compile(r"terminated\s+by\s+" + ORDER_REF, re.I)
 TERMINATION_TYPES = {"terminates", "rescinds"}
 
 
+# ---------------------------------------------------------------------------
+# What an order itself does, read from its own operative text.
+#
+# The archive table gives most orders since 2018 no description at all, and
+# any order whose description did not say otherwise used to be classified as
+# a declaration. Checked against all 145 rows of the join file on 2026-10-16:
+# 32 of them only ended an earlier emergency or rescinded an earlier order
+# ("The State of Emergency declared pursuant to Executive Order No. 409 (2025)
+# is terminated ..."), and 30 declared nothing at all (clean energy policy,
+# COVID-19 school rules, flags at half-staff, a Sunday sales waiver after
+# Sandy). The operative part of an order, from "NOW, THEREFORE" on, says
+# which it is. The recitals before it quote earlier declarations ("Executive
+# Order No. 409, declaring a State of Emergency, was issued on ..."), so they
+# are not read for this.
+_OPERATIVE_RE = re.compile(
+    r"\b(?:NOW,?\s+)?THEREFORE\b,?\s+(?=I\b|in\s+accordance\b|by\s+virtue\b|pursuant\b)", re.I)
+# Declares, ratifies or memorializes an emergency, or grants the emergency
+# powers that come only with a declaration. A bare "declare" counts only with
+# the emergency it declares after it ("hereby declare a State of Emergency"):
+# Whitman's orders open "do hereby DECLARE, ORDER and DIRECT, as follows:"
+# whatever they do, and his EO 102 used those words to end EO 98's drought
+# emergency. Some declarations never use the word "declare" in their
+# operative part; they open with the emergency powers instead. Christie's
+# storm orders (EO 57, EO 80) "authorize and empower the State Director of
+# Emergency Management"; older ones "hereby empower the Superintendent of the
+# Division of State Police" under the Disaster Control Act (Whitman EO 45,
+# the January 1996 blizzard, which EO 46 calls "Executive Order No. 45,
+# declaring a state of emergency").
+_DECLARES_RE = re.compile(
+    r"\bdeclare\s+and\s+proclaim\b"
+    r"|\bdeclare,?\s+(?:that\s+)?(?:the\s+existence\s+of\s+)?an?\s+(?:[\w-]+\s+){0,4}?(?:emergency|disaster)\b"
+    r"|\bthere\s+is\s+hereby\s+declared\b|\b(?:is|are)\s+hereby\s+declared\b"
+    r"|\bstates?\s+of\s+(?:[\w-]+\s+){0,3}(?:emergency|disaster)\s+(?:shall\s+)?"
+    r"(?:has\s+existed\s+and\s+(?:presently\s+)?)?exists?\b"
+    r"|\b(?:ratif|memorializ)\w*\b.{0,100}?\bdeclaration\b"
+    r"|\bdeclaration\b.{0,150}?\b(?:is|are)\s+hereby\s+ratified\b"
+    r"|\bauthorize\s+and\s+empower\s+the\s+State\s+Director\s+of\s+Emergency\s+Management\b"
+    r"|\bhereby\s+empower\s+the\s+Superintendent\s+of\s+(?:the\s+)?(?:Division\s+of\s+)?State\s+Police\b"
+    r"|\bthe\s+declaration\s+of\s+emergency\s+applies\b",
+    re.I,
+)
+# Ends an emergency declared earlier, or rescinds an earlier order.
+_ENDS_RE = re.compile(
+    r"\bstates?\s+of\s+(?:[\w-]+\s+){0,3}(?:emergency|disaster)\b.{0,250}?"
+    r"\b(?:is|are)\s+(?:hereby\s+|also\s+)*terminated\b"
+    r"|\bexecutive\s+orders?\b.{0,150}?\b(?:is|are)\s+(?:hereby\s+|also\s+)*"
+    r"(?:rescinded|terminated|revoked)\b",
+    re.I,
+)
+# An order the operative text names: "Executive Order No. 73 (2011)",
+# "Executive Order 108, signed on November 2, 2012".
+_CITED_ORDER_RE = re.compile(
+    r"\bExecutive\s+Orders?\s*(?:Nos?\.?\s*)?#?\s*(\d+)(?:\s*\((\d{4})\))?"
+    r"(?:,?\s*(?:signed|issued)\s+on\s+[A-Z][a-z]+\.?\s+\d{1,2},?\s*(\d{4}))?",
+    re.I,
+)
+_NEXT_PARAGRAPH_RE = re.compile(r"\s\d{1,2}\.\s+[A-Z]|\bGIVEN\b")
+
+
+def operative_text(text: str) -> Optional[str]:
+    """An order's operative part, from "NOW, THEREFORE" on, with whitespace
+    collapsed; None when the text has no operative part to read."""
+    match = _OPERATIVE_RE.search(text or "")
+    if not match:
+        return None
+    body = re.sub(r"\s+", " ", text[match.start():])
+    # "A state of water emergency, as declared by Executive Order No. 98, ...
+    # no longer exists" (Whitman EO 102) ends an emergency; it declares none.
+    return re.sub(r"\bno\s+longer\s+exists?\b", "no longer in effect", body, flags=re.I)
+
+
+def action_from_operative_text(text: str) -> Optional[str]:
+    """declaration, termination or administrative, from what an order's own
+    operative part does; None when there is no operative part to read. An
+    order that declares a new emergency counts as a declaration even when it
+    also ends an older one."""
+    body = operative_text(text)
+    if body is None:
+        return None
+    if _DECLARES_RE.search(body):
+        return "declaration"
+    if _ENDS_RE.search(body):
+        return "termination"
+    return "administrative"
+
+
+def ended_orders(text: str) -> list[tuple[str, Optional[str]]]:
+    """(number, year or None) for each order an order's operative part ends:
+    the order named in the sentence ("... declared pursuant to Executive Order
+    No. 409 (2025) is terminated"), or, when the sentence names none, the list
+    that follows it ("... are terminated ...: a. Executive Order No. 73 (2011)
+    b. ..."), up to the next numbered paragraph. An order named after the verb
+    of a sentence that already names one is not ended by it: Whitman's EO 102
+    ends EO 98's drought emergency "in those counties as to which it was not
+    previously terminated by Executive Order No. 100". Empty for an order that
+    declares an emergency."""
+    body = operative_text(text)
+    if body is None or _DECLARES_RE.search(body):
+        return []
+    found = []
+    for match in _ENDS_RE.finditer(body):
+        sentence = match.group(0)
+        # A match can reach back across a numbered paragraph; only the
+        # paragraph with the verb says what it ends.
+        breaks = list(_NEXT_PARAGRAPH_RE.finditer(sentence))
+        if breaks:
+            sentence = sentence[breaks[-1].start():]
+        cites = list(_CITED_ORDER_RE.finditer(sentence))
+        if not cites:
+            rest = body[match.end():]
+            stop = _NEXT_PARAGRAPH_RE.search(rest)
+            cites = list(_CITED_ORDER_RE.finditer(rest[:stop.start() if stop else 400]))
+        found.extend((cite.group(1), cite.group(2) or cite.group(3)) for cite in cites)
+    return list(dict.fromkeys(found))
+
+
+# Text the archive's old HTML pages carry above an order, which title recovery
+# used to take as the order's own description: the page header ("Governor
+# Christine Todd Whitman Return to EO Index") and notes on what LATER orders
+# did to this one ("This executive order terminated by EO #46 Whitman", "This
+# executive order has been rescinded by Order No. 86 (Florio)"). Whitman EO
+# 45, the January 1996 blizzard declaration, and Florio EO 85, the March 1993
+# blizzard declaration, were classified as terminations from those notes;
+# EO 46, which ended the first, counted as its declaration.
+_PAGE_HEADER_RE = re.compile(
+    r"(?:Acting\s+)?Governor\s+[A-Z][\w.'\s-]{2,60}?\s+Return\s+to\s+EO\s+Index", re.I)
+_LATER_ORDER_NOTE_RE = re.compile(
+    r"(?:\band\s+)?(?:This\s+(?:executive\s+)?order\s+)?(?:(?:is|was|has\s+been)\s+)?"
+    r"(?:terminated|rescinded|extended|amended|superseded|modified|continued|revoked)"
+    r"(?:\s+(?:or|and)\s+(?:terminated|rescinded|extended|amended|superseded|modified|continued))?"
+    r"\s+by\s+(?:EO|E\.O\.|(?:Executive\s+)?Orders?)\s*(?:Nos?\.?\s*)?#?\s*\d+[^.;]*[.;]?",
+    re.I,
+)
+
+
+def clean_archive_text(text: str) -> str:
+    """text without the archive's page header and its notes on later orders."""
+    text = _PAGE_HEADER_RE.sub(" ", text or "")
+    text = _LATER_ORDER_NOTE_RE.sub(" ", text)
+    return re.sub(r"\s+", " ", text).strip(" .;,")
+
+
+# The number an order's own document is headed with ("EXECUTIVE ORDER NO. 106",
+# "Executive Order #73"), read before its first recital.
+_DOCUMENT_NUMBER_RE = re.compile(r"Executive\s+Order\s*(?:No\.?|Number|#)\s*(\d+)", re.I)
+
+
+def document_number(text: str) -> Optional[str]:
+    head = (text or "")[:300]
+    whereas = re.search(r"\bWHEREAS\b", head, re.I)
+    match = _DOCUMENT_NUMBER_RE.search(head[:whereas.start()] if whereas else head)
+    return match.group(1) if match else None
+
+
+def relink_documents(orders: list["NJOrder"]) -> int:
+    """Give an order the document headed with its own number when the archive
+    links it to another order's. Christie EO 221's row opens EO 222 (a gaming
+    commission order) and EO 222's row opens EO 221 (the March 2017 blizzard),
+    so the blizzard counted under EO 222, dated 2018. An order whose own
+    document the archive does not have keeps the one it links. Returns how
+    many were moved."""
+    by_number = {}
+    for order in orders:
+        number = document_number(order.document_text)
+        if number:
+            by_number.setdefault((_gov_code(order), number), order.document_text)
+    moved = 0
+    for order in orders:
+        number = document_number(order.document_text)
+        if number and number != order.order_number:
+            own = by_number.get((_gov_code(order), order.order_number))
+            if own:
+                order.document_text = own
+                moved += 1
+    return moved
+
+
 @dataclass
 class NJOrder:
     governor: str
@@ -230,7 +409,7 @@ class NJOrder:
     document_url: str
     document_format: str  # "pdf" or "html"
     document_text: str = ""
-    action_type: str = "declaration"  # declaration | extension | amendment | termination
+    action_type: str = "declaration"  # declaration | extension | amendment | termination | administrative
     end_date: Optional[str] = None
     weather_related: bool = False
 
@@ -617,7 +796,10 @@ def recover_title_from_document(text: str) -> Optional[str]:
     whereas_match = _WHEREAS_RE.search(text, start)
     if not whereas_match:
         return None
-    candidate = re.sub(r"\s+", " ", text[start:whereas_match.start()]).strip(" .:-,;")
+    # The old HTML pages put "Governor ... Return to EO Index" and notes on
+    # later orders between the heading and the first recital; neither is a
+    # title (see clean_archive_text()).
+    candidate = clean_archive_text(text[start:whereas_match.start()]).strip(" .:-,;")
     if not (10 <= len(candidate) <= 300):
         # Either the order goes straight from its heading into "WHEREAS,"
         # recitals with no title at all (true for many memorial/tribute
@@ -661,15 +843,40 @@ def classify_action_type(order: NJOrder) -> str:
     as terminations, when they are the ones BEING terminated, not doing the
     terminating. Relationship extraction still uses document_text (that is
     exactly where the useful "terminated by" reference lives); only this
-    classification step is restricted to the table description."""
-    text = order.description.lower()
-    if re.search(r"terminat|rescind", text):
+    classification step is restricted to the table description.
+
+    When the description does not settle it (most orders since 2018 have
+    none), the order's own operative part does: see action_from_operative_text().
+    Only that part is read, never the recitals or a banner above them. An
+    order with no operative part to read stays a declaration, as before."""
+    description = clean_archive_text(order.description)
+    text = description.lower()
+    if re.search(r"terminat|rescind|\blifts?\b|\blifting\b|\bend(?:s|ing)\b(?=[^.]{0,60}\bemergency)"
+                 r"|\bno\s+longer\s+exists?\b", text):
         return "termination"
     if re.search(r"\b(?:extend|continu|renew)", text):
         return "extension"
     if re.search(r"\b(?:amend|modify|modifies|modified)", text):
         return "amendment"
-    return "declaration"
+    if _DESCRIBES_DECLARATION_RE.search(description):
+        return "declaration"
+    return action_from_operative_text(order.document_text) or "declaration"
+
+
+# An archive description that names a declaration ("Declares a Weather Related
+# State of Emergency", "Limited State of Emergency in Atlantic, Cape May,
+# Monmouth, and Ocean Counties", "Authorizes the State Director of Emergency
+# Management to activate ..."). Trusted over the order's text, as before. A
+# description that only mentions the State Director (Christie EO 233 puts
+# local responders under his direction) is not one.
+_DESCRIBES_DECLARATION_RE = re.compile(
+    r"\bdeclar|\bdelcar|\bproclaim|\bratif"
+    r"|\bannounc\w*\s+(?:a\s+)?state\s+of\s+emergency"
+    r"|\bstate\s+of\s+(?:[\w-]+\s+){0,3}emergency\s+(?:in|for|exists|throughout|due)\b"
+    r"|\bauthoriz\w*\s+(?:and\s+empowers?\s+)?the\s+State\s+Director\s+of\s+Emergency\s+Management\s+to\s+activate\b"
+    r"|\bto\s+implement\s+the\s+State\s+Emergency\s+Operations\s+Plan\b",
+    re.I,
+)
 
 
 def weather_clause_from_text(text: str) -> Optional[str]:
@@ -748,14 +955,31 @@ def titled_from_clause(order_number: str, date_issued: str, clause: str) -> str:
     return f"{head}: {label}. {clause}" if label else f"{head}. {clause}"
 
 
+# A declaration made only to send help elsewhere: "a State of Emergency
+# presently exists for the specific purpose of activating the Emergency
+# Management Assistance Compact to coordinate multi-state mutual aid to the
+# Commonwealth of Puerto Rico" (Christie EO 233, after Irma and Maria), and
+# Corzine EO 111 for Louisiana and Mississippi after Katrina. The storm it
+# names happened in another state, so there is no New Jersey weather event to
+# match. Colorado, Missouri and Montana exclude these orders too.
+MUTUAL_AID_ONLY = re.compile(
+    r"\bfor\s+the\s+(?:specific\s+|sole\s+)?purpose\s+of\s+activating\s+the\s+"
+    r"Emergency\s+Management\s+Assistance\s+Compact\b"
+    r"|\bmutual\s+aid\s+to\s+the\s+(?:states?|Commonwealth)\s+of\b",
+    re.I,
+)
+
+
 def is_weather_related(order: NJOrder) -> bool:
     if NOT_WEATHER_TITLE.search(order.description or ""):
         return False
     text = f"{order.description} {order.document_text}"
+    if MUTUAL_AID_ONLY.search(text):
+        return False
     return any(pattern.search(text) for pattern in WEATHER_PATTERNS)
 
 
-def extract_relationships(order: NJOrder) -> list[dict]:
+def extract_relationships(order: NJOrder, resolve=None) -> list[dict]:
     """Best-effort relationship extraction from description + document text.
     Returns rows matching the schema recommended in the NJ research:
     source_order_id, target_order_id, relationship_type, relationship_text,
@@ -824,7 +1048,43 @@ def extract_relationships(order: NJOrder) -> list[dict]:
                         "relationship_source": source_field,
                         "confidence": "medium",
                     })
+
+    # The orders a termination's operative part ends. The patterns above miss
+    # these: "Executive Order No. 409 (2025) is terminated" has a year in the
+    # way, and "the following executive orders are terminated ...: a. ..."
+    # names its targets after the verb. A year names the administration, so
+    # Murphy's EO 415 ending "Executive Order No. 73 (2011)" points at
+    # Christie's EO 73 (resolve() maps it), not Murphy's.
+    for number, year in ended_orders(order.document_text):
+        tgt_id = resolve(order, number, year) if resolve else f"NJ-{_gov_code(order)}-EO-{number}"
+        key = (order.stable_id, tgt_id, "terminates")
+        if key in seen or tgt_id == order.stable_id:
+            continue
+        seen.add(key)
+        relationships.append({
+            "source_order_id": order.stable_id,
+            "target_order_id": tgt_id,
+            "relationship_type": "terminates",
+            "relationship_text": f"Executive Order No. {number}" + (f" ({year})" if year else "") + " ended",
+            "relationship_source": "operative_text",
+            "confidence": "high",
+        })
     return relationships
+
+
+def order_resolver(orders: list[NJOrder]):
+    """resolve(source, number, year) -> the stable id of the order with that
+    number signed in that year, else the same administration's order with
+    that number."""
+    index = {}
+    for order in orders:
+        index.setdefault((order.order_number, (order.date_issued or "")[:4]), order.stable_id)
+
+    def resolve(source: NJOrder, number: str, year: Optional[str]) -> str:
+        if year and (number, year) in index:
+            return index[(number, year)]
+        return f"NJ-{_gov_code(source)}-EO-{number}"
+    return resolve
 
 
 def dedupe_relationships(rows):
@@ -988,6 +1248,10 @@ def main() -> None:
             print(f"  WARNING: {low_yield_count} PDF(s) yielded little/no text; "
                   "these likely need OCR or manual review, not automated "
                   "classification.", file=sys.stderr)
+        relinked = relink_documents(all_orders)
+        if relinked:
+            print(f"  {relinked} order(s) linked to another order's document were given "
+                  "the one headed with their own number.")
 
     for order in all_orders:
         order.action_type = classify_action_type(order)
@@ -1008,8 +1272,9 @@ def main() -> None:
 
     print("New Jersey scraper: extracting order relationships...")
     all_relationships: list[dict] = []
+    resolve = order_resolver(all_orders)
     for order in all_orders:
-        all_relationships.extend(extract_relationships(order))
+        all_relationships.extend(extract_relationships(order, resolve))
     all_relationships = dedupe_relationships(all_relationships)
     print(f"  {len(all_relationships)} relationship(s) extracted (after global dedup)")
 
@@ -1027,7 +1292,7 @@ def main() -> None:
     print(
         f"\nDone. {len(all_orders)} total order(s), {weather_count} weather-related, "
         f"{join_count} original declarations written to the join file "
-        "(excludes extensions, amendments, terminations, and undated rows)."
+        "(excludes extensions, amendments, terminations, administrative orders, and undated rows)."
     )
 
 
