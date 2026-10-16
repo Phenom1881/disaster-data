@@ -340,16 +340,35 @@ def excluded_declaration_ids(state_dir: Path) -> set[str]:
     } - {""}
 
 
+# Where a declaration on a state page came from. Each row carries one, shown
+# in the table beside it and counted above the table, so a reader can tell
+# the state's own archive from the two supplements.
+ORIGIN_STATE = "state"
+ORIGIN_HAND = "hand"
+ORIGIN_FMCSA = "fmcsa"
+ORIGIN_LABELS = {
+    ORIGIN_STATE: "State archive",
+    ORIGIN_HAND: "Added by hand",
+    ORIGIN_FMCSA: "FMCSA archive",
+}
+
+
 def all_state_actions(state: dict, state_dir: Path) -> tuple[list[dict], Path | None]:
     """Every record in the state's files, before records reviewed as not
-    weather events are dropped. The health check counts those drops."""
+    weather events are dropped. The health check counts those drops. Each
+    record's "origin" says which file it came from."""
     path = locate_first(state_dir, candidate_action_files(state))
-    raw = read_csv_rows(path)
-    for name in (MANUAL_SUPPLEMENT, FMCSA_SUPPLEMENT):
+    raw = [(row, ORIGIN_STATE) for row in read_csv_rows(path)]
+    for name, origin in ((MANUAL_SUPPLEMENT, ORIGIN_HAND), (FMCSA_SUPPLEMENT, ORIGIN_FMCSA)):
         supplement = state_dir / name
-        raw += read_csv_rows(supplement) if supplement.exists() else []
-    rows = [normalized_action(row, state["abbreviation"]) for row in raw
-            if not before_cutoff(row)]
+        raw += [(row, origin) for row in (read_csv_rows(supplement) if supplement.exists() else [])]
+    rows = []
+    for row, origin in raw:
+        if before_cutoff(row):
+            continue
+        action = normalized_action(row, state["abbreviation"])
+        action["origin"] = origin
+        rows.append(action)
     return rows, path
 
 
@@ -900,6 +919,97 @@ def build_crosswalk(
     return rows
 
 
+def source_breakdown(state: dict, state_dir: Path, actions: list[dict],
+                     crosswalk: list[dict]) -> dict:
+    """How the page's declarations add up: how many came from each source,
+    how many records a reviewer left off as not weather events, and how many
+    have NOAA storm reports and a federal declaration nearby. Shown on the
+    page and kept in state-summary.json, so a reader can tell a state with
+    few declarations from a state whose sources hold few."""
+    every, _ = all_state_actions(state, state_dir)
+    excluded = excluded_declaration_ids(state_dir)
+    counts = {origin: 0 for origin in ORIGIN_LABELS}
+    for action in actions:
+        origin = action.get("origin")
+        counts[origin if origin in counts else ORIGIN_STATE] += 1
+    noaa = {"matched": 0, "pending": 0, "none": 0}
+    for row in crosswalk:
+        status = row.get("noaa_status")
+        noaa[status if status in noaa else "none"] += 1
+    return {
+        "state_archive": counts[ORIGIN_STATE],
+        "added_by_hand": counts[ORIGIN_HAND],
+        "fmcsa_archive": counts[ORIGIN_FMCSA],
+        "reviewed_not_weather": len({a["declaration_id"] for a in every
+                                     if a["declaration_id"] in excluded}),
+        "noaa_matched": noaa["matched"],
+        "noaa_pending": noaa["pending"],
+        "noaa_none": noaa["none"],
+        "federal_matched": sum(1 for row in crosswalk if row["federal_status"] == "matched"),
+    }
+
+
+# The federal declarations a state page checks for a state declaration of its
+# own. Major disasters and emergencies only: a state can request a Fire
+# Management Assistance (FM) grant without a governor's emergency
+# declaration, so a missing state declaration says nothing there. Weather
+# incident types only, since this is a list of weather declarations, and
+# never a declaration made for a tribal nation, which the tribe requests.
+GAP_DECLARATION_TYPES = ("DR", "EM")
+WEATHER_INCIDENT_TYPES = frozenset({
+    "Coastal Storm", "Drought", "Fire", "Flood", "Freezing", "Hurricane",
+    "Mud/Landslide", "Severe Ice Storm", "Severe Storm", "Snowstorm",
+    "Straight-Line Winds", "Tornado", "Tropical Depression", "Tropical Storm",
+    "Typhoon", "Winter Storm",
+})
+
+
+def coverage_start_year(abbreviation: str, coverage_note: str) -> int | None:
+    """The first year a state's page covers, as its "Since <year>" badge
+    says, or None when the coverage note gives no clean start year."""
+    label = extract_coverage_start_label(abbreviation, coverage_note or "", 0)
+    match = re.fullmatch(r"Since (\d{4})", label)
+    return int(match.group(1)) if match else None
+
+
+def federal_without_state(
+    federal_declarations: list[dict],
+    actions: list[dict],
+    start_year: int | None,
+) -> tuple[list[dict], int]:
+    """The weather major disasters and emergencies FEMA declared for this
+    state since start_year with no state declaration on the page within
+    FEDERAL_MATCH_WINDOW_DAYS of the incident period, the same window
+    find_federal_match() applies from the other side. A federal declaration
+    counts from its incident's first day, so one whose incident began before
+    the page's coverage does is not reported as missing a state declaration
+    the page could never hold.
+
+    Returns (declarations with no state declaration, newest first; how many
+    federal declarations were compared). Nothing is compared when the
+    coverage start year is unknown."""
+    if start_year is None:
+        return [], 0
+    window = timedelta(days=FEDERAL_MATCH_WINDOW_DAYS)
+    signed = [day for day in (parse_iso_date(a.get("date_signed")) for a in actions) if day]
+    compared = 0
+    missing = []
+    for declaration in federal_declarations:
+        if declaration.get("type") not in GAP_DECLARATION_TYPES or declaration.get("tribal"):
+            continue
+        if declaration.get("incidentType") not in WEATHER_INCIDENT_TYPES:
+            continue
+        begin = parse_iso_date(declaration.get("begin")) or parse_iso_date(declaration.get("date"))
+        if begin is None or begin.year < start_year:
+            continue
+        end = parse_iso_date(declaration.get("end")) or begin
+        compared += 1
+        if not any(begin - window <= day <= end + window for day in signed):
+            missing.append(declaration)
+    missing.sort(key=lambda row: (row.get("date") or row.get("begin") or ""), reverse=True)
+    return missing, compared
+
+
 def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     """Move each (tmp_path, final_path) into place, with rollback if any
     individual move fails partway through the set.
@@ -1183,7 +1293,7 @@ def esc(value) -> str:
 def action_rows(actions: list[dict]) -> str:
     if not actions:
         return (
-            '<tr><td colspan="5" class="empty">No verified state-action records '
+            '<tr><td colspan="6" class="empty">No verified state-action records '
             "have been loaded for this state yet.</td></tr>"
         )
     output = []
@@ -1191,6 +1301,7 @@ def action_rows(actions: list[dict]) -> str:
         source = esc(action["source_url"])
         title = esc(action["title"] or "Untitled action")
         title_cell = f'<a href="{source}">{title}</a>' if source else title
+        origin = ORIGIN_LABELS.get(action.get("origin") or ORIGIN_STATE, ORIGIN_LABELS[ORIGIN_STATE])
         output.append(
             "<tr>"
             f"<td>{esc(action['date_signed'])}</td>"
@@ -1198,9 +1309,97 @@ def action_rows(actions: list[dict]) -> str:
             f"<td>{title_cell}</td>"
             f"<td>{esc(action['action_type'])}</td>"
             f"<td>{esc(action['governor'])}</td>"
+            f"<td>{esc(origin)}</td>"
             "</tr>"
         )
     return "\n".join(output)
+
+
+def sources_html(sources: dict | None) -> str:
+    """The line above the state table saying where its declarations come
+    from. Lists only the sources a state uses."""
+    if not sources:
+        return ""
+    parts = [
+        f"<li><strong>{sources['state_archive']:,}</strong> from the state's own archive</li>"
+    ]
+    if sources.get("added_by_hand"):
+        parts.append(f"<li><strong>{sources['added_by_hand']:,}</strong> added by hand from "
+                     "official announcements, order text and dated news coverage</li>")
+    if sources.get("fmcsa_archive"):
+        parts.append(f"<li><strong>{sources['fmcsa_archive']:,}</strong> from FMCSA's archive "
+                     "of state emergency declarations</li>")
+    left_off = sources.get("reviewed_not_weather") or 0
+    if left_off == 1:
+        parts.append("<li>1 record from these sources was reviewed as not a weather "
+                     "emergency and left off</li>")
+    elif left_off:
+        parts.append(f"<li>{left_off:,} records from these sources were reviewed as not "
+                     "weather emergencies and left off</li>")
+    return '<ul class="sources">' + "".join(parts) + "</ul>"
+
+
+def crosswalk_summary_html(sources: dict | None, action_count: int) -> str:
+    """The crosswalk's totals, in a sentence over the table."""
+    if not sources or not action_count:
+        return ""
+    window = FEDERAL_MATCH_WINDOW_DAYS
+    matched = sources.get("noaa_matched", 0)
+    pending = sources.get("noaa_pending", 0)
+    federal = sources.get("federal_matched", 0)
+    if action_count == 1:
+        noaa = ("It has NOAA storm reports nearby" if matched else
+                "It is too recent for NOAA's published storm data" if pending else
+                "It has no NOAA storm reports nearby")
+        near = "has a" if federal else "has no"
+        return f'<p class="note">{noaa}. It {near} FEMA declaration within {window} days.</p>'
+    noaa = (f"{matched:,} of the {action_count:,} declarations on this page "
+            f"{'has' if matched == 1 else 'have'} NOAA storm reports nearby")
+    if pending:
+        noaa += f", and {pending:,} {'is' if pending == 1 else 'are'} too recent for NOAA's published data"
+    near = (f"{federal:,} {'has' if federal == 1 else 'have'} a FEMA declaration "
+            f"within {window} days.")
+    return f'<p class="note">{noaa}. {near}</p>'
+
+
+def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
+                        start_year: int | None) -> str:
+    """The collapsed section listing FEMA's weather major disasters and
+    emergencies that have no state declaration on the page. Renders nothing
+    when the page's coverage start year is unknown."""
+    if start_year is None or gaps is None:
+        return ""
+    window = FEDERAL_MATCH_WINDOW_DAYS
+    badge = f"{len(gaps):,} of {compared:,} since {start_year}"
+    if not compared:
+        body = (f'<p class="note">FEMA made no major disaster or emergency declarations for '
+                f"weather in {name} from {start_year}, the first year this page covers.</p>")
+    elif not gaps:
+        body = (f'<p class="note">Every one of the {compared:,} major disaster and emergency '
+                f"declarations FEMA made for weather in {name} from {start_year}, the first year "
+                f"this page covers, has a state declaration on this page within {window} days "
+                "of its incident period.</p>")
+    else:
+        body = (
+            f'<p class="note">Major disaster and emergency declarations FEMA made for weather in '
+            f"{name} from {start_year}, the first year this page covers, with no state declaration "
+            f"on this page within {window} days of the incident period. It can mean the state made "
+            "no declaration, or that its declaration is not in the sources this page draws on. "
+            "Fire management declarations, which a state can request without declaring an "
+            "emergency, and declarations for tribal nations are not counted.</p>"
+            f"{table_filter('federal-gap-table', 'these declarations')}"
+            '<div class="actions"><table id="federal-gap-table" class="sortable"><thead><tr>'
+            f"{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Type', 2)}"
+            f"{sortable_header('Title', 3)}{sortable_header('Incident type', 4)}"
+            f"{sortable_header('Incident period', 5)}</tr></thead>"
+            f"<tbody>{federal_declaration_rows(gaps)}</tbody></table></div>"
+        )
+    return (
+        '<details class="layer">'
+        "<summary><span>FEMA declarations with no state declaration on this page</span>"
+        f'<span class="count-badge">{esc(badge)}</span></summary>'
+        f'<div class="details-body">{body}</div></details>'
+    )
 
 
 def federal_declaration_rows(federal_declarations: list[dict]) -> str:
@@ -1412,6 +1611,9 @@ def shared_css(prefix: str = "") -> str:
     details.layer[open] > summary {{ border-bottom:1px solid var(--line); }}
     details.layer > .details-body {{ padding:0 1rem 1rem; }}
     .count-badge {{ color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }}
+    ul.sources {{ list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
+      padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }}
+    ul.sources strong {{ color:var(--accent); }}
     [hidden] {{ display:none !important; }}
     @media (max-width:640px) {{
       main {{ padding:1.25rem .75rem 3rem; }}
@@ -1465,6 +1667,10 @@ def render_state_page(
     crosswalk: list[dict],
     metrics: dict,
     coverage: str,
+    sources: dict | None = None,
+    federal_gaps: list[dict] | None = None,
+    federal_compared: int = 0,
+    coverage_start: int | None = None,
 ) -> str:
     name = esc(state["name"])
     source = state.get("official_source_url", "")
@@ -1487,7 +1693,7 @@ def render_state_page(
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>{name}: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> {esc(coverage)}. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<div class="notice"><strong>Coverage:</strong> {esc(public_note(coverage))}. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>{metrics['federal_declaration_count']:,}</strong>federal FEMA declarations</div>
   <div class="metric"><strong>{metrics['action_count']:,}</strong>original state weather declarations</div>
@@ -1498,18 +1704,22 @@ def render_state_page(
 <div class="layer primary">
 <h2>State weather declarations</h2>
 <p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+{sources_html(sources)}
 {table_filter('state-weather-table', 'state declarations')}
-<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}</tr></thead>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}{sortable_header('Source', 5)}</tr></thead>
 <tbody>{action_rows(actions)}</tbody></table></div>
 </div>
 
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within {FEDERAL_MATCH_WINDOW_DAYS} days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+{crosswalk_summary_html(sources, len(actions))}
 {table_filter('crosswalk-table', 'crosswalk')}
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr>{sortable_header('State action', 0)}{sortable_header('NOAA matches', 1)}{sortable_header('Matched areas', 2)}{sortable_header('Federal declaration', 3)}</tr></thead>
 <tbody>{crosswalk_rows(crosswalk)}</tbody></table></div>
 </div>
+
+{federal_gap_section(name, federal_gaps, federal_compared, coverage_start)}
 
 <details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">{metrics['federal_declaration_count']:,} records</span></summary>
@@ -1644,7 +1854,8 @@ def render_landing(summaries: list[dict], all_states: list[dict]) -> str:
         # since that text is already written for a general reader.
         if collection_failed:
             status_display = "Latest update unsuccessful"
-            status_title = f"{coverage_base}; {collection_error}" if coverage_base else collection_error
+            status_title = (f"{public_note(coverage_base)}; {collection_error}"
+                            if coverage_base else collection_error)
         else:
             status_display = public_note(coverage_base)
             status_title = ""
@@ -1699,7 +1910,9 @@ def federal_reference(declaration: dict | None) -> dict | None:
     return {key: declaration.get(key) for key in keys if key in declaration}
 
 
-def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list[dict]) -> dict:
+def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list[dict],
+                federal_gaps: list[dict] | None = None) -> dict:
+    gaps = summary.get("federal_without_state") or {}
     return {
         "schema_version": API_SCHEMA_VERSION,
         "state": state["abbreviation"],
@@ -1713,6 +1926,12 @@ def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list
         "federal_match_window_days": FEDERAL_MATCH_WINDOW_DAYS,
         "noaa_data_through": NOAA_DATA_THROUGH,
         "metrics": summary.get("metrics", {}),
+        "sources": summary.get("sources", {}),
+        "federal_without_state": {
+            "since": gaps.get("since"),
+            "compared": gaps.get("compared", 0),
+            "declarations": [federal_reference(row) for row in federal_gaps or []],
+        },
         "actions": actions,
         "crosswalk": [
             {
@@ -1731,8 +1950,9 @@ def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list
 
 
 def write_api_file(state: dict, state_dir: Path, summary: dict,
-                   actions: list[dict], crosswalk: list[dict]) -> None:
-    write_json(state_dir / API_FILE, api_payload(state, summary, actions, crosswalk))
+                   actions: list[dict], crosswalk: list[dict],
+                   federal_gaps: list[dict] | None = None) -> None:
+    write_json(state_dir / API_FILE, api_payload(state, summary, actions, crosswalk, federal_gaps))
 
 
 def process_state(
@@ -1811,8 +2031,14 @@ def process_state(
     crosswalk = build_crosswalk(actions, federal_declarations, storm_rows_by_declaration)
 
     metrics = state_metrics(state, actions, federal_declarations, storm_rows, severity_rows)
+    sources = source_breakdown(state, state_dir, actions, crosswalk)
     coverage_base = coverage_label(state, actions, collection_note)
-    coverage = coverage_base
+    # What a visitor reads, here and on every page that quotes it (the
+    # locality pages take it from state-summary.json through the sidecar):
+    # no file names, no internal labels. coverage_base keeps the note as the
+    # adapter wrote it. A closing period comes off so the clauses added below
+    # do not follow one ("coverage.; plus 17").
+    coverage = public_note(coverage_base).rstrip(" .")
     if fmcsa_count:
         coverage += ("; plus %d weather declaration%s from FMCSA's archive of state emergency "
                      "declarations (2017-present)" % (fmcsa_count, "" if fmcsa_count == 1 else "s"))
@@ -1825,6 +2051,8 @@ def process_state(
             "; %d saved record%s kept that this refresh's check of the state source "
             "did not return" % (kept["kept"], "" if kept["kept"] == 1 else "s")
         )
+    start_year = coverage_start_year(state["abbreviation"], coverage)
+    federal_gaps, federal_compared = federal_without_state(federal_declarations, actions, start_year)
 
     summary = {
         "abbreviation": state["abbreviation"],
@@ -1837,6 +2065,13 @@ def process_state(
         "collection_failed": bool(collection_error),
         "action_file": action_path.name if action_path else "",
         "metrics": metrics,
+        "sources": sources,
+        "federal_without_state": {
+            "since": start_year,
+            "compared": federal_compared,
+            "count": len(federal_gaps),
+            "ids": [row.get("id") for row in federal_gaps],
+        },
         "storm_pipeline_note": storm_note,
         "storm_pipeline_failed": storm_failed,
         "kept_saved_records": kept["kept"],
@@ -1864,13 +2099,15 @@ def process_state(
             state_dir.mkdir(parents=True, exist_ok=True)
             (state_dir / "index.html").write_text(
                 render_state_page(
-                    state, actions, federal_declarations, storm_rows, crosswalk, metrics, coverage
+                    state, actions, federal_declarations, storm_rows, crosswalk, metrics, coverage,
+                    sources=sources, federal_gaps=federal_gaps,
+                    federal_compared=federal_compared, coverage_start=start_year,
                 ),
                 encoding="utf-8",
             )
             write_json(state_dir / "state-summary.json", summary)
             try:
-                write_api_file(state, state_dir, summary, actions, crosswalk)
+                write_api_file(state, state_dir, summary, actions, crosswalk, federal_gaps)
             except Exception as exc:  # the API file must never break a state's page
                 print(f"WARNING {state['abbreviation']}: {API_FILE} not written ({exc})",
                       file=sys.stderr)
