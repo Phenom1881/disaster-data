@@ -89,3 +89,63 @@ class OcrAndCacheTests(unittest.TestCase):
         self.assertEqual(action.date, "2025-06-19")          # the attestation survives trimming
         self.assertEqual(nm.classify(action), "declaration")
         self.assertTrue(action.via_ocr)
+
+
+class ReviewedDateTests(unittest.TestCase):
+    """Weather declarations whose signing date OCR cannot read get the date
+    read by eye from the signed order, so they reach the join."""
+    # Shaped like the real OCR of EO 2020-077: the event dates sit in a WHEREAS
+    # clause far above the signature block, and OCR reads the typed "5TH" as "STH".
+    SIGNATURE = ("EXECUTIVE ORDER {n}\nDECLARING A DISASTER DUE TO FLOODING\n"
+                 "WHEREAS, from July 24, 2020 to July 26, 2020 monsoon rain caused flooding in the Village of Williamsburg;\n"
+                 "WHEREAS, the flooding damaged roads, culverts, water and wastewater systems and other public property;\n"
+                 "WHEREAS, the cost of repairs is beyond the means of the local government;\n"
+                 "NOW, THEREFORE, I, Michelle Lujan Grisham, Governor of the State of New Mexico, declare a disaster "
+                 "and direct the Department of Homeland Security and Emergency Management to make available its resources.\n"
+                 "THIS ORDER supersedes any other previous orders, proclamations, or directives in conflict. This Executive "
+                 "Order shall take effect immediately and shall remain in effect until such time as the Governor rescinds it.\n\n"
+                 "ATTEST: DONE AT THE EXECUTIVE OFFICE\n' 2 THIS STH DAY OF NOVEMBER 2020\n"
+                 "MAGGIE TOULOUSE OLIVER WITNESS MY HAND AND THE GREAT\nSECRETARY OF STATE SEAL OF THE STATE OF NEW MEXICO\n")
+
+    def parse(self, number):
+        cache = {number: {"text": self.SIGNATURE.format(n=number), "via_ocr": "true"}}
+        return nm.parse_document(number, "u", cache)
+
+    def test_a_reviewed_date_fills_a_signature_ocr_cannot_read(self):
+        self.assertEqual(nm.extract_date(self.SIGNATURE.format(n="2020-077"), "2020-077"), "")   # "STH" is not a day
+        self.assertEqual(self.parse("2020-077").date, "2020-11-05")
+        self.assertEqual(self.parse("2020-076").date, "")                                        # not reviewed: no guess
+
+    def test_a_reviewed_date_wins_over_a_misread_one(self):
+        # The 2019 days are handwritten; OCR that reads "7 DAY" must not beat the date checked by eye.
+        text = self.SIGNATURE.format(n="2019-008").replace("STH DAY OF NOVEMBER 2020", "7 DAY OF APRIL 2019")
+        self.assertEqual(nm.extract_date(text, "2019-008"), "2019-04-07")
+        self.assertEqual(nm.signing_date(text, "2019-008"), "2019-04-22")
+
+    def test_a_fresh_download_uses_the_reviewed_date_too(self):
+        class Pdf: content = b"%PDF-1.4 scan"
+        get, extract_pdf = nm.get, nm.extract_pdf
+        nm.get = lambda url: Pdf()
+        nm.extract_pdf = lambda content: (self.SIGNATURE.format(n="2020-077"), True, True)
+        try:
+            action = nm.parse_document("2020-077", "u")
+        finally:
+            nm.get, nm.extract_pdf = get, extract_pdf
+        self.assertEqual(action.date, "2020-11-05")
+        self.assertEqual(nm.classify(action), "declaration")
+
+    def test_a_reviewed_declaration_reaches_the_join(self):
+        action = self.parse("2020-077")
+        with tempfile.TemporaryDirectory() as root:
+            paths = [root + "/" + name for name in ("actions.csv", "rels.csv", "join.csv")]
+            nm.write_outputs([action], *paths)
+            with open(paths[2], encoding="utf-8") as handle:
+                rows = list(csv.DictReader(handle))
+        self.assertEqual([(r["declaration_id"], r["date_signed"]) for r in rows], [("NM-2020-077", "2020-11-05")])
+
+    def test_reviewed_dates_are_well_formed(self):
+        from datetime import datetime
+        for number, day in nm.REVIEWED_DATES.items():
+            self.assertRegex(number, r"^20\d{2}-\d{3}$")
+            self.assertEqual(datetime.strptime(day, "%Y-%m-%d").year, int(number[:4]))
+
