@@ -308,6 +308,106 @@ def load_nri():
     return _load_county_js("county-nri.js", "COUNTY_NRI")
 
 
+def load_ct_planning_regions():
+    """
+    Connecticut's towns by county and planning region, from
+    ct-planning-regions.json (written by build_ct_planning_regions.py).
+
+    Since 2022 the Census Bureau has used Connecticut's nine planning regions
+    in place of its eight counties, and the CDC SVI 2022 and FEMA NRI report
+    Connecticut only by planning region, while FEMA declarations still name
+    the counties. {county FIPS: {"name", "towns", "regions": [{"fips",
+    "name", "short_name", "towns"}]}}. Returns {} when the file is absent or
+    unreadable, and the county pages then go without the regional rows.
+    """
+    p = os.path.join(SRC_ROOT, "ct-planning-regions.json")
+
+    if not os.path.exists(p):
+        return {}
+
+    try:
+        with open(p, encoding="utf-8") as fh:
+            counties = json.load(fh).get("counties") or {}
+    except Exception as ex:
+        print("  WARNING: could not read ct-planning-regions.json: %s" % ex)
+        return {}
+
+    return counties if isinstance(counties, dict) else {}
+
+
+def ct_planning_region_rows(j, ct_counties, svi_by_fips, nri_by_fips):
+    """
+    (county FIPS, rows) for a Connecticut county page, else (None, []).
+
+    One row per planning region holding any of the county's towns, most
+    towns first, each with that region's SVI and NRI records ({} where a
+    dataset has no row for it). A region's figures describe the whole
+    region, including its towns in other counties.
+    """
+    if j.get("kind") != "county":
+        return None, []
+
+    name = (j.get("name") or "").strip().lower()
+
+    for county_fips, county in sorted((ct_counties or {}).items()):
+        if (county.get("name") or "").strip().lower() != name:
+            continue
+
+        rows = []
+
+        for region in county.get("regions") or []:
+            fips = str(region.get("fips") or "")
+            rows.append(
+                {
+                    "fips": fips,
+                    "name": region.get("name") or "",
+                    "short_name": region.get("short_name") or region.get("name") or "",
+                    "towns": list(region.get("towns") or []),
+                    "svi": svi_by_fips.get(fips) or {},
+                    "nri": nri_by_fips.get(fips) or {},
+                }
+            )
+
+        return county_fips, rows
+
+    return None, []
+
+
+def attach_ct_planning_regions(js, svi_lookup, nri_lookup, ct_counties):
+    """
+    Give each Connecticut county page that has no SVI or NRI row the rows of
+    the planning regions its towns are in (j["risk_regions"]) and its own
+    county FIPS (j["risk_fips"]). That FIPS also keys the page's state
+    declarations (state-declarations.json), which these pages went without
+    while the FIPS came only from an SVI or NRI match. Returns how many pages
+    were given rows.
+    """
+    if not ct_counties:
+        return 0
+
+    svi_by_fips = {rec.get("fips"): rec for rec in svi_lookup.values()}
+    nri_by_fips = {rec.get("fips"): rec for rec in nri_lookup.values()}
+    attached = 0
+
+    for j in js:
+        if j.get("svi") or j.get("nri"):
+            continue
+
+        county_fips, rows = ct_planning_region_rows(
+            j,
+            ct_counties,
+            svi_by_fips,
+            nri_by_fips,
+        )
+
+        if county_fips:
+            j["risk_fips"] = county_fips
+            j["risk_regions"] = rows
+            attached += 1
+
+    return attached
+
+
 # ---------------------------------------------------------------- helpers
 def fy_of(iso):
     y, m = int(iso[:4]), int(iso[5:7])
@@ -4010,6 +4110,183 @@ def _score_text(value):
     return "%.1f" % number if number is not None else "N/A"
 
 
+def _and_list(names):
+    """'A', 'A and B', 'A, B and C'."""
+    names = list(names)
+
+    if len(names) < 2:
+        return "".join(names)
+
+    return "%s and %s" % (", ".join(names[:-1]), names[-1])
+
+
+_COUNT_WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+
+
+def _region_towns_text(region_towns, county_towns, first):
+    """
+    Which of the county's towns a region holds, in a few words. The first
+    row (the region with the most) names the towns it does not hold; the
+    rows below it name their own.
+    """
+    held = sorted(region_towns)
+    total = len(county_towns)
+
+    if len(held) == total:
+        return "All %d" % total
+
+    if not first:
+        return "%d of %d: %s" % (len(held), total, _and_list(held))
+
+    others = sorted(set(county_towns) - set(held))
+
+    if len(others) > 3:
+        return "%d of %d: all but the %d listed below" % (len(held), total, len(others))
+
+    return "%d of %d: all but %s" % (len(held), total, _and_list(others))
+
+
+def planning_region_risk_html(j):
+    """
+    Render CDC SVI and FEMA NRI context for a Connecticut county page.
+
+    Since 2022 both datasets report Connecticut by its nine planning regions,
+    the Census Bureau's county equivalents, so there is no county row to
+    show. Each row here is a region holding some of the county's towns, and
+    its figures describe the whole region, including its towns in other
+    counties.
+    """
+    regions = j.get("risk_regions") or []
+
+    if not regions:
+        return ""
+
+    e = html.escape
+    county = j.get("name") or "This county"
+    county_towns = [town for region in regions for town in region.get("towns") or []]
+
+    if len(regions) == 1:
+        spread = (
+            "Its %d towns are all in one planning region, shown below. That "
+            "row describes the whole region, including any of its towns in "
+            "other counties."
+            % len(county_towns)
+        )
+    else:
+        spread = (
+            "Its %d towns are in %s planning regions, shown below. Each row "
+            "describes the whole region, including any of its towns in other "
+            "counties."
+            % (len(county_towns), _COUNT_WORDS.get(len(regions), str(len(regions))))
+        )
+
+    nri_version = ""
+
+    for region in regions:
+        nri_version = str((region.get("nri") or {}).get("version") or "")
+
+        if nri_version:
+            break
+
+    rows = []
+
+    for index, region in enumerate(regions):
+        svi = region.get("svi") or {}
+        nri = region.get("nri") or {}
+
+        overall = _svi_percent(svi.get("overall"))
+        svi_text = "%.1f" % overall if overall is not None else "N/A"
+
+        if nri:
+            risk_text = "%s, %s" % (
+                _score_text(nri.get("riskScore")),
+                nri.get("riskRating") or "Not rated",
+            )
+            eal_text = "%s, %s" % (
+                _short_money(nri.get("ealValue")),
+                nri.get("ealRating") or "Not rated",
+            )
+        else:
+            risk_text = eal_text = "N/A"
+
+        rows.append(
+            '<tr>'
+            '<td><b>%s</b><br>'
+            '<span style="color:var(--ink3);font-size:.72rem">FIPS %s</span></td>'
+            '<td>%s</td>'
+            '<td>%s</td>'
+            '<td>%s</td>'
+            '<td>%s</td>'
+            '</tr>'
+            % (
+                e(region.get("short_name") or region.get("name") or ""),
+                e(region.get("fips") or ""),
+                e(_region_towns_text(region.get("towns") or [], county_towns, index == 0)),
+                e(svi_text),
+                e(risk_text),
+                e(eal_text),
+            )
+        )
+
+    fips = j.get("risk_fips") or ""
+
+    fips_note = (
+        '<span class="risk-fips">County FIPS %s</span>' % e(str(fips))
+        if fips
+        else ""
+    )
+
+    return (
+        '<section class="risk-section">'
+        '<div class="section-heading-row">'
+        '<div><h2>Risk and vulnerability context</h2>'
+        '<p class="section-deck">Historical declarations show what has '
+        'happened here. These national datasets add context about underlying '
+        'natural-hazard risk and community vulnerability.</p></div>%s'
+        '</div>'
+        # Inline styles, so the shared stylesheet in every other page stays
+        # as it is.
+        '<div class="risk-caution" style="margin:0 0 1rem"><b>Reported by planning '
+        'region.</b> Since 2022 the Census Bureau has used Connecticut\'s '
+        'nine planning regions in place of its eight counties, and the CDC '
+        'Social Vulnerability Index and the FEMA National Risk Index report '
+        'Connecticut only by planning region, so neither has a row for %s. '
+        '%s</div>'
+        '<div class="tablewrap">'
+        '<table class="risk-regions">'
+        '<thead><tr>'
+        '<th>Planning region</th>'
+        '<th>%s towns in it</th>'
+        '<th>CDC SVI 2022 overall percentile</th>'
+        '<th>FEMA NRI risk score%s</th>'
+        '<th>NRI expected annual loss</th>'
+        '</tr></thead>'
+        '<tbody>%s</tbody>'
+        '</table>'
+        '</div>'
+        '<p class="risk-source">Both rank each region against every U.S. '
+        'county and county equivalent; a higher SVI percentile means greater '
+        'relative social vulnerability, and a higher NRI score means greater '
+        'relative natural-hazard risk. '
+        '<a href="https://www.atsdr.cdc.gov/place-health/php/svi/'
+        'svi-data-documentation-download.html">CDC SVI documentation</a>, '
+        '<a href="https://hazards.fema.gov/nri/">FEMA NRI documentation</a>. '
+        'Towns by county and region: '
+        '<a href="https://github.com/CT-Data-Collaborative/2022-block-crosswalk">'
+        'CT Data Collaborative block crosswalk</a>, from Census TIGER/Line '
+        'files.</p>'
+        '</section>'
+        % (
+            fips_note,
+            e(county),
+            e(spread),
+            e(county),
+            e(" (%s)" % nri_version) if nri_version else "",
+            "".join(rows),
+        )
+    )
+
+
 def risk_context_html(j):
     """
     Render static county-level CDC SVI and FEMA NRI context.
@@ -4021,7 +4298,7 @@ def risk_context_html(j):
     nri = j.get("nri") or {}
 
     if not svi and not nri:
-        return ""
+        return planning_region_risk_html(j) if j.get("risk_regions") else ""
 
     e = html.escape
     cards = []
@@ -6451,6 +6728,16 @@ def build_state(
             (j["svi"] or {}).get("fips")
             or (j["nri"] or {}).get("fips")
             or ""
+        )
+
+        j["risk_regions"] = []
+
+    if state_ab == "CT":
+        attach_ct_planning_regions(
+            js,
+            svi_lookup,
+            nri_lookup,
+            load_ct_planning_regions(),
         )
 
     # ------------------------------------------------ state (governor) declarations
