@@ -26,7 +26,7 @@ class NewHampshireTests(unittest.TestCase):
         self.assertEqual(second.action_type, "termination")
 
     def test_generic_declaration_needs_direct_pdf_hazard(self):
-        action = nh.Action("2014-06", "Declaration of State of Emergency", "Margaret Wood Hassan", "x")
+        action = nh.Action("2014-99", "Declaration of State of Emergency", "Margaret Wood Hassan", "x")
         nh.classify(action); self.assertFalse(action.weather_related)
         action.document_text = "The severe storm caused flooding and damaging winds."
         nh.classify(action); self.assertTrue(action.weather_related)
@@ -89,8 +89,8 @@ class NewHampshireTests(unittest.TestCase):
         from unittest import mock
         orders = [nh.Action("2013-08", "An Order Declaring a State of Emergency due to Severe Weather",
                             "Margaret Wood Hassan", "https://x/2013-08.pdf"),
-                  nh.Action("2010-01", "An Order Declaring a State of Emergency Due to Severe Weather.",
-                            "John H. Lynch", "https://x/2010-01.pdf")]
+                  nh.Action("2010-99", "An Order Declaring a State of Emergency Due to Severe Weather.",
+                            "John H. Lynch", "https://x/2010-99.pdf")]   # not a real order: no confirmed date
         with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="", content=b"")), \
              mock.patch.object(nh, "parse_registry", return_value=orders), \
              mock.patch.object(nh, "pdf_text", return_value=pdf_text):
@@ -100,7 +100,7 @@ class NewHampshireTests(unittest.TestCase):
         actions = self._collect("")
         self.assertEqual(actions["2013-08"].date_signed, "2013-07-03")
         self.assertTrue(actions["2013-08"].weather_related)
-        self.assertIsNone(actions["2010-01"].date_signed)   # no confirmed date: stays undated
+        self.assertIsNone(actions["2010-99"].date_signed)   # no confirmed date: stays undated
 
     def test_date_read_from_the_order_beats_the_confirmed_list(self):
         actions = self._collect("Given under my hand this 2nd day of July, 2013.")
@@ -111,10 +111,10 @@ class NewHampshireTests(unittest.TestCase):
         from unittest import mock
         orders = [nh.Action("2013-08", "An Order Declaring a State of Emergency due to Severe Weather",
                             "Margaret Wood Hassan", "https://x/2013-08.pdf"),
-                  nh.Action("2010-01", "An Order Declaring a State of Emergency Due to Severe Weather.",
-                            "John H. Lynch", "https://x/2010-01.pdf"),
-                  nh.Action("2014-06", "Declaration of State of Emergency", "Margaret Wood Hassan",
-                            "https://x/2014-06.pdf")]
+                  nh.Action("2010-99", "An Order Declaring a State of Emergency Due to Severe Weather.",
+                            "John H. Lynch", "https://x/2010-99.pdf"),
+                  nh.Action("2014-99", "Declaration of State of Emergency", "Margaret Wood Hassan",
+                            "https://x/2014-99.pdf")]   # neither is a real order: no confirmed dates
         with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="", content=b"")), \
              mock.patch.object(nh, "parse_registry", return_value=orders), \
              mock.patch.object(nh, "fetch_document", return_value=mock.Mock(content=b"pdf")) as read, \
@@ -125,12 +125,12 @@ class NewHampshireTests(unittest.TestCase):
 
     def test_orders_dated_on_an_earlier_run_are_not_read_again(self):
         saved = {"NH-2013-08": {"date_signed": "2013-07-03", "weather_related": "true"},
-                 "NH-2014-06": {"date_signed": "2014-11-26", "weather_related": "true"}}
+                 "NH-2014-99": {"date_signed": "2014-11-26", "weather_related": "true"}}
         actions, read = self._collect_saved(saved)
-        self.assertEqual(read, ["https://x/2010-01.pdf"])      # only the order with no date yet
-        self.assertEqual(actions["2014-06"].date_signed, "2014-11-26")
+        self.assertEqual(read, ["https://x/2010-99.pdf"])      # only the order with no date yet
+        self.assertEqual(actions["2014-99"].date_signed, "2014-11-26")
         # A generic title has no hazard word; the earlier read of its PDF found one.
-        self.assertTrue(actions["2014-06"].weather_related)
+        self.assertTrue(actions["2014-99"].weather_related)
         self.assertTrue(actions["2013-08"].weather_related)
 
     def test_a_confirmed_date_still_wins_over_a_saved_one(self):
@@ -141,7 +141,7 @@ class NewHampshireTests(unittest.TestCase):
     def test_without_saved_rows_every_order_is_read(self):
         actions, read = self._collect_saved({}, "Given under my hand this 2nd day of July, 2013.")
         self.assertEqual(len(read), 3)
-        self.assertFalse(actions["2014-06"].weather_related)   # nothing found: no hazard
+        self.assertFalse(actions["2014-99"].weather_related)   # nothing found: no hazard
 
     def test_archive_requests_are_spaced(self):
         from unittest import mock
@@ -204,19 +204,92 @@ class NewHampshireTests(unittest.TestCase):
         order = nh.Action("2015-01", "An Order Declaring a State of Emergency Due to Severe Winter Storm",
                           "Margaret Wood Hassan", "https://x/2015-01.pdf", date_signed="2015-01-26")
         nh.classify(order)
-        undated = nh.Action("2010-01", "An Order Declaring a State of Emergency Due to Severe Weather.",
-                            "John H. Lynch", "https://x/2010-01.pdf")
+        undated = nh.Action("2010-99", "An Order Declaring a State of Emergency Due to Severe Weather.",
+                            "John H. Lynch", "https://x/2010-99.pdf")
         nh.classify(undated)
         saved = [{"declaration_id": "NH-PROC-2012-10-29", "governor": "John H. Lynch", "eo_number": "",
                   "event_description": "Sandy", "date_signed": "2012-10-29", "archive_record_url": "u"},
-                 {"declaration_id": "NH-2010-01", "governor": "John H. Lynch", "eo_number": "2010-01",
+                 {"declaration_id": "NH-2010-99", "governor": "John H. Lynch", "eo_number": "2010-99",
                   "event_description": "Severe weather", "date_signed": "2010-02-25", "archive_record_url": "u"},
                  {"declaration_id": "NH-2015-01", "governor": "x", "eo_number": "2015-01",
                   "event_description": "old text", "date_signed": "2015-01-20", "archive_record_url": "u"}]
         rows = {r["declaration_id"]: r for r in nh.join_rows([order, undated], saved)}
-        self.assertEqual(set(rows), {"NH-2015-01", "NH-PROC-2012-10-29", "NH-2010-01"})
+        self.assertEqual(set(rows), {"NH-2015-01", "NH-PROC-2012-10-29", "NH-2010-99"})
         self.assertEqual(rows["NH-2015-01"]["date_signed"], "2015-01-26")   # the registry's own row wins
-        self.assertEqual(rows["NH-2010-01"]["date_signed"], "2010-02-25")
+        self.assertEqual(rows["NH-2010-99"]["date_signed"], "2010-02-25")
+
+
+# The 17 orders that never gave a date, with their registry titles.
+UNDATED = {
+    "2020-04 #72": "An order regarding travel guidance and extending Emergency Order #52 ( Exhibit A )",
+    "2020-04 #61": "An order extending Emergency Order #52",
+    "2020-04 #32": "Extension of Emergency Orders #1 and #19 (temporary remote instruction and support for public K-12 school districts)",
+    "2018-02": "An order extending the effective period for Executive Order 2017-3",
+    "2017-05": "An order amending Executive Order 2017-04 re. Governor's Commission on the Human Treatment of Animals",
+    "2016-09": "An Order Amending Executive Order 2013-05",
+    "2016-03": "An order for state government to continue to lead-by-example in energy efficiency, conservation, and renewable energy.",
+    "2015-02": "An Order Declaring the State of Emergency Over",
+    "2014-06": "Declaration of State of Emergency",
+    "2013-09": "An Order Declaring the State of Emergency Over",
+    "2013-04": "An Order Declaring the State of Emergency Over.",
+    "2012-03": "An Order Amending Executive Order 2011-03.",
+    "2012-02": "An Order Amending Executive Order 2006-11.",
+    "2011-06": "An Order Amending Executive Order 2005-2.",
+    "2011-01": "An Order for State Government to Continue to Lead-by-Example in Energy Efficiency.",
+    "2010-01": "An Order Declaring a State of Emergency Due to Severe Weather.",
+    "2003-09": "An order declaring a limited state of emergency.",
+}
+
+
+class ReviewedDateTests(unittest.TestCase):
+    """Orders whose PDF never gives a date are dated from the reviewed list,
+    so they are read once more and then never again."""
+
+    def run_collect(self, saved, pdf_text=""):
+        from unittest import mock
+        orders = [nh.Action(number, title, "", f"https://x/{number}.pdf") for number, title in UNDATED.items()]
+        with mock.patch.object(nh, "fetch", return_value=mock.Mock(text="", content=b"")), \
+             mock.patch.object(nh, "parse_registry", return_value=orders), \
+             mock.patch.object(nh, "fetch_document", return_value=mock.Mock(content=b"pdf")) as read, \
+             mock.patch.object(nh, "pdf_text", return_value=pdf_text), \
+             mock.patch("builtins.print"):
+            actions = nh.collect(saved)
+        return actions, [c.args[0] for c in read.call_args_list]
+
+    def test_every_order_that_never_gave_a_date_is_dated(self):
+        actions, read = self.run_collect({})
+        self.assertEqual(len(read), len(UNDATED))                    # read one last time
+        self.assertEqual({a.number: a.date_signed for a in actions},
+                         {number: nh.CONFIRMED_DATES[number] for number in UNDATED})
+
+    def test_the_next_run_reads_none_of_them(self):
+        first, _ = self.run_collect({})
+        saved = {row["declaration_id"]: row for row in (nh.action_row(a) for a in first)}
+        second, read = self.run_collect(saved)
+        self.assertEqual(read, [])
+        self.assertEqual([a.date_signed for a in second], [a.date_signed for a in first])
+
+    def test_2010_01_is_signed_the_day_after_the_storm_began(self):
+        actions, _ = self.run_collect({})
+        storm = next(a for a in actions if a.number == "2010-01")
+        self.assertEqual(storm.date_signed, "2010-02-26")
+        self.assertTrue(storm.weather_related)
+        saved = [{"declaration_id": "NH-2010-01", "governor": "John H. Lynch", "eo_number": "2010-01",
+                  "event_description": "Severe weather", "date_signed": "2010-02-25", "archive_record_url": "u"}]
+        rows = {r["declaration_id"]: r for r in nh.join_rows(actions, saved)}
+        self.assertEqual(rows["NH-2010-01"]["date_signed"], "2010-02-26")   # replaces the saved first day
+
+    def test_the_public_health_emergency_is_not_weather(self):
+        actions, _ = self.run_collect({})
+        order = next(a for a in actions if a.number == "2014-06")
+        self.assertEqual(order.action_type, "declaration")
+        self.assertFalse(order.weather_related)
+        self.assertNotIn("NH-2014-06", {r["declaration_id"] for r in nh.join_rows(actions, [])})
+
+    def test_reviewed_dates_fall_in_the_orders_own_year(self):
+        from datetime import date
+        for number, day in nh.CONFIRMED_DATES.items():
+            self.assertEqual(date.fromisoformat(day).year, int(number[:4]), number)
 
 
 if __name__ == "__main__": unittest.main()
