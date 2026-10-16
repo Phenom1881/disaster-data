@@ -279,5 +279,31 @@ class TimingReportTests(unittest.TestCase):
         self.assertEqual(health.render_timing(result, [{"abbreviation": "AA", "name": "AA"}]), [])
 
 
+class FederalGapReportTests(unittest.TestCase):
+    STATES = [{"abbreviation": ab, "name": ab} for ab in ("AA", "BB", "CC", "DD")]
+
+    def test_states_with_the_most_fema_declarations_and_no_state_declaration_are_listed(self):
+        result = {"federal_window_days": 21, "states": {
+            "AA": {"fema_since": 2000, "fema_compared": 40, "fema_without_state": 30},
+            "BB": {"fema_since": 2016, "fema_compared": 10, "fema_without_state": 0},
+            "CC": {"fema_since": 2019, "fema_compared": 5, "fema_without_state": 30 // 10},
+            "DD": {}}}
+        text = "\n".join(health.render_federal_gaps(result, self.STATES))
+        self.assertIn("33 of the 55 FEMA weather major disasters and emergencies", text)
+        self.assertIn("within 21 days", text)
+        self.assertIn("| AA | 2000 | 30 | 40 |", text)
+        self.assertIn("| CC | 2019 | 3 | 5 |", text)
+        self.assertLess(text.index("| AA |"), text.index("| CC |"))
+        self.assertNotIn("| BB |", text)          # nothing missing
+        self.assertNotIn("| DD |", text)          # not refreshed with the numbers yet
+
+    def test_none_missing_has_no_table_and_no_numbers_has_no_section(self):
+        result = {"states": {"AA": {"fema_since": 2016, "fema_compared": 10, "fema_without_state": 0}}}
+        lines = health.render_federal_gaps(result, self.STATES[:1])
+        self.assertIn("0 of the 10", "\n".join(lines))
+        self.assertFalse(any(line.startswith("|") for line in lines))
+        self.assertEqual(health.render_federal_gaps({"states": {"AA": {}}}, self.STATES[:1]), [])
+
+
 if __name__ == "__main__":
     unittest.main()
