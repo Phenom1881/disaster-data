@@ -46,3 +46,44 @@ class DocumentDateTests(unittest.TestCase):
             with open(path, "w") as handle:
                 handle.write("eo_number,date_signed\nJML 24-72,2024-05-20\nJML 24-89,\n")
             self.assertEqual(la.load_saved_dates(path), {"JML 24-72": "2024-05-20"})
+
+
+class ReviewedDateTests(unittest.TestCase):
+    """2026-10-16: JML 24-04 and JML 25-12 gave no readable date on any run;
+    the Louisiana Register prints both orders with their signature lines."""
+
+    INDEX = ('<a href="/media/xbdhrja0/jml-24-04-state-of-emergency-winter-weather.pdf">JML 24-04 State of Emergency '
+             'Winter Weather</a><a href="/media/brydlcr1/jml-25-012-state-of-emergency-winter-weather-preparation-'
+             'january-18-2025.pdf">JML 25-12 State of Emergency Winter Weather Preparation- January 18, 2025</a>')
+
+    def setUp(self):
+        saved = la.get, la.document_text
+        self.addCleanup(lambda: setattr(la, "get", saved[0]) or setattr(la, "document_text", saved[1]))
+        index = self.INDEX
+
+        class Response:
+            text = index
+
+        la.get = lambda url: Response()
+        la.document_text = lambda url: "STATE OF EMERGENCY WINTER WEATHER ... IN WITNESS WHEREOF, I have set my hand"
+
+    def collect(self):
+        return {action.number: action for action in la.collect()}
+
+    def test_an_order_with_no_readable_date_gets_the_registers(self):
+        actions = self.collect()
+        self.assertEqual((actions["JML 24-04"].date, actions["JML 25-12"].date), ("2024-01-12", "2025-01-18"))
+        with tempfile.TemporaryDirectory() as root:
+            paths = [root + f"/{n}.csv" for n in ("actions", "rels", "join")]
+            la.write_outputs(list(actions.values()), *paths)
+            with open(paths[2], encoding="utf-8") as handle:
+                joined = {row["declaration_id"]: row["date_signed"] for row in csv.DictReader(handle)}
+        self.assertEqual(joined, {"LA-EO-JML-24-04": "2024-01-12", "LA-EO-JML-25-12": "2025-01-18"})
+
+    def test_the_registers_date_comes_before_one_read_from_the_document(self):
+        la.document_text = lambda url: "IN WITNESS WHEREOF, I have set my hand this 9th day of January, 2024."
+        self.assertEqual(self.collect()["JML 24-04"].date, "2024-01-12")
+
+    def test_other_orders_are_dated_from_their_documents_as_before(self):
+        self.assertNotIn("JML 24-89", la.REVIEWED_DATES)
+        self.assertEqual(la.extract_date("this 5th day of June, 2024."), "2024-06-05")
