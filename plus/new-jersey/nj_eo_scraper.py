@@ -166,8 +166,24 @@ WEATHER_PATTERNS = tuple(
         r"\bcoastal\s+flood(?:s|ing)?\b",
         r"\bhigh\s+winds?\b",
         r"\bwindstorms?\b",
+        # Sherrill EO 18 (2026) declares an emergency "related to Crop Freeze
+        # Event". A bare "freeze" would also match a hiring freeze.
+        r"\bcrop\s+freeze\b|\b(?:freeze|frost)\s+(?:events?|damage|warnings?)\b",
     )
 )
+
+# Declarations whose archive title names no hazard and whose PDF has no text
+# the scraper can read, each confirmed in dated news coverage (cited in
+# hazard_overrides.csv).
+REVIEWED_WEATHER = {
+    # "Declare and proclaim a State of Emergency throughout the State of New
+    # Jersey", the winter storm of December 26, 2010, declared by Acting
+    # Governor Steve Sweeney under Christie's numbering.
+    "NJ-CHRISTIE-EO-49": "winter storm, December 26, 2010",
+    # "Declare and proclaim that a State of Emergency exists in the State on
+    # New Jersey", Hurricane Irene, August 25, 2011.
+    "NJ-CHRISTIE-EO-73": "Hurricane Irene",
+}
 
 # Matches "Executive Order", "E.O.", or bare "Order", each optionally
 # followed by "No./Nos./Number", then one or more comma/and-separated
@@ -971,6 +987,8 @@ MUTUAL_AID_ONLY = re.compile(
 
 
 def is_weather_related(order: NJOrder) -> bool:
+    if order.stable_id in REVIEWED_WEATHER:
+        return True
     if NOT_WEATHER_TITLE.search(order.description or ""):
         return False
     text = f"{order.description} {order.document_text}"
