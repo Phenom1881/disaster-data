@@ -96,6 +96,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PLUS_ROOT = os.path.join(HERE, "plus")
@@ -117,11 +118,19 @@ _STRIP_KINDS = re.compile(
 )
 
 
+def fold_accents(text: str) -> str:
+    """Text with accents dropped. county-fips.json writes "Doña Ana" and
+    NOAA writes "DONA ANA"; without this the Ñ became a space and none of
+    Doña Ana County's NOAA rows reached its page."""
+    decomposed = unicodedata.normalize("NFKD", text or "")
+    return "".join(c for c in decomposed if not unicodedata.combining(c))
+
+
 def norm_name(name: str) -> str:
     """Normalise a county/city name for matching. Mirrors the intent of
     pa_base_kind() in the page generators: strip the kind suffix, drop
-    punctuation, collapse whitespace."""
-    n = (name or "").upper().strip()
+    accents and punctuation, collapse whitespace."""
+    n = fold_accents(name).upper().strip()
     n = re.sub(r"\s*\(.*?\)\s*", " ", n)
     n = _STRIP_KINDS.sub(" ", n)
     n = re.sub(r"[^A-Z ]", " ", n)

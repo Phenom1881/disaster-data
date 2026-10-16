@@ -11,7 +11,7 @@ table and CSV export for hazard mitigation plans.
 Pilot is scoped to one state (STATE_AB below) but written to generalize.
 """
 
-import os, re, json, html, datetime, hashlib
+import os, re, json, html, datetime, hashlib, unicodedata
 from urllib.parse import quote
 from dd_classify import classify
 
@@ -667,41 +667,70 @@ _RISK_SUFFIXES = [
 ]
 
 
-def _risk_base(name):
-    """Return a normalized county/county-equivalent name for matching."""
-    s = str(name or "").strip().lower()
+# The four states with independent cities. Their cities carry county-equivalent
+# FIPS codes of 510 and up. Texas counties also run past 500 (Yoakum 501, Young
+# 503, Zapata 505, Zavala 507), so the code alone does not mean a city.
+_INDEPENDENT_CITY_STATES = {"VA", "MD", "MO", "NV"}
+
+# Jurisdictions FEMA still lists under an older name, mapped to the FIPS code
+# of the same county today, so their pages get its SVI and NRI rows. Only
+# straight renames: an area later split or merged (Valdez-Cordova, Wrangell-
+# Petersburg, Bedford city) has no single row that speaks for it.
+_RISK_RENAMED = {
+    ("AK", "Wade Hampton Census Area"): "02158",                     # renamed Kusilvak Census Area in 2015
+    ("AK", "Yakutat City and Borough School District"): "02282",     # Yakutat City and Borough
+    ("FL", "Dade County"): "12086",                                  # renamed Miami-Dade County in 1997
+    ("GA", "Georgetown - Quitman County"): "13239",                  # Quitman County, consolidated with Georgetown
+}
+
+
+def _fold(text):
+    """Text with accents dropped: Doña Ana -> Dona Ana, Añasco -> Anasco."""
+    decomposed = unicodedata.normalize("NFKD", str(text or ""))
+    return "".join(c for c in decomposed if not unicodedata.combining(c))
+
+
+def _risk_base(name, strip_kind=True):
+    """
+    Return a normalized county/county-equivalent name for matching.
+
+    Lower case, accents dropped, the kind suffix ("County", "Parish") removed
+    when strip_kind, and no spaces or punctuation. FEMA writes "Dona Ana" and
+    "La Salle" where the SVI and NRI write "Doña Ana" and "LaSalle".
+    """
+    s = _fold(name).strip().lower()
     s = re.sub(r"\s*\([^)]*\)\s*", " ", s)
     s = s.split(",", 1)[0].strip()
 
-    for suffix in _RISK_SUFFIXES:
-        tail = " " + suffix
+    if strip_kind:
+        for suffix in _RISK_SUFFIXES:
+            tail = " " + suffix
 
-        if s.endswith(tail):
-            s = s[:-len(tail)].strip()
-            break
+            if s.endswith(tail):
+                s = s[:-len(tail)].strip()
+                break
 
     s = s.replace("&", "and")
-    s = re.sub(r"[^a-z0-9]+", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
+    return re.sub(r"[^a-z0-9]+", "", s)
 
 
-def _risk_kind(fips, source_name):
+def _risk_kind(fips, state_ab):
     """
     Classify a county-equivalent risk row as county-like or independent city.
 
-    County-equivalent FIPS codes 500 and above identify independent cities.
-    The explicit ``city`` suffix is retained as a second safety check.
+    Independent cities carry county-equivalent FIPS codes of 500 and above,
+    in the four states that have them. The name is no guide: the NRI calls
+    Charles City County and James City County "Charles City" and "James City".
     """
     fp = str(fips or "").zfill(5)
-    source = str(source_name or "").strip().lower()
 
     try:
         city_equivalent = int(fp[2:]) >= 500
     except (TypeError, ValueError):
         city_equivalent = False
 
-    if source.endswith(" city") or source.endswith(" independent city"):
-        city_equivalent = True
+    if state_ab not in _INDEPENDENT_CITY_STATES:
+        city_equivalent = False
 
     return "city" if city_equivalent else "county"
 
@@ -712,8 +741,15 @@ def build_risk_lookup(dataset):
 
     Keys are ``(state abbreviation, normalized place name, county/city kind)``.
     Each matched record retains its canonical five-digit FIPS/GEOID.
+
+    Each row is filed under its full name and under its name with the kind
+    suffix removed. The SVI writes "Rock Island County", the NRI just "Rock
+    Island", and stripping " Island" from that left "Rock". A full name wins
+    over a stripped one.
     """
     lookup = {}
+    stripped = []
+    by_fips = {}
 
     for fips, raw in (dataset or {}).items():
         if not isinstance(raw, dict):
@@ -727,13 +763,19 @@ def build_risk_lookup(dataset):
 
         rec = dict(raw)
         rec["fips"] = str(fips).zfill(5)
+        by_fips[rec["fips"]] = rec
 
-        key = (
-            state_ab,
-            _risk_base(source_name),
-            _risk_kind(fips, source_name),
-        )
-        lookup[key] = rec
+        kind = _risk_kind(fips, state_ab)
+        lookup[(state_ab, _risk_base(source_name, strip_kind=False), kind)] = rec
+        stripped.append(((state_ab, _risk_base(source_name), kind), rec))
+
+    for key, rec in stripped:
+        lookup.setdefault(key, rec)
+
+    for (state_ab, old_name), fips in _RISK_RENAMED.items():
+        if fips in by_fips:
+            key = jurisdiction_risk_key({"name": old_name, "kind": "county"}, state_ab)
+            lookup.setdefault(key, by_fips[fips])
 
     return lookup
 
