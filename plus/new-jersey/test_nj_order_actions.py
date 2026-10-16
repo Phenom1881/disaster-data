@@ -126,6 +126,13 @@ class OperativeTextTests(unittest.TestCase):
                 self.assertEqual(nj.action_from_operative_text(text), expected)
         self.assertIsNone(nj.action_from_operative_text("WHEREAS, a storm; GIVEN under my hand"))
 
+    def test_the_recitals_are_not_read(self):
+        # Constructed from EO 410: a recital quoting the declaration it ends.
+        quoted = EO_410.replace("NOW, THEREFORE", "WHEREAS, Executive Order No. 409 provided that a State of Emergency "
+                                                  "exists throughout the State of New Jersey; NOW, THEREFORE")
+        self.assertEqual(nj.action_from_operative_text(quoted), "termination")
+        self.assertEqual(nj.ended_orders(quoted), [("409", "2025")])
+
     def test_an_order_with_no_description_is_classified_by_what_it_does(self):
         self.assertEqual(nj.classify_action_type(order("410", text=EO_410)), "termination")
         self.assertEqual(nj.classify_action_type(order("109", text=EO_109, governor="Christie")), "administrative")
