@@ -72,5 +72,28 @@ class StateTotalTests(unittest.TestCase):
         self.assertLessEqual(len(record["counties"]["04013"]), record["total"])
 
 
+class CountyNameTests(unittest.TestCase):
+    """NOAA's county names against county-fips.json's."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.by_name, cls.by_squash, _ = sidecar.build_indexes(sidecar.load_county_fips())
+
+    def resolve(self, state, noaa_name):
+        return sidecar.resolve_county(state, noaa_name, self.by_name, self.by_squash)
+
+    def test_an_accented_county_matches_noaas_plain_spelling(self):
+        # county-fips.json writes "Doña Ana"; NOAA writes "DONA ANA". The Ñ
+        # used to become a space, so none of the county's rows resolved.
+        self.assertEqual(sidecar.norm_name("Doña Ana"), "DONA ANA")
+        self.assertEqual(self.resolve("NM", "DONA ANA"), "35013")
+        self.assertEqual(self.resolve("NM", "Doña Ana"), "35013")
+
+    def test_names_that_differ_only_in_spacing_still_match(self):
+        self.assertEqual(self.resolve("IL", "LA SALLE"), "17099")
+        self.assertEqual(self.resolve("NM", "DE BACA"), "35011")
+        self.assertEqual(self.resolve("IL", "DE KALB"), "17037")
+
+
 if __name__ == "__main__":
     unittest.main()
