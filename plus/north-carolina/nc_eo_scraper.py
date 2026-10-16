@@ -11,6 +11,11 @@ number and retains the other URLs as supporting documents.
 
 Pre-2017 orders published in the North Carolina Register require a separate
 historical backfill and are not represented as complete coverage here.
+
+Some orders cannot be classified from the archive alone: the title gives only
+the order number, or says "Declaration of a State of Emergency" without the
+hazard, and the PDF has no text layer. Those a reviewer has read elsewhere are
+listed in REVIEWED_DECLARATIONS, with the source in hazard_overrides.csv.
 """
 
 from __future__ import annotations
@@ -43,9 +48,43 @@ WEATHER_KEYWORDS = (
     "blizzard", "coastal flood", "drought", "extreme cold", "extreme heat",
     "flash flood", "flood", "freezing rain", "hail", "heavy rain",
     "hurricane", "ice storm", "nor'easter", "noreaster", "severe weather",
-    "snow", "storm surge", "tornado", "tropical depression",
+    "snow", "storm surge", "tornado", "tropical cyclone", "tropical depression",
     "tropical storm", "wildfire", "winter storm", "winter weather",
 )
+
+# What declares an emergency, matched against the title and description with
+# everything but letters removed. Cooper's later orders read "Declaration of a
+# STATEWIDE State of Emergency", and the archive's text of several is OCR with
+# words split or letters lost ("DECLARAT IO OF A STATE", "A STAT E OF").
+DECLARATION_RE = re.compile(
+    r"declarat(?:ion|io|on|in)?of(?:a)?(?:statewide)?stateofemergency"
+    r"|declare[sd]?(?:a)?(?:statewide)?stateofemergency"
+    r"|disasterdeclaration"
+)
+
+# Orders the archive cannot classify on its own, each read by a reviewer in
+# FMCSA's copy of the order, a Governor's or NCDPS press release, or an NCDOI
+# bulletin (cited in hazard_overrides.csv). "signed" is set where the order's
+# own signing date differs from the date the archive posted it.
+REVIEWED_DECLARATIONS = {
+    "NC-ROYCOOPER-EO-9": {"event": "straight-line winds from severe thunderstorms, May 30, 2017"},
+    "NC-ROYCOOPER-EO-15": {"event": "remnants of Tropical Storm Julia, September 21-22, 2016"},
+    "NC-ROYCOOPER-EO-20": {"event": "Hurricane Irma"},
+    "NC-ROYCOOPER-EO-28": {"event": "EF1 tornado in Eden, May 5, 2017"},
+    "NC-ROYCOOPER-EO-31": {"event": "winter storm, January 2018"},
+    "NC-ROYCOOPER-EO-34": {"event": "second winter storm, January 2018"},
+    "NC-ROYCOOPER-EO-41": {"event": "EF2 tornado in Guilford and Rockingham counties, April 15, 2018"},
+    "NC-ROYCOOPER-EO-42": {"event": "tornadoes from the remnants of Tropical Storm Nate, October 2017"},
+    "NC-ROYCOOPER-EO-44": {"event": "flooding and mudslides from the remnants of Subtropical Storm Alberto"},
+    "NC-ROYCOOPER-EO-51": {"event": "Tropical Storm Florence"},
+    "NC-ROYCOOPER-EO-86": {"event": "winter storm, January 2019", "signed": "2019-01-13"},
+    "NC-ROYCOOPER-EO-96": {"event": "flooding from heavy rain, June 7-10, 2019"},
+    "NC-ROYCOOPER-EO-115": {"event": "tornadoes, flooding and high winds, February 6-7, 2020",
+                            "signed": "2020-02-07"},
+    "NC-ROYCOOPER-EO-274": {"event": "prolonged cold weather and heating fuel delivery, December 2022"},
+    "NC-ROYCOOPER-EO-288": {"event": "Potential Tropical Cyclone Sixteen (Ophelia)"},
+    "NC-ROYCOOPER-EO-293": {"event": "wildfires, November 2023"},
+}
 
 NUMBER_RE = re.compile(
     r"(?:executive\s+order(?:\s+(?:no\.?|number))?|\bEO)\s*[#.: -]*"
@@ -329,9 +368,20 @@ def classify_action(order: NCOrder) -> str:
         return "amendment"
     if re.search(r"\b(extend|renew|continuing\s+the\s+state\s+of\s+emergency)", text):
         return "extension"
-    if re.search(r"\b(declaration\s+of\s+(?:a\s+)?state\s+of\s+emergency|disaster\s+declaration|declare[sd]?\s+(?:a\s+)?state\s+of\s+emergency)", text):
+    if DECLARATION_RE.search(re.sub(r"[^a-z]", "", text)):
         return "declaration"
     return "administrative"
+
+
+def apply_review(order: NCOrder) -> None:
+    """Classify an order a reviewer has read (REVIEWED_DECLARATIONS)."""
+    reviewed = REVIEWED_DECLARATIONS.get(order.stable_id)
+    if reviewed is None:
+        return
+    order.action_type = "declaration"
+    order.weather_related = True
+    if reviewed.get("signed"):
+        order.date_issued = reviewed["signed"]
 
 
 def is_weather_related(order: NCOrder) -> bool:
@@ -493,6 +543,7 @@ def main() -> None:
     for order in orders:
         order.action_type = classify_action(order)
         order.weather_related = is_weather_related(order)
+        apply_review(order)
     relationships = build_relationships(orders)
     apply_end_dates(orders, relationships)
     write_actions(orders, args.actions_out)

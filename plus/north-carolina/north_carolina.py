@@ -29,6 +29,7 @@ CAPABILITIES = {
         "Pre-2017 executive orders are published in the North Carolina Register but require a separate issue-indexed historical adapter; they are not included in the current completeness claim.",
         "The archive mixes orders with Council of State concurrence records, FAQs, guidance, and Spanish duplicates. These are excluded as independent actions and retained as supporting URLs when they can be matched to a canonical order.",
         "PDF text quality is mixed. Some current detail pages reproduce complete selectable text, while some PDFs and older detail pages require OCR for full-text relationship extraction.",
+        "Some orders give only the order number, or declare a state of emergency without naming the hazard, and their PDFs have no readable text. Those confirmed from FMCSA's copy of the order, a Governor's or NCDPS press release, or an NCDOI bulletin are listed in nc_eo_scraper.REVIEWED_DECLARATIONS. Executive Order No. 94 (April 19, 2019) declares a state of emergency but its hazard could not be confirmed, so it is not on the page.",
     ],
     "notes": (
         "The scraper produces nc_emergency_actions_all.csv, "

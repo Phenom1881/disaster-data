@@ -1,6 +1,10 @@
+import csv
+import os
 import unittest
 
 import nc_eo_scraper as nc
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 ARCHIVE_FIXTURE = """
@@ -93,6 +97,102 @@ class NorthCarolinaScraperTests(unittest.TestCase):
 
     def test_low_yield_threshold(self):
         self.assertEqual(nc.LOW_YIELD_PDF_CHARS, 250)
+
+
+def order(number, description, title=None, governor="Roy Cooper", date="2024-09-25"):
+    return nc.NCOrder(governor, number, title or f"Executive Order No. {number}", description, date, "x")
+
+
+class DeclarationWordingTests(unittest.TestCase):
+    """Headings as the archive's text gives them for Cooper's later orders."""
+
+    def test_a_statewide_state_of_emergency_is_a_declaration(self):
+        # EO 315, Helene
+        helene = order("315", "DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY WAIVER "
+                              "AND SUSPENSION OF MOTOR VE ID CLE REGULATIONS")
+        self.assertEqual(nc.classify_action(helene), "declaration")
+
+    def test_words_split_by_ocr_still_read_as_a_declaration(self):
+        # EO 270 (Ian) and EO 274 (cold weather, December 2022)
+        ian = order("270", "DECLARAT IO OF A STATE OF EMERGENCY AND TEMPORARY WAIVER AND "
+                           "SUSPENSION OF MOTOR VEHICLE REGULAT IO S")
+        cold = order("274", "DECLARATION OF A STAT E OF EMERGENCY AND TEMPORARY SUSPENSION OF "
+                            "MOTOR VEHICLE REGULATIONS TO ENSURE ADEQUATE")
+        self.assertEqual(nc.classify_action(ian), "declaration")
+        self.assertEqual(nc.classify_action(cold), "declaration")
+
+    def test_follow_on_orders_keep_their_own_type(self):
+        cases = {
+            "extension": "EXTENDING THE STATEWIDE STATE OF EMERGENCY DECLARED IN EXECUTIVE ORDER NO. 315",
+            "amendment": "AMENDMENT TO EXECUTIVE ORDER NO. 313 EXPANDING THE EMERGENCY AREA",
+            "termination": "NOTICE OF TERMINATION OF THE STATEWIDE STATE OF EMERGENCY DECLARED IN EO 311",
+        }
+        for expected, text in cases.items():
+            self.assertEqual(nc.classify_action(order("999", text)), expected, text)
+
+    def test_waivers_without_a_state_of_emergency_stay_administrative(self):
+        # EO 100, 102 and 103 support relief for Dorian; EO 101 is the declaration.
+        for number, text in (("100", "Declaration of Emergency to Suspend Motor Vehicle Regulations "
+                                     "adn Support Relief Efforts"),
+                             ("102", "Declaration of Temporary Suspension of Motor Vehicle Regulations"),
+                             ("103", "Declaration of Temporary Suspension of Tolls")):
+            self.assertEqual(nc.classify_action(order(number, text, date="2019-08-30")), "administrative")
+
+    def test_a_potential_tropical_cyclone_is_weather(self):
+        ptc = order("313", "Potential Tropical Cyclone Eight")
+        self.assertTrue(nc.is_weather_related(ptc))
+
+
+class ReviewedDeclarationTests(unittest.TestCase):
+    def test_a_title_only_order_takes_the_reviewed_reading(self):
+        # EO 115: the archive shows only "Executive Order No. 115" and posts it
+        # on February 9, 2020; FMCSA's copy is a state of emergency signed on
+        # February 7 for the storms of February 6 and 7.
+        storms = order("115", "Executive Order No. 115", date="2020-02-09")
+        storms.action_type = nc.classify_action(storms)
+        storms.weather_related = nc.is_weather_related(storms)
+        self.assertEqual((storms.action_type, storms.weather_related), ("administrative", False))
+        nc.apply_review(storms)
+        self.assertEqual((storms.action_type, storms.weather_related, storms.date_issued),
+                         ("declaration", True, "2020-02-07"))
+
+    def test_review_leaves_other_orders_alone(self):
+        other = order("12", "Executive Order No. 12: Declaration of a State of Emergency", date="2017-07-27")
+        other.action_type = nc.classify_action(other)
+        other.weather_related = nc.is_weather_related(other)
+        nc.apply_review(other)   # EO 12 is a transmission line failure, not weather
+        self.assertEqual((other.action_type, other.weather_related, other.date_issued),
+                         ("declaration", False, "2017-07-27"))
+
+    def test_reviewed_orders_carry_their_governor_in_the_id(self):
+        # Numbering restarts with each administration, so EO 9 is Cooper's here.
+        self.assertIn("NC-ROYCOOPER-EO-9", nc.REVIEWED_DECLARATIONS)
+        self.assertTrue(all(key.startswith(("NC-ROYCOOPER-EO-", "NC-JOSHSTEIN-EO-"))
+                            for key in nc.REVIEWED_DECLARATIONS))
+
+    def test_every_reviewed_order_has_a_cited_hazard(self):
+        with open(os.path.join(HERE, "hazard_overrides.csv"), encoding="utf-8") as handle:
+            overrides = {row["declaration_id"]: row for row in csv.DictReader(handle)}
+        for key, reviewed in nc.REVIEWED_DECLARATIONS.items():
+            row = overrides.get(key)
+            self.assertIsNotNone(row, key)
+            self.assertNotEqual(row["hazard_category_override"].strip().lower(), "exclude", key)
+            self.assertTrue(row["source_url"].startswith("https://"), key)
+            if reviewed.get("signed"):
+                self.assertRegex(reviewed["signed"], r"^\d{4}-\d{2}-\d{2}$")
+
+    def test_saved_join_file_matches_the_saved_actions(self):
+        # The join file is the actions file's dated weather declarations.
+        with open(os.path.join(HERE, "nc_emergency_actions_all.csv"), encoding="utf-8") as handle:
+            actions = list(csv.DictReader(handle))
+        with open(os.path.join(HERE, "declarations_for_join.csv"), encoding="utf-8") as handle:
+            joined = [row["declaration_id"] for row in csv.DictReader(handle)]
+        expected = [row["declaration_id"] for row in actions
+                    if row["action_type"] == "declaration" and row["weather_related"] == "True"
+                    and row["date_signed"]]
+        self.assertEqual(joined, expected)
+        for key in nc.REVIEWED_DECLARATIONS:
+            self.assertIn(key, joined)
 
 
 if __name__ == "__main__":
