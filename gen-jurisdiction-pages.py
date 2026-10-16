@@ -5704,11 +5704,34 @@ def render_page(j, others, lcfy):
 
 
 # ---------------------------------------------------------------- hub
+def _stub_counts(ids, by_id, lcfy):
+    """Declarations and major disasters for a hub stub (a tribal nation
+    whose full page is in another state), from complete fiscal years."""
+    complete = [
+        by_id[i]
+        for i in ids
+        if i in by_id and by_id[i].get("fyDeclared", 9999) <= lcfy
+    ]
+
+    return {
+        "decl": len(complete),
+        "dr": sum(
+            1
+            for r in complete
+            if r.get("declarationType") == "DR"
+        ),
+    }
+
+
 def render_hub(js, stubs=(), lcfy=None):
+    """A state's jurisdiction hub: every locality, ranked by its major
+    disaster declarations (complete fiscal years), then by all of its
+    declarations, the way its own page leads with major disasters."""
     e = html.escape
 
     items = [
         (
+            j.get("dr", 0),
             j["decl"],
             j["name"],
             j["label"],
@@ -5729,6 +5752,7 @@ def render_hub(js, stubs=(), lcfy=None):
 
         items.append(
             (
+                s.get("dr", 0),
                 s["decl"],
                 s["name"],
                 s["label"],
@@ -5747,7 +5771,8 @@ def render_hub(js, stubs=(), lcfy=None):
     items.sort(
         key=lambda it: (
             -it[0],
-            it[1],
+            -it[1],
+            it[2],
         )
     )
 
@@ -5757,7 +5782,7 @@ def render_hub(js, stubs=(), lcfy=None):
             '<a href="%s">%s</a> '
             '<span class="k">%s</span>'
             '<span class="c">'
-            '%d declarations%s'
+            '%s, %d in all%s'
             '</span>'
             '</li>'
         )
@@ -5765,10 +5790,12 @@ def render_hub(js, stubs=(), lcfy=None):
             href,
             e(name),
             label,
+            "1 major disaster" if dr == 1 else "%d major disasters" % dr,
             decl,
             note,
         )
         for (
+            dr,
             decl,
             name,
             label,
@@ -5841,10 +5868,10 @@ def render_hub(js, stubs=(), lcfy=None):
         '<h1>%s, by jurisdiction</h1>'
 
         '<p class="lede">'
-        'Every %s %s, ranked by federal disaster and emergency '
-        'declarations since FY2000. Each page carries the full declaration '
-        'history in a sortable table ready to copy into a local '
-        'mitigation plan.'
+        'Every %s %s, ranked by federal major disaster declarations '
+        'since FY2000, then by all federal declarations. Each page carries '
+        'the full declaration history in a sortable table ready to copy '
+        'into a local mitigation plan.'
         '</p>'
 
         '%s'
@@ -6293,12 +6320,14 @@ def build_state(
                     "label":
                         kind_label(c),
 
-                    "decl":
-                        len(
-                            pinfo[
-                                "all_ids"
-                            ]
-                        ),
+                    # Counted the way juris_stats() counts a page:
+                    # complete fiscal years only, so a stub ranks
+                    # beside the pages on the hub on equal terms.
+                    **_stub_counts(
+                        pinfo["all_ids"],
+                        by_id,
+                        lcfy,
+                    ),
                 })
 
                 continue
