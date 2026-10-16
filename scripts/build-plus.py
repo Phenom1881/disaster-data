@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import argparse
 import atexit
+import contextlib
 import csv
 import html
 import importlib.util
@@ -672,6 +673,72 @@ def source_status(error: str, saved_rows: int, scraped_rows: int, kept: int) -> 
     return SOURCE_OK
 
 
+# Most adapters raise a bare "scrape failed" and print their scraper's
+# stderr just before. The log had the cause; the state summary and the health
+# report did not ("South Dakota adapter: scrape failed" on 2026-10-15, where
+# the scraper had said the registry page came back with no table). So the
+# adapter's stderr is copied while it runs, and a failure that gives no cause
+# of its own gets the last thing written there.
+GENERIC_FAILURE = re.compile(r"\bscrapes? failed\b|\bexited with code\b|\bno declarations (?:were )?collected\b", re.I)
+_EXCEPTION_MODULE = re.compile(r"\b(?:[a-z_][a-z0-9_]*\.)+(?=[A-Z][A-Za-z0-9]*(?:Error|Exception|Timeout|Exit)\b)")
+_CONNECTION_POOL = re.compile(r"HTTPS?ConnectionPool\(host='([^']+)', port=\d+\): ")
+_OBJECT_REPR = re.compile(r"<[^<>]* object at 0x[0-9a-fA-F]+>,?\s*")
+CAUSE_LIMIT = 240
+
+
+class StderrCopy:
+    """Stands in for sys.stderr: writes go through, and a copy is kept."""
+
+    def __init__(self, stream):
+        self.stream = stream
+        self.copy = io.StringIO()
+
+    def write(self, text):
+        self.copy.write(text)
+        return self.stream.write(text)
+
+    def flush(self):
+        self.stream.flush()
+
+    def fileno(self):
+        return self.stream.fileno()
+
+    def isatty(self):
+        return False
+
+    def text(self) -> str:
+        return self.copy.getvalue()
+
+
+def stderr_cause(text: str) -> tuple[str, str]:
+    """The last line of text that says something, as written and shortened
+    (exception module paths and connection-pool boilerplate removed).
+    Traceback frames and their source lines are passed over, so a crash
+    gives its exception line. ("", "") when there is none."""
+    for raw in reversed((text or "").splitlines()):
+        line = raw.strip()
+        if not re.search(r"[A-Za-z]{3}", line) or raw.startswith("    ") or line.startswith('File "'):
+            continue
+        if line.startswith(("Traceback (most recent call last)", "During handling of the above exception")):
+            continue
+        short = _OBJECT_REPR.sub("", _CONNECTION_POOL.sub(r"\1: ", _EXCEPTION_MODULE.sub("", line)))
+        if len(short) > CAUSE_LIMIT:
+            short = short[:CAUSE_LIMIT - 3].rstrip() + "..."
+        return line, short
+    return "", ""
+
+
+def with_cause(reason: str, stderr_text: str) -> str:
+    """reason, plus the cause from the adapter's stderr when reason says only
+    that the scrape failed and does not already quote that line."""
+    if not GENERIC_FAILURE.search(reason or ""):
+        return reason
+    line, short = stderr_cause(stderr_text)
+    if not line or line[:60] in reason or short[:60] in reason:
+        return reason
+    return f"{reason.rstrip('. ')} ({short})"
+
+
 def collect_with_safeguard(state: dict, state_dir: Path) -> dict:
     """Run one state's adapter inside the keep-saved safeguard and report
     what its source returned. Snapshot first, merge back after, even when
@@ -689,15 +756,17 @@ def collect_with_safeguard(state: dict, state_dir: Path) -> dict:
         saved_rows = len(_csv_rows_from_bytes(saved[state_dir / primary])[1])
     note, error, scraped_rows = "", "", 0
     kept = {"kept": 0, "filled": 0, "cleaned": 0}
+    stderr_copy = StderrCopy(sys.stderr)
     try:
-        adapter = import_adapter(adapter_path)
-        _, note = adapter.collect(workdir=state_dir, scripts_dir=state_dir)
+        with contextlib.redirect_stderr(stderr_copy):
+            adapter = import_adapter(adapter_path)
+            _, note = adapter.collect(workdir=state_dir, scripts_dir=state_dir)
     except (Exception, SystemExit) as exc:
         # SystemExit too: an adapter that calls sys.exit() must fail its own
         # state, not end the whole build.
         reason = (f"adapter exited with code {exc.code}" if isinstance(exc, SystemExit)
                   else str(exc))
-        error = f"Collection failed: {reason}"
+        error = f"Collection failed: {with_cause(reason, stderr_copy.text())}"
         print(f"WARNING {state['abbreviation']}: {error}", file=sys.stderr)
     finally:
         name = primary or primary_action_name(state, state_dir, {})

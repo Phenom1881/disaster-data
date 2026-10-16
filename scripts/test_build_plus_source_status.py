@@ -63,6 +63,40 @@ EXITS = '''
 '''
 
 
+# Like most real adapters: print the scraper's stderr, then raise a bare message.
+FAILS_AFTER_PRINTING = '''
+    import sys
+    def collect(workdir=".", scripts_dir=None):
+        print("  WARNING: the first page was slow", file=sys.stderr)
+        print("Testland: 0 orders parsed from the registry page: 67664 bytes, 0 table(s)", file=sys.stderr)
+        raise RuntimeError("Testland adapter: scrape failed")
+'''
+CRASHES = '''
+    import sys
+    TRACE = ("Traceback (most recent call last):\\n"
+             '  File "/x/xx_eo_scraper.py", line 9, in <module>\\n'
+             "    main()\\n"
+             "requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='sos.example.gov', port=443): Max retries "
+             "exceeded with url: /orders (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at "
+             "0x7f3a2c>, 'Connection to sos.example.gov timed out. (connect timeout=30)'))\\n")
+    def collect(workdir=".", scripts_dir=None):
+        print(TRACE, file=sys.stderr)
+        raise RuntimeError("Testland adapter: scrape failed; review xx_eo_scraper.py output for the failing source.")
+'''
+SAYS_WHY = '''
+    import sys
+    def collect(workdir=".", scripts_dir=None):
+        print("  WARNING: an unrelated earlier note", file=sys.stderr)
+        raise RuntimeError("Archive request rejected despite HTTP 200: https://x")
+'''
+QUOTES_ITS_CAUSE = '''
+    import sys
+    def collect(workdir=".", scripts_dir=None):
+        print("could not fetch the feed: 406 Client Error: Not Acceptable", file=sys.stderr)
+        raise RuntimeError("Testland adapter: scrape failed (could not fetch the feed: 406 Client Error: Not Acceptable)")
+'''
+
+
 class SourceStatusTests(unittest.TestCase):
     def setUp(self):
         self.root = Path(tempfile.mkdtemp(prefix="source_status_"))
@@ -132,6 +166,60 @@ class SourceStatusTests(unittest.TestCase):
         summary = bp.process_state(STATE, self.root, collect=False, join_storms=False, dry_run=True)
         self.assertEqual(summary["source_status"], "not_collected")
         self.assertIsNone(summary["source_records_returned"])
+
+
+class FailureCauseTests(unittest.TestCase):
+    """A failure that says only "scrape failed" gets the cause the adapter's
+    scraper wrote to stderr, so the state summary and health report say why."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp(prefix="failure_cause_"))
+        self.state_dir = self.root / "plus" / STATE["slug"]
+        self.state_dir.mkdir(parents=True)
+        (self.state_dir / "declarations_for_join.csv").write_text(SAVED, encoding="utf-8")
+
+    def tearDown(self):
+        shutil.rmtree(self.root, ignore_errors=True)
+
+    def run_with(self, body):
+        import contextlib, io
+        (self.state_dir / "testland.py").write_text(textwrap.dedent(body), encoding="utf-8")
+        with contextlib.redirect_stderr(io.StringIO()) as log:
+            summary = bp.process_state(STATE, self.root, collect=True, join_storms=False, dry_run=True)
+        return summary, log.getvalue()
+
+    def test_a_bare_failure_gets_the_cause_its_scraper_printed(self):
+        summary, log = self.run_with(FAILS_AFTER_PRINTING)
+        self.assertEqual(summary["source_status"], "failed")
+        self.assertEqual(summary["collection_error"], "Collection failed: Testland adapter: scrape failed "
+                         "(Testland: 0 orders parsed from the registry page: 67664 bytes, 0 table(s))")
+        self.assertIn("the first page was slow", log)   # the log still gets everything
+
+    def test_a_crash_gives_its_exception_line_shortened(self):
+        summary, _ = self.run_with(CRASHES)
+        error = summary["collection_error"]
+        self.assertIn("for the failing source (ConnectTimeout: sos.example.gov: Max retries exceeded", error)
+        self.assertNotIn("requests.exceptions", error)
+        self.assertNotIn("object at 0x", error)
+        self.assertLessEqual(len(error), len("Collection failed: ") + 120 + bp.CAUSE_LIMIT)
+
+    def test_a_failure_that_says_why_is_left_alone(self):
+        summary, _ = self.run_with(SAYS_WHY)
+        self.assertEqual(summary["collection_error"], "Collection failed: Archive request rejected despite HTTP 200: https://x")
+
+    def test_a_cause_the_adapter_already_quotes_is_not_repeated(self):
+        summary, _ = self.run_with(QUOTES_ITS_CAUSE)
+        self.assertEqual(summary["collection_error"].count("406 Client Error"), 1)
+
+    def test_an_adapter_that_exits_gets_the_cause_too(self):
+        self.assertEqual(bp.with_cause("adapter exited with code 2", "Traceback (most recent call last):\n"
+                                       '  File "x.py", line 1, in <module>\n    run()\nValueError: bad row 12\n'),
+                         "adapter exited with code 2 (ValueError: bad row 12)")
+        self.assertEqual(bp.with_cause("adapter exited with code 2", ""), "adapter exited with code 2")
+
+    def test_the_cause_is_the_last_line_that_says_something(self):
+        self.assertEqual(bp.stderr_cause("first\nsecond warning\n\n   \n^^^^\n"), ("second warning", "second warning"))
+        self.assertEqual(bp.stderr_cause(""), ("", ""))
 
 
 class RetryTests(unittest.TestCase):
