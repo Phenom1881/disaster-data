@@ -1,39 +1,33 @@
 # Plus health report
 
-Checked 2026-10-16 22:08 UTC after the refresh. **48 green, 1 yellow, 1 red.**
-
-## Red: needs attention (1)
-
-| State | Declarations | Why |
-|---|---:|---|
-| New Jersey (NJ) | 80 | Declarations fell from 120 to 80 since the last run. |
+Checked 2026-10-18 10:55 UTC after the refresh. **49 green, 1 yellow, 0 red.**
 
 ## Yellow: working with gaps (1)
 
 | State | Declarations | Why |
 |---|---:|---|
-| Maine (ME) | 24 | Collecting from the state source produced no declarations on this run and on the retry. The page is showing records saved from earlier runs; the last successful collection was 2026-10-15 (1 day ago). This turns red at four weeks. |
+| Maine (ME) | 24 | Collecting from the state source produced no declarations on this run and on the retry, 2 runs in a row. The page is showing records saved from earlier runs; the last successful collection was 2026-10-15 (2 days ago). This turns red at four weeks. |
 
-## Green (48)
+## Green (49)
 
-AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
+AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
 
 ## Where the time went
 
-Collecting from state sources took 52.7 min in all, and matching storms took 1.9 min. The 10 slowest states:
+Collecting from state sources took 34.2 min in all, and matching storms took 1.3 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| TX | 8.1 min | 1 s |
-| NJ | 7.1 min | 13 s |
-| NC | 7.2 min | 1 s |
-| NH | 6.5 min | 0 s |
-| CT | 4.3 min | 0 s |
-| MA | 2.0 min | 2 s |
-| SC | 1.8 min | 4 s |
-| LA | 1.5 min | 1 s |
+| NJ | 6.9 min | 9 s |
+| NC | 4.6 min | 0 s |
+| TX | 3.9 min | 1 s |
+| CT | 3.2 min | 0 s |
 | VT | 1.5 min | 0 s |
-| MI | 1.4 min | 0 s |
+| MA | 1.4 min | 1 s |
+| SC | 1.3 min | 3 s |
+| PA | 1.1 min | 0 s |
+| LA | 1.1 min | 0 s |
+| AZ | 55 s | 9 s |
 
 ## Every state
 
@@ -57,7 +51,7 @@ Collecting from state sources took 52.7 min in all, and matching storms took 1.9
 | KS | green | returned everything | 0 | 51 | 96 | 51 | 51 | 51 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 16 | 99 | 16 | 16 | 16 | 14 |  |
 | LA | green | returned everything | 0 | 45 | 111 | 45 | 45 | 45 | 40 |  |
-| ME | yellow | no declarations | 1 | 24 | 71 | 24 | 24 | 24 | 23 |  |
+| ME | yellow | no declarations | 2 | 24 | 71 | 24 | 24 | 24 | 23 |  |
 | MD | green | returned everything | 0 | 31 | 38 | 31 | 31 | 31 | 28 |  |
 | MA | green | returned everything | 0 | 16 | 59 | 16 | 16 | 16 | 15 |  |
 | MI | green | returned everything | 0 | 23 | 46 | 23 | 23 | 23 | 23 |  |
@@ -68,7 +62,7 @@ Collecting from state sources took 52.7 min in all, and matching storms took 1.9
 | NE | green | returned everything | 0 | 19 | 88 | 19 | 19 | 19 | 14 |  |
 | NV | green | returned everything | 0 | 13 | 116 | 13 | 13 | 13 | 9 |  |
 | NH | green | returned everything | 0 | 14 | 64 | 14 | 14 | 14 | 11 |  |
-| NJ | red | returned everything | 0 | 80 | 59 | 80 | 80 | 80 | 68 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| NJ | green | returned everything | 0 | 80 | 59 | 80 | 80 | 80 | 68 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NM | green | returned everything | 0 | 45 | 127 | 45 | 45 | 45 | 32 |  |
 | NY | green | returned everything | 0 | 24 | 118 | 24 | 24 | 24 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NC | green | returned everything | 0 | 34 | 85 | 34 | 34 | 34 | 32 |  |
