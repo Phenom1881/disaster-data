@@ -399,6 +399,7 @@ def render_report(result: dict, states: list[dict]) -> str:
         lines.extend([f"## Green ({len(greens)})", "", ", ".join(greens), ""])
 
     lines.extend(render_timing(result, states))
+    lines.extend(render_federal_gaps(result, states))
 
     lines.extend([
         "## Every state", "",
@@ -443,6 +444,39 @@ def render_timing(result: dict, states: list[dict], top: int = 10) -> list[str]:
              "| State | Collecting | Matching storms |", "|---|---:|---:|"]
     for ab, collect, join in rows[:top]:
         lines.append(f"| {ab} | {minutes(collect)} | {minutes(join)} |")
+    lines.append("")
+    return lines
+
+
+def render_federal_gaps(result: dict, states: list[dict], top: int = 10) -> list[str]:
+    """Where a state's list is most likely incomplete: FEMA's weather major
+    disasters and emergencies, in the years the state's page covers, that
+    have no state declaration on the page within the crosswalk's window
+    (federal_without_state() in build-plus.py). Not part of any grade.
+    Empty until a refresh has written the numbers."""
+    rows = []
+    for state in states:
+        row = result["states"][state["abbreviation"]]
+        compared = row.get("fema_compared")
+        if compared:
+            rows.append((state["abbreviation"], row.get("fema_since"),
+                         row.get("fema_without_state") or 0, compared))
+    if not rows:
+        return []
+    missing = sum(item[2] for item in rows)
+    compared = sum(item[3] for item in rows)
+    window = result.get("federal_window_days", 21)
+    lines = ["## FEMA declarations with no state declaration", "",
+             f"{missing:,} of the {compared:,} FEMA weather major disasters and emergencies in the "
+             "years each state's page covers have no state declaration on that page within "
+             f"{window} days. A state's list is most likely incomplete where this is high."]
+    worst = sorted((item for item in rows if item[2]), key=lambda item: (item[2], item[2] / item[3]),
+                   reverse=True)[:top]
+    if worst:
+        lines.extend(["", f"The {len(worst)} states with the most:", "",
+                      "| State | Since | No state declaration | FEMA declarations |",
+                      "|---|---:|---:|---:|"])
+        lines.extend(f"| {ab} | {since} | {count} | {total} |" for ab, since, count, total in worst)
     lines.append("")
     return lines
 
@@ -540,7 +574,8 @@ def main() -> int:
     shared_classifier = file_hash(repo_root / "plus" / CLASSIFIER)
 
     result = {"generated_at": now.isoformat(timespec="minutes"),
-              "generated_at_label": run_label(now), "states": {}}
+              "generated_at_label": run_label(now), "states": {},
+              "federal_window_days": bp.FEDERAL_MATCH_WINDOW_DAYS}
     for state in states:
         ab = state["abbreviation"]
         summary = summaries[ab]
@@ -567,9 +602,12 @@ def main() -> int:
         graded = grade_state(state, summary, numbers, history, prior, run_day, since,
                              last_good=last_good, now=now)
         timing = (summary or {}).get("timing") or {}
+        gaps = (summary or {}).get("federal_without_state") or {}
         graded.update(name=state["name"], since=since, history=history,
                       collect_seconds=timing.get("collect_seconds"),
-                      storm_join_seconds=timing.get("storm_join_seconds"))
+                      storm_join_seconds=timing.get("storm_join_seconds"),
+                      fema_since=gaps.get("since"), fema_compared=gaps.get("compared"),
+                      fema_without_state=gaps.get("count"))
         result["states"][ab] = graded
 
     grades = [row["grade"] for row in result["states"].values()]

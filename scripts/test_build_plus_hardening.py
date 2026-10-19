@@ -118,7 +118,13 @@ class ConditionalStormJoinHardeningTests(unittest.TestCase):
             bp.load_state_actions,
             bp.load_federal_declarations,
         )
-        bp.read_csv_rows = lambda path: direct_read_calls.append(path) or []
+        # Only reads of the storm join's own output count: the page also reads
+        # the state's declaration files (to say where each one came from),
+        # and those are never stale storm output.
+        storm_outputs = {"eo_storm_matches.csv", "eo_storm_severity_summary.csv"}
+        bp.read_csv_rows = lambda path: (
+            direct_read_calls.append(path) if path and Path(path).name in storm_outputs else None
+        ) or []
         bp.load_storm_match_rows = lambda sd: (filtered_read_calls.append(sd) or [], None)
         bp.load_severity_rows = lambda sd: ([], None)
         bp.load_state_actions = lambda state, sd: ([], None)
