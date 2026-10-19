@@ -18,6 +18,22 @@ HAZARD_RE=re.compile(r"\b(drought|wildfires?|forest fires?|brush fires?|fire wea
 MODIFIER_RE=re.compile(r"\b(rescind(?:s|ed|ing)?|terminate[sd]?|extend(?:s|ed|ing)?|extension|renew(?:s|ed|ing)?|renewal|amend(?:s|ed|ing)?|expand(?:s|ed|ing)?)\b",re.I)
 OPERATIONAL_RE=re.compile(r"\b(suspending fuel taxes|national guard troops|commercial vehicle|transportation regulations|legal holidays?|leave with pay|closing state offices|evacuation order|curfew)\b",re.I)
 NUMBER_RE=re.compile(r"\b\d{2}\.\d{2}\.\d{2}\.\d{1,2}\b")
+# Declarations whose titles give only the counties ("Declaring a State of
+# Emergency for 14 counties in North Georgia"), each read in the Governor's
+# press release for the order (cited in hazard_overrides.csv). Expansions of
+# an emergency already declared, such as 12.30.15.01 for the December 2015
+# flooding, are not listed: they are not new declarations.
+REVIEWED_WEATHER={
+    "GA-EO-01-28-14-02":"winter storm, statewide, January 28, 2014",
+    "GA-EO-02-10-14-01":"winter storm warning, 14 North Georgia counties",
+    "GA-EO-02-15-15-01":"winter storm with icing, 15 North Georgia counties",
+    "GA-EO-02-24-15-01":"winter storm warning, 50 North Georgia counties, from February 25, 2015",
+    "GA-EO-12-24-15-01":"flooding and storm damage, Fannin, Gilmer and Pickens counties",
+    "GA-EO-01-19-16-01":"winter storm warning, 15 counties",
+    "GA-EO-01-21-16-02":"second winter storm of January 2016, 21 counties",
+    "GA-EO-01-22-17-01":"tornadoes, January 21 and 22, 2017, seven South Central Georgia counties",
+    "GA-EO-01-02-18-01":"winter storm, 28 counties, January 2018",
+}
 
 @dataclass
 class Action:
@@ -71,7 +87,7 @@ def write_csv(path,fields,rows):
 def write_outputs(actions,actions_out,relationships_out,join_out):
     rows=[]; rel=[]; joins=[]
     for a in actions:
-        kind=classify(a); weather=bool(HAZARD_RE.search(a.description) or re.search(r"\bstorms?\b|\bweather conditions?\b",a.description,re.I)); gov="Nathan Deal" if a.date<"2019-01-14" else "Brian P. Kemp"
+        kind=classify(a); weather=bool(HAZARD_RE.search(a.description) or re.search(r"\bstorms?\b|\bweather conditions?\b",a.description,re.I) or a.stable_id in REVIEWED_WEATHER); gov="Nathan Deal" if a.date<"2019-01-14" else "Brian P. Kemp"
         row={"declaration_id":a.stable_id,"state":"GA","governor":gov,"eo_number":a.number,"action_kind":"emergency_declaration" if kind!="administrative" else "executive_order","action_type":kind,"event_description":a.description,"date_signed":a.date,"end_date":"","weather_related":str(weather and kind!="administrative").lower(),"source_scope":"georgia_governor_2011_present","document_format":"pdf","detail_url":a.url,"archive_record_url":a.source}; rows.append(row)
         refs=NUMBER_RE.findall(a.description)
         for n in refs:

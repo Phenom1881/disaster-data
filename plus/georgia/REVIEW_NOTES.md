@@ -7,7 +7,13 @@
 
 ## Manual/PDF review and ambiguities
 
-No OCR was needed for the delivered rows. The following titles declare an emergency but contain no supported hazard keyword; they remain unclassified rather than guessed: `GA-EO-01-02-18-01`, `GA-EO-01-22-17-01`, `GA-EO-01-21-16-02`, `GA-EO-01-19-16-01`, `GA-EO-12-30-15-01`, `GA-EO-12-24-15-01`, `GA-EO-02-24-15-01`, `GA-EO-02-15-15-01`, `GA-EO-02-10-14-01`, and `GA-EO-01-28-14-02`. Their county/date-only titles are insufficient; the PDFs need manual review before any weather classification.
+No OCR was needed for the delivered rows. Ten titles declare an emergency but name only counties or a date, so no hazard keyword classifies them. On 2026-10-16 each was read in Governor Deal's press release for the order (nathandeal.georgia.gov). Nine are weather declarations and are listed in `ga_eo_scraper.REVIEWED_WEATHER`, with the release cited in `hazard_overrides.csv`:
+
+- winter storms: `GA-EO-01-28-14-02` (statewide), `GA-EO-02-10-14-01`, `GA-EO-02-15-15-01`, `GA-EO-02-24-15-01`, `GA-EO-01-19-16-01`, `GA-EO-01-21-16-02` and `GA-EO-01-02-18-01`
+- flooding: `GA-EO-12-24-15-01` (Fannin, Gilmer and Pickens counties)
+- tornadoes: `GA-EO-01-22-17-01` (seven South Central Georgia counties, January 21 and 22, 2017)
+
+`GA-EO-12-30-15-01` stays out. Its release says it expanded the December 2015 flooding emergency to five more counties and extended the December 24 declaration, so it is not a new declaration.
 
 The following are also unclassified because the official title identifies a non-weather emergency: `GA-EO-05-15-26-02` (consumer prices), `GA-EO-01-30-26-02` (water supply), `GA-EO-12-29-24-02` and `GA-EO-11-21-23-01` (funeral/memorial arrangements), `GA-EO-09-12-23-01` (inflation), `GA-EO-01-26-23-01`, `GA-EO-07-06-20-01`, and `GA-EO-05-29-20-01` (civil disturbance), `GA-EO-07-15-21-01` (interstate closure), `GA-EO-05-10-21-02` (pipeline cyberattack), and `GA-EO-03-30-17-03` (bridge collapse).
 
