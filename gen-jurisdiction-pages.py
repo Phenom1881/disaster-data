@@ -11,7 +11,7 @@ table and CSV export for hazard mitigation plans.
 Pilot is scoped to one state (STATE_AB below) but written to generalize.
 """
 
-import os, re, json, html, datetime, hashlib, unicodedata
+import os, re, sys, json, html, datetime, hashlib, unicodedata
 from urllib.parse import quote
 from dd_classify import classify
 
@@ -6177,6 +6177,49 @@ def render_stub(
     )
 
 
+# ---------------------------------------------------------------- stale pages
+# A page this generator no longer writes stays on the site, with its old
+# numbers and wording, until something removes it. Eleven New England county
+# pages whose FEMA area names carried MSA codes ("Litchfield (MSA 1170,1930,
+# 3280,8880)") were last written on 2026-09-01 and sat beside the county pages
+# they duplicate. Each run now removes the pages in a state's folder that it
+# did not write. More than a handful at once would mean this run went wrong,
+# not the old pages, so then they are left in place with a warning.
+STALE_PAGE_LIMIT = 5
+STALE_PAGE_SHARE = 0.05
+
+
+def prune_stale_pages(out_dir, written):
+    """Remove the .html pages in out_dir that are not in written (file
+    names). Returns the names removed."""
+    stale = sorted(
+        name
+        for name in os.listdir(out_dir)
+        if name.endswith(".html") and name not in written
+    )
+
+    if not stale:
+        return []
+
+    if len(stale) > max(STALE_PAGE_LIMIT, STALE_PAGE_SHARE * len(written)):
+        print(
+            "WARNING: %d pages in %s were not written this run; leaving them "
+            "in place: %s"
+            % (len(stale), out_dir, ", ".join(stale[:10])),
+            file=sys.stderr,
+        )
+        return []
+
+    for name in stale:
+        os.remove(os.path.join(out_dir, name))
+
+    print(
+        "removed %d page(s) no longer generated in %s: %s"
+        % (len(stale), out_dir, ", ".join(stale))
+    )
+    return stale
+
+
 # ---------------------------------------------------------------- build
 def build_state(
     state_ab,
@@ -6880,6 +6923,13 @@ def build_state(
             stubs,
             lcfy,
         )
+    )
+
+    prune_stale_pages(
+        OUT_DIR,
+        {j["slug"] + ".html" for j in js}
+        | {stub["slug"] + ".html" for stub in stubs}
+        | {"index.html"},
     )
 
     return (
