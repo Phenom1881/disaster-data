@@ -66,6 +66,11 @@ WEATHER_PATTERNS = {
     "ice": r"\bice\b|\bicing\b|\bsleet\b",
     "landslide": r"\b(?:landslide|mudslide)s?\b",
     "rain": r"\brain(?:fall)?\b",
+    # "Declaration of a State of Emergency Due to Severe Weather" is the whole
+    # title of several orders: May 2002, the April 2008 Suffolk tornado, the
+    # November 2009 nor'easter, three in 2018 and the August 2021 flooding in
+    # Buchanan County. Without this they were read as non-weather.
+    "severe weather": r"\bsevere weather\b",
     "snow": r"\bsnow(?:fall|storm)?s?\b|\bblizzard\b",
     "storm": r"\b(?:severe |winter )?storm(?:s)?\b",
     "tornado": r"\btornado(?:es)?\b",
