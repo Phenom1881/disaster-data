@@ -145,5 +145,44 @@ class NotWeatherTitleTests(unittest.TestCase):
         o.document_text = "a winter storm with heavy snow, high winds and coastal flooding"
         self.assertTrue(MODULE.is_weather_related(o))
 
+    def test_a_crop_freeze_is_weather_and_a_hiring_freeze_is_not(self):
+        # Sherrill EO 18 (2026)
+        self.assertTrue(MODULE.is_weather_related(order(
+            "Declares that the State of New Jersey will enter a State of Emergency, "
+            "effective immediately related to Crop Freeze Event")))
+        self.assertFalse(MODULE.is_weather_related(order(
+            "Establishes a hiring freeze for Executive Branch departments")))
+
+
+class ReviewedWeatherTests(unittest.TestCase):
+    def christie(self, number, description):
+        return MODULE.NJOrder(governor="Christie", order_number=number, description=description,
+                              date_issued="2011-08-25", document_url="https://example.test/order",
+                              document_format="pdf")
+
+    def test_a_reviewed_order_is_weather_without_readable_text(self):
+        # EO 73 (2011): Irene; the archive title names no hazard and the 15 kB
+        # PDF gives no text.
+        irene = self.christie("73", "Declare and proclaim that a State of Emergency exists in the State on New Jersey [pdf 15kB]")
+        self.assertEqual(irene.stable_id, "NJ-CHRISTIE-EO-73")
+        self.assertTrue(MODULE.is_weather_related(irene))
+        other = self.christie("55", "Declare and proclaim that a State of Emergency exists within the "
+                                    "Passaic Valley Sewerage District [pdf 15kB]")
+        self.assertFalse(MODULE.is_weather_related(other))
+
+    def test_every_reviewed_order_has_a_cited_hazard(self):
+        with Path(__file__).with_name("hazard_overrides.csv").open(encoding="utf-8") as handle:
+            overrides = {row["declaration_id"]: row for row in csv.DictReader(handle)}
+        for key in MODULE.REVIEWED_WEATHER:
+            self.assertIn(key, overrides)
+            self.assertNotEqual(overrides[key]["hazard_category_override"].strip().lower(), "exclude")
+            self.assertTrue(overrides[key]["source_url"].startswith("https://"))
+
+    def test_saved_join_file_has_the_reviewed_orders(self):
+        with Path(__file__).with_name("declarations_for_join.csv").open(encoding="utf-8") as handle:
+            ids = {row["declaration_id"] for row in csv.DictReader(handle)}
+        for key in list(MODULE.REVIEWED_WEATHER) + ["NJ-SHERRILL-EO-18"]:
+            self.assertIn(key, ids)
+
 if __name__ == "__main__":
     unittest.main()
