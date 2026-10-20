@@ -23,6 +23,7 @@ ACTION_FIELDS = ("declaration_id", "state", "governor", "eo_number", "action_kin
 REL_FIELDS = ("source_order_id", "target_order_id", "relationship_type", "relationship_text", "relationship_source", "confidence")
 HAZARD_RE = re.compile(r"\b(?:drought|wildfires?|fires?|flood(?:ing)?|heavy rain|rain storms?|hurricanes?|tropical storms?|winter storms?|winter weather|snow|ice|blizzard|severe storms?|severe weather|atmospheric river|high winds?|windstorms?|bomb cyclone|tornado(?:es)?)\b", re.I)
 MODIFIER_RE = re.compile(r"\b(?:amending|amended|amendment|extending|extended|extension|terminating|termination|rescinding|rescission)\b", re.I)
+PROCLAMATION_REF_RE = re.compile(r"\bProclamations?\s+(?:No\.?\s*)?(\d{2}-\d+(?:\.\d+)?)", re.I)
 DECLARATION_TEXT_RE = re.compile(r"proclaim(?:ed|ing)? (?:that )?a State of Emergency|State of Emergency exists", re.I)
 
 
@@ -81,9 +82,25 @@ def governor(action: Action) -> str:
     return "Bob Ferguson" if action.signed >= "2025-01-15" else "Jay Inslee"
 
 
+def text_modifier(action: Action):
+    """A modifier word in the opening of the order's text, when that opening
+    cites another proclamation by number.
+
+    Winter storm proclamations recite "extended road closures on mountain
+    passes": 15-17, 17-01, 19-02 and 22-01 are new declarations that say it,
+    and so is 17-02, which continues 17-01. What separates them is that
+    17-02 opens by citing Proclamation 17-01, and the new declarations cite
+    no other proclamation."""
+    opening = action.text[:700]
+    own = action.number.split(".")[0]
+    cited = {ref.split(".")[0] for ref in PROCLAMATION_REF_RE.findall(opening)}
+    if not cited - {own}:
+        return None
+    return MODIFIER_RE.search(opening)
+
+
 def classify(action: Action) -> str:
-    evidence = f"{action.title} {action.text[:700]}"
-    match = MODIFIER_RE.search(evidence)
+    match = MODIFIER_RE.search(action.title) or text_modifier(action)
     if "." in action.number or match:
         word = match.group(0).lower() if match else "amended"
         return "termination" if word.startswith(("terminat", "rescind")) else "extension" if word.startswith("extend") else "amendment"
