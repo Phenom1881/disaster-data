@@ -80,6 +80,19 @@ WEATHER_PATTERNS = {
 }
 
 
+# Virginia governors often declare a state of emergency verbally and sign
+# the written order later, effective back to the day of the declaration. The
+# Library of Virginia dates an order by its signing, so these orders carry the
+# date the order itself gives as the declaration and effective date.
+# {declaration_id: (declared, what the order says)}
+REVIEWED_DECLARED_DATES = {
+    # Hurricane Irene. Signed September 28, 2011: "On August 25, 2011, I
+    # verbally declared a state of emergency" and "effective retroactively to
+    # August 25". FEMA's Irene declarations (EM-3329, DR-4024) begin August 26.
+    "VA-MCDONNELL-EO-40-2011": ("2011-08-25", "verbally declared August 25, 2011; signed September 28, 2011"),
+}
+
+
 def first(mapping, key, default=""):
     value = mapping.get(key, default)
     if isinstance(value, list):
@@ -194,6 +207,7 @@ def document_to_row(document, governor, administration, governor_key, collection
     declaration_id = "-".join(
         part.upper() for part in ["VA", governor_key, parsed["eo_number"], year] if part
     )
+    date_signed = REVIEWED_DECLARED_DATES.get(declaration_id, (date_signed,))[0]
     return {
         "declaration_id": declaration_id,
         "governor": governor,
