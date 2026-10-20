@@ -65,10 +65,32 @@ def parse_deal(html,page_url):
         desc=re.sub(r"\s+"," ",a.get_text(" ",strip=True)); out.append(Action(m.group(1),desc,urljoin(page_url,href),page_url))
     return out
 
+# The Governor's yearly pages list at most 500 orders each. 2020, 2021, 2023
+# and 2024 came back with exactly 500 and without their earliest weeks: 2023
+# began at January 18, so the January 12, 2023 tornado declaration
+# (01.12.23.02) was never read. The rest of a year is on later pages
+# (?page=1, ?page=2, ...). Reading stops at the first page that adds no order
+# not already seen, so a page that ignores the parameter ends it at once.
+MAX_PAGES=20
+
+def collect_year(url,get=None):
+    get=get or fetch; out=[]; seen=set()
+    for page in range(MAX_PAGES):
+        page_url=url if page==0 else f"{url}?page={page}"
+        try: html=get(page_url)
+        except requests.HTTPError:
+            if page==0: raise
+            break
+        new=[a for a in parse_current(html,page_url) if a.number not in seen]
+        if not new: break
+        for a in new: a.source=url
+        seen.update(a.number for a in new); out.extend(new)
+    return out
+
 def collect():
     out=[]
     for y in range(2019,datetime.now().year+1):
-        suffix=f"{y}" if y>=2022 else f"{y}-executive-orders"; u=f"{CURRENT_ROOT}/executive-action/executive-orders/{suffix}"; out.extend(parse_current(fetch(u),u))
+        suffix=f"{y}" if y>=2022 else f"{y}-executive-orders"; u=f"{CURRENT_ROOT}/executive-action/executive-orders/{suffix}"; out.extend(collect_year(u))
     for y in range(2011,2019):
         u=f"{DEAL_ROOT}/{'2011-executive-orders' if y==2011 else 'executive-orders/'+str(y)}"; out.extend(parse_deal(fetch(u),u))
     return sorted({a.stable_id:a for a in out}.values(),key=lambda a:(a.date,a.number),reverse=True)
