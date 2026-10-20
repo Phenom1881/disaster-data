@@ -6,7 +6,18 @@
   "collection_failed": false,
   "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
   "coverage_base": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 14,
+    "count": 4,
+    "ids": [
+      "DR-4895",
+      "DR-4686",
+      "DR-4613",
+      "DR-4565"
+    ],
+    "since": 2017
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +32,20 @@
   "source_records_returned": 34,
   "source_records_saved_before": 34,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 0,
+    "federal_matched": 21,
+    "fmcsa_archive": 0,
+    "noaa_matched": 18,
+    "noaa_none": 14,
+    "noaa_pending": 2,
+    "reviewed_not_weather": 0,
+    "state_archive": 34
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 6.9,
-    "storm_join_seconds": 0.4
+    "collect_seconds": 7.1,
+    "storm_join_seconds": 0.5
   }
 }

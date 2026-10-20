@@ -69,6 +69,9 @@
     details.layer[open] > summary { border-bottom:1px solid var(--line); }
     details.layer > .details-body { padding:0 1rem 1rem; }
     .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    ul.sources { list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
+      padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }
+    ul.sources strong { color:var(--accent); }
     [hidden] { display:none !important; }
     @media (max-width:640px) {
       main { padding:1.25rem .75rem 3rem; }
@@ -86,55 +89,78 @@
 <div class="notice"><strong>Coverage:</strong> 2017-01-06-present structured Governor archive; North Carolina Register backfill pending. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>85</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>34</strong>original state weather declarations</div>
-  <div class="metric"><strong>2,145</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>55</strong>original state weather declarations</div>
+  <div class="metric"><strong>3,711</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/north-carolina.html">Federal declaration overview</a> &middot; <a href="https://governor.nc.gov/news/executive-orders">Official state source</a></p>
 
 <div class="layer primary">
 <h2>State weather declarations</h2>
 <p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<ul class="sources"><li><strong>55</strong> from the state's own archive</li></ul>
 <div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-01-29</td><td>32</td><td><a href="https://governor.nc.gov/documents/executive-order-no-32-declaration-state-emergency/open">Declaration of a State of Emergency</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2026-01-21</td><td>31</td><td><a href="https://governor.nc.gov/executive-order-no-31-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-09-27</td><td>26</td><td><a href="https://governor.nc.gov/executive-order-26-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-08-19</td><td>20</td><td><a href="https://governor.nc.gov/executive-order-no-20-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-08-05</td><td>19</td><td><a href="https://governor.nc.gov/executive-order-19-disaster-declaration-individual-assistance-durham-orange-and-surrounding-counties/open">Disaster Declaration for Individual Assistance for Durham, Orange, and Surrounding Counties</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-07-16</td><td>18</td><td><a href="https://governor.nc.gov/executive-order-18-declaration-state-emergency/open">Declaration of a State of Emergency</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-03-26</td><td>12</td><td><a href="https://governor.nc.gov/executive-order-no-12-declaration-state-emergency-0/open">Declaration Of A State Of Emergency</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-02-18</td><td>9</td><td><a href="https://governor.nc.gov/executive-order-9-declaration-state-emergency-and-temporary-suspension-motor-vehicle-regulations/open">Declaration Of A State Of Emergency And Temporary Suspension Of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2025-01-09</td><td>7</td><td><a href="https://governor.nc.gov/gov-stein-executive-order-7/open">EO7-WinterStorm-StateofEmergency_0.pdf PDF • 3.41 MB - January 09, 2025 Executive Order January 9, 2025 Executive Order No. 7 Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td></tr>
-<tr><td>2024-10-16</td><td>321</td><td><a href="https://governor.nc.gov/executive-order-no-321/open">STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR BRUNSWICK COUNTY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2024-09-17</td><td>313</td><td><a href="https://governor.nc.gov/executive-order-no-313/open">DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2024-07-01</td><td>310</td><td><a href="https://governor.nc.gov/executive-order-no-310/open">DISASTER DECLARATION FOR THE CITY OF MARION IN MCDOWELL COUNTY NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2024-06-18</td><td>309</td><td><a href="https://governor.nc.gov/executive-order-no-309/open">EO309-DisasterDeclarationWestJefferson.pdf PDF • 603.12 KB - June 18, 2024 Executive Order June 18, 2024 EXECUTIVE ORDER NO. 309 DISASTER DECLARATION FOR THE TOWN OF WEST JEFFERSON IN ASHE COUNTY NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2024-05-23</td><td>308</td><td><a href="https://governor.nc.gov/executive-order-no-308/open">STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR GASTON COUNTY AND CONTIGUOUS COUNTIES</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2023-12-19</td><td>296</td><td><a href="https://governor.nc.gov/executive-order-no-296/open">DECLARATION OF STATE OF EMERGENCY FOR THE PURPOSE OF A TEMPORARY SUSPENSION OF ENFORCEMENT OF TRANSPORTATION REGULATIONS FOR AGRICULTURE VEHICLES IN DUPLIN AND SAMPSON COUNTIES</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2023-10-18</td><td>291</td><td><a href="https://governor.nc.gov/executive-order-no-291/open">DISASTER DECLARATION FOR THE VILLAGE OF CEDAR ROCK IN CALDWELL COUNTY, NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2023-09-01</td><td>286</td><td><a href="https://governor.nc.gov/executive-order-no-286/open">DISASTER DECLARATION FOR THE CITY OF NEWTON IN CATA WBA COUNTY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2023-06-22</td><td>282</td><td><a href="https://governor.nc.gov/executive-order-no-282/open">DISASTER DECLARATION FOR THE CITY OF CHERRYVILLE IN GASTON COUNTY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2022-01-19</td><td>248</td><td><a href="https://governor.nc.gov/executive-order-no-248/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2022-01-14</td><td>247</td><td><a href="https://governor.nc.gov/executive-order-no-247/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2021-08-18</td><td>227</td><td><a href="https://governor.nc.gov/executive-order-no-227/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2021-03-18</td><td>202</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-202-0/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIO S TO ENSURE RESTORATION OF UTILITY SERVICES</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2021-02-24</td><td>196</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-196/open">DECLARATION OF STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2021-02-17</td><td>194</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-194-0/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE RESTORATION OF UTILITY SERVICES</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2020-12-15</td><td>182</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-182/open">STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR ALEXANDER COUNTY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2020-11-13</td><td>178</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-178/open">DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2020-10-30</td><td>174</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-174/open">DISASTER DECLARATION FOR THE CITY OF MARION AND THE TOWN OF OLD FORT IN MCDOWELL COUNTY AND THE TOWN OF TRYON IN POLK COUNTY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2020-10-30</td><td>175</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-175/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE RESTORATION OF UTILITY SERVICES</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2020-07-31</td><td>154</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-154/open">DECLARATION OF A STATE OF EMERGENCY BY THE GOVERNOR OF THE STATE OF NORTH CAROLINA FOR HURRICANE ISAIAS</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2019-08-31</td><td>101</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-101-declaration-state-emergency/open">Executive Order No. 101: Declaration of State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2018-12-07</td><td>83</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-83-declaration-state-emergency/open">EXECUTIVE ORDER NO. 83: DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2018-10-10</td><td>74</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-74-declaration-state-emergency/open">Executive Order No. 74: Declaration of a State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2017-08-31</td><td>19</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-19-declaration-state-emergency-order-suspend-motor-vehicle-regulations-ensure-0/open">Executive Order No. 19: Declaration of State of Emergency In Order to Suspend Motor Vehicle Regulations to Ensure Adequate Fuel Supplies in the State of North Carolina and to Support Relief Efforts for Hurricane Harvey</a></td><td>declaration</td><td>Roy Cooper</td></tr>
-<tr><td>2017-01-06</td><td>1</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-1-governor-cooper-declares-state-emergency-due-winter-storm/open">Executive Order No. 1:  Governor Cooper Declares State of Emergency Due to Winter Storm</a></td><td>declaration</td><td>Roy Cooper</td></tr></tbody></table></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Source">Source <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-01-29</td><td>32</td><td><a href="https://governor.nc.gov/documents/executive-order-no-32-declaration-state-emergency/open">Declaration of a State of Emergency</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2026-01-21</td><td>31</td><td><a href="https://governor.nc.gov/executive-order-no-31-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-09-27</td><td>26</td><td><a href="https://governor.nc.gov/executive-order-26-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-08-19</td><td>20</td><td><a href="https://governor.nc.gov/executive-order-no-20-declaration-state-emergency-and-temporary-waiver-and-suspension-motor-vehicle/open">Declaration of a State of Emergency and Temporary Waiver and Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-08-05</td><td>19</td><td><a href="https://governor.nc.gov/executive-order-19-disaster-declaration-individual-assistance-durham-orange-and-surrounding-counties/open">Disaster Declaration for Individual Assistance for Durham, Orange, and Surrounding Counties</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-07-16</td><td>18</td><td><a href="https://governor.nc.gov/executive-order-18-declaration-state-emergency/open">Declaration of a State of Emergency</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-03-26</td><td>12</td><td><a href="https://governor.nc.gov/executive-order-no-12-declaration-state-emergency-0/open">Declaration Of A State Of Emergency</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-02-18</td><td>9</td><td><a href="https://governor.nc.gov/executive-order-9-declaration-state-emergency-and-temporary-suspension-motor-vehicle-regulations/open">Declaration Of A State Of Emergency And Temporary Suspension Of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2025-01-09</td><td>7</td><td><a href="https://governor.nc.gov/gov-stein-executive-order-7/open">EO7-WinterStorm-StateofEmergency_0.pdf PDF • 3.41 MB - January 09, 2025 Executive Order January 9, 2025 Executive Order No. 7 Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations</a></td><td>declaration</td><td>Josh Stein</td><td>State archive</td></tr>
+<tr><td>2024-10-16</td><td>321</td><td><a href="https://governor.nc.gov/executive-order-no-321/open">STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR BRUNSWICK COUNTY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-09-25</td><td>315</td><td><a href="https://governor.nc.gov/executive-order-no-315/open">DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY WAIVER AND SUSPENSION OF MOTOR VE ID CLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-09-17</td><td>313</td><td><a href="https://governor.nc.gov/executive-order-no-313/open">DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-08-05</td><td>311</td><td><a href="https://governor.nc.gov/executive-order-no-311/open">DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY W AIYER AND SUSPENSION OF MOTOR VEHICLE REGULA TION S</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-07-01</td><td>310</td><td><a href="https://governor.nc.gov/executive-order-no-310/open">DISASTER DECLARATION FOR THE CITY OF MARION IN MCDOWELL COUNTY NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-06-18</td><td>309</td><td><a href="https://governor.nc.gov/executive-order-no-309/open">EO309-DisasterDeclarationWestJefferson.pdf PDF • 603.12 KB - June 18, 2024 Executive Order June 18, 2024 EXECUTIVE ORDER NO. 309 DISASTER DECLARATION FOR THE TOWN OF WEST JEFFERSON IN ASHE COUNTY NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-05-23</td><td>308</td><td><a href="https://governor.nc.gov/executive-order-no-308/open">STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR GASTON COUNTY AND CONTIGUOUS COUNTIES</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2024-01-08</td><td>300</td><td><a href="https://governor.nc.gov/executive-order-no-300/open">DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY W AIYER AND SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-12-19</td><td>296</td><td><a href="https://governor.nc.gov/executive-order-no-296/open">DECLARATION OF STATE OF EMERGENCY FOR THE PURPOSE OF A TEMPORARY SUSPENSION OF ENFORCEMENT OF TRANSPORTATION REGULATIONS FOR AGRICULTURE VEHICLES IN DUPLIN AND SAMPSON COUNTIES</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-11-08</td><td>293</td><td><a href="https://governor.nc.gov/executive-order-no-293/open">Executive Order No. 293</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-10-18</td><td>291</td><td><a href="https://governor.nc.gov/executive-order-no-291/open">DISASTER DECLARATION FOR THE VILLAGE OF CEDAR ROCK IN CALDWELL COUNTY, NORTH CAROLINA</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-09-22</td><td>288</td><td><a href="https://governor.nc.gov/executive-order-no-288/open">Executive Order No. 288</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-09-01</td><td>286</td><td><a href="https://governor.nc.gov/executive-order-no-286/open">DISASTER DECLARATION FOR THE CITY OF NEWTON IN CATA WBA COUNTY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-08-29</td><td>284</td><td><a href="https://governor.nc.gov/executive-order-no-284/open">DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY WAIVER AND SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2023-06-22</td><td>282</td><td><a href="https://governor.nc.gov/executive-order-no-282/open">DISASTER DECLARATION FOR THE CITY OF CHERRYVILLE IN GASTON COUNTY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2022-12-20</td><td>274</td><td><a href="https://governor.nc.gov/executive-order-no-274/open">DECLARATION OF A STAT E OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE ADEQUATE TRANSPORTATION OF FUEL THROUGHOUT THE STATE</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2022-09-28</td><td>270</td><td><a href="https://governor.nc.gov/executive-order-no-270/open">DECLARAT IO OF A STATE OF EMERGENCY AND TEMPORARY WAIVER AND SUSPENSION OF MOTOR VEHICLE REGULAT IO S</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2022-01-19</td><td>248</td><td><a href="https://governor.nc.gov/executive-order-no-248/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2022-01-14</td><td>247</td><td><a href="https://governor.nc.gov/executive-order-no-247/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2021-08-18</td><td>227</td><td><a href="https://governor.nc.gov/executive-order-no-227/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2021-03-18</td><td>202</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-202-0/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIO S TO ENSURE RESTORATION OF UTILITY SERVICES</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2021-02-24</td><td>196</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-196/open">DECLARATION OF STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2021-02-17</td><td>194</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-194-0/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE RESTORATION OF UTILITY SERVICES</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2020-12-15</td><td>182</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-182/open">STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR ALEXANDER COUNTY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2020-11-13</td><td>178</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-178/open">DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2020-10-30</td><td>174</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-174/open">DISASTER DECLARATION FOR THE CITY OF MARION AND THE TOWN OF OLD FORT IN MCDOWELL COUNTY AND THE TOWN OF TRYON IN POLK COUNTY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2020-10-30</td><td>175</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-175/open">DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE RESTORATION OF UTILITY SERVICES</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2020-07-31</td><td>154</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-154/open">DECLARATION OF A STATE OF EMERGENCY BY THE GOVERNOR OF THE STATE OF NORTH CAROLINA FOR HURRICANE ISAIAS</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2020-02-07</td><td>115</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-115/open">Executive Order No. 115</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2019-08-31</td><td>101</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-101-declaration-state-emergency/open">Executive Order No. 101: Declaration of State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2019-07-03</td><td>96</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-96-disaster-declaration-catawba-and-mecklenburg-counties/open">Executive Order No. 96: Disaster Declaration for Catawba and Mecklenburg Counties</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2019-01-13</td><td>86</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-86-declaration-state-emergency-and-temporary-suspension-motor-vehicle-regulations/open">Executive Order No. 86: Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations to Ensure Restoration of Utility Services and the Transportation of Essentials</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-12-07</td><td>83</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-83-declaration-state-emergency/open">EXECUTIVE ORDER NO. 83: DECLARATION OF A STATE OF EMERGENCY</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-10-10</td><td>74</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-74-declaration-state-emergency/open">Executive Order No. 74: Declaration of a State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-09-07</td><td>51</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-51-declaration-state-emergency/open">Executive Order No. 51: Declaration of State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-05-30</td><td>44</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-44-declaration-state-emergency/open">Executive Order No. 44: Declaration of a State of Emergency</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-04-24</td><td>42</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-42-disaster-declaration-town-tryon-polk-county-and-village-cedar-rock-caldwell/open">Executive Order No. 42: Disaster Declaration for the Town of Tryon (Polk County) and the Village of Cedar Rock (Caldwell County)</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-04-20</td><td>41</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-41-declaration-state-emergency-governor-state-north-carolina/open">Executive Order No. 41: Declaration of a State of Emergency by the Governor of the State of North Carolina</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-01-16</td><td>34</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-34-declaration-state-emergency-governor-state-north-carolina/open">Executive Order No. 34: Declaration of a State of Emergency by the Governor of the State of North Carolina</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2018-01-03</td><td>31</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-31-declaration-state-emergency-governor-north-carolina/open">Executive Order No. 31: Declaration of a State of Emergency by the Governor of North Carolina</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2017-11-15</td><td>28</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-28-disaster-declaration-city-eden/open">Executive Order No. 28: Disaster Declaration for the City of Eden</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2017-09-06</td><td>20</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-20-declaration-state-emergency-governor-north-carolina/open">Executive Order No. 20: Declaration of a State of Emergency by the Governor of North Carolina</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2017-08-31</td><td>19</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-19-declaration-state-emergency-order-suspend-motor-vehicle-regulations-ensure-0/open">Executive Order No. 19: Declaration of State of Emergency In Order to Suspend Motor Vehicle Regulations to Ensure Adequate Fuel Supplies in the State of North Carolina and to Support Relief Efforts for Hurricane Harvey</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2017-08-16</td><td>15</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-15-disaster-declaration-town-windsor/open">Executive Order No. 15: Disaster Declaration for the Town of Windsor</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2017-06-16</td><td>9</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-9-disaster-declaration-sampson-county-and-contiguous-counties-bladen-cumberland/open">Executive Order No. 9: Disaster Declaration for Sampson County and the Contiguous Counties of Bladen, Cumberland, Duplin, Harnett, Johnston, Pender and Wayne</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr>
+<tr><td>2017-01-06</td><td>1</td><td><a href="https://governor.nc.gov/documents/files/executive-order-no-1-governor-cooper-declares-state-emergency-due-winter-storm/open">Executive Order No. 1:  Governor Cooper Declares State of Emergency Due to Winter Storm</a></td><td>declaration</td><td>Roy Cooper</td><td>State archive</td></tr></tbody></table></div>
 </div>
 
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<p class="note">53 of the 55 declarations on this page have NOAA storm reports nearby. 27 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-01-29 &middot; Declaration of a State of Emergency</td><td>206</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, AVERY, BEAUFORT, BERTIE</td><td>3637</td></tr>
@@ -147,14 +173,22 @@
 <tr><td>2025-02-18 &middot; Declaration Of A State Of Emergency And Temporary Suspension Of Motor Vehicle Regulations</td><td>77</td><td>ALEXANDER, ALLEGHANY, ASHE, AVERY, BEAUFORT, BERTIE, BUNCOMBE, BURKE MOUNTAINS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2025-01-09 &middot; EO7-WinterStorm-StateofEmergency_0.pdf PDF • 3.41 MB - January 09, 2025 Executive Order January 9, 2025 Executive Order No. 7 Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations</td><td>60</td><td>ALEXANDER, ALLEGHANY, ASHE, AVERY, BUNCOMBE, BURKE MOUNTAINS, CABARRUS, CALDWELL MOUNTAINS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2024-10-16 &middot; STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR BRUNSWICK COUNTY</td><td>72</td><td>BLADEN, BRUNSWICK, CAMDEN, CARTERET, COLUMBUS, CUMBERLAND, CURRITUCK, DARE</td><td>4827</td></tr>
+<tr><td>2024-09-25 &middot; DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY WAIVER AND SUSPENSION OF MOTOR VE ID CLE REGULATIONS</td><td>150</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, AVERY, BERTIE, BLADEN</td><td>4827</td></tr>
 <tr><td>2024-09-17 &middot; DECLARATION OF A STATE OF EMERGENCY</td><td>73</td><td>BLADEN, BRUNSWICK, CAMDEN, CARTERET, COLUMBUS, CUMBERLAND, CURRITUCK, DARE</td><td>4837</td></tr>
+<tr><td>2024-08-05 &middot; DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY W AIYER AND SUSPENSION OF MOTOR VEHICLE REGULA TION S</td><td>171</td><td>ALAMANCE, ALEXANDER, ASHE, BEAUFORT, BERTIE, BLADEN, BRUNSWICK, BUNCOMBE</td><td>3608</td></tr>
 <tr><td>2024-07-01 &middot; DISASTER DECLARATION FOR THE CITY OF MARION IN MCDOWELL COUNTY NORTH CAROLINA</td><td>3</td><td>MCDOWELL, WILKES, YADKIN</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2024-06-18 &middot; EO309-DisasterDeclarationWestJefferson.pdf PDF • 603.12 KB - June 18, 2024 Executive Order June 18, 2024 EXECUTIVE ORDER NO. 309 DISASTER DECLARATION FOR THE TOWN OF WEST JEFFERSON IN ASHE COUNTY NORTH CAROLINA</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2024-05-23 &middot; STATE TYPE I DISASTER DECLARATION FOR INDIVIDUAL ASSISTANCE FOR GASTON COUNTY AND CONTIGUOUS COUNTIES</td><td>111</td><td>ALEXANDER, ANSON, BEAUFORT, BLADEN, BUNCOMBE, CABARRUS, CHEROKEE, CLAY</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2024-01-08 &middot; DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY W AIYER AND SUSPENSION OF MOTOR VEHICLE REGULATIONS</td><td>203</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ASHE, BEAUFORT, BLADEN, BRUNSWICK, BURKE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2023-12-19 &middot; DECLARATION OF STATE OF EMERGENCY FOR THE PURPOSE OF A TEMPORARY SUSPENSION OF ENFORCEMENT OF TRANSPORTATION REGULATIONS FOR AGRICULTURE VEHICLES IN DUPLIN AND SAMPSON COUNTIES</td><td>18</td><td>BEAUFORT, BRUNSWICK, CHOWAN, COASTAL NEW HANOVER, DUPLIN, HATTERAS ISLAND, INLAND NEW HANOVER, OCRACOKE ISLAND</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-11-08 &middot; Executive Order No. 293</td><td>9</td><td>ALLEGHANY, ASHE, CASWELL, ROCKINGHAM, STOKES, SURRY, WATAUGA, WILKES</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2023-10-18 &middot; DISASTER DECLARATION FOR THE VILLAGE OF CEDAR ROCK IN CALDWELL COUNTY, NORTH CAROLINA</td><td>12</td><td>ALEXANDER, ALLEGHANY, CALDWELL, CHATHAM, GRANVILLE, SAMPSON, WAKE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-09-22 &middot; Executive Order No. 288</td><td>55</td><td>BEAUFORT, BERTIE, CAMDEN, CARTERET, CHOWAN, CURRITUCK, EAST CARTERET, EASTERN CURRITUCK</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2023-09-01 &middot; DISASTER DECLARATION FOR THE CITY OF NEWTON IN CATA WBA COUNTY</td><td>110</td><td>ALEXANDER, ANSON, AVERY, BEAUFORT, BERTIE, BRUNSWICK, BUNCOMBE, BURKE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2023-08-29 &middot; DECLARATION OF A STATEWIDE STATE OF EMERGENCY AND TEMPORARY WAIVER AND SUSPENSION OF MOTOR VEHICLE REGULATIONS</td><td>67</td><td>ALEXANDER, ASHE, BERTIE, BRUNSWICK, CABARRUS, CARTERET, CHATHAM, COLUMBUS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2023-06-22 &middot; DISASTER DECLARATION FOR THE CITY OF CHERRYVILLE IN GASTON COUNTY</td><td>61</td><td>ALAMANCE, BRUNSWICK, BUNCOMBE, CLEVELAND, FORSYTH, GASTON, GRANVILLE, GUILFORD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2022-12-20 &middot; DECLARATION OF A STAT E OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE ADEQUATE TRANSPORTATION OF FUEL THROUGHOUT THE STATE</td><td>62</td><td>ALEXANDER, ALLEGHANY, ASHE, AVERY, BEAUFORT, BUNCOMBE, BURKE MOUNTAINS, CABARRUS</td><td>4487</td></tr>
+<tr><td>2022-09-28 &middot; DECLARAT IO OF A STATE OF EMERGENCY AND TEMPORARY WAIVER AND SUSPENSION OF MOTOR VEHICLE REGULAT IO S</td><td>70</td><td>ALAMANCE, ANSON, BEAUFORT, BLADEN, BRUNSWICK, CABARRUS, CASWELL, CATAWBA</td><td>3586</td></tr>
 <tr><td>2022-01-19 &middot; DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</td><td>152</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, AVERY, BEAUFORT, BERTIE</td><td>4487</td></tr>
 <tr><td>2022-01-14 &middot; DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</td><td>90</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, AVERY, BUNCOMBE, BURKE MOUNTAINS</td><td>4487</td></tr>
 <tr><td>2021-08-18 &middot; DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS</td><td>57</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, AVERY, BRUNSWICK, BUNCOMBE, BURKE, CABARRUS</td><td>4617</td></tr>
@@ -166,12 +200,27 @@
 <tr><td>2020-10-30 &middot; DISASTER DECLARATION FOR THE CITY OF MARION AND THE TOWN OF OLD FORT IN MCDOWELL COUNTY AND THE TOWN OF TRYON IN POLK COUNTY</td><td>21</td><td>ALLEGHANY, ANSON, ASHE, CABARRUS, COLUMBUS, GUILFORD, MCDOWELL, MECKLENBURG</td><td>4588</td></tr>
 <tr><td>2020-10-30 &middot; DECLARATION OF A STATE OF EMERGENCY AND TEMPORARY SUSPENSION OF MOTOR VEHICLE REGULATIONS TO ENSURE RESTORATION OF UTILITY SERVICES</td><td>95</td><td>ALAMANCE, ANSON, ASHE, AVERY, BUNCOMBE, BURKE, BURKE MOUNTAINS, CABARRUS</td><td>4588</td></tr>
 <tr><td>2020-07-31 &middot; DECLARATION OF A STATE OF EMERGENCY BY THE GOVERNOR OF THE STATE OF NORTH CAROLINA FOR HURRICANE ISAIAS</td><td>63</td><td>ALEXANDER, BEAUFORT, BERTIE, BRUNSWICK, BUNCOMBE, BURKE, CASWELL, CATAWBA</td><td>4568</td></tr>
+<tr><td>2020-02-07 &middot; Executive Order No. 115</td><td>175</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, BRUNSWICK, BURKE, CABARRUS</td><td>4543</td></tr>
 <tr><td>2019-08-31 &middot; Executive Order No. 101: Declaration of State of Emergency</td><td>0</td><td>None matched</td><td>4465</td></tr>
+<tr><td>2019-07-03 &middot; Executive Order No. 96: Disaster Declaration for Catawba and Mecklenburg Counties</td><td>40</td><td>ALEXANDER, ASHE, AVERY, BRUNSWICK, BUNCOMBE, BURKE, CALDWELL, CATAWBA</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2019-01-13 &middot; Executive Order No. 86: Declaration of a State of Emergency and Temporary Suspension of Motor Vehicle Regulations to Ensure Restoration of Utility Services and the Transportation of Essentials</td><td>41</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ASHE, AVERY, BUNCOMBE, BURKE MOUNTAINS, CALDWELL MOUNTAINS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2018-12-07 &middot; EXECUTIVE ORDER NO. 83: DECLARATION OF A STATE OF EMERGENCY</td><td>74</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ASHE, AVERY, BERTIE, BUNCOMBE, BURKE MOUNTAINS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2018-10-10 &middot; Executive Order No. 74: Declaration of a State of Emergency</td><td>115</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, AVERY, BEAUFORT, BUNCOMBE</td><td>4412</td></tr>
+<tr><td>2018-09-07 &middot; Executive Order No. 51: Declaration of State of Emergency</td><td>5</td><td>ANSON, GASTON, MONTGOMERY</td><td>4393</td></tr>
+<tr><td>2018-05-30 &middot; Executive Order No. 44: Declaration of a State of Emergency</td><td>46</td><td>BRUNSWICK, BUNCOMBE, BURKE, CALDWELL, CHATHAM, CLAY, COLUMBUS, FORSYTH</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-04-24 &middot; Executive Order No. 42: Disaster Declaration for the Town of Tryon (Polk County) and the Village of Cedar Rock (Caldwell County)</td><td>9</td><td>ASHE, BURKE, CALDWELL, CLEVELAND, POLK, RUTHERFORD, WILKES</td><td>4364</td></tr>
+<tr><td>2018-04-20 &middot; Executive Order No. 41: Declaration of a State of Emergency by the Governor of the State of North Carolina</td><td>68</td><td>ALAMANCE, ANSON, ASHE, BLADEN, BURKE, CABARRUS, CALDWELL, CASWELL</td><td>4364</td></tr>
+<tr><td>2018-01-16 &middot; Executive Order No. 34: Declaration of a State of Emergency by the Governor of the State of North Carolina</td><td>112</td><td>ALAMANCE, ALEXANDER, ANSON, AVERY, BEAUFORT, BERTIE, BUNCOMBE, BURKE MOUNTAINS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-01-03 &middot; Executive Order No. 31: Declaration of a State of Emergency by the Governor of North Carolina</td><td>98</td><td>ALAMANCE, ALEXANDER, AVERY, BEAUFORT, BERTIE, BUNCOMBE, BURKE MOUNTAINS, CALDWELL MOUNTAINS</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-11-15 &middot; Executive Order No. 28: Disaster Declaration for the City of Eden</td><td>92</td><td>ALAMANCE, ANSON, ASHE, BERTIE, BURKE, CAMDEN, CARTERET, CHATHAM</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-09-06 &middot; Executive Order No. 20: Declaration of a State of Emergency by the Governor of North Carolina</td><td>1</td><td>WILKES</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2017-08-31 &middot; Executive Order No. 19: Declaration of State of Emergency In Order to Suspend Motor Vehicle Regulations to Ensure Adequate Fuel Supplies in the State of North Carolina and to Support Relief Efforts for Hurricane Harvey</td><td>36</td><td>CABARRUS, CRAVEN, CUMBERLAND, DARE, FRANKLIN, GREENE, HARNETT, HOKE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-08-16 &middot; Executive Order No. 15: Disaster Declaration for the Town of Windsor</td><td>26</td><td>BEAUFORT, BERTIE, BLADEN, CAMDEN, CHOWAN, CURRITUCK, GATES, HERTFORD</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2017-06-16 &middot; Executive Order No. 9: Disaster Declaration for Sampson County and the Contiguous Counties of Bladen, Cumberland, Duplin, Harnett, Johnston, Pender and Wayne</td><td>66</td><td>BRUNSWICK, BUNCOMBE, BURKE, CARTERET, CASWELL, CATAWBA, CHEROKEE, CLEVELAND</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2017-01-06 &middot; Executive Order No. 1:  Governor Cooper Declares State of Emergency Due to Winter Storm</td><td>109</td><td>ALAMANCE, ALEXANDER, ALLEGHANY, ANSON, ASHE, AVERY, BERTIE, BUNCOMBE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr></tbody></table></div>
 </div>
+
+<details class="layer"><summary><span>FEMA declarations with no state declaration on this page</span><span class="count-badge">0 of 18 since 2017</span></summary><div class="details-body"><p class="note">Every one of the 18 major disaster and emergency declarations FEMA made for weather in North Carolina from 2017, the first year this page covers, has a state declaration on this page within 21 days of its incident period.</p></div></details>
 
 <details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">85 records</span></summary>
@@ -266,7 +315,7 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">2,145 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">3,711 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
@@ -379,6 +428,98 @@
 <tr><td>2017-01-06 15:15:00</td><td>YADKIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
 <tr><td>2017-01-06 18:00:00</td><td>YANCEY</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
 <tr><td>2017-01-07 22:00:00</td><td>YANCEY</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-30 02:02:00</td><td>BRUNSWICK</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.20K</td></tr>
+<tr><td>2017-05-27 22:58:00</td><td>BUNCOMBE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 23:54:00</td><td>BURKE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-30 07:43:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-30 07:43:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-30 07:43:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-30 07:48:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-30 08:40:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-31 18:40:00</td><td>CASWELL</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.50K</td></tr>
+<tr><td>2017-05-31 18:43:00</td><td>CASWELL</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.50K</td></tr>
+<tr><td>2017-05-31 18:49:00</td><td>CASWELL</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.50K</td></tr>
+<tr><td>2017-05-28 01:10:00</td><td>CATAWBA</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-27 22:44:00</td><td>CHEROKEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-28 00:27:00</td><td>CLEVELAND</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-28 17:55:00</td><td>COLUMBUS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-28 18:40:00</td><td>COLUMBUS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>3.00K</td></tr>
+<tr><td>2017-05-28 20:00:00</td><td>COLUMBUS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.00K</td></tr>
+<tr><td>2017-05-31 16:03:00</td><td>CRAVEN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-27 21:10:00</td><td>CURRITUCK</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-28 15:10:00</td><td>DARE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-28 01:55:00</td><td>DAVIDSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-31 15:56:00</td><td>DAVIDSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>4.00K</td></tr>
+<tr><td>2017-05-29 22:20:00</td><td>DUPLIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-31 15:52:00</td><td>DUPLIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-31 15:56:00</td><td>DUPLIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-29 17:08:00</td><td>GASTON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-31 18:35:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.00K</td></tr>
+<tr><td>2017-05-31 12:50:00</td><td>HARNETT</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 22:27:00</td><td>HAYWOOD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 23:09:00</td><td>HENDERSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 20:00:00</td><td>HERTFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.00K</td></tr>
+<tr><td>2017-06-01 19:03:00</td><td>HYDE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-28 00:57:00</td><td>IREDELL</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2017-05-27 22:27:00</td><td>JACKSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-28 01:09:00</td><td>LINCOLN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-29 17:16:00</td><td>LINCOLN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-31 15:02:00</td><td>LINCOLN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>15.00K</td></tr>
+<tr><td>2017-05-27 22:24:00</td><td>MACON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 22:38:00</td><td>MADISON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-29 17:30:00</td><td>MECKLENBURG</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-28 00:45:00</td><td>MITCHELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-29 23:10:00</td><td>PENDER</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>25.00K</td></tr>
+<tr><td>2017-05-31 17:50:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.50K</td></tr>
+<tr><td>2017-05-31 17:52:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-31 17:55:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-31 17:55:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-31 18:10:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-31 18:18:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-31 18:18:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-31 18:22:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.50K</td></tr>
+<tr><td>2017-05-31 18:25:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-31 18:26:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>12.50K</td></tr>
+<tr><td>2017-05-27 23:41:00</td><td>RUTHERFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-29 21:40:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 12</td><td>3.50M</td></tr>
+<tr><td>2017-05-29 22:52:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-29 22:55:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-29 22:56:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-29 22:56:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-31 14:36:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>20.00K</td></tr>
+<tr><td>2017-05-31 15:24:00</td><td>SAMPSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>3.00K</td></tr>
+<tr><td>2017-05-31 17:22:00</td><td>STOKES</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-31 17:35:00</td><td>STOKES</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.50K</td></tr>
+<tr><td>2017-05-27 21:56:00</td><td>SWAIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 23:08:00</td><td>TRANSYLVANIA</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-31 13:45:00</td><td>WAYNE</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-27 23:08:00</td><td>YANCEY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2016-09-19 16:30:00</td><td>BEAUFORT</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 17:00:00</td><td>BEAUFORT</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 17:00:00</td><td>BEAUFORT</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 19:55:00</td><td>BEAUFORT</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>BERTIE</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 08:00:00</td><td>BERTIE</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 21:00:00</td><td>BERTIE</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>4.00M</td></tr>
+<tr><td>2016-09-22 17:46:00</td><td>BLADEN</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>CAMDEN</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 12:00:00</td><td>CAMDEN</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>CHOWAN</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 08:00:00</td><td>CHOWAN</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>CURRITUCK</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 12:00:00</td><td>CURRITUCK</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>GATES</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 11:00:00</td><td>GATES</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>HERTFORD</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 11:00:00</td><td>HERTFORD</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>NORTHAMPTON</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 16:00:00</td><td>NORTHAMPTON</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>PASQUOTANK</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 12:00:00</td><td>PASQUOTANK</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-22 18:03:00</td><td>PENDER</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2016-09-22 18:38:00</td><td>PENDER</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-19 06:00:00</td><td>PERQUIMANS</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2016-09-21 08:00:00</td><td>PERQUIMANS</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
 <tr><td>2017-09-01 19:37:00</td><td>CABARRUS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
 <tr><td>2017-09-01 19:32:00</td><td>CRAVEN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
 <tr><td>2017-09-01 19:20:00</td><td>CUMBERLAND</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
@@ -415,167 +556,75 @@
 <tr><td>2017-09-01 17:21:00</td><td>WAKE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>4.00K</td></tr>
 <tr><td>2017-09-01 17:35:00</td><td>WAKE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
 <tr><td>2017-09-01 14:10:00</td><td>WAYNE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2018-10-10 06:00:00</td><td>ALLEGHANY</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-10 07:00:00</td><td>ALLEGHANY</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-10 16:15:00</td><td>ALLEGHANY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 09:45:00</td><td>ALLEGHANY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 10:00:00</td><td>ANSON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 09:30:00</td><td>AVERY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 05:30:00</td><td>BUNCOMBE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 10:00:00</td><td>BURKE</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>2.00K</td></tr>
-<tr><td>2018-10-11 16:30:00</td><td>CABARRUS</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 08:00:00</td><td>CALDWELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>CALDWELL</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.50K</td></tr>
-<tr><td>2018-10-11 14:00:00</td><td>CASWELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 14:45:00</td><td>CASWELL</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>30.00K</td></tr>
-<tr><td>2018-10-11 17:00:00</td><td>DAVIDSON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>DAVIE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.50K</td></tr>
-<tr><td>2018-10-11 14:15:00</td><td>FORSYTH</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 18:00:00</td><td>GRANVILLE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2018-10-11 12:30:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 05:30:00</td><td>HENDERSON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>IREDELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 05:45:00</td><td>MCDOWELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.50K</td></tr>
-<tr><td>2018-10-11 08:30:00</td><td>MCDOWELL</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>2.00K</td></tr>
-<tr><td>2018-10-11 10:00:00</td><td>MCDOWELL</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.50K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>MCDOWELL</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.50K</td></tr>
-<tr><td>2018-10-11 16:40:00</td><td>PERSON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 08:15:00</td><td>POLK</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 06:00:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 06:00:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 13:30:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>2.05M</td></tr>
-<tr><td>2018-10-11 14:30:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2018-10-11 15:45:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 17:00:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 17:00:00</td><td>ROCKINGHAM</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 05:30:00</td><td>RUTHERFORD</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 10:00:00</td><td>RUTHERFORD</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>STANLY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 13:25:00</td><td>STOKES</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>1.45M</td></tr>
-<tr><td>2018-10-10 07:00:00</td><td>SURRY</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 09:30:00</td><td>SURRY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>658.50K</td></tr>
-<tr><td>2018-10-11 18:00:00</td><td>SURRY</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 13:48:00</td><td>WAKE</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-10 06:00:00</td><td>WATAUGA</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-10 06:30:00</td><td>WATAUGA</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 06:30:00</td><td>WATAUGA</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-10 06:00:00</td><td>WILKES</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-10 15:15:00</td><td>WILKES</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-10 16:00:00</td><td>WILKES</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.50K</td></tr>
-<tr><td>2018-10-11 09:00:00</td><td>WILKES</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 13:20:00</td><td>WILKES</td><td>county/county-equivalent</td><td>Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 06:00:00</td><td>YADKIN</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 12:30:00</td><td>YADKIN</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 07:00:00</td><td>YANCEY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>ALAMANCE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>ALEXANDER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>ANSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 14:00:00</td><td>ASHE</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2018-10-11 19:20:00</td><td>BEAUFORT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>CABARRUS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 18:30:00</td><td>CAMDEN</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 11:58:00</td><td>CARTERET</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>CATAWBA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>CHATHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>CLEVELAND</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 10:20:00</td><td>COLUMBUS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 13:54:00</td><td>CRAVEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>CUMBERLAND</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>DAVIDSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>DAVIE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>DURHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2018-10-11 18:30:00</td><td>EASTERN CURRITUCK</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2018-10-11 16:44:00</td><td>EASTERN DARE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 13:17:00</td><td>EASTERN HYDE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>EDGECOMBE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>FORSYTH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>GASTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>GRANVILLE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>GUILFORD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.50M</td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>HALIFAX</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>HARNETT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>HOKE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>IREDELL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>JOHNSTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>LINCOLN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>MECKLENBURG</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>MOORE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>NASH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 11:06:00</td><td>ONSLOW</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>ORANGE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 14:30:00</td><td>PAMLICO</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 18:30:00</td><td>PASQUOTANK</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>PERSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>RANDOLPH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>ROCKINGHAM</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>35.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>ROWAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>SCOTLAND</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>STANLY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>STOKES</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>40.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>SURRY</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 17:00:00</td><td>TYRRELL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 11:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>VANCE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2018-10-11 12:00:00</td><td>WAKE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 1</td><td>200.00K</td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 17:00:00</td><td>WASHINGTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 15:00:00</td><td>WATAUGA</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2018-10-11 18:30:00</td><td>WESTERN CURRITUCK</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2018-10-11 16:44:00</td><td>WESTERN DARE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-10-11 17:00:00</td><td>WESTERN HYDE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-10-11 10:00:00</td><td>WILKES</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2018-10-11 13:00:00</td><td>WILSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2018-10-11 10:30:00</td><td>YADKIN</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>40.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>ALAMANCE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>ALEXANDER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 22:00:00</td><td>ALLEGHANY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-12-08 21:00:00</td><td>ASHE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-12-05 01:00:00</td><td>AVERY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>AVERY</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 03:00:00</td><td>BERTIE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 17:00:00</td><td>BUNCOMBE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>BURKE MOUNTAINS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 22:00:00</td><td>CABARRUS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>CALDWELL MOUNTAINS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 02:00:00</td><td>CASWELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>CATAWBA</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>CHATHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 22:00:00</td><td>CLEVELAND</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>DAVIDSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>DAVIE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>DURHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>EASTERN MCDOWELL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 17:00:00</td><td>EASTERN POLK</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>EDGECOMBE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>FORSYTH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 22:00:00</td><td>GASTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 03:00:00</td><td>GATES</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>GRANVILLE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>GREATER BURKE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>GREATER CALDWELL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 17:00:00</td><td>GREATER RUTHERFORD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>GUILFORD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>HALIFAX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 06:00:00</td><td>HARNETT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 15:00:00</td><td>HAYWOOD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 15:00:00</td><td>HENDERSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 03:00:00</td><td>HERTFORD</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 23:00:00</td><td>IREDELL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 04:00:00</td><td>JOHNSTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-09 06:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 22:00:00</td><td>LINCOLN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-12-08 21:00:00</td><td>MACON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr></tbody></table></div></div>
+<tr><td>2017-09-05 15:00:00</td><td>WILKES</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.20K</td></tr>
+<tr><td>2017-05-05 02:39:00</td><td>ALAMANCE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:49:00</td><td>ALAMANCE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:50:00</td><td>ALAMANCE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:00:00</td><td>ALAMANCE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-05 01:25:00</td><td>ANSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-04 08:00:00</td><td>ASHE</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 06:27:00</td><td>BERTIE</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-05 01:53:00</td><td>BURKE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 07:02:00</td><td>CAMDEN</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>15.00K</td></tr>
+<tr><td>2017-05-05 06:38:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-05 06:57:00</td><td>CARTERET</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-05 03:20:00</td><td>CHATHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:25:00</td><td>CHATHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.50K</td></tr>
+<tr><td>2017-05-05 06:33:00</td><td>CHOWAN</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>200.00K</td></tr>
+<tr><td>2017-05-05 03:45:00</td><td>CUMBERLAND</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:45:00</td><td>CUMBERLAND</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:50:00</td><td>CUMBERLAND</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 07:08:00</td><td>CURRITUCK</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-05 07:15:00</td><td>CURRITUCK</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.00K</td></tr>
+<tr><td>2017-05-05 01:36:00</td><td>DAVIDSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:34:00</td><td>DURHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:35:00</td><td>DURHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-05 03:44:00</td><td>DURHAM</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 04:51:00</td><td>FRANKLIN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-05 04:00:00</td><td>GRANVILLE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 04:10:00</td><td>GRANVILLE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 04:21:00</td><td>GRANVILLE</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>100.00K</td></tr>
+<tr><td>2017-05-05 01:45:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:15:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-05 02:20:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-05 02:25:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>100.00K</td></tr>
+<tr><td>2017-05-05 02:40:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:41:00</td><td>GUILFORD</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-05 05:35:00</td><td>HALIFAX</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-05 05:45:00</td><td>HALIFAX</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 05:50:00</td><td>HALIFAX</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 04:20:00</td><td>JOHNSTON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 04:25:00</td><td>JOHNSTON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2017-05-05 04:35:00</td><td>JOHNSTON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 06:28:00</td><td>JONES</td><td>county/county-equivalent</td><td>Hail</td><td>0 / 0</td><td></td></tr>
+<tr><td>2017-05-05 02:55:00</td><td>LEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 00:10:00</td><td>MECKLENBURG</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-05 01:31:00</td><td>MONTGOMERY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 01:56:00</td><td>MONTGOMERY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 01:58:00</td><td>MONTGOMERY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:04:00</td><td>MONTGOMERY</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-05 02:35:00</td><td>MOORE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:55:00</td><td>MOORE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:55:00</td><td>MOORE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 02:55:00</td><td>MOORE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:30:00</td><td>MOORE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 04:49:00</td><td>NASH</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.50K</td></tr>
+<tr><td>2017-05-05 05:10:00</td><td>NASH</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>10.00K</td></tr>
+<tr><td>2017-05-05 05:20:00</td><td>NASH</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 03:33:00</td><td>ORANGE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2017-05-05 08:12:00</td><td>PASQUOTANK</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.00K</td></tr>
+<tr><td>2017-05-05 04:29:00</td><td>PENDER</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
+<tr><td>2017-05-05 08:00:00</td><td>PERQUIMANS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.00K</td></tr>
+<tr><td>2017-05-05 03:40:00</td><td>PERSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.50K</td></tr>
+<tr><td>2017-05-05 01:36:00</td><td>RANDOLPH</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.50K</td></tr>
+<tr><td>2017-05-05 01:44:00</td><td>RANDOLPH</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>2.50K</td></tr>
+<tr><td>2017-05-05 01:45:00</td><td>RANDOLPH</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>0.00K</td></tr></tbody></table></div></div>
 </details>
 
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-18 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-20 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

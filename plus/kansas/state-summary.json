@@ -6,7 +6,34 @@
   "collection_failed": false,
   "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
   "coverage_base": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 35,
+    "count": 20,
+    "ids": [
+      "DR-4747",
+      "DR-4654",
+      "DR-4640",
+      "DR-4449",
+      "EM-3412",
+      "DR-4403",
+      "DR-4287",
+      "DR-4230",
+      "DR-4150",
+      "DR-4112",
+      "DR-4063",
+      "DR-4035",
+      "DR-4010",
+      "EM-3324",
+      "DR-1932",
+      "DR-1885",
+      "DR-1868",
+      "DR-1860",
+      "DR-1849",
+      "DR-1848"
+    ],
+    "since": 2009
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +48,20 @@
   "source_records_returned": 53,
   "source_records_saved_before": 53,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 0,
+    "federal_matched": 30,
+    "fmcsa_archive": 0,
+    "noaa_matched": 45,
+    "noaa_none": 4,
+    "noaa_pending": 2,
+    "reviewed_not_weather": 2,
+    "state_archive": 51
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 0.6,
-    "storm_join_seconds": 0.5
+    "collect_seconds": 0.8,
+    "storm_join_seconds": 0.7
   }
 }

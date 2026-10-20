@@ -6,7 +6,19 @@
   "collection_failed": false,
   "coverage": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "coverage_base": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations)",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 19,
+    "count": 5,
+    "ids": [
+      "DR-4950",
+      "DR-4862",
+      "DR-4791",
+      "DR-4776",
+      "DR-4657"
+    ],
+    "since": 2016
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 1,
   "metrics": {
@@ -21,10 +33,20 @@
   "source_records_returned": 3,
   "source_records_saved_before": 3,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 48,
+    "federal_matched": 47,
+    "fmcsa_archive": 4,
+    "noaa_matched": 53,
+    "noaa_none": 2,
+    "noaa_pending": 0,
+    "reviewed_not_weather": 0,
+    "state_archive": 3
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 19.0,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 14.5,
+    "storm_join_seconds": 0.8
   }
 }

@@ -6,7 +6,26 @@
   "collection_failed": false,
   "coverage": "January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "coverage_base": "January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour)",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 20,
+    "count": 12,
+    "ids": [
+      "DR-4930",
+      "DR-4922",
+      "DR-4874",
+      "DR-4790",
+      "DR-4727",
+      "DR-4598",
+      "DR-4576",
+      "EM-3550",
+      "EM-3548",
+      "DR-4551",
+      "DR-4536",
+      "DR-4478"
+    ],
+    "since": 2020
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +40,20 @@
   "source_records_returned": 23,
   "source_records_saved_before": 23,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 16,
+    "federal_matched": 30,
+    "fmcsa_archive": 4,
+    "noaa_matched": 42,
+    "noaa_none": 1,
+    "noaa_pending": 0,
+    "reviewed_not_weather": 0,
+    "state_archive": 23
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 5.0,
-    "storm_join_seconds": 0.5
+    "collect_seconds": 5.1,
+    "storm_join_seconds": 0.7
   }
 }

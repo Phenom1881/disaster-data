@@ -4,9 +4,31 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.",
+  "coverage": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage",
   "coverage_base": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 18,
+    "count": 15,
+    "ids": [
+      "DR-4917",
+      "DR-4905",
+      "DR-4789",
+      "DR-4589",
+      "DR-4443",
+      "DR-4342",
+      "DR-4333",
+      "DR-4313",
+      "DR-4310",
+      "DR-4252",
+      "DR-4246",
+      "DR-1987",
+      "DR-1781",
+      "DR-1630",
+      "EM-3244"
+    ],
+    "since": 2000
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +43,20 @@
   "source_records_returned": 208,
   "source_records_saved_before": 208,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 0,
+    "federal_matched": 64,
+    "fmcsa_archive": 0,
+    "noaa_matched": 14,
+    "noaa_none": 193,
+    "noaa_pending": 1,
+    "reviewed_not_weather": 0,
+    "state_archive": 208
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 27.8,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 40.8,
+    "storm_join_seconds": 0.8
   }
 }

@@ -4,9 +4,28 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present Secretary of State year indexes and legal order text.",
+  "coverage": "2000-present Secretary of State year indexes and legal order text",
   "coverage_base": "2000-present Secretary of State year indexes and legal order text.",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 55,
+    "count": 12,
+    "ids": [
+      "DR-4885",
+      "DR-4877",
+      "DR-4876",
+      "DR-4636",
+      "DR-4612",
+      "DR-4552",
+      "DR-4200",
+      "DR-4012",
+      "EM-3325",
+      "DR-1760",
+      "EM-3232",
+      "DR-1524"
+    ],
+    "since": 2000
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +40,20 @@
   "source_records_returned": 83,
   "source_records_saved_before": 83,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 0,
+    "federal_matched": 49,
+    "fmcsa_archive": 0,
+    "noaa_matched": 62,
+    "noaa_none": 5,
+    "noaa_pending": 1,
+    "reviewed_not_weather": 15,
+    "state_archive": 68
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 6.8,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 9.3,
+    "storm_join_seconds": 0.9
   }
 }

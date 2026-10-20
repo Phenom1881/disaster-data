@@ -6,7 +6,13 @@
   "collection_failed": false,
   "coverage": "2025-present Governor news archive; pre-2025 emergency proclamations backfill pending",
   "coverage_base": "2025-present Governor news archive; pre-2025 emergency proclamations backfill pending",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 5,
+    "count": 0,
+    "ids": [],
+    "since": 2025
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +27,20 @@
   "source_records_returned": 18,
   "source_records_saved_before": 18,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 0,
+    "federal_matched": 11,
+    "fmcsa_archive": 0,
+    "noaa_matched": 12,
+    "noaa_none": 0,
+    "noaa_pending": 6,
+    "reviewed_not_weather": 0,
+    "state_archive": 18
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 2.3,
-    "storm_join_seconds": 0.3
+    "collect_seconds": 2.2,
+    "storm_join_seconds": 0.4
   }
 }

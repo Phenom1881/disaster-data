@@ -6,25 +6,44 @@
   "collection_failed": false,
   "coverage": "2002-present",
   "coverage_base": "2002-present",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 33,
+    "count": 2,
+    "ids": [
+      "DR-4024",
+      "EM-3329"
+    ],
+    "since": 2002
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 75,
+    "action_count": 82,
     "federal_declaration_count": 77,
-    "severity_rows": 3409,
-    "storm_match_rows": 4678
+    "severity_rows": 3652,
+    "storm_match_rows": 5044
   },
   "name": "Virginia",
   "retried": false,
   "slug": "virginia",
-  "source_records_returned": 75,
-  "source_records_saved_before": 75,
+  "source_records_returned": 82,
+  "source_records_saved_before": 82,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 0,
+    "federal_matched": 41,
+    "fmcsa_archive": 0,
+    "noaa_matched": 74,
+    "noaa_none": 8,
+    "noaa_pending": 0,
+    "reviewed_not_weather": 0,
+    "state_archive": 82
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join and forecast-zone resolution completed",
   "timing": {
-    "collect_seconds": 15.5,
-    "storm_join_seconds": 1.2
+    "collect_seconds": 14.9,
+    "storm_join_seconds": 1.9
   }
 }

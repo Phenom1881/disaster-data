@@ -69,6 +69,9 @@
     details.layer[open] > summary { border-bottom:1px solid var(--line); }
     details.layer > .details-body { padding:0 1rem 1rem; }
     .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    ul.sources { list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
+      padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }
+    ul.sources strong { color:var(--accent); }
     [hidden] { display:none !important; }
     @media (max-width:640px) {
       main { padding:1.25rem .75rem 3rem; }
@@ -86,54 +89,65 @@
 <div class="notice"><strong>Coverage:</strong> 2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>82</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>33</strong>original state weather declarations</div>
-  <div class="metric"><strong>2,292</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>42</strong>original state weather declarations</div>
+  <div class="metric"><strong>2,992</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/georgia.html">Federal declaration overview</a> &middot; <a href="https://gov.georgia.gov/executive-action/executive-orders/executive-order-archives">Official state source</a></p>
 
 <div class="layer primary">
 <h2>State weather declarations</h2>
 <p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<ul class="sources"><li><strong>42</strong> from the state's own archive</li></ul>
 <div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-10-08</td><td>10.08.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Hurricane Isaias</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2026-06-12</td><td>06.12.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Wildfire Recovery</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2026-04-22</td><td>04.22.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Georgia Wildfires</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2026-01-30</td><td>01.30.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Winter Weather - January 30, 2026</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2026-01-22</td><td>01.22.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Winter Weather</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2025-03-15</td><td>03.15.25.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2025">Declaring a State of Emergency for Tornadoes and Severe Storms</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2025-01-20</td><td>01.20.25.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2025">Declaring a State of Emergency for Winter Weather</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2025-01-09</td><td>01.09.25.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2025">Declaring a State of Emergency for Winter Weather</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2024-11-08</td><td>11.08.24.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Severe Flooding</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2024-10-08</td><td>10.08.24.02</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Hurricane Milton</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2024-09-24</td><td>09.24.24.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Tropical Storm Helene</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2024-08-03</td><td>08.03.24.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Tropical Depression 4</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2023-08-29</td><td>08.29.23.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2023">Declaring a State of Emergency for Hurricane Idalia</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2023-03-26</td><td>03.26.23.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2023">Declaring a State of Emergency for Tornadoes and Severe Storms</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2022-12-21</td><td>12.21.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency due to the potential for severe winter weather</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2022-09-27</td><td>09.27.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency for Hurricane Ian</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2022-09-04</td><td>09.04.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency for Severe Flooding</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2022-04-06</td><td>04.06.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency due to tornado and severe storm damage</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2022-01-14</td><td>01.14.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency in preparation of anticipated severe winter weather</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2021-07-06</td><td>07.06.21.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2021-executive-orders">Declaring a State of Emergency in preparation for the impact of Tropical Storm Elsa</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2021-03-26</td><td>03.26.21.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2021-executive-orders">Declaring a State of Emergency due to Tornado and Severe Storm Damage</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2020-04-13</td><td>04.13.20.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2020-executive-orders">Declaring a State of Emergency due to extensive storm damage on April 12-13, 2020</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2020-03-05</td><td>03.05.20.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2020-executive-orders">Declaring a State of Emergency in 120 counties due to extensive flooding</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2019-12-13</td><td>12.13.19.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders">Declaring a State of Emergency in Fulton County due to flooding/electrical issues at Grady Memorial Hospital</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2019-08-29</td><td>08.29.19.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders">Declaring a State of Emergency in 12 counties in preparation for the effects of Hurricane Dorian</a></td><td>declaration</td><td>Brian P. Kemp</td></tr>
-<tr><td>2018-10-09</td><td>10.09.18.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in preparation for the potential effects of Hurricane Michael</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2018-09-12</td><td>09.12.18.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in preparation for the potential effects of Hurricane Florence</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2018-01-16</td><td>01.16.18.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in preparation for a winter weather event</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2017-09-10</td><td>09.10.17.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2017">Declaring a State of Emergency throughout Georgia due to the potential impact of Hurricane Irma</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2017-09-06</td><td>09.06.17.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2017">Declaring a State of Emergency in response to Hurricane Harvey and in preparation for Hurricane Irma</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2016-10-04</td><td>10.04.16.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2016">Declaring a State of Emergency in preparation for the effects of Hurricane Matthew</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2016-09-01</td><td>09.01.16.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2016">Declaring a State of Emergency in preparation for Tropical Storm Hermine</a></td><td>declaration</td><td>Nathan Deal</td></tr>
-<tr><td>2014-04-28</td><td>04.28.14.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2014">Declaring a State of Emergency due to severe storms</a></td><td>declaration</td><td>Nathan Deal</td></tr></tbody></table></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Source">Source <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-10-08</td><td>10.08.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Hurricane Isaias</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2026-06-12</td><td>06.12.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Wildfire Recovery</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2026-04-22</td><td>04.22.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Georgia Wildfires</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2026-01-30</td><td>01.30.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Winter Weather - January 30, 2026</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2026-01-22</td><td>01.22.26.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2026">Declaring a State of Emergency for Winter Weather</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2025-03-15</td><td>03.15.25.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2025">Declaring a State of Emergency for Tornadoes and Severe Storms</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2025-01-20</td><td>01.20.25.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2025">Declaring a State of Emergency for Winter Weather</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2025-01-09</td><td>01.09.25.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2025">Declaring a State of Emergency for Winter Weather</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2024-11-08</td><td>11.08.24.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Severe Flooding</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2024-10-08</td><td>10.08.24.02</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Hurricane Milton</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2024-09-24</td><td>09.24.24.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Tropical Storm Helene</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2024-08-03</td><td>08.03.24.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2024">Declaring a State of Emergency for Tropical Depression 4</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2023-08-29</td><td>08.29.23.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2023">Declaring a State of Emergency for Hurricane Idalia</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2023-03-26</td><td>03.26.23.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2023">Declaring a State of Emergency for Tornadoes and Severe Storms</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2022-12-21</td><td>12.21.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency due to the potential for severe winter weather</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2022-09-27</td><td>09.27.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency for Hurricane Ian</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2022-09-04</td><td>09.04.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency for Severe Flooding</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2022-04-06</td><td>04.06.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency due to tornado and severe storm damage</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2022-01-14</td><td>01.14.22.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2022">Declaring a State of Emergency in preparation of anticipated severe winter weather</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2021-07-06</td><td>07.06.21.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2021-executive-orders">Declaring a State of Emergency in preparation for the impact of Tropical Storm Elsa</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2021-03-26</td><td>03.26.21.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2021-executive-orders">Declaring a State of Emergency due to Tornado and Severe Storm Damage</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2020-04-13</td><td>04.13.20.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2020-executive-orders">Declaring a State of Emergency due to extensive storm damage on April 12-13, 2020</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2020-03-05</td><td>03.05.20.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2020-executive-orders">Declaring a State of Emergency in 120 counties due to extensive flooding</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2019-12-13</td><td>12.13.19.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders">Declaring a State of Emergency in Fulton County due to flooding/electrical issues at Grady Memorial Hospital</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2019-08-29</td><td>08.29.19.01</td><td><a href="https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders">Declaring a State of Emergency in 12 counties in preparation for the effects of Hurricane Dorian</a></td><td>declaration</td><td>Brian P. Kemp</td><td>State archive</td></tr>
+<tr><td>2018-10-09</td><td>10.09.18.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in preparation for the potential effects of Hurricane Michael</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2018-09-12</td><td>09.12.18.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in preparation for the potential effects of Hurricane Florence</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2018-01-16</td><td>01.16.18.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in preparation for a winter weather event</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2018-01-02</td><td>01.02.18.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2018">Declaring a State of Emergency in 28 counties</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2017-09-10</td><td>09.10.17.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2017">Declaring a State of Emergency throughout Georgia due to the potential impact of Hurricane Irma</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2017-09-06</td><td>09.06.17.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2017">Declaring a State of Emergency in response to Hurricane Harvey and in preparation for Hurricane Irma</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2017-01-22</td><td>01.22.17.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2017">Declaring a State of Emergency in South Central Georgia</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2016-10-04</td><td>10.04.16.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2016">Declaring a State of Emergency in preparation for the effects of Hurricane Matthew</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2016-09-01</td><td>09.01.16.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2016">Declaring a State of Emergency in preparation for Tropical Storm Hermine</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2016-01-21</td><td>01.21.16.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2016">Declaring a State of Emergency in 21 Georgia counties</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2016-01-19</td><td>01.19.16.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2016">Declaring a State of Emergency in 15 Georgia counties</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2015-12-24</td><td>12.24.15.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2015">Declaring a State of Emergency in Fannin, Gilmer and Pickens Counties</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2015-02-24</td><td>02.24.15.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2015">Declaring a State of Emergency for February 25, 2015</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2015-02-15</td><td>02.15.15.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2015">Declaring a State of Emergency in 15 counties in North Georgia</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2014-04-28</td><td>04.28.14.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2014">Declaring a State of Emergency due to severe storms</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2014-02-10</td><td>02.10.14.01</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2014">Declaring a State of Emergency for 14 counties in North Georgia</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr>
+<tr><td>2014-01-28</td><td>01.28.14.02</td><td><a href="https://nathandeal.georgia.gov/executive-orders/2014">Declaring a State of Emergency</a></td><td>declaration</td><td>Nathan Deal</td><td>State archive</td></tr></tbody></table></div>
 </div>
 
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<p class="note">40 of the 42 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 32 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-10-08 &middot; Declaring a State of Emergency for Hurricane Isaias</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>3657</td></tr>
@@ -164,12 +178,25 @@
 <tr><td>2018-10-09 &middot; Declaring a State of Emergency in preparation for the potential effects of Hurricane Michael</td><td>105</td><td>BACON, BAKER, BALDWIN, BEN HILL, BERRIEN, BIBB, BLECKLEY, BROOKS</td><td>4400</td></tr>
 <tr><td>2018-09-12 &middot; Declaring a State of Emergency in preparation for the potential effects of Hurricane Florence</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2018-01-16 &middot; Declaring a State of Emergency in preparation for a winter weather event</td><td>116</td><td>BAKER, BALDWIN, BANKS, BARROW, BARTOW, BEN HILL, BIBB, BLECKLEY</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2018-01-02 &middot; Declaring a State of Emergency in 28 counties</td><td>45</td><td>APPLING, BACON, BEN HILL, BERRIEN, BRANTLEY, BROOKS, BULLOCH, CANDLER</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2017-09-10 &middot; Declaring a State of Emergency throughout Georgia due to the potential impact of Hurricane Irma</td><td>165</td><td>BAKER, BALDWIN, BANKS, BARROW, BARTOW, BEN HILL, BERRIEN, BIBB</td><td>4338</td></tr>
 <tr><td>2017-09-06 &middot; Declaring a State of Emergency in response to Hurricane Harvey and in preparation for Hurricane Irma</td><td>5</td><td>CHATTOOGA, CHEROKEE, DAWSON, FULTON, PICKENS</td><td>4338</td></tr>
+<tr><td>2017-01-22 &middot; Declaring a State of Emergency in South Central Georgia</td><td>153</td><td>APPLING, ATKINSON, BALDWIN, BEN HILL, BERRIEN, BLECKLEY, BROOKS, BRYAN</td><td>4297</td></tr>
 <tr><td>2016-10-04 &middot; Declaring a State of Emergency in preparation for the effects of Hurricane Matthew</td><td>23</td><td>APPLING, BACON, BRANTLEY, CHARLTON, CHATHAM, COASTAL CAMDEN, COASTAL CHATHAM, COASTAL GLYNN</td><td>4284</td></tr>
 <tr><td>2016-09-01 &middot; Declaring a State of Emergency in preparation for Tropical Storm Hermine</td><td>60</td><td>APPLING, ATKINSON, BACON, BAKER, BEN HILL, BERRIEN, BIBB, BRANTLEY</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
-<tr><td>2014-04-28 &middot; Declaring a State of Emergency due to severe storms</td><td>17</td><td>CHATTOOGA, COBB, GWINNETT, HARRIS, HEARD, LEE, MERIWETHER, MUSCOGEE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr></tbody></table></div>
+<tr><td>2016-01-21 &middot; Declaring a State of Emergency in 21 Georgia counties</td><td>67</td><td>BALDWIN, BANKS, BARROW, BARTOW, CARROLL, CATOOSA, CHATTOOGA, CHEROKEE</td><td>4259</td></tr>
+<tr><td>2016-01-19 &middot; Declaring a State of Emergency in 15 Georgia counties</td><td>66</td><td>BALDWIN, BANKS, BARROW, BARTOW, CARROLL, CATOOSA, CHATTOOGA, CHEROKEE</td><td>4259</td></tr>
+<tr><td>2015-12-24 &middot; Declaring a State of Emergency in Fannin, Gilmer and Pickens Counties</td><td>32</td><td>BARTOW, CARROLL, CHATTAHOOCHEE, CLAYTON, COBB, COLUMBIA, COWETA, DADE</td><td>4259</td></tr>
+<tr><td>2015-02-24 &middot; Declaring a State of Emergency for February 25, 2015</td><td>63</td><td>BANKS, BARTOW, CATOOSA, CHATTOOGA, CHEROKEE, CLAYTON, COBB, DADE</td><td>4215</td></tr>
+<tr><td>2015-02-15 &middot; Declaring a State of Emergency in 15 counties in North Georgia</td><td>30</td><td>BANKS, BARROW, BARTOW, CATOOSA, CHEROKEE, CLARKE, COBB, DADE</td><td>4215</td></tr>
+<tr><td>2014-04-28 &middot; Declaring a State of Emergency due to severe storms</td><td>17</td><td>CHATTOOGA, COBB, GWINNETT, HARRIS, HEARD, LEE, MERIWETHER, MUSCOGEE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2014-02-10 &middot; Declaring a State of Emergency for 14 counties in North Georgia</td><td>97</td><td>BALDWIN, BANKS, BARROW, BARTOW, BIBB, BULLOCH, BURKE, BUTTS</td><td>4165</td></tr>
+<tr><td>2014-01-28 &middot; Declaring a State of Emergency</td><td>147</td><td>APPLING, BACON, BAKER, BALDWIN, BANKS, BARROW, BARTOW, BEN HILL</td><td>4165</td></tr></tbody></table></div>
 </div>
+
+<details class="layer"><summary><span>FEMA declarations with no state declaration on this page</span><span class="count-badge">3 of 24 since 2011</span></summary><div class="details-body"><p class="note">Major disaster and emergency declarations FEMA made for weather in Georgia from 2011, the first year this page covers, with no state declaration on this page within 21 days of the incident period. It can mean the state made no declaration, or that its declaration is not in the sources this page draws on. Fire management declarations, which a state can request without declaring an emergency, and declarations for tribal nations are not counted.</p><div class="table-tools"><label for="filter-federal-gap-table">Filter these declarations</label><input id="filter-federal-gap-table" class="table-search" data-table="federal-gap-table" type="search" placeholder="Search this table…"></div><div class="actions"><table id="federal-gap-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead><tbody><tr><td>2023-01-16</td><td>4685</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES</td><td>Severe Storm</td><td>2023-01-12 to 2023-01-12</td></tr>
+<tr><td>2021-01-12</td><td>4579</td><td>DR</td><td>TROPICAL STORM ZETA</td><td>Hurricane</td><td>2020-10-29 to 2020-10-29</td></tr>
+<tr><td>2011-04-29</td><td>1973</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND ASSOCIATED FLOODING</td><td>Severe Storm</td><td>2011-04-27 to 2011-04-28</td></tr></tbody></table></div></div></details>
 
 <details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">82 records</span></summary>
@@ -261,11 +288,255 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">2,292 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">2,992 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2014-04-29 03:00:00</td><td>CHATTOOGA</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 1</td><td>40.00K</td></tr>
+<tbody><tr><td>2014-01-29 07:30:00</td><td>APPLING</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 09:11:00</td><td>APPLING</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 06:00:00</td><td>BACON</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>BAKER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>BALDWIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>BARROW</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>BEN HILL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>BERRIEN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>BIBB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 11:45:00</td><td>BRANTLEY</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 16:00:00</td><td>BROOKS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>BULLOCH</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 19:00:00</td><td>BURKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 1</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>BUTTS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>CALHOUN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>CANDLER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 14:30:00</td><td>CHARLTON</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>CHATTAHOOCHEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>CHATTOOGA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>CHEROKEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>CLAY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>CLAYTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 16:00:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 13:00:00</td><td>COASTAL GLYNN</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>COASTAL MCINTOSH</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>COBB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 07:57:00</td><td>COFFEE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>COLQUITT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 18:00:00</td><td>COLUMBIA</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>COOK</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>COWETA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>CRAWFORD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>DADE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>DAWSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>DE KALB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>DECATUR</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>DOUGHERTY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>DOUGLAS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>EARLY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 14:00:00</td><td>EFFINGHAM</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>ELBERT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>EMANUEL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 14:00:00</td><td>EVANS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>FANNIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>FORSYTH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>GILMER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>GLASCOCK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>GORDON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>GRADY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>GREENE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>GWINNETT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>HABERSHAM</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>HALL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>HANCOCK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>HARALSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>HARRIS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>HART</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>HEARD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>HENRY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>HOUSTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 14:30:00</td><td>INLAND BRYAN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>INLAND CHATHAM</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 14:30:00</td><td>INLAND LIBERTY</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>INLAND MCINTOSH</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>IRWIN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>JASPER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 07:45:00</td><td>JEFF DAVIS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:30:00</td><td>JENKINS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>JOHNSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>JONES</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>LAMAR</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 16:00:00</td><td>LANIER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 19:00:00</td><td>LINCOLN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 14:30:00</td><td>LONG</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 16:00:00</td><td>LOWNDES</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>LUMPKIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>MACON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>MARION</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 18:00:00</td><td>MCDUFFIE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>MERIWETHER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>MILLER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>MITCHELL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>MONROE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>MORGAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>MURRAY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>MUSCOGEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>NEWTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>NORTH FULTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>OCONEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>OGLETHORPE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>PAULDING</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>PEACH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>PICKENS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 10:30:00</td><td>PIERCE</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>PIKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>POLK</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>PULASKI</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>PUTNAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>QUITMAN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 08:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>RANDOLPH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 18:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>ROCKDALE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>SCHLEY</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 11:30:00</td><td>SCREVEN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>SEMINOLE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>SOUTH FULTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>SPALDING</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>STEPHENS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>STEWART</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>TALBOT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>TALIAFERRO</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>TATTNALL</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>TAYLOR</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>TERRELL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-01-28 16:00:00</td><td>THOMAS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>TIFT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>TOWNS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>TROUP</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 15:00:00</td><td>TURNER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-01-28 10:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 17:00:00</td><td>UPSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>WALKER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>WALTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 10:00:00</td><td>WARE</td><td>NWS forecast zone</td><td>Sleet</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WASHINGTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-29 10:00:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WEBSTER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WHEELER</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>WHITE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 12:00:00</td><td>WHITFIELD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WILCOX</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WILKES</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 22:00:00</td><td>WILKINSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-01-28 13:00:00</td><td>WORTH</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>50.00K</td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>BALDWIN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>BARROW</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>BIBB</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 02:30:00</td><td>BULLOCH</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>BURKE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>BUTTS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 01:30:00</td><td>CANDLER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>CHATTOOGA</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>CHEROKEE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>CLAYTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>COBB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 06:00:00</td><td>COLUMBIA</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>COWETA</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>CRAWFORD</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>DADE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>DAWSON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>DE KALB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>DOUGLAS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 03:30:00</td><td>EFFINGHAM</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 00:00:00</td><td>ELBERT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 23:00:00</td><td>ELBERT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>EMANUEL</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>FANNIN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>FORSYTH</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 00:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 23:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>GILMER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>GLASCOCK</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>GORDON</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>GREENE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>GWINNETT</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 00:00:00</td><td>HABERSHAM</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 23:00:00</td><td>HABERSHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>HALL</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>HANCOCK</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>HARALSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 00:00:00</td><td>HART</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 23:00:00</td><td>HART</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>HEARD</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>HENRY</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>HOUSTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>JASPER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>JEFFERSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 01:30:00</td><td>JENKINS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>JOHNSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>JONES</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>LAMAR</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>LAURENS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>LINCOLN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>LUMPKIN</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 06:00:00</td><td>MCDUFFIE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>MERIWETHER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>MONROE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>MORGAN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>MURRAY</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>NEWTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>NORTH FULTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>OCONEE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>OGLETHORPE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>PAULDING</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>PEACH</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>PICKENS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>PIKE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>POLK</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>PUTNAM</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 00:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 23:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 06:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>ROCKDALE</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 02:30:00</td><td>SCREVEN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>SOUTH FULTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>SPALDING</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 00:00:00</td><td>STEPHENS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 23:00:00</td><td>STEPHENS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>TALIAFERRO</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>TOWNS</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>TROUP</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>TWIGGS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>UPSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>WALKER</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>WALTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>WASHINGTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>WHITE</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-11 07:00:00</td><td>WHITFIELD</td><td>NWS forecast zone</td><td>Heavy Snow</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>WILKES</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-02-12 07:00:00</td><td>WILKINSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2014-04-29 03:00:00</td><td>CHATTOOGA</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 1</td><td>40.00K</td></tr>
 <tr><td>2014-04-29 04:20:00</td><td>COBB</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>25.00K</td></tr>
 <tr><td>2014-04-29 05:00:00</td><td>GWINNETT</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>150.00K</td></tr>
 <tr><td>2014-04-29 04:30:00</td><td>HARRIS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.50K</td></tr>
@@ -282,295 +553,51 @@
 <tr><td>2014-04-29 02:55:00</td><td>WALKER</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>3.50K</td></tr>
 <tr><td>2014-04-29 03:45:00</td><td>WALKER</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>3.00K</td></tr>
 <tr><td>2014-04-28 22:05:00</td><td>WHITFIELD</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td>30.00K</td></tr>
-<tr><td>2016-08-29 18:10:00</td><td>BIBB</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2016-09-02 04:12:00</td><td>CHATHAM</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-08-29 18:04:00</td><td>JONES</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>6.00K</td></tr>
-<tr><td>2016-09-02 02:50:00</td><td>LIBERTY</td><td>county/county-equivalent</td><td>Tornado</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-08-29 16:50:00</td><td>SCREVEN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.25K</td></tr>
-<tr><td>2016-08-29 16:56:00</td><td>SCREVEN</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>APPLING</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>ATKINSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>BACON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>BAKER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>BEN HILL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>BERRIEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>BRANTLEY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>BROOKS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 11:00:00</td><td>BURKE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2016-09-02 03:00:00</td><td>CANDLER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>CHARLTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>CLINCH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>COASTAL CAMDEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 03:00:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 13:06:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>COASTAL GLYNN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 03:00:00</td><td>COASTAL LIBERTY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>COFFEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>COLQUITT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>COOK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>CRISP</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>DECATUR</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>DODGE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>DOUGHERTY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>EMANUEL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>30.00K</td></tr>
-<tr><td>2016-09-02 03:00:00</td><td>EVANS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>GRADY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>120.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>INLAND CAMDEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 03:00:00</td><td>INLAND CHATHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 03:00:00</td><td>INLAND LIBERTY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>IRWIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>JEFF DAVIS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>LANIER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>LAURENS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>6.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>LOWNDES</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>MILLER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>MITCHELL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>52.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>PIERCE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 1</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 11:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2016-09-02 04:00:00</td><td>SCREVEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>SEMINOLE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>TATTNALL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>TELFAIR</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>THOMAS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>140.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>TIFT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>TOOMBS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>TURNER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>WARE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-01 07:00:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>WHEELER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-09-02 02:00:00</td><td>WILCOX</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2016-09-02 00:00:00</td><td>WORTH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2016-10-07 20:00:00</td><td>CHATHAM</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>APPLING</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>BACON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>BRANTLEY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>CHARLTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>COASTAL CAMDEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-07 01:00:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 11:00:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 19:15:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 21:30:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Hurricane (Typhoon)</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>COASTAL GLYNN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-07 07:00:00</td><td>COASTAL LIBERTY</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 07:00:00</td><td>COASTAL MCINTOSH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 17:00:00</td><td>EMANUEL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>60.00K</td></tr>
-<tr><td>2016-10-07 22:13:00</td><td>INLAND BRYAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 22:15:00</td><td>INLAND BRYAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 12:09:00</td><td>INLAND CHATHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 22:00:00</td><td>INLAND LIBERTY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2016-10-07 17:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00K</td></tr>
-<tr><td>2016-10-07 17:00:00</td><td>TOOMBS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2016-10-07 17:00:00</td><td>TREUTLEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>WARE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2016-10-06 07:00:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-05 14:20:00</td><td>CHATTOOGA</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>4.00K</td></tr>
-<tr><td>2017-09-05 17:05:00</td><td>CHEROKEE</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>8.00K</td></tr>
-<tr><td>2017-09-05 17:40:00</td><td>DAWSON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2017-09-05 18:10:00</td><td>FULTON</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>4.00K</td></tr>
-<tr><td>2017-09-05 16:45:00</td><td>PICKENS</td><td>county/county-equivalent</td><td>Thunderstorm Wind</td><td>0 / 0</td><td>5.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>BRANTLEY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>BRANTLEY</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 00:00:00</td><td>BURKE</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 13:00:00</td><td>CHATHAM</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2017-09-11 00:00:00</td><td>COLUMBIA</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 23:00:00</td><td>GORDON</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 00:00:00</td><td>MCDUFFIE</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 06:45:00</td><td>MCINTOSH</td><td>county/county-equivalent</td><td>Flash Flood</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2017-09-11 00:00:00</td><td>RICHMOND</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 00:00:00</td><td>RICHMOND</td><td>county/county-equivalent</td><td>Heavy Rain</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>BAKER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>BALDWIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 14:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>BARROW</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 15:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>BEN HILL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>BERRIEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>BIBB</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>300.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>BLECKLEY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-10 10:00:00</td><td>BRANTLEY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>BROOKS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-11 10:22:00</td><td>BURKE</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 14:33:00</td><td>BURKE</td><td>NWS forecast zone</td><td>Strong Wind</td><td>0 / 0</td><td>0.10K</td></tr>
-<tr><td>2017-09-11 10:00:00</td><td>BUTTS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>CALHOUN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>2.00M</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2017-09-10 11:00:00</td><td>CHARLTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>CHATTAHOOCHEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>CHATTOOGA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>20.00K</td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>CHEROKEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 13:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>CLAY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 10:00:00</td><td>CLAYTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 3</td><td>2.00M</td></tr>
-<tr><td>2017-09-10 11:00:00</td><td>CLINCH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 06:00:00</td><td>COASTAL BRYAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>450.00K</td></tr>
-<tr><td>2017-09-10 10:00:00</td><td>COASTAL CAMDEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 06:00:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00M</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>COASTAL CHATHAM</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td>5.00M</td></tr>
-<tr><td>2017-09-10 12:00:00</td><td>COASTAL GLYNN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>COASTAL LIBERTY</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td>2.90M</td></tr>
-<tr><td>2017-09-11 01:00:00</td><td>COASTAL MCINTOSH</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td>967.00K</td></tr>
-<tr><td>2017-09-11 05:00:00</td><td>COASTAL MCINTOSH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>967.00K</td></tr>
-<tr><td>2017-09-11 14:00:00</td><td>COBB</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>COLQUITT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>2.00M</td></tr>
-<tr><td>2017-09-11 10:20:00</td><td>COLUMBIA</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 15:35:00</td><td>COLUMBIA</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 16:25:00</td><td>COLUMBIA</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>COOK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>COWETA</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>CRAWFORD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>CRISP</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>DADE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>DAWSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>600.00K</td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>DE KALB</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>12.00M</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>DECATUR</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 05:00:00</td><td>DODGE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>DOOLY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>DOUGHERTY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00M</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>DOUGLAS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>EARLY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>ELBERT</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-11 06:00:00</td><td>EMANUEL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>300.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>FANNIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>FAYETTE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 15:00:00</td><td>FLOYD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2017-09-11 14:00:00</td><td>FORSYTH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>1 / 1</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>GILMER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>GLASCOCK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>GORDON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>40.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>GRADY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>GREENE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>175.00K</td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>GWINNETT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>3.00M</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>HABERSHAM</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-11 13:00:00</td><td>HALL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>HANCOCK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 14:00:00</td><td>HARALSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>40.00K</td></tr>
-<tr><td>2017-09-11 10:00:00</td><td>HARRIS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>HART</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>HEARD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>HENRY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>HOUSTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 1</td><td>300.00K</td></tr>
-<tr><td>2017-09-11 06:00:00</td><td>INLAND CHATHAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>5.00M</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>INLAND CHATHAM</td><td>NWS forecast zone</td><td>Storm Surge/Tide</td><td>0 / 0</td><td>5.00M</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>IRWIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-11 13:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>JASPER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>JEFFERSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 06:00:00</td><td>JOHNSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>JONES</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>LAMAR</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>LANIER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-11 05:00:00</td><td>LAURENS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>LEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>2.00M</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>LOWNDES</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>9.00M</td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>LUMPKIN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>375.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>MACON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 13:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>MARION</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>MERIWETHER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>MILLER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>MITCHELL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>MONROE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 04:00:00</td><td>MONTGOMERY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>MORGAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>MURRAY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>MUSCOGEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>185.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>NEWTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>NORTH FULTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>1 / 0</td><td>250.00K</td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>OCONEE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>OGLETHORPE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-11 14:00:00</td><td>PAULDING</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>40.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>PEACH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>PICKENS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-10 10:00:00</td><td>PIERCE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>PIKE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 15:00:00</td><td>POLK</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>PULASKI</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>PUTNAM</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>75.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>QUITMAN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>RANDOLPH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 09:30:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 14:10:00</td><td>RICHMOND</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>ROCKDALE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>SCHLEY</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>SEMINOLE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 10:00:00</td><td>SOUTH FULTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>SPALDING</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>700.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>STEPHENS</td><td>NWS forecast zone</td><td>High Wind</td><td>0 / 0</td><td>10.00K</td></tr>
-<tr><td>2017-09-11 09:00:00</td><td>STEWART</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>SUMTER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 10:00:00</td><td>TALBOT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>TALIAFERRO</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>TAYLOR</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 04:00:00</td><td>TELFAIR</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>TERRELL</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>THOMAS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>1.00M</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>TIFT</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>500.00K</td></tr>
-<tr><td>2017-09-11 04:00:00</td><td>TOOMBS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-11 17:00:00</td><td>TOWNS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>30.00K</td></tr>
-<tr><td>2017-09-11 05:00:00</td><td>TREUTLEN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>TROUP</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>TURNER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>2.00M</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>TWIGGS</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>UNION</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>UPSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>250.00K</td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>WALKER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>25.00K</td></tr>
-<tr><td>2017-09-11 12:00:00</td><td>WALTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-10 12:00:00</td><td>WARE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-10 12:00:00</td><td>WARE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>WARREN</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>WASHINGTON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>150.00K</td></tr>
-<tr><td>2017-09-10 10:00:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-10 11:00:00</td><td>WAYNE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>WEBSTER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 04:00:00</td><td>WHEELER</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>WHITE</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>50.00K</td></tr>
-<tr><td>2017-09-11 16:00:00</td><td>WHITFIELD</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>15.00K</td></tr>
-<tr><td>2017-09-11 07:00:00</td><td>WILCOX</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-11 11:00:00</td><td>WILKES</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>200.00K</td></tr>
-<tr><td>2017-09-11 08:00:00</td><td>WILKINSON</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>100.00K</td></tr>
-<tr><td>2017-09-10 22:00:00</td><td>WORTH</td><td>NWS forecast zone</td><td>Tropical Storm</td><td>0 / 0</td><td>2.00M</td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>BAKER</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 03:00:00</td><td>BALDWIN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>BARROW</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 18:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>BEN HILL</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 02:00:00</td><td>BIBB</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 05:00:00</td><td>BLECKLEY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 02:00:00</td><td>BUTTS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>CALHOUN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>CARROLL</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 15:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>CHATTAHOOCHEE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 15:00:00</td><td>CHATTOOGA</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 18:00:00</td><td>CHEROKEE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>CLAY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>CLAYTON</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 18:00:00</td><td>COBB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>COLQUITT</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>COWETA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 03:00:00</td><td>CRAWFORD</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 05:00:00</td><td>CRISP</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 15:00:00</td><td>DADE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 18:00:00</td><td>DAWSON</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>DE KALB</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 05:00:00</td><td>DODGE</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 05:00:00</td><td>DOOLY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-17 04:00:00</td><td>DOUGHERTY</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
-<tr><td>2018-01-16 20:00:00</td><td>DOUGLAS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr></tbody></table></div></div>
+<tr><td>2015-02-16 14:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 18:00:00</td><td>BARROW</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 18:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 12:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 11:30:00</td><td>CHEROKEE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 15:00:00</td><td>CLARKE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 16:00:00</td><td>COBB</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 15:00:00</td><td>DADE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 14:00:00</td><td>DAWSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 14:00:00</td><td>ELBERT</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2015-02-16 12:00:00</td><td>FANNIN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 13:00:00</td><td>FORSYTH</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 14:00:00</td><td>FRANKLIN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2015-02-16 11:30:00</td><td>GILMER</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 13:00:00</td><td>GWINNETT</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 13:00:00</td><td>HABERSHAM</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 22:00:00</td><td>HABERSHAM</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 12:00:00</td><td>HALL</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 14:00:00</td><td>HART</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td>5.00K</td></tr>
+<tr><td>2015-02-16 13:00:00</td><td>JACKSON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 11:30:00</td><td>LUMPKIN</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 14:00:00</td><td>MADISON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 14:30:00</td><td>NORTH FULTON</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 15:00:00</td><td>OGLETHORPE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 12:00:00</td><td>PICKENS</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-16 13:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 13:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-18 22:00:00</td><td>RABUN</td><td>NWS forecast zone</td><td>Cold/Wind Chill</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 13:00:00</td><td>STEPHENS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td>0.00K</td></tr>
+<tr><td>2015-02-16 11:00:00</td><td>WHITE</td><td>NWS forecast zone</td><td>Ice Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-24 03:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-24 03:00:00</td><td>BANKS</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-25 13:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-25 13:00:00</td><td>BARTOW</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-24 01:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Winter Weather</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-25 13:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-25 13:00:00</td><td>CATOOSA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-25 13:00:00</td><td>CHATTOOGA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr>
+<tr><td>2015-02-25 13:00:00</td><td>CHATTOOGA</td><td>NWS forecast zone</td><td>Winter Storm</td><td>0 / 0</td><td></td></tr></tbody></table></div></div>
 </details>
 
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-18 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-20 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

@@ -6,7 +6,16 @@
   "collection_failed": false,
   "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
   "coverage_base": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 23,
+    "count": 2,
+    "ids": [
+      "DR-4879",
+      "DR-4223"
+    ],
+    "since": 2015
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
@@ -21,10 +30,20 @@
   "source_records_returned": 58,
   "source_records_saved_before": 58,
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 1,
+    "federal_matched": 44,
+    "fmcsa_archive": 0,
+    "noaa_matched": 57,
+    "noaa_none": 0,
+    "noaa_pending": 1,
+    "reviewed_not_weather": 1,
+    "state_archive": 57
+  },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 234.8,
-    "storm_join_seconds": 0.7
+    "collect_seconds": 1471.7,
+    "storm_join_seconds": 1.0
   }
 }

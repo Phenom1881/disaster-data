@@ -69,6 +69,9 @@
     details.layer[open] > summary { border-bottom:1px solid var(--line); }
     details.layer > .details-body { padding:0 1rem 1rem; }
     .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    ul.sources { list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
+      padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }
+    ul.sources strong { color:var(--accent); }
     [hidden] { display:none !important; }
     @media (max-width:640px) {
       main { padding:1.25rem .75rem 3rem; }
@@ -94,32 +97,34 @@
 <div class="layer primary">
 <h2>State weather declarations</h2>
 <p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<ul class="sources"><li><strong>19</strong> from the state's own archive</li><li>14 records from these sources were reviewed as not weather emergencies and left off</li></ul>
 <div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
-<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-03-13</td><td>26-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/26-06.pdf">Burn Permit Suspension</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2026-01-23</td><td>26-01</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/26-01.pdf">Meeting Power Demands Due to the State of Emergency</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2025-04-23</td><td>25-08</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/25-08.pdf">Burn Permit Suspension</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2025-03-25</td><td>25-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/25-06.pdf">Emergency Relief Due to Power Outages Caused by Winter Storm</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2024-07-01</td><td>24-07</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/24-07.pdf">Emergency Relief from Hours of Service Requirements for Transportation of Goods Due to Flooding</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2024-07-01</td><td>24-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/24-06.pdf">Emergency Relief from Overweight Vehicle Requirements for Transportation of Goods Due to Flooding</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2024-01-12</td><td>24-01</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/24-01.pdf">Emergency Relief for Fuel Supply Shortages Due to Extreme Cold Temperatures</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2023-08-24</td><td>23-15</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/23-15.pdf">Emergency Relief for Power Providers Due to Heat Wave</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2023-04-13</td><td>23-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/23-06.pdf">Open Fire Ban</a></td><td>declaration</td><td>Jim Pillen</td></tr>
-<tr><td>2021-02-16</td><td>21-04</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/21-04.pdf">Emergency Motor Carrier Relief Due to Extreme Cold Temperatures</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2019-04-10</td><td>19-07</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-07.pdf">Emergency Relief Due to Weather Events - Executive Orders Extended</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2019-04-03</td><td>19-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-06.pdf">Emergency Relief Due to Weather Events - Landfill Disposal Fee</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2019-03-21</td><td>19-05</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-05.pdf">Emergency Relief Due to Weather Events - Locate Requests</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2019-03-20</td><td>19-04</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-04.pdf">Emergency Relief Due to Weather Events - Registrations &amp; Permits</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2019-03-19</td><td>19-03</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-03.pdf">Emergency Relief Due to Weather Events - Livestock Operations</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2019-03-15</td><td>19-02</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-02.pdf">Emergency Relief Due to Weather Events</a></td><td>declaration</td><td>Pete Ricketts</td></tr>
-<tr><td>2005-09-09</td><td>05-7</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/05-07.pdf">Hurricane Katrina: Disaster emergency declaration</a></td><td>declaration</td><td>Dave Heineman</td></tr>
-<tr><td>2005-09-07</td><td>05-6</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/05-06.pdf">Supplemental emergency relief: Hurricane Katrina</a></td><td>declaration</td><td>Dave Heineman</td></tr>
-<tr><td>2005-09-02</td><td>05-5</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/05-05.pdf">Emergency relief for damage caused by Hurricane Katrina</a></td><td>declaration</td><td>Dave Heineman</td></tr></tbody></table></div>
+<div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Source">Source <span aria-hidden="true">↕</span></button></th></tr></thead>
+<tbody><tr><td>2026-03-13</td><td>26-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/26-06.pdf">Burn Permit Suspension</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2026-01-23</td><td>26-01</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/26-01.pdf">Meeting Power Demands Due to the State of Emergency</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2025-04-23</td><td>25-08</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/25-08.pdf">Burn Permit Suspension</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2025-03-25</td><td>25-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/25-06.pdf">Emergency Relief Due to Power Outages Caused by Winter Storm</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2024-07-01</td><td>24-07</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/24-07.pdf">Emergency Relief from Hours of Service Requirements for Transportation of Goods Due to Flooding</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2024-07-01</td><td>24-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/24-06.pdf">Emergency Relief from Overweight Vehicle Requirements for Transportation of Goods Due to Flooding</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2024-01-12</td><td>24-01</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/24-01.pdf">Emergency Relief for Fuel Supply Shortages Due to Extreme Cold Temperatures</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2023-08-24</td><td>23-15</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/23-15.pdf">Emergency Relief for Power Providers Due to Heat Wave</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2023-04-13</td><td>23-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/23-06.pdf">Open Fire Ban</a></td><td>declaration</td><td>Jim Pillen</td><td>State archive</td></tr>
+<tr><td>2021-02-16</td><td>21-04</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/21-04.pdf">Emergency Motor Carrier Relief Due to Extreme Cold Temperatures</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2019-04-10</td><td>19-07</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-07.pdf">Emergency Relief Due to Weather Events - Executive Orders Extended</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2019-04-03</td><td>19-06</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-06.pdf">Emergency Relief Due to Weather Events - Landfill Disposal Fee</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2019-03-21</td><td>19-05</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-05.pdf">Emergency Relief Due to Weather Events - Locate Requests</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2019-03-20</td><td>19-04</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-04.pdf">Emergency Relief Due to Weather Events - Registrations &amp; Permits</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2019-03-19</td><td>19-03</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-03.pdf">Emergency Relief Due to Weather Events - Livestock Operations</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2019-03-15</td><td>19-02</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/19-02.pdf">Emergency Relief Due to Weather Events</a></td><td>declaration</td><td>Pete Ricketts</td><td>State archive</td></tr>
+<tr><td>2005-09-09</td><td>05-7</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/05-07.pdf">Hurricane Katrina: Disaster emergency declaration</a></td><td>declaration</td><td>Dave Heineman</td><td>State archive</td></tr>
+<tr><td>2005-09-07</td><td>05-6</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/05-06.pdf">Supplemental emergency relief: Hurricane Katrina</a></td><td>declaration</td><td>Dave Heineman</td><td>State archive</td></tr>
+<tr><td>2005-09-02</td><td>05-5</td><td><a href="https://govdocs.nebraska.gov/docs/pilot/pubs/eofiles/05-05.pdf">Emergency relief for damage caused by Hurricane Katrina</a></td><td>declaration</td><td>Dave Heineman</td><td>State archive</td></tr></tbody></table></div>
 </div>
 
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
+<p class="note">14 of the 19 declarations on this page have NOAA storm reports nearby. 15 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-03-13 &middot; Burn Permit Suspension</td><td>140</td><td>ADAMS, ANTELOPE, ARTHUR, BANNER, BLAINE, BOONE, BOX BUTTE, BOYD</td><td>4920</td></tr>
@@ -142,6 +147,67 @@
 <tr><td>2005-09-07 &middot; Supplemental emergency relief: Hurricane Katrina</td><td>4</td><td>BROWN, COLFAX, HITCHCOCK, PHELPS</td><td>3245</td></tr>
 <tr><td>2005-09-02 &middot; Emergency relief for damage caused by Hurricane Katrina</td><td>3</td><td>COLFAX, HITCHCOCK, PHELPS</td><td>3245</td></tr></tbody></table></div>
 </div>
+
+<details class="layer"><summary><span>FEMA declarations with no state declaration on this page</span><span class="count-badge">60 of 65 since 1970</span></summary><div class="details-body"><p class="note">Major disaster and emergency declarations FEMA made for weather in Nebraska from 1970, the first year this page covers, with no state declaration on this page within 21 days of the incident period. It can mean the state made no declaration, or that its declaration is not in the sources this page draws on. Fire management declarations, which a state can request without declaring an emergency, and declarations for tribal nations are not counted.</p><div class="table-tools"><label for="filter-federal-gap-table">Filter these declarations</label><input id="filter-federal-gap-table" class="table-search" data-table="federal-gap-table" type="search" placeholder="Search this table…"></div><div class="actions"><table id="federal-gap-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Title">Title <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Incident type">Incident type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Incident period">Incident period <span aria-hidden="true">↕</span></button></th></tr></thead><tbody><tr><td>2026-08-03</td><td>4928</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2026-05-15 to 2026-05-18</td></tr>
+<tr><td>2025-10-22</td><td>4896</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2025-08-08 to 2025-08-10</td></tr>
+<tr><td>2024-10-21</td><td>4838</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2024-07-31 to 2024-07-31</td></tr>
+<tr><td>2024-08-20</td><td>4808</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2024-05-20 to 2024-06-03</td></tr>
+<tr><td>2024-05-24</td><td>4786</td><td>DR</td><td>SEVERE WINTER STORM AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2024-04-06 to 2024-04-07</td></tr>
+<tr><td>2024-05-03</td><td>4778</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES</td><td>Tornado</td><td>2024-04-25 to 2024-04-27</td></tr>
+<tr><td>2022-07-27</td><td>4662</td><td>DR</td><td>SEVERE STORMS AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2022-05-12 to 2022-05-12</td></tr>
+<tr><td>2022-02-23</td><td>4641</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES</td><td>Severe Storm</td><td>2021-12-15 to 2021-12-15</td></tr>
+<tr><td>2021-09-06</td><td>4616</td><td>DR</td><td>SEVERE STORMS AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2021-07-09 to 2021-07-10</td></tr>
+<tr><td>2018-08-27</td><td>4387</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2018-06-17 to 2018-07-01</td></tr>
+<tr><td>2018-06-29</td><td>4375</td><td>DR</td><td>SEVERE WINTER STORM AND STRAIGHT-LINE WINDS</td><td>Snowstorm</td><td>2018-04-13 to 2018-04-18</td></tr>
+<tr><td>2017-08-01</td><td>4325</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2017-06-12 to 2017-06-17</td></tr>
+<tr><td>2017-06-26</td><td>4321</td><td>DR</td><td>SEVERE WINTER STORM AND STRAIGHT-LINE WINDS</td><td>Severe Storm</td><td>2017-04-29 to 2017-05-03</td></tr>
+<tr><td>2015-06-25</td><td>4225</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2015-05-06 to 2015-06-17</td></tr>
+<tr><td>2014-07-28</td><td>4185</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2014-06-01 to 2014-06-04</td></tr>
+<tr><td>2014-07-24</td><td>4183</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2014-06-14 to 2014-06-21</td></tr>
+<tr><td>2014-06-17</td><td>4179</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Tornado</td><td>2014-05-11 to 2014-05-12</td></tr>
+<tr><td>2013-11-26</td><td>4156</td><td>DR</td><td>SEVERE STORMS, WINTER STORMS, TORNADOES AND FLOODING</td><td>Severe Storm</td><td>2013-10-02 to 2013-10-06</td></tr>
+<tr><td>2011-08-12</td><td>4014</td><td>DR</td><td>SEVERE STORMS, TORNADOES, STRAIGHT LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2011-06-19 to 2011-06-21</td></tr>
+<tr><td>2011-08-12</td><td>4013</td><td>DR</td><td>FLOODING</td><td>Flood</td><td>2011-05-24 to 2011-08-01</td></tr>
+<tr><td>2011-06-18</td><td>3323</td><td>EM</td><td>FLOODING</td><td>Flood</td><td>2011-06-17 to 2011-08-01</td></tr>
+<tr><td>2010-10-21</td><td>1945</td><td>DR</td><td>SEVERE STORMS, FLOODING, TORNADO, AND STRAIGHT-LIN</td><td>Severe Storm</td><td>2010-09-13 to 2010-09-14</td></tr>
+<tr><td>2010-07-15</td><td>1924</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2010-06-01 to 2010-08-29</td></tr>
+<tr><td>2010-04-21</td><td>1902</td><td>DR</td><td>SEVERE STORMS, ICE JAMS, AND FLOODING</td><td>Flood</td><td>2010-03-06 to 2010-04-03</td></tr>
+<tr><td>2010-02-25</td><td>1878</td><td>DR</td><td>SEVERE WINTER STORMS AND SNOWSTORM</td><td>Severe Storm</td><td>2009-12-22 to 2010-01-08</td></tr>
+<tr><td>2009-12-16</td><td>1864</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Severe Storm</td><td>2009-11-16 to 2009-11-17</td></tr>
+<tr><td>2009-07-31</td><td>1853</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND TORNADOES</td><td>Severe Storm</td><td>2009-06-05 to 2009-06-26</td></tr>
+<tr><td>2008-07-18</td><td>1779</td><td>DR</td><td>SEVERE STORMS, STRAIGHT-LINE WINDS, AND FLOODING</td><td>Severe Storm</td><td>2008-06-27 to 2008-06-27</td></tr>
+<tr><td>2008-06-20</td><td>1770</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2008-05-22 to 2008-06-24</td></tr>
+<tr><td>2008-05-30</td><td>1765</td><td>DR</td><td>SEVERE STORMS, TORNADOES, AND FLOODING</td><td>Severe Storm</td><td>2008-04-23 to 2008-04-26</td></tr>
+<tr><td>2008-01-11</td><td>1739</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Severe Ice Storm</td><td>2007-12-10 to 2007-12-12</td></tr>
+<tr><td>2007-08-29</td><td>1721</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2007-06-11 to 2007-06-16</td></tr>
+<tr><td>2007-07-24</td><td>1714</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2007-05-28 to 2007-06-02</td></tr>
+<tr><td>2007-06-06</td><td>1706</td><td>DR</td><td>SEVERE STORMS, FLOODING, AND TORNADOES</td><td>Severe Storm</td><td>2007-05-04 to 2007-05-19</td></tr>
+<tr><td>2007-01-07</td><td>1674</td><td>DR</td><td>SEVERE WINTER STORMS</td><td>Severe Storm</td><td>2006-12-19 to 2007-01-01</td></tr>
+<tr><td>2006-01-26</td><td>1627</td><td>DR</td><td>SEVERE WINTER STORM</td><td>Severe Storm</td><td>2005-11-27 to 2005-11-28</td></tr>
+<tr><td>2005-06-23</td><td>1590</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>2005-05-11 to 2005-05-12</td></tr>
+<tr><td>2004-05-25</td><td>1517</td><td>DR</td><td>SEVERE STORMS, TORNADOES AND FLOODING</td><td>Severe Storm</td><td>2004-05-20 to 2004-06-01</td></tr>
+<tr><td>2003-07-21</td><td>1480</td><td>DR</td><td>SEVERE STORMS AND TORNADOES</td><td>Severe Storm</td><td>2003-06-09 to 2003-07-14</td></tr>
+<tr><td>2001-10-12</td><td>1394</td><td>DR</td><td>SEVERE STORMS AND A TORNADO</td><td>Severe Storm</td><td>2001-08-17 to 2001-08-18</td></tr>
+<tr><td>2001-05-16</td><td>1373</td><td>DR</td><td>SEVERE WINTER STORMS, FLOODING AND TORNADOES</td><td>Severe Storm</td><td>2001-04-10 to 2001-04-23</td></tr>
+<tr><td>1999-08-20</td><td>1286</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Severe Storm</td><td>1999-08-06 to 1999-08-09</td></tr>
+<tr><td>1997-11-01</td><td>1190</td><td>DR</td><td>SEVERE SNOW STORMS, RAIN, AND STRONG WINDS</td><td>Severe Storm</td><td>1997-10-24 to 1997-10-26</td></tr>
+<tr><td>1996-06-25</td><td>1123</td><td>DR</td><td>SEVERE STORMS AND TORNADOES</td><td>Severe Storm</td><td>1996-05-08 to 1996-05-28</td></tr>
+<tr><td>1994-05-09</td><td>1027</td><td>DR</td><td>SEVERE SNOW AND ICE STORM</td><td>Snowstorm</td><td>1994-04-10 to 1994-04-13</td></tr>
+<tr><td>1993-07-19</td><td>998</td><td>DR</td><td>SEVERE STORMS AND FLOODING</td><td>Flood</td><td>1993-06-23 to 1993-08-05</td></tr>
+<tr><td>1993-04-02</td><td>983</td><td>DR</td><td>ICE JAMS &amp; FLOODING</td><td>Flood</td><td>1993-03-07 to 1993-03-21</td></tr>
+<tr><td>1992-08-19</td><td>954</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1992-07-11 to 1992-07-29</td></tr>
+<tr><td>1991-05-28</td><td>908</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1991-05-10 to 1991-06-15</td></tr>
+<tr><td>1990-07-04</td><td>873</td><td>DR</td><td>SEVERE STORMS, TORNADOES &amp; FLOODING</td><td>Severe Storm</td><td>1990-06-10 to 1990-07-30</td></tr>
+<tr><td>1984-07-19</td><td>718</td><td>DR</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1984-04-25 to 1984-04-25</td></tr>
+<tr><td>1984-07-03</td><td>716</td><td>DR</td><td>TORNADOES &amp; FLOODING</td><td>Tornado</td><td>1984-06-11 to 1984-06-22</td></tr>
+<tr><td>1980-06-04</td><td>625</td><td>DR</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1980-06-04 to 1980-06-04</td></tr>
+<tr><td>1978-03-24</td><td>552</td><td>DR</td><td>STORMS, ICE JAMS, SNOWMELT &amp; FLOODING</td><td>Flood</td><td>1978-03-24 to 1978-03-24</td></tr>
+<tr><td>1977-01-18</td><td>3022</td><td>EM</td><td>DROUGHT</td><td>Drought</td><td>1977-01-18 to 1977-01-18</td></tr>
+<tr><td>1976-04-08</td><td>500</td><td>DR</td><td>ICE STORMS &amp; HIGH WINDS</td><td>Severe Ice Storm</td><td>1976-04-08 to 1976-04-08</td></tr>
+<tr><td>1975-05-07</td><td>467</td><td>DR</td><td>SEVERE STORMS &amp; TORNADOES</td><td>Tornado</td><td>1975-05-07 to 1975-05-07</td></tr>
+<tr><td>1973-10-20</td><td>406</td><td>DR</td><td>SEVERE STORMS &amp; FLOODING</td><td>Flood</td><td>1973-10-20 to 1973-10-20</td></tr>
+<tr><td>1971-07-07</td><td>308</td><td>DR</td><td>FLOODS</td><td>Flood</td><td>1971-07-07 to 1971-07-07</td></tr>
+<tr><td>1971-02-23</td><td>303</td><td>DR</td><td>FLOODS</td><td>Flood</td><td>1971-02-23 to 1971-02-23</td></tr></tbody></table></div></div></details>
 
 <details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">88 records</span></summary>
@@ -548,7 +614,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-18 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-20 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

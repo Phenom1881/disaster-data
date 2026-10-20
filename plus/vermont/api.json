@@ -6,6 +6,7 @@
       "date_signed": "2024-07-10",
       "declaration_id": "VT-EO-03-23-AR-2024-07-10",
       "governor": "Philip B. Scott",
+      "origin": "hand",
       "source_url": "https://governor.vermont.gov/document/amended-and-restated-executive-order-no-03-23",
       "state": "VT",
       "title": "Statewide state of emergency, Guard call-out and emergency plan activation ahead of the remnants of Hurricane Beryl"
@@ -16,6 +17,7 @@
       "date_signed": "2023-07-09",
       "declaration_id": "VT-EO-03-23",
       "governor": "Phil Scott",
+      "origin": "state",
       "source_url": "https://governor.vermont.gov/document/executive-order-03-23-emergency-declaration",
       "state": "VT",
       "title": "Executive Order No. 03-23 Declaration of State of Emergency"
@@ -26,6 +28,7 @@
       "date_signed": "2018-01-03",
       "declaration_id": "VT-FMCSA-7EB12A53B354",
       "governor": "",
+      "origin": "fmcsa",
       "source_url": "https://www.fmcsa.dot.gov/emergency/state-vermont-declaration-emergency-notice-title-49-cfr-39023",
       "state": "VT",
       "title": "State of vermont Declaration Of Emergency Notice 49 CFR 390.23. From FMCSA's copy: below average cold temperatures, continued weather activities and high demands for fuel regionally"
@@ -36,6 +39,7 @@
       "date_signed": "2015-07-20",
       "declaration_id": "VT-EO-05-15",
       "governor": "Peter Shumlin",
+      "origin": "hand",
       "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00050",
       "state": "VT",
       "title": "Executive Order No. 05-15 State of Emergency in Washington County due to excessive rainfall, Guard Call-Out"
@@ -46,6 +50,7 @@
       "date_signed": "2012-10-29",
       "declaration_id": "VT-EO-11-12",
       "governor": "Peter Shumlin",
+      "origin": "hand",
       "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00046",
       "state": "VT",
       "title": "Executive Order No. 11-12 Declaration of State of Emergency due to Storm Sandy"
@@ -56,6 +61,7 @@
       "date_signed": "2011-08-27",
       "declaration_id": "VT-EO-11-11",
       "governor": "Peter Shumlin",
+      "origin": "hand",
       "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00041",
       "state": "VT",
       "title": "Executive Order No. 11-11 Declaration of State of Emergency and Guard Call-Out: extremely high winds, excessive rain and flooding from Hurricane Irene and related storms"
@@ -66,6 +72,7 @@
       "date_signed": "2011-05-27",
       "declaration_id": "VT-EO-06-11",
       "governor": "Peter Shumlin",
+      "origin": "hand",
       "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-40/",
       "state": "VT",
       "title": "Emergency and Guard call-out for flash flooding in Washington, Orange, Essex, Lamoille, Caledonia, Rutland, Orleans and Chittenden counties"
@@ -76,6 +83,7 @@
       "date_signed": "2011-05-05",
       "declaration_id": "VT-EO-03-11",
       "governor": "Peter Shumlin",
+      "origin": "hand",
       "source_url": "https://legislature.vermont.gov/statutes/section/03APPENDIX/020/00038",
       "state": "VT",
       "title": "Executive Order No. 03-11 Declaration of Emergency: excessive wind and rainfall combined with water runoff and resulting damages beginning April 23, 2011"
@@ -86,6 +94,7 @@
       "date_signed": "2008-12-15",
       "declaration_id": "VT-EO-05-08",
       "governor": "James H. Douglas",
+      "origin": "hand",
       "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-37/",
       "state": "VT",
       "title": "State of emergency for the ice storm in Bennington, Orange, Windham and Windsor counties"
@@ -96,6 +105,7 @@
       "date_signed": "2007-04-17",
       "declaration_id": "VT-EO-04-07",
       "governor": "James H. Douglas",
+      "origin": "hand",
       "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-34/",
       "state": "VT",
       "title": "Statewide state of emergency for the April 2007 nor'easter: rain, snow, high winds, flooding and outages"
@@ -106,12 +116,13 @@
       "date_signed": "2002-06-12",
       "declaration_id": "VT-EO-05-02",
       "governor": "Howard Dean",
+      "origin": "hand",
       "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-28/",
       "state": "VT",
       "title": "State of emergency for Caledonia County flooding"
     }
   ],
-  "coverage": "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2024-07-10",
@@ -446,7 +457,203 @@
     }
   ],
   "federal_match_window_days": 21,
-  "generated_on": "2026-10-18",
+  "federal_without_state": {
+    "compared": 29,
+    "declarations": [
+      {
+        "begin": "2024-08-08",
+        "date": "2024-08-08",
+        "end": "2024-08-10",
+        "id": "EM-3609",
+        "incidentType": "Tropical Storm",
+        "number": 3609,
+        "title": "TROPICAL DEPRESSION DEBBY",
+        "type": "EM"
+      },
+      {
+        "begin": "2024-01-09",
+        "date": "2024-04-19",
+        "end": "2024-01-13",
+        "id": "DR-4770",
+        "incidentType": "Severe Storm",
+        "number": 4770,
+        "title": "SEVERE WINTER STORM",
+        "type": "DR"
+      },
+      {
+        "begin": "2023-12-18",
+        "date": "2024-03-02",
+        "end": "2023-12-19",
+        "id": "DR-4762",
+        "incidentType": "Severe Storm",
+        "number": 4762,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2023-08-03",
+        "date": "2023-10-06",
+        "end": "2023-08-05",
+        "id": "DR-4744",
+        "incidentType": "Flood",
+        "number": 4744,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2022-12-22",
+        "date": "2023-03-20",
+        "end": "2022-12-24",
+        "id": "DR-4695",
+        "incidentType": "Severe Storm",
+        "number": 4695,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2021-07-29",
+        "date": "2021-09-29",
+        "end": "2021-07-30",
+        "id": "DR-4621",
+        "incidentType": "Flood",
+        "number": 4621,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2021-08-22",
+        "date": "2021-08-22",
+        "end": "2021-08-29",
+        "id": "EM-3567",
+        "incidentType": "Hurricane",
+        "number": 3567,
+        "title": "TROPICAL STORM HENRI",
+        "type": "EM"
+      },
+      {
+        "begin": "2019-10-31",
+        "date": "2020-01-17",
+        "end": "2019-11-01",
+        "id": "DR-4474",
+        "incidentType": "Severe Storm",
+        "number": 4474,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2019-04-15",
+        "date": "2019-06-14",
+        "end": "2019-04-15",
+        "id": "DR-4445",
+        "incidentType": "Flood",
+        "number": 4445,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2018-05-04",
+        "date": "2018-07-30",
+        "end": "2018-05-05",
+        "id": "DR-4380",
+        "incidentType": "Severe Storm",
+        "number": 4380,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2017-10-29",
+        "date": "2018-01-02",
+        "end": "2017-10-30",
+        "id": "DR-4356",
+        "incidentType": "Severe Storm",
+        "number": 4356,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2017-06-29",
+        "date": "2017-08-16",
+        "end": "2017-07-01",
+        "id": "DR-4330",
+        "incidentType": "Severe Storm",
+        "number": 4330,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2015-06-09",
+        "date": "2015-07-29",
+        "end": "2015-06-09",
+        "id": "DR-4232",
+        "incidentType": "Severe Storm",
+        "number": 4232,
+        "title": "SEVERE STORM AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2014-12-09",
+        "date": "2015-02-03",
+        "end": "2014-12-12",
+        "id": "DR-4207",
+        "incidentType": "Severe Storm",
+        "number": 4207,
+        "title": "SEVERE WINTER STORM",
+        "type": "DR"
+      },
+      {
+        "begin": "2014-04-15",
+        "date": "2014-06-11",
+        "end": "2014-04-18",
+        "id": "DR-4178",
+        "incidentType": "Flood",
+        "number": 4178,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2013-12-20",
+        "date": "2014-01-29",
+        "end": "2013-12-26",
+        "id": "DR-4163",
+        "incidentType": "Severe Ice Storm",
+        "number": 4163,
+        "title": "SEVERE WINTER STORMS",
+        "type": "DR"
+      },
+      {
+        "begin": "2013-06-25",
+        "date": "2013-08-02",
+        "end": "2013-07-11",
+        "id": "DR-4140",
+        "incidentType": "Flood",
+        "number": 4140,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2013-05-22",
+        "date": "2013-06-13",
+        "end": "2013-05-26",
+        "id": "DR-4120",
+        "incidentType": "Flood",
+        "number": 4120,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2012-05-29",
+        "date": "2012-06-22",
+        "end": "2012-05-29",
+        "id": "DR-4066",
+        "incidentType": "Severe Storm",
+        "number": 4066,
+        "title": "SEVERE STORM, TORNADO, AND FLOODING",
+        "type": "DR"
+      }
+    ],
+    "since": 2011
+  },
+  "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 11,
@@ -460,5 +667,15 @@
   "schema_version": 1,
   "slug": "vermont",
   "source_status": "ok",
+  "sources": {
+    "added_by_hand": 9,
+    "federal_matched": 8,
+    "fmcsa_archive": 1,
+    "noaa_matched": 11,
+    "noaa_none": 0,
+    "noaa_pending": 0,
+    "reviewed_not_weather": 0,
+    "state_archive": 1
+  },
   "state": "VT"
 }
