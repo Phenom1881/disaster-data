@@ -913,6 +913,8 @@ def find_federal_match(action: dict, federal_declarations: list[dict],
     best = None
     best_gap = None
     for declaration in federal_declarations:
+        if declaration.get("incidentType") not in MATCH_INCIDENT_TYPES:
+            continue
         begin = parse_iso_date(declaration.get("begin")) or parse_iso_date(declaration.get("date"))
         end = parse_iso_date(declaration.get("end")) or begin
         if begin is None:
@@ -994,6 +996,15 @@ WEATHER_INCIDENT_TYPES = frozenset({
     "Straight-Line Winds", "Tornado", "Tropical Depression", "Tropical Storm",
     "Typhoon", "Winter Storm",
 })
+# What a state weather declaration is paired with in the crosswalk: the
+# weather incident types above plus dam and levee breaks, which FEMA files
+# for storm floods (Michigan's DR-4547, the May 2020 Midland dam failures,
+# is "Severe Storms and Flooding"). Not COVID-19: each state's declaration
+# runs from January 2020 to May 2023, so a weather order from those years
+# with no FEMA weather declaration nearby was paired with it (191 of the
+# site's 1,362 matches in October 2026). Not an earthquake, a volcanic
+# eruption or seawater intrusion either.
+MATCH_INCIDENT_TYPES = WEATHER_INCIDENT_TYPES | {"Dam/Levee Break"}
 
 
 def coverage_start_year(abbreviation: str, coverage_note: str) -> int | None:

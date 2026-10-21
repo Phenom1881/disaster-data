@@ -182,6 +182,29 @@ class ReviewedEventDateTests(unittest.TestCase):
                          "no_federal_declaration_found")
 
 
+class WeatherOnlyMatchTests(unittest.TestCase):
+    """A state weather declaration is paired only with a federal weather declaration."""
+
+    FLOOD = action("NC-1", "2020-05-20")
+
+    def test_covid_is_not_a_match(self):
+        covid = federal("DR-4487", "2020-01-20", "2023-05-11", incident="Biological")
+        self.assertIsNone(MODULE.find_federal_match(self.FLOOD, [covid]))
+        eta = federal("DR-4588", "2020-05-18", "2020-05-22", incident="Severe Storm")
+        self.assertEqual(MODULE.find_federal_match(self.FLOOD, [covid, eta])["id"], "DR-4588")
+
+    def test_other_non_weather_declarations_are_not_matches(self):
+        for incident in ("Earthquake", "Volcanic Eruption", "Other"):
+            self.assertIsNone(MODULE.find_federal_match(
+                self.FLOOD, [federal("DR-9", "2020-05-19", "2020-05-19", incident=incident)]), incident)
+
+    def test_a_dam_failure_in_a_storm_and_a_fire_still_match(self):
+        midland = federal("DR-4547", "2020-05-16", "2020-05-22", incident="Dam/Levee Break")
+        self.assertEqual(MODULE.find_federal_match(self.FLOOD, [midland])["id"], "DR-4547")
+        fire = federal("FM-1", "2020-05-19", "2020-05-25", "FM", "Fire")
+        self.assertEqual(MODULE.find_federal_match(self.FLOOD, [fire])["id"], "FM-1")
+
+
 class FederalWithoutStateTests(unittest.TestCase):
     """FEMA weather declarations with no state declaration on the page."""
 
