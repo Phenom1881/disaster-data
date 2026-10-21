@@ -135,6 +135,53 @@ class SourceBreakdownTests(unittest.TestCase):
         self.assertEqual(MODULE.crosswalk_summary_html(sources, 0), "")
 
 
+class ReviewedEventDateTests(unittest.TestCase):
+    """An order signed weeks after its event is compared on the event's date."""
+
+    # Washington 15-14: signed September 21, 2015 for the August 29 windstorm.
+    WINDSTORM = [federal("DR-4242", "2015-08-29", "2015-08-29", incident="Severe Storm")]
+    LATE = action("WA-PROC-15-14", "2015-09-21")
+
+    def overrides(self, folder, rows):
+        write(folder / "hazard_overrides.csv", rows,
+              ["declaration_id", "hazard_category_override", "review_note", "source_url", "event_date"])
+
+    def test_event_dates_are_read_from_the_overrides(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.assertEqual(MODULE.reviewed_event_dates(folder), {})
+            self.overrides(folder, [
+                {"declaration_id": "WA-PROC-15-14", "hazard_category_override": "wind",
+                 "event_date": "2015-08-29"},
+                {"declaration_id": "WA-PROC-16-01", "hazard_category_override": "flood", "event_date": ""},
+                {"declaration_id": "WA-PROC-16-02", "hazard_category_override": "exclude"},
+            ])
+            self.assertEqual(MODULE.reviewed_event_dates(folder), {"WA-PROC-15-14": "2015-08-29"})
+
+    def test_a_late_order_matches_the_event_it_declares(self):
+        events = {"WA-PROC-15-14": "2015-08-29"}
+        self.assertIsNone(MODULE.find_federal_match(self.LATE, self.WINDSTORM))
+        self.assertEqual(MODULE.find_federal_match(self.LATE, self.WINDSTORM, events)["id"], "DR-4242")
+        self.assertEqual(len(MODULE.federal_without_state(self.WINDSTORM, [self.LATE], 2013)[0]), 1)
+        self.assertEqual(MODULE.federal_without_state(self.WINDSTORM, [self.LATE], 2013, events), ([], 1))
+
+    def test_the_event_date_replaces_the_signing_date(self):
+        # Washington 24-01: signed January 24, 2024 for the atmospheric river of
+        # December 3, 2023. FEMA's DR-4775 is for storms from January 5, 2024.
+        january = [federal("DR-4775", "2024-01-05", "2024-01-29", incident="Severe Storm")]
+        december = action("WA-PROC-24-01", "2024-01-24")
+        events = {"WA-PROC-24-01": "2023-12-06"}
+        self.assertEqual(MODULE.find_federal_match(december, january)["id"], "DR-4775")
+        self.assertIsNone(MODULE.find_federal_match(december, january, events))
+        self.assertEqual(len(MODULE.federal_without_state(january, [december], 2013, events)[0]), 1)
+
+    def test_the_crosswalk_uses_them(self):
+        rows = MODULE.build_crosswalk([self.LATE], self.WINDSTORM, {}, {"WA-PROC-15-14": "2015-08-29"})
+        self.assertEqual(rows[0]["federal_status"], "matched")
+        self.assertEqual(MODULE.build_crosswalk([self.LATE], self.WINDSTORM, {})[0]["federal_status"],
+                         "no_federal_declaration_found")
+
+
 class FederalWithoutStateTests(unittest.TestCase):
     """FEMA weather declarations with no state declaration on the page."""
 

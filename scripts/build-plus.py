@@ -61,7 +61,8 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_MANIFEST = SCRIPT_DIR / "plus" / "state-manifest.json"
 
-# How far a state action's signing date may sit from a federal declaration's
+# How far a state action's signing date (or reviewed event date, see
+# reviewed_event_dates()) may sit from a federal declaration's
 # incident window and still be offered as a candidate match. Wider than
 # eo_storm_join.py's own NOAA window (3 days) because a federal declaration
 # is often filed weeks after the state emergency that preceded it.
@@ -338,6 +339,35 @@ def excluded_declaration_ids(state_dir: Path) -> set[str]:
         for row in read_csv_rows(path)
         if (row.get("hazard_category_override") or "").strip().lower() == "exclude"
     } - {""}
+
+
+def reviewed_event_dates(state_dir: Path) -> dict[str, str]:
+    """{declaration id: event_date} from hazard_overrides.csv.
+
+    A reviewer fills event_date for an order signed well after the event it
+    declares. Washington proclaims storms weeks later: 15-14 was signed
+    September 21, 2015 for the August 29 windstorm, 22-06 on December 15,
+    2022 for the storms of November 3 to 8. The storm join already searches
+    NOAA around that day. The federal comparison uses it too, so an order is
+    compared with FEMA's declarations for the event it declares rather than
+    with whatever was declared near the day it was signed."""
+    path = state_dir / "hazard_overrides.csv"
+    if not path.exists():
+        return {}
+    dates = {}
+    for row in read_csv_rows(path):
+        key = (row.get("declaration_id") or "").strip()
+        day = (row.get("event_date") or "").strip()
+        if key and parse_iso_date(day):
+            dates[key] = day
+    return dates
+
+
+def match_day(action: dict, event_dates: dict[str, str] | None = None) -> date | None:
+    """The day an action is compared with federal declarations on: its
+    reviewed event date when it has one, otherwise the day it was signed."""
+    reviewed = (event_dates or {}).get(action.get("declaration_id", ""))
+    return parse_iso_date(reviewed) or parse_iso_date(action.get("date_signed"))
 
 
 # Where a declaration on a state page came from. Each row carries one, shown
@@ -874,8 +904,9 @@ def state_metrics(
     }
 
 
-def find_federal_match(action: dict, federal_declarations: list[dict]) -> dict | None:
-    signed = parse_iso_date(action.get("date_signed"))
+def find_federal_match(action: dict, federal_declarations: list[dict],
+                       event_dates: dict[str, str] | None = None) -> dict | None:
+    signed = match_day(action, event_dates)
     if signed is None or not federal_declarations:
         return None
     window = timedelta(days=FEDERAL_MATCH_WINDOW_DAYS)
@@ -897,12 +928,13 @@ def build_crosswalk(
     actions: list[dict],
     federal_declarations: list[dict],
     storm_rows_by_declaration: dict[str, list[dict]],
+    event_dates: dict[str, str] | None = None,
 ) -> list[dict]:
     rows = []
     for action in actions:
         matches = storm_rows_by_declaration.get(action["declaration_id"], [])
         areas = sorted({clean(row.get("CZ_NAME")) for row in matches if clean(row.get("CZ_NAME"))})
-        federal = find_federal_match(action, federal_declarations)
+        federal = find_federal_match(action, federal_declarations, event_dates)
         rows.append(
             {
                 "action": action,
@@ -976,6 +1008,7 @@ def federal_without_state(
     federal_declarations: list[dict],
     actions: list[dict],
     start_year: int | None,
+    event_dates: dict[str, str] | None = None,
 ) -> tuple[list[dict], int]:
     """The weather major disasters and emergencies FEMA declared for this
     state since start_year with no state declaration on the page within
@@ -983,7 +1016,9 @@ def federal_without_state(
     find_federal_match() applies from the other side. A federal declaration
     counts from its incident's first day, so one whose incident began before
     the page's coverage does is not reported as missing a state declaration
-    the page could never hold.
+    the page could never hold. A state declaration counts on its reviewed
+    event date when it has one (reviewed_event_dates()), as in
+    find_federal_match().
 
     Returns (declarations with no state declaration, newest first; how many
     federal declarations were compared). Nothing is compared when the
@@ -991,7 +1026,7 @@ def federal_without_state(
     if start_year is None:
         return [], 0
     window = timedelta(days=FEDERAL_MATCH_WINDOW_DAYS)
-    signed = [day for day in (parse_iso_date(a.get("date_signed")) for a in actions) if day]
+    signed = [day for day in (match_day(a, event_dates) for a in actions) if day]
     compared = 0
     missing = []
     for declaration in federal_declarations:
@@ -2028,7 +2063,8 @@ def process_state(
         storm_rows, _ = load_storm_match_rows(state_dir)
         severity_rows, _ = load_severity_rows(state_dir)
     storm_rows_by_declaration = group_by_declaration(storm_rows)
-    crosswalk = build_crosswalk(actions, federal_declarations, storm_rows_by_declaration)
+    event_dates = reviewed_event_dates(state_dir)
+    crosswalk = build_crosswalk(actions, federal_declarations, storm_rows_by_declaration, event_dates)
 
     metrics = state_metrics(state, actions, federal_declarations, storm_rows, severity_rows)
     sources = source_breakdown(state, state_dir, actions, crosswalk)
@@ -2052,7 +2088,8 @@ def process_state(
             "did not return" % (kept["kept"], "" if kept["kept"] == 1 else "s")
         )
     start_year = coverage_start_year(state["abbreviation"], coverage)
-    federal_gaps, federal_compared = federal_without_state(federal_declarations, actions, start_year)
+    federal_gaps, federal_compared = federal_without_state(federal_declarations, actions, start_year,
+                                                           event_dates)
 
     summary = {
         "abbreviation": state["abbreviation"],

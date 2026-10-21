@@ -64,4 +64,24 @@ class RecitalWordingTests(unittest.TestCase):
             self.assertIn("WA-PROC-" + number, joined)
 
 
+class ReviewedEventDateTests(unittest.TestCase):
+    """hazard_overrides.csv event dates for proclamations signed after the storm."""
+
+    def test_each_event_date_comes_before_its_proclamation(self):
+        from datetime import date
+        here = Path(__file__).resolve().parent
+        with (here / "wa_emergency_actions_all.csv").open(encoding="utf-8") as handle:
+            actions = {row["declaration_id"]: row for row in csv.DictReader(handle)}
+        with (here / "hazard_overrides.csv").open(encoding="utf-8") as handle:
+            overrides = [row for row in csv.DictReader(handle) if row.get("event_date")]
+        self.assertTrue(overrides)
+        for row in overrides:
+            action = actions[row["declaration_id"]]
+            self.assertEqual((action["action_type"], action["weather_related"]), ("declaration", "true"),
+                             row["declaration_id"])
+            days = (date.fromisoformat(action["date_signed"]) - date.fromisoformat(row["event_date"])).days
+            self.assertTrue(0 <= days <= 120, (row["declaration_id"], days))
+            self.assertTrue(row["source_url"].startswith("https://governor.wa.gov/"), row["declaration_id"])
+
+
 if __name__ == "__main__": unittest.main()
