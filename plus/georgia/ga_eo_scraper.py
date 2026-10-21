@@ -48,21 +48,35 @@ class Action:
 def fetch(url):
     r=requests.get(url,headers=HEADERS,timeout=TIMEOUT); r.raise_for_status(); return r.text
 
+# A row's link text on the Governor's yearly pages is the order number:
+# "07.09.19.02", or "07.22.19.01.pdf" for most 2019 orders before mid-July.
+# Only the first form was read, so Georgia's 2019 began at July 9.
+LINK_NUMBER_RE=re.compile(r"(\d{2}\.\d{2}\.\d{2}\.\d{1,2})(?:\.pdf)?",re.I)
+# Deal's 2012 to 2019 pages name each PDF by its number (".../09.21.18.26.pdf")
+# and give the description as the link text. His 2011 page names them
+# ".../16721193901_10_11_02.pdf" and starts the link text with the number:
+# "01.10.11.02 Reinstituting the State of Emergency issued on January 9, 2011".
+# Only the first form was read, so Georgia had no 2011 orders.
+LEADING_NUMBER_RE=re.compile(r"^(\d{2}\.\d{2}\.\d{2}\.\d{1,2})\b\s*")
+
 def parse_current(html,page_url):
     s=BeautifulSoup(html,"html.parser"); out=[]
     for tr in s.select("table#datatable tbody tr"):
         a=tr.select_one('a[href*="download"]'); d=tr.select_one("td.views-field-field-document-description")
         if not a or not d: continue
-        number=re.sub(r"\s+","",a.get_text(" ",strip=True));
-        if NUMBER_RE.fullmatch(number): out.append(Action(number,re.sub(r"\s+"," ",d.get_text(" ",strip=True)),urljoin(page_url,a["href"]),page_url))
+        m=LINK_NUMBER_RE.fullmatch(re.sub(r"\s+","",a.get_text(" ",strip=True)))
+        if m: out.append(Action(m.group(1),re.sub(r"\s+"," ",d.get_text(" ",strip=True)),urljoin(page_url,a["href"]),page_url))
     return out
 
 def parse_deal(html,page_url):
     s=BeautifulSoup(html,"html.parser"); out=[]
     for a in s.select('a[href$=".pdf"]'):
-        href=a.get("href",""); m=re.search(r"(\d{2}\.\d{2}\.\d{2}\.\d{1,2})\.pdf",href,re.I)
-        if not m: continue
-        desc=re.sub(r"\s+"," ",a.get_text(" ",strip=True)); out.append(Action(m.group(1),desc,urljoin(page_url,href),page_url))
+        href=a.get("href",""); text=re.sub(r"\s+"," ",a.get_text(" ",strip=True))
+        m=re.search(r"(\d{2}\.\d{2}\.\d{2}\.\d{1,2})\.pdf",href,re.I); lead=LEADING_NUMBER_RE.match(text)
+        number=m.group(1) if m else lead.group(1) if lead else ""
+        if not number: continue
+        desc=text[lead.end():].strip() if lead and lead.group(1)==number else text
+        out.append(Action(number,desc or text,urljoin(page_url,href),page_url))
     return out
 
 # The Governor's yearly pages list at most 500 orders each. 2020, 2021, 2023
@@ -91,7 +105,8 @@ def collect():
     out=[]
     for y in range(2019,datetime.now().year+1):
         suffix=f"{y}" if y>=2022 else f"{y}-executive-orders"; u=f"{CURRENT_ROOT}/executive-action/executive-orders/{suffix}"; out.extend(collect_year(u))
-    for y in range(2011,2019):
+    # Deal's pages run through 2019: four orders from January 1 and 2, 2019.
+    for y in range(2011,2020):
         u=f"{DEAL_ROOT}/{'2011-executive-orders' if y==2011 else 'executive-orders/'+str(y)}"; out.extend(parse_deal(fetch(u),u))
     return sorted({a.stable_id:a for a in out}.values(),key=lambda a:(a.date,a.number),reverse=True)
 

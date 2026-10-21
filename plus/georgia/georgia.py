@@ -12,7 +12,12 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://gov.georgia.gov/executive-action/executive-orders/executive-order-archives",
     "current_governor_source_start": "2019-01-14", "manual_only": False,
-    "known_gaps": ["The web archive starts with Governor Nathan Deal in 2011. Georgia Archives permanently retains older Executive Minutes and unbound executive orders, but does not expose them through the structured Governor pages."],
+    "known_gaps": [
+        "The web archive starts with Governor Nathan Deal in 2011. Georgia Archives permanently retains older Executive Minutes and unbound executive orders, but does not expose them through the structured Governor pages.",
+        "Deal's 2011 page lists orders from January 10 through June 23, 2011, as read in October 2026; his orders from later in 2011 are not on it.",
+        "The 2011 orders are scanned PDFs without text. Two declare a state of emergency for one county without naming the hazard (06.14.11.02, Charlton County; 06.16.11.01, Ware County), so they are not on the page.",
+        "01.10.11.02 reinstitutes the winter storm emergency Governor Sonny Perdue declared on January 9, 2011. Perdue's order is on his own archive site, which is not collected, so the January 2011 winter storm is not on the page.",
+    ],
 }
 
 def collect(workdir=".", scripts_dir=None):
