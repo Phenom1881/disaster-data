@@ -335,5 +335,31 @@ class FallbackDateTests(unittest.TestCase):
         self.assertEqual(action.date_checked, "2026-09-20")
 
 
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv: emergencies declared without a numbered order."""
+
+    def test_each_hand_added_declaration_is_dated_sourced_and_new(self):
+        here = Path(__file__).resolve().parent
+        with (here / "manual_declarations.csv").open(encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+        with (here / "or_emergency_actions_all.csv").open(encoding="utf-8") as handle:
+            collected = {row["declaration_id"] for row in csv.DictReader(handle)}
+        self.assertTrue(rows)
+        for row in rows:
+            date.fromisoformat(row["date_signed"])
+            self.assertTrue(row["declaration_id"].startswith("OR-SOE-"), row["declaration_id"])
+            self.assertNotIn(row["declaration_id"], collected)
+            self.assertTrue(row["archive_record_url"].startswith("https://www.oregon.gov/"), row["declaration_id"])
+
+    def test_the_december_2015_storms_are_listed(self):
+        # Declared December 10, 2015 for 13 counties with no numbered order
+        # (Oregon's 2015 orders end at 15-22); FEMA's DR-4258 covers the
+        # storms of December 6 to 23.
+        here = Path(__file__).resolve().parent
+        with (here / "manual_declarations.csv").open(encoding="utf-8") as handle:
+            rows = {row["declaration_id"]: row for row in csv.DictReader(handle)}
+        self.assertEqual(rows["OR-SOE-2015-12-10"]["date_signed"], "2015-12-10")
+
+
 if __name__ == "__main__":
     unittest.main()
