@@ -67,4 +67,47 @@ class PagedYearTests(unittest.TestCase):
         self.assertEqual(tornado.source,YEAR)
         self.assertEqual(tornado.url,"https://gov.georgia.gov/document/01.12.23.02/download")
         self.assertEqual((tornado.date,ga.classify(tornado)),("2023-01-12","declaration"))
+
+KEMP_2019='''<table id="datatable"><tbody>
+<tr><td><a href="https://gov.georgia.gov/document/executive-order/07091902/download">07.09.19.02</a></td><td class="views-field-field-document-description">Reappointing the Honorable Sandra Heath Taylor as a member of the Board of Juvenile Justice</td></tr>
+<tr><td><a href="https://gov.georgia.gov/document/executive-order/05141905pdf/download">05.14.19.05.pdf</a></td><td class="views-field-field-document-description">Lowering flags to half-staff on Saturday, May 18, 2019, in honor and memory of Sgt. Kelvin Ansari</td></tr>
+<tr><td><a href="https://gov.georgia.gov/document/executive-order/x/download">Text Alternative</a></td><td class="views-field-field-document-description">Not an order</td></tr>
+</tbody></table>'''
+DEAL_2011='''<ul>
+<li><a href="https://nathandeal.georgia.gov/sites/nathandeal.georgia.gov/files/imported/vgn/images/portal/cit_1210/55/29/16721193901_10_11_02.pdf">01.10.11.02 Reinstituting the State of Emergency issued on January 9, 2011</a></li>
+<li><a href="https://nathandeal.georgia.gov/sites/nathandeal.georgia.gov/files/imported/vgn/images/portal/cit_1210/11/13/17080400004_28_11_01.pdf">04.28.11.01 Declaring a State of Emergency due to severe storms and tornadoes</a></li>
+<li><a href="https://nathandeal.georgia.gov/2011-executive-orders/index.html">2011 Executive Orders</a></li>
+</ul>'''
+DEAL_LATER='''<ul>
+<li><a href="https://nathandeal.georgia.gov/sites/nathandeal.georgia.gov/files/related_files/document/09.21.18.26.pdf">Appointing the Honorable Camila Knowles as a member of the Senate Study Committee</a></li>
+<li><a href="https://nathandeal.georgia.gov/sites/nathandeal.georgia.gov/files/related_files/document/08.16.13.11.pdf">08.16.13.11</a></li>
+</ul>'''
+class LinkTextTests(unittest.TestCase):
+    """Order numbers as each archive page writes them."""
+    def test_a_number_link_ending_in_pdf_is_read(self):
+        orders=ga.parse_current(KEMP_2019,"https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders")
+        self.assertEqual([(a.number,a.date) for a in orders],[("07.09.19.02","2019-07-09"),("05.14.19.05","2019-05-14")])
+        self.assertTrue(orders[1].url.endswith("/05141905pdf/download"))
+    def test_deal_2011_numbers_come_from_the_link_text(self):
+        orders=ga.parse_deal(DEAL_2011,"https://nathandeal.georgia.gov/2011-executive-orders")
+        self.assertEqual([a.number for a in orders],["01.10.11.02","04.28.11.01"])
+        self.assertEqual(orders[1].description,"Declaring a State of Emergency due to severe storms and tornadoes")
+        self.assertEqual((orders[1].date,orders[1].stable_id),("2011-04-28","GA-EO-04-28-11-01"))
+        with tempfile.TemporaryDirectory() as d:
+            p=[f"{d}/{x}.csv" for x in "arj"]; ga.write_outputs(orders,*p)
+            with open(p[2],encoding="utf-8") as h: joined=[r["declaration_id"] for r in csv.DictReader(h)]
+        self.assertEqual(joined,["GA-EO-04-28-11-01"])   # the April 2011 tornado outbreak, FEMA DR-1973
+    def test_later_deal_pages_read_as_before(self):
+        orders=ga.parse_deal(DEAL_LATER,"https://nathandeal.georgia.gov/executive-orders/2018")
+        self.assertEqual([(a.number,a.description) for a in orders],
+            [("09.21.18.26","Appointing the Honorable Camila Knowles as a member of the Senate Study Committee"),("08.16.13.11","08.16.13.11")])
+    def test_collection_reads_deals_2011_and_2019_pages(self):
+        seen=[]; original=ga.fetch
+        def fake(url): seen.append(url); return ""
+        ga.fetch=fake
+        try: ga.collect()
+        finally: ga.fetch=original
+        self.assertIn("https://nathandeal.georgia.gov/2011-executive-orders",seen)
+        self.assertIn("https://nathandeal.georgia.gov/executive-orders/2019",seen)
+        self.assertIn("https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders",seen)
 if __name__=="__main__": unittest.main()
