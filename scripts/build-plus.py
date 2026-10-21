@@ -915,6 +915,13 @@ def find_federal_match(action: dict, federal_declarations: list[dict],
     for declaration in federal_declarations:
         if declaration.get("incidentType") not in MATCH_INCIDENT_TYPES:
             continue
+        # A host state's evacuee emergency pairs with its own relief orders
+        # ("Emergency relief for damage caused by Hurricane Katrina",
+        # Nebraska 05-5), not with a storm of its own that month (Virginia's
+        # EO 98 of September 12, 2005, for flooding and wind).
+        storm = (declaration.get("eventName") or "").lower()
+        if hosts_evacuees(declaration) and not (storm and storm in (action.get("title") or "").lower()):
+            continue
         begin = parse_iso_date(declaration.get("begin")) or parse_iso_date(declaration.get("date"))
         end = parse_iso_date(declaration.get("end")) or begin
         if begin is None:
@@ -1007,6 +1014,19 @@ WEATHER_INCIDENT_TYPES = frozenset({
 MATCH_INCIDENT_TYPES = WEATHER_INCIDENT_TYPES | {"Dam/Levee Break"}
 
 
+def hosts_evacuees(declaration: dict) -> bool:
+    """An emergency FEMA declared so a state could shelter evacuees from a
+    storm that struck elsewhere: "HURRICANE KATRINA EVACUATION" (40 states
+    in September 2005), "HURRICANE KATRINA EVACUEES" (Nebraska). No storm
+    struck the host state, so it is not a gap on that state's page, and it
+    is a match only for a state order about the same storm (see
+    find_federal_match()). Three Katrina host emergencies are titled only
+    "HURRICANE KATRINA" (Idaho, Kentucky, Pennsylvania) and are not told
+    apart here."""
+    title = (declaration.get("title") or "").upper()
+    return declaration.get("type") == "EM" and ("EVACUAT" in title or "EVACUE" in title)
+
+
 def coverage_start_year(abbreviation: str, coverage_note: str) -> int | None:
     """The first year a state's page covers, as its "Since <year>" badge
     says, or None when the coverage note gives no clean start year."""
@@ -1043,7 +1063,7 @@ def federal_without_state(
     for declaration in federal_declarations:
         if declaration.get("type") not in GAP_DECLARATION_TYPES or declaration.get("tribal"):
             continue
-        if declaration.get("incidentType") not in WEATHER_INCIDENT_TYPES:
+        if declaration.get("incidentType") not in WEATHER_INCIDENT_TYPES or hosts_evacuees(declaration):
             continue
         begin = parse_iso_date(declaration.get("begin")) or parse_iso_date(declaration.get("date"))
         if begin is None or begin.year < start_year:

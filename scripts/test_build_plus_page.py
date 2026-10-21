@@ -205,6 +205,40 @@ class WeatherOnlyMatchTests(unittest.TestCase):
         self.assertEqual(MODULE.find_federal_match(self.FLOOD, [fire])["id"], "FM-1")
 
 
+class EvacueeHostingTests(unittest.TestCase):
+    """An emergency for sheltering another state's evacuees is not a storm in this state."""
+
+    def katrina(self, identifier, title, incident="Hurricane"):
+        row = federal(identifier, "2005-08-29", "2005-10-01", "EM", incident)
+        row["title"] = title
+        row["eventName"] = "Katrina"
+        return row
+
+    def test_a_host_states_evacuation_emergency_is_not_a_gap(self):
+        oregon = [self.katrina("EM-3228", "HURRICANE KATRINA EVACUATION", "Coastal Storm")]
+        nebraska = [self.katrina("EM-3245", "HURRICANE KATRINA EVACUEES")]
+        self.assertEqual(MODULE.federal_without_state(oregon, [], 2003), ([], 0))
+        self.assertEqual(MODULE.federal_without_state(nebraska, [], 2003), ([], 0))
+
+    def test_the_storms_own_emergency_still_is(self):
+        louisiana = [self.katrina("EM-3212", "HURRICANE KATRINA")]
+        missing, compared = MODULE.federal_without_state(louisiana, [], 2003)
+        self.assertEqual(([row["id"] for row in missing], compared), (["EM-3212"], 1))
+
+    def test_an_evacuation_emergency_matches_only_an_order_about_that_storm(self):
+        hosting = [self.katrina("EM-3240", "HURRICANE KATRINA EVACUATION")]
+        flood = action("VA-WARNER-EO-98-2005", "2005-09-12")   # Ophelia, flooding and wind
+        self.assertIsNone(MODULE.find_federal_match(flood, hosting))
+        relief = dict(action("NE-EO-05-5", "2005-09-02"),
+                      title="Emergency relief for damage caused by Hurricane Katrina")
+        self.assertEqual(MODULE.find_federal_match(relief, hosting)["id"], "EM-3240")
+
+    def test_the_storms_own_emergency_matches_any_order_near_it(self):
+        flood = action("LA-1", "2005-09-10")
+        self.assertEqual(MODULE.find_federal_match(flood, [self.katrina("EM-3212", "HURRICANE KATRINA")])["id"],
+                         "EM-3212")
+
+
 class FederalWithoutStateTests(unittest.TestCase):
     """FEMA weather declarations with no state declaration on the page."""
 
