@@ -52,7 +52,8 @@ def main() -> int:
         summary = json.loads(summary_path.read_text(encoding="utf-8"))
         actions, _ = bp.load_state_actions(state, state_dir)
         federal = bp.load_federal_declarations(repo_root, state["abbreviation"])
-        crosswalk = bp.build_crosswalk(actions, federal, bp.group_by_declaration(storm_rows_for(state_dir)))
+        crosswalk = bp.build_crosswalk(actions, federal, bp.group_by_declaration(storm_rows_for(state_dir)),
+                                       bp.reviewed_event_dates(state_dir))
         bp.write_api_file(state, state_dir, summary, actions, crosswalk)
         written += 1
         print(f"{state['abbreviation']}: {len(actions)} state declarations, "

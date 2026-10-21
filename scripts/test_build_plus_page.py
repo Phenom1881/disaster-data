@@ -135,6 +135,110 @@ class SourceBreakdownTests(unittest.TestCase):
         self.assertEqual(MODULE.crosswalk_summary_html(sources, 0), "")
 
 
+class ReviewedEventDateTests(unittest.TestCase):
+    """An order signed weeks after its event is compared on the event's date."""
+
+    # Washington 15-14: signed September 21, 2015 for the August 29 windstorm.
+    WINDSTORM = [federal("DR-4242", "2015-08-29", "2015-08-29", incident="Severe Storm")]
+    LATE = action("WA-PROC-15-14", "2015-09-21")
+
+    def overrides(self, folder, rows):
+        write(folder / "hazard_overrides.csv", rows,
+              ["declaration_id", "hazard_category_override", "review_note", "source_url", "event_date"])
+
+    def test_event_dates_are_read_from_the_overrides(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.assertEqual(MODULE.reviewed_event_dates(folder), {})
+            self.overrides(folder, [
+                {"declaration_id": "WA-PROC-15-14", "hazard_category_override": "wind",
+                 "event_date": "2015-08-29"},
+                {"declaration_id": "WA-PROC-16-01", "hazard_category_override": "flood", "event_date": ""},
+                {"declaration_id": "WA-PROC-16-02", "hazard_category_override": "exclude"},
+            ])
+            self.assertEqual(MODULE.reviewed_event_dates(folder), {"WA-PROC-15-14": "2015-08-29"})
+
+    def test_a_late_order_matches_the_event_it_declares(self):
+        events = {"WA-PROC-15-14": "2015-08-29"}
+        self.assertIsNone(MODULE.find_federal_match(self.LATE, self.WINDSTORM))
+        self.assertEqual(MODULE.find_federal_match(self.LATE, self.WINDSTORM, events)["id"], "DR-4242")
+        self.assertEqual(len(MODULE.federal_without_state(self.WINDSTORM, [self.LATE], 2013)[0]), 1)
+        self.assertEqual(MODULE.federal_without_state(self.WINDSTORM, [self.LATE], 2013, events), ([], 1))
+
+    def test_the_event_date_replaces_the_signing_date(self):
+        # Washington 24-01: signed January 24, 2024 for the atmospheric river of
+        # December 3, 2023. FEMA's DR-4775 is for storms from January 5, 2024.
+        january = [federal("DR-4775", "2024-01-05", "2024-01-29", incident="Severe Storm")]
+        december = action("WA-PROC-24-01", "2024-01-24")
+        events = {"WA-PROC-24-01": "2023-12-06"}
+        self.assertEqual(MODULE.find_federal_match(december, january)["id"], "DR-4775")
+        self.assertIsNone(MODULE.find_federal_match(december, january, events))
+        self.assertEqual(len(MODULE.federal_without_state(january, [december], 2013, events)[0]), 1)
+
+    def test_the_crosswalk_uses_them(self):
+        rows = MODULE.build_crosswalk([self.LATE], self.WINDSTORM, {}, {"WA-PROC-15-14": "2015-08-29"})
+        self.assertEqual(rows[0]["federal_status"], "matched")
+        self.assertEqual(MODULE.build_crosswalk([self.LATE], self.WINDSTORM, {})[0]["federal_status"],
+                         "no_federal_declaration_found")
+
+
+class WeatherOnlyMatchTests(unittest.TestCase):
+    """A state weather declaration is paired only with a federal weather declaration."""
+
+    FLOOD = action("NC-1", "2020-05-20")
+
+    def test_covid_is_not_a_match(self):
+        covid = federal("DR-4487", "2020-01-20", "2023-05-11", incident="Biological")
+        self.assertIsNone(MODULE.find_federal_match(self.FLOOD, [covid]))
+        eta = federal("DR-4588", "2020-05-18", "2020-05-22", incident="Severe Storm")
+        self.assertEqual(MODULE.find_federal_match(self.FLOOD, [covid, eta])["id"], "DR-4588")
+
+    def test_other_non_weather_declarations_are_not_matches(self):
+        for incident in ("Earthquake", "Volcanic Eruption", "Other"):
+            self.assertIsNone(MODULE.find_federal_match(
+                self.FLOOD, [federal("DR-9", "2020-05-19", "2020-05-19", incident=incident)]), incident)
+
+    def test_a_dam_failure_in_a_storm_and_a_fire_still_match(self):
+        midland = federal("DR-4547", "2020-05-16", "2020-05-22", incident="Dam/Levee Break")
+        self.assertEqual(MODULE.find_federal_match(self.FLOOD, [midland])["id"], "DR-4547")
+        fire = federal("FM-1", "2020-05-19", "2020-05-25", "FM", "Fire")
+        self.assertEqual(MODULE.find_federal_match(self.FLOOD, [fire])["id"], "FM-1")
+
+
+class EvacueeHostingTests(unittest.TestCase):
+    """An emergency for sheltering another state's evacuees is not a storm in this state."""
+
+    def katrina(self, identifier, title, incident="Hurricane"):
+        row = federal(identifier, "2005-08-29", "2005-10-01", "EM", incident)
+        row["title"] = title
+        row["eventName"] = "Katrina"
+        return row
+
+    def test_a_host_states_evacuation_emergency_is_not_a_gap(self):
+        oregon = [self.katrina("EM-3228", "HURRICANE KATRINA EVACUATION", "Coastal Storm")]
+        nebraska = [self.katrina("EM-3245", "HURRICANE KATRINA EVACUEES")]
+        self.assertEqual(MODULE.federal_without_state(oregon, [], 2003), ([], 0))
+        self.assertEqual(MODULE.federal_without_state(nebraska, [], 2003), ([], 0))
+
+    def test_the_storms_own_emergency_still_is(self):
+        louisiana = [self.katrina("EM-3212", "HURRICANE KATRINA")]
+        missing, compared = MODULE.federal_without_state(louisiana, [], 2003)
+        self.assertEqual(([row["id"] for row in missing], compared), (["EM-3212"], 1))
+
+    def test_an_evacuation_emergency_matches_only_an_order_about_that_storm(self):
+        hosting = [self.katrina("EM-3240", "HURRICANE KATRINA EVACUATION")]
+        flood = action("VA-WARNER-EO-98-2005", "2005-09-12")   # Ophelia, flooding and wind
+        self.assertIsNone(MODULE.find_federal_match(flood, hosting))
+        relief = dict(action("NE-EO-05-5", "2005-09-02"),
+                      title="Emergency relief for damage caused by Hurricane Katrina")
+        self.assertEqual(MODULE.find_federal_match(relief, hosting)["id"], "EM-3240")
+
+    def test_the_storms_own_emergency_matches_any_order_near_it(self):
+        flood = action("LA-1", "2005-09-10")
+        self.assertEqual(MODULE.find_federal_match(flood, [self.katrina("EM-3212", "HURRICANE KATRINA")])["id"],
+                         "EM-3212")
+
+
 class FederalWithoutStateTests(unittest.TestCase):
     """FEMA weather declarations with no state declaration on the page."""
 
