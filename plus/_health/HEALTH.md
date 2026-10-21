@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-10-20 01:55 UTC after the refresh. **49 green, 1 yellow, 0 red.**
+Checked 2026-10-21 00:32 UTC after the refresh. **49 green, 1 yellow, 0 red.**
 
 ## Yellow: working with gaps (1)
 
@@ -14,24 +14,24 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, MD, MA, 
 
 ## Where the time went
 
-Collecting from state sources took 54.2 min in all, and matching storms took 1.2 min. The 10 slowest states:
+Collecting from state sources took 54.6 min in all, and matching storms took 1.5 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| TX | 24.5 min | 1 s |
-| NC | 4.9 min | 1 s |
-| NJ | 4.0 min | 6 s |
-| CT | 2.9 min | 0 s |
-| SC | 1.7 min | 2 s |
-| FL | 1.3 min | 0 s |
-| WA | 1.3 min | 0 s |
-| MI | 1.3 min | 0 s |
-| LA | 1.2 min | 1 s |
-| VT | 1.1 min | 0 s |
+| TX | 19.2 min | 1 s |
+| NJ | 4.9 min | 7 s |
+| NC | 4.8 min | 1 s |
+| CT | 3.1 min | 0 s |
+| WI | 2.0 min | 1 s |
+| LA | 1.7 min | 1 s |
+| WA | 1.5 min | 1 s |
+| SC | 1.5 min | 3 s |
+| MA | 1.2 min | 1 s |
+| CO | 1.1 min | 5 s |
 
 ## FEMA declarations with no state declaration
 
-403 of the 1,031 FEMA weather major disasters and emergencies in the years each state's page covers have no state declaration on that page within 21 days. A state's list is most likely incomplete where this is high.
+399 of the 1,031 FEMA weather major disasters and emergencies in the years each state's page covers have no state declaration on that page within 21 days. A state's list is most likely incomplete where this is high.
 
 The 10 states with the most:
 
@@ -61,7 +61,7 @@ The 10 states with the most:
 | CT | green | returned everything | 0 | 20 | 43 | 20 | 20 | 20 | 19 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | DE | green | returned everything | 0 | 15 | 26 | 15 | 15 | 15 | 15 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | FL | green | returned everything | 0 | 26 | 189 | 26 | 26 | 26 | 22 |  |
-| GA | green | returned everything | 0 | 42 | 82 | 42 | 42 | 42 | 40 |  |
+| GA | green | returned everything | 0 | 43 | 82 | 43 | 43 | 43 | 41 |  |
 | HI | green | returned everything | 0 | 37 | 77 | 37 | 37 | 37 | 31 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | ID | green | returned everything | 0 | 208 | 61 | 208 | 208 | 208 | 14 | 206 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | IL | green | returned everything | 0 | 15 | 68 | 15 | 15 | 15 | 13 |  |
@@ -69,7 +69,7 @@ The 10 states with the most:
 | IA | green | returned everything | 0 | 54 | 79 | 54 | 54 | 54 | 46 |  |
 | KS | green | returned everything | 0 | 51 | 96 | 51 | 51 | 51 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 16 | 99 | 16 | 16 | 16 | 14 |  |
-| LA | green | returned everything | 0 | 45 | 111 | 45 | 45 | 45 | 40 | Failed on the first try this run and recovered on the retry. |
+| LA | green | returned everything | 0 | 45 | 111 | 45 | 45 | 45 | 40 |  |
 | ME | yellow | returned everything | 0 | 24 | 71 | 24 | 24 | 24 | 23 |  |
 | MD | green | returned everything | 0 | 31 | 38 | 31 | 31 | 31 | 28 |  |
 | MA | green | returned everything | 0 | 16 | 59 | 16 | 16 | 16 | 15 |  |
@@ -98,7 +98,7 @@ The 10 states with the most:
 | UT | green | returned everything | 0 | 32 | 62 | 32 | 32 | 32 | 20 | 11 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | VT | green | returned everything | 0 | 11 | 62 | 11 | 11 | 11 | 11 |  |
 | VA | green | returned everything | 0 | 82 | 77 | 82 | 82 | 82 | 65 | 3 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| WA | green | returned everything | 0 | 39 | 223 | 39 | 39 | 39 | 28 |  |
+| WA | green | returned everything | 0 | 43 | 223 | 43 | 43 | 43 | 32 |  |
 | WV | green | returned everything | 0 | 18 | 86 | 18 | 18 | 18 | 12 |  |
 | WI | green | returned everything | 0 | 18 | 57 | 18 | 18 | 18 | 15 |  |
 | WY | green | returned everything | 0 | 13 | 45 | 13 | 13 | 13 | 12 |  |

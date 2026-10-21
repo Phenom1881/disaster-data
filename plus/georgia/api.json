@@ -155,6 +155,17 @@
       "title": "Declaring a State of Emergency for Tornadoes and Severe Storms"
     },
     {
+      "action_number": "01.12.23.02",
+      "action_type": "declaration",
+      "date_signed": "2023-01-12",
+      "declaration_id": "GA-EO-01-12-23-02",
+      "governor": "Brian P. Kemp",
+      "origin": "state",
+      "source_url": "https://gov.georgia.gov/executive-action/executive-orders/2023",
+      "state": "GA",
+      "title": "Declaring a State of Emergency for Tornadoes and Severe Storms"
+    },
+    {
       "action_number": "12.21.22.01",
       "action_type": "declaration",
       "date_signed": "2022-12-21",
@@ -1433,6 +1444,77 @@
         "WILKINSON"
       ],
       "noaa_match_count": 159,
+      "noaa_status": "matched",
+      "title": "Declaring a State of Emergency for Tornadoes and Severe Storms"
+    },
+    {
+      "date_signed": "2023-01-12",
+      "declaration_id": "GA-EO-01-12-23-02",
+      "federal_declaration": {
+        "begin": "2023-01-12",
+        "date": "2023-01-16",
+        "end": "2023-01-12",
+        "id": "DR-4685",
+        "incidentType": "Severe Storm",
+        "number": 4685,
+        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "APPLING",
+        "BARROW",
+        "BARTOW",
+        "BUTTS",
+        "CARROLL",
+        "CATOOSA",
+        "CHATTOOGA",
+        "CHEROKEE",
+        "CLAY",
+        "CLAYTON",
+        "COBB",
+        "COFFEE",
+        "COLQUITT",
+        "COWETA",
+        "CRISP",
+        "DE KALB",
+        "DOOLY",
+        "DOUGLAS",
+        "EARLY",
+        "ELBERT",
+        "FANNIN",
+        "FAYETTE",
+        "FULTON",
+        "GWINNETT",
+        "HENRY",
+        "IRWIN",
+        "JACKSON",
+        "JASPER",
+        "JEFF DAVIS",
+        "LEE",
+        "LINCOLN",
+        "MCDUFFIE",
+        "MERIWETHER",
+        "MILLER",
+        "MITCHELL",
+        "MONROE",
+        "NEWTON",
+        "PAULDING",
+        "PIKE",
+        "POLK",
+        "RABUN",
+        "RANDOLPH",
+        "SPALDING",
+        "TATTNALL",
+        "TIFT",
+        "TROUP",
+        "WALKER",
+        "WALTON",
+        "WARREN",
+        "WILCOX",
+        "WORTH"
+      ],
+      "noaa_match_count": 154,
       "noaa_status": "matched",
       "title": "Declaring a State of Emergency for Tornadoes and Severe Storms"
     },
@@ -3192,16 +3274,6 @@
     "compared": 24,
     "declarations": [
       {
-        "begin": "2023-01-12",
-        "date": "2023-01-16",
-        "end": "2023-01-12",
-        "id": "DR-4685",
-        "incidentType": "Severe Storm",
-        "number": 4685,
-        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, AND TORNADOES",
-        "type": "DR"
-      },
-      {
         "begin": "2020-10-29",
         "date": "2021-01-12",
         "end": "2020-10-29",
@@ -3227,10 +3299,10 @@
   "generated_on": "2026-10-20",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 42,
+    "action_count": 43,
     "federal_declaration_count": 82,
-    "severity_rows": 2010,
-    "storm_match_rows": 2992
+    "severity_rows": 2061,
+    "storm_match_rows": 3146
   },
   "name": "Georgia",
   "noaa_data_through": "2026-06-29",
@@ -3240,13 +3312,13 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 32,
+    "federal_matched": 33,
     "fmcsa_archive": 0,
-    "noaa_matched": 40,
+    "noaa_matched": 41,
     "noaa_none": 1,
     "noaa_pending": 1,
     "reviewed_not_weather": 0,
-    "state_archive": 42
+    "state_archive": 43
   },
   "state": "GA"
 }
