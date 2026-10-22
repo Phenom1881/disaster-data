@@ -131,7 +131,7 @@
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<p class="note">22 of the 26 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 20 have a FEMA declaration within 21 days.</p>
+<p class="note">22 of the 26 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 18 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-10-06 &middot; #2026-202 re: Emergency Management – Tropical Depression Nine (later Hurricane Isaias)</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>3655</td></tr>
@@ -152,8 +152,8 @@
 <tr><td>2022-09-23 &middot; #2022-218 declares a State of Emergency in 24 Counties re: Tropical Depression Nine.</td><td>0</td><td>None matched</td><td>4675</td></tr>
 <tr><td>2022-03-12 &middot; #2022-56 Emergency Management – Severe Weather in Northeast and Central Florida</td><td>53</td><td>ALACHUA, BAY, CITRUS, DIXIE, DUVAL, FLAGLER, HERNANDO, HIGHLANDS</td><td>5426</td></tr>
 <tr><td>2022-03-02 &middot; #2022-54 Emergency Management/Bay County Wildfires</td><td>0</td><td>None matched</td><td>5426</td></tr>
-<tr><td>2022-02-03 &middot; #2022-27 Executive Order re: Emergency Management – Freezing Temperatures, Harm to Agriculture</td><td>4</td><td>GLADES, HENDRY, INLAND COLLIER COUNTY, INLAND PALM BEACH COUNTY</td><td>4545</td></tr>
-<tr><td>2022-01-24 &middot; #2022-17 Executive Order- Emergency Management -Tornadoes in Charlotte and Lee Counties</td><td>0</td><td>None matched</td><td>4545</td></tr>
+<tr><td>2022-02-03 &middot; #2022-27 Executive Order re: Emergency Management – Freezing Temperatures, Harm to Agriculture</td><td>4</td><td>GLADES, HENDRY, INLAND COLLIER COUNTY, INLAND PALM BEACH COUNTY</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2022-01-24 &middot; #2022-17 Executive Order- Emergency Management -Tornadoes in Charlotte and Lee Counties</td><td>0</td><td>None matched</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2021-08-13 &middot; #2021-190 – Emergency Management – Tropical Depression Fred</td><td>81</td><td>BAY, CALHOUN, CENTRAL WALTON, CLAY, COASTAL BAY, COASTAL FRANKLIN, COASTAL GULF, COASTAL JEFFERSON</td><td>3562</td></tr>
 <tr><td>2021-07-03 &middot; #2021-150 Emergency Management – Tropical Storm Elsa</td><td>23</td><td>COASTAL CHARLOTTE, COASTAL HILLSBOROUGH, COASTAL MANATEE, COASTAL SARASOTA, DUVAL, INLAND HERNANDO, INLAND LEE, MONROE/LOWER KEYS</td><td>3561</td></tr>
 <tr><td>2020-11-07 &middot; #2020-277 Executive Order re: Emergency Management – Tropical Storm Eta</td><td>31</td><td>BREVARD, BROWARD, COASTAL BROWARD COUNTY, COASTAL FLAGLER, COASTAL MIAMI-DADE COUNTY, COASTAL PALM BEACH COUNTY, FAR SOUTH MIAMI-DADE COUNTY, HIGHLANDS</td><td>3551</td></tr>
@@ -670,7 +670,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-20 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-21 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

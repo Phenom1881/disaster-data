@@ -499,8 +499,17 @@
     {
       "date_signed": "2019-03-20",
       "declaration_id": "OH-PROC-2019-001",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2019-02-05",
+        "date": "2019-04-08",
+        "end": "2019-02-13",
+        "id": "DR-4424",
+        "incidentType": "Flood",
+        "number": 4424,
+        "title": "SEVERE STORMS, FLOODING, AND LANDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "ADAMS",
         "ASHLAND",
@@ -544,8 +553,17 @@
     {
       "date_signed": "2019-03-11",
       "declaration_id": "OH-PROC-2019-03-11",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2019-02-05",
+        "date": "2019-04-08",
+        "end": "2019-02-13",
+        "id": "DR-4424",
+        "incidentType": "Flood",
+        "number": 4424,
+        "title": "SEVERE STORMS, FLOODING, AND LANDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "ADAMS",
         "ASHLAND",
@@ -907,13 +925,13 @@
       "declaration_id": "OH-PROC-2004-12-28",
       "federal_declaration": {
         "begin": "2004-12-22",
-        "date": "2005-01-11",
-        "end": "2004-12-24",
-        "id": "EM-3198",
-        "incidentType": "Snowstorm",
-        "number": 3198,
-        "title": "SNOW",
-        "type": "EM"
+        "date": "2005-02-15",
+        "end": "2005-02-01",
+        "id": "DR-1580",
+        "incidentType": "Severe Storm",
+        "number": 1580,
+        "title": "SEVERE WINTER STORMS, FLOODING, AND MUDSLIDES",
+        "type": "DR"
       },
       "federal_status": "matched",
       "noaa_areas": [
@@ -1043,18 +1061,8 @@
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 23,
+    "compared": 22,
     "declarations": [
-      {
-        "begin": "2019-02-05",
-        "date": "2019-04-08",
-        "end": "2019-02-13",
-        "id": "DR-4424",
-        "incidentType": "Flood",
-        "number": 4424,
-        "title": "SEVERE STORMS, FLOODING, AND LANDSLIDES",
-        "type": "DR"
-      },
       {
         "begin": "2012-10-29",
         "date": "2013-01-03",
@@ -1106,16 +1114,6 @@
         "type": "DR"
       },
       {
-        "begin": "2005-08-29",
-        "date": "2005-09-13",
-        "end": "2005-10-01",
-        "id": "EM-3250",
-        "incidentType": "Hurricane",
-        "number": 3250,
-        "title": "HURRICANE KATRINA EVACUATION",
-        "type": "EM"
-      },
-      {
         "begin": "2004-08-27",
         "date": "2004-09-19",
         "end": "2004-09-27",
@@ -1158,7 +1156,7 @@
     ],
     "since": 2003
   },
-  "generated_on": "2026-10-21",
+  "generated_on": "2026-10-22",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 18,
@@ -1174,7 +1172,7 @@
   "source_status": "manual",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 9,
+    "federal_matched": 11,
     "fmcsa_archive": 0,
     "noaa_matched": 15,
     "noaa_none": 0,

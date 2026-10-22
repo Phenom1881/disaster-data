@@ -419,17 +419,8 @@
     {
       "date_signed": "2021-02-01",
       "declaration_id": "PA-PROC-2021-02-01-winter-weather-cf544e0",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2020-03-30",
-        "end": "2023-05-11",
-        "id": "DR-4506",
-        "incidentType": "Biological",
-        "number": 4506,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "ADAMS",
         "ALLEGHENY",
@@ -506,17 +497,8 @@
     {
       "date_signed": "2020-12-15",
       "declaration_id": "PA-PROC-2020-12-15-winter-event-d96cc20",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2020-03-30",
-        "end": "2023-05-11",
-        "id": "DR-4506",
-        "incidentType": "Biological",
-        "number": 4506,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "ADAMS",
         "ALLEGHENY",
@@ -763,8 +745,17 @@
     {
       "date_signed": "2016-11-16",
       "declaration_id": "PA-PROC-2016-11-16",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2016-10-20",
+        "date": "2016-12-02",
+        "end": "2016-10-21",
+        "id": "DR-4292",
+        "incidentType": "Flood",
+        "number": 4292,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "BRADFORD",
         "CENTRE",
@@ -1103,7 +1094,7 @@
     "declarations": [],
     "since": 2018
   },
-  "generated_on": "2026-10-21",
+  "generated_on": "2026-10-22",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 17,
@@ -1119,7 +1110,7 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 7,
-    "federal_matched": 9,
+    "federal_matched": 8,
     "fmcsa_archive": 0,
     "noaa_matched": 17,
     "noaa_none": 0,

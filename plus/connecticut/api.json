@@ -371,17 +371,8 @@
     {
       "date_signed": "2021-02-12",
       "declaration_id": "CT-FMCSA-BE7D0324CAB6",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2020-03-28",
-        "end": "2023-05-11",
-        "id": "DR-4500",
-        "incidentType": "Biological",
-        "number": 4500,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "NORTHERN LITCHFIELD",
         "SOUTHERN LITCHFIELD"
@@ -393,17 +384,8 @@
     {
       "date_signed": "2020-08-28",
       "declaration_id": "CT-PROC-2020-08-28",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2020-03-28",
-        "end": "2023-05-11",
-        "id": "DR-4500",
-        "incidentType": "Biological",
-        "number": 4500,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "FAIRFIELD",
         "LITCHFIELD",
@@ -761,7 +743,7 @@
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 38,
+    "compared": 37,
     "declarations": [
       {
         "begin": "2024-01-10",
@@ -822,16 +804,6 @@
         "number": 1619,
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
-      },
-      {
-        "begin": "2005-08-29",
-        "date": "2005-09-13",
-        "end": "2005-10-01",
-        "id": "EM-3246",
-        "incidentType": "Hurricane",
-        "number": 3246,
-        "title": "HURRICANE KATRINA EVACUATION",
-        "type": "EM"
       },
       {
         "begin": "2005-01-22",
@@ -976,7 +948,7 @@
     ],
     "since": 1971
   },
-  "generated_on": "2026-10-20",
+  "generated_on": "2026-10-21",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 20,
@@ -992,7 +964,7 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 6,
-    "federal_matched": 14,
+    "federal_matched": 12,
     "fmcsa_archive": 4,
     "noaa_matched": 19,
     "noaa_none": 1,

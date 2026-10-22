@@ -774,17 +774,8 @@
     {
       "date_signed": "2023-04-13",
       "declaration_id": "AZ-DECL-2023-04-governor-hobbs-issues-declaration-emergency-repair-damages",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2021-02-02",
-        "end": "2023-05-11",
-        "id": "DR-4582",
-        "incidentType": "Biological",
-        "number": 4582,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "COCONINO"
       ],
@@ -851,17 +842,8 @@
     {
       "date_signed": "2021-08-25",
       "declaration_id": "AZ-DECL-2021-08-25-august-2021-coconino-flooding",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2021-02-02",
-        "end": "2023-05-11",
-        "id": "DR-4582",
-        "incidentType": "Biological",
-        "number": 4582,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "APACHE",
         "COCHISE",
@@ -882,17 +864,8 @@
     {
       "date_signed": "2021-08-16",
       "declaration_id": "AZ-DECL-2021-08-16-gila-bend-flooding",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2021-02-02",
-        "end": "2023-05-11",
-        "id": "DR-4582",
-        "incidentType": "Biological",
-        "number": 4582,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "APACHE",
         "COCHISE",
@@ -1105,8 +1078,17 @@
     {
       "date_signed": "2018-11-19",
       "declaration_id": "AZ-DECL-2018-11-19-2018-pinal-county-flooding",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2018-10-01",
+        "date": "2018-11-30",
+        "end": "2018-10-03",
+        "id": "DR-4409",
+        "incidentType": "Severe Storm",
+        "number": 4409,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "COCONINO",
         "LA PAZ",
@@ -1487,8 +1469,17 @@
     {
       "date_signed": "2014-11-18",
       "declaration_id": "AZ-DECL-2014-11-18-cochise-county-flooding",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2014-09-07",
+        "date": "2014-11-05",
+        "end": "2014-09-09",
+        "id": "DR-4203",
+        "incidentType": "Flood",
+        "number": 4203,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "COCHISE",
         "COCONINO",
@@ -2089,7 +2080,7 @@
     "declarations": [],
     "since": 2023
   },
-  "generated_on": "2026-10-20",
+  "generated_on": "2026-10-21",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 59,
@@ -2105,7 +2096,7 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 53,
-    "federal_matched": 40,
+    "federal_matched": 39,
     "fmcsa_archive": 0,
     "noaa_matched": 54,
     "noaa_none": 5,

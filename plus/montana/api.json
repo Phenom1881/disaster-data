@@ -285,8 +285,17 @@
     {
       "date_signed": "2024-09-14",
       "declaration_id": "MT-EO-11-2024",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2024-08-06",
+        "date": "2024-11-14",
+        "end": "2024-08-06",
+        "id": "DR-4847",
+        "incidentType": "Severe Storm",
+        "number": 4847,
+        "title": "SEVERE STORM AND STRAIGHT-LINE WINDS",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "BEAVERHEAD",
         "BLAINE",
@@ -327,8 +336,17 @@
     {
       "date_signed": "2024-09-13",
       "declaration_id": "MT-EO-10-2024",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2024-07-09",
+        "date": "2024-07-12",
+        "end": "",
+        "id": "FM-5507",
+        "incidentType": "Fire",
+        "number": 5507,
+        "title": "HORSE GULCH FIRE",
+        "type": "FM"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "BLAINE",
         "CARTER",
@@ -480,13 +498,13 @@
       "date_signed": "2023-05-16",
       "declaration_id": "MT-EO-1-2023",
       "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2020-03-31",
-        "end": "2023-05-11",
-        "id": "DR-4508",
-        "incidentType": "Biological",
-        "number": 4508,
-        "title": "COVID-19 PANDEMIC",
+        "begin": "2023-06-01",
+        "date": "2023-10-11",
+        "end": "2023-06-08",
+        "id": "DR-4745",
+        "incidentType": "Flood",
+        "number": 4745,
+        "title": "FLOODING",
         "type": "DR"
       },
       "federal_status": "matched",
@@ -694,17 +712,8 @@
     {
       "date_signed": "2021-02-12",
       "declaration_id": "MT-EO-4-2021",
-      "federal_declaration": {
-        "begin": "2020-01-20",
-        "date": "2020-03-31",
-        "end": "2023-05-11",
-        "id": "DR-4508",
-        "incidentType": "Biological",
-        "number": 4508,
-        "title": "COVID-19 PANDEMIC",
-        "type": "DR"
-      },
-      "federal_status": "matched",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
         "BEAVERHEAD",
         "BITTERROOT / SAPPHIRE MOUNTAINS",
@@ -743,7 +752,7 @@
     "declarations": [],
     "since": 2021
   },
-  "generated_on": "2026-10-20",
+  "generated_on": "2026-10-21",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 16,
@@ -759,7 +768,7 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 1,
-    "federal_matched": 13,
+    "federal_matched": 14,
     "fmcsa_archive": 0,
     "noaa_matched": 14,
     "noaa_none": 1,

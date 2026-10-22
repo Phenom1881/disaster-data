@@ -7,25 +7,24 @@
   "coverage": "2003-present structured Governor archive; 2000-2002 unavailable in live source",
   "coverage_base": "2003-present structured Governor archive; 2000-2002 unavailable in live source",
   "federal_without_state": {
-    "compared": 23,
-    "count": 5,
+    "compared": 22,
+    "count": 4,
     "ids": [
       "DR-4296",
       "DR-1683",
       "DR-1632",
-      "EM-3228",
       "DR-1510"
     ],
     "since": 2003
   },
-  "generated_on": "2026-10-21",
+  "generated_on": "2026-10-22",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 252,
+    "action_count": 253,
     "federal_declaration_count": 174,
-    "severity_rows": 664,
-    "storm_match_rows": 1009
+    "severity_rows": 704,
+    "storm_match_rows": 1083
   },
   "name": "Oregon",
   "retried": false,
@@ -34,10 +33,10 @@
   "source_records_saved_before": 252,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 195,
+    "added_by_hand": 1,
+    "federal_matched": 168,
     "fmcsa_archive": 0,
-    "noaa_matched": 106,
+    "noaa_matched": 107,
     "noaa_none": 132,
     "noaa_pending": 14,
     "reviewed_not_weather": 0,
@@ -46,7 +45,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 0.8,
+    "collect_seconds": 1.0,
     "storm_join_seconds": 1.6
   }
 }

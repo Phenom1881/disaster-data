@@ -382,16 +382,20 @@ FL: 26 actions, 189 federal declarations; 2020-present structured Governor archi
 Applied 9 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/georgia/hazard_overrides.csv
 GA-EO-10-08-26-01: no matching storm events found in the date window.
 GA-EO-09-12-18-01: no matching storm events found in the date window.
-Wrote 3146 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_matches.csv.tmp
-Wrote severity summary (2061 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp
+Wrote 3262 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_matches.csv.tmp
+Wrote severity summary (2126 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  GA-EO-04-28-11-01 CATOOSA [county/county-equivalent]: deaths=8, injuries=30, damage=$25,187,000 (Hail, Thunderstorm Wind, Tornado)
   GA-EO-04-13-20-01 MURRAY [county/county-equivalent]: deaths=8, injuries=24, damage=$500,000 (Tornado)
   GA-EO-01-22-17-01 COOK [county/county-equivalent]: deaths=7, injuries=45, damage=$1,550,000 (Thunderstorm Wind, Tornado)
   GA-EO-09-24-24-01 RICHMOND [NWS forecast zone]: deaths=6, injuries=0, damage=$500,500,000 (Tropical Storm)
   GA-EO-01-22-17-01 DOUGHERTY [county/county-equivalent]: deaths=5, injuries=32, damage=$300,043,000 (Flash Flood, Hail, Thunderstorm Wind, Tornado)
   GA-EO-09-24-24-01 MCDUFFIE [NWS forecast zone]: deaths=3, injuries=0, damage=$21,000,000 (Tropical Storm)
   GA-EO-09-24-24-01 LOWNDES [NWS forecast zone]: deaths=2, injuries=77, damage=$600,000,000 (Hurricane (Typhoon))
+  GA-EO-04-28-11-01 DADE [county/county-equivalent]: deaths=2, injuries=25, damage=$21,675,000 (Hail, Thunderstorm Wind, Tornado)
+  GA-EO-04-28-11-01 LAMAR [county/county-equivalent]: deaths=2, injuries=12, damage=$10,000,000 (Tornado)
+  GA-EO-04-28-11-01 SPALDING [county/county-equivalent]: deaths=2, injuries=0, damage=$25,000,000 (Tornado)
   GA-EO-01-22-17-01 BROOKS [county/county-equivalent]: deaths=2, injuries=0, damage=$570,000 (Thunderstorm Wind, Tornado)
   GA-EO-01-22-17-01 BERRIEN [county/county-equivalent]: deaths=2, injuries=0, damage=$500,000 (Tornado)
   GA-EO-09-24-24-01 WHEELER [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Tornado)
@@ -407,15 +411,11 @@ Areas with reported deaths, injuries, or damage:
   GA-EO-04-13-20-01 BARTOW [county/county-equivalent]: deaths=1, injuries=2, damage=$125,000 (Flood, Thunderstorm Wind, Tornado)
   GA-EO-09-10-17-01 FORSYTH [NWS forecast zone]: deaths=1, injuries=1, damage=$100,000 (Tropical Storm)
   GA-EO-09-24-24-01 CLINCH [NWS forecast zone]: deaths=1, injuries=1, damage=$0 (Hurricane (Typhoon))
-  GA-EO-10-09-18-01 SEMINOLE [NWS forecast zone]: deaths=1, injuries=0, damage=$800,000,000 (Hurricane (Typhoon))
-  GA-EO-09-24-24-01 COLUMBIA [NWS forecast zone]: deaths=1, injuries=0, damage=$225,500,000 (Tropical Storm)
-  GA-EO-09-24-24-01 COLQUITT [NWS forecast zone]: deaths=1, injuries=0, damage=$105,000,000 (Hurricane (Typhoon))
-  GA-EO-09-24-24-01 LINCOLN [NWS forecast zone]: deaths=1, injuries=0, damage=$8,900,000 (Tropical Storm)
-  Showing the 25 highest-consequence areas; all 581 are retained in /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 628 are retained in /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/georgia/eo_storm_severity_summary.csv.tmp.
 
-GA: 43 actions, 82 federal declarations; 2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill
+GA: 45 actions, 82 federal declarations; 2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill
 {"actions": 226, "declarations": 8, "relationships": 102, "overrides": 4, "review": 15}
 
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/hawaii/hazard_overrides.csv
@@ -963,7 +963,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/maine/eo_storm_severity_summary.csv.tmp.
 
 ME: 24 actions, 71 federal declarations; 2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending
-Maryland: 111 actions, 21 relationships, 11 weather declarations
+Maryland: 112 actions, 21 relationships, 11 weather declarations
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/maryland/hazard_overrides.csv
 MD-SOE-1972-06-26: no matching storm events found in the date window.
@@ -1005,10 +1005,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 31 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 88 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 81 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 9 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 84 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 11 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 91 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 436 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1964,8 +1964,8 @@ OR-EO-11-01: no matching storm events found in the date window.
 OR-EO-08-23: no matching storm events found in the date window.
 OR-EO-07-16: no matching storm events found in the date window.
 OR-EO-07-11: no matching storm events found in the date window.
-Wrote 1009 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_matches.csv.tmp
-Wrote severity summary (664 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp
+Wrote 1083 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_matches.csv.tmp
+Wrote severity summary (704 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   OR-EO-20-39 NORTH OREGON CASCADES FOOTHILLS [NWS forecast zone]: deaths=10, injuries=0, damage=$2,000,000,000 (High Wind, Wildfire)
@@ -1987,17 +1987,17 @@ Areas with reported deaths, injuries, or damage:
   OR-EO-20-45 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
   OR-EO-20-49 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
   OR-EO-20-50 JACKSON COUNTY [NWS forecast zone]: deaths=3, injuries=0, damage=$10,000,000 (Wildfire)
+  OR-SOE-2015-12-10 COLUMBIA [county/county-equivalent]: deaths=1, injuries=1, damage=$3,253,000 (Flood)
   OR-EO-20-39 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
   OR-EO-20-39 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
   OR-EO-20-40 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
   OR-EO-20-40 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
   OR-EO-20-44 CASCADE FOOTHILLS IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
-  OR-EO-20-44 CASCADES IN LANE COUNTY [NWS forecast zone]: deaths=1, injuries=0, damage=$200,000,000 (Strong Wind, Wildfire)
-  Showing the 25 highest-consequence areas; all 150 are retained in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 165 are retained in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oregon/eo_storm_severity_summary.csv.tmp.
 
-OR: 252 actions, 174 federal declarations; 2003-present structured Governor archive; 2000-2002 unavailable in live source
+OR: 253 actions, 174 federal declarations; 2003-present structured Governor archive; 2000-2002 unavailable in live source
 Pennsylvania adapter: collecting official state actions...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/declarations_for_join.csv
 Pennsylvania scraper: collecting Office of Administration issuances...
@@ -2458,20 +2458,21 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 82 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-Applied 8 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
+WA: wa_order_relationships.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
 WA-PROC-26-03: no matching storm events found in the date window.
-WA-PROC-26-02: no matching storm events found in the date window.
-WA-PROC-25-02: no matching storm events found in the date window.
-WA-PROC-24-05: no matching storm events found in the date window.
-WA-PROC-24-02: no matching storm events found in the date window.
+WA-PROC-26-02: searching around the reviewed event date 2026-03-13 (signed 2026-04-27)
+WA-PROC-25-02: searching around the reviewed event date 2025-02-23 (signed 2025-04-04)
+WA-PROC-24-05: searching around the reviewed event date 2024-07-20 (signed 2024-08-16)
+WA-PROC-24-02: searching around the reviewed event date 2024-01-08 (signed 2024-03-15)
 WA-PROC-24-01: searching around the reviewed event date 2023-12-06 (signed 2024-01-24)
-WA-PROC-23-04: no matching storm events found in the date window.
-WA-PROC-23-01: no matching storm events found in the date window.
+WA-PROC-23-04: searching around the reviewed event date 2023-07-10 (signed 2023-07-24)
+WA-PROC-23-01: searching around the reviewed event date 2022-12-21 (signed 2023-01-31)
 WA-PROC-22-06: searching around the reviewed event date 2022-11-05 (signed 2022-12-15)
-WA-PROC-21-03: no matching storm events found in the date window.
+WA-PROC-21-03: searching around the reviewed event date 2020-12-20 (signed 2021-03-01)
+WA-PROC-19-06: searching around the reviewed event date 2018-12-13 (signed 2019-02-15)
 WA-PROC-17-07: searching around the reviewed event date 2017-03-13 (signed 2017-04-24)
 WA-PROC-17-03: searching around the reviewed event date 2017-02-02 (signed 2017-03-14)
 WA-PROC-16-02: searching around the reviewed event date 2016-01-24 (signed 2016-03-03)
@@ -2479,8 +2480,8 @@ WA-PROC-15-14: searching around the reviewed event date 2015-08-29 (signed 2015-
 WA-PROC-15-03: no matching storm events found in the date window.
 WA-PROC-14-03: searching around the reviewed event date 2014-03-08 (signed 2014-04-03)
 WA-PROC-13-08: searching around the reviewed event date 2013-09-29 (signed 2013-10-03)
-Wrote 540 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_matches.csv.tmp
-Wrote severity summary (340 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp
+Wrote 699 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_matches.csv.tmp
+Wrote severity summary (434 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   WA-PROC-23-05 SPOKANE AREA [NWS forecast zone]: deaths=2, injuries=0, damage=$75,000,000 (Wildfire)
@@ -2497,6 +2498,7 @@ Areas with reported deaths, injuries, or damage:
   WA-PROC-18-05 EAST SLOPES NORTHERN CASCADES [NWS forecast zone]: deaths=0, injuries=0, damage=$81,700,000 (Wildfire)
   WA-PROC-24-04 LOWER GARFIELD & ASOTIN [NWS forecast zone]: deaths=0, injuries=0, damage=$35,000,000 (Wildfire)
   WA-PROC-24-04 OKANOGAN HIGHLANDS [NWS forecast zone]: deaths=0, injuries=0, damage=$21,900,000 (Wildfire)
+  WA-PROC-24-05 OKANOGAN HIGHLANDS [NWS forecast zone]: deaths=0, injuries=0, damage=$21,900,000 (Wildfire)
   WA-PROC-18-03 PEND OREILLE [county/county-equivalent]: deaths=0, injuries=0, damage=$8,000,000 (Flood)
   WA-PROC-15-16 SOUTHWEST INTERIOR [NWS forecast zone]: deaths=0, injuries=0, damage=$6,000,000 (High Wind)
   WA-PROC-15-16 COWLITZ [county/county-equivalent]: deaths=0, injuries=0, damage=$5,995,000 (Flood, Heavy Rain)
@@ -2507,8 +2509,7 @@ Areas with reported deaths, injuries, or damage:
   WA-PROC-19-02 YAKIMA VALLEY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,200,000 (Blizzard)
   WA-PROC-24-04 WESTERN CHELAN COUNTY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,150,000 (Wildfire)
   WA-PROC-18-05 SPOKANE AREA [NWS forecast zone]: deaths=0, injuries=0, damage=$2,000,000 (Wildfire)
-  WA-PROC-15-16 CLARK [county/county-equivalent]: deaths=0, injuries=0, damage=$1,781,000 (Heavy Rain)
-  Showing the 25 highest-consequence areas; all 101 are retained in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 123 are retained in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
 
@@ -2556,10 +2557,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 WV: 18 actions, 86 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
-Wisconsin: 303 executive orders processed (read from the Internet Archive's copy made 2026-10-21 00:31 UTC; the Governor's site did not answer this run)
-
-Wisconsin archive not reachable after 3 tries (try 1: ConnectTimeout; try 2: ConnectTimeout; try 3: ConnectTimeout; last: HTTPSConnectionPool(host='evers.wi.gov', port=443): Max retries exceeded with url: /pages/newsroom/executive-orders.aspx (Caused by ConnectTimeoutError(<HTTPSConnection(host='evers.wi.gov', port=443) at 0x7f08d67e0590>, 'Connection to evers.wi.gov timed out. (connect timeout=10)')))
-  evers.wi.gov resolved to 165.189.150.37, 165.189.241.190; this machine is in US, nearest Cloudflare site IAD
+Wisconsin: 303 executive orders processed
 
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
 WI-EO-256: no matching storm events found in the date window.
@@ -2598,7 +2596,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wisconsin/eo_storm_severity_summary.csv.tmp.
 
-WI: 18 actions, 57 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR; the Governor's site did not answer this run, so the archive was read from the Internet Archive's copy made 2026-10-21 00:31 UTC
+WI: 18 actions, 57 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR
 {"actions": 66, "declarations": 4, "relationships": 22, "overrides": 4, "review": 5}
 
 WY: wy_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 3 blank and 0 garbled field set(s)
@@ -2628,6 +2626,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending
-TIME total: collect 3274s, storm join 87s. Slowest: TX 1151s+1s, NJ 291s+7s, NC 290s+1s, CT 186s+0s, WI 122s+1s, LA 100s+1s, WA 91s+1s, SC 89s+3s, MA 74s+1s, CO 68s+5s
+TIME total: collect 3043s, storm join 106s. Slowest: TX 556s+1s, NJ 464s+10s, NC 408s+1s, CT 240s+0s, VT 140s+1s, MA 103s+1s, WA 99s+1s, LA 92s+1s, SC 90s+3s, NY 86s+1s
 Row-loss check: no saved rows lost.
 Plus health: 49 green, 1 yellow, 0 red.

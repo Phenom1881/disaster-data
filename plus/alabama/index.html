@@ -136,7 +136,7 @@
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<p class="note">29 of the 31 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 19 have a FEMA declaration within 21 days.</p>
+<p class="note">29 of the 31 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 16 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-10-07 &middot; State of Emergency: Tropical Storm Isaias</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>3656</td></tr>
@@ -149,11 +149,11 @@
 <tr><td>2023-03-24 &middot; State of Emergency: March 24, 2023 Severe Weather</td><td>142</td><td>AUTAUGA, BIBB, CHAMBERS, CHILTON, CHOCTAW, CLARKE, CLAY, COFFEE</td><td>4710</td></tr>
 <tr><td>2023-01-18 &middot; State of Emergency: St. Clair County (smoldering underground landfill fire in St. Clair County)</td><td>1</td><td>COLBERT</td><td>4684</td></tr>
 <tr><td>2023-01-12 &middot; State of Emergency: Severe Weather</td><td>82</td><td>AUTAUGA, BARBOUR, BIBB, CHAMBERS, COFFEE, COLBERT, CONECUH, COOSA</td><td>4684</td></tr>
-<tr><td>2021-08-28 &middot; State of Emergency: Hurricane Ida</td><td>23</td><td>BALDWIN CENTRAL, BALDWIN COASTAL, CLARKE, DALE, ELMORE, GENEVA, HOUSTON, LEE</td><td>4591</td></tr>
-<tr><td>2021-06-21 &middot; State of Emergency: Tropical Storm Claudette</td><td>34</td><td>BALDWIN, BALDWIN CENTRAL, BALDWIN COASTAL, CHEROKEE, COLBERT, CONECUH, COVINGTON, DALE</td><td>4591</td></tr>
+<tr><td>2021-08-28 &middot; State of Emergency: Hurricane Ida</td><td>23</td><td>BALDWIN CENTRAL, BALDWIN COASTAL, CLARKE, DALE, ELMORE, GENEVA, HOUSTON, LEE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2021-06-21 &middot; State of Emergency: Tropical Storm Claudette</td><td>34</td><td>BALDWIN, BALDWIN CENTRAL, BALDWIN COASTAL, CHEROKEE, COLBERT, CONECUH, COVINGTON, DALE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2021-03-25 &middot; State of Emergency: Severe Weather</td><td>94</td><td>BIBB, CALHOUN, CHEROKEE, CHILTON, CHOCTAW, CLAY, CLEBURNE, COLBERT</td><td>4596</td></tr>
 <tr><td>2021-03-16 &middot; State of Emergency: Severe Weather</td><td>62</td><td>AUTAUGA, BLOUNT, CHILTON, CHOCTAW, CLARKE, COLBERT, COOSA, CRENSHAW</td><td>4596</td></tr>
-<tr><td>2021-02-14 &middot; State of Emergency: Winter Weather</td><td>47</td><td>COLBERT, CULLMAN, FAYETTE, FRANKLIN, JACKSON, LAMAR, LAUDERDALE, LAWRENCE</td><td>4591</td></tr>
+<tr><td>2021-02-14 &middot; State of Emergency: Winter Weather</td><td>47</td><td>COLBERT, CULLMAN, FAYETTE, FRANKLIN, JACKSON, LAMAR, LAUDERDALE, LAWRENCE</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2020-10-27 &middot; State of Emergency: Tropical Storm Zeta</td><td>49</td><td>AUTAUGA, BALDWIN CENTRAL, BALDWIN COASTAL, BALDWIN INLAND, BIBB, BULLOCK, BUTLER, CALHOUN</td><td>4573</td></tr>
 <tr><td>2020-10-06 &middot; State of Emergency: Hurricane Delta</td><td>0</td><td>None matched</td><td>4563</td></tr>
 <tr><td>2020-09-14 &middot; State of Emergency: Tropical Storm Sally</td><td>63</td><td>AUTAUGA, BALDWIN, BALDWIN CENTRAL, BALDWIN COASTAL, BALDWIN INLAND, BARBOUR, BULLOCK, BUTLER</td><td>4563</td></tr>
@@ -595,7 +595,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-20 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-21 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {
