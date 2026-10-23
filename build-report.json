@@ -1,32 +1,32 @@
 {
   "schemaVersion": 2,
-  "releaseCandidate": "2026.10.23.1",
-  "builtAt": "2026-10-23T11:40:47Z",
+  "releaseCandidate": "2026.10.23.2",
+  "builtAt": "2026-10-23T14:08:07Z",
   "status": "passed",
   "summary": {
     "passed": 40,
     "warnings": 0,
     "failed": 0
   },
-  "fingerprint": "cbf28925318c3f2a5612",
+  "fingerprint": "34c6a0d3cdc8b548e1b9",
   "metrics": {
-    "dataDate": "2026-10-19",
-    "ageDays": 4,
-    "declarationsCurrent": 3552,
+    "dataDate": "2026-10-23",
+    "ageDays": 0,
+    "declarationsCurrent": 3553,
     "declarationsCompletedFY": 3536,
-    "denials": 367,
+    "denials": 366,
     "statesTerritories": 57,
     "localities": 4195,
     "mapCounties": 3241,
-    "mapDeclarationEvents": 3552,
-    "eventCount": 3409,
-    "mapEventCount": 3408,
+    "mapDeclarationEvents": 3553,
+    "eventCount": 3410,
+    "mapEventCount": 3409,
     "statewideOnlyEvents": 1,
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 283432296099.12,
-    "paProjects": 823710,
+    "paTotalObligated": 284097656446.7,
+    "paProjects": 824164,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3266,
@@ -49,7 +49,7 @@
       "category": "Declarations",
       "status": "pass",
       "severity": "error",
-      "detail": "Parsed 3,552 unique declarations",
+      "detail": "Parsed 3,553 unique declarations",
       "metrics": {}
     },
     {
@@ -81,7 +81,7 @@
       "category": "Freshness",
       "status": "pass",
       "severity": "error",
-      "detail": "Data date: 2026-10-19",
+      "detail": "Data date: 2026-10-23",
       "metrics": {}
     },
     {
@@ -89,7 +89,7 @@
       "category": "Declarations",
       "status": "pass",
       "severity": "error",
-      "detail": "3,552 IDs; 0 duplicate(s); 0 blank ID(s)",
+      "detail": "3,553 IDs; 0 duplicate(s); 0 blank ID(s)",
       "metrics": {
         "duplicates": 0,
         "blankIds": 0
@@ -116,7 +116,7 @@
       "category": "Declarations",
       "status": "pass",
       "severity": "error",
-      "detail": "NATIONAL_TOTALS current=3,552; BROWSE=3,552",
+      "detail": "NATIONAL_TOTALS current=3,553; BROWSE=3,553",
       "metrics": {}
     },
     {
@@ -140,7 +140,7 @@
       "category": "Map",
       "status": "pass",
       "severity": "error",
-      "detail": "Map=3,552; BROWSE=3,552",
+      "detail": "Map=3,553; BROWSE=3,553",
       "metrics": {}
     },
     {
@@ -164,7 +164,7 @@
       "category": "Event indexes",
       "status": "pass",
       "severity": "error",
-      "detail": "Parsed 3,408 map event(s)",
+      "detail": "Parsed 3,409 map event(s)",
       "metrics": {}
     },
     {
@@ -172,7 +172,7 @@
       "category": "Event indexes",
       "status": "pass",
       "severity": "error",
-      "detail": "Parsed 3,409 detailed event(s)",
+      "detail": "Parsed 3,410 detailed event(s)",
       "metrics": {}
     },
     {
@@ -180,7 +180,7 @@
       "category": "Event indexes",
       "status": "pass",
       "severity": "error",
-      "detail": "3,408 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s)",
+      "detail": "3,409 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s)",
       "metrics": {}
     },
     {
@@ -188,7 +188,7 @@
       "category": "Event indexes",
       "status": "pass",
       "severity": "error",
-      "detail": "3,409 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s); 0 state/disaster-number issue(s)",
+      "detail": "3,410 rows; 0 duplicate ID(s); 0 core issue(s); 0 FIPS issue(s); 0 state/disaster-number issue(s)",
       "metrics": {}
     },
     {
@@ -196,7 +196,7 @@
       "category": "Event indexes",
       "status": "pass",
       "severity": "error",
-      "detail": "3,408 detailed event(s) with county footprints; 0 missing from map; 0 unexpected map event(s); 1 statewide-only detailed event(s)",
+      "detail": "3,409 detailed event(s) with county footprints; 0 missing from map; 0 unexpected map event(s); 1 statewide-only detailed event(s)",
       "metrics": {}
     },
     {
@@ -204,7 +204,7 @@
       "category": "Event indexes",
       "status": "pass",
       "severity": "error",
-      "detail": "3,408 shared event(s); 0 field mismatch(es)",
+      "detail": "3,409 shared event(s); 0 field mismatch(es)",
       "metrics": {}
     },
     {
@@ -228,7 +228,7 @@
       "category": "Freshness",
       "status": "pass",
       "severity": "error",
-      "detail": "Homepage contains build date 2026-10-19",
+      "detail": "Homepage contains build date 2026-10-23",
       "metrics": {}
     },
     {
@@ -356,7 +356,7 @@
       "category": "Freshness",
       "status": "pass",
       "severity": "error",
-      "detail": "Data date is 4 day(s) old; weekly target is <= 8 days",
+      "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
       "metrics": {}
     }
   ]
