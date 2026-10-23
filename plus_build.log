@@ -1005,10 +1005,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 31 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 81 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 85 relationship(s), 4 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 11 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 91 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 10 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 87 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 MA-EO-366: no matching storm events found in the date window.
 Wrote 436 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
@@ -1606,8 +1606,8 @@ North Carolina scraper: walking official Executive Orders archive...
     page 7: 20 candidate(s), 20 new
     page 8: 20 candidate(s), 20 new
     page 9: 20 candidate(s), 20 new
-    page 10: 20 candidate(s), 19 new
-    page 11: 20 candidate(s), 20 new
+    page 10: 20 candidate(s), 20 new
+    page 11: 20 candidate(s), 19 new
     page 12: 20 candidate(s), 20 new
     page 13: 20 candidate(s), 20 new
     page 14: 20 candidate(s), 20 new
@@ -1618,19 +1618,20 @@ North Carolina scraper: walking official Executive Orders archive...
     page 19: 20 candidate(s), 20 new
     page 20: 20 candidate(s), 20 new
     page 21: 20 candidate(s), 20 new
-    page 22: 11 candidate(s), 11 new
-    428 archive item(s); 358 canonical order(s)
+    page 22: 12 candidate(s), 12 new
+    429 archive item(s); 359 canonical order(s)
 North Carolina scraper: enriching official detail records...
-    enriched 50/358
-    enriched 100/358
-    enriched 150/358
-    enriched 200/358
-    enriched 250/358
-    enriched 300/358
-    enriched 350/358
-Done. 358 canonical order(s); 437 relationship(s); 55 original weather declaration(s) written to join file.
+    enriched 50/359
+    enriched 100/359
+    enriched 150/359
+    enriched 200/359
+    enriched 250/359
+    enriched 300/359
+    enriched 350/359
+Done. 359 canonical order(s); 437 relationship(s); 56 original weather declaration(s) written to join file.
 
 North Carolina adapter: coverage = 2017-01-06-present structured Governor archive; North Carolina Register backfill pending
+NC: nc_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
 Applied 51 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/north-carolina/hazard_overrides.csv
 NC-ROYCOOPER-EO-9: searching around the reviewed event date 2017-05-30 (signed 2017-06-16)
 NC-ROYCOOPER-EO-15: searching around the reviewed event date 2016-09-21 (signed 2017-08-16)
@@ -1649,6 +1650,9 @@ NC-ROYCOOPER-EO-308: searching around the reviewed event date 2024-05-08 (signed
 NC-ROYCOOPER-EO-309: no matching storm events found in the date window.
 NC-ROYCOOPER-EO-310: searching around the reviewed event date 2024-05-18 (signed 2024-07-01)
 NC-ROYCOOPER-EO-321: searching around the reviewed event date 2024-09-16 (signed 2024-10-16)
+
+1 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): NC-JOSHSTEIN-EO-41
+Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
 Wrote 3711 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_matches.csv.tmp
 Wrote severity summary (2189 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp
 
@@ -1682,7 +1686,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp.
 
-NC: 55 actions, 85 federal declarations; 2017-01-06-present structured Governor archive; North Carolina Register backfill pending
+NC: 56 actions, 85 federal declarations; 2017-01-06-present structured Governor archive; North Carolina Register backfill pending
 North Dakota: 186 orders scraped, 34 written as declarations.
 
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/north-dakota/hazard_overrides.csv
@@ -2458,7 +2462,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 82 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2626,6 +2630,11 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending
-TIME total: collect 3043s, storm join 106s. Slowest: TX 556s+1s, NJ 464s+10s, NC 408s+1s, CT 240s+0s, VT 140s+1s, MA 103s+1s, WA 99s+1s, LA 92s+1s, SC 90s+3s, NY 86s+1s
+TIME total: collect 2242s, storm join 70s. Slowest: NJ 429s+8s, NC 278s+0s, TX 239s+1s, CT 171s+0s, SC 145s+3s, VT 136s+0s, MA 94s+1s, MI 68s+0s, LA 60s+0s, AZ 52s+8s
 Row-loss check: no saved rows lost.
-Plus health: 49 green, 1 yellow, 0 red.
+Plus health: 50 green, 0 yellow, 0 red.
+Changes since the last run (2026-10-22 00:28 UTC):
+
+- **Maine** went from yellow to green.
+
+Now 50 green, 0 yellow, 0 red.

@@ -1,33 +1,27 @@
 # Plus health report
 
-Checked 2026-10-22 00:28 UTC after the refresh. **49 green, 1 yellow, 0 red.**
+Checked 2026-10-23 11:40 UTC after the refresh. **50 green, 0 yellow, 0 red.**
 
-## Yellow: working with gaps (1)
+## Green (50)
 
-| State | Declarations | Why |
-|---|---:|---|
-| Maine (ME) | 24 | Collection failed or produced no declarations on 1 of the 3 runs before this one. |
-
-## Green (49)
-
-AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
+AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
 
 ## Where the time went
 
-Collecting from state sources took 50.7 min in all, and matching storms took 1.8 min. The 10 slowest states:
+Collecting from state sources took 37.4 min in all, and matching storms took 1.2 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| TX | 9.3 min | 1 s |
-| NJ | 7.7 min | 10 s |
-| NC | 6.8 min | 1 s |
-| CT | 4.0 min | 0 s |
-| VT | 2.3 min | 1 s |
-| MA | 1.7 min | 1 s |
-| WA | 1.6 min | 1 s |
-| LA | 1.5 min | 1 s |
-| SC | 1.5 min | 3 s |
-| NY | 1.4 min | 1 s |
+| NJ | 7.2 min | 8 s |
+| NC | 4.6 min | 0 s |
+| TX | 4.0 min | 1 s |
+| CT | 2.8 min | 0 s |
+| SC | 2.4 min | 3 s |
+| VT | 2.3 min | 0 s |
+| MA | 1.6 min | 1 s |
+| MI | 1.1 min | 0 s |
+| LA | 1.0 min | 0 s |
+| AZ | 52 s | 8 s |
 
 ## FEMA declarations with no state declaration
 
@@ -70,7 +64,7 @@ The 10 states with the most:
 | KS | green | returned everything | 0 | 51 | 96 | 51 | 51 | 51 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 16 | 99 | 16 | 16 | 16 | 14 |  |
 | LA | green | returned everything | 0 | 45 | 111 | 45 | 45 | 45 | 40 |  |
-| ME | yellow | returned everything | 0 | 24 | 71 | 24 | 24 | 24 | 23 |  |
+| ME | green | returned everything | 0 | 24 | 71 | 24 | 24 | 24 | 23 |  |
 | MD | green | returned everything | 0 | 31 | 38 | 31 | 31 | 31 | 28 |  |
 | MA | green | returned everything | 0 | 16 | 59 | 16 | 16 | 16 | 15 |  |
 | MI | green | returned everything | 0 | 23 | 46 | 23 | 23 | 23 | 23 |  |
@@ -84,7 +78,7 @@ The 10 states with the most:
 | NJ | green | returned everything | 0 | 83 | 59 | 83 | 83 | 83 | 70 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NM | green | returned everything | 0 | 45 | 127 | 45 | 45 | 45 | 32 |  |
 | NY | green | returned everything | 0 | 24 | 118 | 24 | 24 | 24 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| NC | green | returned everything | 0 | 55 | 85 | 55 | 55 | 55 | 53 |  |
+| NC | green | returned everything | 0 | 56 | 85 | 56 | 56 | 56 | 53 |  |
 | ND | green | returned everything | 0 | 34 | 76 | 34 | 34 | 34 | 18 | 7 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | OH | green | maintained by hand | 0 | 18 | 61 | 18 | 18 | 18 | 15 | Maintained by hand: no automatic source works for this state, so declarations are added from official announcements and news coverage. This run's automatic source attempt: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/a.... |
 | OK | green | returned everything | 0 | 55 | 260 | 55 | 55 | 55 | 53 | 6 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
