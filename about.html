@@ -156,7 +156,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <div class="prose">
         <p>Since 2000, the federal government has issued thousands of disaster and emergency declarations: the formal decisions that unlock federal help after a hurricane, flood, wildfire, ice storm, or public-health crisis. The full record is public, but it lives in spreadsheets and APIs built for analysts.</p>
         <p>Disaster Data puts that record on a map and a scoreboard. Drag the year range to watch a decade reshape the rankings, filter by hazard, and drill into any state to see its individual declarations and how often requests were denied. No account, no cost, nothing to install.</p>
-        <p>Every county, parish, borough, and tribal nation also has <a href="states/index.html">its own page</a> with a full declaration history, sortable and ready to copy into a local hazard mitigation plan. Over 3,600 jurisdictions, all searchable from the homepage.</p>
+        <p>Every county, parish, borough, and tribal nation also has <a href="states/index.html">its own page</a> with a full declaration history and a ready-to-use previous-occurrences table for local hazard mitigation plans. Over 3,600 jurisdictions, all searchable from the homepage.</p>
       </div>
     </section>
 
@@ -209,6 +209,15 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
           <div class="dt-head"><span class="swatch" style="background:#c85c2e"></span><span class="dt-code">FM</span><span class="dt-name">Fire Management</span></div>
           <p>Fire Management Assistance, for wildfires threatening to become major disasters. Busy fire seasons can generate many of these in a short window.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">How declarations are decided</div>
+      <h2>The math behind a major disaster declaration.</h2>
+      <div class="prose">
+        <p>Public Assistance has a published per capita indicator. Individual Assistance has no threshold at all. Our teaching sheet covers what each measures, the fiscal year 2026 Public Assistance figure for every state and territory, and why no single number decides a request.</p>
+        <p><a href="declaration-logic.html">Read how a declaration is actually decided.</a></p>
       </div>
     </section>
 
@@ -346,52 +355,6 @@ const local = states.VA.counties[<span class="s">'51161'</span>];</pre>
         <p><strong>What is left out is left out on purpose.</strong> Only county typed storm reports are resolved into the county file. NOAA forecast zones do not align to county boundaries and are not folded in silently; they stay in the per state row level file. Declarations whose text matches no hazard keyword are skipped rather than guessed at. Area names that cannot be resolved to a real county are dropped and counted, not approximated. The counts above are what survived that, not what was collected.</p>
         <p><strong>Free to use.</strong> If you publish something built on this, please credit it: <em>Source: DisasterData.IO, state executive order archives joined to NOAA Storm Events</em>. The underlying state orders and NOAA records are public; the collection, classification, and join are the work being credited.</p>
         <p><strong>Same caveat as the rest of the site.</strong> This is derived from public records but is not endorsed by or affiliated with any state government, FEMA, or NOAA. Where a figure here disagrees with the issuing state's own archive, treat the state as authoritative.</p>
-      </div>
-    </section>
-
-    <section class="section" id="api">
-      <div class="eyebrow">For builders and analysts</div>
-      <h2>The DisasterData API.</h2>
-      <div class="prose">
-        <p>The same data as the files above, answered one question at a time: a state, a county, or a single declaration, already filtered and joined. Read only, JSON, no key. It is served from the files this site publishes, so an answer from the API always matches what the site shows, and it updates on the same weekly schedule.</p>
-      </div>
-      <div class="defs">
-        <div class="def">
-          <div class="def-t"><code class="path">/v1/states</code></div>
-          <div class="def-d">Every state and territory, with its count of federal declarations, localities, and state declarations.</div>
-        </div>
-        <div class="def">
-          <div class="def-t"><code class="path">/v1/states/{ST}/declarations</code></div>
-          <div class="def-d">A state's federal declarations, newest first, with every county each one names. Filter with <code>type=DR</code>, <code>EM</code> or <code>FM</code>, and <code>since</code> or <code>until</code> as YYYY-MM-DD.</div>
-        </div>
-        <div class="def">
-          <div class="def-t"><code class="path">/v1/counties/{FIPS}</code></div>
-          <div class="def-d">Every federal declaration that names one county, including statewide declarations. Takes the same filters.</div>
-        </div>
-        <div class="def">
-          <div class="def-t"><code class="path">/v1/declarations/{DR-4898-TN}</code></div>
-          <div class="def-d">One federal declaration: dates, incident period, programs, and the named areas with their FIPS codes.</div>
-        </div>
-        <div class="def">
-          <div class="def-t"><code class="path">/v1/states/{ST}/actions</code><span class="def-tag">50 states</span></div>
-          <div class="def-d">The state's own weather emergency declarations, with governor, signing date, and a link to the source record.</div>
-        </div>
-        <div class="def">
-          <div class="def-t"><code class="path">/v1/states/{ST}/crosswalk</code><span class="def-tag">50 states</span></div>
-          <div class="def-d">Each state declaration beside its closest federal declaration (an automated candidate within 21 days, not a confirmed link) and the NOAA storm report areas matched to it.</div>
-        </div>
-      </div>
-      <pre class="data-code"><span class="c">// Emergency declarations naming Roanoke County, Virginia, since 2020</span>
-const r = await fetch(<span class="s">'https://disasterdata-api.disasterdata.workers.dev/v1/counties/51161?type=EM&amp;since=2020-01-01'</span>);
-const { name, count, declarations } = await r.json();
-
-<span class="c">// Virginia's state declarations matched to federal ones</span>
-const crosswalk = await fetch(<span class="s">'https://disasterdata-api.disasterdata.workers.dev/v1/states/VA/crosswalk'</span>).then(r =&gt; r.json());</pre>
-      <div class="prose" style="margin-top:22px;">
-        <p><strong>Full reference.</strong> Every endpoint, parameter, example response and error is on the <a href="/api.html">API page</a>.</p>
-        <p><strong>Limits.</strong> 10 requests a minute per address. Past that, the API answers 429 with a Retry-After header. Responses can be cached for an hour.</p>
-        <p><strong>The shape is stable.</strong> Fields may be added inside <code>/v1</code>. Nothing will be renamed or removed without a new version path. The list of endpoints is always at <a href="https://disasterdata-api.disasterdata.workers.dev/">disasterdata-api.disasterdata.workers.dev</a>.</p>
-        <p><strong>Building something larger?</strong> If you need more than the public limit or a feed built for your system, <a href="https://www.linkedin.com/in/reallyjosephreally" target="_blank" rel="noopener">get in touch</a>.</p>
       </div>
     </section>
 
