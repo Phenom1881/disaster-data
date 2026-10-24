@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "release": "2026.10.23.2",
+  "release": "2026.10.24.1",
   "status": "passed",
-  "builtAt": "2026-10-23T14:08:07Z",
+  "builtAt": "2026-10-24T18:03:42Z",
   "dataDate": "2026-10-23",
-  "fingerprint": "34c6a0d3cdc8b548e1b9",
+  "fingerprint": "e8ad2d7978200643c09a",
   "metrics": {
     "dataDate": "2026-10-23",
-    "ageDays": 0,
+    "ageDays": 1,
     "declarationsCurrent": 3553,
     "declarationsCompletedFY": 3536,
     "denials": 366,
@@ -32,10 +32,10 @@
     "nriRelease": "2025"
   },
   "changesFromPreviousRelease": {
-    "declarationsCurrent": 1.0,
+    "declarationsCurrent": 0.0,
     "jurisdictionPages": 0.0,
     "mapCounties": 0.0,
-    "eventCount": 1.0,
+    "eventCount": 0.0,
     "sviCounties": 0.0,
     "nriCounties": 0.0
   },
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 1 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
