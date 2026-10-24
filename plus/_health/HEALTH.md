@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-10-23 11:40 UTC after the refresh. **50 green, 0 yellow, 0 red.**
+Checked 2026-10-24 18:49 UTC after the refresh. **50 green, 0 yellow, 0 red.**
 
 ## Green (50)
 
@@ -8,20 +8,20 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, 
 
 ## Where the time went
 
-Collecting from state sources took 37.4 min in all, and matching storms took 1.2 min. The 10 slowest states:
+Collecting from state sources took 39.3 min in all, and matching storms took 1.4 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| NJ | 7.2 min | 8 s |
-| NC | 4.6 min | 0 s |
-| TX | 4.0 min | 1 s |
-| CT | 2.8 min | 0 s |
-| SC | 2.4 min | 3 s |
-| VT | 2.3 min | 0 s |
-| MA | 1.6 min | 1 s |
-| MI | 1.1 min | 0 s |
-| LA | 1.0 min | 0 s |
-| AZ | 52 s | 8 s |
+| TX | 6.4 min | 1 s |
+| NJ | 4.8 min | 7 s |
+| NC | 4.6 min | 1 s |
+| CT | 3.8 min | 1 s |
+| SC | 1.7 min | 2 s |
+| LA | 1.6 min | 1 s |
+| WA | 1.5 min | 1 s |
+| VT | 1.2 min | 0 s |
+| CO | 1.1 min | 4 s |
+| PA | 1.2 min | 1 s |
 
 ## FEMA declarations with no state declaration
 
@@ -50,7 +50,7 @@ The 10 states with the most:
 | AK | green | returned everything | 0 | 23 | 95 | 23 | 23 | 23 | 17 |  |
 | AZ | green | returned everything | 0 | 59 | 120 | 59 | 59 | 59 | 54 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | AR | green | returned everything | 0 | 36 | 89 | 36 | 36 | 36 | 32 |  |
-| CA | green | returned everything | 0 | 47 | 397 | 47 | 47 | 47 | 43 |  |
+| CA | green | returned everything | 0 | 47 | 398 | 47 | 47 | 47 | 43 |  |
 | CO | green | returned everything | 0 | 112 | 112 | 112 | 112 | 112 | 94 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | CT | green | returned everything | 0 | 20 | 43 | 20 | 20 | 20 | 19 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | DE | green | returned everything | 0 | 15 | 26 | 15 | 15 | 15 | 15 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
