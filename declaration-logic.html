@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="dd-data-date" content="2026-09-20">
+<title>Disaster Data | Declaration Logic</title>
+<meta name="description" content="How FEMA decides major disaster declarations: the FY2026 Public Assistance per capita indicators for every state and territory, and why Individual Assistance has no threshold.">
+<link rel="canonical" href="https://www.disasterdata.io/declaration-logic.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Disaster Data | Declaration Logic">
+<meta property="og:description" content="How FEMA decides major disaster declarations: the FY2026 Public Assistance per capita indicators for every state and territory, and why Individual Assistance has no threshold.">
+<meta property="og:url" content="https://www.disasterdata.io/declaration-logic.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Disaster Data | Declaration Logic">
+<meta name="twitter:description" content="How FEMA decides major disaster declarations: the FY2026 Public Assistance per capita indicators for every state and territory, and why Individual Assistance has no threshold.">
+<meta name="theme-color" content="#f6f1e7">
+<link rel="icon" href="/favicon.ico">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "How a declaration is actually decided", "description": "What FEMA's Public Assistance indicators and Individual Assistance factors measure, with FY2026 figures for every state and territory.", "dateModified": "2026-09-20", "author": {"@type": "Organization", "name": "DisasterData.IO"}, "publisher": {"@type": "Organization", "name": "DisasterData.IO"}, "mainEntityOfPage": "https://www.disasterdata.io/declaration-logic.html", "citation": ["https://www.ecfr.gov/current/title-44/chapter-I/subchapter-D/part-206/subpart-B/section-206.48", "https://www.federalregister.gov/documents/2019/03/21/2019-05388/factors-considered-when-evaluating-a-governors-request-for-individual-assistance-for-a-major", "https://www.fema.gov/assistance/public/tools-resources/per-capita-impact-indicator", "https://home.treasury.gov/policy-issues/economic-policy/total-taxable-resources"]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7; --paper-2:#fcfaf3; --paper-3:#f1ead9;
+  --ink:#1d1813; --ink-2:#5b5346; --ink-3:#938a78;
+  --rule:#e0d8c5; --rule-2:#cfc6b0;
+  --accent:#004c53; --accent-2:#0a6b73; --accent-soft:#d7e9ea;
+  --h1c:#efddb9; --h2c:#e6c089; --h3c:#d98c4e; --h4c:#c85c2e; --h5c:#9e3a1e;
+  --ember:#c85c2e;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font-family:var(--sans);
+  font-size:16px; line-height:1.6; margin:0;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+.container{max-width:1080px; margin:0 auto; padding:0 clamp(18px,4vw,48px)}
+h1,h2,h3,h4{font-family:var(--serif); margin:0; font-weight:400; text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+.n{font-variant-numeric:tabular-nums}
+
+/* masthead */
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,44px)}
+.kicker{font-size:12px; font-weight:600; letter-spacing:2.4px; text-transform:uppercase;
+  color:var(--accent); margin-bottom:22px}
+.headline{font-family:var(--serif); font-weight:400; font-size:clamp(34px,6.2vw,68px);
+  line-height:1.02; letter-spacing:-1.5px; max-width:17ch}
+.headline em{font-style:italic; font-weight:300}
+.standfirst{font-size:clamp(16px,2vw,19px); color:var(--ink-2); max-width:56ch;
+  margin-top:24px; line-height:1.55}
+.asof{margin-top:18px; font-size:13px; color:var(--ink-3)}
+.asof strong{color:var(--ink-2); font-weight:600}
+
+/* stat strip */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule);
+  border:1px solid var(--rule); border-radius:10px; overflow:hidden; margin-top:clamp(32px,4vw,46px)}
+.stat{background:var(--paper-2); padding:20px 22px}
+.stat .num{font-family:var(--serif); font-weight:500; font-size:clamp(26px,3.4vw,38px);
+  line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; color:var(--accent)}
+.stat .lab{font-size:12px; color:var(--ink-2); margin-top:9px; letter-spacing:.3px; font-weight:600}
+.stat .sub{font-size:11.5px; color:var(--ink-3); margin-top:6px; line-height:1.45}
+
+/* sections */
+section{padding:clamp(46px,6vw,80px) 0; border-top:1px solid var(--rule)}
+.shead{display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+  flex-wrap:wrap; margin-bottom:clamp(24px,3vw,38px)}
+.shead h2{font-family:var(--serif); font-weight:400; font-size:clamp(26px,3.6vw,40px);
+  letter-spacing:-.8px; line-height:1.05}
+.shead .tag{font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
+  color:var(--ink-3)}
+.prose{max-width:64ch; color:var(--ink-2); font-size:15.5px}
+.prose p + p{margin-top:14px}
+.prose strong{color:var(--ink); font-weight:600}
+
+/* notes and callouts */
+.hnote{margin-top:22px; font-size:13.5px; color:var(--ink-2); max-width:64ch; line-height:1.6;
+  border-left:3px solid var(--ember); padding-left:14px}
+.formula{background:var(--paper-3); border-left:3px solid var(--accent); border-radius:0 6px 6px 0;
+  padding:16px 18px; margin-top:20px; font-family:var(--serif); font-weight:500; font-size:15px;
+  color:var(--ink); font-variant-numeric:tabular-nums; overflow-x:auto; line-height:1.9}
+.formula span{color:var(--ink-3); font-family:var(--sans); font-weight:400; font-size:13px}
+.statute{background:var(--paper-3); border-left:3px solid #c89a5e; border-radius:0 6px 6px 0;
+  padding:18px 20px; margin-top:20px}
+.statute q{font-family:var(--serif); font-weight:400; font-size:17px; color:var(--ink);
+  font-style:normal; line-height:1.5; display:block; letter-spacing:-.2px}
+.statute q::before{content:"\201C"} .statute q::after{content:"\201D"}
+.statute .attr{font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--ink-3); margin-top:11px; display:block}
+
+/* teal panel */
+.thesis{background:var(--accent); color:#fff; border-radius:14px;
+  padding:clamp(24px,4vw,36px) clamp(24px,4vw,38px)}
+.thesis .q{font-family:var(--serif); font-weight:400; font-size:clamp(21px,3.2vw,32px);
+  line-height:1.16; letter-spacing:-.7px; max-width:26ch}
+.thesis p{margin-top:16px; max-width:60ch; font-size:15px; line-height:1.6; color:#dfeced}
+.thesis .cite{font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
+  color:#9fc4c7; margin-top:18px; display:block}
+
+/* cards */
+.tcard{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px; padding:22px 24px}
+.split{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px}
+.col{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px; padding:22px 24px}
+.col.pa{border-top:3px solid var(--ember)}
+.col.ia{border-top:3px solid var(--accent)}
+.col h4{font-size:19px; letter-spacing:-.4px}
+.col .sub{font-size:11px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase;
+  color:var(--ink-3); margin:5px 0 13px; display:block}
+.col p{font-size:14px; color:var(--ink-2); line-height:1.6}
+.col p + p{margin-top:10px}
+.col .verdict{margin-top:15px; padding-top:13px; border-top:1px solid var(--rule);
+  font-size:13.5px; font-weight:600; color:var(--ink)}
+
+/* controls */
+.controls{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:16px}
+.seg{display:inline-flex; border:1px solid var(--rule-2); border-radius:8px; overflow:hidden;
+  background:var(--paper-2)}
+.seg button{font-family:var(--sans); font-size:12.5px; font-weight:600; color:var(--ink-2);
+  background:none; border:none; border-right:1px solid var(--rule-2); padding:9px 16px;
+  cursor:pointer; transition:.12s; white-space:nowrap}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--accent); color:#fff}
+.seg button:hover:not([aria-pressed="true"]){background:var(--paper-3)}
+input[type=search],input[type=number]{font-family:var(--sans); font-size:14px; color:var(--ink);
+  background:var(--paper-2); border:1px solid var(--rule-2); border-radius:8px; padding:9px 13px}
+input[type=search]{min-width:190px; flex:1 1 190px; max-width:280px}
+.seg button:focus-visible,input:focus-visible,th button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px}
+.count{font-size:11.5px; font-weight:600; letter-spacing:.4px; color:var(--ink-3);
+  margin-left:auto; font-variant-numeric:tabular-nums; text-transform:uppercase}
+
+/* table */
+.tscroll{border:1px solid var(--rule); border-radius:12px; background:var(--paper-2)}
+/* overflow-x makes a scroll container, which kills sticky headers; only need it when narrow */
+@media (max-width:820px){.tscroll{overflow-x:auto}}
+thead th:first-child{border-top-left-radius:11px}
+thead th:last-child{border-top-right-radius:11px}
+table{border-collapse:collapse; width:100%; min-width:600px; font-size:14px}
+thead th{background:var(--paper-3); text-align:right; padding:0;
+  border-bottom:1px solid var(--rule); position:sticky; top:60px; z-index:2}
+thead th:first-child{text-align:left}
+th button{font-family:var(--sans); font-size:10.5px; font-weight:700; letter-spacing:1.4px;
+  text-transform:uppercase; color:var(--ink-3); background:none; border:0;
+  padding:13px 14px; width:100%; text-align:inherit; cursor:pointer; white-space:nowrap}
+th button:hover{color:var(--accent)}
+th .arr{color:var(--accent)}
+tbody td{padding:11px 14px; text-align:right; border-bottom:1px solid var(--rule);
+  font-family:var(--serif); font-weight:500; font-variant-numeric:tabular-nums; color:var(--ink)}
+tbody td:first-child{text-align:left; font-family:var(--sans); font-weight:500; font-size:14px}
+tbody tr:hover td{background:var(--paper-3)}
+tbody tr:last-child td{border-bottom:0}
+.terr{font-family:var(--sans); font-size:10px; font-weight:600; color:var(--ink-2);
+  background:var(--paper-3); border:1px solid var(--rule-2); border-radius:20px;
+  padding:2px 9px; margin-left:8px; vertical-align:1px; letter-spacing:.3px}
+.floor{color:var(--h5c)}
+.dim{color:var(--ink-3)}
+.tnote{font-size:13px; color:var(--ink-2); margin-top:14px; max-width:68ch; line-height:1.6;
+  border-left:3px solid var(--ember); padding-left:14px}
+
+/* calculator */
+.calc{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px;
+  padding:clamp(18px,3vw,26px); margin-top:22px}
+.calc-row{display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end}
+.calc label{display:block; font-size:10.5px; font-weight:700; letter-spacing:1.4px;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:7px}
+.calc input{width:180px}
+.calc-out{margin-top:20px; padding-top:17px; border-top:1px solid var(--rule)}
+.calc-out div span{display:block; font-size:10.5px; font-weight:700; letter-spacing:1.4px;
+  text-transform:uppercase; color:var(--ink-3)}
+.calc-out div b{font-family:var(--serif); font-size:clamp(26px,3.4vw,34px); font-weight:500;
+  color:var(--accent); font-variant-numeric:tabular-nums; letter-spacing:-1px; line-height:1.2}
+
+/* IA factor tiers */
+.tier{margin-top:26px}
+.tier-lab{display:flex; align-items:center; gap:12px; margin-bottom:13px}
+.tier-lab .pill{font-family:var(--sans); font-size:12px; font-weight:500; border-radius:20px;
+  padding:5px 13px; white-space:nowrap}
+.pill.principal{background:var(--accent); border:1px solid var(--accent); color:#fff}
+.pill.secondary{background:var(--paper-2); border:1px solid var(--rule-2); color:var(--ink-2)}
+.tier-lab .rule{flex:1; height:1px; background:var(--rule)}
+.factors{display:grid; gap:14px; grid-template-columns:repeat(2,1fr)}
+.factors.four{grid-template-columns:repeat(4,1fr)}
+.factor{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px; padding:20px 22px}
+.factor.hi{border-left:3px solid var(--accent)}
+.factor h4{font-size:17px; letter-spacing:-.3px; margin-bottom:7px}
+.factor p{font-size:13.5px; color:var(--ink-2); line-height:1.6}
+.factor .cite{font-size:11px; font-weight:700; letter-spacing:.6px;
+  color:var(--ink-3); display:block; margin-top:11px}
+
+/* band tables */
+.bands{width:100%; border-collapse:collapse; margin-top:18px; font-size:14px; min-width:420px}
+.bands th{font-size:10.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
+  color:var(--ink-3); text-align:left; padding:0 12px 10px 0; border-bottom:1px solid var(--rule);
+  font-family:var(--sans)}
+.bands th:last-child,.bands td:last-child{text-align:right; padding-right:0}
+.bands td{padding:12px 12px 12px 0; border-bottom:1px solid var(--rule);
+  font-family:var(--serif); font-weight:500; font-variant-numeric:tabular-nums}
+.bands tr:last-child td{border-bottom:0}
+.bar{display:inline-block; height:8px; border-radius:4px; background:var(--accent);
+  vertical-align:1px; margin-right:10px}
+
+/* capacity compare */
+.compare{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px}
+.cc{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px; padding:22px 24px}
+.cc .st{font-family:var(--serif); font-size:20px; letter-spacing:-.4px}
+.cc .ttr{font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-top:4px}
+.cc .icc{font-family:var(--serif); font-size:clamp(34px,4.6vw,46px); font-weight:500;
+  color:var(--accent); margin-top:14px; font-variant-numeric:tabular-nums;
+  line-height:1; letter-spacing:-1.4px}
+.cc .band{font-size:13.5px; color:var(--ink-2); margin-top:11px; line-height:1.6}
+.cc .band b{color:var(--ink); font-weight:600}
+
+/* sequence */
+.steps{counter-reset:s; margin-top:22px}
+.step{counter-increment:s; display:grid; grid-template-columns:44px 1fr; gap:16px;
+  padding:17px 0; border-bottom:1px solid var(--rule)}
+.step:last-child{border-bottom:0}
+.step::before{content:counter(s,decimal-leading-zero); font-family:var(--serif); font-size:17px;
+  font-weight:500; color:var(--ember); font-variant-numeric:tabular-nums; padding-top:1px}
+.step h4{font-size:17px; letter-spacing:-.3px; margin-bottom:5px}
+.step p{font-size:13.5px; color:var(--ink-2); line-height:1.6}
+.step .who{font-family:var(--sans); font-size:11px; font-weight:500; color:var(--ink-2);
+  background:var(--paper-3); border:1px solid var(--rule-2); border-radius:20px;
+  padding:3px 11px; margin-left:10px; vertical-align:2px}
+
+/* misconceptions */
+.myth{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px;
+  padding:20px 22px; margin-top:12px}
+.myth .heard{font-family:var(--serif); font-size:17px; color:var(--h5c); margin-bottom:10px;
+  letter-spacing:-.3px; line-height:1.35}
+.myth .actual{font-size:14px; color:var(--ink-2); line-height:1.6}
+.myth .actual::before{content:"Actually: "; font-family:var(--sans); font-size:10.5px;
+  font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent)}
+.myth .actual b{color:var(--ink); font-weight:600}
+
+/* worked example */
+.ex{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px;
+  overflow:hidden; margin-top:22px}
+.ex-head{background:var(--paper-3); padding:18px clamp(20px,3vw,26px); border-bottom:1px solid var(--rule)}
+.ex-head h4{font-size:19px; letter-spacing:-.4px}
+.ex-head span{font-size:12px; color:var(--ink-3); display:block; margin-top:5px}
+.ex-body{padding:clamp(20px,3vw,26px)}
+.ex-body > p{font-size:14.5px; color:var(--ink-2); line-height:1.6}
+.ex-body > p + p{margin-top:13px}
+.ex-tbl{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px; min-width:440px}
+.ex-tbl th{font-family:var(--sans); font-size:10.5px; font-weight:700; letter-spacing:1.3px;
+  text-transform:uppercase; color:var(--ink-3); text-align:right; padding:0 0 9px 14px;
+  border-bottom:1px solid var(--rule)}
+.ex-tbl th:first-child{text-align:left; padding-left:0}
+.ex-tbl td{padding:10px 0 10px 14px; text-align:right; border-bottom:1px solid var(--rule);
+  font-family:var(--serif); font-weight:500; font-variant-numeric:tabular-nums}
+.ex-tbl td:first-child{text-align:left; font-family:var(--sans); padding-left:0; font-size:14px}
+.ex-tbl tr:last-child td{border-bottom:0}
+.yes{color:var(--accent); font-weight:600} .no{color:var(--h5c); font-weight:600}
+.ex-take{background:var(--accent); color:#fff; padding:20px clamp(20px,3vw,26px);
+  font-size:14.5px; line-height:1.6}
+.ex-take b{font-weight:600; color:#fff}
+
+/* details */
+details{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px;
+  margin-top:12px; overflow:hidden}
+summary{font-family:var(--sans); font-weight:600; font-size:14.5px; cursor:pointer;
+  padding:16px 20px; list-style:none; color:var(--ink)}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+"; color:var(--accent); margin-right:11px; font-weight:700}
+details[open] summary::before{content:"\2212"}
+details[open] summary{border-bottom:1px solid var(--rule)}
+.dbody{padding:16px 20px 20px; font-size:14px; color:var(--ink-2); line-height:1.6}
+.dbody p + p{margin-top:11px}
+.dbody code{font-family:var(--serif); font-weight:600; font-size:14.5px;
+  font-variant-numeric:tabular-nums; color:var(--ink)}
+
+/* sources + footer */
+.srcs{columns:2; column-gap:38px; font-size:13.5px; color:var(--ink-2); padding-left:18px}
+.srcs li{margin-bottom:10px; break-inside:avoid; line-height:1.5}
+.srcs a{color:var(--accent); text-decoration:none}
+.srcs a:hover{text-decoration:underline}
+footer{border-top:1px solid var(--rule); padding:40px 0 60px}
+.foot{display:flex; justify-content:space-between; flex-wrap:wrap; gap:18px;
+  font-size:12px; color:var(--ink-3); line-height:1.7}
+
+@media (max-width:860px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .factors.four{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .split,.compare,.factors,.factors.four{grid-template-columns:1fr}
+  .srcs{columns:1}
+  .count{margin-left:0; width:100%}
+  .step{grid-template-columns:32px 1fr; gap:12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+.watch{background:var(--paper-2); border:1px solid var(--rule); border-radius:12px; padding:clamp(20px,3vw,28px)}
+.watch h3{font-size:clamp(19px,2.4vw,24px); letter-spacing:-.4px; margin-bottom:14px}
+.watch ul{margin:16px 0 0; padding-left:20px; color:var(--ink-2); font-size:14.5px; line-height:1.6}
+.watch li{margin-bottom:10px}
+.watch li strong{color:var(--ink)}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+<div class="wrap">
+<div class="container">
+<header class="masthead">
+  <div class="kicker">Public Assistance and Individual Assistance criteria</div>
+  <h1 class="headline">How a declaration is <em>actually decided.</em></h1>
+  <p class="standfirst">The Public Assistance indicators are published, adjusted every October, and
+    widely misread as a pass mark. Individual Assistance has no equivalent number at all. This is
+    what each one measures, and where the arithmetic stops and judgment starts.</p>
+  <p class="asof">Fiscal year 2026 figures, for incidents beginning on or after 1 October 2025.
+    Verified against the Federal Register adjustment notices and the September 2025 Treasury
+    release. <strong>Current as of 19 September 2026.</strong></p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="num">$1.94</div>
+      <div class="lab">Statewide indicator</div>
+      <div class="sub">Per capita, against 2020 Census population</div>
+    </div>
+    <div class="stat">
+      <div class="num">$4.86</div>
+      <div class="lab">Countywide indicator</div>
+      <div class="sub">Per capita, per county or independent city</div>
+    </div>
+    <div class="stat">
+      <div class="num">$4,100</div>
+      <div class="lab">Minimum project</div>
+      <div class="sub">Floor for any single PA project to be eligible</div>
+    </div>
+    <div class="stat">
+      <div class="num">$1,093,800</div>
+      <div class="lab">Large project</div>
+      <div class="sub">Standard rather than simplified procedures</div>
+    </div>
+  </div>
+</header>
+
+
+<section>
+  <div class="thesis">
+    <div class="q">Every declaration criterion is a proxy for one question: is this beyond what the state and its local governments can handle?</div>
+    <p>Not "was it bad." Not "did it cost a lot." Federal assistance under the Stafford Act is
+      supplemental by statute. It cannot substitute for capability that already exists. So
+      every factor FEMA weighs, on both the PA and IA side, is an attempt to measure damage against
+      capacity rather than damage on its own. Once you see the factors that way they stop being a
+      checklist and start being a single argument.</p>
+    <span class="cite">42 U.S.C. 5121 et seq. &middot; 44 CFR 206.48</span>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Why PA has a number and IA does not</h2>
+    <span class="tag">The most common point of confusion</span>
+  </div>
+  <div class="prose">
+    <p>These two programs measure different kinds of harm, and that difference is the whole reason
+      one has a published dollar indicator and the other has six factors and no threshold.</p>
+  </div>
+  <div class="split">
+    <div class="col pa">
+      <h4>Public Assistance</h4>
+      <span class="sub">damage to government</span>
+      <p>Measures repair cost to publicly owned infrastructure and the cost of the emergency
+        response. That damage is countable, uniform, and falls on a treasury.</p>
+      <p>Because the burden lands on government, population works as a rough stand-in for the tax
+        base that would otherwise absorb it. Dividing damage by population produces a number that
+        means roughly the same thing in Wyoming as in Texas.</p>
+      <div class="verdict">A per capita index is defensible here.</div>
+    </div>
+    <div class="col ia">
+      <h4>Individual Assistance</h4>
+      <span class="sub">damage to households</span>
+      <p>Measures uninsured loss to homes and personal property. The same dollar figure means
+        entirely different things depending on who absorbed it.</p>
+      <p>Two counties with identical flood damage diverge completely once you account for insurance
+        penetration, homeownership rate, poverty, and age. Population tells you almost nothing about
+        whether those households can recover on their own.</p>
+      <div class="verdict">A per capita index would measure the wrong thing.</div>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:26px">
+    <p>When FEMA rewrote the IA factors in 2019 it considered adding thresholds and said plainly
+      why it would not:</p>
+  </div>
+  <div class="statute">
+    <q>FEMA will not be using a threshold because it would unnecessarily limit FEMA's ability to
+      advise the President and would not allow FEMA to fully consider all factors that may be
+      relevant for the unique circumstances of a disaster and its impact on the State.</q>
+    <span class="attr">Final rule, 84 FR 10664, 21 March 2019</span>
+  </div>
+
+  <div class="prose" style="margin-top:24px">
+    <p>There is also a statutory reason no number can be decisive on either side. The Stafford Act
+      contains a one-sentence provision that shapes the entire framework:</p>
+  </div>
+  <div class="statute">
+    <q>No geographic area shall be precluded from receiving assistance under this chapter solely by
+      virtue of an arithmetic formula or sliding scale based on income or population.</q>
+    <span class="attr">42 U.S.C. 5163, Limitation on use of sliding scales (Stafford Act &sect; 320)</span>
+  </div>
+  <div class="prose" style="margin-top:16px">
+    <p>This is why FEMA calls $1.94 an <strong>indicator</strong> and never a threshold, and why it
+      can recommend PA for a state that fell short of it. FEMA addressed this directly when it
+      adopted the cost-to-capacity ratio, noting it does not deny assistance based solely on the
+      formula. The result is one factor among many. <strong>Any teaching that presents these
+      numbers as a pass/fail line is teaching it wrong.</strong></p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>How the PA number is built</h2>
+    <span class="tag">44 CFR 206.48(a)(1)</span>
+  </div>
+  <div class="prose">
+    <p>Public Assistance is the only side of the house with a published dollar trigger. FEMA takes
+      the estimated cost of federal and non-federal PA across the whole state, divides by statewide
+      population, and compares the result to a per capita indicator that gets adjusted every
+      1 October for CPI-U. The same indicator applies to every state and territory regardless of
+      size, because the Stafford Act bars FEMA from using a sliding scale based on population or income.</p>
+    <div class="formula">
+      statewide threshold &nbsp;=&nbsp; 2020 Census population &nbsp;&times;&nbsp; $1.94<br>
+      county threshold &nbsp;&nbsp;&nbsp;&nbsp;=&nbsp; county population &nbsp;&times;&nbsp; $4.86
+      &nbsp;&nbsp;<span>(evaluated county by county for area designations)</span>
+    </div>
+    <p style="margin-top:14px">Two things trip people up. First, this is an <strong>indicator, not a
+      cutoff</strong>: FEMA has recommended PA below it on localized impacts, recent multiple
+      disasters, or mitigation investment, and has declined requests that cleared it. Second, a
+      separate <strong>$1 million statewide minimum</strong> has been FEMA practice since 1999 and
+      has never been adjusted for inflation. It only binds in the four small territories where
+      per capita math lands under seven figures.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Every state and territory</h2>
+    <span class="tag" id="viewTag">FY2026 Public Assistance</span>
+  </div>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Table view">
+      <button id="btnPA" aria-pressed="true">Public Assistance</button>
+      <button id="btnIA" aria-pressed="false">Individual Assistance</button>
+    </div>
+    <input type="search" id="q" placeholder="Filter jurisdiction" aria-label="Filter jurisdiction">
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="tscroll">
+    <table id="tbl">
+      <thead><tr id="thr"></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+  <p class="tnote" id="tnote"></p>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>County threshold check</h2>
+    <span class="tag">206.40(b) area designations</span>
+  </div>
+  <div class="prose">
+    <p>Localities qualify for designation on their own countywide per capita figure, which is why a
+      county can carry a declaration that the state as a whole would not have reached. Virginia's
+      independent cities are treated as county equivalents here.</p>
+  </div>
+  <div class="calc">
+    <div class="calc-row">
+      <div>
+        <label for="cpop">County or city population</label>
+        <input type="number" id="cpop" value="96872" min="0" step="1">
+      </div>
+      <div>
+        <label for="cind">Indicator</label>
+        <input type="number" id="cind" value="4.86" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="calc-out">
+      <div><span>Countywide threshold</span><b id="cout">$470,798</b></div>
+    </div>
+    <p class="tnote" style="margin-top:14px">Prefilled with Washington County, Virginia. Change the
+      population for any locality.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Working a marginal case</h2>
+    <span class="tag">Hypothetical, illustrative figures only</span>
+  </div>
+  <div class="prose">
+    <p>The recurring Southwest Virginia pattern is worth walking end to end, because it is the case
+      where the arithmetic and the outcome pull in opposite directions.</p>
+  </div>
+
+  <div class="ex">
+    <div class="ex-head">
+      <h4>July flash flood, four localities</h4>
+      <span>Constructed example. Damage figures are invented to illustrate the method, not drawn from any real event.</span>
+    </div>
+    <div class="ex-body">
+      <p><strong>Step one, the statewide picture.</strong> Total PA damage across all four
+        localities comes to $3.1 million. Virginia's statewide threshold is $16,744,902. The event
+        reaches <strong>18.5 percent</strong> of the indicator, which is statewide per capita damage of
+        $0.36 against an indicator of $1.94. On the headline number, this is not close.</p>
+
+      <p><strong>Step two, the local picture.</strong> Every affected locality clears its countywide
+        indicator, most of them by an order of magnitude.</p>
+
+      <div class="tscroll" style="border:0;background:transparent">
+      <table class="ex-tbl">
+        <thead><tr><th>Locality</th><th>Population</th><th>Threshold at $4.86</th><th>PA damage</th><th>Per capita</th><th>Met</th></tr></thead>
+        <tbody>
+          <tr><td>Buchanan County</td><td>20,355</td><td>$98,925</td><td>$980,000</td><td>$48.15</td><td class="yes">yes</td></tr>
+          <tr><td>Tazewell County</td><td>40,429</td><td>$196,485</td><td>$1,150,000</td><td>$28.44</td><td class="yes">yes</td></tr>
+          <tr><td>Dickenson County</td><td>14,124</td><td>$68,643</td><td>$640,000</td><td>$45.31</td><td class="yes">yes</td></tr>
+          <tr><td>City of Norton</td><td>3,646</td><td>$17,720</td><td>$330,000</td><td>$90.51</td><td class="yes">yes</td></tr>
+          <tr><td><b>Virginia statewide</b></td><td>8,631,393</td><td>$16,744,902</td><td>$3,100,000</td><td>$0.36</td><td class="no">no</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p><strong>Step three, what that combination means.</strong> Norton at $90.51 per capita is
+        carrying damage more than eighteen times its own indicator. That is a severe local event
+        inside a state large enough to dilute it to nothing statewide. The countywide figures are
+        what the localized impacts argument is built from, along with the 24-month disaster history
+        and whatever the state has already spent from its own funds this budget cycle.</p>
+
+      <p><strong>Step four, the IA side.</strong> Say 180 homes take damage, flood insurance
+        penetration is low, and the PDA produces an estimated IHP cost of $2.4 million. Virginia's
+        TTR is $845.9 billion, so the cost-to-capacity ratio is
+        <strong>2.4M &divide; 845,900 = 2.84</strong>, the bottom historical band, where
+        43 percent of requests were approved across 2008 to 2025.</p>
+    </div>
+    <div class="ex-take">
+      <b>The teaching point.</b> A large state with high fiscal capacity needs a great deal of
+      household loss before IA math looks compelling, and a geographically concentrated event gets
+      averaged away statewide. For Southwest Virginia that means the county figures and the
+      localized impacts case carry the argument, not the statewide indicator. It also means
+      the PDA is where the outcome is actually decided.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Individual Assistance has no threshold</h2>
+    <span class="tag">44 CFR 206.48(b)</span>
+  </div>
+  <div class="prose">
+    <p>This is the part worth being precise about, because it gets asked as though a per capita
+      number exists. It does not. FEMA's own declaration criteria state plainly that
+      <strong>there is no per capita indicator established as a factor for the consideration of
+      Individual Assistance</strong>. The March 2019 final rule that rewrote 206.48(b) considered
+      setting thresholds and deliberately declined. The preamble carries a section titled
+      "Lack of Thresholds."</p>
+    <p>Instead there are six factors, two of which FEMA designates as principal for the Individuals
+      and Households Program.</p>
+  </div>
+
+  <div class="tier">
+    <div class="tier-lab"><span class="pill principal">Principal factors for IHP</span><span class="rule"></span></div>
+    <div class="factors">
+      <div class="factor hi">
+        <h4>State fiscal capacity and resource availability</h4>
+        <p>Total Taxable Resources first, then GDP by state where TTR is unavailable or stale, then
+          per capita personal income by local area. Also weighs NGO and private sector activity and
+          the cumulative effect of disasters over the prior 24 months.</p>
+        <span class="cite">206.48(b)(1)</span>
+      </div>
+      <div class="factor hi">
+        <h4>Uninsured home and personal property losses</h4>
+        <p>Cause of damage relative to peril coverage, concentration of damage, homes impacted and
+          degree of damage, estimated cost of assistance, homeownership rate, and the share of
+          affected households carrying insurance appropriate to the peril.</p>
+        <span class="cite">206.48(b)(2)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-lab"><span class="pill secondary">Consulted when need is not clear</span><span class="rule"></span></div>
+    <div class="factors four">
+      <div class="factor">
+        <h4>Impacted population profile</h4>
+        <p>Poverty status, existing assistance receipt, pre-disaster unemployment, age 65+ and 18-,
+          disability, and limited English proficiency, each compared against national averages.</p>
+        <span class="cite">206.48(b)(3)</span>
+      </div>
+      <div class="factor">
+        <h4>Community infrastructure</h4>
+        <p>Disruptions beyond 72 hours to life-saving and life-sustaining services, essential
+          community services, and transportation or utilities.</p>
+        <span class="cite">206.48(b)(4)</span>
+      </div>
+      <div class="factor">
+        <h4>Casualties</h4>
+        <p>Missing, injured, or deceased, read as an indicator of community trauma and of likely
+          crisis counseling and funeral assistance need.</p>
+        <span class="cite">206.48(b)(5)</span>
+      </div>
+      <div class="factor">
+        <h4>Disaster-related unemployment</h4>
+        <p>Survivors who lost work and do not qualify for regular state UI, typically self-employed,
+          service, and seasonal workers, plus major employers affected.</p>
+        <span class="cite">206.48(b)(6)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:32px">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:9px">The closest thing to an IA number</h3>
+    <p>Where a state wants something to plan against, the usable proxy is the <strong>IHP Cost to
+      Capacity ratio</strong>. FEMA publishes it in the IA Declarations Factors Guidance and updates
+      the historical tables annually. It is explicitly not a threshold, but it is the arithmetic
+      FEMA actually runs, and it is why the same dollar loss reads differently in Mississippi than
+      in Connecticut.</p>
+    <div class="formula">
+      ICC &nbsp;=&nbsp; estimated IHP cost from PDA &nbsp;&divide;&nbsp; ( state TTR &divide; $1,000,000 )
+    </div>
+    <div class="compare">
+      <div class="cc">
+        <div class="st">Virginia</div>
+        <span class="ttr">TTR $845.9B</span>
+        <div class="icc">2.84</div>
+        <div class="band">Bottom band (ICC under 10), where <b>43%</b> of requests were approved
+          across 2008 to 2025. Would need roughly <b>$21.1M</b> in estimated IHP cost to cross into
+          the top band.</div>
+      </div>
+      <div class="cc">
+        <div class="st">Mississippi</div>
+        <span class="ttr">TTR $176.0B</span>
+        <div class="icc">13.64</div>
+        <div class="band">Middle band (ICC 10 to 25), where <b>77%</b> of requests were approved
+          across 2008 to 2025. Would need roughly <b>$4.4M</b> to cross into the top band.</div>
+      </div>
+    </div>
+    <p class="tnote">Identical $2.4 million in estimated IHP cost, run against each state's fiscal
+      capacity. Virginia's bar sits roughly <strong>4.8 times higher</strong> in dollar terms. This
+      is the framework working as designed, not a flaw: capacity is the denominator, so a state that
+      can raise more revenue is expected to absorb more before federal assistance is supplemental.</p>
+
+    <p style="margin-top:22px">Switch the table above to the Individual Assistance view to see, for
+      each state, the estimated IHP cost that would put a request in each historical band.</p>
+  </div>
+
+  <div class="tscroll" style="border:0;background:transparent">
+  <table class="bands">
+    <thead><tr><th>ICC ratio</th><th>Requests received</th><th>Approved</th><th>Share approved</th></tr></thead>
+    <tbody>
+      <tr><td>&gt; 25</td><td>61</td><td>57</td><td><span class="bar" style="width:74px"></span>93%</td></tr>
+      <tr><td>10 to 25</td><td>90</td><td>69</td><td><span class="bar" style="width:62px"></span>77%</td></tr>
+      <tr><td>&lt; 10</td><td>281</td><td>122</td><td><span class="bar" style="width:34px"></span>43%</td></tr>
+      <tr><td>Total</td><td>432</td><td>248</td><td><span class="bar" style="width:46px"></span>57%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="statute" style="border-left-color:var(--ember)">
+    <q>The odds moved, and they moved a long way.</q>
+    <span class="attr">2019 guidance compared with the 2026 update</span>
+    <div style="font-size:14px;color:var(--ink-2);line-height:1.62;margin-top:12px">
+      The figures above are current. The ones in circulation almost everywhere else are not. FEMA's
+      June 2019 guidance covered January 2008 through December 2016 and is still the version most
+      often cited, including in training material. Against the 2026 series it reads as follows.
+      <table class="bands" style="margin-top:16px;min-width:340px">
+        <thead><tr><th>ICC band</th><th>2019 guidance</th><th>2026 update</th></tr></thead>
+        <tbody>
+          <tr><td>Above 25</td><td>85%</td><td>93%</td></tr>
+          <tr><td>10 to 25</td><td>45%</td><td>77%</td></tr>
+          <tr><td>Under 10</td><td>10%</td><td>43%</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:14px"><b>One caution on reading these side by side.</b> The 2026 series
+      is not the 2019 series with nine more years bolted on. The above-25 band holds <b>fewer</b>
+      requests in the longer series than in the shorter one, 61 against 65, which is only possible
+      if FEMA recomputed the whole thing. Treasury revises TTR every year, so a past event's ICC
+      shifts as its denominator shifts and events migrate between bands. Subtracting one table from
+      the other to derive a recent-years figure produces a number that means nothing.</p>
+    </div>
+  </div>
+
+  <div class="tscroll" style="border:0;background:transparent;margin-top:26px">
+  <table class="bands">
+    <thead><tr><th>Estimated IHP cost of assistance</th><th>Requests</th><th>Declared</th><th>Share declared</th></tr></thead>
+    <tbody>
+      <tr><td>$7.5M or more</td><td>109</td><td>103</td><td><span class="bar" style="width:75px"></span>94%</td></tr>
+      <tr><td>$1.5M to $7.5M</td><td>231</td><td>132</td><td><span class="bar" style="width:46px"></span>57%</td></tr>
+      <tr><td>$1.5M or less</td><td>92</td><td>13</td><td><span class="bar" style="width:11px"></span>14%</td></tr>
+      <tr><td>Total</td><td>432</td><td>248</td><td><span class="bar" style="width:46px"></span>57%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="tnote">Both tables: FEMA's 2026 update, covering major disaster declaration requests
+    including IHP from January 2008 through 1 December 2025. Expedited requests and those without
+    estimates are excluded. Read these as likelihood in historical context, which is exactly how
+    FEMA frames them.</p>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>How a request actually moves</h2>
+    <span class="tag">Each step constrains the next</span>
+  </div>
+  <div class="prose">
+    <p>The order is not administrative trivia. Damage estimates are locked in early by people
+      working fast under bad conditions, and everything downstream is built on them.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <h4>Incident occurs<span class="who">local</span></h4>
+      <p>Local response begins. Cost capture starts here or it does not happen. Force account
+        labor, equipment hours, contracts, mutual aid. Undocumented response work is unrecoverable
+        work.</p>
+    </div>
+    <div class="step">
+      <h4>Local and state emergency declarations<span class="who">local &rarr; governor</span></h4>
+      <p>Establishes the legal basis for state resources and later counts toward the disaster
+        history FEMA weighs under the cumulative-effects factor.</p>
+    </div>
+    <div class="step">
+      <h4>Joint preliminary damage assessment<span class="who">FEMA + state + local</span></h4>
+      <p>Where the outcome is decided. The PDA produces the damage figures that every threshold
+        comparison then runs against, and on the IA side it produces the estimated cost of
+        assistance that drives the cost-to-capacity ratio. A weak PDA cannot be repaired later.</p>
+    </div>
+    <div class="step">
+      <h4>Governor's request<span class="who">governor &rarr; FEMA region</span></h4>
+      <p>Must certify the severity exceeds state and local capability, commit to cost share, and
+        make the case on the factors. This is where a state argues localized impacts, recent
+        disasters, and its own expenditures, the parts no indicator captures.</p>
+    </div>
+    <div class="step">
+      <h4>FEMA analysis and recommendation<span class="who">FEMA &rarr; President</span></h4>
+      <p>Regional and headquarters review weigh the factors in totality. The indicators inform this
+        step; by statute they cannot determine it.</p>
+    </div>
+    <div class="step">
+      <h4>Presidential decision<span class="who">President</span></h4>
+      <p>Sole authority. The President may decline a FEMA recommendation or declare without one.
+        A denial can be appealed once by the governor, generally within 30 days, and new information
+        is what makes an appeal worth filing.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>What gets taught wrong</h2>
+    <span class="tag">Correct these first</span>
+  </div>
+
+  <div class="myth">
+    <p class="heard">"We cleared the county threshold, so we get a declaration."</p>
+    <p class="actual">The countywide indicator governs <b>which areas get designated</b> within a
+      declaration under 206.40(b). It does not determine whether a declaration happens at all. That
+      turns on the statewide picture and the factors in totality. A county can clear $4.86 per capita
+      many times over and still sit inside a state that never receives a declaration.</p>
+  </div>
+
+  <div class="myth">
+    <p class="heard">"$1.94 is the cutoff. Under it you get nothing."</p>
+    <p class="actual">It is an <b>indicator</b>, and Section 320 is why. FEMA has recommended PA
+      below it on localized impacts, recent multiple disasters, and mitigation investment, and has
+      declined requests that cleared it. Roughly 80 percent of declarations between 2005 and 2014
+      met or exceeded the indicator, which also means about a fifth did not.</p>
+  </div>
+
+  <div class="myth">
+    <p class="heard">"IA has a per capita threshold too, we just need to find it."</p>
+    <p class="actual">There is none, and the absence is deliberate. FEMA's own declaration criteria
+      state that <b>no per capita indicator is established as a factor for the consideration of
+      Individual Assistance</b>. Anyone citing an IA per capita figure is either confusing it with
+      PA or repeating something that does not exist.</p>
+  </div>
+
+  <div class="myth">
+    <p class="heard">"The fiscal year figures apply based on when it was declared."</p>
+    <p class="actual">Since FY2025 the notices key to <b>incident start date</b>, not declaration
+      date. An incident beginning 28 September and running into October falls under the prior year's
+      indicators even if the declaration comes months later. Older guidance still circulating says
+      "declared on or after" and is out of date on this point.</p>
+  </div>
+
+  <div class="myth">
+    <p class="heard">"We're at $189 per capita, that's well over the threshold."</p>
+    <p class="actual">Different number, different regulation, different purpose. The $189 figure
+      under 44 CFR 206.47 governs whether FEMA recommends raising the <b>federal cost share</b> from
+      75 to as much as 90 percent. It has nothing to do with eligibility, and it runs on a calendar
+      year rather than a fiscal year.</p>
+  </div>
+
+  <div class="myth">
+    <p class="heard">"Get a rough damage number in fast, FEMA verifies it later."</p>
+    <p class="actual">The PDA estimate <b>is</b> the number. It feeds the per capita comparison and
+      the estimated cost of assistance, and there is no later step that corrects an undercount.
+      Insurance status matters as much as damage count on the IA side, because FEMA cannot duplicate
+      insurance proceeds. A well-insured county generates less demonstrable IA need from
+      identical damage.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>What is moving</h2>
+    <span class="tag">Reform watch</span>
+  </div>
+  <div class="watch">
+    <h3>The FY2026 figures govern. Nothing proposed has changed them.</h3>
+    <div class="prose" style="max-width:none">
+      <p>Several efforts to rewrite the declaration framework are in circulation. None has been
+        finalized, none has a Federal Register notice behind it, and none should be planned against.
+        Listed here only so they are recognizable when they come up secondhand.</p>
+    </div>
+    <ul>
+      <li><strong>FEMA Review Council final report, 7 May 2026.</strong> Recommends a higher per
+        capita indicator plus an annual minimum state expenditure before a state could request a
+        declaration. Reported figures vary between summaries and the primary report has not been
+        checked against them here. Requires congressional action.</li>
+      <li><strong>RAPID.</strong> Would replace Public Assistance with a parametric block grant and
+        retire the per capita indicator entirely rather than raise it. Requires congressional action.</li>
+      <li><strong>April 2025 rebalancing memo.</strong> Never formalized. Worth knowing because
+        declaration practice tightened through 2025 regardless.</li>
+      <li><strong>2020 cost-of-assistance proposed rule.</strong> Still unfinalized after five years.
+        Would have set a per state indicator adjusted by TTR instead of one national figure.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Methodology and cautions</h2>
+    <span class="tag">Read before citing</span>
+  </div>
+
+  <details open>
+    <summary>Which population figure the math uses</summary>
+    <div class="dbody">
+      <p>All statewide figures here use <strong>2020 Census resident population</strong>, which is
+        what state emergency management agencies publish in their own threshold tables. Florida's
+        Division of Emergency Management publishes a FY25/26 statewide threshold of
+        <code>$41,784,082.78</code>; the calculation here reproduces that to the penny, which is the
+        cross-check that the population base and indicator are both right.</p>
+      <p>FEMA's unfinalized 2020 proposed rule would switch to annual population estimates. If that
+        ever lands, every figure in the table moves.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>$1.94 versus $1.97, you will see both</summary>
+    <div class="dbody">
+      <p>At least one national association summary cites the FY2026 indicator as $1.97. The figure
+        is <code>$1.94</code>. The Federal Register notice adjusting the countywide indicator to
+        $4.86 states the CPI-U increase as 2.9 percent for the 12 months ending August 2025; applying
+        that to the FY2025 values gives <code>1.89 &times; 1.029 = 1.9448</code> and
+        <code>4.72 &times; 1.029 = 4.857</code>, which round to $1.94 and $4.86. State published
+        tables use $1.94.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Incident start date, not declaration date</summary>
+    <div class="dbody">
+      <p>The FY2025 and FY2026 notices changed the trigger language. Both indicators now apply to
+        major disasters with an <strong>incident start date</strong> on or after 1 October, where
+        older notices keyed to the declaration date. For an incident that begins in late September
+        and runs into October, the prior fiscal year's figures govern.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The $189 cost share indicator is a different number</summary>
+    <div class="dbody">
+      <p>Under 44 CFR 206.47, FEMA uses a separate statewide per capita indicator to recommend
+        raising the federal cost share from 75 to as much as 90 percent. For disasters declared
+        1 January through 31 December 2026 that figure is <code>$189 per capita</code>. It governs
+        cost share, not eligibility, and is adjusted on a calendar year rather than a fiscal year.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Territories, tribes, and TTR gaps</summary>
+    <div class="dbody">
+      <p>Treasury publishes TTR for the 50 states and DC only, so the IA capacity columns are blank
+        for territories; FEMA substitutes GDP by state there, available from BEA for the Virgin
+        Islands, Guam, American Samoa, and the Northern Marianas, and from Census for Puerto Rico.</p>
+      <p>Tribal governments requesting directly are evaluated under separate criteria in FEMA's
+        Tribal Declarations Interim Guidance, effective for incidents on or after 3 December 2024,
+        not under the state per capita indicator. Those thresholds are not in this table.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What the ICC columns are and are not</summary>
+    <div class="dbody">
+      <p>The IA view shows <code>25 &times; TTR</code> and <code>10 &times; TTR</code> expressed in
+        millions, the estimated IHP cost at which a request would cross <em>into</em> each
+        band. These are lower edges. An ICC of exactly 25 sits at the bottom of the top band, not
+        the top of it. Approval percentages come from FEMA's 2026 update, retrieved from the agency
+        directly; both its tables independently total 432 requests and 248 approvals, and all six
+        percentages recompute from their own row. TTR is the 2023 estimate from Treasury's September 2025 release, the most
+        recent published. Treasury data runs about two years behind, which FEMA acknowledges; a state
+        whose capacity dropped recently should say so in the request and point to GDP instead.</p>
+      <p>These are not thresholds. No ICC value entitles a state to a declaration, and requests have
+        been approved well below the bands and denied well above them.</p>
+    </div>
+  </details>
+</section>
+
+<section>
+  <div class="shead"><h2>Sources</h2><span class="tag">Primary where available</span></div>
+  <ul class="srcs">
+    <li><a href="https://www.federalregister.gov/documents/2024/10/24/2024-24696/notice-of-adjustment-of-statewide-per-capita-impact-indicator">FR: Statewide Per Capita Impact Indicator adjustment</a></li>
+    <li><a href="https://wem.wi.gov/notice-of-adjustment-of-countywide-per-capita-impact-indicator/">FR: Countywide indicator to $4.86, FY2026</a></li>
+    <li><a href="https://www.fema.gov/assistance/public/tools-resources/per-capita-impact-indicator">FEMA: Per Capita Impact Indicator and Project Thresholds</a></li>
+    <li><a href="https://www.ecfr.gov/current/title-44/chapter-I/subchapter-D/part-206/subpart-B/section-206.48">eCFR: 44 CFR 206.48</a></li>
+    <li><a href="https://www.fema.gov/sites/default/files/documents/fema_ia-declarations-factors-guidance-june-2019.pdf">FEMA: IA Declarations Factors Guidance, June 2019</a></li>
+    <li><a href="https://www.federalregister.gov/documents/2019/03/21/2019-05388/factors-considered-when-evaluating-a-governors-request-for-individual-assistance-for-a-major">FR: IA declaration factors final rule, 2019</a></li>
+    <li><a href="https://home.treasury.gov/policy-issues/economic-policy/total-taxable-resources">Treasury: Total Taxable Resources estimates</a></li>
+    <li><a href="https://portal.floridadisaster.org/projects/FROC/FROC_Documents/5.%20F-ROC%20Library/Informational%20One%20Pagers/FY25-26%20Per%20Capita%20and%20Threshold.pdf">Florida DEM: FY25-26 per capita and threshold table</a></li>
+    <li><a href="https://www.federalregister.gov/documents/2026/04/28/2026-08224/notice-of-adjustment-of-statewide-per-capita-indicator-for-recommending-a-cost-share-adjustment">FR: Cost share adjustment indicator, CY2026</a></li>
+    <li><a href="https://www.federalregister.gov/documents/2020/12/14/2020-27094/cost-of-assistance-estimates-in-the-disaster-declaration-process-for-the-public-assistance-program">FR: Cost of Assistance proposed rule, 2020</a></li>
+    <li><a href="https://www.gao.gov/assets/gao-25-106768.pdf">GAO-25-106768: Updated FEMA guidance</a></li>
+    <li><a href="https://www.congress.gov/crs-product/IN12693">CRS: FEMA Review Council final report</a></li>
+    <li><a href="https://www.naco.org/news/fema-review-council-releases-recommendations-sweeping-changes">NACo: Review Council recommendations</a></li>
+    <li><a href="https://www2.census.gov/programs-surveys/decennial/2020/data/apportionment/apportionment-2020-table02.pdf">Census: 2020 resident population by state</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="foot">
+    <span>Compiled 19 September 2026. Figures verified against primary Federal Register notices.<br>&copy; DisasterData.IO. All rights reserved.</span>
+    <span class="n">FY2026 &middot; $1.94 statewide &middot; $4.86 countywide</span>
+  </div>
+</footer>
+  </div>
+</div>
+
+<script>
+const DATA = [{"j":"Alabama","t":0,"p":5024279,"pa":9747101.26,"mg":0,"ttr":351.7,"i25":8792500.0,"i10":3517000.0},{"j":"Alaska","t":0,"p":733391,"pa":1422778.54,"mg":0,"ttr":71.3,"i25":1782500.0,"i10":713000.0},{"j":"American Samoa","t":1,"p":49710,"pa":1000000,"mg":1,"ttr":null,"i25":null,"i10":null},{"j":"Arizona","t":0,"p":7151502,"pa":13873913.88,"mg":0,"ttr":603.0,"i25":15075000.0,"i10":6030000.0},{"j":"Arkansas","t":0,"p":3011524,"pa":5842356.56,"mg":0,"ttr":215.9,"i25":5397500.0,"i10":2159000.0},{"j":"California","t":0,"p":39538223,"pa":76704152.62,"mg":0,"ttr":4221.3,"i25":105532500.0,"i10":42213000.0},{"j":"Colorado","t":0,"p":5773714,"pa":11201005.16,"mg":0,"ttr":605.4,"i25":15135000.0,"i10":6054000.0},{"j":"Connecticut","t":0,"p":3605944,"pa":6995531.36,"mg":0,"ttr":437.6,"i25":10940000.0,"i10":4376000.0},{"j":"Delaware","t":0,"p":989948,"pa":1920499.12,"mg":0,"ttr":119.5,"i25":2987500.0,"i10":1195000.0},{"j":"District of Columbia","t":0,"p":689545,"pa":1337717.3,"mg":0,"ttr":112.5,"i25":2812500.0,"i10":1125000.0},{"j":"Florida","t":0,"p":21538187,"pa":41784082.78,"mg":0,"ttr":2066.3,"i25":51657500.0,"i10":20663000.0},{"j":"Georgia","t":0,"p":10711908,"pa":20781101.52,"mg":0,"ttr":922.0,"i25":23050000.0,"i10":9220000.0},{"j":"Guam","t":1,"p":153836,"pa":1000000,"mg":1,"ttr":null,"i25":null,"i10":null},{"j":"Hawaii","t":0,"p":1455271,"pa":2823225.74,"mg":0,"ttr":121.6,"i25":3040000.0,"i10":1216000.0},{"j":"Idaho","t":0,"p":1839106,"pa":3567865.64,"mg":0,"ttr":146.3,"i25":3657500.0,"i10":1463000.0},{"j":"Illinois","t":0,"p":12812508,"pa":24856265.52,"mg":0,"ttr":1239.7,"i25":30992500.0,"i10":12397000.0},{"j":"Indiana","t":0,"p":6785528,"pa":13163924.32,"mg":0,"ttr":560.5,"i25":14012500.0,"i10":5605000.0},{"j":"Iowa","t":0,"p":3190369,"pa":6189315.86,"mg":0,"ttr":285.9,"i25":7147500.0,"i10":2859000.0},{"j":"Kansas","t":0,"p":2937880,"pa":5699487.2,"mg":0,"ttr":262.7,"i25":6567500.0,"i10":2627000.0},{"j":"Kentucky","t":0,"p":4505836,"pa":8741321.84,"mg":0,"ttr":320.8,"i25":8020000.0,"i10":3208000.0},{"j":"Louisiana","t":0,"p":4657757,"pa":9036048.58,"mg":0,"ttr":342.0,"i25":8550000.0,"i10":3420000.0},{"j":"Maine","t":0,"p":1362359,"pa":2642976.46,"mg":0,"ttr":109.5,"i25":2737500.0,"i10":1095000.0},{"j":"Maryland","t":0,"p":6177224,"pa":11983814.56,"mg":0,"ttr":622.7,"i25":15567500.0,"i10":6227000.0},{"j":"Massachusetts","t":0,"p":7029917,"pa":13638038.98,"mg":0,"ttr":841.9,"i25":21047500.0,"i10":8419000.0},{"j":"Michigan","t":0,"p":10077331,"pa":19550022.14,"mg":0,"ttr":772.1,"i25":19302500.0,"i10":7721000.0},{"j":"Minnesota","t":0,"p":5706494,"pa":11070598.36,"mg":0,"ttr":544.4,"i25":13610000.0,"i10":5444000.0},{"j":"Mississippi","t":0,"p":2961279,"pa":5744881.26,"mg":0,"ttr":176.0,"i25":4400000.0,"i10":1760000.0},{"j":"Missouri","t":0,"p":6154913,"pa":11940531.22,"mg":0,"ttr":499.0,"i25":12475000.0,"i10":4990000.0},{"j":"Montana","t":0,"p":1084225,"pa":2103396.5,"mg":0,"ttr":91.1,"i25":2277500.0,"i10":911000.0},{"j":"Nebraska","t":0,"p":1961504,"pa":3805317.76,"mg":0,"ttr":205.7,"i25":5142500.0,"i10":2057000.0},{"j":"Nevada","t":0,"p":3104614,"pa":6022951.16,"mg":0,"ttr":298.4,"i25":7460000.0,"i10":2984000.0},{"j":"New Hampshire","t":0,"p":1377529,"pa":2672406.26,"mg":0,"ttr":144.6,"i25":3615000.0,"i10":1446000.0},{"j":"New Jersey","t":0,"p":9288994,"pa":18020648.36,"mg":0,"ttr":1008.0,"i25":25200000.0,"i10":10080000.0},{"j":"New Mexico","t":0,"p":2117522,"pa":4107992.68,"mg":0,"ttr":152.8,"i25":3820000.0,"i10":1528000.0},{"j":"New York","t":0,"p":20201249,"pa":39190423.06,"mg":0,"ttr":2442.7,"i25":61067500.0,"i10":24427000.0},{"j":"North Carolina","t":0,"p":10439388,"pa":20252412.72,"mg":0,"ttr":884.2,"i25":22105000.0,"i10":8842000.0},{"j":"North Dakota","t":0,"p":779094,"pa":1511442.36,"mg":0,"ttr":86.1,"i25":2152500.0,"i10":861000.0},{"j":"Northern Mariana Islands","t":1,"p":47329,"pa":1000000,"mg":1,"ttr":null,"i25":null,"i10":null},{"j":"Ohio","t":0,"p":11799448,"pa":22890929.12,"mg":0,"ttr":981.6,"i25":24540000.0,"i10":9816000.0},{"j":"Oklahoma","t":0,"p":3959353,"pa":7681144.82,"mg":0,"ttr":287.3,"i25":7182500.0,"i10":2873000.0},{"j":"Oregon","t":0,"p":4237256,"pa":8220276.64,"mg":0,"ttr":355.6,"i25":8890000.0,"i10":3556000.0},{"j":"Pennsylvania","t":0,"p":13002700,"pa":25225238.0,"mg":0,"ttr":1121.6,"i25":28040000.0,"i10":11216000.0},{"j":"Puerto Rico","t":1,"p":3285874,"pa":6374595.56,"mg":0,"ttr":null,"i25":null,"i10":null},{"j":"Rhode Island","t":0,"p":1097379,"pa":2128915.26,"mg":0,"ttr":95.4,"i25":2385000.0,"i10":954000.0},{"j":"South Carolina","t":0,"p":5118425,"pa":9929744.5,"mg":0,"ttr":392.8,"i25":9820000.0,"i10":3928000.0},{"j":"South Dakota","t":0,"p":886667,"pa":1720133.98,"mg":0,"ttr":87.0,"i25":2175000.0,"i10":870000.0},{"j":"Tennessee","t":0,"p":6910840,"pa":13407029.6,"mg":0,"ttr":592.6,"i25":14815000.0,"i10":5926000.0},{"j":"Texas","t":0,"p":29145505,"pa":56542279.7,"mg":0,"ttr":2880.6,"i25":72015000.0,"i10":28806000.0},{"j":"U.S. Virgin Islands","t":1,"p":87146,"pa":1000000,"mg":1,"ttr":null,"i25":null,"i10":null},{"j":"Utah","t":0,"p":3271616,"pa":6346935.04,"mg":0,"ttr":315.0,"i25":7875000.0,"i10":3150000.0},{"j":"Vermont","t":0,"p":643077,"pa":1247569.38,"mg":0,"ttr":52.9,"i25":1322500.0,"i10":529000.0},{"j":"Virginia","t":0,"p":8631393,"pa":16744902.42,"mg":0,"ttr":845.9,"i25":21147500.0,"i10":8459000.0},{"j":"Washington","t":0,"p":7705281,"pa":14948245.14,"mg":0,"ttr":903.2,"i25":22580000.0,"i10":9032000.0},{"j":"West Virginia","t":0,"p":1793716,"pa":3479809.04,"mg":0,"ttr":118.7,"i25":2967500.0,"i10":1187000.0},{"j":"Wisconsin","t":0,"p":5893718,"pa":11433812.92,"mg":0,"ttr":498.3,"i25":12457500.0,"i10":4983000.0},{"j":"Wyoming","t":0,"p":576851,"pa":1119090.94,"mg":0,"ttr":67.2,"i25":1680000.0,"i10":672000.0}];
+const usd = n => "$" + Math.round(n).toLocaleString("en-US");
+const usd2 = n => "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const VIEWS = {
+  pa: {
+    tag: "FY2026 Public Assistance",
+    note: "Statewide threshold is 2020 Census population multiplied by the $1.94 indicator. Values marked in red are governed by the $1 million statewide minimum, which exceeds their per capita figure.",
+    cols: [
+      {k:"j",  l:"Jurisdiction", t:"s"},
+      {k:"p",  l:"Population 2020", t:"n", f:v=>v.toLocaleString("en-US")},
+      {k:"pa", l:"Statewide threshold", t:"n", f:(v,r)=>r.mg?'<span class="floor">'+usd(v)+"</span>":usd2(v)}
+    ]
+  },
+  ia: {
+    tag: "Individual Assistance capacity reference",
+    note: "There is no IA dollar threshold. These columns show the estimated IHP cost at which a request would cross INTO each historical ICC band \u2014 the lower edge, not the top \u2014 computed as the multiplier times Total Taxable Resources in millions. TTR is Treasury's 2023 estimate; territories are excluded because Treasury does not publish TTR for them.",
+    cols: [
+      {k:"j",   l:"Jurisdiction", t:"s"},
+      {k:"ttr", l:"TTR 2023 ($B)", t:"n", f:v=>v===null?'<span class="dim">n/a</span>':v.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1})},
+      {k:"i25", l:"IHP est. at ICC 25", t:"n", f:v=>v===null?'<span class="dim">n/a</span>':usd(v)},
+      {k:"i10", l:"IHP est. at ICC 10", t:"n", f:v=>v===null?'<span class="dim">n/a</span>':'<span class="dim">'+usd(v)+"</span>"}
+    ]
+  }
+};
+
+let view = "pa", sortK = "j", sortDir = 1, query = "";
+
+function render(){
+  const V = VIEWS[view];
+  document.getElementById("viewTag").textContent = V.tag;
+  document.getElementById("tnote").textContent = V.note;
+
+  const thr = document.getElementById("thr");
+  thr.innerHTML = "";
+  V.cols.forEach(c=>{
+    const th = document.createElement("th");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.innerHTML = c.l + (sortK===c.k ? ' <span class="arr">'+(sortDir===1?"↑":"↓")+"</span>" : "");
+    b.onclick = ()=>{ if(sortK===c.k){sortDir*=-1;} else {sortK=c.k; sortDir = c.t==="s"?1:-1;} render(); };
+    th.appendChild(b); thr.appendChild(th);
+  });
+
+  let rows = DATA.filter(r=>r.j.toLowerCase().includes(query));
+  if(view==="ia") rows = rows.filter(r=>r.ttr!==null);
+  rows.sort((a,b)=>{
+    const x=a[sortK], y=b[sortK];
+    if(typeof x==="string") return x.localeCompare(y)*sortDir;
+    return ((x===null?-1:x)-(y===null?-1:y))*sortDir;
+  });
+
+  document.getElementById("tb").innerHTML = rows.map(r=>"<tr>"+V.cols.map(c=>{
+    let val = c.f ? c.f(r[c.k], r) : r[c.k];
+    if(c.k==="j" && r.t) val += '<span class="terr">Terr</span>';
+    return "<td>"+val+"</td>";
+  }).join("")+"</tr>").join("");
+
+  document.getElementById("count").textContent = rows.length + " of " + (view==="ia"?51:56);
+}
+
+document.getElementById("q").addEventListener("input", e=>{ query = e.target.value.toLowerCase().trim(); render(); });
+document.getElementById("btnPA").onclick = ()=>setView("pa");
+document.getElementById("btnIA").onclick = ()=>setView("ia");
+function setView(v){
+  view = v; sortK = "j"; sortDir = 1;
+  document.getElementById("btnPA").setAttribute("aria-pressed", v==="pa");
+  document.getElementById("btnIA").setAttribute("aria-pressed", v==="ia");
+  render();
+}
+
+function calc(){
+  const p = parseFloat(document.getElementById("cpop").value)||0;
+  const i = parseFloat(document.getElementById("cind").value)||0;
+  document.getElementById("cout").textContent = usd(p*i);
+}
+document.getElementById("cpop").addEventListener("input", calc);
+document.getElementById("cind").addEventListener("input", calc);
+
+render(); calc();
+</script>
+</body>
+</html>
