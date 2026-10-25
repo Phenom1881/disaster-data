@@ -1,27 +1,33 @@
 # Plus health report
 
-Checked 2026-10-24 18:49 UTC after the refresh. **50 green, 0 yellow, 0 red.**
+Checked 2026-10-25 11:19 UTC after the refresh. **49 green, 1 yellow, 0 red.**
 
-## Green (50)
+## Yellow: working with gaps (1)
 
-AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
+| State | Declarations | Why |
+|---|---:|---|
+| Kansas (KS) | 51 | Collecting from the state source failed on this run and on the retry (Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbi...). The page is showing records saved from earlier runs; the last successful collection was 2026-10-24 (0 days ago). This turns red at four weeks. |
+
+## Green (49)
+
+AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY
 
 ## Where the time went
 
-Collecting from state sources took 39.3 min in all, and matching storms took 1.4 min. The 10 slowest states:
+Collecting from state sources took 39.8 min in all, and matching storms took 1.3 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| TX | 6.4 min | 1 s |
-| NJ | 4.8 min | 7 s |
-| NC | 4.6 min | 1 s |
-| CT | 3.8 min | 1 s |
+| TX | 8.9 min | 1 s |
+| NJ | 4.5 min | 6 s |
+| NC | 4.3 min | 1 s |
+| CT | 3.2 min | 0 s |
 | SC | 1.7 min | 2 s |
-| LA | 1.6 min | 1 s |
-| WA | 1.5 min | 1 s |
-| VT | 1.2 min | 0 s |
+| LA | 1.5 min | 1 s |
+| WA | 1.3 min | 1 s |
+| MI | 1.2 min | 1 s |
 | CO | 1.1 min | 4 s |
-| PA | 1.2 min | 1 s |
+| VT | 1.1 min | 0 s |
 
 ## FEMA declarations with no state declaration
 
@@ -61,7 +67,7 @@ The 10 states with the most:
 | IL | green | returned everything | 0 | 15 | 68 | 15 | 15 | 15 | 13 |  |
 | IN | green | returned everything | 0 | 35 | 56 | 34 | 35 | 35 | 27 |  |
 | IA | green | returned everything | 0 | 54 | 79 | 54 | 54 | 54 | 46 |  |
-| KS | green | returned everything | 0 | 51 | 96 | 51 | 51 | 51 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| KS | yellow | failed | 1 | 51 | 96 | 51 | 51 | 51 | 45 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 16 | 99 | 16 | 16 | 16 | 14 |  |
 | LA | green | returned everything | 0 | 45 | 111 | 45 | 45 | 45 | 40 |  |
 | ME | green | returned everything | 0 | 24 | 71 | 24 | 24 | 24 | 23 |  |

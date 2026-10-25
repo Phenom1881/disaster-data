@@ -794,8 +794,9 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected
-Kansas: wrote 53 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
+Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
 
+WARNING KS: Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
 Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kansas/hazard_overrides.csv
 KS-PROC-4326: no matching storm events found in the date window.
 KS-PROC-4366: no matching storm events found in the date window.
@@ -838,7 +839,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp.
 
-KS: 51 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)
+KS: 51 actions, 96 federal declarations; 2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
 Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 11 weather state-of-emergency releases.
 
 KY: ky_emergency_actions_all.csv: kept 10 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1332,10 +1333,15 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 13 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
 New Hampshire: 0 order PDFs read, 73 dated on an earlier run and not read again
-New Hampshire: 340 actions, 49 relationships, 8 weather declarations
+New Hampshire: 339 actions, 49 relationships, 8 weather declarations
+
+  WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
+  WARNING: the registry could not be fetched; reading the Internet Archive copy
 
 NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 6 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 NH: nh_order_relationships.csv: kept 259 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
@@ -1374,7 +1380,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
@@ -2625,6 +2631,18 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending
-TIME total: collect 2361s, storm join 83s. Slowest: TX 384s+1s, NJ 290s+7s, NC 279s+1s, CT 227s+1s, SC 105s+2s, LA 93s+1s, WA 90s+1s, VT 74s+0s, CO 68s+4s, PA 72s+1s
+
+Retrying 1 state(s) whose source failed or returned nothing, after 60s: KS
+Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
+
+WARNING KS: Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
+RETRY KS: still failed (Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations))
+KS: 51 actions, 96 federal declarations; 2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
+TIME total: collect 2389s, storm join 76s. Slowest: TX 533s+1s, NJ 271s+6s, NC 256s+1s, CT 193s+0s, SC 104s+2s, LA 91s+1s, WA 80s+1s, MI 70s+1s, CO 66s+4s, VT 64s+0s
 Row-loss check: no saved rows lost.
-Plus health: 50 green, 0 yellow, 0 red.
+Plus health: 49 green, 1 yellow, 0 red.
+Changes since the last run (2026-10-24 18:49 UTC):
+
+- **Kansas** went from green to yellow. Collecting from the state source failed on this run and on the retry (Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbi...). The page is showing records saved from earlier runs; the last successful collection was 2026-10-24 (0 days ago). This turns red at four weeks.
+
+Now 49 green, 1 yellow, 0 red.

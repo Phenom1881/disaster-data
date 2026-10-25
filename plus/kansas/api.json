@@ -562,7 +562,7 @@
       "title": "Fires (March 22nd and continuing (Fires))"
     }
   ],
-  "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch)",
+  "coverage": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)",
   "crosswalk": [
     {
       "date_signed": "2026-09-30",
@@ -3006,7 +3006,7 @@
     ],
     "since": 2009
   },
-  "generated_on": "2026-10-24",
+  "generated_on": "2026-10-25",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 51,
@@ -3019,7 +3019,7 @@
   "official_source_url": "https://www.kansastag.gov/388/Kansas-Disaster-Declarations",
   "schema_version": 1,
   "slug": "kansas",
-  "source_status": "ok",
+  "source_status": "failed",
   "sources": {
     "added_by_hand": 0,
     "federal_matched": 28,

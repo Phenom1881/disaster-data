@@ -4,8 +4,8 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-  "coverage_base": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR",
+  "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage_base": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner)",
   "federal_without_state": {
     "compared": 52,
     "count": 39,
@@ -52,7 +52,7 @@
     ],
     "since": 1990
   },
-  "generated_on": "2026-10-24",
+  "generated_on": "2026-10-25",
   "kept_saved_records": 0,
   "kept_saved_values": 6,
   "metrics": {
@@ -80,7 +80,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 2.1,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 24.1,
+    "storm_join_seconds": 0.5
   }
 }
