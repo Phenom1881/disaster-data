@@ -8,6 +8,7 @@ CivicPlus-style nested <div>/<li> markup representative of the real page,
 since the exact raw markup could not be captured from this environment
 (no live network access to kansastag.gov - see the summary report).
 """
+import io
 import os
 import sys
 import unittest
@@ -333,6 +334,76 @@ class TestKansasScraper(unittest.TestCase):
         date_str, hazard = scraper.parse_date_range("2024", "June 7 (Drought)")
         self.assertEqual(date_str, "2024-06-07")
         self.assertEqual(hazard, "Drought")
+
+
+class _Response:
+    def __init__(self, status=200, text="", data=None):
+        self.status_code, self.text, self._data = status, text, data
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise scraper.requests.HTTPError(f"{self.status_code} Client Error", response=self)
+
+    def json(self):
+        return self._data
+
+
+class _Session:
+    """Answers kansastag.gov per User-Agent, and the Internet Archive."""
+
+    def __init__(self, live, archive_html=None):
+        self.live, self.archive_html, self.calls = live, archive_html, []
+
+    def get(self, url, headers=None, timeout=None, params=None):
+        agent = (headers or {}).get("User-Agent", "")
+        self.calls.append((url, agent))
+        if url == scraper.WAYBACK_AVAILABLE:
+            if self.archive_html is None:
+                return _Response(data={"archived_snapshots": {}})
+            return _Response(data={"archived_snapshots": {"closest": {"available": True, "timestamp": "20261020123456"}}})
+        if url.startswith("https://web.archive.org/web/20261020123456id_/"):
+            return _Response(text=self.archive_html)
+        return self.live(agent)
+
+
+class PageFetchTests(unittest.TestCase):
+    """kansastag.gov refused the refresh with 403 on October 25 and 26, 2026."""
+
+    def test_a_refusal_is_tried_again_as_the_same_crawler(self):
+        answers = iter([_Response(403), _Response(text=TABS_HTML)])
+        session = _Session(lambda agent: next(answers))
+        sleeps = []
+        self.assertEqual(scraper.fetch_page(session, sleep=sleeps.append), TABS_HTML)
+        self.assertEqual(sleeps, [scraper.RETRY_WAIT])
+        self.assertEqual({agent for _, agent in session.calls}, {scraper.CRAWLER_HEADERS["User-Agent"]})
+
+    def test_after_a_retry_the_internet_archive_copy_is_read_and_said_so(self):
+        session = _Session(lambda agent: _Response(403), archive_html=TABS_HTML)
+        sleeps = []
+        out = io.StringIO()
+        with mock.patch("sys.stdout", out):
+            self.assertEqual(scraper.fetch_page(session, sleep=sleeps.append), TABS_HTML)
+        self.assertEqual(sleeps, [scraper.RETRY_WAIT])
+        self.assertEqual(sum(1 for url, _ in session.calls if url == scraper.SOURCE_URL), 2)
+        self.assertIn("Internet Archive copy from 2026-10-20", out.getvalue())
+        self.assertIn("HTTPError 403", out.getvalue())
+
+    def test_no_live_page_and_no_usable_copy_fails_with_the_reason(self):
+        for archive in (None, "<html><body>Blocked</body></html>"):
+            session = _Session(lambda agent: _Response(403), archive_html=archive)
+            with self.assertRaises(RuntimeError) as caught:
+                scraper.fetch_page(session, sleep=lambda seconds: None)
+            self.assertIn("403", str(caught.exception))
+            self.assertIn("no usable Internet Archive copy", str(caught.exception))
+
+    def test_the_page_note_says_the_archive_copy_was_read(self):
+        import kansas
+        done = mock.Mock(returncode=0, stdout="Kansas: declarations page read from the Internet Archive copy "
+                                              "from 2026-10-20 (the live page could not be read: HTTPError 403)\n",
+                         stderr="")
+        with mock.patch.object(kansas.subprocess, "run", return_value=done), mock.patch("sys.stdout", io.StringIO()):
+            _, note = kansas.collect(workdir=os.path.join(os.path.dirname(__file__), "__pycache__"))
+        self.assertIn("the Internet Archive copy from 2026-10-20 was read", note)
 
 
 if __name__ == "__main__":
