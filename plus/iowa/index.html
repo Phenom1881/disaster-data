@@ -90,7 +90,7 @@
 <section class="metrics">
   <div class="metric"><strong>79</strong>federal FEMA declarations</div>
   <div class="metric"><strong>54</strong>original state weather declarations</div>
-  <div class="metric"><strong>5,107</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>5,148</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/iowa.html">Federal declaration overview</a> &middot; <a href="https://homelandsecurity.iowa.gov/disasters/governors-disaster-proclamations">Official state source</a></p>
 
@@ -159,12 +159,12 @@
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<p class="note">46 of the 54 declarations on this page have NOAA storm reports nearby, and 3 are too recent for NOAA's published data. 37 have a FEMA declaration within 21 days.</p>
+<p class="note">49 of the 54 declarations on this page have NOAA storm reports nearby. 37 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-07-24 &middot; Severe Weather Occurring on July 20 and continuing(Franklin and Hardin Counties)</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>4942</td></tr>
-<tr><td>2026-07-08 &middot; Severe Weather Occurring on June 29 and continuing(Hamilton County)</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>4942</td></tr>
-<tr><td>2026-07-06 &middot; Severe Weather Occurring on June 29 and continuing(Jasper, Osceola, Polk, Story Counties)</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>4942</td></tr>
+<tbody><tr><td>2026-07-24 &middot; Severe Weather Occurring on July 20 and continuing(Franklin and Hardin Counties)</td><td>10</td><td>LYON, SIOUX</td><td>4942</td></tr>
+<tr><td>2026-07-08 &middot; Severe Weather Occurring on June 29 and continuing(Hamilton County)</td><td>11</td><td>CHICKASAW, HOWARD, IDA, JEFFERSON, MITCHELL, SHELBY, WOODBURY</td><td>4942</td></tr>
+<tr><td>2026-07-06 &middot; Severe Weather Occurring on June 29 and continuing(Jasper, Osceola, Polk, Story Counties)</td><td>20</td><td>CEDAR, CHICKASAW, CLAY, DES MOINES, FREMONT, HOWARD, IDA, IOWA</td><td>4942</td></tr>
 <tr><td>2026-06-24 &middot; Severe Weather Occurring on June 17 and continuing(Marshall County)</td><td>0</td><td>None matched</td><td>4942</td></tr>
 <tr><td>2026-06-22 &middot; Severe Weather Occurring on June 17 and continuing(Allamakee County)</td><td>0</td><td>None matched</td><td>4942</td></tr>
 <tr><td>2026-06-16 &middot; Severe Weather Occurring on June 5 and continuing (Cass and Decatur Counties)</td><td>45</td><td>ALLAMAKEE, BENTON, BUENA VISTA, CEDAR, DES MOINES, IOWA, JEFFERSON, JOHNSON</td><td>4942</td></tr>
@@ -307,7 +307,7 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">5,107 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">5,148 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
@@ -616,7 +616,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-25 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-26 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

@@ -90,7 +90,7 @@
 <section class="metrics">
   <div class="metric"><strong>57</strong>federal FEMA declarations</div>
   <div class="metric"><strong>18</strong>original state weather declarations</div>
-  <div class="metric"><strong>1,138</strong>matched NOAA event rows</div>
+  <div class="metric"><strong>1,195</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/wisconsin.html">Federal declaration overview</a> &middot; <a href="https://evers.wi.gov/pages/newsroom/executive-orders.aspx">Official state source</a></p>
 
@@ -123,11 +123,11 @@
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<p class="note">15 of the 18 declarations on this page have NOAA storm reports nearby, and 2 are too recent for NOAA's published data. 6 have a FEMA declaration within 21 days.</p>
+<p class="note">16 of the 18 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 6 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
 <tbody><tr><td>2026-08-03 &middot; Gov. Evers Executive Order #301: Relating to Declaring a State of Emergency in Response to Severe Weather</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>4949</td></tr>
-<tr><td>2026-07-28 &middot; Gov. Evers Executive Order #300: Declaring a State of Emergency in Response to Severe Weather</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td>4949</td></tr>
+<tr><td>2026-07-28 &middot; Gov. Evers Executive Order #300: Declaring a State of Emergency in Response to Severe Weather</td><td>57</td><td>BAYFIELD, CALUMET, DODGE, DOOR, FOND DU LAC, FOREST, JEFFERSON, KENOSHA</td><td>4949</td></tr>
 <tr><td>2026-04-15 &middot; Gov. Evers Executive Order #289: Declaring a State of Emergency in Response to Flooding and Severe Weather Impacts</td><td>334</td><td>ADAMS, ASHLAND, BAYFIELD, BROWN, BUFFALO, CHIPPEWA, CLARK, COLUMBIA</td><td>4923</td></tr>
 <tr><td>2026-03-14 &middot; Gov. Evers Executive Order #286: Declaring a State of Emergency in Response to Severe Winter Weather</td><td>127</td><td>ADAMS, ASHLAND, BARRON, BAYFIELD, BROWN, BUFFALO, BURNETT, CHIPPEWA</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2025-08-11 &middot; Gov. Evers Executive Order #272: Declaring a State of Emergency in Response to Flooding and Severe Weather Impacts</td><td>46</td><td>BROWN, CALUMET, DOOR, GRANT, JEFFERSON, KEWAUNEE, MARATHON, MILWAUKEE</td><td>4892</td></tr>
@@ -213,7 +213,7 @@
 </details>
 
 <details class="layer">
-<summary><span>NOAA/NWS matched event details</span><span class="count-badge">1,138 rows</span></summary>
+<summary><span>NOAA/NWS matched event details</span><span class="count-badge">1,195 rows</span></summary>
 <div class="details-body"><p class="note">Storm Events matched within the configured date window of a state declaration's signing date. This is temporal and geographic evidence, not proof of causation or operational impact.</p>
 <div class="table-tools"><label for="filter-noaa-table">Filter NOAA events</label><input id="filter-noaa-table" class="table-search" data-table="noaa-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="noaa-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Area">Area <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Area type">Area type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Hazard">Hazard <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Deaths / injuries">Deaths / injuries <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Property damage">Property damage <span aria-hidden="true">↕</span></button></th></tr></thead>
@@ -522,7 +522,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-06-29; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-10-25 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-10-26 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

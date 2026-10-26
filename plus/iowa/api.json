@@ -611,9 +611,12 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "LYON",
+        "SIOUX"
+      ],
+      "noaa_match_count": 10,
+      "noaa_status": "matched",
       "title": "Severe Weather Occurring on July 20 and continuing(Franklin and Hardin Counties)"
     },
     {
@@ -630,9 +633,17 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "CHICKASAW",
+        "HOWARD",
+        "IDA",
+        "JEFFERSON",
+        "MITCHELL",
+        "SHELBY",
+        "WOODBURY"
+      ],
+      "noaa_match_count": 11,
+      "noaa_status": "matched",
       "title": "Severe Weather Occurring on June 29 and continuing(Hamilton County)"
     },
     {
@@ -649,9 +660,24 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "CEDAR",
+        "CHICKASAW",
+        "CLAY",
+        "DES MOINES",
+        "FREMONT",
+        "HOWARD",
+        "IDA",
+        "IOWA",
+        "JACKSON",
+        "MITCHELL",
+        "O'BRIEN",
+        "SCOTT",
+        "SHELBY",
+        "WOODBURY"
+      ],
+      "noaa_match_count": 20,
+      "noaa_status": "matched",
       "title": "Severe Weather Occurring on June 29 and continuing(Jasper, Osceola, Polk, Story Counties)"
     },
     {
@@ -3086,13 +3112,13 @@
     "declarations": [],
     "since": 2024
   },
-  "generated_on": "2026-10-25",
+  "generated_on": "2026-10-26",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 54,
     "federal_declaration_count": 79,
-    "severity_rows": 1563,
-    "storm_match_rows": 5107
+    "severity_rows": 1586,
+    "storm_match_rows": 5148
   },
   "name": "Iowa",
   "noaa_data_through": "2026-06-29",
@@ -3104,9 +3130,9 @@
     "added_by_hand": 0,
     "federal_matched": 37,
     "fmcsa_archive": 0,
-    "noaa_matched": 46,
+    "noaa_matched": 49,
     "noaa_none": 5,
-    "noaa_pending": 3,
+    "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 54
   },

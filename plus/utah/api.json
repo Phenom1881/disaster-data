@@ -369,9 +369,20 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "BEAVER",
+        "GARFIELD",
+        "IRON",
+        "KANE",
+        "PIUTE",
+        "SALT LAKE",
+        "SEVIER",
+        "SUMMIT",
+        "WASHINGTON",
+        "WAYNE"
+      ],
+      "noaa_match_count": 20,
+      "noaa_status": "matched",
       "title": "Declaring a State of Emergency in Certain Counties Due to Wildfires and Flooding Related to Wildfires"
     },
     {
@@ -966,13 +977,13 @@
     ],
     "since": 2000
   },
-  "generated_on": "2026-10-25",
+  "generated_on": "2026-10-26",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 32,
     "federal_declaration_count": 62,
-    "severity_rows": 115,
-    "storm_match_rows": 152
+    "severity_rows": 125,
+    "storm_match_rows": 172
   },
   "name": "Utah",
   "noaa_data_through": "2026-06-29",
@@ -984,9 +995,9 @@
     "added_by_hand": 0,
     "federal_matched": 12,
     "fmcsa_archive": 0,
-    "noaa_matched": 20,
+    "noaa_matched": 21,
     "noaa_none": 11,
-    "noaa_pending": 1,
+    "noaa_pending": 0,
     "reviewed_not_weather": 1,
     "state_archive": 32
   },
