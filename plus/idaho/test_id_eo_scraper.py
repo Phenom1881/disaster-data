@@ -53,5 +53,27 @@ class ArchiveTests(unittest.TestCase):
             write_csv(path, JOIN_FIELDS, [])
             self.assertEqual(path.read_bytes(), (','.join(JOIN_FIELDS)+'\n').encode())
 
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv: Governor declarations announced by IOEM or the news, not in the order archive."""
+
+    def test_each_row_is_dated_sourced_and_not_already_collected(self):
+        import csv
+        from datetime import date
+        here = Path(__file__).resolve().parent
+        with (here / 'manual_declarations.csv').open(encoding='utf-8') as handle:
+            rows = list(csv.DictReader(handle))
+        with (here / 'id_emergency_actions_all.csv').open(encoding='utf-8') as handle:
+            collected = {row['declaration_id'] for row in csv.DictReader(handle)}
+        self.assertTrue(rows)
+        self.assertEqual(len({row['declaration_id'] for row in rows}), len(rows))
+        for row in rows:
+            self.assertEqual(row['declaration_id'], 'ID-SOE-' + row['date_signed'])
+            date.fromisoformat(row['date_signed'])
+            self.assertNotIn(row['declaration_id'], collected)
+            self.assertTrue(row['governor'])
+            self.assertTrue(row['archive_record_url'].startswith(('https://ioem.idaho.gov/', 'https://kivitv.com/')),
+                            row['declaration_id'])
+
+
 if __name__ == '__main__':
     unittest.main()
