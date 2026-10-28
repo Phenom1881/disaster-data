@@ -182,5 +182,33 @@ class FetchIndexTests(unittest.TestCase):
         self.assertEqual(len([c for c in calls if c[0] in scraper.INDEX_URLS]), 8)
 
 
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv: Governor declarations announced by NEMA, outside the executive order index."""
+
+    def rows(self, name):
+        import csv
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name), encoding="utf-8") as handle:
+            return list(csv.DictReader(handle))
+
+    def test_each_row_is_dated_sourced_and_announced_by_nema(self):
+        rows = self.rows("manual_declarations.csv")
+        collected = {row["declaration_id"] for row in self.rows("declarations_for_join.csv")}
+        self.assertTrue(rows)
+        self.assertEqual(len({row["declaration_id"] for row in rows}), len(rows))
+        for row in rows:
+            datetime.strptime(row["date_signed"], "%Y-%m-%d")
+            self.assertTrue(row["declaration_id"].startswith("NE-SOE-" + row["date_signed"]), row["declaration_id"])
+            self.assertNotIn(row["declaration_id"], collected)
+            self.assertTrue(row["archive_record_url"].startswith("https://nema.nebraska.gov/"), row["declaration_id"])
+            self.assertIn("announced by NEMA", row["event_description"])
+
+    def test_every_override_names_a_declaration_the_page_can_hold(self):
+        ids = {row["declaration_id"] for row in self.rows("manual_declarations.csv")}
+        ids |= {row["declaration_id"] for row in self.rows("declarations_for_join.csv")}
+        for row in self.rows("hazard_overrides.csv"):
+            if row["declaration_id"].startswith("NE-SOE-"):
+                self.assertIn(row["declaration_id"], ids)
+
+
 if __name__ == "__main__":
     unittest.main()
