@@ -53,5 +53,22 @@ class ArchiveTests(unittest.TestCase):
             write_csv(path, JOIN_FIELDS, [])
             self.assertEqual(path.read_bytes(), (','.join(JOIN_FIELDS)+'\n').encode())
 
+class ReviewedDecisionTests(unittest.TestCase):
+    def test_eo_04_12_is_the_may_2004_severe_weather_declaration(self):
+        # "amends Executive Order 04-10 and declares an emergency due to severe
+        # weather in all Northern and Central Missouri counties" (June 4, 2004):
+        # an amendment by its first words, but the only declaration for the
+        # May 2004 storms and flooding (FEMA DR-1524).
+        import csv
+        here = Path(__file__).resolve().parent
+        with (here / 'declarations_for_join.csv').open(encoding='utf-8') as handle:
+            joined = {row['declaration_id']: row for row in csv.DictReader(handle)}
+        self.assertEqual(joined['MO-EO-04-12']['date_signed'], '2004-06-04')
+        with (here / 'mo_order_relationships.csv').open(encoding='utf-8') as handle:
+            links = [(r['target_order_id'], r['relationship_type']) for r in csv.DictReader(handle)
+                     if r['source_order_id'] == 'MO-EO-04-12']
+        self.assertEqual(links, [('MO-EO-04-10', 'amends')])
+
+
 if __name__ == '__main__':
     unittest.main()
