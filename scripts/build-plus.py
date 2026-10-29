@@ -342,7 +342,8 @@ def excluded_declaration_ids(state_dir: Path) -> set[str]:
 
 
 def reviewed_event_dates(state_dir: Path) -> dict[str, str]:
-    """{declaration id: event_date} from hazard_overrides.csv.
+    """{declaration id: event_date} from hazard_overrides.csv, and from an
+    event_date column in the state's declarations_for_join file.
 
     A reviewer fills event_date for an order signed well after the event it
     declares. Washington proclaims storms weeks later: 15-14 was signed
@@ -351,10 +352,19 @@ def reviewed_event_dates(state_dir: Path) -> dict[str, str]:
     NOAA around that day. The federal comparison uses it too, so an order is
     compared with FEMA's declarations for the event it declares rather than
     with whatever was declared near the day it was signed."""
+    dates = {}
+    # An event date a collector read from the order itself: Tennessee's
+    # proclamations are titled by their event ("State of Emergency May 8,
+    # 2024") and signed months later. Reviewed dates below replace these.
+    for path in sorted(state_dir.glob("declarations_for_join*.csv")):
+        for row in read_csv_rows(path):
+            key = (row.get("declaration_id") or "").strip()
+            day = (row.get("event_date") or "").strip()
+            if key and parse_iso_date(day):
+                dates[key] = day
     path = state_dir / "hazard_overrides.csv"
     if not path.exists():
-        return {}
-    dates = {}
+        return dates
     for row in read_csv_rows(path):
         key = (row.get("declaration_id") or "").strip()
         day = (row.get("event_date") or "").strip()
@@ -1090,6 +1100,79 @@ def federal_without_state(
     return missing, compared
 
 
+# Relationship types that end an emergency rather than keep it in force.
+ENDING_RELATIONSHIPS = frozenset({"terminates", "termination", "rescinds", "rescission", "companion_unresolved"})
+
+
+def extension_orders(state_dir: Path, actions: list[dict]) -> list[dict]:
+    """Later orders that keep a weather declaration on the page in force.
+
+    Missouri runs one emergency for months: EO 25-19 (March 14, 2025, severe
+    storms) was extended by 25-22 to May 14 and by 25-23 to June 30, and the
+    storms of April 29, May 16 and May 23 fell inside it. Each state's
+    *order_relationships*.csv links a follow-on order to the order it
+    extends, amends or cites. An order counts here when that chain leads
+    back to a declaration on the page, and the link is not a termination.
+
+    Returns [{"day", "order", "declaration"}], one per follow-on order with
+    a signing date, where "declaration" is the page declaration it keeps in
+    force."""
+    page = {a["declaration_id"] for a in actions if a.get("declaration_id")}
+    links = []
+    for path in sorted(state_dir.glob("*order_relationships*.csv")):
+        for row in read_csv_rows(path):
+            source = clean(row.get("source_order_id") or row.get("source_declaration_id"))
+            target = clean(row.get("target_order_id") or row.get("target_declaration_id"))
+            kind = clean(row.get("relationship_type")).lower()
+            if source and target and source != target and kind not in ENDING_RELATIONSHIPS:
+                links.append((source, target))
+    if not links:
+        return []
+    dates = {}
+    for pattern in ("*emergency_actions*.csv", "*actions_all*.csv", "declarations_for_join*.csv"):
+        for path in sorted(state_dir.glob(pattern)):
+            for row in read_csv_rows(path):
+                key = clean(row.get("declaration_id"))
+                day = parse_iso_date(row.get("date_signed") or row.get("issued_date") or row.get("date"))
+                if key and day and key not in dates:
+                    dates[key] = day
+    chained: dict[str, str] = {}
+    changed = True
+    while changed:
+        changed = False
+        for source, target in links:
+            if source in page or source in chained:
+                continue
+            root = target if target in page else chained.get(target)
+            if root:
+                chained[source] = root
+                changed = True
+    return sorted(({"day": dates[order], "order": order, "declaration": root}
+                   for order, root in chained.items() if order in dates),
+                  key=lambda row: (row["day"], row["order"]))
+
+
+def covered_by_extension(gaps: list[dict], orders: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Split federal_without_state()'s gaps into those still without a state
+    declaration and those that fell, within FEDERAL_MATCH_WINDOW_DAYS, of an
+    order keeping a page declaration in force (extension_orders()). The
+    second list names the order: [{"id", "order", "order_date",
+    "declaration"}]."""
+    window = timedelta(days=FEDERAL_MATCH_WINDOW_DAYS)
+    remaining, covered = [], []
+    for declaration in gaps:
+        begin = parse_iso_date(declaration.get("begin")) or parse_iso_date(declaration.get("date"))
+        end = parse_iso_date(declaration.get("end")) or begin
+        near = [o for o in orders if begin and begin - window <= o["day"] <= end + window]
+        if not near:
+            remaining.append(declaration)
+            continue
+        best = min(near, key=lambda o: min(abs((o["day"] - begin).days), abs((o["day"] - end).days)))
+        covered.append({"id": declaration.get("id"), "order": best["order"],
+                        "order_date": best["day"].isoformat(), "declaration": best["declaration"]})
+    return remaining, covered
+
+
 def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     """Move each (tmp_path, final_path) into place, with rollback if any
     individual move fails partway through the set.
@@ -1442,8 +1525,21 @@ def crosswalk_summary_html(sources: dict | None, action_count: int) -> str:
     return f'<p class="note">{noaa}. {near}</p>'
 
 
+def extended_note(extended: list[dict] | None) -> str:
+    """One sentence naming the FEMA declarations that fell while a later
+    order kept a state declaration on the page in force."""
+    if not extended:
+        return ""
+    items = "; ".join(f"{esc(row['id'])} (order {esc(row['order'])} of {esc(row['order_date'])}, "
+                      f"continuing {esc(row['declaration'])})" for row in extended)
+    count = len(extended)
+    return (f'<p class="note">{count:,} more FEMA declaration{"" if count == 1 else "s"} fell while a '
+            f"state emergency declared on this page was kept in force by a later order, and "
+            f"{'is' if count == 1 else 'are'} not counted here: {items}.</p>")
+
+
 def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
-                        start_year: int | None) -> str:
+                        start_year: int | None, extended: list[dict] | None = None) -> str:
     """The collapsed section listing FEMA's weather major disasters and
     emergencies that have no state declaration on the page. Renders nothing
     when the page's coverage start year is unknown."""
@@ -1458,7 +1554,8 @@ def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
         body = (f'<p class="note">Every one of the {compared:,} major disaster and emergency '
                 f"declarations FEMA made for weather in {name} from {start_year}, the first year "
                 f"this page covers, has a state declaration on this page within {window} days "
-                "of its incident period.</p>")
+                f"of its incident period{', or fell while one was kept in force' if extended else ''}."
+                f"</p>{extended_note(extended)}")
     else:
         body = (
             f'<p class="note">Major disaster and emergency declarations FEMA made for weather in '
@@ -1473,6 +1570,7 @@ def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
             f"{sortable_header('Title', 3)}{sortable_header('Incident type', 4)}"
             f"{sortable_header('Incident period', 5)}</tr></thead>"
             f"<tbody>{federal_declaration_rows(gaps)}</tbody></table></div>"
+            f"{extended_note(extended)}"
         )
     return (
         '<details class="layer">'
@@ -1751,6 +1849,7 @@ def render_state_page(
     federal_gaps: list[dict] | None = None,
     federal_compared: int = 0,
     coverage_start: int | None = None,
+    federal_extended: list[dict] | None = None,
 ) -> str:
     name = esc(state["name"])
     source = state.get("official_source_url", "")
@@ -1799,7 +1898,7 @@ def render_state_page(
 <tbody>{crosswalk_rows(crosswalk)}</tbody></table></div>
 </div>
 
-{federal_gap_section(name, federal_gaps, federal_compared, coverage_start)}
+{federal_gap_section(name, federal_gaps, federal_compared, coverage_start, federal_extended)}
 
 <details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">{metrics['federal_declaration_count']:,} records</span></summary>
@@ -2011,6 +2110,7 @@ def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list
             "since": gaps.get("since"),
             "compared": gaps.get("compared", 0),
             "declarations": [federal_reference(row) for row in federal_gaps or []],
+            "covered_by_extension": gaps.get("covered_by_extension", []),
         },
         "actions": actions,
         "crosswalk": [
@@ -2135,6 +2235,7 @@ def process_state(
     start_year = coverage_start_year(state["abbreviation"], coverage)
     federal_gaps, federal_compared = federal_without_state(federal_declarations, actions, start_year,
                                                            event_dates)
+    federal_gaps, federal_extended = covered_by_extension(federal_gaps, extension_orders(state_dir, actions))
 
     summary = {
         "abbreviation": state["abbreviation"],
@@ -2153,6 +2254,9 @@ def process_state(
             "compared": federal_compared,
             "count": len(federal_gaps),
             "ids": [row.get("id") for row in federal_gaps],
+            # FEMA declarations that fell while a later order kept a state
+            # declaration on the page in force; not counted as gaps.
+            "covered_by_extension": federal_extended,
         },
         "storm_pipeline_note": storm_note,
         "storm_pipeline_failed": storm_failed,
@@ -2184,6 +2288,7 @@ def process_state(
                     state, actions, federal_declarations, storm_rows, crosswalk, metrics, coverage,
                     sources=sources, federal_gaps=federal_gaps,
                     federal_compared=federal_compared, coverage_start=start_year,
+                    federal_extended=federal_extended,
                 ),
                 encoding="utf-8",
             )

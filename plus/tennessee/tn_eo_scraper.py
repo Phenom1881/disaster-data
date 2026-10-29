@@ -1,13 +1,14 @@
 """Collect Tennessee executive orders from the official catalog's preservation mirror."""
 from __future__ import annotations
 
-import argparse, csv, re
+import argparse, csv, re, sys
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 import requests
 from bs4 import BeautifulSoup
 
 OFFICIAL_ARCHIVE = "https://sos.tn.gov/products/division-publications/executive-orders"
+PROCLAMATION_INDEX = "https://tnsos.net/publications/proclamations/index.php"
 MIRROR_ROOT = "https://digitalcommons.memphis.edu"
 COLLECTIONS = {
     "Bill Lee": "govpubs-tn-governor-bill-lee-eo",
@@ -285,7 +286,21 @@ def write_csv(path,fields,rows):
     with open(path,"w",newline="",encoding="utf-8") as h:
         w=csv.DictWriter(h,fieldnames=fields,lineterminator="\n"); w.writeheader(); w.writerows([{k:(v.replace("\r","") if isinstance(v,str) else v) for k,v in row.items()} for row in rows])
 
-def write_outputs(actions,actions_out,relationships_out,join_out):
+def proclamation_rows(procs):
+    """(actions rows, join rows) for the Governor's state of emergency
+    proclamations (tn_proclamations.py). A join row carries the event date
+    the proclamation's title gives, which the federal comparison and the
+    storm join use; it is signed weeks or months after the event."""
+    rows=[]; joins=[]
+    for p in procs:
+        weather=bool(p["hazards"])
+        desc=p["title"]+(f" ({', '.join(p['hazards'])})" if weather else "")
+        row={"declaration_id":p["declaration_id"],"state":"TN","governor":p["governor"],"eo_number":"","action_kind":"emergency_proclamation","action_type":"declaration","event_description":desc,"date_signed":p["signed"],"end_date":"","weather_related":str(weather).lower(),"source_scope":"tennessee_sos_governor_proclamations","document_format":"pdf","detail_url":p["url"] or PROCLAMATION_INDEX,"archive_record_url":p["url"] or PROCLAMATION_INDEX}
+        rows.append(row)
+        if weather and p["signed"]: joins.append({**{f:row[f] for f in JOIN_FIELDS},"event_date":p["event_date"]})
+    return rows,joins
+
+def write_outputs(actions,actions_out,relationships_out,join_out,procs=()):
     rows=[]; rel=[]; joins=[]
     for a in actions:
         kind=classify(a); weather=bool(HAZARD_RE.search(a.title))
@@ -294,9 +309,20 @@ def write_outputs(actions,actions_out,relationships_out,join_out):
             relation={"termination":"terminates","extension":"extends","amendment":"amends"}[kind]
             for n in re.findall(r"Executive Order (?:No\.? )?(\d+)",a.title,re.I):
                 if n!=a.number: rel.append({"source_order_id":a.stable_id,"target_order_id":f"TN-{re.sub(r'[^A-Z0-9]+','',a.governor.upper())}-EO-{n}","relationship_type":relation,"relationship_text":n,"relationship_source":"archive_title","confidence":"high"})
-        if kind=="declaration" and weather and a.date: joins.append({f:row[f] for f in JOIN_FIELDS})
-    write_csv(actions_out,ACTION_FIELDS,rows); write_csv(relationships_out,REL_FIELDS,rel); write_csv(join_out,JOIN_FIELDS,joins)
+        if kind=="declaration" and weather and a.date: joins.append({**{f:row[f] for f in JOIN_FIELDS},"event_date":""})
+    proc_rows,proc_joins=proclamation_rows(procs); rows+=proc_rows; joins+=proc_joins
+    write_csv(actions_out,ACTION_FIELDS,rows); write_csv(relationships_out,REL_FIELDS,rel); write_csv(join_out,JOIN_FIELDS+("event_date",),joins)
+
+def collect_proclamations():
+    """The Governor's state of emergency proclamations, or [] with a warning:
+    that source failing must not fail the executive orders."""
+    try:
+        import tn_proclamations
+        return tn_proclamations.emergencies(tn_proclamations.collect_index(), HAZARD_RE)
+    except Exception as exc:
+        print(f"WARNING: Tennessee proclamations not read this run: {exc}", file=sys.stderr)
+        return []
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--actions-out",required=True); p.add_argument("--relationships-out",required=True); p.add_argument("--join-out",required=True); a=p.parse_args(); write_outputs(collect(),a.actions_out,a.relationships_out,a.join_out)
+    p=argparse.ArgumentParser(); p.add_argument("--actions-out",required=True); p.add_argument("--relationships-out",required=True); p.add_argument("--join-out",required=True); a=p.parse_args(); write_outputs(collect(),a.actions_out,a.relationships_out,a.join_out,collect_proclamations())
 if __name__=="__main__": main()

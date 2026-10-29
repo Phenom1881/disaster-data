@@ -158,6 +158,20 @@ class ReviewedEventDateTests(unittest.TestCase):
             ])
             self.assertEqual(MODULE.reviewed_event_dates(folder), {"WA-PROC-15-14": "2015-08-29"})
 
+    def test_a_collected_event_date_counts_and_a_reviewed_one_wins(self):
+        # Tennessee's proclamations carry the event date their titles give.
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            write(folder / "declarations_for_join.csv",
+                  [{"declaration_id": "TN-PROC-2700", "date_signed": "2024-08-14", "event_date": "2024-05-08"},
+                   {"declaration_id": "TN-PROC-9", "date_signed": "2024-08-14", "event_date": "2024-05-08"},
+                   {"declaration_id": "TN-EO-1", "date_signed": "2024-01-01", "event_date": ""}],
+                  ["declaration_id", "date_signed", "event_date"])
+            self.overrides(folder, [{"declaration_id": "TN-PROC-9", "hazard_category_override": "flood",
+                                     "event_date": "2024-05-09"}])
+            self.assertEqual(MODULE.reviewed_event_dates(folder),
+                             {"TN-PROC-2700": "2024-05-08", "TN-PROC-9": "2024-05-09"})
+
     def test_a_late_order_matches_the_event_it_declares(self):
         events = {"WA-PROC-15-14": "2015-08-29"}
         self.assertIsNone(MODULE.find_federal_match(self.LATE, self.WINDSTORM))
@@ -258,6 +272,72 @@ class StructureFireTests(unittest.TestCase):
             row = self.fire("DR-2", title)
             self.assertEqual(len(MODULE.federal_without_state([row], [], 1970)[0]), 1, title)
             self.assertEqual(MODULE.find_federal_match(action("A", "1999-12-05"), [row])["id"], "DR-2", title)
+
+
+class ExtendedEmergencyTests(unittest.TestCase):
+    """A FEMA declaration that falls while a later order keeps a state declaration in force is covered."""
+
+    REL_FIELDS = ["source_order_id", "target_order_id", "relationship_type"]
+    ACT_FIELDS = ["declaration_id", "date_signed"]
+
+    def folder(self, tmp, links, dates):
+        folder = Path(tmp)
+        write(folder / "mo_order_relationships.csv",
+              [dict(zip(self.REL_FIELDS, link)) for link in links], self.REL_FIELDS)
+        write(folder / "mo_emergency_actions_all.csv",
+              [{"declaration_id": k, "date_signed": v} for k, v in dates.items()], self.ACT_FIELDS)
+        return folder
+
+    # Missouri 2025: 25-19 declared March 14; 25-22 extends it; 25-23 extends 25-22.
+    LINKS = [("MO-EO-25-22", "MO-EO-25-19", "explicit_order_citation"),
+             ("MO-EO-25-23", "MO-EO-25-22", "extends"),
+             ("MO-EO-25-30", "MO-EO-25-19", "terminates"),
+             ("MO-EO-25-40", "MO-EO-25-99", "extends")]
+    DATES = {"MO-EO-25-19": "2025-03-14", "MO-EO-25-22": "2025-04-14", "MO-EO-25-23": "2025-05-13",
+             "MO-EO-25-30": "2025-08-31", "MO-EO-25-40": "2025-05-14", "MO-EO-25-99": "2025-05-01"}
+
+    def test_a_chain_of_follow_on_orders_leads_back_to_the_declaration(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            orders = MODULE.extension_orders(self.folder(tmp, self.LINKS, self.DATES),
+                                             [action("MO-EO-25-19", "2025-03-14")])
+        self.assertEqual([(o["order"], o["declaration"]) for o in orders],
+                         [("MO-EO-25-22", "MO-EO-25-19"), ("MO-EO-25-23", "MO-EO-25-19")])
+
+    def test_a_termination_or_an_order_for_another_emergency_does_not_count(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            orders = MODULE.extension_orders(self.folder(tmp, self.LINKS, self.DATES),
+                                             [action("MO-EO-25-19", "2025-03-14")])
+        self.assertNotIn("MO-EO-25-30", [o["order"] for o in orders])   # terminates
+        self.assertNotIn("MO-EO-25-40", [o["order"] for o in orders])   # extends an order not on the page
+
+    def test_a_storm_during_the_extension_is_covered_and_named(self):
+        storm = federal("DR-4877", "2025-05-16", "2025-05-16", incident="Severe Storm")
+        later = federal("DR-4999", "2025-09-20", "2025-09-21", incident="Flood")
+        with tempfile.TemporaryDirectory() as tmp:
+            orders = MODULE.extension_orders(self.folder(tmp, self.LINKS, self.DATES),
+                                             [action("MO-EO-25-19", "2025-03-14")])
+        missing, compared = MODULE.federal_without_state([storm, later], [action("MO-EO-25-19", "2025-03-14")], 2000)
+        self.assertEqual(([row["id"] for row in missing], compared), (["DR-4999", "DR-4877"], 2))
+        remaining, covered = MODULE.covered_by_extension(missing, orders)
+        self.assertEqual([row["id"] for row in remaining], ["DR-4999"])
+        self.assertEqual(covered, [{"id": "DR-4877", "order": "MO-EO-25-23", "order_date": "2025-05-13",
+                                    "declaration": "MO-EO-25-19"}])
+        page = text(MODULE.federal_gap_section("Missouri", remaining, compared, 2000, covered))
+        self.assertIn("1 more FEMA declaration fell while a state emergency declared on this page was kept "
+                      "in force by a later order", page)
+        self.assertIn("DR-4877 (order MO-EO-25-23 of 2025-05-13, continuing MO-EO-25-19)", page)
+
+    def test_with_no_gaps_left_the_page_still_names_them(self):
+        covered = [{"id": "DR-4877", "order": "MO-EO-25-23", "order_date": "2025-05-13",
+                    "declaration": "MO-EO-25-19"}]
+        page = text(MODULE.federal_gap_section("Missouri", [], 3, 2000, covered))
+        self.assertIn("or fell while one was kept in force", page)
+        self.assertIn("DR-4877 (order MO-EO-25-23", page)
+        self.assertNotIn("kept in force", text(MODULE.federal_gap_section("Missouri", [], 3, 2000)))
+
+    def test_no_relationship_file_covers_nothing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(MODULE.extension_orders(Path(tmp), [action("A", "2025-01-01")]), [])
 
 
 class FederalWithoutStateTests(unittest.TestCase):
