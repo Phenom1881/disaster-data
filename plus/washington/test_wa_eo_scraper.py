@@ -1,4 +1,5 @@
 import csv
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -82,6 +83,24 @@ class ReviewedEventDateTests(unittest.TestCase):
             days = (date.fromisoformat(action["date_signed"]) - date.fromisoformat(row["event_date"])).days
             self.assertTrue(0 <= days <= 120, (row["declaration_id"], days))
             self.assertTrue(row["source_url"].startswith("https://governor.wa.gov/"), row["declaration_id"])
+
+    def test_hand_added_pre_2013_proclamations(self):
+        with open(Path(__file__).parent / "manual_declarations.csv", encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        ids = [row["declaration_id"] for row in rows]
+        self.assertEqual(len(ids), len(set(ids)))
+        dates = {row["declaration_id"]: row["date_signed"] for row in rows}
+        self.assertEqual(dates["WA-PROC-07-02"], "2007-03-06")
+        self.assertEqual(dates["WA-SOE-2006-11-09"], "2006-11-09")
+        # The scan of the February 2003 order says January 8, 2002 in error; the termination dates it February 12, 2003.
+        self.assertEqual(dates["WA-SOE-2003-02-12"], "2003-02-12")
+        self.assertNotIn("WA-SOE-2002-02-12", dates)
+        for row in rows:
+            self.assertRegex(row["date_signed"], r"^\d{4}-\d{2}-\d{2}$")
+            self.assertLess(row["date_signed"], "2013-04-22", row["declaration_id"])
+            self.assertTrue(wa.HAZARD_RE.search(row["event_description"]) or re.search(r"\b(?:rainfall|landslides?)\b", row["event_description"]), row["declaration_id"])
+            if row["declaration_id"].startswith("WA-SOE-"):
+                self.assertTrue(row["declaration_id"].endswith(row["date_signed"]), row["declaration_id"])
 
 
 if __name__ == "__main__": unittest.main()
