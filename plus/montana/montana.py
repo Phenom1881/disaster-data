@@ -19,16 +19,20 @@ CAPABILITIES = {
     "current_governor_source_start": "2021-02-12",
     "manual_only": False,
     "known_gaps": [
-        "Montana's EO record is split across three separate real sites with "
-        "no unified archive: gov.mt.gov (Gianforte, 2021-present, dated), "
-        "formergovernors.mt.gov/bullock (2013-2020, numbered but UNDATED in "
-        "the rendered list - date lives only inside each PDF), and "
-        "formergovernors.mt.gov/schweitzer/eo/<year>.asp (2005-2013, "
-        "confirmed to exist via one live-fetched page but not deeply parsed "
-        "in this pass). Only the dated Gianforte-era range (2021-present) "
-        "is in declarations_for_join.csv this delivery; Bullock and "
-        "Schweitzer-era disaster EOs are real and identifiable but excluded "
-        "pending per-PDF date confirmation - backfill pending.",
+        "Montana's EO record is split across separate real sites with no "
+        "unified archive: gov.mt.gov (Gianforte, 2021-present, dated, "
+        "collected by the scraper), formergovernors.mt.gov/bullock "
+        "(2013-2020, numbered but undated in the rendered list), "
+        "formergovernors.mt.gov/schweitzer/eo/2005.asp (one page listing "
+        "2005-2012) and the Martz and Racicot archives (2000-2004, text "
+        "copies that leave the signing day blank). Weather orders from "
+        "2000-2020 are in manual_declarations.csv, dated from the order "
+        "text, the governor's press releases or dated news reports. Orders "
+        "with no readable signing date are left blank rather than guessed; "
+        "four of them carry a reviewed event_date in hazard_overrides.csv so "
+        "they are still compared with FEMA's declarations. Scanned Bullock "
+        "and Schweitzer orders with illegible dates, and Martz 2003-2004 "
+        "orders, are still to be backfilled.",
         "Montana's disaster EOs almost all use the identical boilerplate "
         "title 'Declaring a Disaster to Exist in the State of Montana' with "
         "NO hazard word in the title itself - unlike SD/ND, most Montana "

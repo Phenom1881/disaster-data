@@ -156,33 +156,74 @@ class WriteCsvTests(unittest.TestCase):
             self.assertEqual(len(declarations), 0)
 
 
-class HandAddedSchweitzerTests(unittest.TestCase):
-    def test_hand_added_rows_have_unique_ids_and_dates(self):
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv carries the 2000-2020 weather orders the
+    scraper does not collect. A blank date_signed means the signing day
+    could not be read; such a row must carry a reviewed event_date in
+    hazard_overrides.csv, or it would drop out of the federal comparison."""
+
+    @staticmethod
+    def rows():
         path = os.path.join(os.path.dirname(__file__), "manual_declarations.csv")
-        with open(path, newline="") as handle:
-            rows = list(csv.DictReader(handle))
+        with open(path, newline="", encoding="utf-8") as handle:
+            return list(csv.DictReader(handle))
+
+    @staticmethod
+    def event_dates():
+        path = os.path.join(os.path.dirname(__file__), "hazard_overrides.csv")
+        with open(path, newline="", encoding="utf-8") as handle:
+            return {r["declaration_id"]: r["event_date"] for r in csv.DictReader(handle)
+                    if r.get("event_date")}
+
+    def test_ids_are_unique_and_dates_are_iso_or_blank(self):
+        rows = self.rows()
         ids = [row["declaration_id"] for row in rows]
         self.assertEqual(len(ids), len(set(ids)))
-        schweitzer = [r for r in rows if r["governor"] == "Brian Schweitzer"]
-        self.assertGreaterEqual(len(schweitzer), 10)
-        for row in schweitzer:
-            self.assertRegex(row["date_signed"], r"^20(0[5-9]|1[0-2])-\d\d-\d\d$")
-            self.assertTrue(row["declaration_id"].endswith(row["eo_number"]))
-        by_id = {r["declaration_id"]: r["date_signed"] for r in rows}
-        self.assertEqual(by_id["MT-EO-13-2007"], "2007-06-26")
-        self.assertEqual(by_id["MT-EO-11-2012"], "2012-09-17")
-
-    def test_hand_added_bullock_rows_are_dated(self):
-        path = os.path.join(os.path.dirname(__file__), "manual_declarations.csv")
-        with open(path, newline="") as handle:
-            rows = [r for r in csv.DictReader(handle) if r["governor"] == "Steve Bullock"]
-        self.assertGreaterEqual(len(rows), 6)
         for row in rows:
-            self.assertRegex(row["date_signed"], r"^20(1[3-9]|20)-\d\d-\d\d$")
-        by_id = {r["declaration_id"]: r["date_signed"] for r in rows}
-        self.assertEqual(by_id["MT-EO-8-2013"], "2013-08-19")
-        self.assertEqual(by_id["MT-SOE-2018-04-18"], "2018-04-18")
+            if row["date_signed"]:
+                self.assertRegex(row["date_signed"], r"^20\d\d-\d\d-\d\d$", row["declaration_id"])
+            if row["eo_number"]:
+                self.assertTrue(row["declaration_id"].endswith(row["eo_number"]), row["declaration_id"])
 
+    def test_dates_fall_in_each_governors_term(self):
+        terms = {"Marc Racicot": ("2000", "2001-01"), "Judy Martz": ("2001-01", "2005-01"),
+                 "Brian Schweitzer": ("2005-01", "2013-01"), "Steve Bullock": ("2013-01", "2021-01")}
+        for row in self.rows():
+            term = terms.get(row["governor"])
+            if term and row["date_signed"]:
+                self.assertTrue(term[0] <= row["date_signed"] < term[1], row["declaration_id"])
+
+    def test_undated_rows_say_so_and_carry_an_event_date(self):
+        event_dates = self.event_dates()
+        undated = [row for row in self.rows() if not row["date_signed"]]
+        self.assertEqual({row["declaration_id"] for row in undated},
+                         {"MT-EO-31-00", "MT-EO-16-01", "MT-EO-13-02", "MT-EO-5-2019"})
+        for row in undated:
+            self.assertRegex(row["event_description"], r"signing day (?:is )?blank", row["declaration_id"])
+            self.assertRegex(event_dates.get(row["declaration_id"], ""), r"^20\d\d-\d\d-\d\d$",
+                             row["declaration_id"])
+
+    def test_dates_read_from_the_sources(self):
+        by_id = {r["declaration_id"]: r["date_signed"] for r in self.rows()}
+        expected = {
+            "MT-EO-18-00": "2000-07-28", "MT-EO-20-00": "2000-08-16", "MT-EO-24-00": "2000-08-25",
+            "MT-EO-9-01": "2001-05-18", "MT-EO-13-2007": "2007-06-26", "MT-EO-9-2012": "2012-08-29",
+            "MT-EO-11-2012": "2012-09-17", "MT-EO-4-2013": "2013-06-05", "MT-EO-8-2013": "2013-08-19",
+            "MT-EO-3-2014": "2014-03-10", "MT-EO-7-2015": "2015-07-08", "MT-EO-5-2018": "2018-02-26",
+            "MT-EO-11-2018": "2018-04-18", "MT-EO-12-2018": "2018-05-02", "MT-EO-15-2019": "2019-09-29",
+        }
+        for key, day in expected.items():
+            self.assertEqual(by_id.get(key), day, key)
+        event_dates = self.event_dates()
+        self.assertEqual(event_dates["MT-EO-9-01"], "2001-04-02")
+        self.assertEqual(event_dates["MT-EO-5-2019"], "2019-03-20")
+
+    def test_schweitzer_rows_link_the_order_itself(self):
+        for row in self.rows():
+            if row["governor"] == "Brian Schweitzer":
+                self.assertRegex(row["archive_record_url"],
+                                 r"^https://formergovernors\.mt\.gov/schweitzer/eo/EO-.+\.pdf$",
+                                 row["declaration_id"])
 
 if __name__ == "__main__":
     unittest.main()
