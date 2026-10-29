@@ -172,6 +172,17 @@ class HandAddedSchweitzerTests(unittest.TestCase):
         self.assertEqual(by_id["MT-EO-13-2007"], "2007-06-26")
         self.assertEqual(by_id["MT-EO-11-2012"], "2012-09-17")
 
+    def test_hand_added_bullock_rows_are_dated(self):
+        path = os.path.join(os.path.dirname(__file__), "manual_declarations.csv")
+        with open(path, newline="") as handle:
+            rows = [r for r in csv.DictReader(handle) if r["governor"] == "Steve Bullock"]
+        self.assertGreaterEqual(len(rows), 6)
+        for row in rows:
+            self.assertRegex(row["date_signed"], r"^20(1[3-9]|20)-\d\d-\d\d$")
+        by_id = {r["declaration_id"]: r["date_signed"] for r in rows}
+        self.assertEqual(by_id["MT-EO-8-2013"], "2013-08-19")
+        self.assertEqual(by_id["MT-SOE-2018-04-18"], "2018-04-18")
+
 
 if __name__ == "__main__":
     unittest.main()
