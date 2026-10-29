@@ -21,9 +21,16 @@ CAPABILITIES = {
     "known_gaps": [
         "governor.nd.gov's Executive Order Archive gives order numbers "
         "alongside dates only from 2017 (Burgum) forward; 2000-2016 entries "
-        "(Dalrymple and earlier) are listed as date+title only, with no "
-        "order number in the rendered page - the archive itself goes back "
-        "to 1963, but numbered/dated coverage for join purposes starts 2017.",
+        "are listed as date+title only. Those are read too: an entry whose "
+        "title declares or proclaims an emergency or disaster for a hazard "
+        "becomes ND-ARCHIVE-<date>. The archive lists Dalrymple's disaster "
+        "orders from December 2010; Schafer's (2000) and Hoeven's "
+        "(2000-2010) are not on it. Three of Hoeven's are in "
+        "manual_declarations.csv, dated from news reports and the "
+        "Governor's release (March 29, 2004 flood emergency, August 27, "
+        "2007 Northwood tornado emergency, March 16, 2009 statewide flood "
+        "emergency); his other orders are not yet found, so most 2000-2010 "
+        "federal declarations still show no state match.",
         "The live /executive-orders page (2024-present) lists order number, "
         "title, and a PDF link, but NO filed date - only the archive page "
         "(which stops covering current-administration orders after 2023) "
@@ -40,6 +47,21 @@ CAPABILITIES = {
         "its news release before being trusted, not assumed weather-related.",
     ],
 }
+
+
+# The page's coverage text. A refresh (build-plus.py --collect) uses this
+# note, not the manifest's, so the two must say the same thing; the
+# state's tests check that they do.
+COVERAGE_NOTE = (
+    "2000-present: the Governor's executive order archive, with Dalrymple's "
+    "orders read by date and title from December 2010 and numbered orders "
+    "from 2017, plus the current-EOs page (dates confirmed per order "
+    "against news releases); Schafer's and Hoeven's 2000-2010 orders are "
+    "not on the archive, so Hoeven's March 2004 and March 2009 flood "
+    "emergencies and August 2007 Northwood tornado emergency are added by "
+    "hand from dated news reports and the Governor's release, and his "
+    "other orders and undated 2024-2026 orders are still to be backfilled"
+)
 
 
 def collect(workdir=".", scripts_dir=None):
@@ -63,8 +85,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("North Dakota adapter: scrape failed")
 
-    return workdir / "declarations_for_join.csv", (
-        "2017-present numbered/dated Governor archive plus current-EOs page "
-        "(dates confirmed per-order against news releases); 2000-2016 order "
-        "numbers and undated 2024-2026 orders backfill pending"
-    )
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
