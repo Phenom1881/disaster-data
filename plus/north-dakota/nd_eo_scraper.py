@@ -16,7 +16,9 @@ Two real, distinct sources of record, both on governor.nd.gov:
    "2023-04 - April 10, 2023 - Burgum Declares Statewide Emergency for Spring
    Flooding", with both a number and a date. Entries from 2016 and earlier
    give only "Month Day, Year - Title" with no order number, a limitation of
-   the page itself, so they are not used.
+   the page itself. From 2000 on those are kept too, with an id made from
+   the date (ND-ARCHIVE-2011-05-05). The archive lists Dalrymple's disaster
+   orders from December 2010 this way; Hoeven's (2000-2010) are not on it.
 
 Both pages are plain server-rendered HTML (Drupal), no JS execution needed.
 
@@ -115,6 +117,16 @@ _DATE = r"(?P<date>[A-Z][a-z]+\.? \d{1,2}, \d{4})"
 ARCHIVE_ITEM_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + _DATE + r"(?:" + _DASH + r"|,\s*)" + r"(?P<title>.+)$")
 # A few archive entries carry a number but no date ("2023-10 - Burgum
 # Declares Statewide Emergency for Impacts of Ice Storm").
+# Entries from 2016 and earlier: "May 5, 2011 - Dalrymple Proclaims a
+# Statewide Flood Disaster in North Dakota", no number.
+ARCHIVE_DATED_RE = re.compile(r"^(?:[-*]\s+)?" + _DATE + _DASH + r"(?P<title>.+)$")
+DATED_FROM, DATED_THROUGH = "2000-01-01", "2016-12-31"
+# Without a number to look up, an unnumbered entry counts only when its own
+# title declares or proclaims something for a hazard. Orders that only
+# waive rules, order evacuations or ease bidding during a flood do not.
+DATED_DECLARES_RE = re.compile(r"\b(?:declares?|declared|proclaims?|issues emergency declaration)\b", re.I)
+DATED_HAZARD_RE = re.compile(r"disaster|flood|drought|fire|blizzard|storm|tornado|weather", re.I)
+DATED_EXCLUDED_RE = re.compile(r"no longer exist|extend|rescind|terminat|amend|expand", re.I)
 ARCHIVE_UNDATED_RE = re.compile(r"^(?:[-*]\s+)?" + _NUM + _DASH + r"(?![A-Z][a-z]+\.? \d{1,2}, \d{4})(?P<title>.+)$")
 CURRENT_ITEM_RE = re.compile(
     _NUM + _DASH + r"\[(?P<title>[^\]]+)\]\((?P<url>[^)]+)\)"
@@ -179,6 +191,43 @@ def parse_archive_markdown(md_text):
                 "governor": gov,
             })
     return orders
+
+
+def governor_on(day):
+    """The governor in office on a 'YYYY-MM-DD' date."""
+    if day >= "2010-12-07":
+        return "Dalrymple"
+    if day >= "2000-12-15":
+        return "Hoeven"
+    return "Schafer"
+
+
+def parse_archive_dated(md_text):
+    """The archive's unnumbered 'Month Day, Year - Title' entries from 2000
+    through 2016."""
+    orders = []
+    for line in page_markdown(md_text, ARCHIVE_URL).splitlines():
+        line = line.strip()
+        if ARCHIVE_ITEM_RE.search(line) or ARCHIVE_UNDATED_RE.search(line):
+            continue
+        m = ARCHIVE_DATED_RE.search(line)
+        day = parse_date_text(m.group("date")) if m else ""
+        if not (DATED_FROM <= day <= DATED_THROUGH):
+            continue
+        gov, title = split_governor(_MD_LINK_RE.sub(r"\1", m.group("title")).strip())
+        orders.append({
+            "eo_number": "",
+            "date_text": m.group("date"),
+            "title": title,
+            "url": ARCHIVE_URL,
+            "governor": gov or governor_on(day),
+        })
+    return orders
+
+
+def is_dated_declaration(title):
+    return bool(DATED_DECLARES_RE.search(title) and DATED_HAZARD_RE.search(title)
+                and not DATED_EXCLUDED_RE.search(title))
 
 
 def parse_current_markdown(md_text):
@@ -274,7 +323,9 @@ def is_declaration(eo_number, title):
 def collect_orders():
     if requests is None:
         raise RuntimeError("requests/bs4 not installed - pip install requests beautifulsoup4")
-    archive = parse_archive_markdown(fetch(ARCHIVE_URL).text)
+    archive_page = fetch(ARCHIVE_URL).text
+    archive = parse_archive_markdown(archive_page)
+    dated = parse_archive_dated(archive_page)
     page = fetch(CURRENT_URL).text
     current = parse_current_markdown(page)
     if not archive:
@@ -290,7 +341,7 @@ def collect_orders():
     for o in current:
         if is_declaration(o["eo_number"], o["title"]) and o["url"].lower().endswith(".pdf"):
             o["pdf_date"] = pdf_signed_date(o["url"], o["eo_number"])
-    return archive + current
+    return archive + dated + current
 
 
 def write_csv(orders, actions_out, relationships_out, join_out, confirmed_dates=None):
@@ -310,10 +361,27 @@ def write_csv(orders, actions_out, relationships_out, join_out, confirmed_dates=
     # one with a date on the page, else the one with a link to its PDF.
     best = {}
     for o in orders:
+        key = o["eo_number"] or "archive:%s:%s" % (o.get("date_text"), o["title"])
         rank = (bool(parse_date_text(o.get("date_text"))), str(o.get("url", "")).lower().endswith(".pdf"))
-        if o["eo_number"] not in best or rank > best[o["eo_number"]][0]:
-            best[o["eo_number"]] = (rank, o)
+        if key not in best or rank > best[key][0]:
+            best[key] = (rank, o)
+    # An unnumbered declaration's id is its date, ND-ARCHIVE-2011-05-05; a
+    # second declaration listed the same day gets -2.
+    per_day = {}
     for o in (entry for _, entry in best.values()):
+        if not o["eo_number"]:
+            if is_dated_declaration(o["title"]):
+                day = parse_date_text(o["date_text"])
+                per_day[day] = per_day.get(day, 0) + 1
+                declarations.append({
+                    "declaration_id": "ND-ARCHIVE-%s" % (day if per_day[day] == 1 else "%s-%d" % (day, per_day[day])),
+                    "governor": o["governor"],
+                    "eo_number": "",
+                    "event_description": o["title"],
+                    "date_signed": day,
+                    "archive_record_url": o["url"],
+                })
+            continue
         if not is_declaration(o["eo_number"], o["title"]):
             continue
         date_signed = (parse_date_text(o["date_text"]) or confirmed_dates.get(o["eo_number"], "")
@@ -367,7 +435,9 @@ def main():
     orders = collect_orders()
     declarations = write_csv(orders, args.actions_out, args.relationships_out,
                              args.join_out, confirmed_dates=CONFIRMED_DATES)
-    print(f"North Dakota: {len(orders)} orders scraped, {len(declarations)} written as declarations.")
+    older = sum(1 for d in declarations if d["declaration_id"].startswith("ND-ARCHIVE-"))
+    print(f"North Dakota: {len(orders)} orders scraped, {len(declarations)} written as declarations "
+          f"({older} unnumbered 2000-2016 archive entries).")
 
 
 if __name__ == "__main__":

@@ -253,5 +253,112 @@ class WriteCsvTests(unittest.TestCase):
             self.assertEqual(len(rows), 3)
 
 
+class UnnumberedArchiveTests(unittest.TestCase):
+    """The archive's 2016-and-earlier entries have a date and a title but no
+    order number (Oct 2026 wording)."""
+    PAGE = """<html><body><main>
+<ul><li><strong>2017-01</strong> - February 15, 2017 - Burgum Declares Flood Emergency</li></ul>
+<p>April 30, 2015 - Dalrymple Extends Fire Emergency Until May 8</p>
+<p>April 1, 2015 - Dalrymple Declares a Fire Emergency Exists</p>
+<p>August 19, 2016 - Dalrymple Declares an Emergency exists in Southwest and South Central North Dakota</p>
+<p>November 26, 2012 - Dalrymple Declares Circumstances Throughout the State Have Improved to the Extent that Emergency Fire Conditions No Longer Exist.</p>
+<p>June 15, 2012 - Dalrymple Declares Flood Emergency for Ward County</p>
+<p>June 15, 2012 - Dalrymple Declares State Emergency in Devils Lake Basin</p>
+<p>June 15, 2012 - Dalrymple Proclaims a Second Flood Emergency</p>
+<p>June 22, 2011 - Revised: Mandatory Evacuation Along the Souris (Mouse) River Due to Flood Emergency</p>
+<p>May 27, 2011 - Dalrymple Waives Weight Restriction for Flood Emergency</p>
+<p>May 3, 2011 - Dalrymple Declares Winter Storm Emergency and Waives Hours of Service, Weight Restrictions for Power Crews</p>
+<p>April 29, 2011 - Dalrymples Declared a State of Emergency to Provide Flood Protection to the Devils Lake Basin</p>
+<p>July 3, 2014 - Dalrymple Issues Emergency Declaration to Assist Counties Hard Hit by Overland and Riverine Flooding</p>
+<p>July 21, 2011 - Dalrymple Declares Severe Summer Weather Emergency for Dickey and LaMoure Counties</p>
+<p>July 29, 2011 - Dalrymple Extends the Flood Emergency Declared April 8</p>
+<p>December 30, 2010 - Dalrymple Proclaims a Statewide Winter Storm Emergency</p>
+<p>December 28, 2000 - Executive Order 2000-11 Instituting State Emergency Operations Plan</p>
+<p>June 1, 1997 - Schafer Declares Flood Disaster</p>
+<p>March 1, 2017 - Burgum Declares Flood Emergency</p>
+</main></body></html>"""
+
+    def declarations(self):
+        orders = scraper.parse_archive_dated(self.PAGE)
+        with tempfile.TemporaryDirectory() as tmp:
+            out = scraper.write_csv(orders, os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"),
+                                    os.path.join(tmp, "j.csv"))
+        return {d["declaration_id"]: d for d in out}
+
+    def test_reads_dated_entries_from_2000_through_2016_only(self):
+        orders = scraper.parse_archive_dated(self.PAGE)
+        days = [scraper.parse_date_text(o["date_text"]) for o in orders]
+        self.assertNotIn("1997-06-01", days)
+        self.assertNotIn("2017-02-15", days)   # numbered entries stay with parse_archive_markdown
+        self.assertNotIn("2017-03-01", days)   # from 2017 the archive numbers its orders
+        self.assertIn("2000-12-28", days)
+        self.assertEqual(len(orders), 16)
+
+    def test_only_declarations_and_proclamations_for_a_hazard_count(self):
+        self.assertEqual(sorted(self.declarations()), [
+            "ND-ARCHIVE-2010-12-30", "ND-ARCHIVE-2011-04-29", "ND-ARCHIVE-2011-05-03", "ND-ARCHIVE-2011-07-21",
+            "ND-ARCHIVE-2012-06-15",
+            "ND-ARCHIVE-2012-06-15-2", "ND-ARCHIVE-2014-07-03", "ND-ARCHIVE-2015-04-01"])
+
+    def test_record_fields(self):
+        row = self.declarations()["ND-ARCHIVE-2012-06-15"]
+        self.assertEqual(row["event_description"], "Declares Flood Emergency for Ward County")
+        self.assertEqual((row["governor"], row["eo_number"], row["date_signed"]), ("Dalrymple", "", "2012-06-15"))
+        self.assertEqual(self.declarations()["ND-ARCHIVE-2012-06-15-2"]["event_description"],
+                         "Proclaims a Second Flood Emergency")
+        # "Dalrymples Declared" has no name prefix to read; the date gives the governor.
+        self.assertEqual(self.declarations()["ND-ARCHIVE-2011-04-29"]["governor"], "Dalrymple")
+
+    def test_collect_orders_reads_the_unnumbered_entries(self):
+        from unittest import mock
+
+        class Page:
+            def __init__(self, text):
+                self.text, self.content = text, b""
+
+        pages = {scraper.ARCHIVE_URL: self.PAGE, scraper.CURRENT_URL: CURRENT_HTML}
+        with mock.patch.object(scraper, "fetch", side_effect=lambda url: Page(pages.get(url, ""))):
+            orders = scraper.collect_orders()
+        self.assertIn("April 1, 2015", [o.get("date_text") for o in orders])
+
+    def test_governor_on(self):
+        self.assertEqual(scraper.governor_on("2010-12-06"), "Hoeven")
+        self.assertEqual(scraper.governor_on("2010-12-07"), "Dalrymple")
+        self.assertEqual(scraper.governor_on("2000-12-14"), "Schafer")
+
+
+class CommittedArchiveRowsTests(unittest.TestCase):
+    def test_committed_join_has_the_dalrymple_archive_declarations(self):
+        here = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(here, "declarations_for_join.csv"), encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+        archive = [r for r in rows if r["declaration_id"].startswith("ND-ARCHIVE-")]
+        self.assertEqual(len(archive), 24)
+        self.assertEqual(min(r["date_signed"] for r in archive), "2010-12-30")
+        self.assertEqual(len({r["declaration_id"] for r in rows}), len(rows))
+
+
+class CoverageNoteTests(unittest.TestCase):
+    def test_refresh_note_matches_the_manifest(self):
+        """A refresh (build-plus.py --collect) shows the note collect()
+        returns, and a build without collection shows the manifest's."""
+        import importlib.util
+        import json
+        import subprocess
+        from pathlib import Path
+        from unittest import mock
+        here = Path(__file__).resolve().parent
+        spec = importlib.util.spec_from_file_location("north_dakota_adapter", here / "north_dakota.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(adapter.subprocess, "run", return_value=done):
+            _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        states = manifest["states"] if isinstance(manifest, dict) else manifest
+        self.assertEqual(note, next(st["coverage_note"] for st in states if st["abbreviation"] == "ND"))
+        self.assertTrue(note.startswith("2011-present"))
+
+
 if __name__ == "__main__":
     unittest.main()
