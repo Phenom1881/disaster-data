@@ -56,6 +56,20 @@ CAPABILITIES = {
 }
 
 
+# The page's coverage text. A refresh (build-plus.py --collect) uses this
+# note, not the manifest's, so the two must say the same thing; the
+# state's tests check that they do.
+COVERAGE_NOTE = (
+    "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, "
+    "plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and "
+    "Bullock (2013-2020) weather orders added by hand from the order "
+    "texts, governor's press releases and dated news reports; four "
+    "orders whose archive copies leave the signing day blank are "
+    "compared with FEMA on their effective dates, and other orders with "
+    "no readable signing date are still to be backfilled"
+)
+
+
 def collect(workdir=".", scripts_dir=None):
     workdir = Path(workdir)
     scripts_dir = Path(scripts_dir) if scripts_dir else Path(__file__).resolve().parent
@@ -77,8 +91,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Montana adapter: scrape failed")
 
-    return workdir / "declarations_for_join.csv", (
-        "2021-present dated Gianforte-era gov.mt.gov listing; Bullock "
-        "(2013-2020) and Schweitzer (2005-2013) archives exist but are "
-        "undated-in-listing / unparsed, backfill pending"
-    )
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
