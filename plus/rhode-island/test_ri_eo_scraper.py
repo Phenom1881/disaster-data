@@ -56,5 +56,19 @@ class RhodeIslandScraperTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(list(rows[0]), ri.JOIN_FIELDS)
 
+    def test_hand_added_rows_are_dated_by_signing(self):
+        from pathlib import Path
+        with open(Path(__file__).parent / "manual_declarations.csv", encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        ids = [row["declaration_id"] for row in rows]
+        self.assertEqual(len(ids), len(set(ids)))
+        dates = {row["declaration_id"]: row["date_signed"] for row in rows}
+        # The release says "Although signed today" on 10-17-2005; the order covers actions since October 15.
+        self.assertEqual(dates["RI-SOE-2005-10-17"], "2005-10-17")
+        self.assertNotIn("RI-SOE-2005-10-15", dates)
+        for row in rows:
+            self.assertRegex(row["date_signed"], r"^\d{4}-\d{2}-\d{2}$")
+            self.assertTrue(row["declaration_id"].endswith(row["date_signed"]) or row["eo_number"], row["declaration_id"])
+
 
 if __name__ == "__main__": unittest.main()
