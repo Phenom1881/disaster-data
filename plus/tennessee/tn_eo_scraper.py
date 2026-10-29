@@ -146,6 +146,18 @@ OFFICIAL_DECLARATIONS = {
     # plainly: "March 11, 2020 - Executive Order No. 13 - Emergency Order -
     # Tornado relief (3-4-2020)".
     ("Bill Lee", "13"): ("2020-03-11", "https://www.tn.gov/tdot/traffic-operations-division/oversize---overweight-permits/resources.html"),
+
+    # --- Haslam's hay-transport orders: each reissue counts as a declaration
+    # (decided October 2026; see the note below). 08, 14 and 59 are already
+    # in manual_declarations.csv; 17 and 42 have no confirmed date yet. ---
+    # Extends the October 2011 order through May 13, 2012; the Governor's
+    # release of Tuesday, January 24, 2012 calls it recent and gives no day.
+    ("Bill Haslam", "09"): ("2012-01-24", "https://www.tn.gov/news/2012/1/24/haslam-extends-recently-suspended-truck-rules-to-help-farmers.html"),
+    # Extreme winter weather; signed 2015-02-18 (clean scan, signature clause).
+    ("Bill Haslam", "44"): ("2015-02-18", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-haslam-eo/44"),
+    # Drought, continuing No. 59; the signature day is smudged, so the
+    # Secretary of State's receipt stamp of January 26, 2017 is used, as for No. 61.
+    ("Bill Haslam", "64"): ("2017-01-26", "https://digitalcommons.memphis.edu/govpubs-tn-governor-bill-haslam-eo/64"),
 }
 
 # RESOLVED (both Irma orders are now in OFFICIAL_DECLARATIONS above). Method worth
@@ -176,14 +188,10 @@ OFFICIAL_DECLARATIONS = {
 #                                       No. 64: signed ~2017-01-26 (Secretary of State receipt
 #                                               stamp; signature line's day is smudged)
 #
-# Treating each of these seven as a separate original "weather emergency declaration" would
-# overstate Tennessee's history the same way an uncritical count would overstate any state's
-# COVID-19 declarations - it is one recurring mechanism, not seven storms. Whether to (a)
-# fold the whole chain into a single dated entry, (b) add only the first (No. 9) as the
-# original and treat the rest as renewals under a relationship type this scraper does not
-# yet have a name for, or (c) exclude the whole category as "administrative/agricultural"
-# rather than "weather emergency" is a real methodology decision, not a coding one, and is
-# deliberately left unresolved here rather than guessed.
+# DECIDED (October 2026): each reissue counts as its own declaration, since each marks a
+# drought or winter-weather emergency the Governor declared again under a new number.
+# 09, 44 and 64 are in OFFICIAL_DECLARATIONS; 08 (2011-10-13), 14 (2012-07-11) and 59
+# (2016-11-22) are in manual_declarations.csv; 17 and 42 wait for a confirmed date.
 
 # Real candidates identified in Bill Haslam's and Phil Bredesen's collected
 # archives by the same title-keyword review used for Lee above, but NOT yet
