@@ -28,6 +28,16 @@ class TennesseeScraperTests(unittest.TestCase):
             with open(root/"j.csv",encoding="utf-8") as handle: rows=list(csv.DictReader(handle))
             self.assertEqual([row["declaration_id"] for row in rows],[base.stable_id])
 
+    def test_hay_transport_reissues_count_as_declarations(self):
+        for number, date in (("09", "2012-01-24"), ("44", "2015-02-18"), ("64", "2017-01-26")):
+            self.assertEqual(tn.OFFICIAL_DECLARATIONS[("Bill Haslam", number)][0], date)
+        here=Path(__file__).parent
+        with open(here/"declarations_for_join.csv",encoding="utf-8") as handle:
+            joined={row["declaration_id"]: row["date_signed"] for row in csv.DictReader(handle)}
+        self.assertEqual(joined["TN-BILLHASLAM-EO-44"], "2015-02-18")
+        self.assertEqual(joined["TN-BILLHASLAM-EO-64"], "2017-01-26")
+        self.assertNotIn("TN-BILLHASLAM-EO-17", joined)
+
     def test_hand_added_winter_supply_orders(self):
         with open(Path(__file__).parent/"manual_declarations.csv",encoding="utf-8") as handle:
             rows=list(csv.DictReader(handle))
