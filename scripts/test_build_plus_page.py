@@ -234,6 +234,15 @@ class EvacueeHostingTests(unittest.TestCase):
         self.assertEqual(MODULE.federal_without_state(oregon, [], 2003), ([], 0))
         self.assertEqual(MODULE.federal_without_state(nebraska, [], 2003), ([], 0))
 
+    def test_the_three_untitled_host_emergencies_are_not_gaps(self):
+        # FEMA titles Idaho EM-3244, Kentucky EM-3231 and Pennsylvania EM-3235 only "HURRICANE KATRINA",
+        # but each was declared to assist evacuees from the area struck by the storm.
+        for identifier in ("EM-3244", "EM-3231", "EM-3235"):
+            host = [self.katrina(identifier, "HURRICANE KATRINA")]
+            self.assertEqual(MODULE.federal_without_state(host, [], 2003), ([], 0), identifier)
+        flood = action("ID-1", "2005-09-12")
+        self.assertIsNone(MODULE.find_federal_match(flood, [self.katrina("EM-3244", "HURRICANE KATRINA")]))
+
     def test_the_storms_own_emergency_still_is(self):
         louisiana = [self.katrina("EM-3212", "HURRICANE KATRINA")]
         missing, compared = MODULE.federal_without_state(louisiana, [], 2003)

@@ -1037,6 +1037,9 @@ def structure_fire(declaration: dict) -> bool:
             and bool(STRUCTURE_FIRE_RE.search(declaration.get("title") or "")))
 
 
+UNTITLED_KATRINA_HOSTS = frozenset({"EM-3231", "EM-3235", "EM-3244"})
+
+
 def hosts_evacuees(declaration: dict) -> bool:
     """An emergency FEMA declared so a state could shelter evacuees from a
     storm that struck elsewhere: "HURRICANE KATRINA EVACUATION" (40 states
@@ -1044,8 +1047,13 @@ def hosts_evacuees(declaration: dict) -> bool:
     struck the host state, so it is not a gap on that state's page, and it
     is a match only for a state order about the same storm (see
     find_federal_match()). Three Katrina host emergencies are titled only
-    "HURRICANE KATRINA" (Idaho, Kentucky, Pennsylvania) and are not told
-    apart here."""
+    "HURRICANE KATRINA" (Idaho EM-3244, Kentucky EM-3231, Pennsylvania
+    EM-3235) and are listed in UNTITLED_KATRINA_HOSTS. The White House
+    statements of September 10 and 14, 2005 (Kentucky, Idaho) and the Federal
+    Register notice for EM-3235 say each is to assist evacuees from the area
+    struck by Hurricane Katrina."""
+    if declaration.get("id") in UNTITLED_KATRINA_HOSTS:
+        return True
     title = (declaration.get("title") or "").upper()
     return declaration.get("type") == "EM" and ("EVACUAT" in title or "EVACUE" in title)
 
