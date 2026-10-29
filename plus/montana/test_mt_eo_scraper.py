@@ -156,5 +156,22 @@ class WriteCsvTests(unittest.TestCase):
             self.assertEqual(len(declarations), 0)
 
 
+class HandAddedSchweitzerTests(unittest.TestCase):
+    def test_hand_added_rows_have_unique_ids_and_dates(self):
+        path = os.path.join(os.path.dirname(__file__), "manual_declarations.csv")
+        with open(path, newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        ids = [row["declaration_id"] for row in rows]
+        self.assertEqual(len(ids), len(set(ids)))
+        schweitzer = [r for r in rows if r["governor"] == "Brian Schweitzer"]
+        self.assertGreaterEqual(len(schweitzer), 10)
+        for row in schweitzer:
+            self.assertRegex(row["date_signed"], r"^20(0[5-9]|1[0-2])-\d\d-\d\d$")
+            self.assertTrue(row["declaration_id"].endswith(row["eo_number"]))
+        by_id = {r["declaration_id"]: r["date_signed"] for r in rows}
+        self.assertEqual(by_id["MT-EO-13-2007"], "2007-06-26")
+        self.assertEqual(by_id["MT-EO-11-2012"], "2012-09-17")
+
+
 if __name__ == "__main__":
     unittest.main()
