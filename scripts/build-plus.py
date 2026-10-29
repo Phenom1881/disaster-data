@@ -342,7 +342,8 @@ def excluded_declaration_ids(state_dir: Path) -> set[str]:
 
 
 def reviewed_event_dates(state_dir: Path) -> dict[str, str]:
-    """{declaration id: event_date} from hazard_overrides.csv.
+    """{declaration id: event_date} from hazard_overrides.csv, and from an
+    event_date column in the state's declarations_for_join file.
 
     A reviewer fills event_date for an order signed well after the event it
     declares. Washington proclaims storms weeks later: 15-14 was signed
@@ -351,10 +352,19 @@ def reviewed_event_dates(state_dir: Path) -> dict[str, str]:
     NOAA around that day. The federal comparison uses it too, so an order is
     compared with FEMA's declarations for the event it declares rather than
     with whatever was declared near the day it was signed."""
+    dates = {}
+    # An event date a collector read from the order itself: Tennessee's
+    # proclamations are titled by their event ("State of Emergency May 8,
+    # 2024") and signed months later. Reviewed dates below replace these.
+    for path in sorted(state_dir.glob("declarations_for_join*.csv")):
+        for row in read_csv_rows(path):
+            key = (row.get("declaration_id") or "").strip()
+            day = (row.get("event_date") or "").strip()
+            if key and parse_iso_date(day):
+                dates[key] = day
     path = state_dir / "hazard_overrides.csv"
     if not path.exists():
-        return {}
-    dates = {}
+        return dates
     for row in read_csv_rows(path):
         key = (row.get("declaration_id") or "").strip()
         day = (row.get("event_date") or "").strip()

@@ -561,6 +561,12 @@ def apply_overrides(declarations, overrides):
     declarations["override_review_note"] = ""
     declarations["override_source_url"] = ""
     declarations["override_event_date"] = ""
+    # A Governor's proclamation is titled by its event and signed weeks or
+    # months later ("State of Emergency May 8, 2024", signed August 14): the
+    # collector writes that event date, and it is searched like a reviewed
+    # one. A reviewed event_date in the overrides below still replaces it.
+    if "event_date" in declarations.columns:
+        declarations["override_event_date"] = declarations["event_date"].fillna("").astype(str).str.strip()
 
     known_ids = set(declarations["declaration_id"])
     unmatched = []

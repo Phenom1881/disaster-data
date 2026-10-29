@@ -158,6 +158,20 @@ class ReviewedEventDateTests(unittest.TestCase):
             ])
             self.assertEqual(MODULE.reviewed_event_dates(folder), {"WA-PROC-15-14": "2015-08-29"})
 
+    def test_a_collected_event_date_counts_and_a_reviewed_one_wins(self):
+        # Tennessee's proclamations carry the event date their titles give.
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            write(folder / "declarations_for_join.csv",
+                  [{"declaration_id": "TN-PROC-2700", "date_signed": "2024-08-14", "event_date": "2024-05-08"},
+                   {"declaration_id": "TN-PROC-9", "date_signed": "2024-08-14", "event_date": "2024-05-08"},
+                   {"declaration_id": "TN-EO-1", "date_signed": "2024-01-01", "event_date": ""}],
+                  ["declaration_id", "date_signed", "event_date"])
+            self.overrides(folder, [{"declaration_id": "TN-PROC-9", "hazard_category_override": "flood",
+                                     "event_date": "2024-05-09"}])
+            self.assertEqual(MODULE.reviewed_event_dates(folder),
+                             {"TN-PROC-2700": "2024-05-08", "TN-PROC-9": "2024-05-09"})
+
     def test_a_late_order_matches_the_event_it_declares(self):
         events = {"WA-PROC-15-14": "2015-08-29"}
         self.assertIsNone(MODULE.find_federal_match(self.LATE, self.WINDSTORM))
