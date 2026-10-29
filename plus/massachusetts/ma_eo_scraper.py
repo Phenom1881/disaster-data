@@ -33,6 +33,22 @@ WEATHER_PATTERNS = (
     re.compile(r"\b(?:severe (?:storm|weather)|thunderstorm|tornado)\b", re.I),
     re.compile(r"\b(?:wind ?storms?|high winds?|damaging winds?|wind gusts?)\b", re.I),
 )
+# Orders named for the emergency itself: "State of Emergency Due to Major
+# Rain Storm in the Commonwealth of Massachusetts May 31,1984" (EO 239),
+# "State of Emergency Executive Order, February 9, 1978" (EO 142, the
+# Blizzard of 1978), "Declaration of Emergency - Peabody Fire". Only
+# "Declaring ... emergency" was read as a declaration.
+TITLED_EMERGENCY_RE = re.compile(r"^\s*(?:a\s+)?(?:state of emergency|declaration of (?:a )?(?:state of )?emergency)\b", re.I)
+# A full date written in a title, read when the record has no date.
+TITLE_DATE_RE = re.compile(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})\b")
+# Orders whose record date or hazard was checked by hand.
+# EO 239: the record says 1984-03-31; its title and Mass.gov's copy say
+# May 31, 1984, and it follows EO 238 of May 11, 1984.
+REVIEWED_DATES = {"MA-EO-239": "1984-05-31"}
+# EO 142: no hazard in its title or catalogued text. It is the state of
+# emergency for the Blizzard of 1978 (February 6 to 8), FEMA DR-546 and
+# EM-3059.
+REVIEWED_WEATHER = {"MA-EO-142": "Blizzard of 1978"}
 RELATIONSHIP_RE = re.compile(
     r"(?P<verb>amend(?:s|ed|ing)?|exten(?:d(?:s|ed|ing)?|sion)|continu(?:e|es|ed|ing)|"
     r"terminat(?:e|es|ed|ing)|rescind(?:s|ed|ing)?|revoke(?:s|d|ing)?|supersed(?:e|es|ed|ing))"
@@ -117,12 +133,18 @@ def parse_item(item: dict) -> Optional[MAOrder]:
         return None
     dates = metadata_values(item, "dc.date.issued")
     issued = normalize_date(dates[0]) if dates else None
+    if not issued:
+        written = TITLE_DATE_RE.search(title + " " + " ".join(metadata_values(item, "dc.title.alternative")))
+        issued = (datetime.strptime(" ".join(written.groups()), "%B %d %Y").strftime("%Y-%m-%d")
+                  if written else None)
     alternatives = metadata_values(item, "dc.title.alternative")
     notes = metadata_values(item, "dc.description") + metadata_values(item, "dc.description.note")
     description = " ".join(value for value in alternatives if value).strip() or title
     uuid = str(item.get("uuid") or item.get("id") or "")
+    first_series = "new series" not in title.lower()
+    issued = REVIEWED_DATES.get(f"MA-EO-{'1S-' if first_series else ''}{match.group(1).upper()}", issued)
     return MAOrder(
-        number=match.group(1), first_series="new series" not in title.lower(),
+        number=match.group(1), first_series=first_series,
         title=title, description=description, date_issued=issued,
         governor=governor_for_date(issued),
         item_url=f"https://archives.lib.state.ma.us/entities/journalfile/{uuid}",
@@ -211,10 +233,14 @@ def classify_action(order: MAOrder) -> str:
         return "extension"
     if re.search(r"\bdeclaring\b.{0,100}\b(?:state of )?(?:disaster |public health )?emergency\b", lead, re.S | re.I):
         return "declaration"
+    if TITLED_EMERGENCY_RE.match(order.description) or TITLED_EMERGENCY_RE.match(order.title):
+        return "declaration"
     return "administrative"
 
 
 def is_weather_related(order: MAOrder) -> bool:
+    if order.stable_id in REVIEWED_WEATHER:
+        return True
     text = f"{order.title} {order.description} {order.document_text}"
     return any(pattern.search(text) for pattern in WEATHER_PATTERNS)
 

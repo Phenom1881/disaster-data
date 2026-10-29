@@ -38,5 +38,17 @@ class TennesseeScraperTests(unittest.TestCase):
         self.assertEqual(joined["TN-BILLHASLAM-EO-64"], "2017-01-26")
         self.assertNotIn("TN-BILLHASLAM-EO-17", joined)
 
+    def test_hand_added_winter_supply_orders(self):
+        with open(Path(__file__).parent/"manual_declarations.csv",encoding="utf-8") as handle:
+            rows=list(csv.DictReader(handle))
+        ids=[row["declaration_id"] for row in rows]
+        self.assertEqual(len(ids), len(set(ids)))
+        dates={row["declaration_id"]: row["date_signed"] for row in rows}
+        self.assertEqual(dates["TN-BILLHASLAM-EO-36"], "2014-02-19")
+        self.assertEqual(dates["TN-SOE-2018-01-19"], "2018-01-19")
+        for row in rows:
+            self.assertRegex(row["date_signed"], r"^\d{4}-\d{2}-\d{2}$")
+            self.assertTrue(tn.HAZARD_RE.search(row["event_description"]), row["declaration_id"])
+
 
 if __name__ == "__main__": unittest.main()

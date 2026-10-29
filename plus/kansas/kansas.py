@@ -1,3 +1,4 @@
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -50,4 +51,9 @@ def collect(workdir=".", scripts_dir=None):
         # The declarations page was not understood this run; new declarations
         # came from KDEM's News Flash feed instead (see ks_eo_scraper.py).
         note += "; declarations page not read this run, new declarations read from the KDEM News Flash"
+    copy = re.search(r"Internet Archive copy from (\d{4}-\d{2}-\d{2})", result.stdout or "")
+    if copy:
+        # kansastag.gov refused the request this run (see fetch_page() in
+        # ks_eo_scraper.py), so the page was read as the Internet Archive kept it.
+        note += "; the live page could not be read this run, so the Internet Archive copy from %s was read" % copy.group(1)
     return workdir / "declarations_for_join.csv", note

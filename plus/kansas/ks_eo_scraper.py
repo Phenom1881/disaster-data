@@ -23,6 +23,7 @@ import argparse
 import csv
 import re
 import sys
+import time
 from datetime import datetime
 from urllib.parse import urljoin
 
@@ -99,10 +100,62 @@ def governor_for(date_obj):
     return gov
 
 
+CRAWLER_HEADERS = {"User-Agent": "DisasterData.io research crawler"}
+RETRY_WAIT = 20   # seconds before the second round of tries
+WAYBACK_AVAILABLE = "https://archive.org/wayback/available"
+
+
 def fetch(url, session):
-    resp = session.get(url, timeout=30, headers={"User-Agent": "DisasterData.io research crawler"})
+    resp = session.get(url, timeout=30, headers=CRAWLER_HEADERS)
     resp.raise_for_status()
     return resp.text
+
+
+def wayback_copy(url, session):
+    """(html, YYYY-MM-DD) of the Internet Archive's latest copy of url, as
+    originally served, or (None, "")."""
+    try:
+        lookup = session.get(WAYBACK_AVAILABLE, params={"url": url}, headers=CRAWLER_HEADERS, timeout=30)
+        lookup.raise_for_status()
+        closest = (lookup.json().get("archived_snapshots") or {}).get("closest") or {}
+        stamp = str(closest.get("timestamp") or "")
+        if not closest.get("available") or not re.fullmatch(r"\d{14}", stamp):
+            return None, ""
+        resp = session.get(f"https://web.archive.org/web/{stamp}id_/{url}", headers=CRAWLER_HEADERS, timeout=30)
+        resp.raise_for_status()
+        return resp.text, f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}"
+    except (requests.RequestException, ValueError) as exc:
+        print(f"warning: Internet Archive copy of {url} not read: {exc}", file=sys.stderr)
+        return None, ""
+
+
+def fetch_page(session, sleep=time.sleep):
+    """The declarations page, from kansastag.gov or, failing that, the
+    Internet Archive's latest copy.
+
+    On October 25 and 26, 2026 the page answered the refresh with 403
+    Forbidden, on the run and on its retry a minute later, while it loaded
+    normally elsewhere. The page is tried again 20 seconds later, as the
+    same crawler; the scraper does not present itself as a browser to get
+    past a refusal. If neither try answers, the Internet Archive's latest
+    copy is read and the run says so; the build keeps saved records the
+    copy does not list."""
+    problems = []
+    for round_number in range(2):
+        if round_number:
+            sleep(RETRY_WAIT)
+        try:
+            return fetch(SOURCE_URL, session)
+        except requests.RequestException as exc:
+            status = getattr(getattr(exc, "response", None), "status_code", "") or ""
+            problems.append(f"{type(exc).__name__} {status}".strip())
+    html, copy_date = wayback_copy(SOURCE_URL, session)
+    if html and parse_declarations_page(html):
+        print(f"Kansas: declarations page read from the Internet Archive copy from {copy_date} "
+              f"(the live page could not be read: {', '.join(dict.fromkeys(problems))})")
+        return html
+    raise RuntimeError(f"Kansas: could not read {SOURCE_URL}: {', '.join(dict.fromkeys(problems))}; "
+                       "no usable Internet Archive copy")
 
 
 def _clean(text):
@@ -459,7 +512,7 @@ def collect_from_news(session, join_out):
 
 def collect(actions_out, relationships_out, join_out):
     session = requests.Session()
-    html = fetch(SOURCE_URL, session)
+    html = fetch_page(session)
     raw_records = parse_declarations_page(html)
     if not raw_records:
         # The page has listed declarations every year since 2009, so zero
