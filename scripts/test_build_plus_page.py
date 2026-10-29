@@ -253,6 +253,27 @@ class EvacueeHostingTests(unittest.TestCase):
                          "EM-3212")
 
 
+class StructureFireTests(unittest.TestCase):
+    """A city or building fire is not a weather declaration."""
+
+    def fire(self, identifier, title, begin="1999-12-03"):
+        row = federal(identifier, begin, begin, "EM", "Fire")
+        row["title"] = title
+        return row
+
+    def test_structure_fires_are_neither_gaps_nor_matches(self):
+        for title in ("WAREHOUSE FIRE.", "URBAN FIRE", "FIRE (CITY OF CHELSEA)", "FIRES AND EXPLOSIONS"):
+            row = self.fire("EM-1", title)
+            self.assertEqual(MODULE.federal_without_state([row], [], 1970), ([], 0), title)
+            self.assertIsNone(MODULE.find_federal_match(action("A", "1999-12-05"), [row]), title)
+
+    def test_wildfires_still_count(self):
+        for title in ("WILDFIRES, FLOODING, AND MUDSLIDES", "FIRE", "BUNKER FIRE"):
+            row = self.fire("DR-2", title)
+            self.assertEqual(len(MODULE.federal_without_state([row], [], 1970)[0]), 1, title)
+            self.assertEqual(MODULE.find_federal_match(action("A", "1999-12-05"), [row])["id"], "DR-2", title)
+
+
 class ExtendedEmergencyTests(unittest.TestCase):
     """A FEMA declaration that falls while a later order keeps a state declaration in force is covered."""
 

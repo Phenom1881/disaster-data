@@ -923,7 +923,7 @@ def find_federal_match(action: dict, federal_declarations: list[dict],
     best = None
     best_gap = None
     for declaration in federal_declarations:
-        if declaration.get("incidentType") not in MATCH_INCIDENT_TYPES:
+        if declaration.get("incidentType") not in MATCH_INCIDENT_TYPES or structure_fire(declaration):
             continue
         # A host state's evacuee emergency pairs with its own relief orders
         # ("Emergency relief for damage caused by Hurricane Katrina",
@@ -1024,6 +1024,19 @@ WEATHER_INCIDENT_TYPES = frozenset({
 MATCH_INCIDENT_TYPES = WEATHER_INCIDENT_TYPES | {"Dam/Levee Break"}
 
 
+# FEMA's "Fire" incident type covers wildfires and also city and building
+# fires: Chelsea, Massachusetts (DR-405, 1973), Lynn (DR-650, 1981), the
+# Worcester warehouse fire (EM-3153, 1999), and New Jersey's "FIRES AND
+# EXPLOSIONS" emergency of September 11, 2001 (EM-3169). Those are not
+# weather, so a state's weather page cannot hold a declaration for them.
+STRUCTURE_FIRE_RE = re.compile(r"\b(?:WAREHOUSE|URBAN|CITY OF|EXPLOSIONS?|BUILDING|STRUCTURE)\b", re.I)
+
+
+def structure_fire(declaration: dict) -> bool:
+    return (declaration.get("incidentType") == "Fire"
+            and bool(STRUCTURE_FIRE_RE.search(declaration.get("title") or "")))
+
+
 def hosts_evacuees(declaration: dict) -> bool:
     """An emergency FEMA declared so a state could shelter evacuees from a
     storm that struck elsewhere: "HURRICANE KATRINA EVACUATION" (40 states
@@ -1073,7 +1086,8 @@ def federal_without_state(
     for declaration in federal_declarations:
         if declaration.get("type") not in GAP_DECLARATION_TYPES or declaration.get("tribal"):
             continue
-        if declaration.get("incidentType") not in WEATHER_INCIDENT_TYPES or hosts_evacuees(declaration):
+        if (declaration.get("incidentType") not in WEATHER_INCIDENT_TYPES or hosts_evacuees(declaration)
+                or structure_fire(declaration)):
             continue
         begin = parse_iso_date(declaration.get("begin")) or parse_iso_date(declaration.get("date"))
         if begin is None or begin.year < start_year:
