@@ -24,8 +24,13 @@ CAPABILITIES = {
         "are listed as date+title only. Those are read too: an entry whose "
         "title declares or proclaims an emergency or disaster for a hazard "
         "becomes ND-ARCHIVE-<date>. The archive lists Dalrymple's disaster "
-        "orders from December 2010; Hoeven's (2000-2010) are not on it, so "
-        "coverage starts in 2011.",
+        "orders from December 2010; Schafer's (2000) and Hoeven's "
+        "(2000-2010) are not on it. Three of Hoeven's are in "
+        "manual_declarations.csv, dated from news reports and the "
+        "Governor's release (March 29, 2004 flood emergency, August 27, "
+        "2007 Northwood tornado emergency, March 16, 2009 statewide flood "
+        "emergency); his other orders are not yet found, so most 2000-2010 "
+        "federal declarations still show no state match.",
         "The live /executive-orders page (2024-present) lists order number, "
         "title, and a PDF link, but NO filed date - only the archive page "
         "(which stops covering current-administration orders after 2023) "
@@ -48,11 +53,14 @@ CAPABILITIES = {
 # note, not the manifest's, so the two must say the same thing; the
 # state's tests check that they do.
 COVERAGE_NOTE = (
-    "2011-present: the Governor's executive order archive, with Dalrymple's "
+    "2000-present: the Governor's executive order archive, with Dalrymple's "
     "orders read by date and title from December 2010 and numbered orders "
     "from 2017, plus the current-EOs page (dates confirmed per order "
-    "against news releases); Hoeven's 2000-2010 disaster orders are not on "
-    "the archive, and undated 2024-2026 orders are still to be backfilled"
+    "against news releases); Schafer's and Hoeven's 2000-2010 orders are "
+    "not on the archive, so Hoeven's March 2004 and March 2009 flood "
+    "emergencies and August 2007 Northwood tornado emergency are added by "
+    "hand from dated news reports and the Governor's release, and his "
+    "other orders and undated 2024-2026 orders are still to be backfilled"
 )
 
 

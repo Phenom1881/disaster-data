@@ -357,7 +357,41 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         states = manifest["states"] if isinstance(manifest, dict) else manifest
         self.assertEqual(note, next(st["coverage_note"] for st in states if st["abbreviation"] == "ND"))
-        self.assertTrue(note.startswith("2011-present"))
+        self.assertTrue(note.startswith("2000-present"))
+
+
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv carries Hoeven's 2000-2010 weather
+    declarations, which the archive does not list. Each is dated from a
+    dated news report or the Governor's own release."""
+
+    @staticmethod
+    def rows(name="manual_declarations.csv"):
+        here = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(here, name), newline="", encoding="utf-8") as f:
+            return list(csv.DictReader(f))
+
+    def test_dates_read_from_the_sources(self):
+        self.assertEqual({r["declaration_id"]: r["date_signed"] for r in self.rows()},
+                         {"ND-SOE-2004-03-29": "2004-03-29",
+                          "ND-SOE-2007-08-27": "2007-08-27",
+                          "ND-SOE-2009-03-16": "2009-03-16"})
+
+    def test_ids_carry_the_date_and_the_governor_in_office(self):
+        for row in self.rows():
+            self.assertEqual(row["declaration_id"], "ND-SOE-" + row["date_signed"])
+            self.assertEqual(row["governor"], scraper.governor_on(row["date_signed"]), row["declaration_id"])
+            self.assertTrue(row["archive_record_url"].startswith("https://"), row["declaration_id"])
+
+    def test_each_names_its_weather_hazard(self):
+        for row in self.rows():
+            self.assertRegex(row["event_description"].lower(), r"\bflood|\btornado", row["declaration_id"])
+
+    def test_they_only_fill_the_years_before_the_archive(self):
+        archive = self.rows("declarations_for_join.csv")
+        self.assertFalse({r["declaration_id"] for r in archive} & {r["declaration_id"] for r in self.rows()})
+        self.assertLess(max(r["date_signed"] for r in self.rows()),
+                        min(r["date_signed"] for r in archive))
 
 
 if __name__ == "__main__":
