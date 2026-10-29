@@ -54,7 +54,9 @@ def collect(workdir=".", scripts_dir=None):
         raise RuntimeError("Oklahoma adapter: scrape failed")
     return (
         workdir / "declarations_for_join.csv",
-        "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO "
-        "index), with governor declarations back to 2006 reviewed by hand from OEM event pages and "
-        "Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations)",
+        "2006-present: Oklahoma Emergency Management's emergencies-and-disasters "
+        "archive from 2016 (a proxy for the robots-blocked SOS EO index), with "
+        "governor declarations back to 2006 reviewed by hand from OEM event pages and "
+        "the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages "
+        "list no governor declarations)",
     )

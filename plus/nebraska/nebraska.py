@@ -51,7 +51,9 @@ def collect(workdir=".", scripts_dir=None):
         raise RuntimeError("Nebraska adapter: " + (reason[-1][:300] if reason else "scrape failed"))
     return (
         workdir / "declarations_for_join.csv",
-        "1965-present structured Governor's Executive Orders index (Nebraska Library Commission "
-        "mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope"
+        "2000-present from the Nebraska Library Commission mirror of the full "
+        "1965-present Governor's Executive Orders index, rows kept only when a hazard "
+        "or emergency keyword matched; some 2021-2026 fuel-supply orders left "
+        "unclassified pending individual PDF review"
         + ("; this run read the Internet Archive copy of the index" if "Internet Archive copy" in (result.stdout or "") else ""),
     )

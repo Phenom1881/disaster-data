@@ -24,4 +24,11 @@ def collect(workdir=".", scripts_dir=None):
         print(result.stderr, file=sys.stderr)
         last = (result.stderr.strip().splitlines() or ["no error output"])[-1][:200]
         raise RuntimeError(f"Arizona adapter: scrape failed ({last})")
-    return workdir / "declarations_for_join.csv", "2023-present declarations from the Governor's news releases (dated by release) and executive orders; 2000-2022 gap disclosed"
+    return workdir / "declarations_for_join.csv", (
+        "2002-2022 weather emergencies from the Department of Emergency and Military "
+        "Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 "
+        "dates from news coverage of each declaration; January 2023-present from the "
+        "Governor's news releases (dated by release) and executive orders. Some "
+        "2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund "
+        "reports have no published date and are not listed"
+    )
