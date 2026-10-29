@@ -103,4 +103,29 @@ class ReviewedEventDateTests(unittest.TestCase):
                 self.assertTrue(row["declaration_id"].endswith(row["date_signed"]), row["declaration_id"])
 
 
+class CoverageNoteTests(unittest.TestCase):
+    def test_refresh_note_matches_the_manifest(self):
+        """A refresh (build-plus.py --collect) shows the note collect()
+        returns, and a build without collection shows the manifest's. They
+        must agree, or the page's start year and federal comparison change
+        from one build to the next."""
+        import importlib.util
+        import json
+        import subprocess
+        from unittest import mock
+        here = Path(__file__).resolve().parent
+        spec = importlib.util.spec_from_file_location("washington_adapter", here / "washington.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.object(adapter.subprocess, "run", return_value=done):
+            _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        states = manifest["states"] if isinstance(manifest, dict) else manifest
+        expected = next(st["coverage_note"] for st in states if st["abbreviation"] == "WA")
+        self.assertEqual(note, expected)
+        self.assertTrue(note.startswith("2000-present"))
+
+
 if __name__ == "__main__": unittest.main()
