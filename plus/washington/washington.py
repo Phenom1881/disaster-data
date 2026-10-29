@@ -12,8 +12,20 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://governor.wa.gov/office-governor/office/official-actions/proclamations",
     "current_governor_source_start": "2025-01-15", "manual_only": False,
-    "known_gaps": ["The live Governor proclamation table begins with Proclamation 13-02 on April 22, 2013; 2000 through April 21, 2013 is not exposed and is not backfilled from deeper archival holdings."],
+    "known_gaps": ["The live Governor proclamation table begins with Proclamation 13-02 on April 22, 2013; 2000 through April 21, 2013 is not exposed there. Weather proclamations from 2000 to 2012 (Locke and Gregoire) are added by hand in manual_declarations.csv from the Washington State Digital Archives and the termination proclamations that list them; Gregoire proclamations 09-06, 09-07 and 10-08 could not be read."],
 }
+
+# The page's coverage text. A refresh (build-plus.py --collect) uses this
+# note, not the manifest's, so the two must say the same thing; the
+# state's tests check that they do.
+COVERAGE_NOTE = (
+    "2000-present: structured Governor proclamation archive from 2013, "
+    "with 2000-2012 weather proclamations (Locke and Gregoire) added by "
+    "hand from the Washington State Digital Archives and the "
+    "termination proclamations that list them; Gregoire proclamations "
+    "09-06, 09-07 and 10-08 could not be read, and 07-01 is dated from "
+    "the termination that lists it"
+)
 
 def collect(workdir=".", scripts_dir=None):
     workdir = Path(workdir); scripts_dir = Path(scripts_dir) if scripts_dir else Path(__file__).resolve().parents[2]; workdir.mkdir(parents=True, exist_ok=True)
@@ -21,4 +33,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Washington adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2013-present structured Governor proclamation archive; 2000-2012 unavailable"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
