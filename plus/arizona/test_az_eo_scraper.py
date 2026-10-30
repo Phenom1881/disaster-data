@@ -266,5 +266,27 @@ class OutputTests(unittest.TestCase):
             self.assertEqual(len(az.load_saved_news(paths[0])), 4)
 
 
+class CoverageNoteTests(unittest.TestCase):
+    def test_refresh_note_matches_the_manifest_and_starts_in_2000(self):
+        import importlib.util
+        import json
+        import subprocess
+        from pathlib import Path
+        from unittest import mock
+        here = Path(__file__).resolve().parent
+        spec = importlib.util.spec_from_file_location("arizona_adapter", here / "arizona.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(adapter.subprocess, "run", return_value=done):
+            _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "AZ"))
+        self.assertTrue(note.startswith("2000-present"))
+        # The month-only 2000-2001 emergencies are named, not silently dropped.
+        for name in ("Wenden flood", "Hurricane Olivia", "Mohave County windstorm", "monsoon, August 2001"):
+            self.assertIn(name, note)
+
+
 if __name__ == "__main__":
     unittest.main()
