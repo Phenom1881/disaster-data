@@ -71,4 +71,28 @@ class RhodeIslandScraperTests(unittest.TestCase):
             self.assertTrue(row["declaration_id"].endswith(row["date_signed"]) or row["eo_number"], row["declaration_id"])
 
 
+class CoverageNoteTests(unittest.TestCase):
+    def test_refresh_note_matches_the_manifest_and_starts_in_2000(self):
+        """A refresh shows the note collect() returns and a build without
+        collection shows the manifest's; both compare FEMA's declarations
+        from 2000, so the hand-added 2005-2013 rows are counted."""
+        import importlib.util
+        import json
+        import subprocess
+        from pathlib import Path
+        from unittest import mock
+        here = Path(__file__).resolve().parent
+        spec = importlib.util.spec_from_file_location("rhode_island_adapter", here / "rhode_island.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(adapter.subprocess, "run", return_value=done):
+            _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "RI"))
+        self.assertTrue(note.startswith("2000-present"))
+        for event in ("February 2003", "April 2007", "March 2010"):
+            self.assertIn(event, note)
+
+
 if __name__ == "__main__": unittest.main()
