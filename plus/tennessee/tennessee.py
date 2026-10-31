@@ -5,6 +5,17 @@ import sys
 from pathlib import Path
 
 STATE = "TN"
+
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2000-present: the Governor's executive orders from the Secretary of State catalog "
+    "(through the University of Memphis mirror), the Governor's state of emergency "
+    'proclamations from 2012, and declarations added by hand from TEMA reports, official '
+    'announcements, order text and dated news coverage; most emergencies TEMA declared by '
+    'activating the state emergency plan, without an order or proclamation, have no dated '
+    'record yet'
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Tennessee Secretary of State Executive Orders (https://sos.tn.gov/products/division-publications/executive-orders)",
@@ -21,4 +32,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Tennessee adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2000-present SOS catalog via state-university mirror; legacy exact-date review pending"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE

@@ -28,7 +28,9 @@ HAZARD_RE = re.compile(r"\b(drought|wildfires?|forest fires?|brush fires?|flood(
 # this regex missed before, letting a termination slip through classify()
 # as a false original declaration.
 MODIFIER_RE = re.compile(r"\b(rescind(?:s|ed|ing)?|terminat(?:e|es|ed|ing|ion)|end(?:s|ed|ing)?|extend(?:s|ed|ing)?|extension|renew(?:s|ed|ing)?|amend(?:s|ed|ing)?|amendment)\b", re.I)
-NUMBER_RE = re.compile(r"\bNo\.?\s*(\d+)\b", re.I)
+# "No.09", "No. 110", and once "No0.7" (Lee's Executive Order No. 7, March 7,
+# 2019), which read as order 0 until the zero typo was allowed for.
+NUMBER_RE = re.compile(r"\bNo(?:\.|0\.)?\s*(\d+)\b", re.I)
 # Every entry below was verified against the actual signed order text (the
 # "IN WITNESS WHEREOF ... this __ day of ___, ____" signature clause), not
 # guessed from a title or from the archive's own upload/publication date,
@@ -125,16 +127,12 @@ OFFICIAL_DECLARATIONS = {
     # article: "signed Thursday", and March 7 2019 was that Thursday), and the
     # Tennessee Secretary of State's own EO archive PDF corroborates the order's
     # content and retroactive effective date of February 6, 2019.
-    ("Bill Lee", "0"): ("2019-03-07", "https://publications.tnsosfiles.com/pub/execorders/exec-orders-lee7.pdf"),
+    ("Bill Lee", "7"): ("2019-03-07", "https://publications.tnsosfiles.com/pub/execorders/exec-orders-lee7.pdf"),
     # Note on the key above: this record's title in the collected archive reads
     # "No0.7 An Emergency Order..." - a typo already present in the source
-    # archive's own citation metadata, not introduced by this scraper.
-    # NUMBER_RE correctly extracts "0" from that garbled text (there is no
-    # literal "." directly after "No" for \.? to match, so \d+ stops at the
-    # first digit it finds), which is why this dict is keyed "7" as a plain
-    # string equal to what re.search's \d+ actually captures here - verify
-    # against a fresh scrape before assuming this key is stale, since a fix
-    # to the source metadata or to NUMBER_RE would change what gets captured.
+    # archive's own citation metadata, not introduced by this scraper. It used
+    # to be read as order 0 (TN-BILLLEE-EO-0); NUMBER_RE now allows the "0."
+    # typo, so it is order 7, as the Secretary of State's lee7.pdf says.
     #
     # Hurricane Dorian relief/logistics order; confirmed via the complete,
     # cleanly legible order text mirrored by the FMCSA (the order is filed
