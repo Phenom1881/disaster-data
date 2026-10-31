@@ -78,7 +78,7 @@ class RefreshNoteTests(unittest.TestCase):
     def test_backfilled_states_start_where_their_data_does(self):
         # Arizona compares from 2000: its 2000-2001 emergencies are known by
         # month only (Auditor General report 04-04), so DR-1347 shows as a gap.
-        expected = {"AZ": 2000, "NE": 2000, "OK": 2006}
+        expected = {"AZ": 2000, "NE": 2000, "OK": 2006, "WV": 2000}
         for state in manifest_states():
             if state["abbreviation"] in expected:
                 self.assertEqual(MODULE.coverage_start_year(state["abbreviation"], refresh_note(state)),
