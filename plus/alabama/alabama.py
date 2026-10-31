@@ -5,6 +5,16 @@ import sys
 from pathlib import Path
 
 STATE = "AL"
+
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2010-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 "
+    "states of emergency added by hand from the Secretary of State's Record of "
+    'Proclamations; the register lists no storm declaration for the January 2012 '
+    'tornadoes (DR-4052) or the December 2015 floods (DR-4251), and 2000-2009 has not '
+    'been backfilled yet'
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Alabama Governor State of Emergency Archive (https://governor.alabama.gov/newsroom/category/state-of-emergency/)",
@@ -12,7 +22,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://governor.alabama.gov/newsroom/category/state-of-emergency/",
     "current_governor_source_start": "2017-04-10", "manual_only": False,
-    "known_gaps": ["The current Governor newsroom begins in April 2017; 2000-April 2017 is not represented in the delivered data."],
+    "known_gaps": ["The current Governor newsroom begins in April 2017.", "Weather states of emergency from November 2009 to April 2017 are added by hand in manual_declarations.csv from the Secretary of State's Record of Proclamations (arc-sos.state.al.us/cgi/proclist.mbr), the constitutional register of the Governor's acts, which links a scan of each proclamation from 2007. One row is kept for each original declaration; terminations, extensions, supplements and non-weather emergencies (sinkholes, the Deepwater Horizon spill, pipeline leaks, the 2010 UAH shooting, out-of-state hurricanes) are left out. The register lists no storm declaration before November 2009 (not even Hurricane Gustav in 2008, which news coverage reports was declared), so the page compares from 2010. It also lists none for the January 2012 tornadoes (DR-4052) or the December 2015 floods (DR-4251)."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -25,4 +35,4 @@ def collect(workdir=".", scripts_dir=None):
         # Say why, so the health report's status line names the cause.
         lines = [l.strip() for l in (result.stderr or "").splitlines() if l.strip()]
         raise RuntimeError("Alabama adapter: scrape failed" + (f" ({lines[-1][:400]})" if lines else ""))
-    return workdir / "declarations_for_join.csv", "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
