@@ -4,6 +4,15 @@ from pathlib import Path
 
 STATE = 'IA'
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2020-present: HSEMD proclamation tables from 2024, plus the Governor's 2020-2023 "
+    "weather disaster proclamations added by hand from the Governor's press releases "
+    '(governor.iowa.gov); the newsroom starts in March 2020 and no archive of earlier '
+    'proclamations has been found, so 2000-2019 is not covered yet'
+)
+
 CAPABILITIES = {'structured_archive_coverage_start': '2024-01-08',
  'structured_archive_coverage_end': None,
  'pdf_text_available': True,
@@ -15,7 +24,8 @@ CAPABILITIES = {'structured_archive_coverage_start': '2024-01-08',
  'known_gaps': ['The linked 2008-2023 legacy archive fails TLS certificate validation in this '
                 'environment.',
                 '2000-2007 is not exposed by the collected tables; scanned signatures require '
-                'OCR.']}
+                'OCR.',
+                "The Governor's 2020-2023 weather disaster proclamations are added by hand in manual_declarations.csv, one row for each proclamation announced in the Governor's newsroom (governor.iowa.gov/newsroom), which begins in March 2020. Extensions, COVID-19, avian influenza, harvest, fuel and the 2023 Davenport building collapse are left out. HSEMD's archive page now lists only 2024 and 2025, and no list of the 2000-2019 proclamations has been found, so the page compares from 2020."]}
 
 def collect(workdir=".", scripts_dir=None):
     workdir = Path(workdir).resolve()
@@ -34,4 +44,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Iowa adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", '2024-present HSEMD proclamation tables; 2000-2023 not collected.'
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
