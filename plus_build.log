@@ -83,9 +83,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
 AK: 23 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 0 new emergency declaration(s), 6 in all
+Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 1 new emergency declaration(s), 7 in all
 
 Applied 8 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arizona/hazard_overrides.csv
+AZ-DECL-2026-10-governor-katie-hobbs-visits-heber-overgaard-declares-state: no matching storm events found in the date window.
 AZ-DECL-2008-02-19-january-2008-severe-precipitation-emergency: searching around the reviewed event date 2008-02-22 (signed 2008-02-19)
 AZ-DECL-2008-02-19-january-2008-severe-precipitation-emergency: no matching storm events found in the date window.
 AZ-DECL-2011-01-27-december-2010-flooding: searching around the reviewed event date 2010-12-22 (signed 2011-01-27)
@@ -131,47 +132,51 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/arizona/eo_storm_severity_summary.csv.tmp.
 
-AZ: 59 actions, 120 federal declarations; 2023-present declarations from the Governor's news releases (dated by release) and executive orders; 2000-2022 gap disclosed
-Applied 7 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arkansas/hazard_overrides.csv
+AZ: 60 actions, 120 federal declarations; 2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed
+Applied 10 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arkansas/hazard_overrides.csv
 AR-POST-5133: searching around the reviewed event date 2026-05-28 (signed 2026-09-18)
 AR-POST-5085: no matching storm events found in the date window.
 AR-DR-24-08: no matching storm events found in the date window.
 AR-DR-25-08: no matching storm events found in the date window.
 AR-DR-26-01: no matching storm events found in the date window.
-Wrote 2200 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_matches.csv.tmp
-Wrote severity summary (1176 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp
+AR-DR-06-22: searching around the reviewed event date 2006-04-02 (signed 2006-08-06)
+AR-DR-09-35: searching around the reviewed event date 2009-10-08 (signed 2009-10-20)
+AR-SOE-2009-11-07: no matching storm events found in the date window.
+AR-SOE-2020-04-24: searching around the reviewed event date 2020-04-12 (signed 2020-04-24)
+Wrote 3608 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_matches.csv.tmp
+Wrote severity summary (1803 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   AR-SOE-2014-04-28 FAULKNER [county/county-equivalent]: deaths=12, injuries=167, damage=$210,000,000 (Tornado)
   AR-SOE-2013-05-31 SCOTT [county/county-equivalent]: deaths=5, injuries=1, damage=$9,215,000 (Flash Flood)
   AR-POST-1928 CROSS [county/county-equivalent]: deaths=4, injuries=26, damage=$150,000,000 (Thunderstorm Wind, Tornado)
+  AR-SOE-2011-01-01 WASHINGTON [county/county-equivalent]: deaths=4, injuries=8, damage=$1,600,000 (Thunderstorm Wind, Tornado)
+  AR-DR-09-12 POLK [county/county-equivalent]: deaths=3, injuries=30, damage=$130,250,000 (Hail, Tornado)
   AR-SOE-2014-04-28 PULASKI [county/county-equivalent]: deaths=3, injuries=25, damage=$13,000,000 (Hail, Tornado)
   AR-EO-24-07 BENTON [county/county-equivalent]: deaths=3, injuries=2, damage=$109,850,000 (Flood, Hail, Thunderstorm Wind, Tornado)
   AR-EO-24-07 MARION [county/county-equivalent]: deaths=3, injuries=0, damage=$0 (Thunderstorm Wind, Tornado)
   AR-SOE-2015-05-11 HOWARD [county/county-equivalent]: deaths=2, injuries=8, damage=$1,500,000 (Thunderstorm Wind, Tornado)
   AR-SOE-2023-06-26 LONOKE [county/county-equivalent]: deaths=2, injuries=1, damage=$0 (Thunderstorm Wind)
+  AR-SOE-2017-04-30 MADISON [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Flash Flood)
+  AR-SOE-2017-04-30 WASHINGTON [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Flash Flood, Hail)
   AR-EO-24-07 BAXTER [county/county-equivalent]: deaths=1, injuries=17, damage=$0 (Thunderstorm Wind, Tornado)
   AR-EO-25-07 PULASKI [county/county-equivalent]: deaths=1, injuries=6, damage=$0 (Flash Flood, Flood, Hail, Thunderstorm Wind)
+  AR-DR-21-17 CRAIGHEAD [county/county-equivalent]: deaths=1, injuries=5, damage=$2,750,000 (Tornado)
   AR-SOE-2014-04-28 WHITE [county/county-equivalent]: deaths=1, injuries=2, damage=$2,270,000 (Hail, Thunderstorm Wind, Tornado)
   AR-EO-24-07 BOONE [county/county-equivalent]: deaths=1, injuries=1, damage=$0 (Hail, Thunderstorm Wind, Tornado)
   AR-SOE-2011-04-30 PRAIRIE [county/county-equivalent]: deaths=1, injuries=0, damage=$25,512,000 (Flash Flood, Flood, Thunderstorm Wind)
   AR-SOE-2012-12-26 SALINE [NWS forecast zone]: deaths=1, injuries=0, damage=$10,000,000 (Winter Storm)
   AR-SOE-2011-04-30 FAULKNER [county/county-equivalent]: deaths=1, injuries=0, damage=$9,250,000 (Flash Flood, Flood, Hail, Heavy Rain)
   AR-SOE-2011-04-30 LONOKE [county/county-equivalent]: deaths=1, injuries=0, damage=$9,000,000 (Flood, Heavy Rain)
-  AR-SOE-2011-04-30 RANDOLPH [county/county-equivalent]: deaths=1, injuries=0, damage=$525,000 (Flood, Hail)
-  AR-SOE-2013-12-05 POPE [NWS forecast zone]: deaths=1, injuries=0, damage=$300,000 (Winter Storm)
-  AR-SOE-2013-05-31 PULASKI [county/county-equivalent]: deaths=1, injuries=0, damage=$260,000 (Flash Flood, Thunderstorm Wind, Tornado)
-  AR-SOE-2011-04-30 CROSS [county/county-equivalent]: deaths=1, injuries=0, damage=$200,000 (Flood, Thunderstorm Wind)
-  AR-SOE-2011-04-30 GREENE [county/county-equivalent]: deaths=1, injuries=0, damage=$200,000 (Flood)
-  AR-SOE-2013-05-31 GRANT [county/county-equivalent]: deaths=1, injuries=0, damage=$25,000 (Tornado)
-  AR-SOE-2015-05-11 CRAWFORD [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flash Flood, Flood)
-  AR-SOE-2019-05-24 SEBASTIAN [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flood)
-  AR-POST-1874 SCOTT [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flash Flood, Thunderstorm Wind)
-  Showing the 25 highest-consequence areas; all 329 are retained in /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp.
+  AR-DR-08-07 STONE [county/county-equivalent]: deaths=1, injuries=0, damage=$8,020,000 (Flash Flood, Flood)
+  AR-DR-21-17 MISSISSIPPI [county/county-equivalent]: deaths=1, injuries=0, damage=$1,405,000 (Thunderstorm Wind, Tornado)
+  AR-DR-09-03 CRAIGHEAD [NWS forecast zone]: deaths=1, injuries=0, damage=$1,300,000 (Ice Storm)
+  AR-DR-09-03 CLAY [NWS forecast zone]: deaths=1, injuries=0, damage=$750,000 (Ice Storm)
+  Showing the 25 highest-consequence areas; all 663 are retained in /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/arkansas/eo_storm_severity_summary.csv.tmp.
 
-AR: 36 actions, 89 federal declarations; 2023-present structured current-Governor archive; 2000-2022 gap disclosed
+AR: 56 actions, 89 federal declarations; 2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for February and May 2008, December 2009, May 2011 and June 2019 still have no dated state declaration
 Applied 30 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/california/hazard_overrides.csv
 CA-PROC-109626: no matching storm events found in the date window.
 CA-PROC-108024: no matching storm events found in the date window.
@@ -340,7 +345,6 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
 DE: 15 actions, 26 federal declarations; October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending
-FL: fl_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2026-202: no matching storm events found in the date window.
 FL-EO-2022-218: no matching storm events found in the date window.
@@ -379,7 +383,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/florida/eo_storm_severity_summary.csv.tmp.
 
-FL: 26 actions, 189 federal declarations; 2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending
+FL: 26 actions, 190 federal declarations; 2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending
 Applied 9 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/georgia/hazard_overrides.csv
 GA-EO-10-08-26-01: no matching storm events found in the date window.
 GA-EO-09-12-18-01: no matching storm events found in the date window.
@@ -657,16 +661,29 @@ ID-PROC-0D8D06267C1B0DA3: no matching storm events found in the date window.
 ID-PROC-B310085B862E0D66: no matching storm events found in the date window.
 ID-PROC-2A8AB0BA81A066E8: no matching storm events found in the date window.
 ID-PROC-7D424679AB1F18C1: no matching storm events found in the date window.
-Wrote 120 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/idaho/eo_storm_matches.csv.tmp
-Wrote severity summary (120 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/idaho/eo_storm_severity_summary.csv.tmp
+ID-SOE-2026-04-03: no matching storm events found in the date window.
+ID-SOE-2011-04-13: no matching storm events found in the date window.
+Wrote 154 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/idaho/eo_storm_matches.csv.tmp
+Wrote severity summary (146 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/idaho/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  ID-SOE-2019-04-12 IDAHO [county/county-equivalent]: deaths=0, injuries=0, damage=$6,000,000 (Flood)
   ID-PROC-DDD255BE8685FB9C PAYETTE [county/county-equivalent]: deaths=0, injuries=0, damage=$1,000,000 (Flood)
   ID-PROC-DDD255BE8685FB9C IDAHO [county/county-equivalent]: deaths=0, injuries=0, damage=$800,000 (Flash Flood)
+  ID-SOE-2017-03-21 KOOTENAI [county/county-equivalent]: deaths=0, injuries=0, damage=$300,000 (Flood)
+  ID-SOE-2019-04-12 LATAH [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Flash Flood, Flood)
+  ID-SOE-2011-01-21 UPPER SNAKE RIVER PLAIN [NWS forecast zone]: deaths=0, injuries=0, damage=$140,000 (Heavy Snow)
+  ID-SOE-2019-04-12 LEWIS [county/county-equivalent]: deaths=0, injuries=0, damage=$110,000 (Debris Flow, Flood)
+  ID-SOE-2017-05-08 BOISE [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flood)
+  ID-SOE-2017-05-08 ELMORE [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flood)
+  ID-SOE-2017-05-08 GOODING [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flood)
+  ID-SOE-2017-01-23 UPPER SNAKE RIVER PLAIN [NWS forecast zone]: deaths=0, injuries=0, damage=$25,000 (Winter Storm)
+  ID-SOE-2017-01-23 BIG AND LITTLE WOOD RIVER REGION [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (Heavy Snow)
+  ID-SOE-2019-04-12 NEZ PERCE [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000 (Flood)
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/idaho/eo_storm_severity_summary.csv.tmp.
 
-ID: 208 actions, 61 federal declarations; 2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage
+ID: 216 actions, 61 federal declarations; 2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage
 {"actions": 378, "declarations": 7, "relationships": 16, "overrides": 0, "review": 8}
 
 IL-PROC-4883F2AF4F255E59: no matching storm events found in the date window.
@@ -792,16 +809,19 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 IA: 54 actions, 79 federal declarations; 2024-present HSEMD proclamation tables; 2000-2023 not collected
-Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
+Kansas: declarations page read from the Internet Archive copy from 2025-10-21 (the live page could not be read: HTTPError 403)
+Kansas: wrote 41 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/kansas/declarations_for_join.csv
 
-WARNING KS: Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
+KS: declarations_for_join.csv: kept 12 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+KS: ks_emergency_actions_all.csv: kept 13 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+KS: ks_order_relationships.csv: kept 13 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/kansas/hazard_overrides.csv
-KS-PROC-4326: no matching storm events found in the date window.
-KS-PROC-4366: no matching storm events found in the date window.
 KS-PROC-3653: no matching storm events found in the date window.
 KS-PROC-3722: no matching storm events found in the date window.
 KS-PROC-3733: no matching storm events found in the date window.
 KS-PROC-3844: no matching storm events found in the date window.
+KS-PROC-4326: no matching storm events found in the date window.
+KS-PROC-4366: no matching storm events found in the date window.
 
 2 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): KS-PROC-3741, KS-PROC-1189
 Wrote 2878 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_matches.csv.tmp
@@ -837,7 +857,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp.
 
-KS: 51 actions, 96 federal declarations; 2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
+KS: 51 actions, 96 federal declarations; 2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read; 12 saved records kept that this refresh's check of the state source did not return
 Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 11 weather state-of-emergency releases.
 
 KY: ky_emergency_actions_all.csv: kept 10 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1004,17 +1024,22 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 31 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 59 relationship(s), 4 original weather declaration(s).
+Done. 762 action(s), 85 relationship(s), 6 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 19 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 113 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 10 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 87 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
+Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/massachusetts/hazard_overrides.csv
 MA-EO-366: no matching storm events found in the date window.
-Wrote 436 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
-Wrote severity summary (270 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp
+MA-EO-239: no matching storm events found in the date window.
+MA-EO-142: searching around the reviewed event date 1978-02-07 (signed 1978-02-09)
+MA-EO-142: no matching storm events found in the date window.
+Wrote 475 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_matches.csv.tmp
+Wrote severity summary (301 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   MA-PROC-2011-06-01 HAMPDEN [county/county-equivalent]: deaths=3, injuries=200, damage=$227,650,000 (Hail, Thunderstorm Wind, Tornado)
+  MA-PROC-2006-05-14 ESSEX [county/county-equivalent]: deaths=2, injuries=0, damage=$7,000,000 (Flood)
   MA-PROC-2018-03-03-7107885f WESTERN PLYMOUTH [NWS forecast zone]: deaths=1, injuries=0, damage=$45,000 (High Wind)
   MA-PROC-2018-03-03-7107885f SOUTHERN WORCESTER [NWS forecast zone]: deaths=0, injuries=2, damage=$40,000 (High Wind)
   MA-PROC-2010-03-15 ESSEX [county/county-equivalent]: deaths=0, injuries=1, damage=$9,800,000 (Flood)
@@ -1027,7 +1052,9 @@ Areas with reported deaths, injuries, or damage:
   MA-PROC-2010-03-15 BRISTOL [county/county-equivalent]: deaths=0, injuries=0, damage=$11,790,000 (Flood)
   MA-PROC-2010-03-15 SUFFOLK [county/county-equivalent]: deaths=0, injuries=0, damage=$10,700,000 (Flood)
   MA-PROC-2012-10-27 DUKES [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000,000 (Coastal Flood, High Wind)
+  MA-PROC-2011-10-30 EASTERN HAMPDEN [NWS forecast zone]: deaths=0, injuries=0, damage=$8,000,000 (Heavy Snow)
   MA-PROC-2012-10-27 SUFFOLK [NWS forecast zone]: deaths=0, injuries=0, damage=$6,000,000 (Coastal Flood, High Wind)
+  MA-PROC-2006-05-14 MIDDLESEX [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000,000 (Flood)
   MA-PROC-2010-03-15 WORCESTER [county/county-equivalent]: deaths=0, injuries=0, damage=$4,050,000 (Flood)
   MA-PROC-2011-08-26 BARNSTABLE [NWS forecast zone]: deaths=0, injuries=0, damage=$3,700,000 (Storm Surge/Tide, Tropical Storm)
   MA-PROC-2011-08-26 WESTERN NORFOLK [NWS forecast zone]: deaths=0, injuries=0, damage=$3,500,000 (Tropical Storm)
@@ -1036,14 +1063,11 @@ Areas with reported deaths, injuries, or damage:
   MA-PROC-2011-08-26 EASTERN FRANKLIN [NWS forecast zone]: deaths=0, injuries=0, damage=$3,050,000 (Tropical Storm)
   MA-PROC-2008-12-12 WESTERN FRANKLIN [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Ice Storm)
   MA-PROC-2008-12-12 EASTERN FRANKLIN [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Ice Storm)
-  MA-PROC-2008-12-12 WESTERN MIDDLESEX [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Ice Storm)
-  MA-PROC-2008-12-12 WESTERN HAMPSHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Ice Storm)
-  MA-PROC-2008-12-12 EASTERN HAMPSHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Ice Storm)
-  Showing the 25 highest-consequence areas; all 120 are retained in /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 141 are retained in /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp.
 
-MA: 16 actions, 59 federal declarations; 1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+MA: 21 actions, 59 federal declarations; 1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 Michigan: 275 executive orders processed
 
 Applied 10 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/michigan/hazard_overrides.csv
@@ -1091,44 +1115,48 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/michigan/eo_storm_severity_summary.csv.tmp.
 
 MI: 23 actions, 46 federal declarations; 2019-present structured Governor archive; 2000-2018 not covered by the current Governor source
-Minnesota: 258 executive orders read from the Legislative Reference Library, 15 weather declarations
+Minnesota: 559 executive orders read from the Legislative Reference Library (Jesse Ventura 36, Tim Pawlenty 130, Mark Dayton 134, Tim Walz 259), 49 weather declarations
 
 MN: mn_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/minnesota/hazard_overrides.csv
-Wrote 903 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_matches.csv.tmp
-Wrote severity summary (634 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp
+MN-EO-00-04: no matching storm events found in the date window.
+MN-EO-04-09: no matching storm events found in the date window.
+MN-EO-05-21: no matching storm events found in the date window.
+MN-EO-16-08: no matching storm events found in the date window.
+Wrote 2914 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_matches.csv.tmp
+Wrote severity summary (1669 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  MN-EO-07-10 WINONA [county/county-equivalent]: deaths=5, injuries=0, damage=$43,161,500 (Flash Flood, Flood)
+  MN-EO-07-10 HOUSTON [county/county-equivalent]: deaths=2, injuries=32, damage=$40,741,000 (Flash Flood, Flood, Heavy Rain)
+  MN-EO-11-17 HENNEPIN [county/county-equivalent]: deaths=1, injuries=48, damage=$166,000,000 (Hail, Tornado)
+  MN-EO-08-09 WASHINGTON [county/county-equivalent]: deaths=1, injuries=17, damage=$25,300,000 (Hail, Thunderstorm Wind, Tornado)
+  MN-EO-00-6 YELLOW MEDICINE [county/county-equivalent]: deaths=1, injuries=15, damage=$20,000,000 (Hail, Tornado)
+  MN-EO-10-10 FREEBORN [county/county-equivalent]: deaths=1, injuries=14, damage=$25,000 (Flash Flood, Hail, Thunderstorm Wind, Tornado)
+  MN-EO-10-10 OTTER TAIL [county/county-equivalent]: deaths=1, injuries=5, damage=$300,000 (Thunderstorm Wind, Tornado)
+  MN-EO-08-11 FREEBORN [county/county-equivalent]: deaths=1, injuries=2, damage=$500,000 (Flash Flood)
+  MN-EO-08-12 FREEBORN [county/county-equivalent]: deaths=1, injuries=2, damage=$500,000 (Flash Flood)
+  MN-EO-10-10 POLK [county/county-equivalent]: deaths=1, injuries=2, damage=$0 (Hail, Tornado)
+  MN-EO-18-11 RENVILLE [county/county-equivalent]: deaths=1, injuries=0, damage=$625,000 (Flash Flood, Flood, Heavy Rain, Thunderstorm Wind)
+  MN-EO-14-03 MCLEOD [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Blizzard, Extreme Cold/Wind Chill)
   MN-EO-22-23 WASHINGTON [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm, Winter Weather)
   MN-EO-22-23 SCOTT [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
+  MN-EO-10-10 WADENA [county/county-equivalent]: deaths=0, injuries=20, damage=$0 (Tornado)
+  MN-EO-05-10 MEEKER [county/county-equivalent]: deaths=0, injuries=3, damage=$0 (Thunderstorm Wind)
+  MN-EO-08-09 ANOKA [county/county-equivalent]: deaths=0, injuries=2, damage=$1,000,000 (Hail, Thunderstorm Wind, Tornado)
+  MN-EO-02-06 LAKE OF THE WOODS [NWS forecast zone]: deaths=0, injuries=2, damage=$500,000 (Flood)
+  MN-EO-10-10 PINE [county/county-equivalent]: deaths=0, injuries=2, damage=$283,000 (Tornado)
+  MN-EO-01-07 RICE [county/county-equivalent]: deaths=0, injuries=1, damage=$9,000,000 (Tornado)
   MN-EO-26-04 FILLMORE [NWS forecast zone]: deaths=0, injuries=1, damage=$15,000 (High Wind, Winter Storm)
+  MN-EO-10-10 RED LAKE [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Thunderstorm Wind, Tornado)
+  MN-EO-10-10 STEELE [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Flash Flood, Thunderstorm Wind, Tornado)
+  MN-EO-18-11 BECKER [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Hail, Thunderstorm Wind)
   MN-EO-22-23 KANDIYOHI [NWS forecast zone]: deaths=0, injuries=1, damage=$0 (Blizzard, Extreme Cold/Wind Chill, Winter Storm)
-  MN-EO-24-05 COTTONWOOD [county/county-equivalent]: deaths=0, injuries=0, damage=$20,700,000 (Flood)
-  MN-EO-24-05 NOBLES [county/county-equivalent]: deaths=0, injuries=0, damage=$3,600,000 (Flash Flood, Flood)
-  MN-EO-19-30 JACKSON [NWS forecast zone]: deaths=0, injuries=0, damage=$2,760,000 (Ice Storm)
-  MN-EO-24-05 MURRAY [county/county-equivalent]: deaths=0, injuries=0, damage=$2,300,000 (Flood)
-  MN-EO-24-05 ROCK [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000,000 (Flash Flood, Flood)
-  MN-EO-24-05 ST. LOUIS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,010,000 (Flood)
-  MN-EO-19-30 NOBLES [NWS forecast zone]: deaths=0, injuries=0, damage=$877,000 (Ice Storm)
-  MN-EO-19-30 DODGE [NWS forecast zone]: deaths=0, injuries=0, damage=$750,000 (Winter Weather)
-  MN-EO-19-30 MOWER [NWS forecast zone]: deaths=0, injuries=0, damage=$750,000 (Winter Weather)
-  MN-EO-19-30 MURRAY [NWS forecast zone]: deaths=0, injuries=0, damage=$648,000 (Blizzard)
-  MN-EO-19-30 ROCK [NWS forecast zone]: deaths=0, injuries=0, damage=$602,000 (Ice Storm)
-  MN-EO-19-30 OLMSTED [NWS forecast zone]: deaths=0, injuries=0, damage=$570,000 (Winter Storm)
-  MN-EO-19-30 HOUSTON [NWS forecast zone]: deaths=0, injuries=0, damage=$560,000 (Winter Weather)
-  MN-EO-19-30 PIPESTONE [NWS forecast zone]: deaths=0, injuries=0, damage=$485,000 (Blizzard)
-  MN-EO-19-30 COTTONWOOD [NWS forecast zone]: deaths=0, injuries=0, damage=$380,000 (Blizzard)
-  MN-EO-24-05 JACKSON [county/county-equivalent]: deaths=0, injuries=0, damage=$355,000 (Flood)
-  MN-EO-19-30 FREEBORN [NWS forecast zone]: deaths=0, injuries=0, damage=$250,000 (Winter Storm)
-  MN-EO-22-08 RED LAKE [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Flash Flood)
-  MN-EO-24-05 PIPESTONE [county/county-equivalent]: deaths=0, injuries=0, damage=$250,000 (Flood)
-  MN-EO-24-05 MOWER [county/county-equivalent]: deaths=0, injuries=0, damage=$205,000 (Flash Flood, Flood)
-  MN-EO-19-30 WINONA [NWS forecast zone]: deaths=0, injuries=0, damage=$190,000 (Winter Weather)
-  Showing the 25 highest-consequence areas; all 43 are retained in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 258 are retained in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/minnesota/eo_storm_severity_summary.csv.tmp.
 
-MN: 15 actions, 81 federal declarations; 2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered
+MN: 49 actions, 81 federal declarations; 2000-present Legislative Reference Library executive order database (Ventura from 2000, Pawlenty, Dayton and Walz); weather orders that only provide assistance, without declaring an emergency, are not counted as declarations
 Mississippi SOS orders 2008-2019: 203 listed, 0 read this run, 0 left for the next run, 14 weather emergencies, 14 added to the join file
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/mississippi/hazard_overrides.csv
@@ -1167,9 +1195,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/mississippi/eo_storm_severity_summary.csv.tmp.
 
 MS: 43 actions, 99 federal declarations; January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-{"actions": 620, "declarations": 83, "relationships": 215, "overrides": 15, "review": 49}
+{"actions": 620, "declarations": 84, "relationships": 215, "overrides": 15, "review": 49}
 
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/missouri/hazard_overrides.csv
+MO-EO-04-12: no matching storm events found in the date window.
 MO-EO-07-34: no matching storm events found in the date window.
 MO-EO-09-04: no matching storm events found in the date window.
 MO-EO-11-03: no matching storm events found in the date window.
@@ -1210,66 +1239,72 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/missouri/eo_storm_severity_summary.csv.tmp.
 
-MO: 68 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text
+MO: 69 actions, 88 federal declarations; 2000-present Secretary of State year indexes and legal order text
 Montana: 193 orders scraped, 18 written as declarations.
 
 NOTE: 6 declarations need hazard_overrides.csv entries (boilerplate title, no hazard keyword): ['MT-EO-11-2025', 'MT-EO-9-2025', 'MT-EO-8-2024', 'MT-EO-2-2023', 'MT-EO-1-2023', 'MT-EO-4-2022']
 
-Applied 13 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/montana/hazard_overrides.csv
+Applied 18 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/montana/hazard_overrides.csv
 MT-EO-9-2026: no matching storm events found in the date window.
 MT-EO-11-2024: searching around the reviewed event date 2024-08-23 (signed 2024-09-14)
 MT-EO-10-2024: searching around the reviewed event date 2024-07-13 (signed 2024-09-13)
 MT-EO-8-2024: no matching storm events found in the date window.
+MT-EO-24-00: no matching storm events found in the date window.
+MT-EO-9-01: searching around the reviewed event date 2001-04-02 (signed 2001-05-18)
+MT-EO-10-2015: no matching storm events found in the date window.
 
 3 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): MT-EO-8-2026, MT-EO-5-2024, MT-EO-9-2021
-Wrote 476 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_matches.csv.tmp
-Wrote severity summary (266 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp
+Wrote 987 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_matches.csv.tmp
+Wrote severity summary (579 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   MT-EO-1-2023 CASCADE [county/county-equivalent]: deaths=2, injuries=0, damage=$60,000 (Flood, Heavy Rain)
   MT-EO-12-2021 NORTHERN CARBON [NWS forecast zone]: deaths=1, injuries=1, damage=$0 (Wildfire)
+  MT-EO-5-2011 BIG HORN [county/county-equivalent]: deaths=1, injuries=0, damage=$4,000,000 (Flash Flood, Flood)
+  MT-EO-5-2011 CARBON [county/county-equivalent]: deaths=1, injuries=0, damage=$1,000,000 (Flood)
+  MT-EO-5-2011 YELLOWSTONE [county/county-equivalent]: deaths=1, injuries=0, damage=$300,000 (Flash Flood, Flood)
+  MT-EO-18-00 BEAVERHEAD [county/county-equivalent]: deaths=0, injuries=6, damage=$10,000 (Wildfire)
+  MT-EO-20-00 GALLATIN [county/county-equivalent]: deaths=0, injuries=3, damage=$160,000 (Wildfire)
   MT-EO-10-2024 CUSTER [county/county-equivalent]: deaths=0, injuries=3, damage=$0 (Thunderstorm Wind)
+  MT-EO-13-2007 LINCOLN [county/county-equivalent]: deaths=0, injuries=2, damage=$30,000 (Thunderstorm Wind)
   MT-EO-9-2025 LINCOLN [county/county-equivalent]: deaths=0, injuries=0, damage=$31,000,000 (Flood)
+  MT-EO-5-2011 MUSSELSHELL [county/county-equivalent]: deaths=0, injuries=0, damage=$6,000,000 (Flood)
+  MT-EO-5-2011 SWEET GRASS [county/county-equivalent]: deaths=0, injuries=0, damage=$4,000,000 (Flood)
   MT-EO-9-2024 MISSOULA [county/county-equivalent]: deaths=0, injuries=0, damage=$4,000,000 (Thunderstorm Wind)
   MT-EO-9-2025 MINERAL [county/county-equivalent]: deaths=0, injuries=0, damage=$4,000,000 (Flood)
+  MT-EO-5-2011 STILLWATER [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000,000 (Flash Flood, Flood)
+  MT-EO-5-2011 CUSTER [county/county-equivalent]: deaths=0, injuries=0, damage=$1,100,000 (Flood)
   MT-EO-11-2025 FLATHEAD/MISSION VALLEYS [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (High Wind)
   MT-EO-11-2025 KOOTENAI/CABINET REGION [NWS forecast zone]: deaths=0, injuries=0, damage=$614,000 (High Wind, Strong Wind)
   MT-EO-4-2022 FLATHEAD [county/county-equivalent]: deaths=0, injuries=0, damage=$500,000 (Flash Flood, Flood)
+  MT-EO-5-2011 FALLON [county/county-equivalent]: deaths=0, injuries=0, damage=$375,000 (Flood)
+  MT-EO-5-2011 CARTER [county/county-equivalent]: deaths=0, injuries=0, damage=$320,000 (Flood)
   MT-EO-11-2025 MISSOULA / BITTERROOT VALLEYS [NWS forecast zone]: deaths=0, injuries=0, damage=$307,000 (High Wind)
+  MT-EO-15-2019 FLATHEAD/MISSION VALLEYS [NWS forecast zone]: deaths=0, injuries=0, damage=$300,000 (High Wind)
+  MT-EO-5-2011 ROSEBUD [county/county-equivalent]: deaths=0, injuries=0, damage=$225,000 (Flood)
   MT-EO-2-2023 FERGUS [county/county-equivalent]: deaths=0, injuries=0, damage=$225,000 (Flash Flood)
-  MT-EO-11-2025 WEST GLACIER REGION [NWS forecast zone]: deaths=0, injuries=0, damage=$200,000 (High Wind)
-  MT-EO-11-2025 POTOMAC / SEELEY LAKE REGION [NWS forecast zone]: deaths=0, injuries=0, damage=$140,000 (High Wind)
-  MT-EO-11-2025 LOWER CLARK FORK REGION [NWS forecast zone]: deaths=0, injuries=0, damage=$120,000 (High Wind)
-  MT-EO-11-2024 MISSOULA [county/county-equivalent]: deaths=0, injuries=0, damage=$110,000 (Thunderstorm Wind)
-  MT-EO-2-2023 BROADWATER [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flash Flood)
-  MT-EO-11-2024 FLATHEAD [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Thunderstorm Wind)
-  MT-EO-9-2025 SANDERS [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flood)
-  MT-EO-8-2021 MISSOULA [county/county-equivalent]: deaths=0, injuries=0, damage=$75,000 (Thunderstorm Wind)
-  MT-EO-2-2023 CASCADE [county/county-equivalent]: deaths=0, injuries=0, damage=$70,000 (Flash Flood)
-  MT-EO-2-2023 GLACIER [county/county-equivalent]: deaths=0, injuries=0, damage=$50,000 (Debris Flow)
-  MT-EO-2-2023 TETON [county/county-equivalent]: deaths=0, injuries=0, damage=$50,000 (Debris Flow)
-  MT-EO-11-2025 BUTTE / BLACKFOOT REGION [NWS forecast zone]: deaths=0, injuries=0, damage=$35,000 (High Wind)
-  MT-EO-9-2024 RAVALLI [county/county-equivalent]: deaths=0, injuries=0, damage=$25,000 (Thunderstorm Wind)
-  MT-EO-2-2023 SILVER BOW [county/county-equivalent]: deaths=0, injuries=0, damage=$15,000 (Flash Flood)
-  Showing the 25 highest-consequence areas; all 33 are retained in /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 62 are retained in /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/montana/eo_storm_severity_summary.csv.tmp.
 
-MT: 16 actions, 113 federal declarations; 2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending
+MT: 46 actions, 113 federal declarations; 2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; four orders whose archive copies leave the signing day blank are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled
 Nebraska: wrote 33 declaration(s) to /home/runner/work/disaster-data/disaster-data/plus/nebraska/declarations_for_join.csv
 
 NE: ne_emergency_actions_all.csv: kept 4 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 NE: ne_order_relationships.csv: kept 28 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-Applied 54 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nebraska/hazard_overrides.csv
+Applied 60 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nebraska/hazard_overrides.csv
 NE-EO-25-06: no matching storm events found in the date window.
 NE-EO-19-06: no matching storm events found in the date window.
 NE-EO-19-05: no matching storm events found in the date window.
 NE-EO-19-04: no matching storm events found in the date window.
 NE-EO-19-03: no matching storm events found in the date window.
+NE-SOE-2024-06-23-1: no matching storm events found in the date window.
+NE-SOE-2025-03-24: no matching storm events found in the date window.
+NE-SOE-2026-06-10: searching around the reviewed event date 2026-05-16 (signed 2026-06-10)
 
 14 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): NE-EO-26-20, NE-EO-26-08, NE-EO-25-12, NE-EO-25-10, NE-EO-25-09, NE-EO-24-02, NE-EO-23-08, NE-EO-23-07, NE-EO-17-09, NE-EO-17-08, NE-EO-17-06, NE-EO-17-05, NE-EO-17-02, NE-EO-17-01
-Wrote 748 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_matches.csv.tmp
-Wrote severity summary (519 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_severity_summary.csv.tmp
+Wrote 1446 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_matches.csv.tmp
+Wrote severity summary (860 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   NE-EO-26-06 ARTHUR [NWS forecast zone]: deaths=1, injuries=0, damage=$2,620,000 (Drought, High Wind, Wildfire)
@@ -1277,29 +1312,31 @@ Areas with reported deaths, injuries, or damage:
   NE-EO-24-01 DOUGLAS [NWS forecast zone]: deaths=0, injuries=12, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
   NE-EO-24-01 LANCASTER [NWS forecast zone]: deaths=0, injuries=12, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
   NE-EO-23-06 GARFIELD [NWS forecast zone]: deaths=0, injuries=2, damage=$1,100,000 (Drought, Wildfire)
+  NE-SOE-2024-06-23-2 DOUGLAS [county/county-equivalent]: deaths=0, injuries=1, damage=$60,000 (Flood, Hail, Thunderstorm Wind)
+  NE-SOE-2024-06-23-2 GRANT [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Tornado)
+  NE-SOE-2024-08-02 DOUGLAS [county/county-equivalent]: deaths=0, injuries=0, damage=$35,000,000 (Thunderstorm Wind)
   NE-EO-26-06 GARDEN [NWS forecast zone]: deaths=0, injuries=0, damage=$15,100,000 (Drought, High Wind, Wildfire)
+  NE-SOE-2024-08-02 SARPY [county/county-equivalent]: deaths=0, injuries=0, damage=$15,000,000 (Thunderstorm Wind)
   NE-EO-26-06 LINCOLN [NWS forecast zone]: deaths=0, injuries=0, damage=$7,370,000 (Drought, High Wind, Wildfire)
+  NE-SOE-2024-06-23-2 HOWARD [county/county-equivalent]: deaths=0, injuries=0, damage=$6,600,000 (Flash Flood, Flood)
+  NE-SOE-2024-06-23-2 NANCE [county/county-equivalent]: deaths=0, injuries=0, damage=$6,600,000 (Flash Flood, Hail, Thunderstorm Wind)
+  NE-SOE-2024-06-24 HOWARD [county/county-equivalent]: deaths=0, injuries=0, damage=$6,600,000 (Flash Flood, Flood)
+  NE-SOE-2024-06-24 NANCE [county/county-equivalent]: deaths=0, injuries=0, damage=$6,600,000 (Flash Flood)
+  NE-SOE-2024-06-23-2 SCOTTS BLUFF [county/county-equivalent]: deaths=0, injuries=0, damage=$4,000,000 (Flash Flood, Hail, Thunderstorm Wind, Tornado)
+  NE-SOE-2024-06-23-2 MERRICK [county/county-equivalent]: deaths=0, injuries=0, damage=$3,325,000 (Flash Flood, Thunderstorm Wind)
+  NE-SOE-2024-06-23-2 GREELEY [county/county-equivalent]: deaths=0, injuries=0, damage=$3,300,000 (Flash Flood)
+  NE-SOE-2024-06-23-2 SHERMAN [county/county-equivalent]: deaths=0, injuries=0, damage=$3,300,000 (Flash Flood)
+  NE-SOE-2024-06-24 GREELEY [county/county-equivalent]: deaths=0, injuries=0, damage=$3,300,000 (Flash Flood)
+  NE-SOE-2024-06-24 MERRICK [county/county-equivalent]: deaths=0, injuries=0, damage=$3,300,000 (Flash Flood)
+  NE-SOE-2024-06-24 SHERMAN [county/county-equivalent]: deaths=0, injuries=0, damage=$3,300,000 (Flash Flood)
+  NE-SOE-2024-06-23-2 DAWSON [county/county-equivalent]: deaths=0, injuries=0, damage=$3,000,000 (Thunderstorm Wind)
   NE-EO-23-06 CUSTER [NWS forecast zone]: deaths=0, injuries=0, damage=$2,250,000 (Drought, Wildfire)
   NE-EO-26-06 DAWSON [NWS forecast zone]: deaths=0, injuries=0, damage=$1,850,000 (Drought, High Wind, Wildfire)
-  NE-EO-26-06 WESTERN CHERRY [NWS forecast zone]: deaths=0, injuries=0, damage=$1,419,000 (Drought, High Wind, Wildfire)
-  NE-EO-26-06 KEITH [NWS forecast zone]: deaths=0, injuries=0, damage=$1,248,000 (Drought, High Wind, Wildfire)
-  NE-EO-25-08 BROWN [NWS forecast zone]: deaths=0, injuries=0, damage=$500,000 (Drought, Wildfire)
-  NE-EO-05-5 PHELPS [county/county-equivalent]: deaths=0, injuries=0, damage=$225,000 (Flash Flood)
-  NE-EO-05-6 PHELPS [county/county-equivalent]: deaths=0, injuries=0, damage=$225,000 (Flash Flood)
-  NE-EO-24-06 LANCASTER [county/county-equivalent]: deaths=0, injuries=0, damage=$125,000 (Flash Flood, Flood)
-  NE-EO-24-07 LANCASTER [county/county-equivalent]: deaths=0, injuries=0, damage=$125,000 (Flash Flood, Flood)
-  NE-EO-23-06 WESTERN CHERRY [NWS forecast zone]: deaths=0, injuries=0, damage=$100,000 (Drought, Wildfire)
-  NE-EO-24-06 CASS [county/county-equivalent]: deaths=0, injuries=0, damage=$65,000 (Flash Flood, Flood)
-  NE-EO-24-07 CASS [county/county-equivalent]: deaths=0, injuries=0, damage=$65,000 (Flash Flood, Flood)
-  NE-EO-26-06 GRANT [NWS forecast zone]: deaths=0, injuries=0, damage=$63,000 (Drought, High Wind, Wildfire)
-  NE-EO-24-06 SAUNDERS [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Flash Flood, Flood)
-  NE-EO-24-06 SEWARD [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Flash Flood)
-  NE-EO-24-07 SAUNDERS [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Flash Flood, Flood)
-  NE-EO-24-07 SEWARD [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000 (Flash Flood)
+  Showing the 25 highest-consequence areas; all 81 are retained in /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nebraska/eo_storm_severity_summary.csv.tmp.
 
-NE: 19 actions, 88 federal declarations; 1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope
+NE: 34 actions, 88 federal declarations; 2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review
 Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/nevada/hazard_overrides.csv
 NV-PROCLAMATION-2023-05-29-DECLARATION-OF-EMERGENCY: no matching storm events found in the date window.
 NV-SOE-2021-08-30: no matching storm events found in the date window.
@@ -1329,16 +1366,11 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 13 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
-New Hampshire: 0 order PDFs read, 73 dated on an earlier run and not read again
-New Hampshire: 339 actions, 49 relationships, 8 weather declarations
-
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
   WARNING: the registry could not be fetched; reading the Internet Archive copy
+the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 
-NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 6 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 259 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WARNING NH: Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
 NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
@@ -1376,7 +1408,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
@@ -1474,7 +1506,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
 NJ: 83 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
-New Mexico: 1216 actions scraped, 1184 read via OCR (1216 from earlier runs), 0 still image-only with no usable text.
+New Mexico: 1285 actions scraped, 1243 read via OCR (1216 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 NM: nm_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1531,7 +1563,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp.
 
-NM: 45 actions, 127 federal declarations; 2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
+NM: 45 actions, 128 federal declarations; 2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
 New York adapter: collecting executive orders...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-york/declarations_for_join.csv
 New York scraper: collecting current executive orders...
@@ -1625,9 +1657,9 @@ North Carolina scraper: enriching official detail records...
     enriched 350/359
 Done. 359 canonical order(s); 437 relationship(s); 56 original weather declaration(s) written to join file.
 
-North Carolina adapter: coverage = 2017-01-06-present structured Governor archive; North Carolina Register backfill pending
+North Carolina adapter: coverage = 2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed
 NC: nc_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 1 blank and 0 garbled field set(s)
-Applied 51 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/north-carolina/hazard_overrides.csv
+Applied 57 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/north-carolina/hazard_overrides.csv
 NC-ROYCOOPER-EO-9: searching around the reviewed event date 2017-05-30 (signed 2017-06-16)
 NC-ROYCOOPER-EO-15: searching around the reviewed event date 2016-09-21 (signed 2017-08-16)
 NC-ROYCOOPER-EO-28: searching around the reviewed event date 2017-05-05 (signed 2017-11-15)
@@ -1645,46 +1677,50 @@ NC-ROYCOOPER-EO-308: searching around the reviewed event date 2024-05-08 (signed
 NC-ROYCOOPER-EO-309: no matching storm events found in the date window.
 NC-ROYCOOPER-EO-310: searching around the reviewed event date 2024-05-18 (signed 2024-07-01)
 NC-ROYCOOPER-EO-321: searching around the reviewed event date 2024-09-16 (signed 2024-10-16)
+NC-SOE-2004-06-04: searching around the reviewed event date 2004-01-26 (signed 2004-06-04)
+NC-PATMCCRORY-EO-16: searching around the reviewed event date 2013-06-13 (signed 2013-07-11)
+NC-PATMCCRORY-EO-17: searching around the reviewed event date 2013-06-30 (signed 2013-07-16)
+NC-PATMCCRORY-EO-51: searching around the reviewed event date 2014-02-12 (signed 2014-04-29)
 
 1 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): NC-JOSHSTEIN-EO-41
 Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
-Wrote 3711 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_matches.csv.tmp
-Wrote severity summary (2189 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp
+Wrote 5452 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_matches.csv.tmp
+Wrote severity summary (3399 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   NC-ROYCOOPER-EO-315 BUNCOMBE [county/county-equivalent]: deaths=37, injuries=0, damage=$601,101,000 (Debris Flow, Flash Flood, Flood)
   NC-ROYCOOPER-EO-315 YANCEY [county/county-equivalent]: deaths=13, injuries=0, damage=$95,100,000 (Flash Flood, Flood)
+  NC-SOE-2011-04-17 BERTIE [county/county-equivalent]: deaths=12, injuries=63, damage=$2,500,000 (Tornado)
   NC-ROYCOOPER-EO-315 HENDERSON [county/county-equivalent]: deaths=7, injuries=0, damage=$201,020,000 (Flash Flood, Flood)
   NC-ROYCOOPER-EO-315 AVERY [county/county-equivalent]: deaths=6, injuries=0, damage=$40,101,000 (Flash Flood, Flood)
   NC-ROYCOOPER-EO-178 ALEXANDER [county/county-equivalent]: deaths=6, injuries=0, damage=$450,000 (Flash Flood, Flood)
   NC-ROYCOOPER-EO-182 ALEXANDER [county/county-equivalent]: deaths=6, injuries=0, damage=$450,000 (Flash Flood, Flood)
   NC-ROYCOOPER-EO-227 HAYWOOD [county/county-equivalent]: deaths=5, injuries=0, damage=$200,000,000 (Flash Flood)
   NC-ROYCOOPER-EO-315 MADISON [county/county-equivalent]: deaths=5, injuries=0, damage=$35,000,000 (Flash Flood, Flood)
+  NC-SOE-2011-04-17 WAKE [county/county-equivalent]: deaths=4, injuries=67, damage=$115,000,000 (Tornado)
   NC-ROYCOOPER-EO-315 HAYWOOD [county/county-equivalent]: deaths=4, injuries=0, damage=$200,100,000 (Flash Flood, Flood)
+  NC-SOE-2011-04-17 BLADEN [county/county-equivalent]: deaths=4, injuries=0, damage=$4,160,000 (Thunderstorm Wind, Tornado)
   NC-ROYCOOPER-EO-196 BRUNSWICK [county/county-equivalent]: deaths=3, injuries=10, damage=$0 (Thunderstorm Wind, Tornado)
+  NC-SOE-2004-09-17 HAYWOOD [NWS forecast zone]: deaths=3, injuries=0, damage=$15,035,000 (Flood, High Wind)
+  NC-SOE-2011-04-17 LEE [county/county-equivalent]: deaths=2, injuries=36, damage=$57,000,000 (Tornado)
   NC-ROYCOOPER-EO-315 WATAUGA [county/county-equivalent]: deaths=2, injuries=4, damage=$250,009,000 (Flash Flood, Heavy Rain, Thunderstorm Wind, Tornado)
+  NC-SOE-2011-08-25 PITT [NWS forecast zone]: deaths=2, injuries=0, damage=$48,000,000 (Tropical Storm)
+  NC-SOE-2004-09-17 BUNCOMBE [NWS forecast zone]: deaths=2, injuries=0, damage=$40,210,000 (Flood, High Wind)
   NC-ROYCOOPER-EO-315 GREATER RUTHERFORD [NWS forecast zone]: deaths=2, injuries=0, damage=$4,000,000 (Tropical Storm)
   NC-ROYCOOPER-EO-315 CLEVELAND [NWS forecast zone]: deaths=2, injuries=0, damage=$3,000,000 (Tropical Storm)
   NC-ROYCOOPER-EO-315 MECKLENBURG [NWS forecast zone]: deaths=2, injuries=0, damage=$3,000,000 (Tropical Storm)
   NC-ROYCOOPER-EO-270 JOHNSTON [NWS forecast zone]: deaths=2, injuries=0, damage=$1,000,000 (Tropical Storm)
   NC-JOSHSTEIN-EO-19 NASH [county/county-equivalent]: deaths=2, injuries=0, damage=$100,000 (Flash Flood)
-  NC-ROYCOOPER-EO-300 CATAWBA [county/county-equivalent]: deaths=1, injuries=4, damage=$251,000 (Flash Flood, Tornado)
-  NC-ROYCOOPER-EO-308 GASTON [county/county-equivalent]: deaths=1, injuries=3, damage=$240,000 (Hail, Thunderstorm Wind, Tornado)
-  NC-ROYCOOPER-EO-291 ALEXANDER [county/county-equivalent]: deaths=1, injuries=1, damage=$10,000 (Flash Flood)
-  NC-ROYCOOPER-EO-315 ASHE [county/county-equivalent]: deaths=1, injuries=0, damage=$116,000,000 (Flash Flood)
-  NC-ROYCOOPER-EO-315 MCDOWELL [county/county-equivalent]: deaths=1, injuries=0, damage=$105,021,000 (Flash Flood, Flood)
-  NC-ROYCOOPER-EO-315 RUTHERFORD [county/county-equivalent]: deaths=1, injuries=0, damage=$35,020,000 (Flash Flood, Flood, Tornado)
-  NC-ROYCOOPER-EO-315 MITCHELL [county/county-equivalent]: deaths=1, injuries=0, damage=$30,101,000 (Flash Flood, Flood)
-  NC-ROYCOOPER-EO-315 POLK [county/county-equivalent]: deaths=1, injuries=0, damage=$15,010,000 (Flash Flood, Flood)
-  NC-ROYCOOPER-EO-96 GASTON [county/county-equivalent]: deaths=1, injuries=0, damage=$2,010,000 (Flood)
-  Showing the 25 highest-consequence areas; all 803 are retained in /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp.
+  NC-SOE-2011-04-17 CUMBERLAND [county/county-equivalent]: deaths=1, injuries=89, damage=$100,250,000 (Tornado)
+  NC-SOE-2011-04-17 HARNETT [county/county-equivalent]: deaths=1, injuries=24, damage=$16,000,000 (Tornado)
+  Showing the 25 highest-consequence areas; all 1219 are retained in /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/north-carolina/eo_storm_severity_summary.csv.tmp.
 
-NC: 56 actions, 85 federal declarations; 2017-01-06-present structured Governor archive; North Carolina Register backfill pending
-North Dakota: 186 orders scraped, 34 written as declarations.
+NC: 81 actions, 85 federal declarations; 2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed
+North Dakota: 310 orders scraped, 58 written as declarations (24 unnumbered 2000-2016 archive entries).
 
-Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/north-dakota/hazard_overrides.csv
+Applied 7 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/north-dakota/hazard_overrides.csv
 ND-EO-2022-09: no matching storm events found in the date window.
 ND-EO-2020-30: no matching storm events found in the date window.
 ND-EO-2019-10: no matching storm events found in the date window.
@@ -1699,15 +1735,30 @@ ND-EO-2017-03: no matching storm events found in the date window.
 ND-EO-2017-02.1: no matching storm events found in the date window.
 ND-EO-2017-02: no matching storm events found in the date window.
 ND-EO-2017-01: no matching storm events found in the date window.
+ND-ARCHIVE-2015-04-01: no matching storm events found in the date window.
+ND-ARCHIVE-2014-09-09: no matching storm events found in the date window.
+ND-ARCHIVE-2014-07-03: no matching storm events found in the date window.
+ND-ARCHIVE-2013-10-22: no matching storm events found in the date window.
+ND-ARCHIVE-2013-10-15: no matching storm events found in the date window.
+ND-ARCHIVE-2012-06-15: no matching storm events found in the date window.
+ND-ARCHIVE-2011-05-05: no matching storm events found in the date window.
+ND-ARCHIVE-2011-02-10: no matching storm events found in the date window.
+ND-ARCHIVE-2011-01-21: no matching storm events found in the date window.
+ND-ARCHIVE-2011-01-11: no matching storm events found in the date window.
 ND-EO-2026-07: no matching storm events found in the date window.
 ND-EO-2026-05: no matching storm events found in the date window.
-Wrote 753 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_matches.csv.tmp
-Wrote severity summary (379 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp
+ND-SOE-2009-03-16: no matching storm events found in the date window.
+Wrote 1169 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_matches.csv.tmp
+Wrote severity summary (622 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   ND-EO-2025-05 CASS [county/county-equivalent]: deaths=3, injuries=0, damage=$0 (Flash Flood, Hail, Thunderstorm Wind, Tornado)
   ND-EO-2024-06 WILLIAMS [NWS forecast zone]: deaths=2, injuries=8, damage=$20,000,000 (Drought, High Wind, Wildfire)
+  ND-SOE-2007-08-27 GRAND FORKS [county/county-equivalent]: deaths=1, injuries=18, damage=$52,000,000 (Hail, Tornado)
+  ND-ARCHIVE-2011-05-03 HETTINGER [NWS forecast zone]: deaths=1, injuries=1, damage=$35,000 (Blizzard)
+  ND-ARCHIVE-2011-03-11 SIOUX [NWS forecast zone]: deaths=0, injuries=7, damage=$15,000 (High Wind)
   ND-EO-2025-05 BURLEIGH [county/county-equivalent]: deaths=0, injuries=1, damage=$5,109,000 (Thunderstorm Wind)
+  ND-ARCHIVE-2011-04-29 WARD [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000,000 (Flood)
   ND-EO-2022-04 WILLIAMS [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (Blizzard)
   ND-EO-2025-05 STUTSMAN [county/county-equivalent]: deaths=0, injuries=0, damage=$12,652,000 (Hail, Thunderstorm Wind, Tornado)
   ND-EO-2024-04 BURLEIGH [county/county-equivalent]: deaths=0, injuries=0, damage=$12,375,000 (Hail)
@@ -1715,26 +1766,22 @@ Areas with reported deaths, injuries, or damage:
   ND-EO-2022-04 DIVIDE [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000,000 (Blizzard)
   ND-EO-2022-04 MOUNTRAIL [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000,000 (Blizzard)
   ND-EO-2022-04 BURKE [NWS forecast zone]: deaths=0, injuries=0, damage=$6,000,000 (Blizzard)
+  ND-ARCHIVE-2011-04-29 MCHENRY [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000,000 (Flood)
+  ND-ARCHIVE-2011-04-29 RENVILLE [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000,000 (Flood)
   ND-EO-2022-04 ROLETTE [NWS forecast zone]: deaths=0, injuries=0, damage=$4,000,000 (Blizzard)
   ND-EO-2022-04 RENVILLE [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Blizzard)
   ND-EO-2022-04 BOTTINEAU [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Blizzard)
   ND-EO-2022-04 WARD [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Blizzard)
   ND-EO-2022-04 MCKENZIE [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Blizzard)
   ND-EO-2022-04 MCLEAN [NWS forecast zone]: deaths=0, injuries=0, damage=$3,000,000 (Blizzard)
+  ND-SOE-2004-03-29 EASTERN WALSH [NWS forecast zone]: deaths=0, injuries=0, damage=$1,900,000 (Flood)
   ND-EO-2025-05 MORTON [county/county-equivalent]: deaths=0, injuries=0, damage=$1,685,000 (Hail, Thunderstorm Wind, Tornado)
   ND-EO-2023-10 STUTSMAN [NWS forecast zone]: deaths=0, injuries=0, damage=$1,250,000 (Ice Storm)
-  ND-EO-2025-05 STARK [county/county-equivalent]: deaths=0, injuries=0, damage=$800,000 (Hail, Thunderstorm Wind, Tornado)
-  ND-EO-2025-05 KIDDER [county/county-equivalent]: deaths=0, injuries=0, damage=$765,000 (Thunderstorm Wind, Tornado)
-  ND-EO-2021-14 WELLS [county/county-equivalent]: deaths=0, injuries=0, damage=$550,000 (Hail)
-  ND-EO-2025-05 FOSTER [county/county-equivalent]: deaths=0, injuries=0, damage=$550,000 (Thunderstorm Wind, Tornado)
-  ND-EO-2023-10 FOSTER [NWS forecast zone]: deaths=0, injuries=0, damage=$500,000 (Ice Storm)
-  ND-EO-2023-10 LOGAN [NWS forecast zone]: deaths=0, injuries=0, damage=$500,000 (Ice Storm)
-  ND-EO-2025-05 MERCER [county/county-equivalent]: deaths=0, injuries=0, damage=$500,000 (Thunderstorm Wind)
-  Showing the 25 highest-consequence areas; all 58 are retained in /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 109 are retained in /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/north-dakota/eo_storm_severity_summary.csv.tmp.
 
-ND: 34 actions, 76 federal declarations; 2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending
+ND: 61 actions, 76 federal declarations; 2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled
 warning: Ohio bulletin feed answered 406; retrying with Accept: */*
 warning: Ohio bulletin feed answered 406; retrying with Accept: */*
 could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss
@@ -1821,11 +1868,11 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
-OK: 55 actions, 260 federal declarations; 2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Oregon signing dates: 38 from confirmed_signing_dates.csv; 190 kept from earlier runs; 1 not found by OCR; 99 not found by OCR in the last four weeks, not retried yet; 62 of those undated, dated by when they were posted
+OK: 55 actions, 260 federal declarations; 2006-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+Oregon signing dates: 38 from confirmed_signing_dates.csv; 190 kept from earlier runs; 1 read from the scan by OCR; 98 not found by OCR; 1 not found by OCR in the last four weeks, not retried yet; 62 of those undated, dated by when they were posted
 
-OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 33 blank and 0 garbled field set(s)
-OR: or_order_relationships.csv: kept 109 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 34 blank and 0 garbled field set(s)
+OR: or_order_relationships.csv: kept 14 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 112 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oregon/hazard_overrides.csv
 OR-EO-26-25: no matching storm events found in the date window.
 OR-EO-26-24: no matching storm events found in the date window.
@@ -1996,16 +2043,15 @@ OR: 253 actions, 174 federal declarations; 2003-present structured Governor arch
 Pennsylvania adapter: collecting official state actions...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/pa_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/declarations_for_join.csv
 Pennsylvania scraper: collecting Office of Administration issuances...
-    Office of Administration: 138 row(s)
+    Office of Administration: 0 row(s)
 Pennsylvania scraper: collecting PEMA emergency proclamations...
     PEMA proclamation history: 37 linked document(s)
 Pennsylvania scraper: fetching linked documents...
-    fetched 50/175
-    fetched 100/175
-    fetched 150/175
-Done. 175 action(s): 138 OA issuances, 37 PEMA documents; 10 original weather declarations written to join file.
+Done. 37 action(s): 0 OA issuances, 37 PEMA documents; 10 original weather declarations written to join file.
 
 Pennsylvania adapter: coverage = 2018-present linked PEMA proclamation history; older Pennsylvania Bulletin backfill pending
+PA: pa_emergency_actions_all.csv: kept 138 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+PA: pa_order_relationships.csv: kept 4 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/hazard_overrides.csv
 PA-PROC-2016-11-16: searching around the reviewed event date 2016-10-20 (signed 2016-11-16)
 Wrote 1026 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/pennsylvania/eo_storm_matches.csv.tmp
@@ -2046,40 +2092,41 @@ Rhode Island scraper: fetching 19 ambiguous declaration detail page(s)...
 Done. 350 action(s), 68 relationship(s), 7 original weather declaration(s).
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/rhode-island/hazard_overrides.csv
-Wrote 115 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_matches.csv.tmp
-Wrote severity summary (84 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_severity_summary.csv.tmp
+RI-EO-03-02: no matching storm events found in the date window.
+Wrote 120 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_matches.csv.tmp
+Wrote severity summary (89 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   RI-SOE-2012-10-28 WASHINGTON [NWS forecast zone]: deaths=0, injuries=1, damage=$4,775,000 (Coastal Flood, High Wind)
   RI-SOE-2012-10-28 NEWPORT [NWS forecast zone]: deaths=0, injuries=0, damage=$3,100,000 (Coastal Flood, High Wind)
   RI-SOE-2012-10-28 BLOCK ISLAND [NWS forecast zone]: deaths=0, injuries=0, damage=$3,100,000 (Coastal Flood)
+  RI-EO-10-06 KENT [county/county-equivalent]: deaths=0, injuries=0, damage=$1,300,000 (Flood)
   RI-EO-21-88 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Tropical Storm)
-  RI-SOE-2005-10-15 SOUTHEAST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$560,000 (Flood)
+  RI-SOE-2005-10-17 SOUTHEAST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$560,000 (Flood)
   RI-EO-21-88 NEWPORT [NWS forecast zone]: deaths=0, injuries=0, damage=$500,000 (Tropical Storm)
-  RI-SOE-2005-10-15 NORTHWEST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$340,000 (Flood)
-  RI-SOE-2005-10-15 WESTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$300,000 (Flood)
-  RI-SOE-2005-10-15 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$300,000 (Flood)
+  RI-SOE-2005-10-17 NORTHWEST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$340,000 (Flood)
+  RI-SOE-2005-10-17 WESTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$300,000 (Flood)
+  RI-SOE-2005-10-17 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$300,000 (Flood)
   RI-SOE-2012-10-28 BRISTOL [NWS forecast zone]: deaths=0, injuries=0, damage=$220,000 (Coastal Flood, High Wind)
   RI-EO-21-88 BRISTOL [NWS forecast zone]: deaths=0, injuries=0, damage=$200,000 (Tropical Storm)
-  RI-SOE-2005-10-15 EASTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$120,000 (Flood)
+  RI-SOE-2005-10-17 EASTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$120,000 (Flood)
   RI-EO-21-88 NORTHWEST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$80,000 (Tropical Storm)
   RI-SOE-2011-08-26 NORTHWEST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$75,000 (Tropical Storm)
+  RI-EO-10-06 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$50,000 (High Wind)
   RI-SOE-2011-08-26 WESTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$50,000 (Tropical Storm)
   RI-EO-15-02 NEWPORT [NWS forecast zone]: deaths=0, injuries=0, damage=$50,000 (Blizzard)
+  RI-EO-10-06 WASHINGTON [county/county-equivalent]: deaths=0, injuries=0, damage=$40,000 (Flood)
   RI-EO-21-88 WESTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$38,000 (Tropical Storm)
+  RI-EO-10-06 NEWPORT [NWS forecast zone]: deaths=0, injuries=0, damage=$25,000 (High Wind)
   RI-SOE-2011-08-26 NEWPORT [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (Storm Surge/Tide, Tropical Storm)
   RI-SOE-2012-10-28 SOUTHEAST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (High Wind)
   RI-SOE-2011-08-26 EASTERN KENT [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000 (Tropical Storm)
   RI-SOE-2011-08-26 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000 (Tropical Storm)
-  RI-EO-24-01 WASHINGTON [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000 (Coastal Flood, High Wind)
-  RI-SOE-2011-08-26 BRISTOL [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000 (Storm Surge/Tide, Tropical Storm)
-  RI-SOE-2012-10-28 NORTHWEST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000 (High Wind)
-  RI-SOE-2011-08-26 SOUTHEAST PROVIDENCE [NWS forecast zone]: deaths=0, injuries=0, damage=$5,000 (Tropical Storm)
-  Showing the 25 highest-consequence areas; all 30 are retained in /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 34 are retained in /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/rhode-island/eo_storm_severity_summary.csv.tmp.
 
-RI: 13 actions, 31 federal declarations; 2015-present structured Governor archive; State Library 1973-2014 backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
+RI: 15 actions, 31 federal declarations; 2000-present: the Governor's executive order archive from 2015, plus 2003-2013 weather declarations (Carcieri and Chafee) from the State Archives' scanned executive orders, the Governor's press releases on ri.gov and FMCSA's copy of Executive Order 13-02; the Archives hold no executive order for the February 2003 snowstorm or the April 2007 nor'easter, and Almond's 2000-2002 orders have not been read; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
 SC: sc_emergency_actions_all.csv: left off 54 declaration(s) signed before 1970
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/south-carolina/hazard_overrides.csv
 SC-EO-2025-14: no matching storm events found in the date window.
@@ -2130,61 +2177,90 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/south-carolina/eo_storm_severity_summary.csv.tmp.
 
 SC: 67 actions, 51 federal declarations; 1970-present from the official State Library collection (orders before 1970 left off), enriched from the 2017-present Governor archive
-South Dakota: 103 orders scraped, 25 written as declarations.
+South Dakota: 433 orders scraped (330 from the 2000-2019 search), 89 written as declarations.
 
-Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/south-dakota/hazard_overrides.csv
+Applied 79 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/south-dakota/hazard_overrides.csv
 SD-EO-2026-01: no matching storm events found in the date window.
 SD-EO-2026-08: no matching storm events found in the date window.
 SD-EO-2023-14: no matching storm events found in the date window.
 SD-EO-2020-27: no matching storm events found in the date window.
+SD-EO-2019-13: no matching storm events found in the date window.
+SD-EO-2019-19: searching around the reviewed event date 2019-06-30 (signed 2019-08-13)
+SD-EO-2019-28: searching around the reviewed event date 2019-09-10 (signed 2019-11-05)
+SD-EO-2018-06: searching around the reviewed event date 2018-05-17 (signed 2018-06-14)
+SD-EO-2017-03: searching around the reviewed event date 2016-12-24 (signed 2017-01-23)
+SD-EO-2016-04: no matching storm events found in the date window.
+SD-EO-2016-09: no matching storm events found in the date window.
+SD-EO-2015-10: searching around the reviewed event date 2015-06-17 (signed 2015-07-22)
+SD-EO-2014-08: no matching storm events found in the date window.
+SD-EO-2013-06: no matching storm events found in the date window.
+SD-EO-2011-17: no matching storm events found in the date window.
+SD-EO-2010-11: no matching storm events found in the date window.
+SD-EO-2010-13: searching around the reviewed event date 2010-04-02 (signed 2010-04-27)
+SD-EO-2010-21: searching around the reviewed event date 2010-06-16 (signed 2010-07-19)
+SD-EO-2010-31: no matching storm events found in the date window.
+SD-EO-2010-39: searching around the reviewed event date 2010-09-22 (signed 2010-10-25)
+SD-EO-2007-13: no matching storm events found in the date window.
+SD-EO-2007-18: no matching storm events found in the date window.
+SD-EO-2006-07: searching around the reviewed event date 2006-04-18 (signed 2006-05-12)
+SD-EO-2006-13: searching around the reviewed event date 2006-07-06 (signed 2006-12-05)
 
-3 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): SD-EO-2026-10, SD-EO-2025-03, SD-EO-2022-11
-Wrote 1289 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_matches.csv.tmp
-Wrote severity summary (494 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp
+4 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): SD-EO-2026-10, SD-EO-2025-03, SD-EO-2022-11, SD-EO-2010-29
+Wrote 4443 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_matches.csv.tmp
+Wrote severity summary (2059 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  SD-EO-2019-06 SANBORN [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Flood)
   SD-EO-2022-03 MINNEHAHA [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Thunderstorm Wind)
+  SD-EO-2013-09 HAMLIN [county/county-equivalent]: deaths=1, injuries=1, damage=$215,000 (Flash Flood, Hail, Thunderstorm Wind, Tornado)
+  SD-EO-2014-05 BUTTE [county/county-equivalent]: deaths=1, injuries=1, damage=$100,000 (Flash Flood, Flood)
   SD-EO-2024-04 LINCOLN [county/county-equivalent]: deaths=1, injuries=0, damage=$12,000,000 (Flash Flood, Flood)
+  SD-EO-2005-15 DOUGLAS [NWS forecast zone]: deaths=1, injuries=0, damage=$1,100,000 (Blizzard, Ice Storm, Winter Weather)
+  SD-EO-2008-10 RAPID CITY [NWS forecast zone]: deaths=1, injuries=0, damage=$300,000 (Blizzard)
+  SD-EO-2016-10 HAAKON [NWS forecast zone]: deaths=1, injuries=0, damage=$300,000 (Blizzard)
+  SD-EO-2017-03 HAAKON [NWS forecast zone]: deaths=1, injuries=0, damage=$300,000 (Blizzard)
+  SD-EO-2015-10 BUFFALO [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Thunderstorm Wind)
+  SD-EO-2019-04 RAPID CITY [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Blizzard)
+  SD-EO-2015-08 DOUGLAS [county/county-equivalent]: deaths=0, injuries=9, damage=$1,500,000 (Tornado)
+  SD-EO-2019-22 LINCOLN [county/county-equivalent]: deaths=0, injuries=8, damage=$8,354,250 (Flood, Thunderstorm Wind, Tornado)
+  SD-EO-2019-28 LINCOLN [county/county-equivalent]: deaths=0, injuries=8, damage=$8,354,250 (Flood, Thunderstorm Wind, Tornado)
+  SD-EO-2009-07 CORSON [NWS forecast zone]: deaths=0, injuries=3, damage=$0 (High Wind)
+  SD-EO-2010-21 ZIEBACH [county/county-equivalent]: deaths=0, injuries=2, damage=$910,000 (Flash Flood, Flood, Hail, Thunderstorm Wind, Tornado)
+  SD-EO-2010-24 HAND [county/county-equivalent]: deaths=0, injuries=2, damage=$150,000 (Flash Flood)
+  SD-EO-2013-08 BENNETT [county/county-equivalent]: deaths=0, injuries=2, damage=$125,000 (Thunderstorm Wind, Tornado)
   SD-EO-2022-03 HAMLIN [county/county-equivalent]: deaths=0, injuries=2, damage=$0 (Hail, Thunderstorm Wind, Tornado)
+  SD-EO-2019-22 MINNEHAHA [county/county-equivalent]: deaths=0, injuries=1, damage=$6,900,000 (Flash Flood, Flood, Thunderstorm Wind, Tornado)
+  SD-EO-2019-28 MINNEHAHA [county/county-equivalent]: deaths=0, injuries=1, damage=$6,900,000 (Flash Flood, Flood, Thunderstorm Wind, Tornado)
+  SD-EO-2007-08 YANKTON [county/county-equivalent]: deaths=0, injuries=1, damage=$300,000 (Flash Flood, Flood, Hail, Tornado)
   SD-EO-2022-03 DEUEL [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Thunderstorm Wind, Tornado)
   SD-EO-2024-04 UNION [county/county-equivalent]: deaths=0, injuries=0, damage=$54,520,000 (Flood)
-  SD-EO-2021-09 HUTCHINSON [NWS forecast zone]: deaths=0, injuries=0, damage=$11,990,000 (Drought)
-  SD-EO-2021-09 YANKTON [NWS forecast zone]: deaths=0, injuries=0, damage=$11,570,000 (Drought)
-  SD-EO-2024-04 DAVISON [county/county-equivalent]: deaths=0, injuries=0, damage=$10,250,000 (Flash Flood, Flood)
-  SD-EO-2024-04 CLAY [county/county-equivalent]: deaths=0, injuries=0, damage=$6,500,000 (Flash Flood, Flood)
-  SD-EO-2021-09 TURNER [NWS forecast zone]: deaths=0, injuries=0, damage=$6,490,000 (Drought)
-  SD-EO-2021-09 BON HOMME [NWS forecast zone]: deaths=0, injuries=0, damage=$5,810,000 (Drought)
-  SD-EO-2021-09 LAKE [NWS forecast zone]: deaths=0, injuries=0, damage=$5,380,000 (Drought)
-  SD-EO-2021-09 MINER [NWS forecast zone]: deaths=0, injuries=0, damage=$5,360,000 (Drought)
-  SD-EO-2024-04 TURNER [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000,000 (Flash Flood, Flood)
-  SD-EO-2021-09 MCCOOK [NWS forecast zone]: deaths=0, injuries=0, damage=$4,590,000 (Drought)
-  SD-EO-2021-09 BEADLE [NWS forecast zone]: deaths=0, injuries=0, damage=$4,150,000 (Drought)
-  SD-EO-2021-09 BRULE [NWS forecast zone]: deaths=0, injuries=0, damage=$3,840,000 (Drought)
-  SD-EO-2021-09 AURORA [NWS forecast zone]: deaths=0, injuries=0, damage=$3,840,000 (Drought)
-  SD-EO-2021-09 GREGORY [NWS forecast zone]: deaths=0, injuries=0, damage=$3,299,000 (Drought)
-  SD-EO-2024-04 CHARLES MIX [county/county-equivalent]: deaths=0, injuries=0, damage=$3,000,000 (Flood)
-  SD-EO-2021-09 CHARLES MIX [NWS forecast zone]: deaths=0, injuries=0, damage=$2,876,000 (Drought)
-  SD-EO-2021-09 BROOKINGS [NWS forecast zone]: deaths=0, injuries=0, damage=$2,774,000 (Drought)
-  SD-EO-2024-04 AURORA [county/county-equivalent]: deaths=0, injuries=0, damage=$2,540,000 (Flash Flood, Flood)
-  SD-EO-2021-09 MINNEHAHA [NWS forecast zone]: deaths=0, injuries=0, damage=$2,369,000 (Drought)
-  SD-EO-2021-09 DAVISON [NWS forecast zone]: deaths=0, injuries=0, damage=$2,184,000 (Drought)
-  Showing the 25 highest-consequence areas; all 103 are retained in /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp.
+  SD-EO-2013-05 MINNEHAHA [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000,000 (Winter Storm)
+  Showing the 25 highest-consequence areas; all 482 are retained in /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/south-dakota/eo_storm_severity_summary.csv.tmp.
 
-SD: 22 actions, 98 federal declarations; 2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending
+SD: 85 actions, 98 federal declarations; 2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders
+Tennessee proclamations: 22 index rows over 2 page(s)
+Tennessee proclamations: 22 state of emergency title(s), 12 naming a weather hazard
+
 TN-BILLLEE-EO-107: no matching storm events found in the date window.
 TN-BILLLEE-EO-99: no matching storm events found in the date window.
 TN-BILLLEE-EO-96: no matching storm events found in the date window.
 TN-BILLLEE-EO-13: no matching storm events found in the date window.
 TN-BILLLEE-EO-09: no matching storm events found in the date window.
+TN-BILLHASLAM-EO-64: no matching storm events found in the date window.
+TN-BILLHASLAM-EO-09: no matching storm events found in the date window.
+TN-PROC-1912: no matching storm events found in the date window.
+TN-PROC-1053: no matching storm events found in the date window.
+TN-PROC-994: no matching storm events found in the date window.
 TN-SOE-2011-10-13: no matching storm events found in the date window.
 TN-PHILBREDESEN-EO-27: no matching storm events found in the date window.
 TN-PHILBREDESEN-EO-53: no matching storm events found in the date window.
 TN-PHILBREDESEN-EO-57: no matching storm events found in the date window.
 TN-PHILBREDESEN-EO-65: no matching storm events found in the date window.
-Wrote 2105 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_matches.csv.tmp
-Wrote severity summary (988 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp
+TN-BILLHASLAM-EO-36: no matching storm events found in the date window.
+Wrote 3009 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_matches.csv.tmp
+Wrote severity summary (1436 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   TN-SOE-2011-04-26 BRADLEY [county/county-equivalent]: deaths=9, injuries=201, damage=$23,855,000 (Hail, Thunderstorm Wind, Tornado)
@@ -2196,11 +2272,14 @@ Areas with reported deaths, injuries, or damage:
   TN-SOE-2024-01-13 SHELBY [NWS forecast zone]: deaths=4, injuries=0, damage=$0 (Extreme Cold/Wind Chill, Winter Storm)
   TN-BILLLEE-EO-94 LAKE [county/county-equivalent]: deaths=3, injuries=0, damage=$4,500,000 (Tornado)
   TN-BILLHASLAM-EO-43 SHELBY [NWS forecast zone]: deaths=3, injuries=0, damage=$0 (Cold/Wind Chill, Winter Storm)
+  TN-BILLHASLAM-EO-44 SHELBY [NWS forecast zone]: deaths=3, injuries=0, damage=$0 (Cold/Wind Chill, Winter Storm)
+  TN-SOE-2012-02-29 CUMBERLAND [county/county-equivalent]: deaths=2, injuries=7, damage=$1,000,000 (Hail, Tornado)
   TN-SOE-2025-04-02 FAYETTE [county/county-equivalent]: deaths=2, injuries=3, damage=$103,000 (Hail, Thunderstorm Wind, Tornado)
   TN-BILLLEE-EO-105 WASHINGTON [county/county-equivalent]: deaths=2, injuries=0, damage=$39,000,000 (Flash Flood)
   TN-SOE-2011-04-26 JOHNSON [county/county-equivalent]: deaths=2, injuries=0, damage=$1,000,000 (Tornado)
   TN-BILLLEE-EO-105 COCKE [county/county-equivalent]: deaths=2, injuries=0, damage=$24,300 (Flash Flood, Flood)
   TN-BILLHASLAM-EO-43 HENRY [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Cold/Wind Chill, Winter Storm, Winter Weather)
+  TN-BILLHASLAM-EO-44 HENRY [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Cold/Wind Chill, Winter Storm, Winter Weather)
   TN-BILLHASLAM-EO-61 POLK [county/county-equivalent]: deaths=2, injuries=0, damage=$0 (Thunderstorm Wind, Tornado)
   TN-BILLLEE-EO-76 SHELBY [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Cold/Wind Chill, Heavy Snow, Winter Storm)
   TN-SOE-2024-01-13 KNOX [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Heavy Snow, High Wind)
@@ -2209,17 +2288,25 @@ Areas with reported deaths, injuries, or damage:
   TN-SOE-2011-04-26 WASHINGTON [county/county-equivalent]: deaths=1, injuries=0, damage=$3,520,000 (Hail, Thunderstorm Wind, Tornado)
   TN-BILLLEE-EO-94 OBION [county/county-equivalent]: deaths=1, injuries=0, damage=$2,910,000 (Thunderstorm Wind, Tornado)
   TN-SOE-2011-04-26 SEQUATCHIE [county/county-equivalent]: deaths=1, injuries=0, damage=$580,000 (Flood, Hail, Thunderstorm Wind, Tornado)
-  TN-SOE-2025-04-02 OBION [county/county-equivalent]: deaths=1, injuries=0, damage=$295,000 (Hail, Thunderstorm Wind, Tornado)
-  TN-BILLLEE-EO-94 SHELBY [county/county-equivalent]: deaths=1, injuries=0, damage=$252,000 (Flash Flood, Hail, Thunderstorm Wind)
-  TN-SOE-2025-04-02 TIPTON [county/county-equivalent]: deaths=1, injuries=0, damage=$20,000 (Flash Flood, Hail)
-  Showing the 25 highest-consequence areas; all 273 are retained in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 413 are retained in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
-TN: 30 actions, 97 federal declarations; 2000-present SOS catalog via state-university mirror; legacy exact-date review pending
-Texas: read 142 of 142 monthly archive pages (0 not read), 627 proclamation posts, 439 parsed (0 not read), 58 weather declarations.
+TN: 51 actions, 97 federal declarations; 2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet
+Texas: read 134 of 142 monthly archive pages (8 not read), 608 proclamation posts, 357 parsed (104 not read), 50 weather declarations.
 
-TX: tx_emergency_actions_all.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: 3 more Texas archive pages not read
+  WARNING: Texas proclamation post not read: crawl time budget spent before https://gov.texas.gov/news/post/updated-governor-abbott-requests-sba-disaster-declaration-for-south-texas-severe-storm-weather
+  WARNING: Texas proclamation post not read: crawl time budget spent before https://gov.texas.gov/news/post/governor-abbott-renews-severe-storm-and-flooding-disaster-proclamation-in-may-2025
+  WARNING: Texas proclamation post not read: crawl time budget spent before https://gov.texas.gov/news/post/governor-abbott-announces-federal-disaster-declaration-for-south-texas-flooding
+
+TX: declarations_for_join.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+TX: tx_emergency_actions_all.csv: kept 85 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 
 1 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): TX-PROCLAMATION-2015-05-15-governor_abbott_again_declares_state_of_disaster_in_texas_counties
@@ -2256,8 +2343,8 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 58 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
-{"actions": 560, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
+TX: 58 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 8 saved records kept that this refresh's check of the state source did not return
+{"actions": 561, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
 UT-PROC-E1536D0F537ACA7F: no matching storm events found in the date window.
@@ -2450,7 +2537,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 82 actions, 77 federal declarations; 2002-present
-WA: wa_order_relationships.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 9 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2472,40 +2559,52 @@ WA-PROC-15-14: searching around the reviewed event date 2015-08-29 (signed 2015-
 WA-PROC-15-03: no matching storm events found in the date window.
 WA-PROC-14-03: searching around the reviewed event date 2014-03-08 (signed 2014-04-03)
 WA-PROC-13-08: searching around the reviewed event date 2013-09-29 (signed 2013-10-03)
-Wrote 699 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_matches.csv.tmp
-Wrote severity summary (434 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp
+WA-SOE-2000-06-28: no matching storm events found in the date window.
+WA-SOE-2000-08-08: no matching storm events found in the date window.
+WA-SOE-2002-01-08: no matching storm events found in the date window.
+WA-SOE-2003-02-12: no matching storm events found in the date window.
+WA-SOE-2004-02-06: no matching storm events found in the date window.
+WA-SOE-2006-03-03: no matching storm events found in the date window.
+WA-SOE-2007-02-05: no matching storm events found in the date window.
+WA-PROC-07-02: no matching storm events found in the date window.
+WA-PROC-08-08: no matching storm events found in the date window.
+WA-PROC-10-02: no matching storm events found in the date window.
+WA-PROC-11-08: no matching storm events found in the date window.
+WA-PROC-12-04: no matching storm events found in the date window.
+Wrote 1134 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_matches.csv.tmp
+Wrote severity summary (729 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  WA-SOE-2006-12-15 TACOMA AREA [NWS forecast zone]: deaths=2, injuries=2, damage=$11,010,000 (High Wind, Strong Wind)
   WA-PROC-23-05 SPOKANE AREA [NWS forecast zone]: deaths=2, injuries=0, damage=$75,000,000 (Wildfire)
+  WA-SOE-2006-11-06 LEWIS [county/county-equivalent]: deaths=2, injuries=0, damage=$8,800,000 (Flood)
   WA-PROC-22-01 GRAYS HARBOR [county/county-equivalent]: deaths=2, injuries=0, damage=$3,390,000 (Flood)
   WA-PROC-15-15 SPOKANE AREA [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (High Wind)
+  WA-PROC-07-06 CENTRAL COAST [NWS forecast zone]: deaths=1, injuries=10, damage=$20,000,000 (High Wind)
   WA-PROC-15-14 Tacoma Area [NWS forecast zone]: deaths=1, injuries=4, damage=$250,000 (Strong Wind)
   WA-PROC-22-01 KING [county/county-equivalent]: deaths=1, injuries=1, damage=$1,520,000 (Heavy Rain)
+  WA-SOE-2006-12-15 LOWER CHEHALIS VALLEY AREA [NWS forecast zone]: deaths=1, injuries=1, damage=$1,000,000 (High Wind)
+  WA-PROC-12-01 EAST PUGET SOUND LOWLANDS [NWS forecast zone]: deaths=1, injuries=1, damage=$800,000 (Heavy Snow, Ice Storm)
+  WA-PROC-07-06 LEWIS [county/county-equivalent]: deaths=1, injuries=0, damage=$50,000,000 (Flood)
+  WA-PROC-07-06 LOWER CHEHALIS VALLEY AREA [NWS forecast zone]: deaths=1, injuries=0, damage=$2,000,000 (High Wind)
+  WA-SOE-2006-12-15 KING [county/county-equivalent]: deaths=1, injuries=0, damage=$1,750,000 (Flash Flood, Heavy Rain)
   WA-PROC-15-15 EAST PUGET SOUND LOWLANDS [NWS forecast zone]: deaths=1, injuries=0, damage=$1,500,000 (Strong Wind)
   WA-PROC-15-14 SEATTLE AND VICINITY [NWS forecast zone]: deaths=1, injuries=0, damage=$1,000,000 (Strong Wind)
-  WA-PROC-15-15 SEATTLE AND VICINITY [NWS forecast zone]: deaths=0, injuries=1, damage=$300,000 (Strong Wind)
-  WA-PROC-21-18 WHATCOM [county/county-equivalent]: deaths=0, injuries=1, damage=$75,000 (Heavy Rain)
-  WA-PROC-14-04 OKANOGAN VALLEY [NWS forecast zone]: deaths=0, injuries=0, damage=$121,000,000 (Wildfire)
-  WA-PROC-24-04 CENTRAL CHELAN COUNTY [NWS forecast zone]: deaths=0, injuries=0, damage=$100,000,000 (Wildfire)
-  WA-PROC-18-05 EAST SLOPES NORTHERN CASCADES [NWS forecast zone]: deaths=0, injuries=0, damage=$81,700,000 (Wildfire)
-  WA-PROC-24-04 LOWER GARFIELD & ASOTIN [NWS forecast zone]: deaths=0, injuries=0, damage=$35,000,000 (Wildfire)
-  WA-PROC-24-04 OKANOGAN HIGHLANDS [NWS forecast zone]: deaths=0, injuries=0, damage=$21,900,000 (Wildfire)
-  WA-PROC-24-05 OKANOGAN HIGHLANDS [NWS forecast zone]: deaths=0, injuries=0, damage=$21,900,000 (Wildfire)
-  WA-PROC-18-03 PEND OREILLE [county/county-equivalent]: deaths=0, injuries=0, damage=$8,000,000 (Flood)
-  WA-PROC-15-16 SOUTHWEST INTERIOR [NWS forecast zone]: deaths=0, injuries=0, damage=$6,000,000 (High Wind)
-  WA-PROC-15-16 COWLITZ [county/county-equivalent]: deaths=0, injuries=0, damage=$5,995,000 (Flood, Heavy Rain)
-  WA-PROC-17-12 CASCADES OF SNOHOMISH AND KING COUNTIES [NWS forecast zone]: deaths=0, injuries=0, damage=$4,500,000 (Wildfire)
-  WA-PROC-15-15 EVERETT AND VICINITY [NWS forecast zone]: deaths=0, injuries=0, damage=$3,500,000 (High Wind)
-  WA-PROC-23-05 WESTERN OKANOGAN COUNTY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,350,000 (Wildfire)
-  WA-PROC-18-03 OKANOGAN [county/county-equivalent]: deaths=0, injuries=0, damage=$2,305,260 (Flood)
-  WA-PROC-19-02 YAKIMA VALLEY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,200,000 (Blizzard)
-  WA-PROC-24-04 WESTERN CHELAN COUNTY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,150,000 (Wildfire)
-  WA-PROC-18-05 SPOKANE AREA [NWS forecast zone]: deaths=0, injuries=0, damage=$2,000,000 (Wildfire)
-  Showing the 25 highest-consequence areas; all 123 are retained in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
+  WA-PROC-07-06 HOOD CANAL AREA [NWS forecast zone]: deaths=1, injuries=0, damage=$600,000 (Debris Flow, High Wind)
+  WA-PROC-07-06 MASON [county/county-equivalent]: deaths=1, injuries=0, damage=$12,000 (Flood)
+  WA-PROC-08-10 SPOKANE AREA [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Heavy Snow)
+  WA-SOE-2006-12-15 EAST PUGET SOUND LOWLANDS [NWS forecast zone]: deaths=0, injuries=17, damage=$10,200,000 (High Wind, Strong Wind)
+  WA-SOE-2006-12-15 SEATTLE/BREMERTON AREA [NWS forecast zone]: deaths=0, injuries=16, damage=$16,850,000 (High Wind, Strong Wind)
+  WA-PROC-07-06 NORTH COAST [NWS forecast zone]: deaths=0, injuries=2, damage=$3,000,000 (High Wind)
+  WA-SOE-2001-08-15 OKANOGAN [county/county-equivalent]: deaths=0, injuries=2, damage=$900,000 (Wildfire)
+  WA-PROC-12-01 SPOKANE AREA [NWS forecast zone]: deaths=0, injuries=2, damage=$0 (Heavy Snow, Strong Wind, Winter Weather)
+  WA-PROC-08-10 EAST PUGET SOUND LOWLANDS [NWS forecast zone]: deaths=0, injuries=1, damage=$2,200,000 (Heavy Snow)
+  WA-SOE-2006-12-15 CENTRAL COAST [NWS forecast zone]: deaths=0, injuries=1, damage=$1,600,000 (High Wind)
+  Showing the 25 highest-consequence areas; all 243 are retained in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/washington/eo_storm_severity_summary.csv.tmp.
 
-WA: 43 actions, 223 federal declarations; 2013-present structured Governor proclamation archive; 2000-2012 unavailable
+WA: 81 actions, 223 federal declarations; 2000-present: structured Governor proclamation archive from 2013, with 2000-2012 weather proclamations (Locke and Gregoire) added by hand from the Washington State Digital Archives and the termination proclamations that list them; Gregoire proclamations 09-06, 09-07 and 10-08 could not be read, and 07-01 is dated from the termination that lists it
 West Virginia: 23 actions, 0 relationships, 18 weather declarations
 
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/west-virginia/hazard_overrides.csv
@@ -2615,12 +2714,62 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending
 
-Retrying 1 state(s) whose source failed or returned nothing, after 60s: KS
-Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations
+Retrying 1 state(s) whose source failed or returned nothing, after 60s: NH
+New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
+New Hampshire: 0 order PDFs read, 73 dated on an earlier run and not read again
+New Hampshire: 339 actions, 49 relationships, 8 weather declarations
 
-WARNING KS: Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
-RETRY KS: still failed (Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations))
-KS: 51 actions, 96 federal declarations; 2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)
-TIME total: collect 3080s, storm join 112s. Slowest: TX 554s+1s, NJ 543s+11s, NC 451s+1s, CT 268s+0s, WA 106s+1s, LA 102s+1s, VT 98s+1s, SC 87s+4s, PA 86s+1s, MI 85s+1s
+  WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
+  WARNING: the registry could not be fetched; reading the Internet Archive copy
+
+NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 6 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 259 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+RETRY NH: recovered (ok, 8 records returned); rebuilding
+Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
+NH-2010-01: no matching storm events found in the date window.
+NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
+NH-FMCSA-D74D3C13CBE5: no matching storm events found in the date window.
+Wrote 173 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
+Wrote severity summary (139 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
+
+Areas with reported deaths, injuries, or damage:
+  NH-PROC-2005-10-09 CHESHIRE [county/county-equivalent]: deaths=2, injuries=0, damage=$10,000,000 (Flash Flood)
+  NH-PROC-2005-10-09 SULLIVAN [NWS forecast zone]: deaths=2, injuries=0, damage=$3,250,000 (Flood)
+  NH-PROC-2012-10-29 GRAFTON [county/county-equivalent]: deaths=1, injuries=0, damage=$9,000 (Debris Flow, Flood, Heavy Rain, Thunderstorm Wind)
+  NH-2003-09 HILLSBOROUGH [county/county-equivalent]: deaths=0, injuries=9, damage=$0 (Lightning)
+  NH-2003-09 BELKNAP [county/county-equivalent]: deaths=0, injuries=4, damage=$0 (Lightning)
+  NH-2003-09 CHESHIRE [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Flash Flood)
+  NH-PROC-2012-10-29 MERRIMACK [NWS forecast zone]: deaths=0, injuries=1, damage=$106,000 (High Wind)
+  NH-2008-12 EASTERN HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (Ice Storm)
+  NH-2008-12 WESTERN AND CENTRAL HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$12,000,000 (Ice Storm)
+  NH-2008-12 CHESHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$9,000,000 (Ice Storm)
+  NH-2013-08 GRAFTON [county/county-equivalent]: deaths=0, injuries=0, damage=$7,500,000 (Flash Flood)
+  NH-2013-08 SULLIVAN [county/county-equivalent]: deaths=0, injuries=0, damage=$2,575,000 (Flash Flood, Thunderstorm Wind)
+  NH-2008-12 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$1,620,000 (Ice Storm)
+  NH-2008-12 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,580,000 (Ice Storm)
+  NH-PROC-2005-10-09 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,010,000 (Flood)
+  NH-PROC-2005-10-09 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Flood)
+  NH-2008-12 SULLIVAN [NWS forecast zone]: deaths=0, injuries=0, damage=$786,000 (Ice Storm)
+  NH-PROC-2012-10-29 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$387,000 (High Wind)
+  NH-2008-12 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$359,000 (Ice Storm)
+  NH-2008-12 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$326,000 (Ice Storm)
+  NH-2008-12 SOUTHERN GRAFTON [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Ice Storm)
+  NH-PROC-2012-10-29 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Coastal Flood, High Wind)
+  NH-PROC-2005-10-09 STRAFFORD [NWS forecast zone]: deaths=0, injuries=0, damage=$200,000 (Flood)
+  NH-PROC-2012-10-29 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$184,000 (High Wind)
+  NH-2008-12 SOUTHERN CARROLL [NWS forecast zone]: deaths=0, injuries=0, damage=$166,000 (Ice Storm)
+  Showing the 25 highest-consequence areas; all 51 are retained in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
+
+Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
+
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+TIME total: collect 4235s, storm join 91s. Slowest: TX 1514s+1s, NJ 423s+9s, OR 350s+2s, NC 315s+1s, CT 194s+0s, NM 130s+1s, VT 125s+0s, SC 106s+3s, LA 92s+1s, MI 89s+1s
+WARNING kept saved records the state source did not return: KS (12), TX (8)
 Row-loss check: no saved rows lost.
-Plus health: 49 green, 1 yellow, 0 red.
+Plus health: 48 green, 2 yellow, 0 red.
+Changes since the last run (2026-10-26 23:44 UTC):
+
+- **Texas** went from green to yellow. The source left out 8 of 58 saved records; they are shown from earlier runs.
+
+Now 48 green, 2 yellow, 0 red.

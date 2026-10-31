@@ -683,6 +683,17 @@
       "title": "Gov. Matt Blunt declares a DROUGHT ALERT for 23 Missouri counties and orders the Director of the Department of Natural Resources to activate and designate a chairperson for the Drought Assessment Committee. (July 5) - Rescinded by Executive Order 24-11"
     },
     {
+      "action_number": "04-12",
+      "action_type": "declaration",
+      "date_signed": "2004-06-04",
+      "declaration_id": "MO-EO-04-12",
+      "governor": "Bob Holden",
+      "origin": "state",
+      "source_url": "https://www.sos.mo.gov/library/reference/orders/2004/eo04_012",
+      "state": "MO",
+      "title": "Gov. Bob Holden amends Executive Order 04-10 and declares an emergency due to severe weather in all Northern and Central Missouri counties. (June 4)"
+    },
+    {
       "action_number": "03-12",
       "action_type": "declaration",
       "date_signed": "2003-05-05",
@@ -4098,6 +4109,25 @@
       "title": "Gov. Matt Blunt declares a DROUGHT ALERT for 23 Missouri counties and orders the Director of the Department of Natural Resources to activate and designate a chairperson for the Drought Assessment Committee. (July 5) - Rescinded by Executive Order 24-11"
     },
     {
+      "date_signed": "2004-06-04",
+      "declaration_id": "MO-EO-04-12",
+      "federal_declaration": {
+        "begin": "2004-05-18",
+        "date": "2004-06-11",
+        "end": "2004-05-31",
+        "id": "DR-1524",
+        "incidentType": "Severe Storm",
+        "number": 1524,
+        "title": "SEVERE STORMS, TORNADOES, AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
+      "title": "Gov. Bob Holden amends Executive Order 04-10 and declares an emergency due to severe weather in all Northern and Central Missouri counties. (June 4)"
+    },
+    {
       "date_signed": "2003-05-05",
       "declaration_id": "MO-EO-03-12",
       "federal_declaration": {
@@ -4415,37 +4445,45 @@
   "federal_match_window_days": 21,
   "federal_without_state": {
     "compared": 54,
-    "declarations": [
+    "covered_by_extension": [
       {
-        "begin": "2025-05-23",
-        "date": "2025-07-22",
-        "end": "2025-05-26",
+        "declaration": "MO-EO-25-19",
         "id": "DR-4885",
-        "incidentType": "Severe Storm",
-        "number": 4885,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
+        "order": "MO-EO-25-24",
+        "order_date": "2025-05-20"
       },
       {
-        "begin": "2025-05-16",
-        "date": "2025-06-09",
-        "end": "2025-05-16",
+        "declaration": "MO-EO-25-19",
         "id": "DR-4877",
-        "incidentType": "Severe Storm",
-        "number": 4877,
-        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING",
-        "type": "DR"
+        "order": "MO-EO-25-23",
+        "order_date": "2025-05-13"
       },
       {
-        "begin": "2025-04-29",
-        "date": "2025-06-09",
-        "end": "2025-04-29",
+        "declaration": "MO-EO-25-19",
         "id": "DR-4876",
-        "incidentType": "Severe Storm",
-        "number": 4876,
-        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, TORNADOES, AND FLOODING",
-        "type": "DR"
+        "order": "MO-EO-25-23",
+        "order_date": "2025-05-13"
       },
+      {
+        "declaration": "MO-EO-11-06",
+        "id": "DR-4012",
+        "order": "MO-EO-11-11",
+        "order_date": "2011-05-26"
+      },
+      {
+        "declaration": "MO-EO-11-06",
+        "id": "EM-3325",
+        "order": "MO-EO-11-11",
+        "order_date": "2011-05-26"
+      },
+      {
+        "declaration": "MO-EO-08-14",
+        "id": "DR-1760",
+        "order": "MO-EO-08-17",
+        "order_date": "2008-04-29"
+      }
+    ],
+    "declarations": [
       {
         "begin": "2021-12-10",
         "date": "2022-01-10",
@@ -4485,73 +4523,33 @@
         "number": 4200,
         "title": "SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING",
         "type": "DR"
-      },
-      {
-        "begin": "2011-06-01",
-        "date": "2011-08-12",
-        "end": "2011-08-01",
-        "id": "DR-4012",
-        "incidentType": "Flood",
-        "number": 4012,
-        "title": "FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2011-06-01",
-        "date": "2011-06-30",
-        "end": "2011-08-01",
-        "id": "EM-3325",
-        "incidentType": "Flood",
-        "number": 3325,
-        "title": "FLOODING",
-        "type": "EM"
-      },
-      {
-        "begin": "2008-05-10",
-        "date": "2008-05-23",
-        "end": "2008-05-11",
-        "id": "DR-1760",
-        "incidentType": "Severe Storm",
-        "number": 1760,
-        "title": "SEVERE STORMS AND TORNADOES",
-        "type": "DR"
-      },
-      {
-        "begin": "2004-05-18",
-        "date": "2004-06-11",
-        "end": "2004-05-31",
-        "id": "DR-1524",
-        "incidentType": "Severe Storm",
-        "number": 1524,
-        "title": "SEVERE STORMS, TORNADOES, AND FLOODING",
-        "type": "DR"
       }
     ],
     "since": 2000
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 68,
+    "action_count": 69,
     "federal_declaration_count": 88,
     "severity_rows": 2494,
     "storm_match_rows": 7037
   },
   "name": "Missouri",
-  "noaa_data_through": "2026-06-29",
+  "noaa_data_through": "2026-07-30",
   "official_source_url": "https://www.sos.mo.gov/library/reference/orders/default",
   "schema_version": 1,
   "slug": "missouri",
   "source_status": "ok",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 47,
+    "federal_matched": 48,
     "fmcsa_archive": 0,
     "noaa_matched": 63,
-    "noaa_none": 5,
+    "noaa_none": 6,
     "noaa_pending": 0,
     "reviewed_not_weather": 15,
-    "state_archive": 68
+    "state_archive": 69
   },
   "state": "MO"
 }

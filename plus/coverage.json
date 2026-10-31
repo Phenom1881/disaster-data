@@ -1,5 +1,5 @@
 {
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "states": [
     {
       "abbreviation": "AL",
@@ -12,13 +12,14 @@
       "federal_without_state": {
         "compared": 20,
         "count": 2,
+        "covered_by_extension": [],
         "ids": [
           "EM-3618",
           "DR-4632"
         ],
         "since": 2017
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -46,8 +47,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 5.9,
-        "storm_join_seconds": 21.1
+        "collect_seconds": 4.7,
+        "storm_join_seconds": 14.4
       }
     },
     {
@@ -61,6 +62,7 @@
       "federal_without_state": {
         "compared": 36,
         "count": 24,
+        "covered_by_extension": [],
         "ids": [
           "DR-4904",
           "DR-4893",
@@ -89,7 +91,7 @@
         ],
         "since": 2004
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -117,8 +119,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 22.0,
-        "storm_join_seconds": 19.9
+        "collect_seconds": 21.0,
+        "storm_join_seconds": 13.5
       }
     },
     {
@@ -127,19 +129,22 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2023-present declarations from the Governor's news releases (dated by release) and executive orders; 2000-2022 gap disclosed",
-      "coverage_base": "2023-present declarations from the Governor's news releases (dated by release) and executive orders; 2000-2022 gap disclosed",
+      "coverage": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
+      "coverage_base": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
       "federal_without_state": {
-        "compared": 0,
-        "count": 0,
-        "ids": [],
-        "since": 2023
+        "compared": 12,
+        "count": 1,
+        "covered_by_extension": [],
+        "ids": [
+          "DR-1347"
+        ],
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 59,
+        "action_count": 60,
         "federal_declaration_count": 120,
         "severity_rows": 426,
         "storm_match_rows": 1338
@@ -147,7 +152,7 @@
       "name": "Arizona",
       "retried": false,
       "slug": "arizona",
-      "source_records_returned": 6,
+      "source_records_returned": 7,
       "source_records_saved_before": 6,
       "source_status": "ok",
       "sources": {
@@ -156,15 +161,15 @@
         "fmcsa_archive": 0,
         "noaa_matched": 54,
         "noaa_none": 5,
-        "noaa_pending": 0,
+        "noaa_pending": 1,
         "reviewed_not_weather": 0,
-        "state_archive": 6
+        "state_archive": 7
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 57.7,
-        "storm_join_seconds": 13.4
+        "collect_seconds": 58.1,
+        "storm_join_seconds": 8.8
       }
     },
     {
@@ -173,22 +178,37 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2023-present structured current-Governor archive; 2000-2022 gap disclosed",
-      "coverage_base": "2023-present structured current-Governor archive; 2000-2022 gap disclosed",
+      "coverage": "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for February and May 2008, December 2009, May 2011 and June 2019 still have no dated state declaration",
+      "coverage_base": "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for February and May 2008, December 2009, May 2011 and June 2019 still have no dated state declaration",
       "federal_without_state": {
-        "compared": 8,
-        "count": 0,
-        "ids": [],
-        "since": 2023
+        "compared": 46,
+        "count": 13,
+        "covered_by_extension": [],
+        "ids": [
+          "DR-4460",
+          "DR-4000",
+          "DR-1872",
+          "DR-1758",
+          "DR-1744",
+          "DR-1528",
+          "DR-1516",
+          "DR-1472",
+          "DR-1450",
+          "DR-1400",
+          "DR-1363",
+          "DR-1354",
+          "EM-3159"
+        ],
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 36,
+        "action_count": 56,
         "federal_declaration_count": 89,
-        "severity_rows": 1176,
-        "storm_match_rows": 2200
+        "severity_rows": 1803,
+        "storm_match_rows": 3608
       },
       "name": "Arkansas",
       "retried": false,
@@ -197,11 +217,11 @@
       "source_records_saved_before": 10,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 26,
-        "federal_matched": 22,
+        "added_by_hand": 46,
+        "federal_matched": 39,
         "fmcsa_archive": 0,
-        "noaa_matched": 32,
-        "noaa_none": 3,
+        "noaa_matched": 51,
+        "noaa_none": 4,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
         "state_archive": 10
@@ -209,8 +229,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 2.1,
+        "storm_join_seconds": 0.9
       }
     },
     {
@@ -224,10 +244,11 @@
       "federal_without_state": {
         "compared": 15,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2019
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -255,7 +276,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 48.8,
+        "collect_seconds": 46.6,
         "storm_join_seconds": 0.8
       }
     },
@@ -270,6 +291,7 @@
       "federal_without_state": {
         "compared": 16,
         "count": 3,
+        "covered_by_extension": [],
         "ids": [
           "DR-4944",
           "DR-4731",
@@ -277,7 +299,7 @@
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -305,8 +327,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 65.9,
-        "storm_join_seconds": 6.4
+        "collect_seconds": 66.1,
+        "storm_join_seconds": 4.8
       }
     },
     {
@@ -320,6 +342,7 @@
       "federal_without_state": {
         "compared": 37,
         "count": 20,
+        "covered_by_extension": [],
         "ids": [
           "EM-3604",
           "DR-4410",
@@ -344,7 +367,7 @@
         ],
         "since": 1971
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -372,7 +395,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 268.5,
+        "collect_seconds": 194.1,
         "storm_join_seconds": 0.5
       }
     },
@@ -387,10 +410,11 @@
       "federal_without_state": {
         "compared": 1,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2025
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -418,7 +442,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.8,
+        "collect_seconds": 0.7,
         "storm_join_seconds": 0.5
       }
     },
@@ -431,17 +455,18 @@
       "coverage": "2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending",
       "coverage_base": "2020-present structured Governor archive; official State Library 1971-2019 OCR/manual backfill pending",
       "federal_without_state": {
-        "compared": 21,
+        "compared": 22,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2020
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
         "action_count": 26,
-        "federal_declaration_count": 189,
+        "federal_declaration_count": 190,
         "severity_rows": 612,
         "storm_match_rows": 1156
       },
@@ -464,7 +489,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 17.5,
+        "collect_seconds": 55.9,
         "storm_join_seconds": 0.6
       }
     },
@@ -479,12 +504,13 @@
       "federal_without_state": {
         "compared": 24,
         "count": 1,
+        "covered_by_extension": [],
         "ids": [
           "DR-4579"
         ],
         "since": 2011
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -512,7 +538,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 15.3,
+        "collect_seconds": 10.0,
         "storm_join_seconds": 0.9
       }
     },
@@ -527,12 +553,13 @@
       "federal_without_state": {
         "compared": 17,
         "count": 1,
+        "covered_by_extension": [],
         "ids": [
           "DR-4549"
         ],
         "since": 2014
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -560,7 +587,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 28.1,
+        "collect_seconds": 29.3,
         "storm_join_seconds": 0.6
       }
     },
@@ -573,35 +600,26 @@
       "coverage": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage",
       "coverage_base": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.",
       "federal_without_state": {
-        "compared": 18,
-        "count": 15,
+        "compared": 17,
+        "count": 5,
+        "covered_by_extension": [],
         "ids": [
-          "DR-4917",
           "DR-4905",
           "DR-4789",
           "DR-4589",
-          "DR-4443",
-          "DR-4342",
-          "DR-4333",
-          "DR-4313",
-          "DR-4310",
-          "DR-4252",
-          "DR-4246",
-          "DR-1987",
           "DR-1781",
-          "DR-1630",
-          "EM-3244"
+          "DR-1630"
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 208,
+        "action_count": 216,
         "federal_declaration_count": 61,
-        "severity_rows": 120,
-        "storm_match_rows": 120
+        "severity_rows": 146,
+        "storm_match_rows": 154
       },
       "name": "Idaho",
       "retried": false,
@@ -610,19 +628,19 @@
       "source_records_saved_before": 208,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 46,
+        "added_by_hand": 8,
+        "federal_matched": 53,
         "fmcsa_archive": 0,
-        "noaa_matched": 14,
-        "noaa_none": 193,
-        "noaa_pending": 1,
+        "noaa_matched": 20,
+        "noaa_none": 196,
+        "noaa_pending": 0,
         "reviewed_not_weather": 0,
         "state_archive": 208
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 54.4,
+        "collect_seconds": 53.1,
         "storm_join_seconds": 1.1
       }
     },
@@ -637,6 +655,7 @@
       "federal_without_state": {
         "compared": 28,
         "count": 22,
+        "covered_by_extension": [],
         "ids": [
           "DR-4819",
           "DR-4749",
@@ -663,7 +682,7 @@
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -691,7 +710,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 12.1,
+        "collect_seconds": 11.7,
         "storm_join_seconds": 0.6
       }
     },
@@ -706,6 +725,7 @@
       "federal_without_state": {
         "compared": 27,
         "count": 13,
+        "covered_by_extension": [],
         "ids": [
           "DR-4882",
           "DR-4173",
@@ -723,7 +743,7 @@
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -751,7 +771,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 9.8,
+        "collect_seconds": 6.1,
         "storm_join_seconds": 0.7
       }
     },
@@ -766,10 +786,11 @@
       "federal_without_state": {
         "compared": 5,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2024
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -797,7 +818,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
+        "collect_seconds": 2.1,
         "storm_join_seconds": 0.9
       }
     },
@@ -805,13 +826,14 @@
       "abbreviation": "KS",
       "action_file": "declarations_for_join.csv",
       "adapter_status": "implemented",
-      "collection_error": "Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)",
-      "collection_failed": true,
-      "coverage": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending; Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)",
-      "coverage_base": "2009-present KDEM disaster-declarations page; 2000-2008 sits behind a JavaScript-loaded archive widget, backfill pending",
+      "collection_error": "",
+      "collection_failed": false,
+      "coverage": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read; 12 saved records kept that this refresh's check of the state source did not return",
+      "coverage_base": "2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending (JS-loaded 'Archived Declarations' widget not reachable via plain fetch); the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read",
       "federal_without_state": {
         "compared": 35,
         "count": 20,
+        "covered_by_extension": [],
         "ids": [
           "DR-4747",
           "DR-4654",
@@ -836,8 +858,8 @@
         ],
         "since": 2009
       },
-      "generated_on": "2026-10-26",
-      "kept_saved_records": 0,
+      "generated_on": "2026-10-31",
+      "kept_saved_records": 12,
       "kept_saved_values": 0,
       "metrics": {
         "action_count": 51,
@@ -846,13 +868,11 @@
         "storm_match_rows": 2878
       },
       "name": "Kansas",
-      "retried": true,
-      "retry_error": "Collection failed: Kansas adapter: scrape failed (Kansas: could not read https://www.kansastag.gov/388/Kansas-Disaster-Declarations: 403 Client Error: Forbidden for url: https://www.kansastag.gov/388/Kansas-Disaster-Declarations)",
-      "retry_status": "failed",
+      "retried": false,
       "slug": "kansas",
-      "source_records_returned": 53,
+      "source_records_returned": 41,
       "source_records_saved_before": 53,
-      "source_status": "failed",
+      "source_status": "partial",
       "sources": {
         "added_by_hand": 0,
         "federal_matched": 28,
@@ -866,8 +886,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.4,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 22.2,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -881,6 +901,7 @@
       "federal_without_state": {
         "compared": 21,
         "count": 6,
+        "covered_by_extension": [],
         "ids": [
           "DR-4848",
           "DR-4804",
@@ -891,7 +912,7 @@
         ],
         "since": 2019
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -919,7 +940,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.9,
+        "collect_seconds": 1.4,
         "storm_join_seconds": 0.6
       }
     },
@@ -934,10 +955,11 @@
       "federal_without_state": {
         "compared": 30,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2016
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -957,15 +979,15 @@
         "federal_matched": 23,
         "fmcsa_archive": 15,
         "noaa_matched": 40,
-        "noaa_none": 4,
-        "noaa_pending": 1,
+        "noaa_none": 5,
+        "noaa_pending": 0,
         "reviewed_not_weather": 0,
         "state_archive": 11
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 101.5,
+        "collect_seconds": 92.0,
         "storm_join_seconds": 0.8
       }
     },
@@ -980,6 +1002,7 @@
       "federal_without_state": {
         "compared": 14,
         "count": 6,
+        "covered_by_extension": [],
         "ids": [
           "DR-4737",
           "DR-4736",
@@ -990,7 +1013,7 @@
         ],
         "since": 2011
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1018,7 +1041,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.7,
+        "collect_seconds": 20.4,
         "storm_join_seconds": 0.6
       }
     },
@@ -1033,10 +1056,11 @@
       "federal_without_state": {
         "compared": 1,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2023
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1064,8 +1088,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 8.8,
-        "storm_join_seconds": 2.4
+        "collect_seconds": 6.3,
+        "storm_join_seconds": 1.8
       }
     },
     {
@@ -1077,15 +1101,12 @@
       "coverage": "1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
       "coverage_base": "1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending",
       "federal_without_state": {
-        "compared": 45,
-        "count": 30,
+        "compared": 42,
+        "count": 21,
+        "covered_by_extension": [],
         "ids": [
           "DR-4651",
-          "DR-4051",
-          "EM-3343",
-          "EM-3315",
           "DR-1701",
-          "DR-1642",
           "DR-1614",
           "EM-3264",
           "EM-3201",
@@ -1094,7 +1115,6 @@
           "EM-3175",
           "DR-1364",
           "EM-3165",
-          "EM-3153",
           "DR-1224",
           "DR-1142",
           "EM-3119",
@@ -1105,44 +1125,40 @@
           "DR-914",
           "DR-790",
           "DR-751",
-          "DR-650",
-          "DR-546",
-          "EM-3059",
-          "DR-405",
           "DR-325"
         ],
         "since": 1970
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 16,
+        "action_count": 21,
         "federal_declaration_count": 59,
-        "severity_rows": 270,
-        "storm_match_rows": 436
+        "severity_rows": 301,
+        "storm_match_rows": 475
       },
       "name": "Massachusetts",
       "retried": false,
       "slug": "massachusetts",
-      "source_records_returned": 4,
-      "source_records_saved_before": 4,
+      "source_records_returned": 6,
+      "source_records_saved_before": 6,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 8,
-        "federal_matched": 12,
+        "added_by_hand": 11,
+        "federal_matched": 16,
         "fmcsa_archive": 4,
-        "noaa_matched": 15,
-        "noaa_none": 1,
+        "noaa_matched": 18,
+        "noaa_none": 3,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
-        "state_archive": 4
+        "state_archive": 6
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 60.7,
-        "storm_join_seconds": 1.4
+        "collect_seconds": 85.4,
+        "storm_join_seconds": 1.9
       }
     },
     {
@@ -1156,10 +1172,11 @@
       "federal_without_state": {
         "compared": 4,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2019
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1187,7 +1204,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 85.4,
+        "collect_seconds": 88.9,
         "storm_join_seconds": 0.6
       }
     },
@@ -1197,46 +1214,49 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered",
-      "coverage_base": "2019-present Legislative Reference Library executive order database (Walz); 2000-2018 not covered",
+      "coverage": "2000-present Legislative Reference Library executive order database (Ventura from 2000, Pawlenty, Dayton and Walz); weather orders that only provide assistance, without declaring an emergency, are not counted as declarations",
+      "coverage_base": "2000-present Legislative Reference Library executive order database (Ventura from 2000, Pawlenty, Dayton and Walz); weather orders that only provide assistance, without declaring an emergency, are not counted as declarations",
       "federal_without_state": {
-        "compared": 6,
-        "count": 1,
+        "compared": 30,
+        "count": 3,
+        "covered_by_extension": [],
         "ids": [
-          "DR-4722"
+          "DR-4722",
+          "DR-4414",
+          "DR-4113"
         ],
-        "since": 2019
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 15,
+        "action_count": 49,
         "federal_declaration_count": 81,
-        "severity_rows": 634,
-        "storm_match_rows": 903
+        "severity_rows": 1669,
+        "storm_match_rows": 2914
       },
       "name": "Minnesota",
       "retried": false,
       "slug": "minnesota",
-      "source_records_returned": 15,
-      "source_records_saved_before": 15,
+      "source_records_returned": 49,
+      "source_records_saved_before": 49,
       "source_status": "ok",
       "sources": {
         "added_by_hand": 0,
-        "federal_matched": 6,
+        "federal_matched": 33,
         "fmcsa_archive": 0,
-        "noaa_matched": 15,
-        "noaa_none": 0,
+        "noaa_matched": 45,
+        "noaa_none": 4,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
-        "state_archive": 15
+        "state_archive": 49
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 2.5,
+        "storm_join_seconds": 0.9
       }
     },
     {
@@ -1250,6 +1270,7 @@
       "federal_without_state": {
         "compared": 20,
         "count": 12,
+        "covered_by_extension": [],
         "ids": [
           "DR-4930",
           "DR-4922",
@@ -1266,7 +1287,7 @@
         ],
         "since": 2020
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1294,7 +1315,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 6.9,
+        "collect_seconds": 6.7,
         "storm_join_seconds": 0.8
       }
     },
@@ -1308,27 +1329,58 @@
       "coverage_base": "2000-present Secretary of State year indexes and legal order text.",
       "federal_without_state": {
         "compared": 54,
-        "count": 11,
+        "count": 4,
+        "covered_by_extension": [
+          {
+            "declaration": "MO-EO-25-19",
+            "id": "DR-4885",
+            "order": "MO-EO-25-24",
+            "order_date": "2025-05-20"
+          },
+          {
+            "declaration": "MO-EO-25-19",
+            "id": "DR-4877",
+            "order": "MO-EO-25-23",
+            "order_date": "2025-05-13"
+          },
+          {
+            "declaration": "MO-EO-25-19",
+            "id": "DR-4876",
+            "order": "MO-EO-25-23",
+            "order_date": "2025-05-13"
+          },
+          {
+            "declaration": "MO-EO-11-06",
+            "id": "DR-4012",
+            "order": "MO-EO-11-11",
+            "order_date": "2011-05-26"
+          },
+          {
+            "declaration": "MO-EO-11-06",
+            "id": "EM-3325",
+            "order": "MO-EO-11-11",
+            "order_date": "2011-05-26"
+          },
+          {
+            "declaration": "MO-EO-08-14",
+            "id": "DR-1760",
+            "order": "MO-EO-08-17",
+            "order_date": "2008-04-29"
+          }
+        ],
         "ids": [
-          "DR-4885",
-          "DR-4877",
-          "DR-4876",
           "DR-4636",
           "DR-4612",
           "DR-4552",
-          "DR-4200",
-          "DR-4012",
-          "EM-3325",
-          "DR-1760",
-          "DR-1524"
+          "DR-4200"
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 68,
+        "action_count": 69,
         "federal_declaration_count": 88,
         "severity_rows": 2494,
         "storm_match_rows": 7037
@@ -1336,24 +1388,24 @@
       "name": "Missouri",
       "retried": false,
       "slug": "missouri",
-      "source_records_returned": 83,
-      "source_records_saved_before": 83,
+      "source_records_returned": 84,
+      "source_records_saved_before": 84,
       "source_status": "ok",
       "sources": {
         "added_by_hand": 0,
-        "federal_matched": 47,
+        "federal_matched": 48,
         "fmcsa_archive": 0,
         "noaa_matched": 63,
-        "noaa_none": 5,
+        "noaa_none": 6,
         "noaa_pending": 0,
         "reviewed_not_weather": 15,
-        "state_archive": 68
+        "state_archive": 69
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 14.4,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 14.2,
+        "storm_join_seconds": 1.1
       }
     },
     {
@@ -1362,22 +1414,28 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending",
-      "coverage_base": "2021-present dated Gianforte-era gov.mt.gov listing; Bullock (2013-2020) and Schweitzer (2005-2013) archives exist but are undated-in-listing / unparsed, backfill pending",
+      "coverage": "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; four orders whose archive copies leave the signing day blank are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled",
+      "coverage_base": "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; four orders whose archive copies leave the signing day blank are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled",
       "federal_without_state": {
-        "compared": 8,
-        "count": 0,
-        "ids": [],
-        "since": 2021
+        "compared": 25,
+        "count": 4,
+        "covered_by_extension": [],
+        "ids": [
+          "DR-4275",
+          "DR-4271",
+          "DR-4198",
+          "DR-1767"
+        ],
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 16,
+        "action_count": 46,
         "federal_declaration_count": 113,
-        "severity_rows": 266,
-        "storm_match_rows": 476
+        "severity_rows": 579,
+        "storm_match_rows": 987
       },
       "name": "Montana",
       "retried": false,
@@ -1386,11 +1444,11 @@
       "source_records_saved_before": 18,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 1,
-        "federal_matched": 14,
+        "added_by_hand": 31,
+        "federal_matched": 37,
         "fmcsa_archive": 0,
-        "noaa_matched": 14,
-        "noaa_none": 1,
+        "noaa_matched": 38,
+        "noaa_none": 7,
         "noaa_pending": 1,
         "reviewed_not_weather": 3,
         "state_archive": 15
@@ -1398,8 +1456,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 22.3,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 22.4,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -1408,20 +1466,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope",
-      "coverage_base": "1965-present structured Governor's Executive Orders index (Nebraska Library Commission mirror); rows kept only when a hazard/emergency keyword matched, 2000-present in scope",
+      "coverage": "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+      "coverage_base": "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
       "federal_without_state": {
-        "compared": 64,
-        "count": 60,
+        "compared": 45,
+        "count": 36,
+        "covered_by_extension": [],
         "ids": [
-          "DR-4928",
-          "DR-4896",
-          "DR-4838",
-          "DR-4808",
           "DR-4786",
           "DR-4778",
           "DR-4662",
-          "DR-4641",
           "DR-4616",
           "DR-4387",
           "DR-4375",
@@ -1454,37 +1508,18 @@
           "DR-1517",
           "DR-1480",
           "DR-1394",
-          "DR-1373",
-          "DR-1286",
-          "DR-1190",
-          "DR-1123",
-          "DR-1027",
-          "DR-998",
-          "DR-983",
-          "DR-954",
-          "DR-908",
-          "DR-873",
-          "DR-718",
-          "DR-716",
-          "DR-625",
-          "DR-552",
-          "EM-3022",
-          "DR-500",
-          "DR-467",
-          "DR-406",
-          "DR-308",
-          "DR-303"
+          "DR-1373"
         ],
-        "since": 1970
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 19,
+        "action_count": 34,
         "federal_declaration_count": 88,
-        "severity_rows": 519,
-        "storm_match_rows": 748
+        "severity_rows": 860,
+        "storm_match_rows": 1446
       },
       "name": "Nebraska",
       "retried": false,
@@ -1493,11 +1528,11 @@
       "source_records_saved_before": 33,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 14,
+        "added_by_hand": 15,
+        "federal_matched": 25,
         "fmcsa_archive": 0,
-        "noaa_matched": 14,
-        "noaa_none": 5,
+        "noaa_matched": 27,
+        "noaa_none": 7,
         "noaa_pending": 0,
         "reviewed_not_weather": 14,
         "state_archive": 19
@@ -1505,8 +1540,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.7,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 0.6,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -1520,10 +1555,11 @@
       "federal_without_state": {
         "compared": 2,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2023
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1551,7 +1587,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 5.9,
+        "collect_seconds": 11.4,
         "storm_join_seconds": 0.5
       }
     },
@@ -1566,6 +1602,7 @@
       "federal_without_state": {
         "compared": 52,
         "count": 39,
+        "covered_by_extension": [],
         "ids": [
           "DR-4947",
           "DR-4812",
@@ -1609,7 +1646,12 @@
         ],
         "since": 1990
       },
-      "generated_on": "2026-10-26",
+      "first_attempt": {
+        "error": "Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)",
+        "seconds": 21.8,
+        "status": "failed"
+      },
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 6,
       "metrics": {
@@ -1619,7 +1661,8 @@
         "storm_match_rows": 173
       },
       "name": "New Hampshire",
-      "retried": false,
+      "retried": true,
+      "retry_status": "ok",
       "slug": "new-hampshire",
       "source_records_returned": 8,
       "source_records_saved_before": 8,
@@ -1637,7 +1680,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 25.7,
+        "collect_seconds": 26.3,
         "storm_join_seconds": 0.5
       }
     },
@@ -1650,19 +1693,19 @@
       "coverage": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected",
       "coverage_base": "1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected",
       "federal_without_state": {
-        "compared": 38,
-        "count": 6,
+        "compared": 37,
+        "count": 5,
+        "covered_by_extension": [],
         "ids": [
           "DR-4231",
           "DR-4070",
           "DR-4039",
           "DR-1873",
-          "DR-1588",
-          "EM-3169"
+          "DR-1588"
         ],
         "since": 1990
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1690,8 +1733,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 543.0,
-        "storm_join_seconds": 10.9
+        "collect_seconds": 422.9,
+        "storm_join_seconds": 9.3
       }
     },
     {
@@ -1703,17 +1746,20 @@
       "coverage": "2019-present structured current-Governor archive; 2000-2018 gap disclosed; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
       "coverage_base": "2019-present structured current-Governor archive; 2000-2018 gap disclosed",
       "federal_without_state": {
-        "compared": 5,
-        "count": 0,
-        "ids": [],
+        "compared": 6,
+        "count": 1,
+        "covered_by_extension": [],
+        "ids": [
+          "EM-3660"
+        ],
         "since": 2019
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
         "action_count": 45,
-        "federal_declaration_count": 127,
+        "federal_declaration_count": 128,
         "severity_rows": 526,
         "storm_match_rows": 777
       },
@@ -1736,7 +1782,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
+        "collect_seconds": 129.8,
         "storm_join_seconds": 0.7
       }
     },
@@ -1751,13 +1797,14 @@
       "federal_without_state": {
         "compared": 13,
         "count": 2,
+        "covered_by_extension": [],
         "ids": [
           "DR-4694",
           "EM-3590"
         ],
         "since": 2021
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1785,7 +1832,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 66.5,
+        "collect_seconds": 58.9,
         "storm_join_seconds": 0.7
       }
     },
@@ -1795,22 +1842,28 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2017-01-06-present structured Governor archive; North Carolina Register backfill pending",
-      "coverage_base": "2017-01-06-present structured Governor archive; North Carolina Register backfill pending",
+      "coverage": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
+      "coverage_base": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
       "federal_without_state": {
-        "compared": 18,
-        "count": 0,
-        "ids": [],
-        "since": 2017
+        "compared": 38,
+        "count": 4,
+        "covered_by_extension": [],
+        "ids": [
+          "DR-4167",
+          "DR-4153",
+          "DR-1942",
+          "DR-1457"
+        ],
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 56,
+        "action_count": 81,
         "federal_declaration_count": 85,
-        "severity_rows": 2189,
-        "storm_match_rows": 3711
+        "severity_rows": 3399,
+        "storm_match_rows": 5452
       },
       "name": "North Carolina",
       "retried": false,
@@ -1819,10 +1872,10 @@
       "source_records_saved_before": 56,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 20,
+        "added_by_hand": 25,
+        "federal_matched": 38,
         "fmcsa_archive": 0,
-        "noaa_matched": 53,
+        "noaa_matched": 78,
         "noaa_none": 2,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
@@ -1831,8 +1884,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 451.3,
-        "storm_join_seconds": 1.0
+        "collect_seconds": 315.0,
+        "storm_join_seconds": 1.2
       }
     },
     {
@@ -1841,49 +1894,66 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
-      "coverage_base": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
+      "coverage": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled",
+      "coverage_base": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled",
       "federal_without_state": {
-        "compared": 14,
-        "count": 4,
+        "compared": 41,
+        "count": 20,
+        "covered_by_extension": [],
         "ids": [
           "DR-4895",
           "DR-4686",
           "DR-4613",
-          "DR-4565"
+          "DR-4565",
+          "DR-1907",
+          "DR-1901",
+          "EM-3309",
+          "DR-1879",
+          "DR-1725",
+          "DR-1713",
+          "DR-1645",
+          "DR-1621",
+          "DR-1616",
+          "DR-1597",
+          "EM-3196",
+          "DR-1483",
+          "DR-1431",
+          "DR-1376",
+          "DR-1353",
+          "DR-1334"
         ],
-        "since": 2017
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 34,
+        "action_count": 61,
         "federal_declaration_count": 76,
-        "severity_rows": 379,
-        "storm_match_rows": 753
+        "severity_rows": 622,
+        "storm_match_rows": 1169
       },
       "name": "North Dakota",
       "retried": false,
       "slug": "north-dakota",
-      "source_records_returned": 34,
-      "source_records_saved_before": 34,
+      "source_records_returned": 58,
+      "source_records_saved_before": 58,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 16,
+        "added_by_hand": 3,
+        "federal_matched": 33,
         "fmcsa_archive": 0,
-        "noaa_matched": 18,
-        "noaa_none": 14,
+        "noaa_matched": 34,
+        "noaa_none": 25,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
-        "state_archive": 34
+        "state_archive": 58
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 9.6,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 6.7,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -1897,6 +1967,7 @@
       "federal_without_state": {
         "compared": 22,
         "count": 9,
+        "covered_by_extension": [],
         "ids": [
           "DR-4098",
           "DR-4002",
@@ -1910,7 +1981,7 @@
         ],
         "since": 2003
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -1938,7 +2009,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.8,
+        "collect_seconds": 1.0,
         "storm_join_seconds": 0.6
       }
     },
@@ -1948,21 +2019,31 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations)",
+      "coverage": "2006-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2006-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations)",
       "federal_without_state": {
-        "compared": 19,
-        "count": 5,
+        "compared": 56,
+        "count": 14,
+        "covered_by_extension": [],
         "ids": [
           "DR-4950",
           "DR-4862",
           "DR-4791",
           "DR-4776",
-          "DR-4657"
+          "DR-4657",
+          "DR-4256",
+          "DR-1803",
+          "DR-1775",
+          "DR-1756",
+          "DR-1735",
+          "EM-3280",
+          "DR-1718",
+          "DR-1712",
+          "DR-1637"
         ],
-        "since": 2016
+        "since": 2006
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 1,
       "metrics": {
@@ -1990,8 +2071,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.7,
-        "storm_join_seconds": 1.1
+        "collect_seconds": 15.8,
+        "storm_join_seconds": 1.0
       }
     },
     {
@@ -2005,6 +2086,7 @@
       "federal_without_state": {
         "compared": 22,
         "count": 4,
+        "covered_by_extension": [],
         "ids": [
           "DR-4296",
           "DR-1683",
@@ -2013,7 +2095,7 @@
         ],
         "since": 2003
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2033,16 +2115,16 @@
         "federal_matched": 168,
         "fmcsa_archive": 0,
         "noaa_matched": 110,
-        "noaa_none": 132,
-        "noaa_pending": 11,
+        "noaa_none": 140,
+        "noaa_pending": 3,
         "reviewed_not_weather": 0,
         "state_archive": 252
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 13.6,
-        "storm_join_seconds": 1.6
+        "collect_seconds": 350.1,
+        "storm_join_seconds": 1.5
       }
     },
     {
@@ -2056,10 +2138,11 @@
       "federal_without_state": {
         "compared": 3,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2018
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2087,7 +2170,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 86.4,
+        "collect_seconds": 15.3,
         "storm_join_seconds": 0.6
       }
     },
@@ -2097,24 +2180,27 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2015-present structured Governor archive; State Library 1973-2014 backfill pending",
+      "coverage": "2000-present: the Governor's executive order archive from 2015, plus 2003-2013 weather declarations (Carcieri and Chafee) from the State Archives' scanned executive orders, the Governor's press releases on ri.gov and FMCSA's copy of Executive Order 13-02; the Archives hold no executive order for the February 2003 snowstorm or the April 2007 nor'easter, and Almond's 2000-2002 orders have not been read; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: the Governor's executive order archive from 2015, plus 2003-2013 weather declarations (Carcieri and Chafee) from the State Archives' scanned executive orders, the Governor's press releases on ri.gov and FMCSA's copy of Executive Order 13-02; the Archives hold no executive order for the February 2003 snowstorm or the April 2007 nor'easter, and Almond's 2000-2002 orders have not been read",
       "federal_without_state": {
-        "compared": 6,
-        "count": 1,
+        "compared": 16,
+        "count": 3,
+        "covered_by_extension": [],
         "ids": [
-          "DR-4753"
+          "DR-4753",
+          "DR-1704",
+          "EM-3182"
         ],
-        "since": 2015
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 13,
+        "action_count": 15,
         "federal_declaration_count": 31,
-        "severity_rows": 84,
-        "storm_match_rows": 115
+        "severity_rows": 89,
+        "storm_match_rows": 120
       },
       "name": "Rhode Island",
       "retried": false,
@@ -2123,11 +2209,11 @@
       "source_records_saved_before": 7,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 5,
-        "federal_matched": 9,
+        "added_by_hand": 7,
+        "federal_matched": 10,
         "fmcsa_archive": 1,
-        "noaa_matched": 13,
-        "noaa_none": 0,
+        "noaa_matched": 14,
+        "noaa_none": 1,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
         "state_archive": 7
@@ -2135,7 +2221,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 11.7,
+        "collect_seconds": 16.0,
         "storm_join_seconds": 0.5
       }
     },
@@ -2150,6 +2236,7 @@
       "federal_without_state": {
         "compared": 39,
         "count": 4,
+        "covered_by_extension": [],
         "ids": [
           "DR-4479",
           "DR-1625",
@@ -2158,7 +2245,7 @@
         ],
         "since": 1970
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2186,8 +2273,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 86.9,
-        "storm_join_seconds": 4.4
+        "collect_seconds": 106.1,
+        "storm_join_seconds": 2.8
       }
     },
     {
@@ -2196,46 +2283,51 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending",
-      "coverage_base": "2020-present structured SD Secretary of State registry; 2000-2019 exists behind an unverified ASP.NET postback form, backfill pending",
+      "coverage": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders",
+      "coverage_base": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders",
       "federal_without_state": {
-        "compared": 7,
-        "count": 1,
+        "compared": 36,
+        "count": 5,
+        "covered_by_extension": [],
         "ids": [
-          "DR-4718"
+          "DR-4718",
+          "DR-1596",
+          "DR-1531",
+          "DR-1375",
+          "DR-1330"
         ],
-        "since": 2020
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 22,
+        "action_count": 85,
         "federal_declaration_count": 98,
-        "severity_rows": 494,
-        "storm_match_rows": 1289
+        "severity_rows": 2059,
+        "storm_match_rows": 4443
       },
       "name": "South Dakota",
       "retried": false,
       "slug": "south-dakota",
-      "source_records_returned": 25,
-      "source_records_saved_before": 25,
+      "source_records_returned": 89,
+      "source_records_saved_before": 89,
       "source_status": "ok",
       "sources": {
         "added_by_hand": 0,
-        "federal_matched": 10,
+        "federal_matched": 59,
         "fmcsa_archive": 0,
-        "noaa_matched": 18,
-        "noaa_none": 3,
+        "noaa_matched": 71,
+        "noaa_none": 13,
         "noaa_pending": 1,
-        "reviewed_not_weather": 3,
-        "state_archive": 22
+        "reviewed_not_weather": 4,
+        "state_archive": 85
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 36.1,
+        "storm_join_seconds": 1.2
       }
     },
     {
@@ -2244,29 +2336,24 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present SOS catalog via state-university mirror; legacy exact-date review pending",
-      "coverage_base": "2000-present SOS catalog via state-university mirror; legacy exact-date review pending",
+      "coverage": "2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet",
+      "coverage_base": "2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet",
       "federal_without_state": {
         "compared": 53,
-        "count": 34,
+        "count": 28,
+        "covered_by_extension": [],
         "ids": [
-          "DR-4792",
           "DR-4751",
           "DR-4742",
           "DR-4735",
           "DR-4729",
           "DR-4712",
           "DR-4701",
-          "DR-4691",
-          "DR-4645",
           "DR-4601",
           "DR-4550",
           "DR-4541",
           "DR-4471",
-          "DR-4320",
           "DR-4189",
-          "DR-4171",
-          "DR-4060",
           "DR-4005",
           "DR-1978",
           "DR-1965",
@@ -2287,36 +2374,36 @@
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 30,
+        "action_count": 51,
         "federal_declaration_count": 97,
-        "severity_rows": 988,
-        "storm_match_rows": 2105
+        "severity_rows": 1436,
+        "storm_match_rows": 3009
       },
       "name": "Tennessee",
       "retried": false,
       "slug": "tennessee",
-      "source_records_returned": 14,
-      "source_records_saved_before": 14,
+      "source_records_returned": 29,
+      "source_records_saved_before": 17,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 16,
-        "federal_matched": 15,
+        "added_by_hand": 22,
+        "federal_matched": 25,
         "fmcsa_archive": 0,
-        "noaa_matched": 20,
-        "noaa_none": 10,
+        "noaa_matched": 35,
+        "noaa_none": 16,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
-        "state_archive": 14
+        "state_archive": 29
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 7.1,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 10.6,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -2325,19 +2412,20 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+      "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 8 saved records kept that this refresh's check of the state source did not return",
       "coverage_base": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
       "federal_without_state": {
         "compared": 23,
         "count": 2,
+        "covered_by_extension": [],
         "ids": [
           "DR-4879",
           "DR-4223"
         ],
         "since": 2015
       },
-      "generated_on": "2026-10-26",
-      "kept_saved_records": 0,
+      "generated_on": "2026-10-31",
+      "kept_saved_records": 8,
       "kept_saved_values": 0,
       "metrics": {
         "action_count": 58,
@@ -2348,9 +2436,9 @@
       "name": "Texas",
       "retried": false,
       "slug": "texas",
-      "source_records_returned": 58,
+      "source_records_returned": 50,
       "source_records_saved_before": 58,
-      "source_status": "ok",
+      "source_status": "partial",
       "sources": {
         "added_by_hand": 1,
         "federal_matched": 34,
@@ -2364,7 +2452,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 553.9,
+        "collect_seconds": 1514.3,
         "storm_join_seconds": 1.2
       }
     },
@@ -2379,6 +2467,7 @@
       "federal_without_state": {
         "compared": 10,
         "count": 4,
+        "covered_by_extension": [],
         "ids": [
           "DR-4578",
           "DR-4311",
@@ -2387,7 +2476,7 @@
         ],
         "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2415,7 +2504,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 16.9,
+        "collect_seconds": 26.5,
         "storm_join_seconds": 0.6
       }
     },
@@ -2429,12 +2518,34 @@
       "coverage_base": "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv",
       "federal_without_state": {
         "compared": 29,
-        "count": 19,
+        "count": 15,
+        "covered_by_extension": [
+          {
+            "declaration": "VT-EO-03-23",
+            "id": "EM-3609",
+            "order": "VT-EO-03-23-AMENDED-RESTATED-2024-08-08",
+            "order_date": "2024-08-08"
+          },
+          {
+            "declaration": "VT-EO-03-23",
+            "id": "DR-4770",
+            "order": "VT-EO-03-23-ADDENDUM-10",
+            "order_date": "2024-01-12"
+          },
+          {
+            "declaration": "VT-EO-03-23",
+            "id": "DR-4762",
+            "order": "VT-EO-03-23-ADDENDUM-8",
+            "order_date": "2023-12-14"
+          },
+          {
+            "declaration": "VT-EO-03-23",
+            "id": "DR-4744",
+            "order": "VT-EO-03-23-ADDENDUM-5",
+            "order_date": "2023-08-01"
+          }
+        ],
         "ids": [
-          "EM-3609",
-          "DR-4770",
-          "DR-4762",
-          "DR-4744",
           "DR-4695",
           "DR-4621",
           "EM-3567",
@@ -2453,7 +2564,7 @@
         ],
         "since": 2011
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2481,8 +2592,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 97.8,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 124.7,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2496,10 +2607,11 @@
       "federal_without_state": {
         "compared": 32,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2002
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2527,8 +2639,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join and forecast-zone resolution completed",
       "timing": {
-        "collect_seconds": 14.2,
-        "storm_join_seconds": 2.6
+        "collect_seconds": 18.3,
+        "storm_join_seconds": 2.4
       }
     },
     {
@@ -2537,22 +2649,23 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2013-present structured Governor proclamation archive; 2000-2012 unavailable",
-      "coverage_base": "2013-present structured Governor proclamation archive; 2000-2012 unavailable",
+      "coverage": "2000-present: structured Governor proclamation archive from 2013, with 2000-2012 weather proclamations (Locke and Gregoire) added by hand from the Washington State Digital Archives and the termination proclamations that list them; Gregoire proclamations 09-06, 09-07 and 10-08 could not be read, and 07-01 is dated from the termination that lists it",
+      "coverage_base": "2000-present: structured Governor proclamation archive from 2013, with 2000-2012 weather proclamations (Locke and Gregoire) added by hand from the Washington State Digital Archives and the termination proclamations that list them; Gregoire proclamations 09-06, 09-07 and 10-08 could not be read, and 07-01 is dated from the termination that lists it",
       "federal_without_state": {
-        "compared": 22,
+        "compared": 32,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
-        "since": 2013
+        "since": 2000
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 43,
+        "action_count": 81,
         "federal_declaration_count": 223,
-        "severity_rows": 434,
-        "storm_match_rows": 699
+        "severity_rows": 729,
+        "storm_match_rows": 1134
       },
       "name": "Washington",
       "retried": false,
@@ -2561,11 +2674,11 @@
       "source_records_saved_before": 43,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 31,
+        "added_by_hand": 38,
+        "federal_matched": 55,
         "fmcsa_archive": 0,
-        "noaa_matched": 39,
-        "noaa_none": 1,
+        "noaa_matched": 65,
+        "noaa_none": 13,
         "noaa_pending": 3,
         "reviewed_not_weather": 0,
         "state_archive": 43
@@ -2573,8 +2686,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 106.1,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 78.0,
+        "storm_join_seconds": 0.9
       }
     },
     {
@@ -2588,10 +2701,11 @@
       "federal_without_state": {
         "compared": 5,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2025
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2619,7 +2733,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 15.1,
+        "collect_seconds": 2.7,
         "storm_join_seconds": 0.6
       }
     },
@@ -2634,10 +2748,11 @@
       "federal_without_state": {
         "compared": 5,
         "count": 0,
+        "covered_by_extension": [],
         "ids": [],
         "since": 2019
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2665,7 +2780,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.5,
+        "collect_seconds": 0.6,
         "storm_join_seconds": 0.6
       }
     },
@@ -2680,12 +2795,13 @@
       "federal_without_state": {
         "compared": 2,
         "count": 1,
+        "covered_by_extension": [],
         "ids": [
           "DR-4739"
         ],
         "since": 2019
       },
-      "generated_on": "2026-10-26",
+      "generated_on": "2026-10-31",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
@@ -2713,8 +2829,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.0,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 23.1,
+        "storm_join_seconds": 0.5
       }
     }
   ]

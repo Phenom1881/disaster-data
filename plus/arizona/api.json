@@ -3,6 +3,17 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2026-10-30",
+      "declaration_id": "AZ-DECL-2026-10-governor-katie-hobbs-visits-heber-overgaard-declares-state",
+      "governor": "Katie Hobbs",
+      "origin": "state",
+      "source_url": "https://azgovernor.gov/office-arizona-governor/news/2026/10/governor-katie-hobbs-visits-heber-overgaard-declares-state",
+      "state": "AZ",
+      "title": "Governor Katie Hobbs visits Heber-Overgaard, Declares State of Emergency for Navajo, Coconino Counties Due to Extreme Weather Events. From the release: Heber-Overgaard, AZ - Governor Katie Hobbs has declared a State of Emergency for Navajo and Coconino Counties after extreme weather, including heavy rains, high winds, hail, and tornadoes struck the regions from October 20 through October 22."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2025-10-19",
       "declaration_id": "AZ-DECL-2025-10-governor-katie-hobbs-declares-state-emergency-gila-and-maricopa",
       "governor": "Katie Hobbs",
@@ -650,8 +661,18 @@
       "title": "Rodeo/Chedeski Fire Emergency. Wildfire emergency. State emergency account 22006."
     }
   ],
-  "coverage": "2023-present declarations from the Governor's news releases (dated by release) and executive orders; 2000-2022 gap disclosed",
+  "coverage": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
   "crosswalk": [
+    {
+      "date_signed": "2026-10-30",
+      "declaration_id": "AZ-DECL-2026-10-governor-katie-hobbs-visits-heber-overgaard-declares-state",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "pending",
+      "title": "Governor Katie Hobbs visits Heber-Overgaard, Declares State of Emergency for Navajo, Coconino Counties Due to Extreme Weather Events. From the release: Heber-Overgaard, AZ - Governor Katie Hobbs has declared a State of Emergency for Navajo and Coconino Counties after extreme weather, including heavy rains, high winds, hail, and tornadoes struck the regions from October 20 through October 22."
+    },
     {
       "date_signed": "2025-10-19",
       "declaration_id": "AZ-DECL-2025-10-governor-katie-hobbs-declares-state-emergency-gila-and-maricopa",
@@ -2076,20 +2097,32 @@
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 0,
-    "declarations": [],
-    "since": 2023
+    "compared": 12,
+    "covered_by_extension": [],
+    "declarations": [
+      {
+        "begin": "2000-10-21",
+        "date": "2000-10-27",
+        "end": "2000-11-08",
+        "id": "DR-1347",
+        "incidentType": "Severe Storm",
+        "number": 1347,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      }
+    ],
+    "since": 2000
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 59,
+    "action_count": 60,
     "federal_declaration_count": 120,
     "severity_rows": 426,
     "storm_match_rows": 1338
   },
   "name": "Arizona",
-  "noaa_data_through": "2026-06-29",
+  "noaa_data_through": "2026-07-30",
   "official_source_url": "https://azgovernor.gov/news-releases",
   "schema_version": 1,
   "slug": "arizona",
@@ -2100,9 +2133,9 @@
     "fmcsa_archive": 0,
     "noaa_matched": 54,
     "noaa_none": 5,
-    "noaa_pending": 0,
+    "noaa_pending": 1,
     "reviewed_not_weather": 0,
-    "state_archive": 6
+    "state_archive": 7
   },
   "state": "AZ"
 }

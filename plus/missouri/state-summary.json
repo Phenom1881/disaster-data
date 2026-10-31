@@ -8,27 +8,58 @@
   "coverage_base": "2000-present Secretary of State year indexes and legal order text.",
   "federal_without_state": {
     "compared": 54,
-    "count": 11,
+    "count": 4,
+    "covered_by_extension": [
+      {
+        "declaration": "MO-EO-25-19",
+        "id": "DR-4885",
+        "order": "MO-EO-25-24",
+        "order_date": "2025-05-20"
+      },
+      {
+        "declaration": "MO-EO-25-19",
+        "id": "DR-4877",
+        "order": "MO-EO-25-23",
+        "order_date": "2025-05-13"
+      },
+      {
+        "declaration": "MO-EO-25-19",
+        "id": "DR-4876",
+        "order": "MO-EO-25-23",
+        "order_date": "2025-05-13"
+      },
+      {
+        "declaration": "MO-EO-11-06",
+        "id": "DR-4012",
+        "order": "MO-EO-11-11",
+        "order_date": "2011-05-26"
+      },
+      {
+        "declaration": "MO-EO-11-06",
+        "id": "EM-3325",
+        "order": "MO-EO-11-11",
+        "order_date": "2011-05-26"
+      },
+      {
+        "declaration": "MO-EO-08-14",
+        "id": "DR-1760",
+        "order": "MO-EO-08-17",
+        "order_date": "2008-04-29"
+      }
+    ],
     "ids": [
-      "DR-4885",
-      "DR-4877",
-      "DR-4876",
       "DR-4636",
       "DR-4612",
       "DR-4552",
-      "DR-4200",
-      "DR-4012",
-      "EM-3325",
-      "DR-1760",
-      "DR-1524"
+      "DR-4200"
     ],
     "since": 2000
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 68,
+    "action_count": 69,
     "federal_declaration_count": 88,
     "severity_rows": 2494,
     "storm_match_rows": 7037
@@ -36,23 +67,23 @@
   "name": "Missouri",
   "retried": false,
   "slug": "missouri",
-  "source_records_returned": 83,
-  "source_records_saved_before": 83,
+  "source_records_returned": 84,
+  "source_records_saved_before": 84,
   "source_status": "ok",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 47,
+    "federal_matched": 48,
     "fmcsa_archive": 0,
     "noaa_matched": 63,
-    "noaa_none": 5,
+    "noaa_none": 6,
     "noaa_pending": 0,
     "reviewed_not_weather": 15,
-    "state_archive": 68
+    "state_archive": 69
   },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 14.4,
-    "storm_join_seconds": 1.2
+    "collect_seconds": 14.2,
+    "storm_join_seconds": 1.1
   }
 }

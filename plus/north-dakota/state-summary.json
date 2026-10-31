@@ -4,48 +4,65 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
-  "coverage_base": "2017-present numbered/dated Governor archive plus current-EOs page (dates confirmed per-order against news releases); 2000-2016 order numbers and undated 2024-2026 orders backfill pending",
+  "coverage": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled",
+  "coverage_base": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled",
   "federal_without_state": {
-    "compared": 14,
-    "count": 4,
+    "compared": 41,
+    "count": 20,
+    "covered_by_extension": [],
     "ids": [
       "DR-4895",
       "DR-4686",
       "DR-4613",
-      "DR-4565"
+      "DR-4565",
+      "DR-1907",
+      "DR-1901",
+      "EM-3309",
+      "DR-1879",
+      "DR-1725",
+      "DR-1713",
+      "DR-1645",
+      "DR-1621",
+      "DR-1616",
+      "DR-1597",
+      "EM-3196",
+      "DR-1483",
+      "DR-1431",
+      "DR-1376",
+      "DR-1353",
+      "DR-1334"
     ],
-    "since": 2017
+    "since": 2000
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 34,
+    "action_count": 61,
     "federal_declaration_count": 76,
-    "severity_rows": 379,
-    "storm_match_rows": 753
+    "severity_rows": 622,
+    "storm_match_rows": 1169
   },
   "name": "North Dakota",
   "retried": false,
   "slug": "north-dakota",
-  "source_records_returned": 34,
-  "source_records_saved_before": 34,
+  "source_records_returned": 58,
+  "source_records_saved_before": 58,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 16,
+    "added_by_hand": 3,
+    "federal_matched": 33,
     "fmcsa_archive": 0,
-    "noaa_matched": 18,
-    "noaa_none": 14,
+    "noaa_matched": 34,
+    "noaa_none": 25,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,
-    "state_archive": 34
+    "state_archive": 58
   },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 9.6,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 6.7,
+    "storm_join_seconds": 0.8
   }
 }

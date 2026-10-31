@@ -7,35 +7,26 @@
   "coverage": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage",
   "coverage_base": "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.",
   "federal_without_state": {
-    "compared": 18,
-    "count": 15,
+    "compared": 17,
+    "count": 5,
+    "covered_by_extension": [],
     "ids": [
-      "DR-4917",
       "DR-4905",
       "DR-4789",
       "DR-4589",
-      "DR-4443",
-      "DR-4342",
-      "DR-4333",
-      "DR-4313",
-      "DR-4310",
-      "DR-4252",
-      "DR-4246",
-      "DR-1987",
       "DR-1781",
-      "DR-1630",
-      "EM-3244"
+      "DR-1630"
     ],
     "since": 2000
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 208,
+    "action_count": 216,
     "federal_declaration_count": 61,
-    "severity_rows": 120,
-    "storm_match_rows": 120
+    "severity_rows": 146,
+    "storm_match_rows": 154
   },
   "name": "Idaho",
   "retried": false,
@@ -44,19 +35,19 @@
   "source_records_saved_before": 208,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 46,
+    "added_by_hand": 8,
+    "federal_matched": 53,
     "fmcsa_archive": 0,
-    "noaa_matched": 14,
-    "noaa_none": 193,
-    "noaa_pending": 1,
+    "noaa_matched": 20,
+    "noaa_none": 196,
+    "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 208
   },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 54.4,
+    "collect_seconds": 53.1,
     "storm_join_seconds": 1.1
   }
 }

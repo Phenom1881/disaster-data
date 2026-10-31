@@ -122,15 +122,26 @@
       "title": "Declaration of Disaster Emergency ahead of Hurricane Irene."
     },
     {
+      "action_number": "10-06",
+      "action_type": "declaration",
+      "date_signed": "2010-03-15",
+      "declaration_id": "RI-EO-10-06",
+      "governor": "Donald L. Carcieri",
+      "origin": "hand",
+      "source_url": "https://sosri.access.preservica.com/uncategorized/IO_24fd639f-7489-429a-85ac-bea801657a4a/",
+      "state": "RI",
+      "title": "Executive Order 10-06, Declaration of Disaster Emergency for severe rainfall causing extensive and in some places historic flooding, and wind from the storm."
+    },
+    {
       "action_number": "",
       "action_type": "declaration",
-      "date_signed": "2005-10-15",
-      "declaration_id": "RI-SOE-2005-10-15",
+      "date_signed": "2005-10-17",
+      "declaration_id": "RI-SOE-2005-10-17",
       "governor": "Donald L. Carcieri",
       "origin": "hand",
       "source_url": "https://www.ri.gov/press/view/694",
       "state": "RI",
-      "title": "State of emergency for a weekend storm with heavy rain and flooding."
+      "title": "State of emergency for a weekend storm with heavy rain and flooding, signed October 17 and covering actions since October 15."
     },
     {
       "action_number": "",
@@ -142,9 +153,20 @@
       "source_url": "https://www.reed.senate.gov/news/releases/rhode-island-receives-emergency-declaration-for-blizzard-of-2005",
       "state": "RI",
       "title": "Statewide state of emergency for the Blizzard of 2005 (heavy snow), with state and municipal offices closed Monday, January 24."
+    },
+    {
+      "action_number": "03-02",
+      "action_type": "declaration",
+      "date_signed": "2003-01-17",
+      "declaration_id": "RI-EO-03-02",
+      "governor": "Donald L. Carcieri",
+      "origin": "hand",
+      "source_url": "https://sosri.access.preservica.com/uncategorized/IO_60ecfa6d-a5a3-4095-a78a-c249258b5c66/",
+      "state": "RI",
+      "title": "Executive Order 03-02, Proclamation of Home Heating Fuel Transportation Emergency for a prolonged period of cold weather and the demand for home heating fuel (continued by 03-03 to 03-07 through February 27, 2003)."
     }
   ],
-  "coverage": "2015-present structured Governor archive; State Library 1973-2014 backfill pending; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2000-present: the Governor's executive order archive from 2015, plus 2003-2013 weather declarations (Carcieri and Chafee) from the State Archives' scanned executive orders, the Governor's press releases on ri.gov and FMCSA's copy of Executive Order 13-02; the Archives hold no executive order for the February 2003 snowstorm or the April 2007 nor'easter, and Almond's 2000-2002 orders have not been read; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-02-22",
@@ -411,8 +433,32 @@
       "title": "Declaration of Disaster Emergency ahead of Hurricane Irene."
     },
     {
-      "date_signed": "2005-10-15",
-      "declaration_id": "RI-SOE-2005-10-15",
+      "date_signed": "2010-03-15",
+      "declaration_id": "RI-EO-10-06",
+      "federal_declaration": {
+        "begin": "2010-03-12",
+        "date": "2010-03-30",
+        "end": "2010-04-12",
+        "id": "EM-3311",
+        "incidentType": "Severe Storm",
+        "number": 3311,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BRISTOL",
+        "KENT",
+        "NEWPORT",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 5,
+      "noaa_status": "matched",
+      "title": "Executive Order 10-06, Declaration of Disaster Emergency for severe rainfall causing extensive and in some places historic flooding, and wind from the storm."
+    },
+    {
+      "date_signed": "2005-10-17",
+      "declaration_id": "RI-SOE-2005-10-17",
       "federal_declaration": null,
       "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
@@ -424,7 +470,7 @@
       ],
       "noaa_match_count": 18,
       "noaa_status": "matched",
-      "title": "State of emergency for a weekend storm with heavy rain and flooding."
+      "title": "State of emergency for a weekend storm with heavy rain and flooding, signed October 17 and covering actions since October 15."
     },
     {
       "date_signed": "2005-01-24",
@@ -452,11 +498,22 @@
       "noaa_match_count": 7,
       "noaa_status": "matched",
       "title": "Statewide state of emergency for the Blizzard of 2005 (heavy snow), with state and municipal offices closed Monday, January 24."
+    },
+    {
+      "date_signed": "2003-01-17",
+      "declaration_id": "RI-EO-03-02",
+      "federal_declaration": null,
+      "federal_status": "no_federal_declaration_found",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
+      "title": "Executive Order 03-02, Proclamation of Home Heating Fuel Transportation Emergency for a prolonged period of cold weather and the demand for home heating fuel (continued by 03-03 to 03-07 through February 27, 2003)."
     }
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 6,
+    "compared": 16,
+    "covered_by_extension": [],
     "declarations": [
       {
         "begin": "2023-09-10",
@@ -467,30 +524,50 @@
         "number": 4753,
         "title": "SEVERE STORMS, FLOODING, AND TORNADOES",
         "type": "DR"
+      },
+      {
+        "begin": "2007-04-15",
+        "date": "2007-05-25",
+        "end": "2007-04-16",
+        "id": "DR-1704",
+        "incidentType": "Severe Storm",
+        "number": 1704,
+        "title": "SEVERE STORMS AND INLAND AND COASTAL FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2003-02-17",
+        "date": "2003-03-27",
+        "end": "2003-02-18",
+        "id": "EM-3182",
+        "incidentType": "Snowstorm",
+        "number": 3182,
+        "title": "SNOW",
+        "type": "EM"
       }
     ],
-    "since": 2015
+    "since": 2000
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 13,
+    "action_count": 15,
     "federal_declaration_count": 31,
-    "severity_rows": 84,
-    "storm_match_rows": 115
+    "severity_rows": 89,
+    "storm_match_rows": 120
   },
   "name": "Rhode Island",
-  "noaa_data_through": "2026-06-29",
+  "noaa_data_through": "2026-07-30",
   "official_source_url": "https://governor.ri.gov/executive-order-archive",
   "schema_version": 1,
   "slug": "rhode-island",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 5,
-    "federal_matched": 9,
+    "added_by_hand": 7,
+    "federal_matched": 10,
     "fmcsa_archive": 1,
-    "noaa_matched": 13,
-    "noaa_none": 0,
+    "noaa_matched": 14,
+    "noaa_none": 1,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 7

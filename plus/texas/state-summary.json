@@ -4,19 +4,20 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+  "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 8 saved records kept that this refresh's check of the state source did not return",
   "coverage_base": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
   "federal_without_state": {
     "compared": 23,
     "count": 2,
+    "covered_by_extension": [],
     "ids": [
       "DR-4879",
       "DR-4223"
     ],
     "since": 2015
   },
-  "generated_on": "2026-10-26",
-  "kept_saved_records": 0,
+  "generated_on": "2026-10-31",
+  "kept_saved_records": 8,
   "kept_saved_values": 0,
   "metrics": {
     "action_count": 58,
@@ -27,9 +28,9 @@
   "name": "Texas",
   "retried": false,
   "slug": "texas",
-  "source_records_returned": 58,
+  "source_records_returned": 50,
   "source_records_saved_before": 58,
-  "source_status": "ok",
+  "source_status": "partial",
   "sources": {
     "added_by_hand": 1,
     "federal_matched": 34,
@@ -43,7 +44,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 553.9,
+    "collect_seconds": 1514.3,
     "storm_join_seconds": 1.2
   }
 }

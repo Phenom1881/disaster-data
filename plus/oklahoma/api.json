@@ -606,7 +606,7 @@
       "title": "Disaster emergency for Texas County caused by snow and ice storms"
     }
   ],
-  "coverage": "2016-present OEM emergencies-and-disasters archive (proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and Governor releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2006-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-04-24",
@@ -3769,7 +3769,8 @@
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 19,
+    "compared": 56,
+    "covered_by_extension": [],
     "declarations": [
       {
         "begin": "2026-07-04",
@@ -3820,11 +3821,101 @@
         "number": 4657,
         "title": "SEVERE STORMS, TORNADOES, AND FLOODING",
         "type": "DR"
+      },
+      {
+        "begin": "2015-12-26",
+        "date": "2016-02-10",
+        "end": "2016-01-05",
+        "id": "DR-4256",
+        "incidentType": "Severe Storm",
+        "number": 4256,
+        "title": "SEVERE WINTER STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2008-09-12",
+        "date": "2008-10-09",
+        "end": "2008-09-19",
+        "id": "DR-1803",
+        "incidentType": "Severe Storm",
+        "number": 1803,
+        "title": "SEVERE STORMS, TORNADOES, AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2008-06-03",
+        "date": "2008-07-09",
+        "end": "2008-06-20",
+        "id": "DR-1775",
+        "incidentType": "Severe Storm",
+        "number": 1775,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2008-05-10",
+        "date": "2008-05-14",
+        "end": "2008-05-13",
+        "id": "DR-1756",
+        "incidentType": "Severe Storm",
+        "number": 1756,
+        "title": "SEVERE STORMS, TORNADOES, AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2007-12-08",
+        "date": "2007-12-18",
+        "end": "2008-01-03",
+        "id": "DR-1735",
+        "incidentType": "Severe Ice Storm",
+        "number": 1735,
+        "title": "SEVERE WINTER STORMS",
+        "type": "DR"
+      },
+      {
+        "begin": "2007-12-08",
+        "date": "2007-12-10",
+        "end": "2008-01-03",
+        "id": "EM-3280",
+        "incidentType": "Severe Ice Storm",
+        "number": 3280,
+        "title": "SEVERE WINTER STORMS",
+        "type": "EM"
+      },
+      {
+        "begin": "2007-08-18",
+        "date": "2007-08-24",
+        "end": "2007-09-12",
+        "id": "DR-1718",
+        "incidentType": "Severe Storm",
+        "number": 1718,
+        "title": "SEVERE STORMS, TORNADOES, AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2007-06-10",
+        "date": "2007-07-07",
+        "end": "2007-07-25",
+        "id": "DR-1712",
+        "incidentType": "Severe Storm",
+        "number": 1712,
+        "title": "SEVERE STORMS, FLOODING, AND TORNADOES",
+        "type": "DR"
+      },
+      {
+        "begin": "2006-03-12",
+        "date": "2006-04-13",
+        "end": "2006-03-12",
+        "id": "DR-1637",
+        "incidentType": "Severe Storm",
+        "number": 1637,
+        "title": "SEVERE STORMS AND TORNADOES",
+        "type": "DR"
       }
     ],
-    "since": 2016
+    "since": 2006
   },
-  "generated_on": "2026-10-26",
+  "generated_on": "2026-10-31",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 55,
@@ -3833,7 +3924,7 @@
     "storm_match_rows": 5150
   },
   "name": "Oklahoma",
-  "noaa_data_through": "2026-06-29",
+  "noaa_data_through": "2026-07-30",
   "official_source_url": "https://oklahoma.gov/oem/emergencies-and-disasters.html",
   "schema_version": 1,
   "slug": "oklahoma",
