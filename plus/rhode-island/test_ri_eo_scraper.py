@@ -91,8 +91,20 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "RI"))
         self.assertTrue(note.startswith("2000-present"))
-        for event in ("February 2003", "April 2007", "March 2010"):
+        for event in ("February 2003 snowstorm", "April 2007 nor'easter"):
             self.assertIn(event, note)
+
+    def test_state_archives_orders_read_from_the_scans(self):
+        import csv
+        from pathlib import Path
+        here = Path(__file__).resolve().parent
+        with open(here / "manual_declarations.csv", newline="", encoding="utf-8") as handle:
+            rows = {r["declaration_id"]: r for r in csv.DictReader(handle)}
+        self.assertEqual(rows["RI-EO-10-06"]["date_signed"], "2010-03-15")
+        self.assertEqual(rows["RI-EO-03-02"]["date_signed"], "2003-01-17")
+        for key in ("RI-EO-10-06", "RI-EO-03-02"):
+            self.assertEqual(rows[key]["governor"], "Donald L. Carcieri")
+            self.assertIn("sosri.access.preservica.com", rows[key]["archive_record_url"])
 
 
 if __name__ == "__main__": unittest.main()
