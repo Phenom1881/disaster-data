@@ -71,4 +71,40 @@ class RhodeIslandScraperTests(unittest.TestCase):
             self.assertTrue(row["declaration_id"].endswith(row["date_signed"]) or row["eo_number"], row["declaration_id"])
 
 
+class CoverageNoteTests(unittest.TestCase):
+    def test_refresh_note_matches_the_manifest_and_starts_in_2000(self):
+        """A refresh shows the note collect() returns and a build without
+        collection shows the manifest's; both compare FEMA's declarations
+        from 2000, so the hand-added 2005-2013 rows are counted."""
+        import importlib.util
+        import json
+        import subprocess
+        from pathlib import Path
+        from unittest import mock
+        here = Path(__file__).resolve().parent
+        spec = importlib.util.spec_from_file_location("rhode_island_adapter", here / "rhode_island.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(adapter.subprocess, "run", return_value=done):
+            _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "RI"))
+        self.assertTrue(note.startswith("2000-present"))
+        for event in ("February 2003 snowstorm", "April 2007 nor'easter"):
+            self.assertIn(event, note)
+
+    def test_state_archives_orders_read_from_the_scans(self):
+        import csv
+        from pathlib import Path
+        here = Path(__file__).resolve().parent
+        with open(here / "manual_declarations.csv", newline="", encoding="utf-8") as handle:
+            rows = {r["declaration_id"]: r for r in csv.DictReader(handle)}
+        self.assertEqual(rows["RI-EO-10-06"]["date_signed"], "2010-03-15")
+        self.assertEqual(rows["RI-EO-03-02"]["date_signed"], "2003-01-17")
+        for key in ("RI-EO-10-06", "RI-EO-03-02"):
+            self.assertEqual(rows[key]["governor"], "Donald L. Carcieri")
+            self.assertIn("sosri.access.preservica.com", rows[key]["archive_record_url"])
+
+
 if __name__ == "__main__": unittest.main()
