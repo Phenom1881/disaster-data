@@ -195,5 +195,103 @@ class ReviewedDeclarationTests(unittest.TestCase):
             self.assertIn(key, joined)
 
 
+
+# Governors of North Carolina and the day each took office.
+GOVERNOR_TERMS = (("2017-01-01", "Roy Cooper"), ("2013-01-05", "Pat McCrory"),
+                  ("2009-01-10", "Bev Perdue"), ("2001-01-06", "Mike Easley"),
+                  ("1993-01-09", "James B. Hunt Jr."))
+
+
+def governor_on(day):
+    return next(name for start, name in GOVERNOR_TERMS if day >= start)
+
+
+def csv_rows(name):
+    with open(os.path.join(HERE, name), newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+class CoverageNoteTests(unittest.TestCase):
+    def test_refresh_note_matches_the_manifest_and_starts_in_2000(self):
+        import importlib.util
+        import json
+        import subprocess
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        spec = importlib.util.spec_from_file_location("north_carolina_adapter", os.path.join(HERE, "north_carolina.py"))
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        with tempfile.TemporaryDirectory() as tmp:
+            Path(tmp, "declarations_for_join.csv").write_text("declaration_id\n")
+            with mock.patch.object(adapter, "_run", return_value=True):
+                _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((Path(HERE).parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "NC"))
+        self.assertTrue(note.startswith("2000-present"))
+
+
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv carries the 2000-2016 weather declarations,
+    each dated by the State Archives record identifier, the Governor's
+    dated press release, NCDPS or dated news coverage."""
+
+    def test_dates_read_from_the_sources(self):
+        dates = {r["declaration_id"]: r["date_signed"] for r in csv_rows("manual_declarations.csv")}
+        expected = {
+            "NC-SOE-2000-01-25": "2000-01-25", "NC-SOE-2002-12-05": "2002-12-05",
+            "NC-SOE-2003-09-16": "2003-09-16", "NC-SOE-2004-09-07": "2004-09-07",
+            "NC-SOE-2004-09-17": "2004-09-17", "NC-MIKEEASLEY-EO-88": "2005-09-11",
+            "NC-MIKEEASLEY-EO-144": "2008-09-04", "NC-BEVPERDUE-EO-62": "2010-09-01",
+            "NC-SOE-2011-04-17": "2011-04-17", "NC-SOE-2011-08-25": "2011-08-25",
+            # McCrory's are the State Archives identifiers (McCrory_EO_NNN_YYYYMMDD).
+            "NC-PATMCCRORY-EO-16": "2013-07-11", "NC-PATMCCRORY-EO-17": "2013-07-16",
+            "NC-PATMCCRORY-EO-43": "2014-02-11", "NC-PATMCCRORY-EO-51": "2014-04-29",
+            "NC-PATMCCRORY-EO-57": "2014-07-02", "NC-PATMCCRORY-EO-66": "2015-02-16",
+            "NC-PATMCCRORY-EO-97": "2016-09-01", "NC-PATMCCRORY-EO-103": "2016-09-22",
+            "NC-PATMCCRORY-EO-107": "2016-10-03", "NC-PATMCCRORY-EO-115": "2016-11-10",
+        }
+        self.assertEqual({k: dates.get(k) for k in expected}, expected)
+
+    def test_ids_carry_the_date_or_the_governor_and_number(self):
+        rows = csv_rows("manual_declarations.csv")
+        self.assertEqual(len(rows), len({r["declaration_id"] for r in rows}))
+        for row in rows:
+            did = row["declaration_id"]
+            if did.startswith("NC-SOE-"):
+                self.assertEqual(did, "NC-SOE-" + row["date_signed"])
+                self.assertEqual(row["eo_number"], "")
+            else:
+                key = row["governor"].upper().replace(" ", "").replace(".", "")
+                self.assertEqual(did, "NC-%s-EO-%s" % (key, row["eo_number"]))
+                self.assertIn("Executive Order No. %s" % row["eo_number"], row["event_description"])
+
+    def test_governor_in_office_on_each_date(self):
+        for row in csv_rows("manual_declarations.csv"):
+            self.assertEqual(row["governor"], governor_on(row["date_signed"]), row["declaration_id"])
+
+    def test_each_names_its_hazard_and_links_its_source(self):
+        for row in csv_rows("manual_declarations.csv"):
+            self.assertRegex(row["event_description"].lower(),
+                             r"snow|ice|storm|hurricane|flood|tornado|wildfire|cold|winter", row["declaration_id"])
+            self.assertTrue(row["archive_record_url"].startswith("https://"), row["declaration_id"])
+
+    def test_they_only_fill_the_years_before_the_archive(self):
+        hand = csv_rows("manual_declarations.csv")
+        archive = csv_rows("declarations_for_join.csv")
+        self.assertFalse({r["declaration_id"] for r in hand} & {r["declaration_id"] for r in archive})
+        self.assertLess(max(r["date_signed"] for r in hand), "2017-01-01")
+
+    def test_reviewed_event_dates_come_before_signing(self):
+        signed = {r["declaration_id"]: r["date_signed"] for r in csv_rows("manual_declarations.csv")}
+        events = {}
+        for row in csv_rows("hazard_overrides.csv"):
+            if row["declaration_id"] in signed:
+                events[row["declaration_id"]] = row["event_date"]
+                if row["event_date"]:
+                    self.assertLessEqual(row["event_date"], signed[row["declaration_id"]])
+        self.assertEqual(events["NC-PATMCCRORY-EO-17"], "2013-06-30")
+        self.assertEqual(events["NC-SOE-2004-06-04"], "2004-01-26")
+
 if __name__ == "__main__":
     unittest.main()
