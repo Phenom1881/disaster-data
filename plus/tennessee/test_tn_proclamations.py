@@ -53,11 +53,13 @@ class IndexTests(unittest.TestCase):
         with redirect_stdout(io.StringIO()):
             rows = procs.collect_index(get)
         self.assertEqual(len(rows), 4)
-        self.assertEqual(calls, [None, {"page": 2}, {"page": 3}])
+        # Every page asks the index's own search for state of emergency titles.
+        search = {"Search": "State of Emergency"}
+        self.assertEqual(calls, [search, {**search, "page": 2}, {**search, "page": 3}])
 
     def test_a_missing_first_page_fails_and_a_missing_later_page_ends_the_walk(self):
         def broken(url, params=None):
-            if params:
+            if (params or {}).get("page"):
                 raise requests.HTTPError("404")
             return PAGE_ONE
         with redirect_stdout(io.StringIO()):
@@ -79,7 +81,8 @@ class EmergencyTests(unittest.TestCase):
         self.assertEqual(sorted(found), ["TN-PROC-2023-02-01", "TN-PROC-2650", "TN-PROC-2700"])
         may = found["TN-PROC-2700"]
         self.assertEqual((may["signed"], may["event_date"], may["governor"]), ("2024-08-14", "2024-05-08", "Bill Lee"))
-        self.assertEqual(may["hazards"], ["flooding", "rainfall", "severe weather", "thunderstorms", "tornadoes"])
+        # 2700 was read on the page (REVIEWED), so its PDF is not read again.
+        self.assertEqual(may["hazards"], ["flooding", "severe storms", "tornadoes"])
         self.assertEqual(found["TN-PROC-2650"]["hazards"], [])            # unreadable PDF
         self.assertEqual(found["TN-PROC-2023-02-01"]["hazards"], [])      # no PDF link
 
@@ -94,7 +97,7 @@ class EmergencyTests(unittest.TestCase):
         self.assertEqual([(r["declaration_id"], r["date_signed"], r["event_date"]) for r in joined],
                          [("TN-PROC-2700", "2024-08-14", "2024-05-08")])
         self.assertEqual(joined[0]["event_description"],
-                         "State of Emergency May 8, 2024 (flooding, rainfall, severe weather, thunderstorms, tornadoes)")
+                         "State of Emergency May 8, 2024 (flooding, severe storms, tornadoes)")
         self.assertEqual(actions["TN-PROC-2650"]["weather_related"], "false")
         self.assertEqual(len(actions), 3)
 
@@ -118,6 +121,56 @@ class StormJoinTests(unittest.TestCase):
             merged = eo_storm_join.apply_overrides(declarations, overrides)
         dates = dict(zip(merged["declaration_id"], merged["override_event_date"]))
         self.assertEqual(dates, {"TN-PROC-2700": "2024-05-08", "TN-PROC-9": "2024-05-09", "TN-EO-1": ""})
+
+
+# Rows as the live index's search returned them on October 31, 2026.
+LIVE_SEARCH = """<table><thead><tr>
+        <th width="52%">Title</th>
+        <th width="22%">Governor</th>
+        <th width="23%">Date Signed</th>
+    </tr></thead><tbody>
+<tr><td><a href="files/2346.pdf">Campbell County State of Emergency August 11, 2022</a></td><td>Bill Lee</td><td>08-11-2022</td></tr>
+<tr><td><a href="files/1912.pdf">State of Emergency March 10, 2020</a></td><td>Bill Lee</td><td>03-10-2020</td></tr>
+<tr><td><a href="files/1264.pdf">State of Emergency - Various Areas Throughout the State | May 27, 2017</a></td><td>Bill Haslam</td><td>06-08-2017</td></tr>
+<tr><td><a href="files/104.pdf">State of Emergency - Bradley, Claiborne, Cumberland, DeKalb, Hamilton, Jackson, McMinn, Monroe, Overton and Polk Counties | February 29-March 2, 2012</a></td><td>Bill Haslam</td><td>03-20-2012</td></tr>
+</tbody></table>"""
+
+
+class ReviewedProclamationTests(unittest.TestCase):
+    def emergencies(self):
+        read = mock.Mock(return_value="")
+        with redirect_stdout(io.StringIO()):
+            found = procs.emergencies(procs.parse_index(LIVE_SEARCH), tn.HAZARD_RE, read=read)
+        return {e["declaration_id"]: e for e in found}, read
+
+    def test_a_title_with_the_phrase_after_a_county_is_kept(self):
+        found, _ = self.emergencies()
+        self.assertIn("TN-PROC-2346", found)
+
+    def test_reviewed_proclamations_give_hazards_and_event_dates_without_reading_the_pdf(self):
+        found, read = self.emergencies()
+        read.assert_not_called()
+        # The title's date is the signing date; the storms began February 6.
+        self.assertEqual(found["TN-PROC-1912"]["event_date"], "2020-02-06")
+        self.assertEqual(found["TN-PROC-1264"]["event_date"], "2017-05-27")
+        self.assertIn("straight-line winds", found["TN-PROC-1264"]["hazards"])
+
+    def test_a_rockslide_and_a_termination_stay_out_of_the_join(self):
+        found, _ = self.emergencies()
+        self.assertEqual(found["TN-PROC-2346"]["hazards"], [])
+        self.assertEqual(found["TN-PROC-104"]["hazards"], [])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tn.write_outputs([], root / "a.csv", root / "r.csv", root / "j.csv", list(found.values()))
+            with open(root / "j.csv", encoding="utf-8") as handle:
+                joined = sorted(r["declaration_id"] for r in csv.DictReader(handle))
+        self.assertEqual(joined, ["TN-PROC-1264", "TN-PROC-1912"])
+
+    def test_every_reviewed_weather_proclamation_has_an_event_date_on_or_before_signing(self):
+        for number, review in procs.REVIEWED.items():
+            if review["hazards"]:
+                self.assertRegex(review.get("event_date", ""), r"^\d{4}-\d{2}-\d{2}$", number)
+            self.assertTrue(review["note"], number)
 
 
 if __name__ == "__main__":

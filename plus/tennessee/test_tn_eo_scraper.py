@@ -51,4 +51,51 @@ class TennesseeScraperTests(unittest.TestCase):
             self.assertTrue(tn.HAZARD_RE.search(row["event_description"]), row["declaration_id"])
 
 
+class OrderNumberTests(unittest.TestCase):
+    def test_the_no0_7_typo_is_order_7_and_leading_zeros_are_kept(self):
+        self.assertEqual(tn.NUMBER_RE.search("No0.7 An Emergency Order").group(1), "7")
+        self.assertEqual(tn.NUMBER_RE.search("No.09 An Emergency Order").group(1), "09")
+        self.assertEqual(tn.NUMBER_RE.search("No. 110 An Order").group(1), "110")
+        self.assertIn(("Bill Lee", "7"), tn.OFFICIAL_DECLARATIONS)
+        self.assertNotIn(("Bill Lee", "0"), tn.OFFICIAL_DECLARATIONS)
+
+
+class StateOfEmergencyRowTests(unittest.TestCase):
+    """Hand-added states of emergency TEMA declared by activating the
+    state plan, each dated by a TEMA flash report or the proclamation
+    that ended it."""
+
+    def rows(self):
+        import csv, os
+        here = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(here, "manual_declarations.csv"), newline="", encoding="utf-8") as handle:
+            return {r["declaration_id"]: r for r in csv.DictReader(handle)}
+
+    def test_dates_and_sources(self):
+        rows = self.rows()
+        expected = {"TN-SOE-2012-02-29": ("2012-02-29", "Bill Haslam", "104.pdf"),
+                    "TN-SOE-2022-01-06": ("2022-01-06", "Bill Lee", "2022/1/6/"),
+                    "TN-SOE-2022-02-03": ("2022-02-03", "Bill Lee", "2022/2/3/"),
+                    "TN-SOE-2022-12-23": ("2022-12-23", "Bill Lee", "2022/12/23/")}
+        for key, (day, governor, source) in expected.items():
+            self.assertEqual((rows[key]["date_signed"], rows[key]["governor"]), (day, governor), key)
+            self.assertIn(source, rows[key]["archive_record_url"], key)
+            self.assertTrue(rows[key]["archive_record_url"].startswith("https://"), key)
+
+    def test_coverage_note_matches_the_manifest(self):
+        import importlib.util, json, os, subprocess, tempfile
+        from pathlib import Path
+        from unittest import mock
+        here = Path(os.path.dirname(os.path.abspath(__file__)))
+        spec = importlib.util.spec_from_file_location("tennessee_adapter", here / "tennessee.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(adapter.subprocess, "run", return_value=done):
+            _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
+        self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "TN"))
+        self.assertTrue(note.startswith("2000-present"))
+
+
 if __name__ == "__main__": unittest.main()
