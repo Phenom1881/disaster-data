@@ -1952,7 +1952,9 @@ _COVERAGE_START_RANGE_PATTERN = re.compile(r"^(\d{4})-\d{4}\b")
 # actually says as of the date this was written.
 _COVERAGE_START_OVERRIDES = {
     "CO": "2000",
-    "KY": "2019",
+    # Kentucky: hand-added states of emergency from 2008 (Patton and Fletcher
+    # declarations are not found yet); the note leads with "manual_only -".
+    "KY": "2008",
     "VA": "2002",
     # Alaska: 2004-2024 state disasters dated from news coverage. Hawaii:
     # partial 2014-2022 procurement mirror. Ohio: proclamations from 2003.
