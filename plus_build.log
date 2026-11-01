@@ -83,7 +83,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
 AK: 23 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 1 new emergency declaration(s), 7 in all
+Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 0 new emergency declaration(s), 7 in all
 
 Applied 8 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arizona/hazard_overrides.csv
 AZ-DECL-2026-10-governor-katie-hobbs-visits-heber-overgaard-declares-state: no matching storm events found in the date window.
@@ -1024,10 +1024,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 31 actions, 38 federal declarations; 2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 85 relationship(s), 6 original weather declaration(s).
+Done. 762 action(s), 88 relationship(s), 6 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 10 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 87 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 9 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 84 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/massachusetts/hazard_overrides.csv
 MA-EO-366: no matching storm events found in the date window.
@@ -1366,11 +1366,16 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/nevada/eo_storm_severity_summary.csv.tmp.
 
 NV: 13 actions, 116 federal declarations; 2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
+New Hampshire: 0 order PDFs read, 73 dated on an earlier run and not read again
+New Hampshire: 339 actions, 49 relationships, 8 weather declarations
+
   WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
   WARNING: the registry could not be fetched; reading the Internet Archive copy
-the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
 
-WARNING NH: Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
+NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 6 blank and 0 garbled field set(s)
+NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+NH: nh_order_relationships.csv: kept 259 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
 NH-2010-01: no matching storm events found in the date window.
 NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
@@ -1408,7 +1413,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present); Collection failed: New Hampshire adapter: the New Hampshire executive order registry could not be fetched, and no readable Internet Archive copy was found (https://www.sos.nh.gov/executive-orders)
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
@@ -1506,7 +1511,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
 NJ: 83 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
-New Mexico: 1285 actions scraped, 1243 read via OCR (1216 from earlier runs), 0 still image-only with no usable text.
+New Mexico: 1285 actions scraped, 1243 read via OCR (1285 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 NM: nm_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1869,10 +1874,10 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/oklahoma/eo_storm_severity_summary.csv.tmp.
 
 OK: 55 actions, 260 federal declarations; 2006-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Oregon signing dates: 38 from confirmed_signing_dates.csv; 190 kept from earlier runs; 1 read from the scan by OCR; 98 not found by OCR; 1 not found by OCR in the last four weeks, not retried yet; 62 of those undated, dated by when they were posted
+Oregon signing dates: 38 from confirmed_signing_dates.csv; 191 kept from earlier runs; 99 not found by OCR in the last four weeks, not retried yet; 62 of those undated, dated by when they were posted
 
 OR: or_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 34 blank and 0 garbled field set(s)
-OR: or_order_relationships.csv: kept 14 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+OR: or_order_relationships.csv: kept 109 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 112 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/oregon/hazard_overrides.csv
 OR-EO-26-25: no matching storm events found in the date window.
 OR-EO-26-24: no matching storm events found in the date window.
@@ -2293,20 +2298,9 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 TN: 51 actions, 97 federal declarations; 2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet
-Texas: read 134 of 142 monthly archive pages (8 not read), 608 proclamation posts, 357 parsed (104 not read), 50 weather declarations.
+Texas: read 143 of 143 monthly archive pages (0 not read), 633 proclamation posts, 444 parsed (0 not read), 58 weather declarations.
 
-  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
-  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
-  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
-  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
-  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
-  WARNING: 3 more Texas archive pages not read
-  WARNING: Texas proclamation post not read: crawl time budget spent before https://gov.texas.gov/news/post/updated-governor-abbott-requests-sba-disaster-declaration-for-south-texas-severe-storm-weather
-  WARNING: Texas proclamation post not read: crawl time budget spent before https://gov.texas.gov/news/post/governor-abbott-renews-severe-storm-and-flooding-disaster-proclamation-in-may-2025
-  WARNING: Texas proclamation post not read: crawl time budget spent before https://gov.texas.gov/news/post/governor-abbott-announces-federal-disaster-declaration-for-south-texas-flooding
-
-TX: declarations_for_join.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-TX: tx_emergency_actions_all.csv: kept 85 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+TX: tx_emergency_actions_all.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 
 1 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): TX-PROCLAMATION-2015-05-15-governor_abbott_again_declares_state_of_disaster_in_texas_counties
@@ -2343,7 +2337,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 58 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 8 saved records kept that this refresh's check of the state source did not return
+TX: 58 actions, 392 federal declarations; 2015-present current-Governor proclamation archive; 2000-2014 gap disclosed
 {"actions": 561, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
@@ -2607,44 +2601,75 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 WA: 81 actions, 223 federal declarations; 2000-present: structured Governor proclamation archive from 2013, with 2000-2012 weather proclamations (Locke and Gregoire) added by hand from the Washington State Digital Archives and the termination proclamations that list them; Gregoire proclamations 09-06, 09-07 and 10-08 could not be read, and 07-01 is dated from the termination that lists it
 West Virginia: 23 actions, 0 relationships, 18 weather declarations
 
-Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/west-virginia/hazard_overrides.csv
+Applied 62 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/west-virginia/hazard_overrides.csv
 WV-PROC-2026-09-23-declares-state-of-emergency-for-boone-and-lincoln-counties-f: no matching storm events found in the date window.
 WV-PROC-2026-09-17-declares-state-of-emergency-for-mason-county-following-sever: no matching storm events found in the date window.
 WV-PROC-2026-08-18-declares-state-of-emergency-following-new-round-of-severe-st: no matching storm events found in the date window.
-Wrote 1315 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_matches.csv.tmp
-Wrote severity summary (526 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp
+WV-SOE-2001-07-08: searching around the reviewed event date 2001-07-08 (signed 2001-07-08)
+WV-PROC-16524: searching around the reviewed event date 2002-05-01 (signed 2002-05-02)
+WV-PROC-16544: searching around the reviewed event date 2002-11-10 (signed 2002-11-13)
+WV-PROC-16655: searching around the reviewed event date 2003-02-15 (signed 2003-02-16)
+WV-PROC-16706: searching around the reviewed event date 2003-05-09 (signed 2003-05-10)
+WV-PROC-16761: searching around the reviewed event date 2003-06-11 (signed 2003-06-17)
+WV-PROC-16781: searching around the reviewed event date 2003-11-12 (signed 2003-11-13)
+WV-PROC-16800: searching around the reviewed event date 2004-02-05 (signed 2004-02-06)
+WV-PROC-16917: searching around the reviewed event date 2004-05-27 (signed 2004-05-28)
+WV-PROC-16961: searching around the reviewed event date 2005-01-05 (signed 2005-01-06)
+WV-PROC-18255: searching around the reviewed event date 2009-05-09 (signed 2009-05-11)
+WV-PROC-17941: searching around the reviewed event date 2009-12-18 (signed 2009-12-21)
+WV-PROC-18453: searching around the reviewed event date 2010-03-12 (signed 2010-03-12)
+WV-PROC-18151: searching around the reviewed event date 2010-05-16 (signed 2010-05-19)
+WV-PROC-18432: searching around the reviewed event date 2010-06-13 (signed 2010-06-14)
+WV-PROC-27324: searching around the reviewed event date 2011-04-08 (signed 2011-04-11)
+WV-PROC-32324: searching around the reviewed event date 2011-11-21 (signed 2012-02-07)
+WV-PROC-32438: searching around the reviewed event date 2012-02-29 (signed 2012-03-02)
+WV-PROC-33144: searching around the reviewed event date 2012-06-29 (signed 2012-06-30)
+WV-PROC-34923: searching around the reviewed event date 2013-06-13 (signed 2013-06-13)
+WV-PROC-38786: searching around the reviewed event date 2015-03-03 (signed 2015-03-04)
+WV-PROC-42094: searching around the reviewed event date 2015-04-03 (signed 2015-04-07)
+WV-PROC-45439: searching around the reviewed event date 2015-07-12 (signed 2015-07-13)
+WV-PROC-53209: searching around the reviewed event date 2016-01-22 (signed 2016-01-22)
+WV-PROC-56955: searching around the reviewed event date 2016-06-23 (signed 2016-06-23)
+WV-PROC-85699: searching around the reviewed event date 2017-07-28 (signed 2017-07-29)
+WV-PROC-87369: searching around the reviewed event date 2018-05-28 (signed 2018-06-04)
+WV-PROC-88743: searching around the reviewed event date 2019-06-29 (signed 2019-06-30)
+WV-PROC-89196: searching around the reviewed event date 2019-06-29 (signed 2019-12-04)
+WV-PROC-92521: searching around the reviewed event date 2022-05-06 (signed 2022-05-06)
+WV-PROC-92747: searching around the reviewed event date 2022-06-17 (signed 2022-06-20)
+Wrote 4267 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_matches.csv.tmp
+Wrote severity summary (2076 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
+  WV-PROC-56955 GREENBRIER [county/county-equivalent]: deaths=16, injuries=0, damage=$40,052,000 (Flash Flood, Thunderstorm Wind, Tornado)
   WV-PROC-2025-06-15-declares-state-of-emergency-in-marion-county OHIO [county/county-equivalent]: deaths=9, injuries=0, damage=$2,505,000 (Flash Flood, Heavy Rain)
   WV-PROC-2025-06-15-declares-state-of-emergency-in-ohio-county OHIO [county/county-equivalent]: deaths=9, injuries=0, damage=$2,505,000 (Flash Flood, Heavy Rain)
+  WV-PROC-56955 KANAWHA [county/county-equivalent]: deaths=6, injuries=0, damage=$62,038,000 (Flood, Hail, Thunderstorm Wind)
   WV-PROC-2025-02-15-declares-state-of-emergency-in-10-counties-urges-caution-acr MCDOWELL [county/county-equivalent]: deaths=3, injuries=0, damage=$10,000,000 (Flash Flood, Flood)
+  WV-PROC-16524 MCDOWELL [county/county-equivalent]: deaths=2, injuries=0, damage=$85,000,000 (Flash Flood, Hail)
+  WV-PROC-18453 RALEIGH [county/county-equivalent]: deaths=2, injuries=0, damage=$4,000,000 (Flood)
   WV-PROC-2026-07-20-declares-state-of-emergency-for-barbour-county-following-sev UPSHUR [county/county-equivalent]: deaths=2, injuries=0, damage=$230,000 (Flash Flood, Flood)
   WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever UPSHUR [county/county-equivalent]: deaths=2, injuries=0, damage=$99,000 (Flash Flood, Thunderstorm Wind)
   WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of- UPSHUR [county/county-equivalent]: deaths=2, injuries=0, damage=$99,000 (Flash Flood, Thunderstorm Wind)
-  WV-PROC-2025-02-15-declares-state-of-emergency-in-10-counties-urges-caution-acr MINGO [county/county-equivalent]: deaths=0, injuries=0, damage=$5,000,000 (Flash Flood, Flood)
-  WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever PENDLETON [county/county-equivalent]: deaths=0, injuries=0, damage=$2,250,000 (Tornado)
-  WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of- PENDLETON [county/county-equivalent]: deaths=0, injuries=0, damage=$2,250,000 (Tornado)
-  WV-PROC-2025-02-15-declares-state-of-emergency-in-10-counties-urges-caution-acr MERCER [county/county-equivalent]: deaths=0, injuries=0, damage=$2,100,000 (Flash Flood, Flood)
-  WV-PROC-2025-06-15-declares-state-of-emergency-in-marion-county MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$1,160,000 (Flash Flood)
-  WV-PROC-2025-06-15-declares-state-of-emergency-in-ohio-county MARION [county/county-equivalent]: deaths=0, injuries=0, damage=$1,160,000 (Flash Flood)
-  WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever LEWIS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,011,500 (Flash Flood, Thunderstorm Wind)
-  WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of- LEWIS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,011,500 (Flash Flood, Thunderstorm Wind)
-  WV-PROC-2026-07-20-declares-state-of-emergency-for-barbour-county-following-sev LEWIS [county/county-equivalent]: deaths=0, injuries=0, damage=$1,000,000 (Flash Flood, Flood)
-  WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever HAMPSHIRE [county/county-equivalent]: deaths=0, injuries=0, damage=$500,000 (Tornado)
-  WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of- HAMPSHIRE [county/county-equivalent]: deaths=0, injuries=0, damage=$500,000 (Tornado)
-  WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever PLEASANTS [county/county-equivalent]: deaths=0, injuries=0, damage=$210,000 (Tornado)
-  WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of- PLEASANTS [county/county-equivalent]: deaths=0, injuries=0, damage=$210,000 (Tornado)
-  WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever RITCHIE [county/county-equivalent]: deaths=0, injuries=0, damage=$200,000 (Flash Flood, Thunderstorm Wind, Tornado)
-  WV-PROC-2026-07-21-declares-state-of-preparedness-for-all-55-counties-ahead-of- RITCHIE [county/county-equivalent]: deaths=0, injuries=0, damage=$200,000 (Flash Flood, Thunderstorm Wind, Tornado)
-  WV-PROC-2026-07-20-declares-state-of-emergency-for-barbour-county-following-sev RITCHIE [county/county-equivalent]: deaths=0, injuries=0, damage=$150,000 (Flash Flood, Flood)
-  WV-PROC-2025-02-15-declares-state-of-emergency-in-10-counties-urges-caution-acr SUMMERS [county/county-equivalent]: deaths=0, injuries=0, damage=$100,000 (Flash Flood, Flood)
-  WV-PROC-2026-06-24-declares-state-of-emergency-for-boone-logan-and-raleigh-coun MINGO [county/county-equivalent]: deaths=0, injuries=0, damage=$76,000 (Flash Flood, Thunderstorm Wind)
-  WV-PROC-2026-07-21-declares-state-of-emergency-for-all-55-counties-due-to-sever HARRISON [county/county-equivalent]: deaths=0, injuries=0, damage=$58,000 (Flash Flood, Hail, Thunderstorm Wind)
-  Showing the 25 highest-consequence areas; all 187 are retained in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
+  WV-PROC-56955 JACKSON [county/county-equivalent]: deaths=1, injuries=2, damage=$521,000 (Flash Flood, Thunderstorm Wind, Tornado)
+  WV-SOE-2001-07-08 WYOMING [county/county-equivalent]: deaths=1, injuries=0, damage=$60,000,000 (Flash Flood)
+  WV-PROC-16781 KANAWHA [NWS forecast zone]: deaths=1, injuries=0, damage=$6,600,000 (Flood)
+  WV-PROC-16926 MARSHALL [NWS forecast zone]: deaths=1, injuries=0, damage=$4,700,000 (Flood)
+  WV-PROC-16655 LINCOLN [NWS forecast zone]: deaths=1, injuries=0, damage=$2,500,000 (Flood)
+  WV-PROC-16655 KANAWHA [NWS forecast zone]: deaths=1, injuries=0, damage=$2,300,000 (Flood, Winter Storm)
+  WV-PROC-92521 CABELL [county/county-equivalent]: deaths=1, injuries=0, damage=$900,000 (Flash Flood)
+  WV-PROC-33685 BARBOUR [NWS forecast zone]: deaths=1, injuries=0, damage=$750,000 (Heavy Snow)
+  WV-PROC-42094 WAYNE [county/county-equivalent]: deaths=1, injuries=0, damage=$450,000 (Flash Flood)
+  WV-PROC-16926 LINCOLN [NWS forecast zone]: deaths=1, injuries=0, damage=$125,000 (Flood)
+  WV-PROC-16917 MARION [county/county-equivalent]: deaths=1, injuries=0, damage=$15,000 (Thunderstorm Wind)
+  WV-PROC-96703 WOOD [county/county-equivalent]: deaths=1, injuries=0, damage=$7,000 (Flood, Thunderstorm Wind)
+  WV-PROC-92729 WETZEL [county/county-equivalent]: deaths=1, injuries=0, damage=$5,000 (Flash Flood)
+  WV-PROC-92747 WETZEL [county/county-equivalent]: deaths=1, injuries=0, damage=$5,000 (Flash Flood)
+  WV-PROC-94857 FAYETTE [county/county-equivalent]: deaths=1, injuries=0, damage=$2,500 (Flood)
+  Showing the 25 highest-consequence areas; all 1135 are retained in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/west-virginia/eo_storm_severity_summary.csv.tmp.
 
-WV: 18 actions, 86 federal declarations; 2025-present Governor news archive; pre-2025 emergency proclamations backfill pending
+WV: 80 actions, 86 federal declarations; 2000-present: the Governor's news archive from 2025, plus 2001-2024 weather declarations added by hand from the Governor's state of emergency proclamations in the Secretary of State's Executive Journal (and Executive Order 14-01 for the July 2001 flooding); the Journal holds no proclamations from Governor Underwood, so DR-1319 (February 2000) has no state declaration
 Wisconsin: 303 executive orders processed
 
 Applied 0 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/wisconsin/hazard_overrides.csv
@@ -2713,63 +2738,12 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending
-
-Retrying 1 state(s) whose source failed or returned nothing, after 60s: NH
-New Hampshire: registry read from the Internet Archive copy from 2025-11-15 (the live registry refused this runner)
-New Hampshire: 0 order PDFs read, 73 dated on an earlier run and not read again
-New Hampshire: 339 actions, 49 relationships, 8 weather declarations
-
-  WARNING: failed to fetch https://www.sos.nh.gov/executive-orders: 503 Server Error: Service Unavailable for url: https://sos.nh.gov/executive-orders
-  WARNING: the registry could not be fetched; reading the Internet Archive copy
-
-NH: declarations_for_join.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 6 blank and 0 garbled field set(s)
-NH: nh_emergency_actions_all.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-NH: nh_order_relationships.csv: kept 259 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-RETRY NH: recovered (ok, 8 records returned); rebuilding
-Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/hazard_overrides.csv
-NH-2010-01: no matching storm events found in the date window.
-NH-FMCSA-0CD09DD8A747: no matching storm events found in the date window.
-NH-FMCSA-D74D3C13CBE5: no matching storm events found in the date window.
-Wrote 173 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_matches.csv.tmp
-Wrote severity summary (139 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp
-
-Areas with reported deaths, injuries, or damage:
-  NH-PROC-2005-10-09 CHESHIRE [county/county-equivalent]: deaths=2, injuries=0, damage=$10,000,000 (Flash Flood)
-  NH-PROC-2005-10-09 SULLIVAN [NWS forecast zone]: deaths=2, injuries=0, damage=$3,250,000 (Flood)
-  NH-PROC-2012-10-29 GRAFTON [county/county-equivalent]: deaths=1, injuries=0, damage=$9,000 (Debris Flow, Flood, Heavy Rain, Thunderstorm Wind)
-  NH-2003-09 HILLSBOROUGH [county/county-equivalent]: deaths=0, injuries=9, damage=$0 (Lightning)
-  NH-2003-09 BELKNAP [county/county-equivalent]: deaths=0, injuries=4, damage=$0 (Lightning)
-  NH-2003-09 CHESHIRE [county/county-equivalent]: deaths=0, injuries=1, damage=$500,000 (Flash Flood)
-  NH-PROC-2012-10-29 MERRIMACK [NWS forecast zone]: deaths=0, injuries=1, damage=$106,000 (High Wind)
-  NH-2008-12 EASTERN HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$15,000,000 (Ice Storm)
-  NH-2008-12 WESTERN AND CENTRAL HILLSBOROUGH [NWS forecast zone]: deaths=0, injuries=0, damage=$12,000,000 (Ice Storm)
-  NH-2008-12 CHESHIRE [NWS forecast zone]: deaths=0, injuries=0, damage=$9,000,000 (Ice Storm)
-  NH-2013-08 GRAFTON [county/county-equivalent]: deaths=0, injuries=0, damage=$7,500,000 (Flash Flood)
-  NH-2013-08 SULLIVAN [county/county-equivalent]: deaths=0, injuries=0, damage=$2,575,000 (Flash Flood, Thunderstorm Wind)
-  NH-2008-12 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$1,620,000 (Ice Storm)
-  NH-2008-12 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,580,000 (Ice Storm)
-  NH-PROC-2005-10-09 MERRIMACK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,010,000 (Flood)
-  NH-PROC-2005-10-09 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Flood)
-  NH-2008-12 SULLIVAN [NWS forecast zone]: deaths=0, injuries=0, damage=$786,000 (Ice Storm)
-  NH-PROC-2012-10-29 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$387,000 (High Wind)
-  NH-2008-12 BELKNAP [NWS forecast zone]: deaths=0, injuries=0, damage=$359,000 (Ice Storm)
-  NH-2008-12 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$326,000 (Ice Storm)
-  NH-2008-12 SOUTHERN GRAFTON [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Ice Storm)
-  NH-PROC-2012-10-29 COASTAL ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$225,000 (Coastal Flood, High Wind)
-  NH-PROC-2005-10-09 STRAFFORD [NWS forecast zone]: deaths=0, injuries=0, damage=$200,000 (Flood)
-  NH-PROC-2012-10-29 INTERIOR ROCKINGHAM [NWS forecast zone]: deaths=0, injuries=0, damage=$184,000 (High Wind)
-  NH-2008-12 SOUTHERN CARROLL [NWS forecast zone]: deaths=0, injuries=0, damage=$166,000 (Ice Storm)
-  Showing the 25 highest-consequence areas; all 51 are retained in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
-
-Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
-
-NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-TIME total: collect 4235s, storm join 91s. Slowest: TX 1514s+1s, NJ 423s+9s, OR 350s+2s, NC 315s+1s, CT 194s+0s, NM 130s+1s, VT 125s+0s, SC 106s+3s, LA 92s+1s, MI 89s+1s
-WARNING kept saved records the state source did not return: KS (12), TX (8)
+TIME total: collect 3313s, storm join 79s. Slowest: TX 1414s+1s, NJ 287s+6s, NC 271s+1s, CT 195s+0s, SC 111s+2s, LA 91s+1s, WA 83s+1s, VT 72s+0s, CO 66s+4s, MI 66s+1s
+WARNING kept saved records the state source did not return: KS (12)
 Row-loss check: no saved rows lost.
-Plus health: 48 green, 2 yellow, 0 red.
-Changes since the last run (2026-10-26 23:44 UTC):
+Plus health: 49 green, 1 yellow, 0 red.
+Changes since the last run (2026-10-31 17:52 UTC):
 
-- **Texas** went from green to yellow. The source left out 8 of 58 saved records; they are shown from earlier runs.
+- **Texas** went from yellow to green.
 
-Now 48 green, 2 yellow, 0 red.
+Now 49 green, 1 yellow, 0 red.
