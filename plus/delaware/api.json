@@ -155,6 +155,28 @@
       "title": "Limited State of Emergency for a winter storm with heavy snow in Kent and Sussex counties."
     },
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2010-02-10",
+      "declaration_id": "DE-SOE-2010-02-10",
+      "governor": "Jack Markell",
+      "origin": "hand",
+      "source_url": "https://whyy.org/articles/delaware-wakes-up-to-a-state-wide-blizzard-warning/",
+      "state": "DE",
+      "title": "Statewide State of Emergency, effective at midnight February 10, 2010, for the second February blizzard; WHYY reports it was declared once again after the first storm."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2003-09-18",
+      "declaration_id": "DE-SOE-2003-09-18",
+      "governor": "Ruth Ann Minner",
+      "origin": "hand",
+      "source_url": "https://www.pbs.org/newshour/world/weather-july-dec03-isabel_09-18",
+      "state": "DE",
+      "title": "State of Emergency for Hurricane Isabel, reported in place by September 18, 2003 alongside mandatory evacuations of low-lying areas."
+    },
+    {
       "action_number": "32",
       "action_type": "declaration",
       "date_signed": "2002-08-02",
@@ -166,7 +188,7 @@
       "title": "Executive Order 32: mandatory water conservation measures during the 2002 statewide drought, the drought emergency later ended by Executive Order 34."
     }
   ],
-  "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
+  "coverage": "2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage",
   "crosswalk": [
     {
       "date_signed": "2026-02-22",
@@ -426,6 +448,55 @@
       "title": "Limited State of Emergency for a winter storm with heavy snow in Kent and Sussex counties."
     },
     {
+      "date_signed": "2010-02-10",
+      "declaration_id": "DE-SOE-2010-02-10",
+      "federal_declaration": {
+        "begin": "2010-02-05",
+        "date": "2010-03-31",
+        "end": "2010-02-11",
+        "id": "DR-1896",
+        "incidentType": "Snowstorm",
+        "number": 1896,
+        "title": "SEVERE WINTER STORMS AND SNOWSTORMS",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "DELAWARE BEACHES",
+        "INLAND SUSSEX",
+        "KENT",
+        "NEW CASTLE"
+      ],
+      "noaa_match_count": 8,
+      "noaa_status": "matched",
+      "title": "Statewide State of Emergency, effective at midnight February 10, 2010, for the second February blizzard; WHYY reports it was declared once again after the first storm."
+    },
+    {
+      "date_signed": "2003-09-18",
+      "declaration_id": "DE-SOE-2003-09-18",
+      "federal_declaration": {
+        "begin": "2003-09-18",
+        "date": "2003-09-20",
+        "end": "2003-09-29",
+        "id": "DR-1494",
+        "incidentType": "Hurricane",
+        "number": 1494,
+        "title": "HURRICANE ISABEL",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "DELAWARE BEACHES",
+        "INLAND SUSSEX",
+        "KENT",
+        "NEW CASTLE",
+        "SUSSEX"
+      ],
+      "noaa_match_count": 13,
+      "noaa_status": "matched",
+      "title": "State of Emergency for Hurricane Isabel, reported in place by September 18, 2003 alongside mandatory evacuations of low-lying areas."
+    },
+    {
       "date_signed": "2002-08-02",
       "declaration_id": "DE-EO-32",
       "federal_declaration": null,
@@ -443,18 +514,59 @@
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 1,
+    "compared": 14,
     "covered_by_extension": [],
-    "declarations": [],
-    "since": 2025
+    "declarations": [
+      {
+        "begin": "2021-09-01",
+        "date": "2021-10-24",
+        "end": "2021-09-07",
+        "id": "DR-4627",
+        "incidentType": "Hurricane",
+        "number": 4627,
+        "title": "REMNANTS OF HURRICANE IDA",
+        "type": "DR"
+      },
+      {
+        "begin": "2006-06-23",
+        "date": "2006-07-05",
+        "end": "2006-07-14",
+        "id": "DR-1654",
+        "incidentType": "Severe Storm",
+        "number": 1654,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2004-09-28",
+        "date": "2004-11-15",
+        "end": "2004-10-02",
+        "id": "DR-1572",
+        "incidentType": "Severe Storm",
+        "number": 1572,
+        "title": "SEVERE STORMS, TORNADOES, AND FLOODING FROM THE REMNANTS OF",
+        "type": "DR"
+      },
+      {
+        "begin": "2003-02-14",
+        "date": "2003-03-20",
+        "end": "2003-02-19",
+        "id": "EM-3183",
+        "incidentType": "Snowstorm",
+        "number": 3183,
+        "title": "SNOW",
+        "type": "EM"
+      }
+    ],
+    "since": 2000
   },
   "generated_on": "2026-11-01",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 15,
+    "action_count": 17,
     "federal_declaration_count": 26,
-    "severity_rows": 68,
-    "storm_match_rows": 141
+    "severity_rows": 79,
+    "storm_match_rows": 162
   },
   "name": "Delaware",
   "noaa_data_through": "2026-07-30",
@@ -463,10 +575,10 @@
   "slug": "delaware",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 13,
-    "federal_matched": 5,
+    "added_by_hand": 15,
+    "federal_matched": 7,
     "fmcsa_archive": 0,
-    "noaa_matched": 15,
+    "noaa_matched": 17,
     "noaa_none": 0,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,

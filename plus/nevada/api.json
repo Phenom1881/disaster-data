@@ -142,9 +142,20 @@
       "source_url": "https://m.lasvegassun.com/news/2014/sep/09/sandoval-declares-state-emergency-clark-county/",
       "state": "NV",
       "title": "State of emergency for flash flooding that damaged Interstate 15, homes and infrastructure in Clark County and on the Moapa Band of Paiutes Reservation."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2008-01-05",
+      "declaration_id": "NV-SOE-2008-01-05",
+      "governor": "Jim Gibbons",
+      "origin": "hand",
+      "source_url": "https://www.reviewjournal.com/news/levee-break-floods-fernley/",
+      "state": "NV",
+      "title": "State of emergency for Lyon County after the Truckee Canal levee broke and flooded Fernley during a winter storm."
     }
   ],
-  "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire, the winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, DR-1583, DR-1629) have no state declaration; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-08-23",
@@ -403,22 +414,107 @@
       "noaa_match_count": 16,
       "noaa_status": "matched",
       "title": "State of emergency for flash flooding that damaged Interstate 15, homes and infrastructure in Clark County and on the Moapa Band of Paiutes Reservation."
+    },
+    {
+      "date_signed": "2008-01-05",
+      "declaration_id": "NV-SOE-2008-01-05",
+      "federal_declaration": {
+        "begin": "2008-01-05",
+        "date": "2008-01-08",
+        "end": "2008-01-10",
+        "id": "DR-1738",
+        "incidentType": "Severe Storm",
+        "number": 1738,
+        "title": "SEVERE WINTER STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "GREATER LAKE TAHOE AREA",
+        "GREATER RENO/CARSON CITY/MINDEN AREA",
+        "HUMBOLDT",
+        "LAS VEGAS VALLEY",
+        "LYON",
+        "N ELKO CNTY",
+        "NORTHERN NYE",
+        "RUBY MOUNTAINS/E HUMBOLDT RANGE",
+        "S LANDER & S EUREKA",
+        "SPRING MOUNTAINS",
+        "SW & SC ELKO",
+        "WASHOE",
+        "WESTERN NEVADA BASIN AND RANGE",
+        "WHITE PINE"
+      ],
+      "noaa_match_count": 23,
+      "noaa_status": "matched",
+      "title": "State of emergency for Lyon County after the Truckee Canal levee broke and flooded Fernley during a winter storm."
     }
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 2,
+    "compared": 11,
     "covered_by_extension": [],
-    "declarations": [],
-    "since": 2023
+    "declarations": [
+      {
+        "begin": "2005-12-31",
+        "date": "2006-02-03",
+        "end": "2006-01-04",
+        "id": "DR-1629",
+        "incidentType": "Severe Storm",
+        "number": 1629,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2005-01-07",
+        "date": "2005-03-07",
+        "end": "2005-01-13",
+        "id": "DR-1583",
+        "incidentType": "Severe Storm",
+        "number": 1583,
+        "title": "HEAVY RAINS AND FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2005-01-06",
+        "date": "2005-02-23",
+        "end": "2005-01-10",
+        "id": "EM-3204",
+        "incidentType": "Snowstorm",
+        "number": 3204,
+        "title": "SNOW",
+        "type": "EM"
+      },
+      {
+        "begin": "2004-12-29",
+        "date": "2005-02-17",
+        "end": "2005-01-02",
+        "id": "EM-3202",
+        "incidentType": "Snowstorm",
+        "number": 3202,
+        "title": "RECORD AND/OR NEAR RECORD SNOW",
+        "type": "EM"
+      },
+      {
+        "begin": "2004-07-14",
+        "date": "2004-08-26",
+        "end": "2004-07-27",
+        "id": "DR-1540",
+        "incidentType": "Fire",
+        "number": 1540,
+        "title": "WILDLAND FIRE",
+        "type": "DR"
+      }
+    ],
+    "since": 2000
   },
   "generated_on": "2026-11-01",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 13,
+    "action_count": 14,
     "federal_declaration_count": 116,
-    "severity_rows": 48,
-    "storm_match_rows": 118
+    "severity_rows": 62,
+    "storm_match_rows": 141
   },
   "name": "Nevada",
   "noaa_data_through": "2026-07-30",
@@ -427,10 +523,10 @@
   "slug": "nevada",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 5,
-    "federal_matched": 8,
+    "added_by_hand": 6,
+    "federal_matched": 9,
     "fmcsa_archive": 2,
-    "noaa_matched": 9,
+    "noaa_matched": 10,
     "noaa_none": 2,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,

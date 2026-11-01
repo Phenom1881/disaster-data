@@ -4,23 +4,23 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2024-present HSEMD proclamation tables; 2000-2023 not collected",
-  "coverage_base": "2024-present HSEMD proclamation tables; 2000-2023 not collected.",
+  "coverage": "2020-present: HSEMD proclamation tables from 2024, plus the Governor's 2020-2023 weather disaster proclamations added by hand from the Governor's press releases (governor.iowa.gov); the newsroom starts in March 2020 and no archive of earlier proclamations has been found, so 2000-2019 is not covered yet",
+  "coverage_base": "2020-present: HSEMD proclamation tables from 2024, plus the Governor's 2020-2023 weather disaster proclamations added by hand from the Governor's press releases (governor.iowa.gov); the newsroom starts in March 2020 and no archive of earlier proclamations has been found, so 2000-2019 is not covered yet",
   "federal_without_state": {
-    "compared": 5,
+    "compared": 8,
     "count": 0,
     "covered_by_extension": [],
     "ids": [],
-    "since": 2024
+    "since": 2020
   },
   "generated_on": "2026-11-01",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 54,
+    "action_count": 93,
     "federal_declaration_count": 79,
-    "severity_rows": 1586,
-    "storm_match_rows": 5148
+    "severity_rows": 2471,
+    "storm_match_rows": 8076
   },
   "name": "Iowa",
   "retried": false,
@@ -29,11 +29,11 @@
   "source_records_saved_before": 54,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 37,
+    "added_by_hand": 39,
+    "federal_matched": 54,
     "fmcsa_archive": 0,
-    "noaa_matched": 49,
-    "noaa_none": 5,
+    "noaa_matched": 83,
+    "noaa_none": 10,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 54
@@ -41,7 +41,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 2.2,
+    "collect_seconds": 1.6,
     "storm_join_seconds": 0.9
   }
 }

@@ -7,26 +7,28 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed",
-      "coverage_base": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed",
+      "coverage": "2004-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2004-2009 ones from dated news coverage (Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav, the March 2009 floods); no state declaration has been found for the May 2009 floods (DR-1842) or the January 2012 tornadoes (DR-4052), and 2000-2003 is not compared yet",
+      "coverage_base": "2004-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2004-2009 ones from dated news coverage (Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav, the March 2009 floods); no state declaration has been found for the May 2009 floods (DR-1842) or the January 2012 tornadoes (DR-4052), and 2000-2003 is not compared yet",
       "federal_without_state": {
-        "compared": 20,
-        "count": 2,
+        "compared": 40,
+        "count": 4,
         "covered_by_extension": [],
         "ids": [
           "EM-3618",
-          "DR-4632"
+          "DR-4632",
+          "DR-4052",
+          "DR-1842"
         ],
-        "since": 2017
+        "since": 2004
       },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 31,
+        "action_count": 62,
         "federal_declaration_count": 103,
-        "severity_rows": 723,
-        "storm_match_rows": 1583
+        "severity_rows": 1702,
+        "storm_match_rows": 3483
       },
       "name": "Alabama",
       "retried": false,
@@ -35,11 +37,11 @@
       "source_records_saved_before": 31,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 16,
+        "added_by_hand": 31,
+        "federal_matched": 32,
         "fmcsa_archive": 0,
-        "noaa_matched": 29,
-        "noaa_none": 1,
+        "noaa_matched": 59,
+        "noaa_none": 2,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
         "state_archive": 31
@@ -47,8 +49,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.7,
-        "storm_join_seconds": 11.9
+        "collect_seconds": 0.6,
+        "storm_join_seconds": 35.4
       }
     },
     {
@@ -119,8 +121,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.3,
-        "storm_join_seconds": 10.9
+        "collect_seconds": 15.1,
+        "storm_join_seconds": 3.7
       }
     },
     {
@@ -168,8 +170,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 57.2,
-        "storm_join_seconds": 7.0
+        "collect_seconds": 60.3,
+        "storm_join_seconds": 3.3
       }
     },
     {
@@ -229,8 +231,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.9,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 2.1,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -276,8 +278,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 42.5,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 38.5,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -327,8 +329,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 65.8,
-        "storm_join_seconds": 4.0
+        "collect_seconds": 42.6,
+        "storm_join_seconds": 3.6
       }
     },
     {
@@ -395,8 +397,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 195.3,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 229.3,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -405,23 +407,28 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
-      "coverage_base": "October 2025-present structured Governor declaration archive; earlier emergency declarations backfill pending",
+      "coverage": "2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage",
+      "coverage_base": "2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage",
       "federal_without_state": {
-        "compared": 1,
-        "count": 0,
+        "compared": 14,
+        "count": 4,
         "covered_by_extension": [],
-        "ids": [],
-        "since": 2025
+        "ids": [
+          "DR-4627",
+          "DR-1654",
+          "DR-1572",
+          "EM-3183"
+        ],
+        "since": 2000
       },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 15,
+        "action_count": 17,
         "federal_declaration_count": 26,
-        "severity_rows": 68,
-        "storm_match_rows": 141
+        "severity_rows": 79,
+        "storm_match_rows": 162
       },
       "name": "Delaware",
       "retried": false,
@@ -430,10 +437,10 @@
       "source_records_saved_before": 2,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 13,
-        "federal_matched": 5,
+        "added_by_hand": 15,
+        "federal_matched": 7,
         "fmcsa_archive": 0,
-        "noaa_matched": 15,
+        "noaa_matched": 17,
         "noaa_none": 0,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -442,7 +449,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.6,
+        "collect_seconds": 0.7,
         "storm_join_seconds": 0.5
       }
     },
@@ -489,8 +496,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 53.9,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 53.7,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -538,8 +545,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 9.0,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 14.6,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -587,8 +594,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 29.5,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 22.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -640,8 +647,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 54.8,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 39.1,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -710,8 +717,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 11.8,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 7.7,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -771,8 +778,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 5.8,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 6.9,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -781,23 +788,23 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2024-present HSEMD proclamation tables; 2000-2023 not collected",
-      "coverage_base": "2024-present HSEMD proclamation tables; 2000-2023 not collected.",
+      "coverage": "2020-present: HSEMD proclamation tables from 2024, plus the Governor's 2020-2023 weather disaster proclamations added by hand from the Governor's press releases (governor.iowa.gov); the newsroom starts in March 2020 and no archive of earlier proclamations has been found, so 2000-2019 is not covered yet",
+      "coverage_base": "2020-present: HSEMD proclamation tables from 2024, plus the Governor's 2020-2023 weather disaster proclamations added by hand from the Governor's press releases (governor.iowa.gov); the newsroom starts in March 2020 and no archive of earlier proclamations has been found, so 2000-2019 is not covered yet",
       "federal_without_state": {
-        "compared": 5,
+        "compared": 8,
         "count": 0,
         "covered_by_extension": [],
         "ids": [],
-        "since": 2024
+        "since": 2020
       },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 54,
+        "action_count": 93,
         "federal_declaration_count": 79,
-        "severity_rows": 1586,
-        "storm_match_rows": 5148
+        "severity_rows": 2471,
+        "storm_match_rows": 8076
       },
       "name": "Iowa",
       "retried": false,
@@ -806,11 +813,11 @@
       "source_records_saved_before": 54,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 37,
+        "added_by_hand": 39,
+        "federal_matched": 54,
         "fmcsa_archive": 0,
-        "noaa_matched": 49,
-        "noaa_none": 5,
+        "noaa_matched": 83,
+        "noaa_none": 10,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
         "state_archive": 54
@@ -818,7 +825,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
+        "collect_seconds": 1.6,
         "storm_join_seconds": 0.9
       }
     },
@@ -886,8 +893,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 22.3,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 22.2,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -896,30 +903,30 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap",
-      "coverage_base": "manual_only - Beshear-era Governor newsroom releases (about eight months deep) plus reviewed records; SOS Executive Journal (authoritative) is bot-blocked and pre-2019 coverage is an open gap",
+      "coverage": "2008-present: the Governor's newsroom releases and executive orders, plus 2008-2024 states of emergency added by hand from executive orders, official releases and dated news coverage; the Secretary of State's Executive Journal (authoritative) blocks automated requests, no dated declaration has been found for April 2008, May and August 2009, June 2011, August 2014 or Helene in 2024 (DR-1757, DR-1841, DR-1855, DR-4008, DR-4196, DR-4848), and 2000-2007 is not compared yet",
+      "coverage_base": "manual_only - 2008-present: the Governor's newsroom releases and executive orders, plus 2008-2024 states of emergency added by hand from executive orders, official releases and dated news coverage; the Secretary of State's Executive Journal (authoritative) blocks automated requests, no dated declaration has been found for April 2008, May and August 2009, June 2011, August 2014 or Helene in 2024 (DR-1757, DR-1841, DR-1855, DR-4008, DR-4196, DR-4848), and 2000-2007 is not compared yet",
       "federal_without_state": {
-        "compared": 21,
+        "compared": 41,
         "count": 6,
         "covered_by_extension": [],
         "ids": [
           "DR-4848",
-          "DR-4804",
-          "DR-4711",
-          "DR-4702",
-          "DR-4540",
-          "DR-4428"
+          "DR-4196",
+          "DR-4008",
+          "DR-1855",
+          "DR-1841",
+          "DR-1757"
         ],
-        "since": 2019
+        "since": 2008
       },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 16,
+        "action_count": 33,
         "federal_declaration_count": 99,
-        "severity_rows": 867,
-        "storm_match_rows": 1785
+        "severity_rows": 2083,
+        "storm_match_rows": 4769
       },
       "name": "Kentucky",
       "retried": false,
@@ -928,10 +935,10 @@
       "source_records_saved_before": 11,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 5,
-        "federal_matched": 11,
+        "added_by_hand": 22,
+        "federal_matched": 27,
         "fmcsa_archive": 0,
-        "noaa_matched": 14,
+        "noaa_matched": 31,
         "noaa_none": 2,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -940,7 +947,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.2,
+        "collect_seconds": 1.6,
         "storm_join_seconds": 0.6
       }
     },
@@ -959,6 +966,11 @@
         "ids": [],
         "since": 2016
       },
+      "first_attempt": {
+        "error": "Collection failed: Louisiana adapter: scrape failed",
+        "seconds": 50.7,
+        "status": "failed"
+      },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
@@ -969,7 +981,8 @@
         "storm_match_rows": 2223
       },
       "name": "Louisiana",
-      "retried": false,
+      "retried": true,
+      "retry_status": "ok",
       "slug": "louisiana",
       "source_records_returned": 11,
       "source_records_saved_before": 11,
@@ -987,8 +1000,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 90.6,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 78.5,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -1041,8 +1054,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 15.3,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 23.0,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1051,23 +1064,26 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage",
-      "coverage_base": "2023-present structured Governor archive; three isolated 2007/2012 records are not continuous older coverage",
+      "coverage": "2000-present: the Governor's executive order archive from 2023, plus 2000-2022 weather declarations added by hand: 2000-2018 executive orders from the Department of Legislative Services' yearly compilations, and others from official announcements, order text and dated news coverage; no state declaration was found for the June 2006 flooding (DR-1652) or Tropical Storm Isaias in 2020 (DR-4583)",
+      "coverage_base": "2000-present: the Governor's executive order archive from 2023, plus 2000-2022 weather declarations added by hand: 2000-2018 executive orders from the Department of Legislative Services' yearly compilations, and others from official announcements, order text and dated news coverage; no state declaration was found for the June 2006 flooding (DR-1652) or Tropical Storm Isaias in 2020 (DR-4583)",
       "federal_without_state": {
-        "compared": 1,
-        "count": 0,
+        "compared": 20,
+        "count": 2,
         "covered_by_extension": [],
-        "ids": [],
-        "since": 2023
+        "ids": [
+          "DR-4583",
+          "DR-1652"
+        ],
+        "since": 2000
       },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 31,
+        "action_count": 47,
         "federal_declaration_count": 38,
-        "severity_rows": 592,
-        "storm_match_rows": 1052
+        "severity_rows": 814,
+        "storm_match_rows": 1512
       },
       "name": "Maryland",
       "retried": false,
@@ -1076,11 +1092,11 @@
       "source_records_saved_before": 11,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 20,
-        "federal_matched": 13,
+        "added_by_hand": 36,
+        "federal_matched": 18,
         "fmcsa_archive": 0,
-        "noaa_matched": 28,
-        "noaa_none": 3,
+        "noaa_matched": 43,
+        "noaa_none": 4,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
         "state_archive": 11
@@ -1088,8 +1104,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 4.1,
-        "storm_join_seconds": 1.4
+        "collect_seconds": 6.1,
+        "storm_join_seconds": 2.1
       }
     },
     {
@@ -1157,8 +1173,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 57.4,
-        "storm_join_seconds": 1.5
+        "collect_seconds": 112.7,
+        "storm_join_seconds": 2.2
       }
     },
     {
@@ -1204,8 +1220,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 66.4,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 75.6,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1255,8 +1271,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 4.1,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 4.2,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -1315,8 +1331,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 5.0,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 7.1,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -1404,7 +1420,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 14.3,
+        "collect_seconds": 9.2,
         "storm_join_seconds": 1.1
       }
     },
@@ -1457,7 +1473,7 @@
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
         "collect_seconds": 22.6,
-        "storm_join_seconds": 0.7
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -1540,8 +1556,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.8,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 0.6,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -1550,23 +1566,29 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2023-present current-Governor executive and emergency-order archives; 2000-2022 gap disclosed",
+      "coverage": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire, the winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, DR-1583, DR-1629) have no state declaration; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire, the winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, DR-1583, DR-1629) have no state declaration",
       "federal_without_state": {
-        "compared": 2,
-        "count": 0,
+        "compared": 11,
+        "count": 5,
         "covered_by_extension": [],
-        "ids": [],
-        "since": 2023
+        "ids": [
+          "DR-1629",
+          "DR-1583",
+          "EM-3204",
+          "EM-3202",
+          "DR-1540"
+        ],
+        "since": 2000
       },
       "generated_on": "2026-11-01",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 13,
+        "action_count": 14,
         "federal_declaration_count": 116,
-        "severity_rows": 48,
-        "storm_match_rows": 118
+        "severity_rows": 62,
+        "storm_match_rows": 141
       },
       "name": "Nevada",
       "retried": false,
@@ -1575,10 +1597,10 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 5,
-        "federal_matched": 8,
+        "added_by_hand": 6,
+        "federal_matched": 9,
         "fmcsa_archive": 2,
-        "noaa_matched": 9,
+        "noaa_matched": 10,
         "noaa_none": 2,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
@@ -1587,7 +1609,7 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 12.0,
+        "collect_seconds": 7.7,
         "storm_join_seconds": 0.5
       }
     },
@@ -1674,8 +1696,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 27.9,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 25.8,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -1727,8 +1749,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 287.1,
-        "storm_join_seconds": 6.0
+        "collect_seconds": 560.6,
+        "storm_join_seconds": 9.3
       }
     },
     {
@@ -1776,8 +1798,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.7,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 1.7,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1826,8 +1848,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 41.9,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 60.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1878,8 +1900,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 271.4,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 439.4,
+        "storm_join_seconds": 0.9
       }
     },
     {
@@ -1947,7 +1969,7 @@
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
         "collect_seconds": 8.3,
-        "storm_join_seconds": 0.8
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -2003,8 +2025,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.7,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 1.0,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2065,8 +2087,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 12.3,
-        "storm_join_seconds": 1.0
+        "collect_seconds": 22.6,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -2118,7 +2140,7 @@
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
         "collect_seconds": 0.9,
-        "storm_join_seconds": 1.5
+        "storm_join_seconds": 1.1
       }
     },
     {
@@ -2164,8 +2186,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 10.7,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 15.9,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2215,8 +2237,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 14.4,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 15.0,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -2267,8 +2289,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 110.9,
-        "storm_join_seconds": 2.1
+        "collect_seconds": 84.6,
+        "storm_join_seconds": 4.5
       }
     },
     {
@@ -2320,8 +2342,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 38.5,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 36.4,
+        "storm_join_seconds": 0.9
       }
     },
     {
@@ -2396,8 +2418,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 9.8,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 6.8,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -2406,7 +2428,7 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
+      "coverage": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed; 11 saved records kept that this refresh's check of the state source did not return",
       "coverage_base": "2015-present current-Governor proclamation archive; 2000-2014 gap disclosed",
       "federal_without_state": {
         "compared": 23,
@@ -2419,7 +2441,7 @@
         "since": 2015
       },
       "generated_on": "2026-11-01",
-      "kept_saved_records": 0,
+      "kept_saved_records": 11,
       "kept_saved_values": 0,
       "metrics": {
         "action_count": 58,
@@ -2430,9 +2452,9 @@
       "name": "Texas",
       "retried": false,
       "slug": "texas",
-      "source_records_returned": 58,
+      "source_records_returned": 47,
       "source_records_saved_before": 58,
-      "source_status": "ok",
+      "source_status": "partial",
       "sources": {
         "added_by_hand": 1,
         "federal_matched": 34,
@@ -2446,8 +2468,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1413.6,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 1509.6,
+        "storm_join_seconds": 1.0
       }
     },
     {
@@ -2498,8 +2520,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 16.5,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 25.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2586,8 +2608,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 72.0,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 99.1,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -2633,8 +2655,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join and forecast-zone resolution completed",
       "timing": {
-        "collect_seconds": 17.2,
-        "storm_join_seconds": 2.4
+        "collect_seconds": 15.5,
+        "storm_join_seconds": 1.8
       }
     },
     {
@@ -2680,8 +2702,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 83.2,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 64.4,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -2729,8 +2751,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.3,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 3.2,
+        "storm_join_seconds": 0.9
       }
     },
     {
@@ -2776,8 +2798,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.8,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 1.2,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2825,8 +2847,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.9,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 20.8,
+        "storm_join_seconds": 0.4
       }
     }
   ]

@@ -4,26 +4,28 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed",
-  "coverage_base": "April 2017-present structured Governor archive; 2000-April 2017 gap disclosed",
+  "coverage": "2004-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2004-2009 ones from dated news coverage (Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav, the March 2009 floods); no state declaration has been found for the May 2009 floods (DR-1842) or the January 2012 tornadoes (DR-4052), and 2000-2003 is not compared yet",
+  "coverage_base": "2004-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2004-2009 ones from dated news coverage (Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav, the March 2009 floods); no state declaration has been found for the May 2009 floods (DR-1842) or the January 2012 tornadoes (DR-4052), and 2000-2003 is not compared yet",
   "federal_without_state": {
-    "compared": 20,
-    "count": 2,
+    "compared": 40,
+    "count": 4,
     "covered_by_extension": [],
     "ids": [
       "EM-3618",
-      "DR-4632"
+      "DR-4632",
+      "DR-4052",
+      "DR-1842"
     ],
-    "since": 2017
+    "since": 2004
   },
   "generated_on": "2026-11-01",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 31,
+    "action_count": 62,
     "federal_declaration_count": 103,
-    "severity_rows": 723,
-    "storm_match_rows": 1583
+    "severity_rows": 1702,
+    "storm_match_rows": 3483
   },
   "name": "Alabama",
   "retried": false,
@@ -32,11 +34,11 @@
   "source_records_saved_before": 31,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 16,
+    "added_by_hand": 31,
+    "federal_matched": 32,
     "fmcsa_archive": 0,
-    "noaa_matched": 29,
-    "noaa_none": 1,
+    "noaa_matched": 59,
+    "noaa_none": 2,
     "noaa_pending": 1,
     "reviewed_not_weather": 0,
     "state_archive": 31
@@ -44,7 +46,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 0.7,
-    "storm_join_seconds": 11.9
+    "collect_seconds": 0.6,
+    "storm_join_seconds": 35.4
   }
 }
