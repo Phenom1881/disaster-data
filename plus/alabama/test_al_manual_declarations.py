@@ -44,7 +44,7 @@ class RegisterRowTests(unittest.TestCase):
         self.assertEqual({k: dates.get(k) for k in expected}, expected)
 
     def test_ids_match_the_register_page(self):
-        rows = csv_rows("manual_declarations.csv")
+        rows = [r for r in csv_rows("manual_declarations.csv") if r["declaration_id"].startswith("AL-SOS-")]
         ids = [r["declaration_id"] for r in rows]
         self.assertEqual(len(ids), len(set(ids)))
         for row in rows:
@@ -64,7 +64,10 @@ class RegisterRowTests(unittest.TestCase):
     def test_governor_in_office_and_rows_before_the_newsroom(self):
         for row in csv_rows("manual_declarations.csv"):
             self.assertEqual(row["governor"], governor_on(row["date_signed"]), row["declaration_id"])
-            self.assertTrue("2009-11-01" <= row["date_signed"] < "2017-04-10", row["declaration_id"])
+            if row["declaration_id"].startswith("AL-SOS-"):
+                self.assertTrue("2009-11-01" <= row["date_signed"] < "2017-04-10", row["declaration_id"])
+            else:
+                self.assertEqual(row["declaration_id"], "AL-SOE-" + row["date_signed"])
 
     def test_each_has_a_reviewed_hazard(self):
         overrides = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
@@ -77,6 +80,20 @@ class RegisterRowTests(unittest.TestCase):
         self.assertEqual(overrides["AL-SOS-13-1262"]["event_date"], "2012-08-26")
 
 
+class NewsCoverageRowTests(unittest.TestCase):
+    """Declarations the register does not list, from dated news coverage."""
+
+    def test_news_rows(self):
+        rows = {r["declaration_id"]: r for r in csv_rows("manual_declarations.csv")}
+        expected = {"AL-SOE-2005-07-08": ("Bob Riley", "Dennis"),
+                    "AL-SOE-2008-08-29": ("Bob Riley", "Gustav"),
+                    "AL-SOE-2009-03-30": ("Bob Riley", "Houston County"),
+                    "AL-SOE-2015-12-24": ("Robert Bentley", "flooding")}
+        for did, (governor, word) in expected.items():
+            self.assertEqual(rows[did]["governor"], governor)
+            self.assertIn(word, rows[did]["event_description"])
+
+
 class CoverageNoteTests(unittest.TestCase):
     def test_refresh_note_matches_the_manifest(self):
         spec = importlib.util.spec_from_file_location("alabama_adapter", HERE / "alabama.py")
@@ -87,8 +104,8 @@ class CoverageNoteTests(unittest.TestCase):
             _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "AL"))
-        self.assertTrue(note.startswith("2010-present"))
-        for gap in ("DR-4052", "DR-4251"):
+        self.assertTrue(note.startswith("2009-present"))
+        for gap in ("DR-1842", "DR-4052"):
             self.assertIn(gap, note)
 
 
