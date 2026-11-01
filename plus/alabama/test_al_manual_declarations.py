@@ -85,7 +85,11 @@ class NewsCoverageRowTests(unittest.TestCase):
 
     def test_news_rows(self):
         rows = {r["declaration_id"]: r for r in csv_rows("manual_declarations.csv")}
-        expected = {"AL-SOE-2005-07-08": ("Bob Riley", "Dennis"),
+        expected = {"AL-SOE-2004-09-13": ("Bob Riley", "Ivan"),
+                    "AL-SOE-2005-08-26": ("Bob Riley", "Katrina"),
+                    "AL-SOE-2007-03-02": ("Bob Riley", "Enterprise"),
+                    "AL-SOE-2008-08-24": ("Bob Riley", "Fay"),
+                    "AL-SOE-2005-07-08": ("Bob Riley", "Dennis"),
                     "AL-SOE-2008-08-29": ("Bob Riley", "Gustav"),
                     "AL-SOE-2009-03-30": ("Bob Riley", "Houston County"),
                     "AL-SOE-2015-12-24": ("Robert Bentley", "flooding")}
@@ -104,7 +108,7 @@ class CoverageNoteTests(unittest.TestCase):
             _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "AL"))
-        self.assertTrue(note.startswith("2009-present"))
+        self.assertTrue(note.startswith("2004-present"))
         for gap in ("DR-1842", "DR-4052"):
             self.assertIn(gap, note)
 
