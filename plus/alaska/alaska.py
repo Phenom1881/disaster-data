@@ -12,7 +12,14 @@ CAPABILITIES = {'structured_archive_coverage_start': '2001-07-03',
  'current_governor_source': 'https://gov.alaska.gov/administrative-orders/',
  'current_governor_source_start': None,
  'manual_only': False,
- 'known_gaps': ['DHSEM Operations documents page supplies local declaration templates, not a '
+ 'known_gaps': ['State disaster declarations from 2002 on are added by hand in '
+                'manual_declarations.csv from DHS&EM\'s Disaster Cost Index as printed in the 2013 '
+                'and 2018 State Hazard Mitigation Plans (Wayback Machine copies) and the 2023 plan, '
+                'and from DHS&EM releases. The legislative journals that list every declaration '
+                '(akleg.gov) and alaskapublic.org disallow Claude\'s crawlers, so they were not '
+                'used. No dated declaration has been found for DR-4391 (May 2018) or DR-4638 '
+                '(fall 2021).',
+                'DHSEM Operations documents page supplies local declaration templates, not a '
                 'complete signed state archive.',
                 'Governor and DHSEM releases are proxies; only explicit same-day or explicitly '
                 'stated issuance dates enter joins.',
