@@ -1955,7 +1955,9 @@ _COVERAGE_START_OVERRIDES = {
     # Kentucky: hand-added states of emergency from 2008 (Patton and Fletcher
     # declarations are not found yet); the note leads with "manual_only -".
     "KY": "2008",
-    "VA": "2002",
+    # Virginia: the LVA archive starts with Warner in 2002; Gilmore's 2000-2001
+    # weather orders are hand-added from the Virginia Register (manual_declarations.csv).
+    "VA": "2000",
     # Alaska: 2004-2024 state disasters dated from news coverage. Hawaii:
     # partial 2014-2022 procurement mirror. Ohio: proclamations from 2003.
     # Vermont: 2011-2015 orders from the statutes appendix sit before the
