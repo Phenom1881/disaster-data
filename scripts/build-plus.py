@@ -1957,11 +1957,12 @@ _COVERAGE_START_OVERRIDES = {
     "KY": "2008",
     "VA": "2002",
     # Alaska: 2004-2024 state disasters dated from news coverage. Hawaii:
-    # partial 2014-2022 procurement mirror. Ohio: proclamations from 2003.
+    # partial 2014-2022 procurement mirror, plus hand-added declarations from
+    # 2004 on; compared from 2000 with the November 2000 flood (DR-1348) a gap. Ohio: proclamations from 2003.
     # Vermont: 2011-2015 orders from the statutes appendix sit before the
     # 2017-present Governor archive the note leads with.
     "AK": "2004",
-    "HI": "2014",
+    "HI": "2000",
     "OH": "2003",
     "VT": "2011",
 }
