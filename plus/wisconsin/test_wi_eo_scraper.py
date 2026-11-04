@@ -347,8 +347,9 @@ class AdapterNoteTests(unittest.TestCase):
         self.assertTrue(note.endswith("; the Governor's site did not answer this run, so the archive was read from the Internet Archive's copy made 2026-10-15 09:00 UTC"))
 
     def test_note_for_a_direct_read_and_for_the_press_releases(self):
-        self.assertEqual(self.collect_with("Wisconsin: 303 executive orders processed\n"),
-                         "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR")
+        import wisconsin
+        self.assertEqual(self.collect_with("Wisconsin: 303 executive orders processed\n"), wisconsin.COVERAGE_NOTE)
+        self.assertTrue(wisconsin.COVERAGE_NOTE.startswith("2000-present: "))
         self.assertIn("new declarations read from the Governor's press releases",
                       self.collect_with("Wisconsin: archive not reachable; 1 weather emergency press releases read, 0 new declarations added (read from the Governor's press releases)\n"))
 
