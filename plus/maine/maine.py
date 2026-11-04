@@ -12,7 +12,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://www.maine.gov/governor/mills/official_documents",
     "current_governor_source_start": "2019-01-02", "manual_only": False,
-    "known_gaps": ["The Governor sources used cover the LePage and Mills administrations from 2011 onward; the Maine Legislature reports a broader historical collection, but pre-2011 records are outside this adapter's Governor-archive scope.", "Some LePage emergency records are preserved as HTML records without conventional executive-order numbers."],
+    "known_gaps": ["The Governor sources used cover the LePage and Mills administrations from 2011 onward. For 2003-2010, Governor Baldacci's weather emergency proclamations are kept in manual_declarations.csv, taken from the Maine State Library's yearly archives of his press releases (digitalmaine.com/ogvn_docs), which quote or describe each proclamation. Releases that mention a declaration without its date (Oxford County, July 2007) are not added.", "No state declaration was found for EM-3174, EM-3190, EM-3194, EM-3209, EM-3210, DR-1591, EM-3265, DR-1716, DR-1788 or DR-1852. 2000-2002 (Governor King) is not covered: no press release archive for those years was found, and the Maine State Archives' 1975-2000 executive proclamations collection on Digital Maine was not searched for this backfill.", "Some LePage emergency records are preserved as HTML records without conventional executive-order numbers."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -21,4 +21,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Maine adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2011-present Governor archives (LePage and Mills); pre-2011 historical backfill pending"
+    return workdir / "declarations_for_join.csv", "January 2003-present: 2011-present Governor archives (LePage and Mills); 2003-2010 Baldacci weather emergency proclamations added by hand from the State Library's archives of his press releases, kept in manual_declarations.csv; 2000-2002 not covered"
