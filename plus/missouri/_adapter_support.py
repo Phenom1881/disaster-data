@@ -179,12 +179,42 @@ def finalize(records,base):
             rels.append(dict(source_order_id=r['declaration_id'],target_order_id='',relationship_type='companion_unresolved',relationship_text=r['reason'],source_url=r['archive_record_url'],target_status='unresolved_no_fabricated_target'))
     return sorted(records,key=lambda r:(r['date_signed'],r['declaration_id'])),rels,overrides
 
+def merge_overrides(path,generated,collected_ids):
+    """Rows for hazard_overrides.csv after a scrape.
+
+    The scraper's own rows come from review_decisions.json (generated). Rows
+    for declarations it does not collect are reviewed overrides for
+    hand-added declarations (manual_declarations.csv); they are kept, so a
+    refresh no longer deletes them (Iowa lost all 40 on 2026-11-01). Extra
+    columns such as event_date are kept, and a generated row keeps the
+    value its earlier row had for a column the review does not set. Rows
+    keep their order in the file; new generated rows go at the end."""
+    fields=list(OVERRIDE_FIELDS);existing=[]
+    if path.exists():
+        with path.open(newline='',encoding='utf-8') as f:
+            rd=csv.DictReader(f);existing=list(rd)
+            fields+=[c for c in (rd.fieldnames or []) if c and c not in fields]
+    gen={r['declaration_id']:dict(r) for r in generated};rows=[];seen=set()
+    for old in existing:
+        key=old.get('declaration_id','')
+        if not key or key in seen:continue
+        if key in gen:
+            row=gen[key]
+            for c in fields:
+                if c not in row and old.get(c):row[c]=old[c]
+            rows.append(row);seen.add(key)
+        elif key not in collected_ids:rows.append(old);seen.add(key)
+    rows+=[gen[k] for k in gen if k not in seen]
+    return rows,fields
+
 def run(collector,base):
     p=argparse.ArgumentParser();p.add_argument('--actions-out',required=True);p.add_argument('--relationships-out',required=True);p.add_argument('--join-out',required=True)
     a=p.parse_args();records,rels,overrides=finalize(collector(),base)
     joins=[r for r in records if r['decision'] in ('include','override_exclude')]
     if not records:raise RuntimeError('Archive parser produced no audit records; refusing empty success')
     write_csv(a.actions_out,ACTION_FIELDS,records);write_csv(a.relationships_out,REL_FIELDS,rels);write_csv(a.join_out,JOIN_FIELDS,joins)
-    if overrides:write_csv(Path(a.join_out).parent/'hazard_overrides.csv',OVERRIDE_FIELDS,overrides)
-    elif (Path(a.join_out).parent/'hazard_overrides.csv').exists():(Path(a.join_out).parent/'hazard_overrides.csv').unlink()
+    path=Path(a.join_out).parent/'hazard_overrides.csv'
+    rows,fields=merge_overrides(path,overrides,{r['declaration_id'] for r in records})
+    if rows:write_csv(path,fields,rows)
+    elif path.exists():path.unlink()
     print(json.dumps({'actions':len(records),'declarations':len(joins),'relationships':len(rels),'overrides':len(overrides),'review':sum(r['decision']=='review' for r in records)}))
