@@ -1,9 +1,11 @@
 """Louisiana's hand-added declarations (manual_declarations.csv).
 
-Governor Edwards (January 2016 to January 2024) declared weather emergencies
-by proclamation, and no index of his proclamations is published, so the ones
-FMCSA's archive does not carry are kept by hand. Each row has to reach the
-storm join and the page the way a collected declaration does.
+Louisiana governors declare weather emergencies by proclamation, and no index
+of proclamations is published, so the ones FMCSA's archive does not carry are
+kept by hand: Governor Edwards (2016-2024) from his proclamations and news
+coverage, and Governors Blanco and Jindal (2004-2015) from proclamations
+cited in the monthly Louisiana Register and news coverage. Each row has to
+reach the storm join and the page the way a collected declaration does.
 
 Run:  python -m unittest test_la_manual_declarations
 """
@@ -18,7 +20,12 @@ import la_eo_scraper as la
 
 HERE = Path(__file__).resolve().parent
 MANUAL = HERE / "manual_declarations.csv"
-EDWARDS_TERM = (date(2016, 1, 11), date(2024, 1, 8))
+# Governor -> (proclamation initials, first day in office, first day out).
+TERMS = {
+    "Kathleen Babineaux Blanco": ("KBB", date(2004, 1, 12), date(2008, 1, 14)),
+    "Bobby Jindal": ("BJ", date(2008, 1, 14), date(2016, 1, 11)),
+    "John Bel Edwards": ("JBE", date(2016, 1, 11), date(2024, 1, 8)),
+}
 SAME_EVENT_DAYS = 5   # plus_fmcsa.DUPLICATE_DAYS: rows this close are one event
 
 _SPEC = importlib.util.spec_from_file_location("la_storm_join", HERE / "eo_storm_join.py")
@@ -36,11 +43,12 @@ class ManualDeclarationTests(unittest.TestCase):
         with open(MANUAL, newline="", encoding="utf-8") as handle:
             self.assertEqual(next(csv.reader(handle)), list(la.JOIN_FIELDS))
 
-    def test_every_row_is_an_edwards_declaration_signed_in_his_term(self):
+    def test_every_row_is_signed_in_its_governors_term(self):
         for row in rows():
             signed = date.fromisoformat(row["date_signed"])
-            self.assertEqual(row["governor"], "John Bel Edwards", row["declaration_id"])
-            self.assertTrue(EDWARDS_TERM[0] <= signed < EDWARDS_TERM[1], row["declaration_id"])
+            self.assertIn(row["governor"], TERMS, row["declaration_id"])
+            _, start, end = TERMS[row["governor"]]
+            self.assertTrue(start <= signed < end, row["declaration_id"])
 
     def test_the_id_says_whether_the_proclamation_number_is_known(self):
         ids = [row["declaration_id"] for row in rows()]
@@ -48,10 +56,11 @@ class ManualDeclarationTests(unittest.TestCase):
         for row in rows():
             number = row["eo_number"]
             if number:
-                found = re.fullmatch(r"(\d{1,3}) JBE (\d{4})", number)
+                initials = TERMS[row["governor"]][0]
+                found = re.fullmatch(r"(\d{1,3}) %s (\d{4})" % initials, number)
                 self.assertTrue(found, number)
                 self.assertEqual(found.group(2), row["date_signed"][:4], number)
-                self.assertEqual(row["declaration_id"], f"LA-PROC-{found.group(1)}-JBE-{found.group(2)}")
+                self.assertEqual(row["declaration_id"], f"LA-PROC-{found.group(1)}-{initials}-{found.group(2)}")
             else:
                 self.assertEqual(row["declaration_id"], "LA-SOE-" + row["date_signed"])
 
@@ -71,6 +80,19 @@ class ManualDeclarationTests(unittest.TestCase):
     def test_every_row_links_its_source(self):
         for row in rows():
             self.assertTrue(row["archive_record_url"].startswith("https://"), row["declaration_id"])
+
+    def test_register_rows_cite_the_louisiana_register(self):
+        with open(HERE / "hazard_overrides.csv", newline="", encoding="utf-8") as handle:
+            notes = {row["declaration_id"]: row for row in csv.DictReader(handle)}
+        for row in rows():
+            if row["governor"] == "John Bel Edwards":
+                continue
+            self.assertIn(row["declaration_id"], notes, row["declaration_id"])
+            note = notes[row["declaration_id"]]
+            if row["archive_record_url"].startswith("https://doa.louisiana.gov/media/"):
+                self.assertIn("Louisiana Register", note["review_note"], row["declaration_id"])
+                self.assertIn(row["eo_number"], note["review_note"], row["declaration_id"])
+            self.assertEqual(note["source_url"], row["archive_record_url"], row["declaration_id"])
 
     def test_no_long_dashes(self):
         text = MANUAL.read_text(encoding="utf-8")
