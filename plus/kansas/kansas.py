@@ -15,14 +15,18 @@ CAPABILITIES = {
     "current_governor_source_start": "2009-03-26",
     "manual_only": False,
     "known_gaps": [
-        "The Kansas Adjutant General's Department (KDEM) disaster-declarations page lists "
-        "proclamations back to 2009; it links to an 'Archived Declarations' widget that loads "
-        "additional content via JavaScript, which was not reachable from a plain HTTP fetch, so "
-        "the 2000-2008 window is a disclosed gap rather than a confirmed absence of declarations.",
-        "The Kansas Register (sos.ks.gov/publications/register/) independently publishes the same "
-        "proclamations issue-by-issue and could serve as a cross-check or a 2000-2008 backfill "
-        "source in a future pass; not used here since KDEM's page is the more complete single "
-        "source and is far easier to enumerate.",
+        "The Kansas Adjutant General's Department (KDEM) disaster-declarations page has year tabs back "
+        "to 2009, but its 2009 and 2010 tabs list only federal declarations and its 'Archived "
+        "Declarations' link opens no further content.",
+        "Declarations before 2011, and the 2011-2016 proclamations the page links without a hazard "
+        "label, are kept in manual_declarations.csv: scanned KDEM proclamations read by eye; "
+        "proclamation dates cited by executive orders and legislation printed in the Kansas Register "
+        "(rules.ks.gov, 2000-2010 issues searched in full); Adjutant General news releases for "
+        "2006-2013 from archived copies of kansastag.gov; and dated news coverage.",
+        "The Kansas Register does not print disaster proclamations themselves, only executive orders "
+        "that cite some of them, so the 2000-2006 record is thin. No state declaration was found for "
+        "DR-1327, DR-1402, DR-1535, DR-1562, DR-1579, DR-1600, DR-1615, DR-1626, DR-1638, DR-1808, "
+        "DR-1849, DR-1932, DR-4654 or DR-4747.",
     ],
 }
 
@@ -45,8 +49,9 @@ def collect(workdir=".", scripts_dir=None):
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Kansas adapter: scrape failed")
-    note = ("2009-present KDEM Kansas Disaster Declarations archive; 2000-2008 backfill pending "
-            "(JS-loaded 'Archived Declarations' widget not reachable via plain fetch)")
+    note = ("2000-present: KDEM Kansas Disaster Declarations archive from 2011; earlier and unlabeled "
+            "declarations added by hand from KDEM's scanned proclamations, the Kansas Register, archived "
+            "Adjutant General releases and dated news coverage, kept in manual_declarations.csv")
     if "read from the KDEM News Flash" in (result.stdout or ""):
         # The declarations page was not understood this run; new declarations
         # came from KDEM's News Flash feed instead (see ks_eo_scraper.py).
