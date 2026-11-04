@@ -1955,7 +1955,9 @@ _COVERAGE_START_OVERRIDES = {
     # Kentucky: hand-added states of emergency from 2008 (Patton and Fletcher
     # declarations are not found yet); the note leads with "manual_only -".
     "KY": "2008",
-    "VA": "2002",
+    # Virginia: the LVA archive starts with Warner in 2002; Gilmore's 2000-2001
+    # weather orders are hand-added from the Virginia Register (manual_declarations.csv).
+    "VA": "2000",
     # Alaska: 2002-2025 state disasters dated from DHS&EM's Disaster Cost Index
     # (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news
     # coverage; the 2000 comparison found no gaps in 2000-2001. Hawaii:
