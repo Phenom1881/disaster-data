@@ -13,6 +13,7 @@ CAPABILITIES = {
     "current_governor_source_available": True, "current_governor_source": "https://gov.georgia.gov/executive-action/executive-orders/executive-order-archives",
     "current_governor_source_start": "2019-01-14", "manual_only": False,
     "known_gaps": [
+        "2000-2009 states of emergency are added by hand in manual_declarations.csv: Perdue's orders from his archived site (sonnyperdue.georgia.gov), and Barnes's January and February 2000 declarations from FEMA's and CNN's dated reports, since the Digital Library of Georgia's copies of his 2000 orders hold none for those storms. The current archive has no Zeta order (October 2020, DR-4579).",
         "The web archive starts with Governor Nathan Deal in 2011. Georgia Archives permanently retains older Executive Minutes and unbound executive orders, but does not expose them through the structured Governor pages.",
         "Deal's 2011 page lists orders from January 10 through September 9, 2011 (330 orders collected in October 2026); his orders from later in 2011 are not on it.",
         "The 2011 orders are scanned PDFs without text. Two declare a state of emergency for one county without naming the hazard (06.14.11.02, Charlton County; 06.16.11.01, Ware County), so they are not on the page.",
@@ -26,4 +27,7 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Georgia adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill"
+    return workdir / "declarations_for_join.csv", ("2000-present: structured Governor archives from 2011, plus 2000-2009 states of emergency "
+            "added by hand from Governor Perdue's archived executive order list and, for 2000, dated "
+            "FEMA and news reports of Governor Barnes's declarations; no state declaration has been "
+            "found for Hurricane Zeta in October 2020 (DR-4579)")
