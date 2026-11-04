@@ -8,21 +8,20 @@
   "coverage_base": "2003-present structured Governor archive; 2000-2002 unavailable in live source",
   "federal_without_state": {
     "compared": 22,
-    "count": 4,
+    "count": 3,
     "covered_by_extension": [],
     "ids": [
       "DR-4296",
       "DR-1683",
-      "DR-1632",
       "DR-1510"
     ],
     "since": 2003
   },
-  "generated_on": "2026-11-01",
+  "generated_on": "2026-11-04",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 253,
+    "action_count": 254,
     "federal_declaration_count": 174,
     "severity_rows": 707,
     "storm_match_rows": 1086
@@ -34,11 +33,11 @@
   "source_records_saved_before": 252,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 1,
-    "federal_matched": 168,
+    "added_by_hand": 2,
+    "federal_matched": 169,
     "fmcsa_archive": 0,
     "noaa_matched": 110,
-    "noaa_none": 140,
+    "noaa_none": 141,
     "noaa_pending": 3,
     "reviewed_not_weather": 0,
     "state_archive": 252
@@ -47,6 +46,6 @@
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
     "collect_seconds": 0.9,
-    "storm_join_seconds": 1.1
+    "storm_join_seconds": 1.5
   }
 }

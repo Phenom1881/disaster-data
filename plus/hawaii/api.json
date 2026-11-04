@@ -406,6 +406,17 @@
       "source_url": "https://honoluluadvertiser.com/article/2006/Mar/03/ln/FP603030349.html",
       "state": "HI",
       "title": "Statewide heavy rains and flooding, Windward Oahu hard hit"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2004-10-31",
+      "declaration_id": "HI-SOE-2004-10-31",
+      "governor": "Linda Lingle",
+      "origin": "hand",
+      "source_url": "https://archives.starbulletin.com/2004/11/01/news/story1.html",
+      "state": "HI",
+      "title": "State disaster proclamation for the October 30, 2004 Manoa Valley flash flood on Oahu"
     }
   ],
   "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
@@ -1156,11 +1167,34 @@
       "noaa_match_count": 3,
       "noaa_status": "matched",
       "title": "Statewide heavy rains and flooding, Windward Oahu hard hit"
+    },
+    {
+      "date_signed": "2004-10-31",
+      "declaration_id": "HI-SOE-2004-10-31",
+      "federal_declaration": {
+        "begin": "2004-10-30",
+        "date": "2005-02-01",
+        "end": "2004-10-30",
+        "id": "DR-1575",
+        "incidentType": "Severe Storm",
+        "number": 1575,
+        "title": "SEVERE STORMS AND FLASH FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "HAWAII",
+        "HONOLULU",
+        "MAUI"
+      ],
+      "noaa_match_count": 5,
+      "noaa_status": "matched",
+      "title": "State disaster proclamation for the October 30, 2004 Manoa Valley flash flood on Oahu"
     }
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 17,
+    "compared": 23,
     "covered_by_extension": [],
     "declarations": [
       {
@@ -1172,17 +1206,27 @@
         "number": 4549,
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
+      },
+      {
+        "begin": "2000-10-28",
+        "date": "2000-11-09",
+        "end": "2000-11-02",
+        "id": "DR-1348",
+        "incidentType": "Severe Storm",
+        "number": 1348,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
       }
     ],
-    "since": 2014
+    "since": 2000
   },
-  "generated_on": "2026-11-01",
+  "generated_on": "2026-11-04",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 37,
+    "action_count": 38,
     "federal_declaration_count": 77,
-    "severity_rows": 139,
-    "storm_match_rows": 334
+    "severity_rows": 142,
+    "storm_match_rows": 339
   },
   "name": "Hawaii",
   "noaa_data_through": "2026-07-30",
@@ -1191,10 +1235,10 @@
   "slug": "hawaii",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 26,
-    "federal_matched": 23,
+    "added_by_hand": 27,
+    "federal_matched": 24,
     "fmcsa_archive": 3,
-    "noaa_matched": 31,
+    "noaa_matched": 32,
     "noaa_none": 3,
     "noaa_pending": 3,
     "reviewed_not_weather": 0,

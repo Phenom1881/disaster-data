@@ -120,9 +120,20 @@
       "source_url": "https://law.justia.com/codes/vermont/2014/title-3-appendix/chapter-20/app-20-28/",
       "state": "VT",
       "title": "State of emergency for Caledonia County flooding"
+    },
+    {
+      "action_number": "05-00",
+      "action_type": "declaration",
+      "date_signed": "2000-07-17",
+      "declaration_id": "VT-EO-05-00",
+      "governor": "Howard Dean",
+      "origin": "hand",
+      "source_url": "https://law.justia.com/codes/vermont/2011/title03appendix/chapter20/section25/",
+      "state": "VT",
+      "title": "State of emergency for flooding in Addison, Bennington, Windham and Windsor counties"
     }
   ],
-  "coverage": "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2017-present structured Governor archive; 2000-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2024-07-10",
@@ -454,6 +465,32 @@
       "noaa_match_count": 6,
       "noaa_status": "matched",
       "title": "State of emergency for Caledonia County flooding"
+    },
+    {
+      "date_signed": "2000-07-17",
+      "declaration_id": "VT-EO-05-00",
+      "federal_declaration": {
+        "begin": "2000-07-14",
+        "date": "2000-07-27",
+        "end": "2000-07-18",
+        "id": "DR-1336",
+        "incidentType": "Severe Storm",
+        "number": 1336,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ADDISON",
+        "BENNINGTON",
+        "ORANGE",
+        "RUTLAND",
+        "WINDHAM",
+        "WINDSOR"
+      ],
+      "noaa_match_count": 9,
+      "noaa_status": "matched",
+      "title": "State of emergency for flooding in Addison, Bennington, Windham and Windsor counties"
     }
   ],
   "federal_match_window_days": 21,
@@ -639,13 +676,13 @@
     ],
     "since": 2011
   },
-  "generated_on": "2026-11-01",
+  "generated_on": "2026-11-04",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 11,
+    "action_count": 12,
     "federal_declaration_count": 62,
-    "severity_rows": 147,
-    "storm_match_rows": 244
+    "severity_rows": 154,
+    "storm_match_rows": 253
   },
   "name": "Vermont",
   "noaa_data_through": "2026-07-30",
@@ -654,10 +691,10 @@
   "slug": "vermont",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 9,
-    "federal_matched": 8,
+    "added_by_hand": 10,
+    "federal_matched": 9,
     "fmcsa_archive": 1,
-    "noaa_matched": 11,
+    "noaa_matched": 12,
     "noaa_none": 0,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
