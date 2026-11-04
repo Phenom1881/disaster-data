@@ -20,7 +20,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
+os.environ["DD_TRACKER_SCRAPE"] = "0"  # tests never crawl unless they ask to
+import tempfile as _tempfile  # noqa: E402
+_SCRATCH = Path(_tempfile.mkdtemp(prefix="tracker-tests-"))
 import declaration_tracker as dt  # noqa: E402
+dt.SOURCES_PATH, dt.REVIEW_PATH = _SCRATCH / "declaration-sources.csv", _SCRATCH / "declaration-sources-review.csv"
 
 EN = "\u2013"  # the briefing separates fields with an en dash
 
@@ -291,7 +295,7 @@ class BuildTests(unittest.TestCase):
                 raise ConnectionError("offline")
             dt.fetch_fema = down
             try:
-                ledger = dt.build(today="2026-11-04")
+                ledger = dt.build(today="2026-11-04", scrape=False)
             finally:
                 dt.BRIEF_DIR, dt.LEDGER_PATH, dt.CACHE_PATH = old
                 dt.fetch_fema = fetch
