@@ -20,7 +20,7 @@
       "slug": "alaska",
       "adapter_status": "implemented",
       "adapter_file": "alaska.py",
-      "coverage_note": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2004-2024 state disaster declarations (Murkowski through Dunleavy) dated from news coverage of each declaration; DHS&EM's complete disaster list is not published, so other state disasters are not listed.",
+      "coverage_note": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638)",
       "official_source_url": "https://gov.alaska.gov/administrative-orders/",
       "action_files": [
         "declarations_for_join.csv",
@@ -128,7 +128,7 @@
       "slug": "georgia",
       "adapter_status": "implemented",
       "adapter_file": "georgia.py",
-      "coverage_note": "2011-present structured Governor archives; Georgia Archives pre-2011 holdings require archival backfill",
+      "coverage_note": "2000-present: structured Governor archives from 2011, plus 2000-2009 states of emergency added by hand from Governor Perdue's archived executive order list and, for 2000, dated FEMA and news reports of Governor Barnes's declarations; no state declaration has been found for Hurricane Zeta in October 2020 (DR-4579)",
       "official_source_url": "https://gov.georgia.gov/executive-action/executive-orders/executive-order-archives",
       "action_files": [
         "declarations_for_join.csv",
@@ -233,7 +233,7 @@
       "slug": "louisiana",
       "adapter_status": "implemented",
       "adapter_file": "louisiana.py",
-      "coverage_note": "January 2016-present official State Register web indexes; 2000-2015 gap disclosed. Plus 19 weather declarations by Governor Edwards (2016-2023) added by hand from his proclamations and dated news coverage (manual_declarations.csv).",
+      "coverage_note": "September 2004-present: official State Register web indexes from January 2016, plus 32 weather declarations added by hand (manual_declarations.csv): 13 by Governors Blanco and Jindal (2004-2015), from proclamations cited in the Louisiana Register and dated news coverage, and 19 by Governor Edwards (2016-2023). No state declaration was found for DR-1521 (May 2004), DR-1601 (Cindy, 2005), DR-1668 (October 2006) or DR-4228 (Red River flooding, 2015); 2000 to mid-2004 (DR-1314, 1357, 1380, 1435, 1437) is not covered.",
       "official_source_url": "https://www.doa.la.gov/doa/osr/executive-orders/",
       "action_files": [
         "declarations_for_join.csv",
@@ -473,7 +473,7 @@
       "slug": "oklahoma",
       "adapter_status": "implemented",
       "adapter_file": "oklahoma.py",
-      "coverage_note": "2006-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages list no governor declarations)",
+      "coverage_note": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and 2000-2008 disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders)",
       "official_source_url": "https://oklahoma.gov/oem/emergencies-and-disasters.html",
       "action_files": [
         "declarations_for_join.csv"
@@ -499,7 +499,7 @@
       "slug": "pennsylvania",
       "adapter_status": "implemented",
       "adapter_file": "pennsylvania.py",
-      "coverage_note": "2018-present linked PEMA proclamation history, plus 2011-2017 storm disaster proclamations (Corbett and Wolf) from the Pennsylvania Bulletin and press coverage; other pre-2018 proclamations are not listed",
+      "coverage_note": "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the Pennsylvania Bulletin, PEMA records and press coverage; no dated proclamation has been found yet for November 2006, April 2011 or summer 2013 (DR-1684, DR-4003, DR-4149), and the August 2004 storms (DR-1538) match only through the September 2004 Frances proclamation",
       "official_source_url": "https://www.pa.gov/agencies/pema/resources/emergency-proclamations",
       "action_files": [
         "declarations_for_join.csv",
@@ -604,7 +604,7 @@
       "slug": "virginia",
       "adapter_status": "implemented",
       "adapter_file": "virginia.py",
-      "coverage_note": "Virginia structured archive coverage begins in 2002; the current administration is collected separately",
+      "coverage_note": "Virginia structured archive coverage begins in 2002, plus Gilmore's 2000-2001 weather emergency orders added by hand from the Virginia Register of Regulations; the current administration is collected separately",
       "official_source_url": "https://www.governor.virginia.gov/executive-actions/",
       "action_files": [
         "declarations_for_join_2002_present.csv",

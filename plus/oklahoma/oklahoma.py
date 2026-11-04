@@ -14,6 +14,11 @@ CAPABILITIES = {
     "current_governor_source_start": "2016-01-01",
     "manual_only": True,
     "known_gaps": [
+        "2000-2008 disaster emergency orders are added by hand in manual_declarations.csv "
+        "from Oklahoma Administrative Code Title 1 (Executive Orders), read from Cornell LII's "
+        "copy at its 10-second crawl delay: rules.ok.gov disallows Claude's crawlers in "
+        "robots.txt and the SOS index is robots-blocked. Each row's date is the signing date "
+        "Title 1 gives for the order.",
         "The Secretary of State's own Executive Orders index (sos.ok.gov/gov/execorders.aspx), "
         "which is Oklahoma's legal system of record for EO text, returns HTTP 403 to automated "
         "requests (robots-disallowed, confirmed directly). This adapter instead crawls the "
@@ -54,9 +59,9 @@ def collect(workdir=".", scripts_dir=None):
         raise RuntimeError("Oklahoma adapter: scrape failed")
     return (
         workdir / "declarations_for_join.csv",
-        "2006-present: Oklahoma Emergency Management's emergencies-and-disasters "
-        "archive from 2016 (a proxy for the robots-blocked SOS EO index), with "
-        "governor declarations back to 2006 reviewed by hand from OEM event pages and "
-        "the Governor's releases; 2000-2005 not covered (OEM's 2003 and 2005 pages "
-        "list no governor declarations)",
+        "2000-present: Oklahoma Emergency Management's emergencies-and-disasters "
+        "archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor"
+        " declarations back to 2006 reviewed by hand from OEM event pages and the "
+        "Governor's releases, and 2000-2008 disaster emergency orders added by hand "
+        "from Oklahoma Administrative Code Title 1 (Executive Orders)",
     )
