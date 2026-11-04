@@ -2,8 +2,8 @@
 
 KDEM's disaster-declarations page links 2011-2016 state proclamations as
 scanned PDFs under labels the scraper cannot read, so those were read by eye
-and kept by hand, with a few declarations dated from Adjutant General releases
-and news coverage. Each row has to reach the storm join and the page the way a
+and kept by hand. Earlier declarations come from proclamation dates cited in
+the Kansas Register, archived Adjutant General releases and news coverage. Each row has to reach the storm join and the page the way a
 collected declaration does.
 
 Run:  python -m unittest test_ks_manual_declarations
@@ -21,7 +21,13 @@ OVERRIDES = HERE / "hazard_overrides.csv"
 JOIN = HERE / "declarations_for_join.csv"
 JOIN_FIELDS = ["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"]
 HAZARDS = {"fire", "flood", "winter", "severe_storm", "tropical", "storm_general", "wind", "drought", "exclude"}
+# Governor, or lieutenant governor acting for the governor -> (first day in office, first day out).
 TERMS = {
+    "Bill Graves": (date(1995, 1, 9), date(2003, 1, 13)),
+    "Kathleen Sebelius": (date(2003, 1, 13), date(2009, 4, 28)),
+    "John Moore": (date(2003, 1, 13), date(2006, 5, 31)),
+    "Mark Parkinson": (date(2009, 4, 28), date(2011, 1, 10)),
+    "Troy Findley": (date(2009, 5, 1), date(2011, 1, 10)),
     "Sam Brownback": (date(2011, 1, 10), date(2018, 1, 31)),
     "Jeff Colyer": (date(2018, 1, 31), date(2019, 1, 14)),
     "Laura Kelly": (date(2019, 1, 14), date(2027, 1, 11)),
@@ -76,6 +82,12 @@ class ManualDeclarationTests(unittest.TestCase):
             self.assertEqual(note["source_url"], row["archive_record_url"], row["declaration_id"])
             if note["event_date"]:
                 self.assertLessEqual(note["event_date"], row["date_signed"], row["declaration_id"])
+
+    def test_register_rows_quote_the_register(self):
+        notes = {row["declaration_id"]: row for row in read(OVERRIDES)}
+        for row in read(MANUAL):
+            if row["archive_record_url"].startswith("https://rules.ks.gov/browse/collections/"):
+                self.assertIn("Kansas Register", notes[row["declaration_id"]]["review_note"], row["declaration_id"])
 
     def test_no_long_dashes(self):
         for path in (MANUAL, OVERRIDES):

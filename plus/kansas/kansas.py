@@ -17,17 +17,16 @@ CAPABILITIES = {
     "known_gaps": [
         "The Kansas Adjutant General's Department (KDEM) disaster-declarations page has year tabs back "
         "to 2009, but its 2009 and 2010 tabs list only federal declarations and its 'Archived "
-        "Declarations' link opens no further content, so 2000-2010 is a disclosed gap rather than a "
-        "confirmed absence of declarations.",
-        "For 2011-2016 the page links scanned state proclamations under labels the scraper cannot read "
-        "(no hazard in parentheses); seven of them were read by eye and are kept in "
-        "manual_declarations.csv with their signing dates, along with four declarations dated from "
-        "Adjutant General releases and news coverage (2012, 2018, 2019, 2021).",
-        "No state declaration was found for DR-4010, DR-4035 and EM-3324 (2011 storms and flooding), "
-        "DR-4112 (February 2013 winter storm), DR-4654 (March 2022) or DR-4747 (summer 2023 storms).",
-        "The Kansas Register (sos.ks.gov/publications/register/) independently publishes "
-        "proclamations issue-by-issue and could serve as a cross-check or an earlier backfill source "
-        "in a future pass.",
+        "Declarations' link opens no further content.",
+        "Declarations before 2011, and the 2011-2016 proclamations the page links without a hazard "
+        "label, are kept in manual_declarations.csv: scanned KDEM proclamations read by eye; "
+        "proclamation dates cited by executive orders and legislation printed in the Kansas Register "
+        "(rules.ks.gov, 2000-2010 issues searched in full); Adjutant General news releases for "
+        "2006-2013 from archived copies of kansastag.gov; and dated news coverage.",
+        "The Kansas Register does not print disaster proclamations themselves, only executive orders "
+        "that cite some of them, so the 2000-2006 record is thin. No state declaration was found for "
+        "DR-1327, DR-1402, DR-1535, DR-1562, DR-1579, DR-1600, DR-1615, DR-1626, DR-1638, DR-1808, "
+        "DR-1849, DR-1932, DR-4654 or DR-4747.",
     ],
 }
 
@@ -50,9 +49,9 @@ def collect(workdir=".", scripts_dir=None):
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Kansas adapter: scrape failed")
-    note = ("2011-present: KDEM Kansas Disaster Declarations archive; 2011-2021 declarations the page "
-            "does not label added by hand from its scanned proclamations and dated news coverage, kept in "
-            "manual_declarations.csv; 2000-2010 not covered (the page's 2009-2010 tabs list only federal declarations)")
+    note = ("2000-present: KDEM Kansas Disaster Declarations archive from 2011; earlier and unlabeled "
+            "declarations added by hand from KDEM's scanned proclamations, the Kansas Register, archived "
+            "Adjutant General releases and dated news coverage, kept in manual_declarations.csv")
     if "read from the KDEM News Flash" in (result.stdout or ""):
         # The declarations page was not understood this run; new declarations
         # came from KDEM's News Flash feed instead (see ks_eo_scraper.py).
