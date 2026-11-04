@@ -12,7 +12,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://governor.vermont.gov/document-types/executive-orders",
     "current_governor_source_start": "2017-01-05", "manual_only": False,
-    "known_gaps": ["The Governor archive covers the Phil Scott administration from 2017 onward; it links prior administrations to the statutory appendix rather than preserving them in this structured Governor archive."],
+    "known_gaps": ["The Governor archive covers the Phil Scott administration from 2017 onward; it links prior administrations to the statutory appendix rather than preserving them in this structured Governor archive.", "Orders from before 2011 were rescinded in 2015 and dropped from the current appendix. The emergency orders that were still in force in 2011 (No. 05-00, 05-02, 04-07 and 05-08) are kept in manual_declarations.csv from the 2011-2014 editions of the appendix; orders rescinded earlier are not published there, so most 2000-2010 Vermont declarations remain unlisted."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -21,4 +21,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Vermont adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2017-present structured Governor archive; 2002-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv"
+    return workdir / "declarations_for_join.csv", "2017-present structured Governor archive; 2000-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv"
