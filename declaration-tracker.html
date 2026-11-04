@@ -309,8 +309,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     var med=median(spans);
     $('st-median').innerHTML=med==null?'&middot;':med+'<small>days</small>';
     $('st-tracked').textContent=reqs.length;
-    var firstBrief=reqs.reduce(function(m,r){ return r.first_seen&&(!m||r.first_seen<m)?r.first_seen:m; },'');
-    if(firstBrief) $('st-tracked-lab').textContent='requests tracked since '+fdShort(firstBrief);
+    var firstAsked=reqs.reduce(function(m,r){ return r.requested&&(!m||r.requested<m)?r.requested:m; },'');
+    if(firstAsked) $('st-tracked-lab').textContent='requests tracked since '+fd(firstAsked);
 
     /* notice */
     var fetched=(data.fema_fetched_at||'').slice(0,10);
