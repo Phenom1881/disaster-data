@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-11-04 16:30 UTC after the refresh. **49 green, 1 yellow, 0 red.**
+Checked 2026-11-04 22:01 UTC after the refresh. **49 green, 1 yellow, 0 red.**
 
 ## Yellow: working with gaps (1)
 
@@ -14,20 +14,20 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KY, LA, ME, MD, MA, 
 
 ## Where the time went
 
-Collecting from state sources took 60.9 min in all, and matching storms took 1.8 min. The 10 slowest states:
+Collecting from state sources took 34.9 min in all, and matching storms took 1.0 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| TX | 16.5 min | 2 s |
-| NJ | 9.2 min | 11 s |
-| NC | 7.8 min | 1 s |
-| CT | 4.2 min | 0 s |
-| SC | 1.8 min | 4 s |
-| MI | 1.7 min | 1 s |
-| LA | 1.7 min | 1 s |
-| VT | 1.7 min | 0 s |
-| WA | 1.7 min | 1 s |
-| NY | 1.5 min | 1 s |
+| TX | 6.9 min | 1 s |
+| NC | 4.5 min | 1 s |
+| NJ | 3.7 min | 5 s |
+| CT | 3.3 min | 0 s |
+| SC | 1.7 min | 2 s |
+| MI | 1.1 min | 0 s |
+| VT | 1.1 min | 0 s |
+| LA | 1.0 min | 1 s |
+| FL | 57 s | 1 s |
+| WA | 55 s | 1 s |
 
 ## FEMA declarations with no state declaration
 
@@ -66,7 +66,7 @@ The 10 states with the most:
 | ID | green | returned everything | 0 | 216 | 61 | 216 | 216 | 216 | 20 | 206 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | IL | green | returned everything | 0 | 15 | 68 | 15 | 15 | 15 | 13 |  |
 | IN | green | returned everything | 0 | 35 | 56 | 34 | 35 | 35 | 27 |  |
-| IA | green | returned everything | 0 | 93 | 79 | 93 | 93 | 93 | 83 |  |
+| IA | green | returned everything | 0 | 93 | 79 | 93 | 93 | 93 | 88 |  |
 | KS | yellow | returned part | 0 | 78 | 96 | 78 | 78 | 78 | 72 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 33 | 99 | 33 | 33 | 33 | 31 |  |
 | LA | green | returned everything | 0 | 58 | 111 | 58 | 58 | 58 | 52 |  |

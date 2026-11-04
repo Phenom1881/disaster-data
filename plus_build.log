@@ -111,7 +111,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
 AK: 46 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 1 new emergency declaration(s), 8 in all
+Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 0 new emergency declaration(s), 8 in all
 
 Applied 8 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arizona/hazard_overrides.csv
 AZ-DECL-2026-11-governor-katie-hobbs-declares-statewide-state-emergency: no matching storm events found in the date window.
@@ -767,8 +767,8 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_severity_summary.csv.tmp.
 
 IL: 15 actions, 68 federal declarations; 2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending
-Indiana: 128 orders read from the current governor's page (https://www.in.gov/gov/newsroom/executive-orders/).
-Indiana: 451 actions scraped, 35 routed to join CSV, 34 with a resolved date_signed (1 via OCR).
+Indiana: 130 orders read from the current governor's page (https://www.in.gov/gov/newsroom/executive-orders/).
+Indiana: 453 actions scraped, 35 routed to join CSV, 34 with a resolved date_signed (1 via OCR).
 Indiana signing dates: 33 kept from earlier runs; 1 from the confirmed-date list; 1 read, but no signing date found (OCR)
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/indiana/hazard_overrides.csv
@@ -815,16 +815,45 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 IN: 35 actions, 56 federal declarations; 2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified
 {"actions": 100, "declarations": 54, "relationships": 26, "overrides": 0, "review": 1}
 
+Applied 39 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/iowa/hazard_overrides.csv
 IA-PROC-2024-42: no matching storm events found in the date window.
 IA-PROC-2024-44: no matching storm events found in the date window.
 IA-PROC-2024-45: no matching storm events found in the date window.
 IA-PROC-2026-12: no matching storm events found in the date window.
 IA-PROC-2026-13: no matching storm events found in the date window.
-
-5 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): IA-GOV-2020-08-11-six-counties, IA-GOV-2020-08-11-14-counties, IA-GOV-2020-08-12-jackson-jones-grundy, IA-GOV-2020-08-13-audubon-madison, IA-GOV-2020-08-14-cass-guthrie
-Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
-Wrote 8076 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_matches.csv.tmp
-Wrote severity summary (2471 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp
+IA-GOV-2020-06-25-black-hawk: searching around the reviewed event date 2020-06-20 (signed 2020-06-25)
+IA-GOV-2020-06-29-fayette-van-buren: searching around the reviewed event date 2020-06-20 (signed 2020-06-29)
+IA-GOV-2020-08-11-six-counties: searching around the reviewed event date 2020-08-10 (signed 2020-08-11)
+IA-GOV-2020-08-11-14-counties: searching around the reviewed event date 2020-08-10 (signed 2020-08-11)
+IA-GOV-2020-08-12-jackson-jones-grundy: searching around the reviewed event date 2020-08-10 (signed 2020-08-12)
+IA-GOV-2020-08-13-audubon-madison: searching around the reviewed event date 2020-08-10 (signed 2020-08-13)
+IA-GOV-2020-08-14-cass-guthrie: searching around the reviewed event date 2020-08-10 (signed 2020-08-14)
+IA-GOV-2021-07-01-davis-van-buren: searching around the reviewed event date 2021-06-24 (signed 2021-07-01)
+IA-GOV-2021-07-16-11-counties: searching around the reviewed event date 2021-07-14 (signed 2021-07-16)
+IA-GOV-2021-12-16-43-counties: searching around the reviewed event date 2021-12-15 (signed 2021-12-16)
+IA-GOV-2021-12-16-six-counties: searching around the reviewed event date 2021-12-15 (signed 2021-12-16)
+IA-GOV-2021-12-17-carroll: searching around the reviewed event date 2021-12-15 (signed 2021-12-17)
+IA-GOV-2022-03-05-madison: searching around the reviewed event date 2022-03-05 (signed 2022-03-05)
+IA-GOV-2022-03-07-nine-counties: searching around the reviewed event date 2022-03-05 (signed 2022-03-07)
+IA-GOV-2022-04-13-seven-counties: searching around the reviewed event date 2022-04-12 (signed 2022-04-13)
+IA-GOV-2022-04-15-howard: searching around the reviewed event date 2022-04-12 (signed 2022-04-15)
+IA-GOV-2022-06-10-union: searching around the reviewed event date 2022-06-07 (signed 2022-06-10)
+IA-GOV-2022-07-06-four-counties: searching around the reviewed event date 2022-07-05 (signed 2022-07-06)
+IA-GOV-2023-04-01-12-counties: searching around the reviewed event date 2023-03-31 (signed 2023-04-01)
+IA-GOV-2023-04-04-six-counties: searching around the reviewed event date 2023-03-31 (signed 2023-04-04)
+IA-GOV-2023-04-05-marion-warren: searching around the reviewed event date 2023-04-04 (signed 2023-04-05)
+IA-GOV-2023-05-08-five-counties: searching around the reviewed event date 2023-05-07 (signed 2023-05-08)
+IA-GOV-2023-05-09-story: searching around the reviewed event date 2023-05-07 (signed 2023-05-09)
+IA-GOV-2023-05-10-marshall: searching around the reviewed event date 2023-05-07 (signed 2023-05-10)
+IA-GOV-2023-05-16-pocahontas: searching around the reviewed event date 2023-05-12 (signed 2023-05-16)
+IA-GOV-2023-06-30-three-counties: searching around the reviewed event date 2023-06-29 (signed 2023-06-30)
+IA-GOV-2023-07-01-ringgold: searching around the reviewed event date 2023-06-29 (signed 2023-07-01)
+IA-GOV-2023-07-05-four-counties: searching around the reviewed event date 2023-06-29 (signed 2023-07-05)
+IA-GOV-2023-07-06-union: searching around the reviewed event date 2023-06-29 (signed 2023-07-06)
+IA-GOV-2023-08-06-lee-sioux: searching around the reviewed event date 2023-08-04 (signed 2023-08-06)
+IA-GOV-2023-08-10-des-moines: searching around the reviewed event date 2023-08-04 (signed 2023-08-10)
+Wrote 9221 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_matches.csv.tmp
+Wrote severity summary (3075 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   IA-GOV-2022-03-05-madison MADISON [county/county-equivalent]: deaths=6, injuries=5, damage=$75,000,000 (Hail, Tornado)
@@ -832,6 +861,11 @@ Areas with reported deaths, injuries, or damage:
   IA-PROC-2024-12 ADAIR [county/county-equivalent]: deaths=4, injuries=35, damage=$30,750,000 (Hail, Thunderstorm Wind, Tornado)
   IA-PROC-2024-13 ADAIR [county/county-equivalent]: deaths=4, injuries=35, damage=$30,750,000 (Hail, Thunderstorm Wind, Tornado)
   IA-PROC-2024-14 ADAIR [county/county-equivalent]: deaths=4, injuries=35, damage=$30,750,000 (Thunderstorm Wind, Tornado)
+  IA-GOV-2020-08-11-14-counties LINN [county/county-equivalent]: deaths=1, injuries=100, damage=$0 (Thunderstorm Wind, Tornado)
+  IA-GOV-2020-08-11-six-counties LINN [county/county-equivalent]: deaths=1, injuries=100, damage=$0 (Thunderstorm Wind, Tornado)
+  IA-GOV-2020-08-12-jackson-jones-grundy LINN [county/county-equivalent]: deaths=1, injuries=100, damage=$0 (Thunderstorm Wind, Tornado)
+  IA-GOV-2020-08-13-audubon-madison LINN [county/county-equivalent]: deaths=1, injuries=100, damage=$0 (Thunderstorm Wind, Tornado)
+  IA-GOV-2020-08-14-cass-guthrie LINN [county/county-equivalent]: deaths=1, injuries=100, damage=$0 (Thunderstorm Wind, Tornado)
   IA-PROC-2024-09 POTTAWATTAMIE [county/county-equivalent]: deaths=1, injuries=3, damage=$0 (Hail, Tornado)
   IA-PROC-2024-10 POTTAWATTAMIE [county/county-equivalent]: deaths=1, injuries=3, damage=$0 (Hail, Tornado)
   IA-GOV-2022-03-05-madison LUCAS [county/county-equivalent]: deaths=1, injuries=1, damage=$1,500,000 (Tornado)
@@ -847,12 +881,7 @@ Areas with reported deaths, injuries, or damage:
   IA-PROC-2024-12 ADAMS [county/county-equivalent]: deaths=1, injuries=0, damage=$2,900,000 (Tornado)
   IA-PROC-2024-13 ADAMS [county/county-equivalent]: deaths=1, injuries=0, damage=$2,900,000 (Tornado)
   IA-PROC-2024-14 ADAMS [county/county-equivalent]: deaths=1, injuries=0, damage=$2,900,000 (Tornado)
-  IA-GOV-2021-12-16-43-counties BENTON [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Thunderstorm Wind)
-  IA-GOV-2021-12-16-six-counties BENTON [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Thunderstorm Wind)
-  IA-GOV-2021-12-17-carroll BENTON [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Thunderstorm Wind)
-  IA-GOV-2023-04-01-12-counties JACKSON [county/county-equivalent]: deaths=0, injuries=3, damage=$0 (Hail, Tornado)
-  IA-GOV-2023-04-01-12-counties KEOKUK [county/county-equivalent]: deaths=0, injuries=3, damage=$0 (Hail, Tornado)
-  Showing the 25 highest-consequence areas; all 639 are retained in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 720 are retained in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/iowa/eo_storm_severity_summary.csv.tmp.
 
@@ -1108,10 +1137,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 47 actions, 38 federal declarations; 2000-present: the Governor's executive order archive from 2023, plus 2000-2022 weather declarations added by hand: 2000-2018 executive orders from the Department of Legislative Services' yearly compilations, and others from official announcements, order text and dated news coverage; no state declaration was found for the June 2006 flooding (DR-1652) or Tropical Storm Isaias in 2020 (DR-4583)
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 75 relationship(s), 6 original weather declaration(s).
+Done. 762 action(s), 94 relationship(s), 6 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 13 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 97 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 8 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 78 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/massachusetts/hazard_overrides.csv
 MA-EO-366: no matching storm events found in the date window.
@@ -1664,17 +1693,17 @@ New York adapter: collecting executive orders...
 New York scraper: collecting current executive orders...
     current page 1: 100 row(s), 100 new
     current page 2: 100 row(s), 100 new
-    current page 3: 36 row(s), 36 new
+    current page 3: 38 row(s), 38 new
 New York scraper: collecting selected prior orders...
     selected prior: 97 row(s)
 New York scraper: fetching linked documents...
-    fetched 50/333
-    fetched 100/333
-    fetched 150/333
-    fetched 200/333
-    fetched 250/333
-    fetched 300/333
-Done. 333 total row(s): 236 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
+    fetched 50/335
+    fetched 100/335
+    fetched 150/335
+    fetched 200/335
+    fetched 250/335
+    fetched 300/335
+Done. 335 total row(s): 238 complete current, 97 selected prior; 52 weather-related; 25 written to join file.
 
 New York adapter: coverage = 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
 Applied 14 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-york/hazard_overrides.csv
@@ -2656,7 +2685,7 @@ Resolution status:
   PRINCE WILLIAM / MANASSAS
 
 VA: 85 actions, 77 federal declarations; 2000-present (2000-2001 Gilmore orders added by hand)
-WA: wa_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+WA: wa_order_relationships.csv: kept 5 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -2863,12 +2892,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 13 actions, 45 federal declarations; 2019-present Governor CMS executive-order archive; 2000-2018 backfill pending
-TIME total: collect 3653s, storm join 109s. Slowest: TX 992s+2s, NJ 551s+11s, NC 470s+1s, CT 255s+0s, SC 108s+4s, MI 104s+1s, LA 103s+1s, VT 100s+0s, WA 100s+1s, NY 91s+1s
+TIME total: collect 2092s, storm join 62s. Slowest: TX 413s+1s, NC 271s+1s, NJ 221s+5s, CT 200s+0s, SC 103s+2s, MI 66s+0s, VT 65s+0s, LA 63s+1s, FL 57s+1s, WA 55s+1s
 WARNING kept saved records the state source did not return: KS (12)
 Row-loss check: no saved rows lost.
 Plus health: 49 green, 1 yellow, 0 red.
-Changes since the last run (2026-11-01 21:13 UTC):
-
-- **Texas** went from yellow to green.
-
-Now 49 green, 1 yellow, 0 red.
