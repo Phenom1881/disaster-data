@@ -9,6 +9,15 @@ from pathlib import Path
 
 STATE = "PA"
 
+COVERAGE_NOTE = (
+    "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm "
+    "disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the "
+    "Pennsylvania Bulletin, PEMA records and press coverage; no dated proclamation has "
+    "been found yet for November 2006, April 2011 or summer 2013 (DR-1684, DR-4003, "
+    "DR-4149), and the August 2004 storms (DR-1538) match only through the September 2004"
+    " Frances proclamation"
+)
+
 CAPABILITIES = {
     "state": STATE,
     "structured_archive_available": True,
@@ -26,6 +35,7 @@ CAPABILITIES = {
     "manual_only": False,
     "known_gaps": [
         "PEMA's linked emergency-proclamation history provides web-page coverage from 2018 forward. Older proclamations published through the Pennsylvania Bulletin require a separate historical backfill.",
+        "2001-2017 storm proclamations are added by hand in manual_declarations.csv. pacodeandbulletin.gov disallows all automated agents in robots.txt, so 2001-2010 dates come from the Pennsylvania Bulletin issues hosted by Villanova Law's digital repository and from PEMA's archived proclamation files. PEMA's 2009 disaster history lists Governor's proclamations in August 2004 and November 2006 whose signing days have not been found; none has been found for April 2011 or June-July 2013. DR-1538 (August 2004) counts as matched only because its incident period falls within the match window of the September 15, 2004 Frances proclamation.",
         "The Office of Administration policy search currently exposes Executive Order issuances back to the 1970s, but it is a maintained policy index rather than a complete historical archive. Revised or rescinded entries may replace original versions.",
         "Some amendment dates are listed on the PEMA page without linked documents. The scraper records only official linked artifacts and does not manufacture rows for unlinked dates.",
         "Pennsylvania proclamation PDFs have mixed text quality. Some are selectable, while others are image-only; complete full-text coverage therefore requires OCR.",
@@ -66,7 +76,7 @@ def collect(workdir=".", scripts_dir=None):
     ], workdir)
     if not ok or not join_out.exists():
         raise RuntimeError("Pennsylvania adapter: scrape failed; review pa_eo_scraper.py output for the failing source.")
-    coverage = "2018-present linked PEMA proclamation history; older Pennsylvania Bulletin backfill pending"
+    coverage = COVERAGE_NOTE
     print("Pennsylvania adapter: coverage = " + coverage)
     return join_out, coverage
 
