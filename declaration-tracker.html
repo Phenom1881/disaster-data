@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Disaster Data | Declaration Tracker: requests for federal declarations and how long they wait</title>
+<meta name="description" content="An unofficial tracker of state, tribal and territorial requests for federal major disaster and emergency declarations: what is still waiting, what was decided, and how long each took. Built from archived FEMA Daily Operations Briefings and OpenFEMA.">
+<meta property="og:title" content="Declaration Tracker: who is still waiting on FEMA">
+<meta property="og:description" content="Requests for federal disaster and emergency declarations, from the day they are filed to the day FEMA acts. Unofficial, built from FEMA's Daily Operations Briefings and OpenFEMA.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.disasterdata.io/declaration-tracker.html">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f6f1e7;--paper-2:#fcfaf3;--paper-3:#f1ead9;
+  --ink:#1d1813;--ink-2:#5b5346;--ink-3:#938a78;
+  --rule:#e0d8c5;--rule-2:#cfc6b0;
+  --accent:#004c53;--accent-2:#0a6b73;--accent-soft:#d7e9ea;
+  --ember:#c85c2e;--ember-soft:#f6e1d3;--amber:#9c6a00;--amber-soft:#f3e6c4;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+::selection{background:var(--accent);color:#fff;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px);background-size:4px 4px;}
+.wrap{position:relative;z-index:1;}
+
+.container{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+.masthead{padding:clamp(40px,7vw,84px) 0 clamp(28px,4vw,44px);}
+.kicker{font-size:12px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+.kicker .unoff{display:inline-block;margin-left:10px;padding:2px 8px;border:1px solid var(--ember);border-radius:4px;color:var(--ember);letter-spacing:1.4px;font-size:10.5px;vertical-align:1px;}
+.headline{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,60px);line-height:1.02;letter-spacing:-1.5px;max-width:19ch;}
+.headline em{font-style:italic;font-weight:300;}
+.standfirst{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:62ch;margin-top:24px;line-height:1.55;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:clamp(32px,4vw,46px);}
+.stat{background:var(--paper-2);padding:20px 22px;}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.4vw,38px);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.stat .num small{font-size:.5em;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:2px;}
+.stat .lab{font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:.3px;}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+.notice{margin-top:22px;background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--ember);border-radius:10px;padding:16px 20px;font-size:14px;color:var(--ink-2);line-height:1.6;max-width:84ch;}
+.notice b{color:var(--ink);}
+
+section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(24px,3vw,38px);}
+.shead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.8px;line-height:1.05;}
+.shead p{font-size:14px;color:var(--ink-2);max-width:60ch;margin-top:8px;}
+
+/* Waiting cards, matching the "latest" card style used elsewhere */
+.ll-grid{display:flex;flex-direction:column;gap:10px;}
+.ll-card{display:flex;align-items:center;gap:14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:11px;padding:13px 16px;transition:border-color .13s;}
+.ll-card:hover{border-color:var(--rule-2);}
+.ll-badge{flex:none;font-size:11px;font-weight:700;letter-spacing:.6px;color:#fff;padding:3px 8px;border-radius:5px;line-height:1.4;}
+.ll-badge.DR{background:var(--accent);}
+.ll-badge.EM{background:var(--amber);}
+.ll-body{flex:1;min-width:0;}
+.ll-title{font-family:var(--serif);font-weight:600;font-size:15.5px;color:var(--ink);line-height:1.25;}
+.ll-title .inc{font-family:var(--sans);font-weight:400;font-size:14px;color:var(--ink-2);}
+.ll-meta{font-size:12.5px;color:var(--ink-2);margin-top:4px;display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;}
+.pill{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-radius:3px;padding:1px 6px;border:1px solid var(--rule-2);color:var(--ink-2);}
+.pill.appeal{color:#9e3a1e;border-color:#d98c4e;}
+.pill.prog{color:var(--accent);border-color:#9cc4c7;}
+.pill.part{color:var(--amber);border-color:#d8b56a;}
+.ll-days{flex:none;text-align:right;min-width:86px;}
+.ll-days .n{font-family:var(--serif);font-weight:600;font-size:26px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
+.ll-days .l{font-size:11px;color:var(--ink-3);letter-spacing:.3px;}
+.ll-days.long .n{color:var(--ember);}
+.placeholder{color:var(--ink-3);font-size:14px;}
+@media(max-width:560px){
+  .ll-card{flex-wrap:wrap;gap:6px 12px;}
+  .ll-body{flex-basis:100%;order:2;}
+  .ll-days{order:3;text-align:left;display:flex;align-items:baseline;gap:6px;}
+}
+
+/* Decided rows, matching the ranked rows on the Denials page */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.chip{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--rule);border-radius:999px;padding:6px 13px;cursor:pointer;transition:.13s;}
+.chip:hover{border-color:var(--rule-2);color:var(--ink);}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
+.tier-h{display:flex;align-items:baseline;gap:12px;padding:0 0 12px;border-bottom:2px solid var(--ink);margin-bottom:6px;}
+.tier-h .t{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.3px;}
+.tier-h .c{font-size:12px;color:var(--ink-3);letter-spacing:.4px;font-variant-numeric:tabular-nums;}
+.row{display:grid;grid-template-columns:2.1fr 2fr 1.25fr;align-items:center;gap:16px;padding:12px 10px;border-bottom:1px solid var(--rule);border-radius:6px;transition:background .12s;}
+.row:hover{background:var(--paper-2);}
+.who{min-width:0;}
+.who .n{font-weight:600;font-size:15px;letter-spacing:-.2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.who .n .ll-badge{font-size:10px;padding:2px 6px;}
+.who .meta{font-size:12px;color:var(--ink-3);margin-top:2px;}
+.bar-wrap{display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:13px;background:var(--paper-3);border-radius:3px;overflow:hidden;min-width:40px;}
+.bar{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.bar.declared{background:var(--accent);}
+.bar.denied{background:var(--ember);}
+.bar.other{background:var(--rule-2);}
+.barnum{font-family:var(--serif);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;min-width:62px;text-align:right;}
+.barnum small{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--ink-3);}
+.outcome{font-size:12.5px;line-height:1.4;}
+.outcome .o{font-weight:700;}
+.outcome .o.declared{color:var(--accent);}
+.outcome .o.denied{color:#9e3a1e;}
+.outcome .o.other{color:var(--ink-2);}
+.outcome a{color:var(--accent);text-decoration:none;font-weight:600;}
+.outcome a:hover{text-decoration:underline;}
+.outcome .d{color:var(--ink-3);}
+@media(max-width:720px){.row{grid-template-columns:1fr;gap:6px;}}
+
+.method{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.mcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;}
+.mcard h3{font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:-.3px;margin-bottom:8px;}
+.mcard p,.mcard li{font-size:14px;color:var(--ink-2);line-height:1.6;}
+.mcard ul{padding-left:18px;margin-top:6px;}
+.mcard li{margin-bottom:4px;}
+.mcard a{color:var(--accent);}
+@media(max-width:720px){.method{grid-template-columns:1fr;}}
+
+footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--ink-3);line-height:1.7;}
+.foot a{color:var(--accent);text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot .disc{max-width:62ch;}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+
+<div class="wrap">
+
+<div class="container">
+  <header class="masthead">
+    <div class="kicker reveal">Declaration Tracker <span class="unoff">Unofficial</span></div>
+    <h1 class="headline reveal" style="animation-delay:.06s">Who is <em>still waiting</em> on FEMA.</h1>
+    <p class="standfirst reveal" style="animation-delay:.12s">When a governor or tribal leader asks the President for a major disaster or emergency declaration, the request can sit for weeks. FEMA's open data only shows a request once it is decided. This tracks each one from the day it was filed to the day FEMA acted, and how long that took.</p>
+    <div class="stats reveal" style="animation-delay:.18s">
+      <div class="stat"><div class="num" id="st-open">&middot;</div><div class="lab">requests still waiting</div></div>
+      <div class="stat"><div class="num" id="st-longest">&middot;</div><div class="lab" id="st-longest-lab">longest current wait</div></div>
+      <div class="stat"><div class="num" id="st-median">&middot;</div><div class="lab">median days to a decision</div></div>
+      <div class="stat"><div class="num" id="st-tracked">&middot;</div><div class="lab" id="st-tracked-lab">requests tracked</div></div>
+    </div>
+    <div class="notice reveal" style="animation-delay:.24s" id="notice">Loading the tracker&hellip;</div>
+  </header>
+</div>
+
+<div class="container">
+  <section id="waiting" style="padding-top:clamp(30px,4vw,48px)">
+    <div class="shead">
+      <div>
+        <h2>Waiting on a decision</h2>
+        <p id="waiting-sub">Requests still listed as in process on the last briefing that carried the table, with no declaration or turndown in OpenFEMA since. Longest wait first.</p>
+      </div>
+    </div>
+    <div class="ll-grid" id="open-list"><p class="placeholder">Loading&hellip;</p></div>
+  </section>
+</div>
+
+<div class="container">
+  <section id="decided">
+    <div class="shead">
+      <div>
+        <h2>Decided</h2>
+        <p>Every tracked request that has an outcome, newest decision first. The bar is the number of days from the request to the decision.</p>
+      </div>
+    </div>
+    <div class="chips" role="group" aria-label="Filter decided requests">
+      <button class="chip" data-f="all" aria-pressed="true">All</button>
+      <button class="chip" data-f="declared" aria-pressed="false">Declared</button>
+      <button class="chip" data-f="denied" aria-pressed="false">Turned down</button>
+      <button class="chip" data-f="other" aria-pressed="false">Other</button>
+    </div>
+    <div class="tier-h"><span class="t">Request to decision</span><span class="c" id="dec-count">0 requests</span></div>
+    <div id="decided-rows"><p class="placeholder">Loading&hellip;</p></div>
+  </section>
+</div>
+
+<div class="container">
+  <section id="how">
+    <div class="shead">
+      <div>
+        <h2>How this works</h2>
+        <p>This is an unofficial reading of public records. It is not a FEMA product and FEMA has not reviewed it.</p>
+      </div>
+    </div>
+    <div class="method">
+      <div class="mcard">
+        <h3>Where requests come from</h3>
+        <p>FEMA's Daily Operations Briefing included a "Declaration Requests in Process" table listing every pending request, the programs asked for, and the date it was filed. DisasterData.IO archives each briefing, and this tracker reads that table out of every archived copy, then follows each request from the first day it was listed to the last.</p>
+        <p style="margin-top:8px;">The briefing stopped carrying the table after <span class="last-table">October 29, 2026</span>. Requests filed since then do not appear here until FEMA acts on them.</p>
+      </div>
+      <div class="mcard">
+        <h3>How outcomes are decided</h3>
+        <ul>
+          <li><b>Declared</b>: OpenFEMA shows a declaration for the same requester and type, on or after the request date, around the day the briefing marked it approved or dropped it.</li>
+          <li><b>Turned down</b>: OpenFEMA's Declaration Denials has the same request. Denials there post in batches, often weeks after the decision.</li>
+          <li><b>Per the Ops Brief</b>: the briefing marked it approved or denied, but OpenFEMA has no matching record yet.</li>
+          <li><b>Left the briefing</b>: it dropped off the table and no outcome could be found.</li>
+        </ul>
+      </div>
+      <div class="mcard">
+        <h3>Reading the dates</h3>
+        <p>The briefing prints the requested date without a year; the year is taken from the briefing. For an appeal, the briefing sometimes shows the original request date and sometimes the appeal date, so an appeal's wait can include the original review. When the briefing changed a request's date partway through, the tracker keeps the date it showed last.</p>
+      </div>
+      <div class="mcard">
+        <h3>Get the data</h3>
+        <p>The full ledger is updated every morning with the briefing archive: <a href="/archive/ops-briefings/declaration-tracker.json">declaration-tracker.json</a>. Each request lists the briefings it appeared in, its programs, and the OpenFEMA record it was matched to. Spot something wrong? <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a>.</p>
+        <p style="margin-top:8px;" id="freshness"></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="disc">Unofficial. Built by DisasterData.IO from archived FEMA Daily Operations Briefings and OpenFEMA's Disaster Declarations Summaries and Declaration Denials. Uses OpenFEMA data but is not endorsed by or affiliated with FEMA. A request here is a governor's or tribal leader's request for a federal declaration, not an individual's application for assistance.</div>
+      <div style="text-align:right;">Sources: <a href="/ops-briefings/">Ops Briefing archive</a> &middot; <a href="https://www.fema.gov/about/openfema/data-sets" target="_blank" rel="noopener">OpenFEMA</a><br><a href="/denials.html">Denials</a><br>DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="/">Back to overview</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var MONTH=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function fd(iso){ var p=(iso||'').split('-'); return p.length<3?'':MON[+p[1]-1]+' '+(+p[2])+', '+p[0]; }
+  function fdLong(iso){ var p=(iso||'').split('-'); return p.length<3?'':MONTH[+p[1]-1]+' '+(+p[2])+', '+p[0]; }
+  function fdShort(iso){ var p=(iso||'').split('-'); return p.length<3?'':MON[+p[1]-1]+' '+(+p[2]); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function $(id){ return document.getElementById(id); }
+  function plural(n,w){ return n+' '+w+(n===1?'':'s'); }
+  function daysBetween(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
+  function median(a){ if(!a.length) return null; var s=a.slice().sort(function(x,y){return x-y;}); var m=Math.floor(s.length/2); return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2); }
+
+  var TYPE={DR:'Major disaster',EM:'Emergency'};
+  function kind(r){
+    if(r.status==='declared') return 'declared';
+    if(r.status==='turned_down'||r.status==='denied_per_brief') return 'denied';
+    return 'other';
+  }
+  function isWaiting(r,last){
+    return r.status==='open' || (r.status==='declared' && r.still_listed_after_declaration && r.last_seen>=last);
+  }
+  function femaLink(id){
+    var n=(id||'').split('-')[1];
+    return n?'<a href="https://www.fema.gov/disaster/'+esc(n)+'" target="_blank" rel="noopener">'+esc(id)+'</a>':esc(id);
+  }
+  function programs(r){
+    return (r.programs||[]).map(function(p){ return '<span class="pill prog" title="'+({IA:'Individual Assistance',PA:'Public Assistance',HM:'Hazard Mitigation'}[p]||p)+'">'+p+'</span>'; }).join(' ');
+  }
+
+  function render(data){
+    var reqs=data.requests||[], last=data.last_brief_with_table||'';
+    var waiting=reqs.filter(function(r){ return isWaiting(r,last); })
+                    .map(function(r){ return Object.assign({},r,{days:daysBetween(r.requested,data.as_of)}); })
+                    .sort(function(a,b){ return (b.days||0)-(a.days||0); });
+    var decided=reqs.filter(function(r){ return r.status!=='open' && !isWaiting(r,last); });
+
+    /* stats */
+    $('st-open').textContent=waiting.length;
+    if(waiting.length){
+      $('st-longest').innerHTML=waiting[0].days+'<small>days</small>';
+      $('st-longest-lab').textContent='longest current wait ('+waiting[0].requester+')';
+    }
+    var spans=decided.filter(function(r){ return r.status==='declared'||r.status==='turned_down'; }).map(function(r){ return r.days; });
+    var med=median(spans);
+    $('st-median').innerHTML=med==null?'&middot;':med+'<small>days</small>';
+    $('st-tracked').textContent=reqs.length;
+    var firstBrief=reqs.reduce(function(m,r){ return !m||r.first_seen<m?r.first_seen:m; },'');
+    if(firstBrief) $('st-tracked-lab').textContent='requests tracked since '+fdShort(firstBrief);
+
+    /* notice */
+    var fetched=(data.fema_fetched_at||'').slice(0,10);
+    var n='<b>FEMA stopped listing pending requests in its Daily Operations Briefing after '+esc(fdLong(last))+'.</b> '+
+      'The requests below were last confirmed as waiting on that date and are checked against OpenFEMA every day. '+
+      'A request filed after '+esc(fdShort(last))+' will not show up here until FEMA declares or turns it down.';
+    if(fetched) n+=' OpenFEMA last checked '+esc(fdLong(fetched))+'.';
+    if(data.fema_note) n+=' '+esc(data.fema_note);
+    $('notice').innerHTML=n;
+    Array.prototype.forEach.call(document.querySelectorAll('.last-table'),function(el){ el.textContent=fdLong(last); });
+    $('freshness').textContent='Ledger built '+fdLong((data.generated_at||'').slice(0,10))+' from '+data.briefs_read+' archived briefings ('+data.briefs_with_table+' with the requests table).';
+
+    /* waiting */
+    $('open-list').innerHTML=waiting.length?waiting.map(function(r){
+      var part=r.status==='declared'
+        ? '<span class="pill part">'+femaLink(r.declaration.id)+' declared '+esc(fdShort(r.decision_date))+'; rest still listed</span>' : '';
+      return '<div class="ll-card">'+
+        '<span class="ll-badge '+r.type+'" title="'+TYPE[r.type]+'">'+r.type+'</span>'+
+        '<div class="ll-body">'+
+          '<div class="ll-title">'+esc(r.requester)+' <span class="inc">&middot; '+esc(r.incident)+'</span></div>'+
+          '<div class="ll-meta"><span>Requested '+esc(fd(r.requested))+'</span>'+
+            (r.appeal?'<span class="pill appeal">Appeal</span>':'')+programs(r)+part+
+            '<span>Last listed '+esc(fdShort(r.last_seen))+'</span></div>'+
+        '</div>'+
+        '<div class="ll-days'+(r.days>=60?' long':'')+'"><div class="n">'+r.days+'</div><div class="l">'+(r.days===1?'day':'days')+' waiting</div></div>'+
+      '</div>';
+    }).join(''):'<p class="placeholder">No tracked requests are waiting on a decision.</p>';
+
+    /* decided */
+    decided.sort(function(a,b){ return (b.decision_date||b.last_seen).localeCompare(a.decision_date||a.last_seen) || (b.days-a.days); });
+    var maxDays=decided.reduce(function(m,r){ return Math.max(m,r.days||0); },1);
+    function outcome(r){
+      if(r.status==='declared') return '<span class="o declared">Declared</span> '+femaLink(r.declaration.id)+'<br><span class="d">'+esc(fd(r.decision_date))+'</span>';
+      if(r.status==='turned_down') return '<span class="o denied">Turned down</span><br><span class="d">'+esc(fd(r.decision_date))+' &middot; OpenFEMA request '+esc(r.denial_number)+'</span>';
+      if(r.status==='approved_per_brief') return '<span class="o other">Approved per the Ops Brief</span><br><span class="d">'+esc(fd(r.decision_date))+'; not in OpenFEMA yet</span>';
+      if(r.status==='denied_per_brief') return '<span class="o denied">Denied per the Ops Brief</span><br><span class="d">'+esc(fd(r.decision_date))+'; not in OpenFEMA yet</span>';
+      return '<span class="o other">Left the briefing</span><br><span class="d">Last listed '+esc(fd(r.last_seen))+'; no outcome found</span>';
+    }
+    function draw(filter){
+      var rows=decided.filter(function(r){ return filter==='all'||kind(r)===filter; });
+      $('dec-count').textContent=plural(rows.length,'request');
+      $('decided-rows').innerHTML=rows.length?rows.map(function(r){
+        var k=kind(r), label=r.status==='left_brief'?'listed':(r.days===1?'day':'days');
+        return '<div class="row">'+
+          '<div class="who"><div class="n"><span class="ll-badge '+r.type+'">'+r.type+'</span>'+esc(r.requester)+(r.appeal?' <span class="pill appeal">Appeal</span>':'')+'</div>'+
+            '<div class="meta">'+esc(r.incident)+' &middot; requested '+esc(fd(r.requested))+'</div></div>'+
+          '<div class="bar-wrap"><div class="bar-track"><div class="bar '+k+'" style="width:'+Math.max(2,Math.round((r.days||0)/maxDays*100))+'%"></div></div>'+
+            '<div class="barnum">'+r.days+' <small>'+label+'</small></div></div>'+
+          '<div class="outcome">'+outcome(r)+'</div>'+
+        '</div>';
+      }).join(''):'<p class="placeholder">Nothing in this group.</p>';
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
+      b.addEventListener('click',function(){
+        Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(o){ o.setAttribute('aria-pressed',o===b?'true':'false'); });
+        draw(b.getAttribute('data-f'));
+      });
+    });
+    draw('all');
+  }
+
+  fetch('/archive/ops-briefings/declaration-tracker.json',{cache:'no-cache'})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function(){
+      $('notice').textContent='The tracker data could not be loaded right now. Please try again later.';
+      $('open-list').innerHTML='<p class="placeholder">Unavailable.</p>';
+      $('decided-rows').innerHTML='<p class="placeholder">Unavailable.</p>';
+    });
+})();
+</script>
+</body>
+</html>

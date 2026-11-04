@@ -29,6 +29,7 @@
     ["Funding",  "/public-assistance-projects.html"],
     ["Mitigation", "/mitigation.html"],
     ["Denials",  "/denials.html"],
+    ["Declaration Tracker", "/declaration-tracker.html"],
     ["API",      "/api.html"],
     ["About",    "/about.html"],
     ["Ops Briefing", "/ops-briefings/"]

@@ -123,7 +123,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;margin-top:40px;}
 FOOTER = """<footer>
   <div class="container">
     <div class="foot">
-      <div class="disc">FEMA distributes the Daily Operations Briefing through GovDelivery. This archive preserves each captured PDF as-is, with no text or table extraction.</div>
+      <div class="disc">FEMA distributes the Daily Operations Briefing through GovDelivery. This archive preserves each captured PDF as-is. The unofficial <a href="/declaration-tracker.html">Declaration Tracker</a> reads the declaration requests table out of these PDFs.</div>
       <div style="text-align:right;">DisasterData.IO is part of <a href="https://www.compliaid.com" target="_blank" rel="noopener">CompliAid</a><br><a href="/">Back to Disaster Data</a></div>
     </div>
   </div>
@@ -202,7 +202,8 @@ move through the process.</p>
 {items}
 </ul>
 
-<a class="archive-link" href="/ops-briefings/archive/">Browse the full archive by month &rarr;</a>
+<a class="archive-link" href="/ops-briefings/archive/">Browse the full archive by month &rarr;</a><br>
+<a class="archive-link" href="/declaration-tracker.html">Follow declaration requests in the Declaration Tracker &rarr;</a>
 
 {subscribe_callout()}
 """
@@ -321,6 +322,16 @@ def main() -> int:
     build_archive_hub(rows)
 
     print(f"Built {len(rows)} day page(s), index, and archive hub.")
+
+    # The Declaration Tracker rides along in this daily job. A failure there
+    # must never stop a briefing from being archived, so it is reported and
+    # the job carries on.
+    try:
+        import declaration_tracker
+
+        declaration_tracker.main()
+    except Exception as exc:  # noqa: BLE001
+        print(f"WARNING: Declaration Tracker not updated: {type(exc).__name__}: {exc}")
     return 0
 
 
