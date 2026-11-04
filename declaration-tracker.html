@@ -73,6 +73,18 @@ section{padding:clamp(46px,6vw,80px) 0;border-top:1px solid var(--rule);}
 .ll-days .l{font-size:11px;color:var(--ink-3);letter-spacing:.3px;}
 .ll-days.long .n{color:var(--ember);}
 .placeholder{color:var(--ink-3);font-size:14px;}
+.srcs{font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.55;}
+.srcs .lab{font-weight:600;color:var(--ink-3);letter-spacing:.3px;margin-right:4px;}
+.srcs a{color:var(--accent);text-decoration:none;font-weight:600;}
+.srcs a:hover{text-decoration:underline;}
+.srcs .sep{color:var(--rule-2);margin:0 6px;}
+.pill.ann{color:#5b3a8c;border-color:#b9a2d8;}
+.health{margin-top:10px;font-size:13px;}
+.health summary{cursor:pointer;color:var(--accent);font-weight:600;}
+.health ul{list-style:none;padding-left:0;margin-top:8px;max-height:320px;overflow:auto;border-top:1px solid var(--rule);}
+.health li{display:flex;justify-content:space-between;gap:10px;padding:5px 2px;border-bottom:1px solid var(--rule);font-size:12.5px;}
+.health li .st{color:var(--ink-3);text-align:right;}
+.health li .st.ok{color:var(--accent);}
 @media(max-width:560px){
   .ll-card{flex-wrap:wrap;gap:6px 12px;}
   .ll-body{flex-basis:100%;order:2;}
@@ -157,7 +169,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     <div class="shead">
       <div>
         <h2>Waiting on a decision</h2>
-        <p id="waiting-sub">Requests still listed as in process on the last briefing that carried the table, with no declaration or turndown in OpenFEMA since. Longest wait first.</p>
+        <p id="waiting-sub">Requests still listed as in process on the last briefing that carried the table, and requests governors have announced since, with no declaration or turndown in OpenFEMA yet. Longest wait first.</p>
       </div>
     </div>
     <div class="ll-grid" id="open-list"><p class="placeholder">Loading&hellip;</p></div>
@@ -195,7 +207,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       <div class="mcard">
         <h3>Where requests come from</h3>
         <p>FEMA's Daily Operations Briefing included a "Declaration Requests in Process" table listing every pending request, the programs asked for, and the date it was filed. DisasterData.IO archives each briefing, and this tracker reads that table out of every archived copy, then follows each request from the first day it was listed to the last.</p>
-        <p style="margin-top:8px;">The briefing stopped carrying the table after <span class="last-table">October 29, 2026</span>. Requests filed since then do not appear here until FEMA acts on them.</p>
+        <p style="margin-top:8px;">The briefing stopped carrying the table after <span class="last-table">October 29, 2026</span>. Since then, requests are added when a governor's or territorial office announces one, with a link to that announcement.</p>
       </div>
       <div class="mcard">
         <h3>How outcomes are decided</h3>
@@ -203,6 +215,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
           <li><b>Declared</b>: OpenFEMA shows a declaration for the same requester and type, on or after the request date, around the day the briefing marked it approved or dropped it.</li>
           <li><b>Turned down</b>: OpenFEMA's Declaration Denials has the same request. Denials there post in batches, often weeks after the decision.</li>
           <li><b>Per the Ops Brief</b>: the briefing marked it approved or denied, but OpenFEMA has no matching record yet.</li>
+          <li><b>Per an official release</b>: a governor's office announced the approval or denial, and OpenFEMA has no matching record yet. The release is linked.</li>
           <li><b>Left the briefing</b>: it dropped off the table and no outcome could be found.</li>
         </ul>
       </div>
@@ -211,8 +224,14 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         <p>The briefing prints the requested date without a year; the year is taken from the briefing. For an appeal, the briefing sometimes shows the original request date and sometimes the appeal date, so an appeal's wait can include the original review. When the briefing changed a request's date partway through, the tracker keeps the date it showed last.</p>
       </div>
       <div class="mcard">
+        <h3>Official sources</h3>
+        <p>Every morning the tracker reads the newsrooms of the governors' offices (and the agency that issues them, where that is where requests are posted), opens only releases whose headline is about a federal declaration, and links each one to the request it is about. It identifies itself, follows each site's robots.txt, and leaves out state proclamations and SBA or USDA designations.</p>
+        <p style="margin-top:8px;">A link goes up on its own only when the headline says what happened, the declaration type is clear, and exactly one tracked request fits. Anything less certain waits for a person to review it first.</p>
+        <div id="health"></div>
+      </div>
+      <div class="mcard">
         <h3>Get the data</h3>
-        <p>The full ledger is updated every morning with the briefing archive: <a href="/archive/ops-briefings/declaration-tracker.json">declaration-tracker.json</a>. Each request lists the briefings it appeared in, its programs, and the OpenFEMA record it was matched to. Spot something wrong? <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a>.</p>
+        <p>The full ledger is updated every morning with the briefing archive: <a href="/archive/ops-briefings/declaration-tracker.json">declaration-tracker.json</a>. Each request lists the briefings it appeared in, its programs, the OpenFEMA record it was matched to, and the official releases behind it. The releases themselves, with who added each one and how, are in <a href="/archive/ops-briefings/declaration-sources.csv">declaration-sources.csv</a>. Spot something wrong? <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a data issue</a>.</p>
         <p style="margin-top:8px;" id="freshness"></p>
       </div>
     </div>
@@ -247,7 +266,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   var TYPE={DR:'Major disaster',EM:'Emergency'};
   function kind(r){
     if(r.status==='declared') return 'declared';
-    if(r.status==='turned_down'||r.status==='denied_per_brief') return 'denied';
+    if(r.status==='turned_down'||r.status==='denied_per_brief'||r.status==='denied_per_source') return 'denied';
     return 'other';
   }
   function isWaiting(r,last){
@@ -256,6 +275,18 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
   function femaLink(id){
     var n=(id||'').split('-')[1];
     return n?'<a href="https://www.fema.gov/disaster/'+esc(n)+'" target="_blank" rel="noopener">'+esc(id)+'</a>':esc(id);
+  }
+  var ACT={request:'requested',approved:'approved',denied:'denied',unclear:'mentioned'};
+  function sources(r){
+    var out=[];
+    if(r.first_seen){
+      out.push('<a href="/ops-briefings/'+esc(r.first_seen)+'.html">Ops Brief, first listed '+esc(fdShort(r.first_seen))+'</a>');
+      if(r.last_seen && r.last_seen!==r.first_seen) out.push('<a href="/ops-briefings/'+esc(r.last_seen)+'.html">last listed '+esc(fdShort(r.last_seen))+'</a>');
+    }
+    (r.sources||[]).forEach(function(s){
+      out.push('<a href="'+esc(s.url)+'" target="_blank" rel="noopener" title="'+esc(s.title)+'">'+esc(s.publisher||'Official release')+', '+esc(ACT[s.action]||s.action)+' '+esc(fdShort(s.published))+'</a>');
+    });
+    return out.length?'<div class="srcs"><span class="lab">Sources</span>'+out.join('<span class="sep">&middot;</span>')+'</div>':'';
   }
   function programs(r){
     return (r.programs||[]).map(function(p){ return '<span class="pill prog" title="'+({IA:'Individual Assistance',PA:'Public Assistance',HM:'Hazard Mitigation'}[p]||p)+'">'+p+'</span>'; }).join(' ');
@@ -278,18 +309,32 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
     var med=median(spans);
     $('st-median').innerHTML=med==null?'&middot;':med+'<small>days</small>';
     $('st-tracked').textContent=reqs.length;
-    var firstBrief=reqs.reduce(function(m,r){ return !m||r.first_seen<m?r.first_seen:m; },'');
+    var firstBrief=reqs.reduce(function(m,r){ return r.first_seen&&(!m||r.first_seen<m)?r.first_seen:m; },'');
     if(firstBrief) $('st-tracked-lab').textContent='requests tracked since '+fdShort(firstBrief);
 
     /* notice */
     var fetched=(data.fema_fetched_at||'').slice(0,10);
     var n='<b>FEMA stopped listing pending requests in its Daily Operations Briefing after '+esc(fdLong(last))+'.</b> '+
-      'The requests below were last confirmed as waiting on that date and are checked against OpenFEMA every day. '+
-      'A request filed after '+esc(fdShort(last))+' will not show up here until FEMA declares or turns it down.';
+      'Requests listed then are checked against OpenFEMA every day. Requests filed since are added when a governor\'s office announces them, '+
+      'and every status links to where it came from.';
     if(fetched) n+=' OpenFEMA last checked '+esc(fdLong(fetched))+'.';
     if(data.fema_note) n+=' '+esc(data.fema_note);
     $('notice').innerHTML=n;
     Array.prototype.forEach.call(document.querySelectorAll('.last-table'),function(el){ el.textContent=fdLong(last); });
+    var hs=data.sources_checked||[];
+    if(hs.length){
+      var ok=hs.filter(function(h){ return h.status==='ok'; }).length;
+      var blocked=hs.filter(function(h){ return /robots/.test(h.status); }).length;
+      var skipped=hs.filter(function(h){ return /^skipped/.test(h.status); }).length;
+      var other=hs.length-ok-blocked-skipped;
+      var line=plural(hs.length,'newsroom')+' on the list. On the last run ('+esc(fdShort(hs[0].checked_at))+'): '+ok+' read, '+other+' could not be read, '+blocked+' blocked by robots.txt'+(skipped?', '+skipped+' skipped':'')+'.';
+      if(data.sources_waiting_review) line+=' '+plural(data.sources_waiting_review,'release')+' waiting for review.';
+      $('health').innerHTML='<div class="health"><p>'+line+'</p><details><summary>See every newsroom</summary><ul>'+
+        hs.map(function(h){ return '<li><span><a href="'+esc(h.url)+'" target="_blank" rel="noopener">'+esc(h.requester||h.code)+'</a> &middot; '+esc(h.publisher)+'</span><span class="st'+(h.status==='ok'?' ok':'')+'">'+esc(h.status)+'</span></li>'; }).join('')+
+        '</ul></details></div>';
+    } else {
+      $('health').innerHTML='<p class="health" style="color:var(--ink-3)">The first newsroom check runs with the next daily update.</p>';
+    }
     $('freshness').textContent='Ledger built '+fdLong((data.generated_at||'').slice(0,10))+' from '+data.briefs_read+' archived briefings ('+data.briefs_with_table+' with the requests table).';
 
     /* waiting */
@@ -299,10 +344,12 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       return '<div class="ll-card">'+
         '<span class="ll-badge '+r.type+'" title="'+TYPE[r.type]+'">'+r.type+'</span>'+
         '<div class="ll-body">'+
-          '<div class="ll-title">'+esc(r.requester)+' <span class="inc">&middot; '+esc(r.incident)+'</span></div>'+
-          '<div class="ll-meta"><span>Requested '+esc(fd(r.requested))+'</span>'+
+          '<div class="ll-title">'+esc(r.requester)+(r.incident?' <span class="inc">&middot; '+esc(r.incident)+'</span>':'')+'</div>'+
+          '<div class="ll-meta"><span>'+(r.source==='announced'?'Announced ':'Requested ')+esc(fd(r.requested))+'</span>'+
+            (r.source==='announced'?'<span class="pill ann" title="Filed after the Ops Brief stopped listing requests">Not in the Ops Brief</span>':'')+
             (r.appeal?'<span class="pill appeal">Appeal</span>':'')+programs(r)+part+
-            '<span>Last listed '+esc(fdShort(r.last_seen))+'</span></div>'+
+            '</div>'+
+          sources(r)+
         '</div>'+
         '<div class="ll-days'+(r.days>=60?' long':'')+'"><div class="n">'+r.days+'</div><div class="l">'+(r.days===1?'day':'days')+' waiting</div></div>'+
       '</div>';
@@ -316,6 +363,8 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
       if(r.status==='turned_down') return '<span class="o denied">Turned down</span><br><span class="d">'+esc(fd(r.decision_date))+' &middot; OpenFEMA request '+esc(r.denial_number)+'</span>';
       if(r.status==='approved_per_brief') return '<span class="o other">Approved per the Ops Brief</span><br><span class="d">'+esc(fd(r.decision_date))+'; not in OpenFEMA yet</span>';
       if(r.status==='denied_per_brief') return '<span class="o denied">Denied per the Ops Brief</span><br><span class="d">'+esc(fd(r.decision_date))+'; not in OpenFEMA yet</span>';
+      if(r.status==='denied_per_source') return '<span class="o denied">Denied, per an official release</span><br><span class="d">'+esc(fd(r.decision_date))+'; not in OpenFEMA yet</span>';
+      if(r.status==='approved_per_source') return '<span class="o other">Approved, per an official release</span><br><span class="d">'+esc(fd(r.decision_date))+'; not in OpenFEMA yet</span>';
       return '<span class="o other">Left the briefing</span><br><span class="d">Last listed '+esc(fd(r.last_seen))+'; no outcome found</span>';
     }
     function draw(filter){
@@ -325,7 +374,7 @@ footer{border-top:1px solid var(--rule);padding:40px 0 60px;}
         var k=kind(r), label=r.status==='left_brief'?'listed':(r.days===1?'day':'days');
         return '<div class="row">'+
           '<div class="who"><div class="n"><span class="ll-badge '+r.type+'">'+r.type+'</span>'+esc(r.requester)+(r.appeal?' <span class="pill appeal">Appeal</span>':'')+'</div>'+
-            '<div class="meta">'+esc(r.incident)+' &middot; requested '+esc(fd(r.requested))+'</div></div>'+
+            '<div class="meta">'+(r.incident?esc(r.incident)+' &middot; ':'')+(r.source==='announced'?'announced ':'requested ')+esc(fd(r.requested))+'</div>'+sources(r)+'</div>'+
           '<div class="bar-wrap"><div class="bar-track"><div class="bar '+k+'" style="width:'+Math.max(2,Math.round((r.days||0)/maxDays*100))+'%"></div></div>'+
             '<div class="barnum">'+r.days+' <small>'+label+'</small></div></div>'+
           '<div class="outcome">'+outcome(r)+'</div>'+

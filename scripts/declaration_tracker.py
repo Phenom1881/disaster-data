@@ -54,6 +54,8 @@ OUT_ROOT = Path(os.environ.get("DD_OUT", "archive"))
 BRIEF_DIR = OUT_ROOT / "ops-briefings"
 LEDGER_PATH = BRIEF_DIR / "declaration-tracker.json"          # what the page reads
 CACHE_PATH = BRIEF_DIR / "declaration-tracker-cache.json"     # parsed briefings + FEMA snapshot
+SOURCES_PATH = BRIEF_DIR / "declaration-sources.csv"           # official releases linked to requests
+REVIEW_PATH = BRIEF_DIR / "declaration-sources-review.csv"     # releases waiting for a person
 
 OPENFEMA = "https://www.fema.gov/api/open"
 USER_AGENT = "DisasterData.IO declaration tracker (+https://www.disasterdata.io/declaration-tracker.html)"
@@ -446,7 +448,7 @@ def resolve(requests: list[dict], fema: dict, table_dates: list[str], today: str
 
     def window_end(req: dict) -> str | None:
         """Latest plausible decision date for a request that left the table."""
-        if last_table and req["last_seen"] < last_table:
+        if last_table and req["last_seen"] and req["last_seen"] < last_table:
             return _shift(next_table_date(req["last_seen"], table_dates), 2)
         return None
 
@@ -534,7 +536,7 @@ def resolve(requests: list[dict], fema: dict, table_dates: list[str], today: str
                 continue
             score = abs((date.fromisoformat(declared) - point).days) \
                 - 5 * len(_words(req["incident"]) & _words(dec.get("declarationTitle", "")))
-            if declared < req["first_seen"]:
+            if req["first_seen"] and declared < req["first_seen"]:
                 score += 30  # declared before the briefing ever listed it
             if best is None or score < best[0]:
                 best = (score, dec)
@@ -556,6 +558,8 @@ def resolve(requests: list[dict], fema: dict, table_dates: list[str], today: str
             req.update({"status": "approved_per_brief", "decision_date": req["brief_status_date"]})
         elif req["brief_status"] == "denied":
             req.update({"status": "denied_per_brief", "decision_date": req["brief_status_date"]})
+        elif req.get("source") == "announced":
+            req["status"] = "open"  # filed after the briefing dropped the table
         elif last_table and req["last_seen"] >= last_table:
             req["status"] = "open"
         else:
@@ -594,7 +598,8 @@ def brief_pdfs() -> dict[str, Path]:
     return found
 
 
-def build(today: str | None = None, fema_override: dict | None = None) -> dict:
+def build(today: str | None = None, fema_override: dict | None = None, scrape: bool | None = None,
+          fetcher=None) -> dict:
     today = today or os.environ.get("DD_TRACKER_TODAY") or datetime.now(timezone.utc).date().isoformat()
     old = load_cache()
     cache: dict[str, dict] = old.get("briefs", {})
@@ -624,7 +629,34 @@ def build(today: str | None = None, fema_override: dict | None = None) -> dict:
         except Exception as exc:  # keep the last good snapshot
             fema_note = f"OpenFEMA could not be reached ({type(exc).__name__}); using the snapshot from {old.get('fema_fetched_at')}."
             fema, fetched_at = old.get("fema"), old.get("fema_fetched_at")
-    resolve(requests, fema or {}, table_dates, today)
+    # Official sources: releases from governors' newsrooms (see declaration_sources.py).
+    import declaration_sources as ds
+
+    if scrape is None:
+        scrape = fema_override is None and os.environ.get("DD_TRACKER_SCRAPE", "1") == "1"
+    accepted_path, review_path = BRIEF_DIR / SOURCES_PATH.name, BRIEF_DIR / REVIEW_PATH.name
+    old_sources = old.get("sources") or {}
+    ignored = set(old_sources.get("ignored", []))
+    ignored |= set(ds.apply_review_decisions(accepted_path, review_path, today))
+    brief_requests = requests
+
+    def assemble() -> tuple[list[dict], list[dict]]:
+        accepted = ds.read_csv(accepted_path)
+        reqs = [dict(r) for r in brief_requests] + ds.announced_requests(accepted, STATE_NAMES)
+        resolve(reqs, fema or {}, table_dates, today)
+        orphans = ds.attach(reqs, accepted)
+        reqs.sort(key=lambda r: (r["requested"], r["id"]))
+        return reqs, orphans
+
+    requests, orphans = assemble()
+    health = old_sources.get("health", [])
+    if scrape:
+        try:
+            health = ds.crawl(ds.load_feeds(), requests, fetcher or ds.Fetcher(USER_AGENT),
+                              accepted_path, review_path, ignored, today)
+        except Exception as exc:  # noqa: BLE001  a crawl failure never blocks the ledger
+            print(f"WARNING: official sources not checked: {type(exc).__name__}: {exc}")
+        requests, orphans = assemble()
 
     ledger = {
         "parser_version": PARSER_VERSION,
@@ -640,10 +672,14 @@ def build(today: str | None = None, fema_override: dict | None = None) -> dict:
         "briefs_with_table": sum(1 for b in briefs.values() if b["has_table"]),
         "fema_fetched_at": fetched_at,
         "fema_note": fema_note,
+        "sources_checked": health,
+        "sources_waiting_review": len(ds.read_csv(review_path)),
+        "sources_unmatched": orphans,
         "requests": requests,
     }
     ledger["_cache"] = {"parser_version": PARSER_VERSION, "fema_fetched_at": fetched_at,
-                        "fema": fema, "briefs": briefs}
+                        "fema": fema, "briefs": briefs,
+                        "sources": {"ignored": sorted(ignored), "health": health}}
     ledger["_parsed_now"] = parsed_now
     return ledger
 
