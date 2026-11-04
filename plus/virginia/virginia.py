@@ -60,7 +60,7 @@ CAPABILITIES = {
     "current_governor_source_start": "2026-01-17",         # Spanberger inauguration
     "manual_only": False,
     "known_gaps": [
-        "Gilmore administration, 2000-2002, not covered by the LVA collection",
+        "Gilmore administration, 2000-2002, not covered by the LVA collection. His 2000-2001 weather emergency orders (EO 63 of 2000, EO 77 and EO 82 of 2001) are added by hand in manual_declarations.csv from the Virginia Register of Regulations, which printed them with the date each emergency was verbally declared.",
     ],
     "notes": (
         "Virginia has unusually complete coverage: a structured historical "
@@ -123,7 +123,7 @@ def collect(workdir=".", scripts_dir=None):
     hist_ok = _run(hist_cmd, cwd=workdir)
 
     if hist_ok and merged_join.exists():
-        coverage = "2002-present" if current_ok else "2002-2026 (current administration missing)"
+        coverage = "2000-present (2000-2001 Gilmore orders added by hand)" if current_ok else "2000-2026 (current administration missing)"
         result_path = merged_join
     elif current_ok and current_join.exists():
         coverage = "current administration only (2026-present); historical scrape failed"
