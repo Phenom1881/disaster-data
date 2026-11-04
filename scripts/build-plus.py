@@ -1961,11 +1961,12 @@ _COVERAGE_START_OVERRIDES = {
     # Alaska: 2002-2025 state disasters dated from DHS&EM's Disaster Cost Index
     # (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news
     # coverage; the 2000 comparison found no gaps in 2000-2001. Hawaii:
-    # partial 2014-2022 procurement mirror. Ohio: proclamations from 2003.
+    # partial 2014-2022 procurement mirror, plus hand-added declarations from
+    # 2004 on; compared from 2000 with the November 2000 flood (DR-1348) a gap. Ohio: proclamations from 2003.
     # Vermont: 2011-2015 orders from the statutes appendix sit before the
     # 2017-present Governor archive the note leads with.
     "AK": "2000",
-    "HI": "2014",
+    "HI": "2000",
     "OH": "2003",
     "VT": "2011",
 }

@@ -13,7 +13,9 @@ CAPABILITIES = {'structured_archive_coverage_start': '2022-11-28',
  'current_governor_source_start': None,
  'manual_only': False,
  'known_gaps': ['2000-2013 is not supplied by these sources; the procurement mirror is partial and '
-                'some historical PDF links fail.',
+                'some historical PDF links fail. Declarations from 2004 on are added by hand in '
+                'manual_declarations.csv; no dated proclamation has been found for the November 2000 '
+                'Big Island floods (DR-1348).',
                 'Posted dates are not substituted for unreadable signing dates. Scanned or '
                 'malformed signature dates remain listed for review.']}
 
