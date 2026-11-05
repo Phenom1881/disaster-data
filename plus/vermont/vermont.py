@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 
 STATE = "VT"
+# Kept identical to the coverage_note in scripts/plus/state-manifest.json.
+COVERAGE_NOTE = "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv). No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4178, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380, DR-4445, DR-4474, DR-4621, EM-3567 and DR-4695 (2017-2022), which are not in the Governor's numbered order list."
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Vermont Governor Phil Scott Executive Orders Archive (https://governor.vermont.gov/document-types/executive-orders)",
@@ -21,4 +23,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Vermont adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2017-present structured Governor archive; 2000-2015 emergency orders added by hand from the Vermont Statutes appendix (3 V.S.A. App. ch. 20), kept in manual_declarations.csv"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
