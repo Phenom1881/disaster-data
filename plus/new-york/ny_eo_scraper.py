@@ -288,11 +288,22 @@ def classify_action(order: NYOrder) -> str:
         return "amendment"
     if re.match(r"\s*(extend|continu)", title):
         return "extension"
+    # "On December 22, 2022 and continuing thereafter, a severe winter
+    # storm..." opens most declarations (EO 13, 26, 27). The phrase dates the
+    # event; it does not continue an earlier order, so it is not read as one.
+    text = re.sub(r"\band continuing( thereafter)?\b", " ", text)
+    # A whole-numbered order titled "Declaring ..." is a new declaration,
+    # unless it says it rests on an earlier order (EO 3 of 2021 carries on
+    # Executive Order 198).
+    if (re.match(r"\s*declar", title) and "." not in order.order_number
+            and not re.search(r"pursuant to executive order", text)):
+        return "declaration"
     if re.search(r"\b(terminat|rescind|revok)", text) and "." not in order.order_number:
         return "termination"
     if re.search(r"\b(amend|modif)", text):
         return "amendment"
-    if re.search(r"\b(extend|continu)", text) or "." in order.order_number:
+    if (re.search(r"\b(extend|continu)", text) or "." in order.order_number
+            or re.search(r"pursuant to executive order", text)):
         return "extension"
     return "declaration"
 
