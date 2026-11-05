@@ -9,6 +9,8 @@ Run:  python -m unittest test_vt_manual_declarations
 """
 import csv
 import importlib.util
+import json
+import re
 import unittest
 from pathlib import Path
 
@@ -51,6 +53,17 @@ class ManualDeclarationTests(unittest.TestCase):
         self.assertEqual(note["hazard_category_override"], "flood")
         self.assertEqual(note["event_date"], "2000-07-14")
         self.assertIn("July 17, 2000", note["review_note"])
+
+    def test_the_coverage_note_starts_in_2000_and_matches_the_manifest(self):
+        spec = importlib.util.spec_from_file_location("vt_adapter", HERE / "vermont.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text(encoding="utf-8"))
+        note = next(s["coverage_note"] for s in manifest["states"] if s["abbreviation"] == "VT")
+        self.assertEqual(adapter.COVERAGE_NOTE, note)
+        self.assertTrue(note.startswith("2000-present: "), note)
+        named = re.findall(r"\b(?:DR|EM)-\d{4}\b", note)
+        self.assertEqual(len(named), len(set(named)))
 
     def test_no_long_dashes(self):
         for path in (MANUAL, OVERRIDES):

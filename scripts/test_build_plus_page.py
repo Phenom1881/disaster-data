@@ -387,7 +387,7 @@ class FederalWithoutStateTests(unittest.TestCase):
             "LA", "2016-present official State Register web indexes; 2000-2015 gap disclosed"), 2016)
         self.assertEqual(MODULE.coverage_start_year(
             "MA", "1941-present Governor archive"), MODULE.EARLIEST_ACTION_YEAR)
-        self.assertEqual(MODULE.coverage_start_year("VT", "2017-present structured archive"), 2011)
+        self.assertEqual(MODULE.coverage_start_year("VT", "2017-present structured archive"), 2000)
         self.assertIsNone(MODULE.coverage_start_year("NJ", "Adapter available; no cached action file found"))
 
     def render(self, gaps, compared, start=2019):
