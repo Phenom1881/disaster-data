@@ -1,12 +1,16 @@
-"""Kentucky's 2008-2024 states of emergency, added by hand.
+"""Kentucky's 2000-2024 states of emergency, added by hand.
 
 The Secretary of State's Executive Journal blocks automated requests, so
-each row comes from an executive order, an official release or a dated news
-report. Where a report gives no signing day, the report's own date is used.
+each 2008-2024 row comes from an executive order, an official release or a
+dated news report. Where a report gives no signing day, the report's own date
+is used. The 2000-2007 rows come from Appendix A of Beshear v. Acree (Ky.
+2020), which lists every declaration of emergency filed in the Executive
+Journal from 1996 with its filing date and order number.
 """
 import csv
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -16,7 +20,12 @@ from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-GOVERNORS = [("2007-12-11", "Steve Beshear"), ("2015-12-08", "Matt Bevin"), ("2019-12-10", "Andy Beshear")]
+APPENDIX = "https://cases.justia.com/kentucky/supreme-court/2020-2020-sc-0313-oa.pdf"
+APPENDIX_ENTRY = re.compile(r"Appendix A 'Declarations of Emergency from 1996 to present', PDF page (9[5-7]), entry (\d+): "
+                            r"'(\d{1,2})/(\d{1,2})/(\d{4}) \| (\d{4}-\d{4}) \| [^']+'")
+# The appendix prints this January 5, 2000 order with a 1998 number.
+PRINTED_NUMBER_YEAR = {"1998-0012": "2000"}
+GOVERNORS = [("1995-12-12", "Paul Patton"), ("2003-12-09", "Ernie Fletcher"), ("2007-12-11", "Steve Beshear"), ("2015-12-08", "Matt Bevin"), ("2019-12-10", "Andy Beshear")]
 
 
 def csv_rows(name):
@@ -56,7 +65,8 @@ class HandAddedDeclarationTests(unittest.TestCase):
                 self.assertEqual(row["declaration_id"], "KY-SOE-" + row["date_signed"])
             else:
                 self.assertEqual(row["declaration_id"], "KY-EO-" + row["eo_number"])
-                self.assertEqual(row["eo_number"][:4], row["date_signed"][:4])
+                year = PRINTED_NUMBER_YEAR.get(row["eo_number"], row["eo_number"][:4])
+                self.assertEqual(year, row["date_signed"][:4], row["declaration_id"])
 
     def test_governor_in_office_on_each_date(self):
         for row in named_rows():
@@ -69,9 +79,32 @@ class HandAddedDeclarationTests(unittest.TestCase):
             self.assertTrue(row["archive_record_url"].startswith("https://"))
             self.assertEqual(override["source_url"], row["archive_record_url"])
             self.assertLessEqual(set(override["hazard_category_override"].split(",")),
-                                 {"severe_storm", "flood", "winter", "wind", "tropical"})
+                                 {"severe_storm", "flood", "winter", "wind", "tropical", "fire", "drought"})
             if override["event_date"]:
                 self.assertLessEqual(override["event_date"], row["date_signed"])
+
+
+class AppendixTests(unittest.TestCase):
+    def test_appendix_rows_quote_their_entry_with_the_order_number_and_date(self):
+        overrides = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        found = 0
+        for row in named_rows():
+            if row["archive_record_url"] != APPENDIX:
+                continue
+            found += 1
+            self.assertLess(row["date_signed"], "2008-01-01", row["declaration_id"])
+            entry = APPENDIX_ENTRY.search(overrides[row["declaration_id"]]["review_note"])
+            self.assertTrue(entry, row["declaration_id"])
+            _, _, month, day, year, order = entry.groups()
+            self.assertEqual(f"{year}-{int(month):02d}-{int(day):02d}", row["date_signed"], row["declaration_id"])
+            self.assertEqual(order, row["eo_number"], row["declaration_id"])
+            self.assertIn("filed in the Executive Journal", overrides[row["declaration_id"]]["review_note"])
+        self.assertEqual(found, 32)
+
+    def test_unnumbered_and_dated_rows_before_2008_come_from_the_appendix(self):
+        for row in named_rows():
+            if row["date_signed"] < "2008-01-01":
+                self.assertEqual(row["archive_record_url"], APPENDIX, row["declaration_id"])
 
 
 class CoverageStartTests(unittest.TestCase):
@@ -88,7 +121,9 @@ class CoverageStartTests(unittest.TestCase):
         build = importlib.util.module_from_spec(build_spec)
         sys.modules[build_spec.name] = build
         build_spec.loader.exec_module(build)
-        self.assertEqual(build.coverage_start_year("KY", note), 2008)
+        self.assertEqual(build.coverage_start_year("KY", note), 2000)
+        self.assertTrue(note.startswith("manual_only - 2000-present: "), note)
+        self.assertIn("Beshear v. Acree", note)
         for gap in ("DR-1757", "DR-1841", "DR-1855", "DR-4008", "DR-4196", "DR-4848"):
             self.assertIn(gap, note)
 

@@ -2011,9 +2011,10 @@ _COVERAGE_START_RANGE_PATTERN = re.compile(r"^(\d{4})-\d{4}\b")
 # actually says as of the date this was written.
 _COVERAGE_START_OVERRIDES = {
     "CO": "2000",
-    # Kentucky: hand-added states of emergency from 2008 (Patton and Fletcher
-    # declarations are not found yet); the note leads with "manual_only -".
-    "KY": "2008",
+    # Kentucky: compared from 2000. Patton's and Fletcher's 2000-2007
+    # declarations come from Appendix A of Beshear v. Acree (Ky. 2020); the
+    # note leads with "manual_only -".
+    "KY": "2000",
     # Virginia: the LVA archive starts with Warner in 2002; Gilmore's 2000-2001
     # weather orders are hand-added from the Virginia Register (manual_declarations.csv).
     "VA": "2000",
