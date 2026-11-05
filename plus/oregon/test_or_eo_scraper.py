@@ -347,8 +347,12 @@ class HandAddedDeclarationTests(unittest.TestCase):
         self.assertTrue(rows)
         for row in rows:
             date.fromisoformat(row["date_signed"])
-            self.assertTrue(row["declaration_id"].startswith("OR-SOE-"), row["declaration_id"])
             self.assertNotIn(row["declaration_id"], collected)
+            if row["governor"] == "John A. Kitzhaber":
+                # Numbered 2000-2002 orders from the archived Governor website;
+                # test_or_manual_declarations checks their ids and sources.
+                continue
+            self.assertTrue(row["declaration_id"].startswith("OR-SOE-"), row["declaration_id"])
             self.assertTrue(row["archive_record_url"].startswith("https://www.oregon.gov/"), row["declaration_id"])
 
     def test_the_december_2015_storms_are_listed(self):
