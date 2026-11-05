@@ -6,6 +6,13 @@ import sys
 from pathlib import Path
 
 STATE = "WI"
+COVERAGE_NOTE = (
+    "2000-present: the current Governor archive from January 2019, plus the 2000-2018 weather states of e"
+    "mergency (Governors Thompson, McCallum, Doyle and Walker) read from the Legislature's executive orde"
+    "r archive (docs.legis.wisconsin.gov), as listed under States of Emergency in the Legislative Referen"
+    "ce Bureau's Index to Executive Orders, added by hand (manual_declarations.csv); early PDFs may requi"
+    "re OCR"
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Wisconsin Governor Executive Orders (https://evers.wi.gov/pages/newsroom/executive-orders.aspx)",
@@ -13,7 +20,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": True,
     "current_governor_source_available": True, "current_governor_source": "https://evers.wi.gov/pages/newsroom/executive-orders.aspx",
     "current_governor_source_start": "2019-01-07", "manual_only": False,
-    "known_gaps": ["The current Governor archive covers the Evers administration only, so the requested 2000-2018 period is not populated.", "Several early PDFs are image-only and need OCR for body-text review, although the structured archive exposes their titles and dates.", "evers.wi.gov does not answer some of GitHub's servers (connect timeouts on about a third of refresh runs since September 2026; a later try from the same server has never got through). On those runs the archive is read from an Internet Archive copy of the same page made in the last day, or made on request through Save Page Now; an older copy is never used. Failing that, new declarations are read from the Governor's GovDelivery press releases (https://content.govdelivery.com/accounts/WIGOV/bulletins.rss), which have answered 406 to every request from GitHub's servers so far; saved archive records are kept as they are."],
+    "known_gaps": ["The current Governor archive covers the Evers administration only. The 2000-2018 weather states of emergency are added by hand in manual_declarations.csv from the Legislature's executive order archive (docs.legis.wisconsin.gov/code/executive_orders), one row per original order, as listed under States of Emergency in the Legislative Reference Bureau's Index to Executive Orders. Amendments, extensions, orders that only incorporate or supersede an earlier one, energy and propane emergencies, office closings, out-of-state hurricane assistance, and permitting, hay and salt transport orders are left out.", "Several early PDFs are image-only and need OCR for body-text review, although the structured archive exposes their titles and dates.", "evers.wi.gov does not answer some of GitHub's servers (connect timeouts on about a third of refresh runs since September 2026; a later try from the same server has never got through). On those runs the archive is read from an Internet Archive copy of the same page made in the last day, or made on request through Save Page Now; an older copy is never used. Failing that, new declarations are read from the Governor's GovDelivery press releases (https://content.govdelivery.com/accounts/WIGOV/bulletins.rss), which have answered 406 to every request from GitHub's servers so far; saved archive records are kept as they are."],
 }
 
 def collect(workdir=".", scripts_dir=None):
@@ -31,7 +38,7 @@ def collect(workdir=".", scripts_dir=None):
         lines = [l.strip() for l in (result.stderr or "").splitlines() if l.strip()]
         reason = lines[-1][:400] if lines else ""
         raise RuntimeError("Wisconsin adapter: scrape failed" + (f" ({reason})" if reason else ""))
-    note = "2019-present structured Governor archive; 2000-2018 not covered; early PDFs may require OCR"
+    note = COVERAGE_NOTE
     copy = re.search(r"read from the Internet Archive's copy made ([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} UTC)", result.stdout or "")
     if copy:
         # evers.wi.gov did not answer this run; the scraper read a current
