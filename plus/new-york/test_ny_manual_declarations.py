@@ -161,7 +161,7 @@ class ManualDeclarationTests(unittest.TestCase):
         note = next(s["coverage_note"] for s in manifest["states"] if s["abbreviation"] == "NY")
         self.assertEqual(len(re.findall(r"\b(?:DR|EM)-\d{4}\b", note)),
                          len(set(re.findall(r"\b(?:DR|EM)-\d{4}\b", note))))
-        gaps = re.search(r"No state order is kept yet for (\d+) federal declarations from [^:]*: (.*?\))\. ", note)
+        gaps = re.search(r"No state order is kept for (\d+) federal declarations from [^:]*: (.*?\))\. ", note)
         self.assertIsNotNone(gaps, note)
         named = re.findall(r"\b(?:DR|EM)-\d{4}\b", gaps.group(2))
         self.assertEqual(int(gaps.group(1)), len(named))
