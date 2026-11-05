@@ -13,7 +13,7 @@ STATE = "NY"
 COVERAGE_NOTE = (
     "2000-present: comprehensive Governor archive from August 24, 2021, and "
     "selected earlier orders still in force from the Past Executive Orders "
-    "page; plus 11 weather disaster orders added by hand: 6 Pataki orders "
+    "page; plus 12 weather disaster orders added by hand: 7 Pataki orders "
     "(2000-2006) from 9 NYCRR Part 5 and 5 Cuomo orders (2017-2020) from "
     "the New York State Register (manual_declarations.csv). Every federal "
     "declaration from 2017 on has a matching state order. No state order is "
