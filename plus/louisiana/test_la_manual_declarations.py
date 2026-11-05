@@ -3,14 +3,17 @@
 Louisiana governors declare weather emergencies by proclamation, and no index
 of proclamations is published, so the ones FMCSA's archive does not carry are
 kept by hand: Governor Edwards (2016-2024) from his proclamations and news
-coverage, and Governors Blanco and Jindal (2004-2015) from proclamations
-cited in the monthly Louisiana Register and news coverage. Each row has to
+coverage, Governors Blanco and Jindal (2004-2015) from proclamations
+cited in the monthly Louisiana Register and news coverage, and Governor
+Foster (2000-2003) from his executive orders printed in the Louisiana
+Register and news coverage. Each row has to
 reach the storm join and the page the way a collected declaration does.
 
 Run:  python -m unittest test_la_manual_declarations
 """
 import csv
 import importlib.util
+import json
 import re
 import unittest
 from datetime import date
@@ -22,6 +25,7 @@ HERE = Path(__file__).resolve().parent
 MANUAL = HERE / "manual_declarations.csv"
 # Governor -> (proclamation initials, first day in office, first day out).
 TERMS = {
+    "Mike Foster": ("MJF", date(1996, 1, 8), date(2004, 1, 12)),
     "Kathleen Babineaux Blanco": ("KBB", date(2004, 1, 12), date(2008, 1, 14)),
     "Bobby Jindal": ("BJ", date(2008, 1, 14), date(2016, 1, 11)),
     "John Bel Edwards": ("JBE", date(2016, 1, 11), date(2024, 1, 8)),
@@ -55,7 +59,13 @@ class ManualDeclarationTests(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
         for row in rows():
             number = row["eo_number"]
-            if number:
+            if number and row["declaration_id"].startswith("LA-EO-"):
+                # An executive order, numbered by initials and two-digit year.
+                found = re.fullmatch(r"(%s) (\d{2})-(\d{1,3})" % TERMS[row["governor"]][0], number)
+                self.assertTrue(found, number)
+                self.assertEqual(found.group(2), row["date_signed"][2:4], number)
+                self.assertEqual(row["declaration_id"], "LA-EO-" + number.replace(" ", "-"))
+            elif number:
                 initials = TERMS[row["governor"]][0]
                 found = re.fullmatch(r"(\d{1,3}) %s (\d{4})" % initials, number)
                 self.assertTrue(found, number)
@@ -89,10 +99,20 @@ class ManualDeclarationTests(unittest.TestCase):
                 continue
             self.assertIn(row["declaration_id"], notes, row["declaration_id"])
             note = notes[row["declaration_id"]]
-            if row["archive_record_url"].startswith("https://doa.louisiana.gov/media/"):
+            if re.match(r"https://doa\.(?:louisiana|la)\.gov/media/", row["archive_record_url"]):
                 self.assertIn("Louisiana Register", note["review_note"], row["declaration_id"])
                 self.assertIn(row["eo_number"], note["review_note"], row["declaration_id"])
             self.assertEqual(note["source_url"], row["archive_record_url"], row["declaration_id"])
+
+    def test_the_coverage_note_starts_in_2000_and_matches_the_manifest(self):
+        spec = importlib.util.spec_from_file_location("la_adapter", HERE / "louisiana.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text(encoding="utf-8"))
+        note = next(s["coverage_note"] for s in manifest["states"] if s["abbreviation"] == "LA")
+        self.assertEqual(adapter.COVERAGE_NOTE, note)
+        self.assertTrue(note.startswith("2000-present: "), note)
+        self.assertIn(f"plus {len(rows())} weather declarations added by hand", note)
 
     def test_no_long_dashes(self):
         text = MANUAL.read_text(encoding="utf-8")
