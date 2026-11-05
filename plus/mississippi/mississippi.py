@@ -6,9 +6,8 @@ import sys
 from pathlib import Path
 
 STATE = "MS"
-NOTE = ("January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the "
-        "Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order "
-        "compilations (Musgrove and Barbour)")
+# Kept identical to the coverage_note in scripts/plus/state-manifest.json.
+NOTE = "2000-present: January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour), most of them National Guard call-outs for storms; plus 18 state of emergency proclamations (2003-2026) added by hand from MEMA's newsroom and dated news coverage, since Mississippi declares states of emergency by proclamation and no index of proclamations is published. No state declaration was found for DR-1443 (November 2002 tornadoes), DR-4470 (October 2019 storm), DR-4478 (January 2020 storms), DR-4727 (June 2023 storms), DR-4790 (April 2024 storms) or DR-4922 (May 2026 storms). DR-1470 (May 2003) counts as matched only because the April 2003 proclamation falls within three weeks of it, DR-4551 (April 22-23, 2020) only because the Easter 2020 proclamation does, and DR-1753 (March to May 2008 flooding) through the April 2008 tornado proclamation inside its incident period."
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Mississippi Governor Tate Reeves Newsroom and Media Archive (https://governorreeves.ms.gov/) and the Secretary of State's executive order listing (https://www.sos.ms.gov/publications-external-affairs/executive-orders)",
@@ -17,7 +16,8 @@ CAPABILITIES = {
     "current_governor_source_available": True, "current_governor_source": "https://governorreeves.ms.gov/",
     "current_governor_source_start": "2020-01-14", "manual_only": False,
     "known_gaps": ["2008-2019 orders are read from the Secretary of State's PDFs a few minutes at a time, so the first runs fill them in over several weeks; orders read are saved in ms_sos_orders.csv.",
-                   "Orders that only extend, amend or end an earlier order are not added as separate declarations."],
+                   "Orders that only extend, amend or end an earlier order are not added as separate declarations.",
+                   "Mississippi declares states of emergency by proclamation, not executive order, and no index of proclamations is published; the Secretary of State's executive orders are mostly National Guard call-outs. Proclamations behind federal declarations the orders do not cover are kept in manual_declarations.csv (MS-SOE- rows), from MEMA's newsroom (2020 on) and dated news coverage; where a story does not give the signing day, the row carries the date of the report."],
 }
 
 
