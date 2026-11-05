@@ -45,6 +45,27 @@ class NewYorkScraperTests(unittest.TestCase):
         self.assertEqual(relationships[0]["target_order_id"], "NY-KATHYHOCHUL-EO-56")
         self.assertEqual(relationships[0]["relationship_type"], "amends")
 
+    def test_and_continuing_thereafter_does_not_make_a_declaration_an_extension(self):
+        def order(number, title, description):
+            return ny.NYOrder(
+                governor="Kathy Hochul", order_number=number, title=title,
+                description=description, date_issued="2022-12-22", detail_url="",
+                document_url="", document_format="pdf", source_scope="current_complete",
+            )
+        storm = order("26", "Declaring a Disaster Emergency in the State of New York",
+                      "On December 22, 2022 and continuing thereafter, a severe winter storm is expected "
+                      "to create hazardous conditions in New York State")
+        self.assertEqual(ny.classify_action(storm), "declaration")
+        untitled = order("27", "Disaster Emergency in Several Counties",
+                         "On March 13, 2023 and continuing thereafter, a Nor'easter is forecast")
+        self.assertEqual(ny.classify_action(untitled), "declaration")
+        carried_on = order("3", "Declaring a Disaster Emergency in the Counties of Cayuga, Jefferson",
+                           "Pursuant to Executive Order 198, issued November 20, 2019, a disaster was declared")
+        self.assertEqual(ny.classify_action(carried_on), "extension")
+        extended = order("26.2", "Extending the State Disaster Emergency",
+                         "Extension of the State Disaster Emergency as set forth in Executive Order 26")
+        self.assertEqual(ny.classify_action(extended), "extension")
+
     def test_weather_requires_hazard(self):
         order = ny.NYOrder(
             governor="Kathy Hochul", order_number="1", title="Disaster Emergency",
