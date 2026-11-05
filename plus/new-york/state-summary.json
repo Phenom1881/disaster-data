@@ -8,12 +8,9 @@
   "coverage_base": "2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled",
   "federal_without_state": {
     "compared": 13,
-    "count": 2,
+    "count": 0,
     "covered_by_extension": [],
-    "ids": [
-      "DR-4694",
-      "EM-3590"
-    ],
+    "ids": [],
     "no_state_declaration": [],
     "since": 2021
   },
@@ -21,31 +18,31 @@
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 24,
+    "action_count": 76,
     "federal_declaration_count": 118,
-    "severity_rows": 651,
-    "storm_match_rows": 1757
+    "severity_rows": 2753,
+    "storm_match_rows": 5236
   },
   "name": "New York",
   "retried": false,
   "slug": "new-york",
-  "source_records_returned": 25,
-  "source_records_saved_before": 25,
+  "source_records_returned": 28,
+  "source_records_saved_before": 28,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 11,
+    "added_by_hand": 49,
+    "federal_matched": 37,
     "fmcsa_archive": 0,
-    "noaa_matched": 22,
-    "noaa_none": 1,
+    "noaa_matched": 69,
+    "noaa_none": 6,
     "noaa_pending": 1,
     "reviewed_not_weather": 1,
-    "state_archive": 24
+    "state_archive": 27
   },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 51.6,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 95.5,
+    "storm_join_seconds": 1.2
   }
 }

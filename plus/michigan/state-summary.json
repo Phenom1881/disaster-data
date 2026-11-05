@@ -4,24 +4,29 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2019-present structured Governor archive; 2000-2018 not covered by the current Governor source",
-  "coverage_base": "2019-present structured Governor archive; 2000-2018 not covered by the current Governor source",
+  "coverage": "2000-present: structured Governor archive from 2019, plus 5 weather declarations added by hand by Governors Granholm and Snyder (2008-2018), from the former Governors' archive on michigan.gov (orders and press releases) and dated news coverage. No state declaration was found for DR-1346 (September 2000 flooding), EM-3160 (December 2000 snowstorm), DR-1413 (April 2002 flooding) or DR-1527 (May 2004 storms): the archive keeps no Engler records and no Granholm declaration for May 2004",
+  "coverage_base": "2000-present: structured Governor archive from 2019, plus 5 weather declarations added by hand (manual_declarations.csv) by Governors Granholm and Snyder (2008-2018), from the former Governors' archive on michigan.gov (orders and press releases) and dated news coverage. No state declaration was found for DR-1346 (September 2000 flooding), EM-3160 (December 2000 snowstorm), DR-1413 (April 2002 flooding) or DR-1527 (May 2004 storms): the archive keeps no Engler records and no Granholm declaration for May 2004.",
   "federal_without_state": {
-    "compared": 4,
-    "count": 0,
+    "compared": 13,
+    "count": 4,
     "covered_by_extension": [],
-    "ids": [],
+    "ids": [
+      "DR-1527",
+      "DR-1413",
+      "EM-3160",
+      "DR-1346"
+    ],
     "no_state_declaration": [],
-    "since": 2019
+    "since": 2000
   },
   "generated_on": "2026-11-05",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 23,
+    "action_count": 28,
     "federal_declaration_count": 46,
-    "severity_rows": 460,
-    "storm_match_rows": 858
+    "severity_rows": 550,
+    "storm_match_rows": 1134
   },
   "name": "Michigan",
   "retried": false,
@@ -30,10 +35,10 @@
   "source_records_saved_before": 23,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 6,
+    "added_by_hand": 5,
+    "federal_matched": 11,
     "fmcsa_archive": 0,
-    "noaa_matched": 23,
+    "noaa_matched": 28,
     "noaa_none": 0,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
@@ -42,7 +47,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 68.7,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 133.3,
+    "storm_join_seconds": 0.7
   }
 }
