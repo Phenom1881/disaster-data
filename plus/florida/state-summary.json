@@ -4,26 +4,28 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2004-present: structured Governor archive from 2020; 2004-2019 weather emergency orders added by hand from the FSU College of Law order collection, FMCSA, Division of Emergency Management and DEP order copies, archived Governor pages and dated news coverage; 2000-2003 not covered",
-  "coverage_base": "2004-present: structured Governor archive from 2020; 2004-2019 weather emergency orders added by hand from the FSU College of Law order collection, FMCSA, Division of Emergency Management and DEP order copies, archived Governor pages and dated news coverage, kept in manual_declarations.csv; 2000-2003 not covered",
+  "coverage": "2000-present: structured Governor archive from 2020, plus 35 weather emergency orders added by hand: 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001), DR-1595 (Dennis, 2005) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period",
+  "coverage_base": "2000-present: structured Governor archive from 2020, plus 35 weather emergency orders added by hand (manual_declarations.csv): 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001), DR-1595 (Dennis, 2005) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period.",
   "federal_without_state": {
-    "compared": 52,
-    "count": 2,
+    "compared": 59,
+    "count": 3,
     "covered_by_extension": [],
     "ids": [
       "DR-4138",
-      "DR-1595"
+      "DR-1595",
+      "DR-1381"
     ],
-    "since": 2004
+    "no_state_declaration": [],
+    "since": 2000
   },
   "generated_on": "2026-11-05",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 55,
+    "action_count": 62,
     "federal_declaration_count": 190,
-    "severity_rows": 1331,
-    "storm_match_rows": 2225
+    "severity_rows": 1461,
+    "storm_match_rows": 2444
   },
   "name": "Florida",
   "retried": false,
@@ -32,11 +34,11 @@
   "source_records_saved_before": 27,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 28,
-    "federal_matched": 42,
+    "added_by_hand": 35,
+    "federal_matched": 49,
     "fmcsa_archive": 0,
-    "noaa_matched": 48,
-    "noaa_none": 5,
+    "noaa_matched": 54,
+    "noaa_none": 6,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,
     "state_archive": 27
@@ -44,7 +46,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 55.9,
+    "collect_seconds": 54.4,
     "storm_join_seconds": 0.9
   }
 }

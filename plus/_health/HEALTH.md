@@ -1,6 +1,6 @@
 # Plus health report
 
-Checked 2026-11-05 02:34 UTC after the refresh. **49 green, 1 yellow, 0 red.**
+Checked 2026-11-05 13:24 UTC after the refresh. **49 green, 1 yellow, 0 red.**
 
 ## Yellow: working with gaps (1)
 
@@ -14,24 +14,24 @@ AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KY, LA, ME, MD, MA, 
 
 ## Where the time went
 
-Collecting from state sources took 51.1 min in all, and matching storms took 1.6 min. The 10 slowest states:
+Collecting from state sources took 41.0 min in all, and matching storms took 1.5 min. The 10 slowest states:
 
 | State | Collecting | Matching storms |
 |---|---:|---:|
-| TX | 9.0 min | 2 s |
-| NJ | 7.1 min | 8 s |
-| NC | 6.6 min | 1 s |
-| CT | 4.0 min | 0 s |
-| WI | 3.1 min | 1 s |
-| VT | 2.3 min | 0 s |
-| SC | 1.7 min | 3 s |
-| LA | 1.6 min | 1 s |
-| MA | 1.5 min | 2 s |
-| WA | 1.5 min | 1 s |
+| TX | 9.1 min | 2 s |
+| NJ | 4.9 min | 7 s |
+| NC | 4.6 min | 1 s |
+| CT | 3.9 min | 0 s |
+| LA | 1.5 min | 1 s |
+| SC | 1.4 min | 2 s |
+| WA | 1.2 min | 1 s |
+| MI | 1.1 min | 1 s |
+| VT | 1.1 min | 0 s |
+| CO | 60 s | 3 s |
 
 ## FEMA declarations with no state declaration
 
-391 of the 1,551 FEMA weather major disasters and emergencies in the years each state's page covers have no state declaration on that page within 21 days. A state's list is most likely incomplete where this is high.
+405 of the 1,613 FEMA weather major disasters and emergencies in the years each state's page covers have no state declaration on that page within 21 days. A state's list is most likely incomplete where this is high.
 
 The 10 states with the most:
 
@@ -44,7 +44,7 @@ The 10 states with the most:
 | MA | 1970 | 21 | 42 |
 | CT | 1971 | 20 | 37 |
 | ND | 2000 | 20 | 41 |
-| ME | 2003 | 16 | 36 |
+| ME | 2000 | 18 | 40 |
 | VT | 2011 | 15 | 29 |
 | KS | 2000 | 14 | 53 |
 
@@ -60,16 +60,16 @@ The 10 states with the most:
 | CO | green | returned everything | 0 | 112 | 112 | 112 | 112 | 112 | 94 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | CT | green | returned everything | 0 | 20 | 43 | 20 | 20 | 20 | 19 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | DE | green | returned everything | 0 | 17 | 26 | 17 | 17 | 17 | 17 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| FL | green | returned everything | 0 | 55 | 190 | 55 | 55 | 55 | 48 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
+| FL | green | returned everything | 0 | 62 | 190 | 62 | 62 | 62 | 54 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | GA | green | returned everything | 0 | 54 | 82 | 54 | 54 | 54 | 52 |  |
 | HI | green | returned everything | 0 | 38 | 77 | 38 | 38 | 38 | 32 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | ID | green | returned everything | 0 | 216 | 61 | 216 | 216 | 216 | 20 | 206 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | IL | green | returned everything | 0 | 15 | 68 | 15 | 15 | 15 | 13 |  |
 | IN | green | returned everything | 0 | 35 | 56 | 34 | 35 | 35 | 27 |  |
-| IA | green | returned everything | 0 | 93 | 79 | 93 | 93 | 93 | 88 |  |
+| IA | green | returned everything | 0 | 119 | 79 | 119 | 119 | 119 | 114 |  |
 | KS | yellow | returned part | 0 | 78 | 96 | 78 | 78 | 78 | 72 | 2 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | KY | green | returned everything | 0 | 33 | 99 | 33 | 33 | 33 | 31 |  |
-| LA | green | returned everything | 0 | 58 | 111 | 58 | 58 | 58 | 52 |  |
+| LA | green | returned everything | 0 | 62 | 111 | 62 | 62 | 62 | 56 | Failed on the first try this run and recovered on the retry. |
 | ME | green | returned everything | 0 | 36 | 71 | 36 | 36 | 36 | 35 |  |
 | MD | green | returned everything | 0 | 47 | 38 | 47 | 47 | 47 | 43 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | MA | green | returned everything | 0 | 21 | 59 | 21 | 21 | 21 | 18 |  |
@@ -82,7 +82,7 @@ The 10 states with the most:
 | NV | green | returned everything | 0 | 14 | 116 | 14 | 14 | 14 | 10 |  |
 | NH | green | returned everything | 0 | 14 | 64 | 14 | 14 | 14 | 11 |  |
 | NJ | green | returned everything | 0 | 83 | 59 | 83 | 83 | 83 | 70 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
-| NM | green | returned everything | 0 | 45 | 128 | 45 | 45 | 45 | 34 |  |
+| NM | green | returned everything | 0 | 52 | 128 | 52 | 52 | 52 | 41 |  |
 | NY | green | returned everything | 0 | 24 | 118 | 24 | 24 | 24 | 22 | 1 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
 | NC | green | returned everything | 0 | 81 | 85 | 81 | 81 | 81 | 78 |  |
 | ND | green | returned everything | 0 | 61 | 76 | 61 | 61 | 61 | 34 | 8 drought declaration(s) are not counted in the storm match rate; NOAA's storm database logs drought only in some months. |
