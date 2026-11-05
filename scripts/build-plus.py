@@ -2021,12 +2021,13 @@ _COVERAGE_START_OVERRIDES = {
     # (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news
     # coverage; the 2000 comparison found no gaps in 2000-2001. Hawaii:
     # partial 2014-2022 procurement mirror, plus hand-added declarations from
-    # 2004 on; compared from 2000 with the November 2000 flood (DR-1348) a gap. Ohio: proclamations from 2003.
+    # 2004 on; compared from 2000 with the November 2000 flood (DR-1348) a gap. Ohio: compared from 2000
+    # with proclamations from Ohio EMA's gubernatorial declarations chart.
     # Vermont: compared from 2000. The note leads with "2000-present", and the
     # gaps it names are federal declarations with no Vermont order on record.
     "AK": "2000",
     "HI": "2000",
-    "OH": "2003",
+    "OH": "2000",
     "VT": "2000",
 }
 _COVERAGE_START_NO_CLEAN_YEAR = set()
