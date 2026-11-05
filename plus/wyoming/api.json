@@ -142,9 +142,20 @@
       "source_url": "https://kowb1290.com/governor-mead-signs-disaster-declaration-in-response-to-wyoming-flooding/",
       "state": "WY",
       "title": "Statewide flood preparation emergency order for record snowpack, teams sent to high-risk counties"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2010-06-09",
+      "declaration_id": "WY-SOE-2010-06-09",
+      "governor": "Dave Freudenthal",
+      "origin": "hand",
+      "source_url": "https://archives.lincolndailynews.com/2010/Jun/09/News/news060910_af.shtml",
+      "state": "WY",
+      "title": "Disaster declaration for flooding in Fremont County (reported by the Associated Press on June 9, 2010)"
     }
   ],
-  "coverage": "2019-present Governor CMS executive-order archive; 2000-2018 backfill pending",
+  "coverage": "2000-present: the Governor CMS executive-order archive from 2019, plus declarations added by hand from official announcements, order text and dated news coverage: Governor Freudenthal's June 2010 Fremont County flood disaster declaration and Governor Mead's flood declarations (2011, 2015, February 2017). No archive of earlier Wyoming governors' orders exists, and no state declaration has been found for the November 2000 winter storm (DR-1351), the August 2005 Wright tornado (DR-1599), the June 2017 floods (DR-4327) or the June 2023 Casper flood (DR-4739)",
   "crosswalk": [
     {
       "date_signed": "2025-08-24",
@@ -529,11 +540,35 @@
       "noaa_match_count": 19,
       "noaa_status": "matched",
       "title": "Statewide flood preparation emergency order for record snowpack, teams sent to high-risk counties"
+    },
+    {
+      "date_signed": "2010-06-09",
+      "declaration_id": "WY-SOE-2010-06-09",
+      "federal_declaration": {
+        "begin": "2010-06-04",
+        "date": "2010-07-14",
+        "end": "2010-06-18",
+        "id": "DR-1923",
+        "incidentType": "Flood",
+        "number": 1923,
+        "title": "FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CARBON",
+        "FREMONT",
+        "JOHNSON",
+        "UINTA"
+      ],
+      "noaa_match_count": 5,
+      "noaa_status": "matched",
+      "title": "Disaster declaration for flooding in Fremont County (reported by the Associated Press on June 9, 2010)"
     }
   ],
   "federal_match_window_days": 21,
   "federal_without_state": {
-    "compared": 2,
+    "compared": 9,
     "covered_by_extension": [],
     "declarations": [
       {
@@ -545,17 +580,47 @@
         "number": 4739,
         "title": "FLOODING",
         "type": "DR"
+      },
+      {
+        "begin": "2017-06-07",
+        "date": "2017-08-05",
+        "end": "2017-06-22",
+        "id": "DR-4327",
+        "incidentType": "Flood",
+        "number": 4327,
+        "title": "FLOODING",
+        "type": "DR"
+      },
+      {
+        "begin": "2005-08-12",
+        "date": "2005-08-22",
+        "end": "2005-08-12",
+        "id": "DR-1599",
+        "incidentType": "Tornado",
+        "number": 1599,
+        "title": "TORNADO",
+        "type": "DR"
+      },
+      {
+        "begin": "2000-10-31",
+        "date": "2000-12-13",
+        "end": "2000-11-20",
+        "id": "DR-1351",
+        "incidentType": "Severe Storm",
+        "number": 1351,
+        "title": "SEVERE WINTER STORM",
+        "type": "DR"
       }
     ],
-    "since": 2019
+    "since": 2000
   },
-  "generated_on": "2026-11-04",
+  "generated_on": "2026-11-05",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 13,
+    "action_count": 14,
     "federal_declaration_count": 45,
-    "severity_rows": 179,
-    "storm_match_rows": 330
+    "severity_rows": 183,
+    "storm_match_rows": 335
   },
   "name": "Wyoming",
   "noaa_data_through": "2026-07-30",
@@ -564,10 +629,10 @@
   "slug": "wyoming",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 9,
-    "federal_matched": 7,
+    "added_by_hand": 10,
+    "federal_matched": 8,
     "fmcsa_archive": 0,
-    "noaa_matched": 12,
+    "noaa_matched": 13,
     "noaa_none": 1,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
