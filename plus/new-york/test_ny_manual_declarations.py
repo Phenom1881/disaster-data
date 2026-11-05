@@ -2,10 +2,10 @@
 
 The Governor's archive is complete from August 24, 2021, and the Past
 Executive Orders page lists only earlier orders still in force, so earlier
-weather disaster orders are kept by hand: Governors Pataki, Spitzer and
-Paterson's from 9 NYCRR Parts 5, 6 and 7, where their executive orders are
-printed with their dates, and Governor Cuomo's from the New York State Register, which prints each order
-with its signing line. Each row has to reach the storm join and the page the
+weather disaster orders are kept by hand from 9 NYCRR Parts 5 to 8, where
+Governors Pataki, Spitzer, Paterson and Cuomo's executive orders are printed
+with their dates, and from the New York State Register, which prints each
+later Cuomo order with its signing line. Each row has to reach the storm join and the page the
 way a collected declaration does.
 
 Run:  python -m unittest test_ny_manual_declarations
@@ -31,9 +31,9 @@ TERMS = {
     "Andrew M Cuomo": (date(2011, 1, 1), date(2021, 8, 24)),
 }
 NYCRR = re.compile(
-    r"https://regulations\.justia\.com/states/new-york/title-9/subtitle-a/chapter-i/part-([567])/section-\1-(\d+)/")
+    r"https://regulations\.justia\.com/states/new-york/title-9/subtitle-a/chapter-i/part-([5678])/section-\1-(\d+)/")
 # 9 NYCRR part for each governor whose executive orders it prints.
-PART = {"George E Pataki": "5", "Eliot Spitzer": "6", "David A Paterson": "7"}
+PART = {"George E Pataki": "5", "Eliot Spitzer": "6", "David A Paterson": "7", "Andrew M Cuomo": "8"}
 REGISTER = re.compile(r"https://dos\.ny\.gov/([a-z]+)-(\d{1,2})-(\d{4})vol-[xlvi]+-issue-(\d+)")
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
