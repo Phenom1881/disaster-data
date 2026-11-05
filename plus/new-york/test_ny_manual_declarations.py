@@ -2,9 +2,9 @@
 
 The Governor's archive is complete from August 24, 2021, and the Past
 Executive Orders page lists only earlier orders still in force, so earlier
-weather disaster orders are kept by hand: Governor Pataki's from 9 NYCRR
-Part 5, where his executive orders are printed with their dates, and
-Governor Cuomo's from the New York State Register, which prints each order
+weather disaster orders are kept by hand: Governors Pataki, Spitzer and
+Paterson's from 9 NYCRR Parts 5, 6 and 7, where their executive orders are
+printed with their dates, and Governor Cuomo's from the New York State Register, which prints each order
 with its signing line. Each row has to reach the storm join and the page the
 way a collected declaration does.
 
@@ -26,10 +26,14 @@ JOIN_FIELDS = ["declaration_id", "governor", "eo_number", "event_description", "
 HAZARDS = {"fire", "flood", "winter", "severe_storm", "tropical", "storm_general", "wind", "drought", "exclude"}
 TERMS = {
     "George E Pataki": (date(1995, 1, 1), date(2007, 1, 1)),
+    "Eliot Spitzer": (date(2007, 1, 1), date(2008, 3, 17)),
+    "David A Paterson": (date(2008, 3, 17), date(2011, 1, 1)),
     "Andrew M Cuomo": (date(2011, 1, 1), date(2021, 8, 24)),
 }
 NYCRR = re.compile(
-    r"https://regulations\.justia\.com/states/new-york/title-9/subtitle-a/chapter-i/part-5/section-5-(\d+)/")
+    r"https://regulations\.justia\.com/states/new-york/title-9/subtitle-a/chapter-i/part-([567])/section-\1-(\d+)/")
+# 9 NYCRR part for each governor whose executive orders it prints.
+PART = {"George E Pataki": "5", "Eliot Spitzer": "6", "David A Paterson": "7"}
 REGISTER = re.compile(r"https://dos\.ny\.gov/([a-z]+)-(\d{1,2})-(\d{4})vol-[xlvi]+-issue-(\d+)")
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
@@ -97,18 +101,19 @@ class ManualDeclarationTests(unittest.TestCase):
             url = row["archive_record_url"]
             self.assertTrue(NYCRR.fullmatch(url) or REGISTER.fullmatch(url), row["declaration_id"])
 
-    def test_nycrr_rows_are_patakis_and_quote_their_section_and_date(self):
+    def test_nycrr_rows_sit_in_their_governors_part_and_quote_section_and_date(self):
         found_any = False
         for row in read(MANUAL):
             found = NYCRR.fullmatch(row["archive_record_url"])
             if not found:
                 continue
             found_any = True
-            self.assertEqual(row["governor"], "George E Pataki", row["declaration_id"])
-            self.assertEqual(found.group(1), row["eo_number"], row["declaration_id"])
+            part, section = found.groups()
+            self.assertEqual(PART.get(row["governor"]), part, row["declaration_id"])
+            self.assertEqual(section, row["eo_number"], row["declaration_id"])
             signed = date.fromisoformat(row["date_signed"])
             note = notes()[row["declaration_id"]]["review_note"]
-            self.assertTrue(note.startswith(f"9 NYCRR 5.{row['eo_number']}, Executive Order No. {row['eo_number']}: '"), note)
+            self.assertTrue(note.startswith(f"9 NYCRR {part}.{row['eo_number']}, Executive Order No. {row['eo_number']}: '"), note)
             self.assertIn(f"'Dated: {MONTHS[signed.month - 1]} {signed.day}, {signed.year}'", note)
         self.assertTrue(found_any)
 
@@ -144,15 +149,22 @@ class ManualDeclarationTests(unittest.TestCase):
         self.assertIn(f"plus {len(rows)} weather disaster orders added by hand", note)
         pataki = sum(1 for row in rows if row["governor"] == "George E Pataki")
         cuomo = sum(1 for row in rows if row["governor"] == "Andrew M Cuomo")
+        spitzer = sum(1 for row in rows if row["governor"] == "Eliot Spitzer")
+        paterson = sum(1 for row in rows if row["governor"] == "David A Paterson")
         self.assertIn(f"{pataki} Pataki orders", note)
+        self.assertIn(f"{spitzer} Spitzer order", note)
+        self.assertIn(f"{paterson} Paterson orders", note)
         self.assertIn(f"{cuomo} Cuomo orders", note)
 
     def test_the_named_gaps_are_counted_and_named_once(self):
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text(encoding="utf-8"))
         note = next(s["coverage_note"] for s in manifest["states"] if s["abbreviation"] == "NY")
-        named = re.findall(r"\b(?:DR|EM)-\d{4}\b", note)
-        self.assertEqual(len(named), len(set(named)))
-        self.assertIn(f"No state order is kept yet for {len(named)} federal declarations", note)
+        self.assertEqual(len(re.findall(r"\b(?:DR|EM)-\d{4}\b", note)),
+                         len(set(re.findall(r"\b(?:DR|EM)-\d{4}\b", note))))
+        gaps = re.search(r"No state order is kept yet for (\d+) federal declarations from [^:]*: (.*?\))\. ", note)
+        self.assertIsNotNone(gaps, note)
+        named = re.findall(r"\b(?:DR|EM)-\d{4}\b", gaps.group(2))
+        self.assertEqual(int(gaps.group(1)), len(named))
 
     def test_no_long_dashes(self):
         for path in (MANUAL, OVERRIDES, HERE / "new_york.py"):
