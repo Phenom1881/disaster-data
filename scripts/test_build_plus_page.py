@@ -413,6 +413,83 @@ class FederalWithoutStateTests(unittest.TestCase):
         self.assertNotIn("no state declaration on this page", self.render([], 0, start=None))
 
 
+class StateSaidNoDeclarationTests(unittest.TestCase):
+    """FEMA declarations the state itself has said it made no declaration for."""
+
+    FIELDS = ["fema_declaration", "statement", "source_title", "source_url"]
+    QUOTE = "A State of Emergency was not declared for this event due to the isolated nature of flash flooding."
+
+    def folder(self, tmp, rows):
+        state_dir = Path(tmp)
+        write(state_dir / MODULE.NO_STATE_DECLARATION, rows, self.FIELDS)
+        return state_dir
+
+    def row(self, ident, statement=None, url="https://maine.gov/letter.pdf", title="Request letter"):
+        return {"fema_declaration": ident, "statement": self.QUOTE if statement is None else statement,
+                "source_title": title, "source_url": url}
+
+    def test_only_quoted_and_sourced_rows_count(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            stated = MODULE.load_no_state_declaration(self.folder(tmp, [
+                self.row("DR-4736"), self.row("dr-4737"),
+                self.row("DR-4738", statement=""),                      # no statement
+                self.row("DR-4739", url="http://maine.gov/x.pdf"),      # not https
+                self.row("DR-47", ), self.row("FM-5000")]))             # not a DR or EM number
+        self.assertEqual(sorted(stated), ["DR-4736", "DR-4737"])
+        self.assertEqual(stated["DR-4736"]["statement"], self.QUOTE)
+
+    def test_no_file_means_nothing_is_taken_off(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(MODULE.load_no_state_declaration(Path(tmp)), {})
+
+    def test_gaps_the_state_explained_move_out_with_their_quote(self):
+        gaps = [federal("DR-4737", "2023-06-26", "2023-06-26"), federal("DR-4719", "2023-04-30", "2023-05-01")]
+        stated = {"DR-4737": {"statement": self.QUOTE, "source_title": "Request letter",
+                              "source_url": "https://maine.gov/letter.pdf"},
+                  "DR-9999": {"statement": self.QUOTE, "source_title": "", "source_url": "https://x.gov/a"}}
+        remaining, said = MODULE.state_said_no_declaration(gaps, stated)
+        self.assertEqual([row["id"] for row in remaining], ["DR-4719"])
+        self.assertEqual(said, [{"id": "DR-4737", "statement": self.QUOTE, "source_title": "Request letter",
+                                 "source_url": "https://maine.gov/letter.pdf",
+                                 "fema_url": "https://www.fema.gov/disaster/4737"}])
+
+    def test_the_page_quotes_and_links_them_and_stops_counting_them(self):
+        said = [{"id": "DR-4737", "statement": self.QUOTE, "source_title": "Request letter",
+                 "source_url": "https://maine.gov/letter.pdf", "fema_url": "https://www.fema.gov/disaster/4737"}]
+        page = MODULE.federal_gap_section("Maine", [federal("DR-4719", "2023-04-30", "2023-05-01")], 3, 2003,
+                                          said=said)
+        words = text(page)
+        self.assertIn("1 of 3 since 2003", words)
+        self.assertIn("1 more FEMA declaration was made where the state has said it did not declare an "
+                      "emergency of its own, and is not counted here", words)
+        self.assertIn(self.QUOTE, words)
+        self.assertIn('href="https://www.fema.gov/disaster/4737"', page)
+        self.assertIn('href="https://maine.gov/letter.pdf"', page)
+        two = MODULE.no_declaration_note(said * 2)
+        self.assertIn("2 more FEMA declarations were made", text(two))
+
+    def test_with_no_gaps_left_the_page_says_why(self):
+        said = [{"id": "DR-4737", "statement": self.QUOTE, "source_title": "Request letter",
+                 "source_url": "https://maine.gov/letter.pdf", "fema_url": "https://www.fema.gov/disaster/4737"}]
+        words = text(MODULE.federal_gap_section("Maine", [], 3, 2003, said=said))
+        self.assertIn("or the state has said it made no declaration", words)
+        self.assertIn(self.QUOTE, words)
+        self.assertNotIn("or the state has said", text(MODULE.federal_gap_section("Maine", [], 3, 2003)))
+
+    def test_every_states_file_is_well_formed(self):
+        root = MODULE_PATH.resolve().parents[1] / "plus"
+        for path in sorted(root.glob("*/" + MODULE.NO_STATE_DECLARATION)):
+            with open(path, newline="", encoding="utf-8") as handle:
+                reader = csv.DictReader(handle)
+                self.assertEqual(reader.fieldnames, self.FIELDS, path)
+                rows = list(reader)
+            self.assertTrue(rows, path)
+            self.assertEqual(len(MODULE.load_no_state_declaration(path.parent)), len(rows), path)
+            for row in rows:
+                self.assertNotIn("\u2013", row["statement"] + row["source_title"])
+                self.assertNotIn("\u2014", row["statement"] + row["source_title"])
+
+
 class VisitorNoteTests(unittest.TestCase):
     def test_the_coverage_note_shows_no_file_names(self):
         note = ("2017-present structured Governor archive; 2002-2015 emergency orders added by hand, "

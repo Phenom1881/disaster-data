@@ -294,6 +294,14 @@ FMCSA_SUPPLEMENT = "fmcsa_declarations.csv"
 # Kept out of the state's action file so the source is judged only on what it
 # returns: a hand-added row there reads as a record the source "left out".
 MANUAL_SUPPLEMENT = "manual_declarations.csv"
+# FEMA declarations the state itself has said it made no emergency
+# declaration for (a request letter saying "A State of Emergency was not
+# declared for this event", say). Each row quotes the statement and links it.
+# They are shown with the quote and not counted as gaps: FEMA declared, and
+# the state, by its own account, did not. Only explicit statements belong
+# here; a source that is merely silent does not.
+NO_STATE_DECLARATION = "no_state_declaration.csv"
+NO_STATE_DECLARATION_FIELDS = ["fema_declaration", "statement", "source_title", "source_url"]
 _fmcsa_module = None
 
 
@@ -1181,6 +1189,37 @@ def covered_by_extension(gaps: list[dict], orders: list[dict]) -> tuple[list[dic
     return remaining, covered
 
 
+def load_no_state_declaration(state_dir: Path) -> dict[str, dict]:
+    """{FEMA declaration id ("DR-4736"): row} from NO_STATE_DECLARATION.
+    A row without a statement or an https source is ignored, so nothing is
+    taken off the gap list on an unsourced say-so."""
+    path = state_dir / NO_STATE_DECLARATION
+    rows = {}
+    for row in read_csv_rows(path) if path.exists() else []:
+        key = (row.get("fema_declaration") or "").strip().upper()
+        statement = (row.get("statement") or "").strip()
+        source = (row.get("source_url") or "").strip()
+        if re.fullmatch(r"(DR|EM)-\d{4}", key) and statement and source.startswith("https://"):
+            rows[key] = {"statement": statement, "source_title": (row.get("source_title") or "").strip(),
+                         "source_url": source}
+    return rows
+
+
+def state_said_no_declaration(gaps: list[dict], stated: dict[str, dict]) -> tuple[list[dict], list[dict]]:
+    """Split gaps into those still unexplained and those the state has said
+    it made no declaration for. The second list carries the quote:
+    [{"id", "statement", "source_title", "source_url", "fema_url"}]."""
+    remaining, said = [], []
+    for declaration in gaps:
+        key = (declaration.get("id") or "").upper()
+        row = stated.get(key)
+        if row is None:
+            remaining.append(declaration)
+            continue
+        said.append({"id": key, **row, "fema_url": f"https://www.fema.gov/disaster/{key.split('-')[1]}"})
+    return remaining, said
+
+
 def _promote_outputs(pairs: list[tuple[Path, Path]]) -> tuple[bool, str]:
     """Move each (tmp_path, final_path) into place, with rollback if any
     individual move fails partway through the set.
@@ -1546,8 +1585,26 @@ def extended_note(extended: list[dict] | None) -> str:
             f"{'is' if count == 1 else 'are'} not counted here: {items}.</p>")
 
 
+def no_declaration_note(said: list[dict] | None) -> str:
+    """One paragraph naming the FEMA declarations the state has said it made
+    no declaration for, each with the quote and its source."""
+    if not said:
+        return ""
+    count = len(said)
+    items = "; ".join(
+        f'<a href="{esc(row["fema_url"])}">{esc(row["id"])}</a>: &ldquo;{esc(row["statement"])}&rdquo; '
+        f'(<a href="{esc(row["source_url"])}">{esc(row.get("source_title") or "source")}</a>)'
+        for row in said)
+    return (f'<p class="note">{count:,} more FEMA declaration{"" if count == 1 else "s"} '
+            f"{'was' if count == 1 else 'were'} made where the state has said it did not declare an "
+            f"emergency of its own, and {'is' if count == 1 else 'are'} not counted here. A state can "
+            "ask for federal help without a declaration of its own, or declare later: "
+            f"{items}.</p>")
+
+
 def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
-                        start_year: int | None, extended: list[dict] | None = None) -> str:
+                        start_year: int | None, extended: list[dict] | None = None,
+                        said: list[dict] | None = None) -> str:
     """The collapsed section listing FEMA's weather major disasters and
     emergencies that have no state declaration on the page. Renders nothing
     when the page's coverage start year is unknown."""
@@ -1562,8 +1619,9 @@ def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
         body = (f'<p class="note">Every one of the {compared:,} major disaster and emergency '
                 f"declarations FEMA made for weather in {name} from {start_year}, the first year "
                 f"this page covers, has a state declaration on this page within {window} days "
-                f"of its incident period{', or fell while one was kept in force' if extended else ''}."
-                f"</p>{extended_note(extended)}")
+                f"of its incident period{', or fell while one was kept in force' if extended else ''}"
+                f"{', or the state has said it made no declaration' if said else ''}."
+                f"</p>{extended_note(extended)}{no_declaration_note(said)}")
     else:
         body = (
             f'<p class="note">Major disaster and emergency declarations FEMA made for weather in '
@@ -1578,7 +1636,7 @@ def federal_gap_section(name: str, gaps: list[dict] | None, compared: int,
             f"{sortable_header('Title', 3)}{sortable_header('Incident type', 4)}"
             f"{sortable_header('Incident period', 5)}</tr></thead>"
             f"<tbody>{federal_declaration_rows(gaps)}</tbody></table></div>"
-            f"{extended_note(extended)}"
+            f"{extended_note(extended)}{no_declaration_note(said)}"
         )
     return (
         '<details class="layer">'
@@ -1858,6 +1916,7 @@ def render_state_page(
     federal_compared: int = 0,
     coverage_start: int | None = None,
     federal_extended: list[dict] | None = None,
+    federal_said: list[dict] | None = None,
 ) -> str:
     name = esc(state["name"])
     source = state.get("official_source_url", "")
@@ -1906,7 +1965,7 @@ def render_state_page(
 <tbody>{crosswalk_rows(crosswalk)}</tbody></table></div>
 </div>
 
-{federal_gap_section(name, federal_gaps, federal_compared, coverage_start, federal_extended)}
+{federal_gap_section(name, federal_gaps, federal_compared, coverage_start, federal_extended, federal_said)}
 
 <details class="layer">
 <summary><span>Federal FEMA declarations</span><span class="count-badge">{metrics['federal_declaration_count']:,} records</span></summary>
@@ -2126,6 +2185,7 @@ def api_payload(state: dict, summary: dict, actions: list[dict], crosswalk: list
             "compared": gaps.get("compared", 0),
             "declarations": [federal_reference(row) for row in federal_gaps or []],
             "covered_by_extension": gaps.get("covered_by_extension", []),
+            "no_state_declaration": gaps.get("no_state_declaration", []),
         },
         "actions": actions,
         "crosswalk": [
@@ -2251,6 +2311,7 @@ def process_state(
     federal_gaps, federal_compared = federal_without_state(federal_declarations, actions, start_year,
                                                            event_dates)
     federal_gaps, federal_extended = covered_by_extension(federal_gaps, extension_orders(state_dir, actions))
+    federal_gaps, federal_said = state_said_no_declaration(federal_gaps, load_no_state_declaration(state_dir))
 
     summary = {
         "abbreviation": state["abbreviation"],
@@ -2272,6 +2333,9 @@ def process_state(
             # FEMA declarations that fell while a later order kept a state
             # declaration on the page in force; not counted as gaps.
             "covered_by_extension": federal_extended,
+            # FEMA declarations the state has said it made no declaration
+            # for (NO_STATE_DECLARATION); not counted as gaps.
+            "no_state_declaration": federal_said,
         },
         "storm_pipeline_note": storm_note,
         "storm_pipeline_failed": storm_failed,
@@ -2303,7 +2367,7 @@ def process_state(
                     state, actions, federal_declarations, storm_rows, crosswalk, metrics, coverage,
                     sources=sources, federal_gaps=federal_gaps,
                     federal_compared=federal_compared, coverage_start=start_year,
-                    federal_extended=federal_extended,
+                    federal_extended=federal_extended, federal_said=federal_said,
                 ),
                 encoding="utf-8",
             )
