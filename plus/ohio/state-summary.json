@@ -4,34 +4,28 @@
   "adapter_status": "implemented",
   "collection_error": "Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss",
   "collection_failed": true,
-  "coverage": "Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on are added by hand from the Governor's announcements and news coverage; Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss",
-  "coverage_base": "manual_only - Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations from 2003 on are added by hand from the Governor's announcements and news coverage. The Governor's GovDelivery feed answers 406 to every request on record, so it adds nothing automatically.",
+  "coverage": "2000-present: Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations are added by hand from Ohio EMA's Gubernatorial Declarations History Chart (State Hazard Mitigation Plan, 2024, Appendix A), the Governor's announcements and news coverage; the chart says it may not include every declaration. No state proclamation has been found for the February 2000 floods (DR-1321) or the March 2008 snowstorm (EM-3286), and the November 2, 2012 Sandy proclamation only sent the Ohio National Guard to New York, with no Ohio counties declared (DR-4098); Collection failed: Ohio adapter: could not fetch Ohio GovDelivery bulletin feed: 406 Client Error: Not Acceptable for url: https://content.govdelivery.com/accounts/OHIOGOVERNOR/bulletins.rss",
+  "coverage_base": "manual_only - 2000-present: Ohio's weather actions are ORC 5502.22 proclamations, not filed/numbered EOs, and no complete list is published. Proclamations are added by hand from Ohio EMA's Gubernatorial Declarations History Chart (State Hazard Mitigation Plan, 2024, Appendix A), the Governor's announcements and news coverage; the chart says it may not include every declaration. No state proclamation has been found for the February 2000 floods (DR-1321) or the March 2008 snowstorm (EM-3286), and the November 2, 2012 Sandy proclamation only sent the Ohio National Guard to New York, with no Ohio counties declared (DR-4098). The Governor's GovDelivery feed answers 406 to every request on record, so it adds nothing automatically.",
   "federal_without_state": {
-    "compared": 22,
-    "count": 9,
+    "compared": 27,
+    "count": 3,
     "covered_by_extension": [],
     "ids": [
       "DR-4098",
-      "DR-4002",
       "EM-3286",
-      "DR-1656",
-      "DR-1651",
-      "DR-1556",
-      "DR-1519",
-      "DR-1507",
-      "DR-1453"
+      "DR-1321"
     ],
     "no_state_declaration": [],
-    "since": 2003
+    "since": 2000
   },
-  "generated_on": "2026-11-05",
+  "generated_on": "2026-11-06",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 18,
+    "action_count": 42,
     "federal_declaration_count": 61,
-    "severity_rows": 631,
-    "storm_match_rows": 1362
+    "severity_rows": 1345,
+    "storm_match_rows": 2596
   },
   "name": "Ohio",
   "retried": false,
@@ -40,11 +34,11 @@
   "source_records_saved_before": 18,
   "source_status": "manual",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 11,
+    "added_by_hand": 24,
+    "federal_matched": 26,
     "fmcsa_archive": 0,
-    "noaa_matched": 16,
-    "noaa_none": 0,
+    "noaa_matched": 39,
+    "noaa_none": 1,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,
     "state_archive": 18
@@ -52,7 +46,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 0.9,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 0.8,
+    "storm_join_seconds": 0.8
   }
 }

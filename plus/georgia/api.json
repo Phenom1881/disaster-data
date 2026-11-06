@@ -1,6 +1,17 @@
 {
   "actions": [
     {
+      "action_number": "11.05.26.01",
+      "action_type": "declaration",
+      "date_signed": "2026-11-05",
+      "declaration_id": "GA-EO-11-05-26-01",
+      "governor": "Brian P. Kemp",
+      "origin": "state",
+      "source_url": "https://gov.georgia.gov/executive-action/executive-orders/2026",
+      "state": "GA",
+      "title": "Declaring a State of Emergency for Severe Flooding"
+    },
+    {
       "action_number": "10.08.26.01",
       "action_type": "declaration",
       "date_signed": "2026-10-08",
@@ -597,6 +608,25 @@
   ],
   "coverage": "2000-present: structured Governor archives from 2011, plus 2000-2009 states of emergency added by hand from Governor Perdue's archived executive order list and, for 2000, dated FEMA and news reports of Governor Barnes's declarations; no state declaration has been found for Hurricane Zeta in October 2020 (DR-4579)",
   "crosswalk": [
+    {
+      "date_signed": "2026-11-05",
+      "declaration_id": "GA-EO-11-05-26-01",
+      "federal_declaration": {
+        "begin": "2026-10-08",
+        "date": "2026-10-09",
+        "end": "2026-10-15",
+        "id": "EM-3657",
+        "incidentType": "Tropical Storm",
+        "number": 3657,
+        "title": "HURRICANE ISAIAS",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "pending",
+      "title": "Declaring a State of Emergency for Severe Flooding"
+    },
     {
       "date_signed": "2026-10-08",
       "declaration_id": "GA-EO-10-08-26-01",
@@ -4101,10 +4131,10 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-05",
+  "generated_on": "2026-11-06",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 54,
+    "action_count": 55,
     "federal_declaration_count": 82,
     "severity_rows": 2660,
     "storm_match_rows": 4156
@@ -4117,13 +4147,13 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 9,
-    "federal_matched": 35,
+    "federal_matched": 36,
     "fmcsa_archive": 0,
     "noaa_matched": 52,
     "noaa_none": 1,
-    "noaa_pending": 1,
+    "noaa_pending": 2,
     "reviewed_not_weather": 0,
-    "state_archive": 45
+    "state_archive": 46
   },
   "state": "GA"
 }
