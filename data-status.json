@@ -1,16 +1,16 @@
 {
   "schemaVersion": 2,
-  "release": "2026.11.06.2",
+  "release": "2026.11.08.1",
   "status": "passed",
-  "builtAt": "2026-11-06T13:29:53Z",
-  "dataDate": "2026-11-06",
-  "fingerprint": "b1ecf500efa5cfe37d9b",
+  "builtAt": "2026-11-08T11:36:04Z",
+  "dataDate": "2026-11-08",
+  "fingerprint": "0279630e78d4b36c4a16",
   "metrics": {
-    "dataDate": "2026-11-06",
+    "dataDate": "2026-11-08",
     "ageDays": 0,
     "declarationsCurrent": 3555,
     "declarationsCompletedFY": 3536,
-    "denials": 366,
+    "denials": 363,
     "statesTerritories": 57,
     "localities": 4195,
     "mapCounties": 3241,
@@ -21,8 +21,8 @@
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
     "paJurisdictions": 3231,
-    "paTotalObligated": 284292008086.14,
-    "paProjects": 824711,
+    "paTotalObligated": 284283073970.61,
+    "paProjects": 824797,
     "paTimingJurisdictions": 3287,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3266,
@@ -46,16 +46,16 @@
       "file": "data.js",
       "records": 3555,
       "release": "OpenFEMA v2",
-      "hash": "da1c2e64a569c81b",
+      "hash": "ecd2b0a3f5acc481",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
       "name": "FEMA Declaration Denials",
       "status": "current",
       "file": "data.js",
-      "records": 366,
+      "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "da1c2e64a569c81b",
+      "hash": "ecd2b0a3f5acc481",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
@@ -64,7 +64,7 @@
       "file": "data.js",
       "records": 3231,
       "release": "OpenFEMA v2",
-      "hash": "da1c2e64a569c81b",
+      "hash": "ecd2b0a3f5acc481",
       "note": "Public Assistance project and county rollups."
     },
     {
@@ -73,7 +73,7 @@
       "file": "pa-timing.json",
       "records": 3287,
       "release": "OpenFEMA v2",
-      "hash": "79e77d9c72f7ca96",
+      "hash": "7db6c62ae74f262a",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,7 +91,7 @@
       "file": "ia.json",
       "records": 3266,
       "release": "OpenFEMA v2",
-      "hash": "59614e20f5f9bc77",
+      "hash": "94b0e0e1cb99691f",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-11-06",
+        "detail": "Data date: 2026-11-08",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-11-06",
+        "detail": "Homepage contains build date 2026-11-08",
         "metrics": {}
       },
       {
