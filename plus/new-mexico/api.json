@@ -1,6 +1,28 @@
 {
   "actions": [
     {
+      "action_number": "2026-159",
+      "action_type": "declaration",
+      "date_signed": "2026-11-02",
+      "declaration_id": "NM-2026-159",
+      "governor": "Michelle Lujan Grisham",
+      "origin": "state",
+      "source_url": "https://www.governor.state.nm.us/assets/executive-orders/2026/executive-order-2026-159.pdf",
+      "state": "NM",
+      "title": "DECLARING AN EMERGENCY DUE TO EXPECTED SEVERE WINTER WEATHER EVENTS AND AUTHORIZING EMERGENCY FUNDS FOR THE NEW MEXICO NATIONAL GUARD"
+    },
+    {
+      "action_number": "2026-158",
+      "action_type": "declaration",
+      "date_signed": "2026-11-02",
+      "declaration_id": "NM-2026-158",
+      "governor": "Michelle Lujan Grisham",
+      "origin": "state",
+      "source_url": "https://www.governor.state.nm.us/assets/executive-orders/2026/executive-order-2026-158.pdf",
+      "state": "NM",
+      "title": "DECLARING AN EMERGENCY DUE TO EXPECTED SEVERE WINTER WEATHER EVENTS AND AUTHORIZING EMERGENCY FUNDS FOR THE DEPARTMENT OF HOMELAND SECURITY AND EMERGENCY MANAGEMENT"
+    },
+    {
       "action_number": "2026-077",
       "action_type": "declaration",
       "date_signed": "2026-09-30",
@@ -575,6 +597,44 @@
   ],
   "coverage": "2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 7 weather declarations added by hand by Governors Richardson (2006-2010) and Martinez (2011-2013), from executive orders reprinted in the press and dated news coverage. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000), DR-1514 (April 2004 storms and flooding), DR-4047 (August 2011 flooding), DR-4079 (June 2012 flooding), DR-4197 (July 2014 storms and flooding) or DR-4199 (September 2014 storms and flooding); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
+    {
+      "date_signed": "2026-11-02",
+      "declaration_id": "NM-2026-159",
+      "federal_declaration": {
+        "begin": "2026-10-22",
+        "date": "2026-10-26",
+        "end": "",
+        "id": "EM-3660",
+        "incidentType": "Flood",
+        "number": 3660,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "pending",
+      "title": "DECLARING AN EMERGENCY DUE TO EXPECTED SEVERE WINTER WEATHER EVENTS AND AUTHORIZING EMERGENCY FUNDS FOR THE NEW MEXICO NATIONAL GUARD"
+    },
+    {
+      "date_signed": "2026-11-02",
+      "declaration_id": "NM-2026-158",
+      "federal_declaration": {
+        "begin": "2026-10-22",
+        "date": "2026-10-26",
+        "end": "",
+        "id": "EM-3660",
+        "incidentType": "Flood",
+        "number": 3660,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "pending",
+      "title": "DECLARING AN EMERGENCY DUE TO EXPECTED SEVERE WINTER WEATHER EVENTS AND AUTHORIZING EMERGENCY FUNDS FOR THE DEPARTMENT OF HOMELAND SECURITY AND EMERGENCY MANAGEMENT"
+    },
     {
       "date_signed": "2026-09-30",
       "declaration_id": "NM-2026-077",
@@ -2014,16 +2074,6 @@
     "covered_by_extension": [],
     "declarations": [
       {
-        "begin": "2026-10-22",
-        "date": "2026-10-26",
-        "end": "",
-        "id": "EM-3660",
-        "incidentType": "Flood",
-        "number": 3660,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "EM"
-      },
-      {
         "begin": "2014-09-15",
         "date": "2014-10-29",
         "end": "2014-09-26",
@@ -2097,10 +2147,10 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-06",
+  "generated_on": "2026-11-08",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 52,
+    "action_count": 54,
     "federal_declaration_count": 128,
     "severity_rows": 619,
     "storm_match_rows": 1009
@@ -2113,13 +2163,13 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 7,
-    "federal_matched": 28,
+    "federal_matched": 30,
     "fmcsa_archive": 1,
     "noaa_matched": 41,
     "noaa_none": 5,
-    "noaa_pending": 6,
+    "noaa_pending": 8,
     "reviewed_not_weather": 3,
-    "state_archive": 44
+    "state_archive": 46
   },
   "state": "NM"
 }

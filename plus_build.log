@@ -1253,10 +1253,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 47 actions, 38 federal declarations; 2000-present: the Governor's executive order archive from 2023, plus 2000-2022 weather declarations added by hand: 2000-2018 executive orders from the Department of Legislative Services' yearly compilations, and others from official announcements, order text and dated news coverage; no state declaration was found for the June 2006 flooding (DR-1652) or Tropical Storm Isaias in 2020 (DR-4583)
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 72 relationship(s), 6 original weather declaration(s).
+Done. 762 action(s), 93 relationship(s), 6 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 100 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 8 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 79 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/massachusetts/hazard_overrides.csv
 MA-EO-366: no matching storm events found in the date window.
@@ -1767,11 +1767,13 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
 NJ: 83 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
-New Mexico: 1285 actions scraped, 1243 read via OCR (1285 from earlier runs), 0 still image-only with no usable text.
+New Mexico: 1298 actions scraped, 1256 read via OCR (1285 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 NM: nm_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 22 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-mexico/hazard_overrides.csv
+NM-2026-159: no matching storm events found in the date window.
+NM-2026-158: no matching storm events found in the date window.
 NM-2026-077: no matching storm events found in the date window.
 NM-2026-076: no matching storm events found in the date window.
 NM-2026-075: no matching storm events found in the date window.
@@ -1828,7 +1830,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-mexico/eo_storm_severity_summary.csv.tmp.
 
-NM: 52 actions, 128 federal declarations; 2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 7 weather declarations added by hand by Governors Richardson (2006-2010) and Martinez (2011-2013), from executive orders reprinted in the press and dated news coverage. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000), DR-1514 (April 2004 storms and flooding), DR-4047 (August 2011 flooding), DR-4079 (June 2012 flooding), DR-4197 (July 2014 storms and flooding) or DR-4199 (September 2014 storms and flooding); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
+NM: 54 actions, 128 federal declarations; 2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 7 weather declarations added by hand by Governors Richardson (2006-2010) and Martinez (2011-2013), from executive orders reprinted in the press and dated news coverage. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000), DR-1514 (April 2004 storms and flooding), DR-4047 (August 2011 flooding), DR-4079 (June 2012 flooding), DR-4197 (July 2014 storms and flooding) or DR-4199 (September 2014 storms and flooding); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)
 New York adapter: collecting executive orders...
   running: /opt/hostedtoolcache/Python/3.11.18/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-york/ny_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-york/declarations_for_join.csv
 New York scraper: collecting current executive orders...
@@ -2607,13 +2609,9 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 TN: 51 actions, 97 federal declarations; 2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet
-Texas: read 143 of 143 monthly archive pages (0 not read), 635 proclamation posts, 436 parsed (13 not read), 58 weather declarations.
+Texas: read 143 of 143 monthly archive pages (0 not read), 635 proclamation posts, 446 parsed (0 not read), 58 weather declarations.
 
-  WARNING: Texas proclamation post not read: 500 Server Error for url: https://gov.texas.gov/news/post/governor-greg-abbott-renews-state-of-disaster-following-violent-protests-december
-  WARNING: Texas proclamation post not read: 500 Server Error for url: https://gov.texas.gov/news/post/governor-abbott-extends-disaster-declaration-in-response-to-drought-conditions
-  WARNING: Texas proclamation post not read: 500 Server Error for url: https://gov.texas.gov/news/post/governor-abbott-extends-state-disaster-declaration-for-covid-19-in-december-2020
-
-TX: tx_emergency_actions_all.csv: kept 13 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+TX: tx_emergency_actions_all.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 42 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-SOE-2000-03-29: searching around the reviewed event date 2000-03-28 (signed 2000-03-29)
 TX-SOE-2001-06-09: searching around the reviewed event date 2001-06-05 (signed 2001-06-09)
@@ -3128,12 +3126,7 @@ DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did n
 DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 RETRY DE: still empty
 DE: 17 actions, 26 federal declarations; 2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage; 2 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 3047s, storm join 104s. Slowest: TX 773s+2s, NJ 447s+9s, NC 352s+1s, CT 233s+0s, LA 102s+1s, MA 89s+2s, VT 88s+0s, SC 78s+3s, WA 79s+1s, MI 72s+1s
+TIME total: collect 2197s, storm join 91s. Slowest: NJ 313s+7s, NC 270s+1s, TX 244s+2s, CT 228s+0s, SC 88s+2s, LA 89s+1s, WA 72s+1s, MI 70s+1s, VT 68s+0s, CO 60s+3s
 WARNING kept saved records the state source did not return: DE (2), KS (12)
 Row-loss check: no saved rows lost.
 Plus health: 48 green, 2 yellow, 0 red.
-Changes since the last run (2026-11-05 17:50 UTC):
-
-- **Delaware** went from green to yellow. Collecting from the state source produced no declarations on this run and on the retry. The page is showing records saved from earlier runs; the last successful collection was 2026-11-05 (0 days ago). This turns red at four weeks.
-
-Now 48 green, 2 yellow, 0 red.
