@@ -1,0 +1,11 @@
+# GitHub Pages (Jekyll) settings. Only the exclude list is set; everything
+# else keeps the Pages defaults.
+#
+# The storm match files are pipeline intermediates (about 212 MB across the
+# Plus states). No page or document links to them, and they push the
+# published site toward the 1 GB Pages limit, which makes deploys time out
+# while syncing files. They stay in the repository; they are only left off
+# the published site.
+exclude:
+  - "plus/*/eo_storm_matches.csv"
+  - "plus/*/eo_storm_matches_*.csv"
