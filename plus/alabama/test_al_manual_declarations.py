@@ -95,6 +95,7 @@ class NewsCoverageRowTests(unittest.TestCase):
                     "AL-SOE-2008-08-29": ("Bob Riley", "Gustav"),
                     "AL-SOE-2009-03-30": ("Bob Riley", "Houston County"),
                     "AL-SOE-2015-12-24": ("Robert Bentley", "flooding"),
+                    "AL-SOE-2012-01-23": ("Robert Bentley", "tornadoes"),
                     "AL-SOE-2000-10-13": ("Don Siegelman", "drought"),
                     "AL-SOE-2000-12-16": ("Don Siegelman", "Tuscaloosa"),
                     "AL-SOE-2002-09-26": ("Don Siegelman", "Isidore"),
@@ -124,7 +125,7 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "AL"))
         self.assertTrue(note.startswith("2000-present"))
-        for gap in ("DR-1317", "DR-1322", "DR-1362", "DR-1399", "DR-1842", "DR-4052", "DR-4632", "EM-3618"):
+        for gap in ("DR-1317", "DR-1322", "DR-1362", "DR-1399", "DR-1842", "DR-4632", "EM-3618"):
             self.assertEqual(note.count(gap), 1, gap)
 
 
