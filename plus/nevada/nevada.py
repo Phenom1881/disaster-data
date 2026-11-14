@@ -9,12 +9,12 @@ STATE = "NV"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: the current Governor's executive and emergency-order archives from "
-    'January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, '
-    "Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no "
-    'archive of earlier declarations was found, so the July 2004 Waterfall Fire, the '
-    'winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, '
-    'DR-1583, DR-1629) have no state declaration'
+    "2000-present: the current Governor's executive and emergency-order archives from January 2"
+    "023, plus Guinn's January 3, 2006 flood disaster declaration and 2008-2021 storm, flood an"
+    "d wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's cop"
+    "y of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Wa"
+    "terfall Fire and the winter 2004-2005 storms (DR-1540, EM-3202, EM-3204, DR-1583) have no "
+    "state declaration"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
