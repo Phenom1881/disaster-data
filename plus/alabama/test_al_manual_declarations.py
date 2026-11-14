@@ -1,7 +1,9 @@
-"""Alabama's November 2009 to April 2017 states of emergency, added by hand.
+"""Alabama's 2000-2017 states of emergency, added by hand.
 
-Each row is a proclamation in the Secretary of State's Record of
-Proclamations, which links a scan of each proclamation from 2007. Only the
+November 2009 to April 2017 rows are proclamations in the Secretary of
+State's Record of Proclamations, which links a scan of each proclamation
+from 2007. Earlier rows come from dated news coverage and, for October 2000,
+a Jefferson County order that cites the Governor's declaration. Only the
 original weather declaration is kept.
 """
 import csv
@@ -16,7 +18,7 @@ from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 REGISTER = "https://arc-sos.state.al.us/PPC/VOL{}P{}.PDF"
-GOVERNORS = [("2003-01-20", "Bob Riley"), ("2011-01-17", "Robert Bentley"), ("2017-04-10", "Kay Ivey")]
+GOVERNORS = [("1999-01-18", "Don Siegelman"), ("2003-01-20", "Bob Riley"), ("2011-01-17", "Robert Bentley"), ("2017-04-10", "Kay Ivey")]
 
 
 def csv_rows(name):
@@ -74,7 +76,7 @@ class RegisterRowTests(unittest.TestCase):
         for row in csv_rows("manual_declarations.csv"):
             override = overrides[row["declaration_id"]]
             self.assertLessEqual(set(override["hazard_category_override"].split(",")),
-                                 {"severe_storm", "flood", "winter", "tropical", "fire"})
+                                 {"severe_storm", "flood", "winter", "tropical", "fire", "drought"})
             if override["event_date"] and row["declaration_id"] != "AL-SOS-13-1158":
                 self.assertLessEqual(override["event_date"], row["date_signed"])
         self.assertEqual(overrides["AL-SOS-13-1262"]["event_date"], "2012-08-26")
@@ -92,10 +94,23 @@ class NewsCoverageRowTests(unittest.TestCase):
                     "AL-SOE-2005-07-08": ("Bob Riley", "Dennis"),
                     "AL-SOE-2008-08-29": ("Bob Riley", "Gustav"),
                     "AL-SOE-2009-03-30": ("Bob Riley", "Houston County"),
-                    "AL-SOE-2015-12-24": ("Robert Bentley", "flooding")}
+                    "AL-SOE-2015-12-24": ("Robert Bentley", "flooding"),
+                    "AL-SOE-2000-10-13": ("Don Siegelman", "drought"),
+                    "AL-SOE-2000-12-16": ("Don Siegelman", "Tuscaloosa"),
+                    "AL-SOE-2002-09-26": ("Don Siegelman", "Isidore"),
+                    "AL-SOE-2002-11-06": ("Don Siegelman", "Abbeville"),
+                    "AL-SOE-2003-05-08": ("Bob Riley", "Jefferson County")}
         for did, (governor, word) in expected.items():
             self.assertEqual(rows[did]["governor"], governor)
             self.assertIn(word, rows[did]["event_description"])
+
+    def test_2000_2003_rows_quote_their_report(self):
+        overrides = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        for row in csv_rows("manual_declarations.csv"):
+            if row["date_signed"] < "2004-01-01":
+                note = overrides[row["declaration_id"]]["review_note"]
+                self.assertRegex(note, r"'[^']*(Siegelman|Riley)[^']*(declared|called) (a|this)", row["declaration_id"])
+                self.assertEqual(overrides[row["declaration_id"]]["source_url"], row["archive_record_url"])
 
 
 class CoverageNoteTests(unittest.TestCase):
@@ -108,9 +123,9 @@ class CoverageNoteTests(unittest.TestCase):
             _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "AL"))
-        self.assertTrue(note.startswith("2004-present"))
-        for gap in ("DR-1842", "DR-4052"):
-            self.assertIn(gap, note)
+        self.assertTrue(note.startswith("2000-present"))
+        for gap in ("DR-1317", "DR-1322", "DR-1362", "DR-1399", "DR-1842", "DR-4052", "DR-4632", "EM-3618"):
+            self.assertEqual(note.count(gap), 1, gap)
 
 
 if __name__ == "__main__":
