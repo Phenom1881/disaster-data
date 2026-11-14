@@ -5,6 +5,14 @@ import sys
 from pathlib import Path
 
 STATE = "MA"
+
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "1970-present from the official State Library executive-order collection (orders before 1970 left off"
+    "), plus 2008-2015 storm states of emergency (Patrick and Baker) from news coverage and FMCSA's copy "
+    "of the 2015 declaration; other unnumbered declarations are not listed"
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "State Library of Massachusetts Executive Orders (https://archives.lib.state.ma.us/entities/aggregation/db64a731-fbc5-4ed7-ac61-5330b8b8e5ae)",
@@ -21,4 +29,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Massachusetts adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE

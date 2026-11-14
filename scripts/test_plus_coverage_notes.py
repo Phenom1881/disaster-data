@@ -28,10 +28,22 @@ MODULE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
-# These adapters read their scraper's output files before returning a note, so
-# collect() cannot run without a real collection. Their notes are built from
-# what was collected.
-NEEDS_REAL_COLLECTION = {"NJ", "NY", "NC", "PA", "VA"}
+# Some adapters check that their scraper wrote its output files before they
+# return a note. The stand-in run below writes an empty file for every
+# --*-out path it is given, so every adapter's collect() runs here. New
+# York was once left out of this check, and its refresh note said 2021 while
+# its manifest said 2000.
+NEEDS_REAL_COLLECTION = set()
+JOIN_HEADER = "declaration_id,governor,eo_number,event_description,date_signed,archive_record_url\n"
+
+
+def scraper_run(cmd, *args, **kwargs):
+    """A scraper run that succeeds, prints nothing, and writes its output files."""
+    for flag, value in zip(cmd, list(cmd)[1:]):
+        if isinstance(flag, str) and flag.startswith("--") and flag.endswith("-out"):
+            Path(value).parent.mkdir(parents=True, exist_ok=True)
+            Path(value).write_text(JOIN_HEADER, encoding="utf-8")
+    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
 
 
 def manifest_states():
@@ -46,10 +58,9 @@ def refresh_note(state):
     path = ROOT / "plus" / state["slug"] / state["adapter_file"]
     spec = importlib.util.spec_from_file_location(f"adapter_note_{state['abbreviation']}", path)
     adapter = importlib.util.module_from_spec(spec)
-    done = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
     quiet = io.StringIO()
     with contextlib.redirect_stdout(quiet), contextlib.redirect_stderr(quiet), \
-            tempfile.TemporaryDirectory() as tmp, mock.patch("subprocess.run", return_value=done):
+            tempfile.TemporaryDirectory() as tmp, mock.patch("subprocess.run", side_effect=scraper_run):
         spec.loader.exec_module(adapter)
         _, note = adapter.collect(workdir=tmp, scripts_dir=tmp)
     return note
@@ -74,6 +85,13 @@ class RefreshNoteTests(unittest.TestCase):
                 )
         # A new adapter that cannot run here has to be looked at, not skipped.
         self.assertEqual(could_not_run, NEEDS_REAL_COLLECTION)
+
+    def test_refresh_and_manifest_notes_match_exactly(self):
+        # The page shows the refresh note after every weekly run, so a shorter
+        # refresh note drops whatever the manifest note names (gaps, sources).
+        for state in manifest_states():
+            with self.subTest(state=state["abbreviation"]):
+                self.assertEqual(refresh_note(state), state.get("coverage_note", ""))
 
     def test_backfilled_states_start_where_their_data_does(self):
         # Arizona compares from 2000: its 2000-2001 emergencies are known by

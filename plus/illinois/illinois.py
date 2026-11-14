@@ -4,6 +4,14 @@ from pathlib import Path
 
 STATE = 'IL'
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, p"
+    "lus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; oth"
+    "er pre-2023 proclamations are not listed"
+)
+
 CAPABILITIES = {'structured_archive_coverage_start': '2003-06-11',
  'structured_archive_coverage_end': None,
  'pdf_text_available': True,
@@ -34,4 +42,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Illinois adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", '2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending.'
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE

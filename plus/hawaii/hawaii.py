@@ -4,6 +4,15 @@ from pathlib import Path
 
 STATE = 'HI'
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified j"
+    "oining coverage is narrower. Plus 27 declarations added by hand from official announcements, order t"
+    "ext and dated news coverage (manual_declarations.csv); compared from 2000, with no dated proclamatio"
+    "n found for the November 2000 Big Island floods (DR-1348)"
+)
+
 CAPABILITIES = {'structured_archive_coverage_start': '2022-11-28',
  'structured_archive_coverage_end': None,
  'pdf_text_available': True,
@@ -36,4 +45,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Hawaii adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", 'Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.'
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE

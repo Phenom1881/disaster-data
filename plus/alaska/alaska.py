@@ -4,6 +4,15 @@ from pathlib import Path
 
 STATE = 'AK'
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster d"
+    "eclarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State "
+    "Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been fou"
+    "nd for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638)"
+)
+
 CAPABILITIES = {'structured_archive_coverage_start': '2001-07-03',
  'structured_archive_coverage_end': None,
  'pdf_text_available': True,
@@ -43,4 +52,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Alaska adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", 'Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified.'
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE

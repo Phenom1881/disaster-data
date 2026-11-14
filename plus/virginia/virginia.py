@@ -47,6 +47,14 @@ from pathlib import Path
 
 STATE = "VA"
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "Virginia structured archive coverage begins in 2002, plus Gilmore's 2000-2001 weather emergency orde"
+    "rs added by hand from the Virginia Register of Regulations; the current administration is collected "
+    "separately"
+)
+
 CAPABILITIES = {
     "state": STATE,
     "structured_archive_available": True,
@@ -123,7 +131,7 @@ def collect(workdir=".", scripts_dir=None):
     hist_ok = _run(hist_cmd, cwd=workdir)
 
     if hist_ok and merged_join.exists():
-        coverage = "2000-present (2000-2001 Gilmore orders added by hand)" if current_ok else "2000-2026 (current administration missing)"
+        coverage = COVERAGE_NOTE if current_ok else "2000-2026 (current administration missing)"
         result_path = merged_join
     elif current_ok and current_join.exists():
         coverage = "current administration only (2026-present); historical scrape failed"
