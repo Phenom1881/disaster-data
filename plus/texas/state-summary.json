@@ -4,8 +4,8 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present: current-Governor proclamation archive from 2015; 2000-2014 weather disaster proclamations added by hand from archived copies of the Governor's proclamation pages and dated news coverage",
-  "coverage_base": "2000-present: current-Governor proclamation archive from 2015; 2000-2014 weather disaster proclamations added by hand from archived copies of the Governor's proclamation pages and dated news coverage, kept in manual_declarations.csv",
+  "coverage": "2000-present: current-Governor proclamation archive from January 2015, plus 36 weather declarations added by hand: 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2015 and 2025 declarations from dated news and TDEM coverage. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1425 (2002 floods), DR-1479 (Claudette, 2003), DR-1658 (El Paso flooding, 2006), DR-1709 (June 2007 floods), DR-1730 and EM-3277 (Erin and Dean, 2007); DR-1999 and DR-4029 (2011 wildfires) fell under the December 2010 wildfire proclamation, which was renewed month by month and is not counted as a new declaration; 3 saved records kept that this refresh's check of the state source did not return",
+  "coverage_base": "2000-present: current-Governor proclamation archive from January 2015, plus 36 weather declarations added by hand (manual_declarations.csv): 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2015 and 2025 declarations from dated news and TDEM coverage. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1425 (2002 floods), DR-1479 (Claudette, 2003), DR-1658 (El Paso flooding, 2006), DR-1709 (June 2007 floods), DR-1730 and EM-3277 (Erin and Dean, 2007); DR-1999 and DR-4029 (2011 wildfires) fell under the December 2010 wildfire proclamation, which was renewed month by month and is not counted as a new declaration.",
   "federal_without_state": {
     "compared": 48,
     "count": 9,
@@ -24,8 +24,8 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-08",
-  "kept_saved_records": 0,
+  "generated_on": "2026-11-14",
+  "kept_saved_records": 3,
   "kept_saved_values": 0,
   "metrics": {
     "action_count": 94,
@@ -36,9 +36,9 @@
   "name": "Texas",
   "retried": false,
   "slug": "texas",
-  "source_records_returned": 58,
+  "source_records_returned": 55,
   "source_records_saved_before": 58,
-  "source_status": "ok",
+  "source_status": "partial",
   "sources": {
     "added_by_hand": 37,
     "federal_matched": 54,
@@ -52,7 +52,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 244.5,
-    "storm_join_seconds": 1.6
+    "collect_seconds": 1409.5,
+    "storm_join_seconds": 1.1
   }
 }

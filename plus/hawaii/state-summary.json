@@ -4,27 +4,26 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-  "coverage_base": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower.",
+  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage_base": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv); compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348)",
   "federal_without_state": {
     "compared": 23,
-    "count": 2,
+    "count": 1,
     "covered_by_extension": [],
     "ids": [
-      "DR-4549",
       "DR-1348"
     ],
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-08",
+  "generated_on": "2026-11-14",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
     "action_count": 38,
     "federal_declaration_count": 77,
-    "severity_rows": 142,
-    "storm_match_rows": 339
+    "severity_rows": 147,
+    "storm_match_rows": 348
   },
   "name": "Hawaii",
   "retried": false,
@@ -34,10 +33,10 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 27,
-    "federal_matched": 24,
+    "federal_matched": 25,
     "fmcsa_archive": 3,
-    "noaa_matched": 32,
-    "noaa_none": 3,
+    "noaa_matched": 33,
+    "noaa_none": 2,
     "noaa_pending": 3,
     "reviewed_not_weather": 0,
     "state_archive": 8
@@ -45,7 +44,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 27.8,
-    "storm_join_seconds": 0.7
+    "collect_seconds": 17.4,
+    "storm_join_seconds": 0.5
   }
 }

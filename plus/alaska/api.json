@@ -507,7 +507,7 @@
       "title": "DCI 02-200, 2002 Interior Floods: state disaster for flooding in interior and western communities."
     }
   ],
-  "coverage": "Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-08-18",
@@ -577,24 +577,12 @@
       "federal_status": "matched",
       "noaa_areas": [
         "BALDWIN PENINSULA",
-        "CENTRAL BROOKS RANGE",
-        "EASTERN ALASKA RANGE NORTH OF TRIMS CAMP",
-        "EASTERN NORTON SOUND AND NULATO HILLS",
         "INLAND KUSKOKWIM DELTA",
         "KIVALINA AND RED DOG DOCK",
         "KUSKOKWIM DELTA COAST AND NUNIVAK ISLAND",
-        "LOWER KOYUKUK VALLEY",
-        "LOWER YUKON AND INNOKO VALLEYS",
-        "LOWER YUKON RIVER",
-        "MIDDLE YUKON VALLEY",
-        "NOATAK VALLEY",
-        "NORTHERN DENALI BOROUGH",
-        "PRIBILOF ISLANDS",
-        "SOUTH SLOPES OF THE WESTERN BROOKS RANGE",
-        "UPPER KOBUK VALLEYS",
         "YUKON DELTA COAST"
       ],
-      "noaa_match_count": 28,
+      "noaa_match_count": 6,
       "noaa_status": "matched",
       "title": "2025 October West Coast Storm: state disaster for the remnants of a typhoon that struck the west coast on October 8, 2025."
     },
@@ -706,11 +694,9 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [
-        "KETCHIKAN GATEWAY BOROUGH"
-      ],
-      "noaa_match_count": 2,
-      "noaa_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
       "title": "Ketchikan landslide: state disaster, declared verbally, for the landslide of August 25, 2024."
     },
     {
@@ -754,10 +740,24 @@
       },
       "federal_status": "matched",
       "noaa_areas": [
-        "CRAIG COASTAL",
-        "WRANGELL CHANNELS"
+        "ADMIRALTY ISLAND",
+        "ANCHORAGE",
+        "ANNETTE ISLAND",
+        "CAPE FAIRWEATHER TO LISIANSKI STRAIT",
+        "CITY AND BOROUGH OF JUNEAU",
+        "COPPER RIVER BASIN",
+        "EASTERN CHICHAGOF ISLAND",
+        "GLACIER BAY",
+        "HAINES BOROUGH AND KLUKWAN",
+        "KENAI PENINSULA",
+        "KETCHIKAN GATEWAY BOROUGH",
+        "KUSKOKWIM DELTA",
+        "MATANUSKA VALLEY",
+        "NORTHEAST PRINCE WILLIAM SOUND",
+        "SUSITNA VALLEY",
+        "WESTERN KUPREANOF ISLAND AND KUIU ISLAND"
       ],
-      "noaa_match_count": 2,
+      "noaa_match_count": 19,
       "noaa_status": "matched",
       "title": "Wrangell landslide: state disaster for the landslide in Wrangell on November 20, 2023."
     },
@@ -779,14 +779,12 @@
         "COPPER RIVER BASIN",
         "LOWER KUSKOKWIM VALLEY",
         "NRN & INTR. SEWARD PENINSULA",
-        "ST LAWRENCE IS. BERING STRAIT",
         "UPPER KOBUK AND NOATAK VLYS",
         "UPR TANANA VLY FORTYMILE",
         "WRN TANANA VLY WRN YUKON VLY",
-        "YUKON DELTA",
         "YUKON FLATS NEARBY UPLANDS"
       ],
-      "noaa_match_count": 15,
+      "noaa_match_count": 12,
       "noaa_status": "matched",
       "title": "2023 Spring Floods: state disaster for ice jam and snowmelt flooding on the Yukon and Kuskokwim rivers and in Glennallen."
     },
@@ -866,20 +864,22 @@
       "date_signed": "2022-05-13",
       "declaration_id": "AK-PROC-2022-05-13",
       "federal_declaration": {
-        "begin": "2022-05-08",
-        "date": "2022-08-26",
-        "end": "2022-05-11",
-        "id": "DR-4667",
-        "incidentType": "Flood",
-        "number": 4667,
-        "title": "FLOODING",
+        "begin": "2022-05-07",
+        "date": "2022-07-26",
+        "end": "2022-05-07",
+        "id": "DR-4661",
+        "incidentType": "Mud/Landslide",
+        "number": 4661,
+        "title": "LANDSLIDE",
         "type": "DR"
       },
       "federal_status": "matched",
       "noaa_areas": [
-        "UPPER KUSKOKWIM VALLEY"
+        "UPPER KUSKOKWIM VALLEY",
+        "WRN TANANA VLY WRN YUKON VLY",
+        "YUKON FLATS NEARBY UPLANDS"
       ],
-      "noaa_match_count": 1,
+      "noaa_match_count": 3,
       "noaa_status": "matched",
       "title": "Lowell Point landslide: state disaster for the May 7, 2022 landslide across Lowell Point Road in Seward."
     },
@@ -994,16 +994,6 @@
     {
       "date_signed": "2018-01-19",
       "declaration_id": "AK-PROC-2018-01-19",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
-      "title": "DCI AK-17-262, 2017 December Kenai Peninsula Borough Storm: state disaster for a storm on December 4, 2017."
-    },
-    {
-      "date_signed": "2017-11-14",
-      "declaration_id": "AK-PROC-2017-11-14",
       "federal_declaration": {
         "begin": "2017-12-04",
         "date": "2018-06-08",
@@ -1015,17 +1005,29 @@
         "type": "DR"
       },
       "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
+      "title": "DCI AK-17-262, 2017 December Kenai Peninsula Borough Storm: state disaster for a storm on December 4, 2017."
+    },
+    {
+      "date_signed": "2017-11-14",
+      "declaration_id": "AK-PROC-2017-11-14",
+      "federal_declaration": {
+        "begin": "2017-09-28",
+        "date": "2017-12-20",
+        "end": "2017-09-30",
+        "id": "DR-4351",
+        "incidentType": "Severe Storm",
+        "number": 4351,
+        "title": "SEVERE STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
-        "CAPE FAIRWEATHER TO CAPE SUCKLING COASTAL AREA",
-        "EASTERN CHICHAGOF ISLAND",
-        "HAINES BOROUGH AND LYNN CANAL",
-        "JUNEAU BOROUGH AND NORTHERN ADMIRALTY ISLAND",
-        "SALISBURY SOUND TO CAPE FAIRWEATHER COASTAL AREA",
-        "SRN SEWARD PENINSULA COAST",
-        "ST LAWRENCE IS. BERING STRAIT",
-        "WESTERN ARCTIC COAST"
+        "TAIYA INLET"
       ],
-      "noaa_match_count": 10,
+      "noaa_match_count": 1,
       "noaa_status": "matched",
       "title": "DCI AK-17-261, 2017 September North Slope Borough Storm: state disaster for a storm and storm surge beginning September 28, 2017."
     },
@@ -1042,27 +1044,41 @@
     {
       "date_signed": "2016-01-29",
       "declaration_id": "AK-PROC-2016-01-29",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [
-        "DIXON ENTRANCE TO CAPE DECISION COASTAL AREA",
-        "EASTERN BEAUFORT SEA COAST",
-        "JUNEAU BOROUGH AND NORTHERN ADMIRALTY ISLAND",
-        "ST LAWRENCE IS. BERING STRAIT"
-      ],
-      "noaa_match_count": 5,
-      "noaa_status": "matched",
+      "federal_declaration": {
+        "begin": "2015-12-12",
+        "date": "2016-02-17",
+        "end": "2015-12-15",
+        "id": "DR-4257",
+        "incidentType": "Severe Storm",
+        "number": 4257,
+        "title": "SEVERE STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
       "title": "DCI AK-15-256, 2015 December Bering Sea Storm: state disaster for a storm beginning December 12, 2015."
     },
     {
       "date_signed": "2015-10-14",
       "declaration_id": "AK-PROC-2015-10-14",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2015-08-27",
+        "date": "2015-10-30",
+        "end": "2015-08-27",
+        "id": "DR-4244",
+        "incidentType": "Coastal Storm",
+        "number": 4244,
+        "title": "SEVERE STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
-        "DIXON ENTRANCE TO CAPE DECISION COASTAL AREA"
+        "DENALI",
+        "NORTHERN ARCTIC COAST"
       ],
-      "noaa_match_count": 1,
+      "noaa_match_count": 2,
       "noaa_status": "matched",
       "title": "DCI AK-15-255, 2015 August North Slope Borough Sea Storm: state disaster for an arctic sea storm beginning the week of August 27, 2015."
     },
@@ -1107,19 +1123,21 @@
       "date_signed": "2013-11-18",
       "declaration_id": "AK-PROC-2013-11-18",
       "federal_declaration": {
-        "begin": "2013-11-05",
-        "date": "2014-01-23",
-        "end": "2013-11-14",
-        "id": "DR-4162",
-        "incidentType": "Severe Storm",
-        "number": 4162,
-        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, AND FLOODING",
+        "begin": "2013-10-27",
+        "date": "2014-01-16",
+        "end": "2013-10-28",
+        "id": "DR-4161",
+        "incidentType": "Flood",
+        "number": 4161,
+        "title": "FLOODING",
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "noaa_areas": [
+        "WRN P.W. SND & KENAI MTNS"
+      ],
+      "noaa_match_count": 1,
+      "noaa_status": "matched",
       "title": "DCI 13-F-243, 2013 October Kenai Peninsula Borough Flood: state disaster for heavy rain and flooding beginning October 27, 2013."
     },
     {
@@ -1193,44 +1211,25 @@
       "date_signed": "2011-12-06",
       "declaration_id": "AK-PROC-2011-12-06",
       "federal_declaration": {
-        "begin": "2011-11-15",
-        "date": "2012-02-02",
-        "end": "2011-11-17",
-        "id": "DR-4054",
+        "begin": "2011-11-08",
+        "date": "2011-12-22",
+        "end": "2011-11-13",
+        "id": "DR-4050",
         "incidentType": "Severe Storm",
-        "number": 4054,
-        "title": "SEVERE STORM",
+        "number": 4050,
+        "title": "SEVERE WINTER STORMS AND FLOODING",
         "type": "DR"
       },
       "federal_status": "matched",
       "noaa_areas": [
-        "ALASKA PENINSULA",
-        "ANCHORAGE MUNI TO BIRD CREEK",
-        "BALDWIN PEN. & SELAWIK VALLEY",
-        "CENTRAL BEAUFORT SEA COAST",
         "CHUKCHI SEA COAST",
-        "DENALI",
+        "ERN NORTON SOUND NULATO HILLS",
         "KUSKOKWIM DELTA",
-        "LOWER KOBUK & NOATAK VALLEYS",
-        "LOWER KOYUKUK MIDDLE YKN VLYS",
-        "LOWER YUKON VALLEY",
-        "MIDDLE TANANA VALLEY",
-        "N. BROOKS RNG COLVILLE RVR W",
-        "N. BROOKS RNG E OF COLVILLE R",
-        "NORTHERN ARCTIC COAST",
-        "NRN & INTR. SEWARD PENINSULA",
-        "PRIBILOF ISLANDS",
-        "S. SLOPES OF ERN BROOKS RANGE",
         "SRN SEWARD PENINSULA COAST",
         "ST LAWRENCE IS. BERING STRAIT",
-        "UPPER KOBUK AND NOATAK VLYS",
-        "UPPER KOYUKUK VALLEY",
-        "UPPER KUSKOKWIM VALLEY",
-        "UPR TANANA VLY FORTYMILE",
-        "WESTERN ARCTIC COAST",
         "YUKON DELTA"
       ],
-      "noaa_match_count": 35,
+      "noaa_match_count": 8,
       "noaa_status": "matched",
       "title": "State disaster for the November 2011 Bering Sea storm with high winds, storm surge, coastal flooding and ice damage along the western coast."
     },
@@ -1238,38 +1237,41 @@
       "date_signed": "2011-05-17",
       "declaration_id": "AK-PROC-2011-05-17",
       "federal_declaration": {
-        "begin": "2011-05-20",
-        "date": "2011-05-22",
-        "end": "2011-06-02",
-        "id": "FM-2909",
-        "incidentType": "Fire",
-        "number": 2909,
-        "title": "MOOSE MOUNTAIN FIRE",
-        "type": "FM"
+        "begin": "2011-05-08",
+        "date": "2011-06-10",
+        "end": "2011-05-13",
+        "id": "DR-1992",
+        "incidentType": "Flood",
+        "number": 1992,
+        "title": "ICE JAM AND FLOODING",
+        "type": "DR"
       },
       "federal_status": "matched",
       "noaa_areas": [
-        "EASTERN CHICHAGOF ISLAND",
-        "GLACIER BAY",
-        "NRN & INTR. SEWARD PENINSULA",
-        "UPPER KOBUK AND NOATAK VLYS"
+        "LOWER KUSKOKWIM VALLEY"
       ],
-      "noaa_match_count": 8,
+      "noaa_match_count": 1,
       "noaa_status": "matched",
       "title": "DCI 11-233, 2011 Spring Flooding: state disaster for ice jam flooding in Red Devil and Crooked Creek beginning May 8, 2011."
     },
     {
       "date_signed": "2009-11-06",
       "declaration_id": "AK-PROC-2009-11-06",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2009-10-06",
+        "date": "2009-12-18",
+        "end": "2009-10-11",
+        "id": "DR-1865",
+        "incidentType": "Severe Storm",
+        "number": 1865,
+        "title": "SEVERE STORMS, FLOODING, MUDSLIDES, AND ROCKSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
-        "CAPE DECISION TO SALISBURY SOUND COASTAL AREA",
-        "CAPE FAIRWEATHER TO CAPE SUCKLING COASTAL AREA",
-        "DIXON ENTRANCE TO CAPE DECISION COASTAL AREA",
-        "SALISBURY SOUND TO CAPE FAIRWEATHER COASTAL AREA"
+        "SRN SEWARD PENINSULA COAST"
       ],
-      "noaa_match_count": 4,
+      "noaa_match_count": 1,
       "noaa_status": "matched",
       "title": "State disaster for Kodiak Island after October heavy rainfall caused flooding, landslides and erosion."
     },
@@ -1342,9 +1344,15 @@
       },
       "federal_status": "matched",
       "noaa_areas": [
-        "KUSKOKWIM DELTA"
+        "BRISTOL BAY",
+        "COPPER RIVER BASIN",
+        "KUSKOKWIM DELTA",
+        "NERN P.W. SND",
+        "SERN P.W. SND",
+        "SUSITNA VALLEY",
+        "WRN P.W. SND & KENAI MTNS"
       ],
-      "noaa_match_count": 1,
+      "noaa_match_count": 7,
       "noaa_status": "matched",
       "title": "DCI 07-221, 2006 October Southern Alaska Storm: state disaster for storms and flooding beginning October 8, 2006."
     },
@@ -1362,9 +1370,15 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "noaa_areas": [
+        "DENALI",
+        "MATANUSKA VALLEY",
+        "NE. SLOPES OF THE ERN AK RNG",
+        "SERN P.W. SND",
+        "SUSITNA VALLEY"
+      ],
+      "noaa_match_count": 5,
+      "noaa_status": "matched",
       "title": "DCI 07-220, 2006 August Southcentral Flooding: state disaster for storms and flooding beginning August 18, 2006."
     },
     {
@@ -1390,22 +1404,19 @@
       "date_signed": "2006-06-27",
       "declaration_id": "AK-PROC-2006-06-27",
       "federal_declaration": {
-        "begin": "2006-06-07",
-        "date": "2006-06-08",
-        "end": "2006-06-25",
-        "id": "FM-2641",
-        "incidentType": "Fire",
-        "number": 2641,
-        "title": "PARKS HIGHWAY (TAMARACK) FIRE",
-        "type": "FM"
+        "begin": "2006-05-13",
+        "date": "2006-08-04",
+        "end": "2006-05-30",
+        "id": "DR-1657",
+        "incidentType": "Flood",
+        "number": 1657,
+        "title": "SNOW MELT AND ICE JAM FLOODING",
+        "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [
-        "DELTANA AND TANANA",
-        "MIDDLE TANANA VALLEY"
-      ],
-      "noaa_match_count": 2,
-      "noaa_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
       "title": "DCI 06-218, 2006 Spring Floods: state disaster for snowmelt and ice jam flooding beginning May 5, 2006."
     },
     {
@@ -1431,11 +1442,22 @@
     {
       "date_signed": "2005-10-24",
       "declaration_id": "AK-PROC-2005-10-24",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "federal_declaration": {
+        "begin": "2005-09-22",
+        "date": "2005-12-09",
+        "end": "2005-09-26",
+        "id": "DR-1618",
+        "incidentType": "Severe Storm",
+        "number": 1618,
+        "title": "SEVERE FALL STORM, TIDAL SURGES, AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "KUSKOKWIM DELTA"
+      ],
+      "noaa_match_count": 1,
+      "noaa_status": "matched",
       "title": "DCI 06-215, 2005 West Coast Storm: state disaster for a fall sea storm with tidal surges and flooding beginning September 22, 2005."
     },
     {
@@ -1453,19 +1475,18 @@
       },
       "federal_status": "matched",
       "noaa_areas": [
-        "EASTERN CHICHAGOF ISLAND",
-        "GLACIER BAY",
-        "HAINES BOROUGH AND LYNN CANAL",
-        "INNER CHANNELS FROM KUPREANOF ISLAND TO ETOLIN ISLAND",
-        "JUNEAU BOROUGH AND NORTHERN ADMIRALTY ISLAND",
-        "MATANUSKA VALLEY",
-        "MISTY FJORDS",
-        "NERN P.W. SND",
-        "SALISBURY SOUND TO CAPE FAIRWEATHER COASTAL AREA",
+        "CENTRAL BEAUFORT SEA COAST",
+        "DENALI",
+        "EASTERN BEAUFORT SEA COAST",
+        "NE. SLOPES OF THE ERN AK RNG",
+        "S. SLOPES OF ERN BROOKS RANGE",
         "SERN P.W. SND",
-        "TAIYA INLET AND KLONDIKE HIGHWAY"
+        "ST LAWRENCE IS. BERING STRAIT",
+        "UPR TANANA VLY FORTYMILE",
+        "WRN TANANA VLY WRN YUKON VLY",
+        "YUKON FLATS NEARBY UPLANDS"
       ],
-      "noaa_match_count": 12,
+      "noaa_match_count": 18,
       "noaa_status": "matched",
       "title": "DCI 05-212, 2005 Kaktovik Winter Storm: state disaster for a week-long severe winter storm with extremely low temperatures beginning January 7, 2005."
     },
@@ -1578,88 +1599,18 @@
         "number": 4391,
         "title": "FLOODING",
         "type": "DR"
-      },
-      {
-        "begin": "2017-09-28",
-        "date": "2017-12-20",
-        "end": "2017-09-30",
-        "id": "DR-4351",
-        "incidentType": "Severe Storm",
-        "number": 4351,
-        "title": "SEVERE STORM",
-        "type": "DR"
-      },
-      {
-        "begin": "2015-12-12",
-        "date": "2016-02-17",
-        "end": "2015-12-15",
-        "id": "DR-4257",
-        "incidentType": "Severe Storm",
-        "number": 4257,
-        "title": "SEVERE STORM",
-        "type": "DR"
-      },
-      {
-        "begin": "2015-08-27",
-        "date": "2015-10-30",
-        "end": "2015-08-27",
-        "id": "DR-4244",
-        "incidentType": "Coastal Storm",
-        "number": 4244,
-        "title": "SEVERE STORM",
-        "type": "DR"
-      },
-      {
-        "begin": "2011-11-08",
-        "date": "2011-12-22",
-        "end": "2011-11-13",
-        "id": "DR-4050",
-        "incidentType": "Severe Storm",
-        "number": 4050,
-        "title": "SEVERE WINTER STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2009-10-06",
-        "date": "2009-12-18",
-        "end": "2009-10-11",
-        "id": "DR-1865",
-        "incidentType": "Severe Storm",
-        "number": 1865,
-        "title": "SEVERE STORMS, FLOODING, MUDSLIDES, AND ROCKSLIDES",
-        "type": "DR"
-      },
-      {
-        "begin": "2006-05-13",
-        "date": "2006-08-04",
-        "end": "2006-05-30",
-        "id": "DR-1657",
-        "incidentType": "Flood",
-        "number": 1657,
-        "title": "SNOW MELT AND ICE JAM FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2005-09-22",
-        "date": "2005-12-09",
-        "end": "2005-09-26",
-        "id": "DR-1618",
-        "incidentType": "Severe Storm",
-        "number": 1618,
-        "title": "SEVERE FALL STORM, TIDAL SURGES, AND FLOODING",
-        "type": "DR"
       }
     ],
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-08",
+  "generated_on": "2026-11-14",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 46,
     "federal_declaration_count": 95,
-    "severity_rows": 231,
-    "storm_match_rows": 314
+    "severity_rows": 206,
+    "storm_match_rows": 273
   },
   "name": "Alaska",
   "noaa_data_through": "2026-07-30",
@@ -1669,7 +1620,7 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 37,
-    "federal_matched": 36,
+    "federal_matched": 41,
     "fmcsa_archive": 3,
     "noaa_matched": 32,
     "noaa_none": 13,

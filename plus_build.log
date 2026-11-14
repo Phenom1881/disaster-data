@@ -3,7 +3,7 @@ Selected states: AL, AK, AZ, AR, CA, CO, CT, DE, FL, GA, HI, ID, IL, IN, IA, KS,
 FMCSA state declarations: 0 entries read from 0 page(s), 0 declaration page(s) read, 570 saved in all; pages not read: 2017 (HTTPError 403), 2018 (HTTPError 403), 2019 (HTTPError 403), 2020 (HTTPError 403), 2021 (HTTPError 403), 2022 (HTTPError 403), 2023 (HTTPError 403), 2024 (HTTPError 403), 2025 (HTTPError 403), 2026 (HTTPError 403), 2026 (HTTPError 403)
 Alabama: read 105 state of emergency posts and 48 executive orders posts
 
-Applied 32 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alabama/hazard_overrides.csv
+Applied 37 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alabama/hazard_overrides.csv
 AL-SOE-2026-10-07-state-of-emergency-tropical-storm-isaias: no matching storm events found in the date window.
 AL-SOE-2020-10-06-state-of-emergency-hurricane-delta: no matching storm events found in the date window.
 AL-SOS-13-1146: searching around the reviewed event date 2009-12-12 (signed 2009-12-16)
@@ -24,8 +24,10 @@ AL-SOS-14-1432: searching around the reviewed event date 2015-07-14 (signed 2015
 AL-SOS-14-1700: searching around the reviewed event date 2016-11-28 (signed 2016-11-30)
 AL-SOS-14-1702: searching around the reviewed event date 2017-01-06 (signed 2017-01-09)
 AL-SOE-2007-03-02: searching around the reviewed event date 2007-03-01 (signed 2007-03-02)
-Wrote 3483 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_matches.csv.tmp
-Wrote severity summary (1702 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp
+AL-SOE-2002-11-06: searching around the reviewed event date 2002-11-05 (signed 2002-11-06)
+AL-SOE-2003-05-08: searching around the reviewed event date 2003-05-07 (signed 2003-05-08)
+Wrote 3739 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_matches.csv.tmp
+Wrote severity summary (1809 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   AL-SOS-13-1110 TUSCALOOSA [county/county-equivalent]: deaths=44, injuries=800, damage=$1,514,433,000 (Thunderstorm Wind, Tornado)
@@ -35,6 +37,7 @@ Areas with reported deaths, injuries, or damage:
   AL-SOS-13-1110 JEFFERSON [county/county-equivalent]: deaths=20, injuries=720, damage=$723,583,000 (Thunderstorm Wind, Tornado)
   AL-SOS-13-1110 ST. CLAIR [county/county-equivalent]: deaths=15, injuries=35, damage=$200,880,000 (Thunderstorm Wind, Tornado)
   AL-SOS-13-1110 LAWRENCE [county/county-equivalent]: deaths=14, injuries=0, damage=$40,000,000 (Hail, Thunderstorm Wind, Tornado)
+  AL-SOE-2000-12-16 TUSCALOOSA [county/county-equivalent]: deaths=11, injuries=144, damage=$12,502,000 (Thunderstorm Wind, Tornado)
   AL-SOS-13-1110 WALKER [county/county-equivalent]: deaths=9, injuries=60, damage=$128,430,000 (Hail, Thunderstorm Wind, Tornado)
   AL-SOE-2007-03-02 COFFEE [county/county-equivalent]: deaths=9, injuries=50, damage=$250,000,000 (Tornado)
   AL-SOS-13-1110 CALHOUN [county/county-equivalent]: deaths=9, injuries=26, damage=$126,011,000 (Thunderstorm Wind, Tornado)
@@ -52,44 +55,61 @@ Areas with reported deaths, injuries, or damage:
   AL-SOS-14-1700 JACKSON [county/county-equivalent]: deaths=3, injuries=0, damage=$0 (Hail, Tornado)
   AL-SOS-14-1368 LIMESTONE [county/county-equivalent]: deaths=2, injuries=30, damage=$0 (Hail, Thunderstorm Wind, Tornado)
   AL-SOE-2025-03-14-state-of-emergency-severe-weather DALLAS [county/county-equivalent]: deaths=2, injuries=2, damage=$0 (Thunderstorm Wind, Tornado)
-  AL-SOS-13-1110 CULLMAN [county/county-equivalent]: deaths=2, injuries=0, damage=$20,000,000 (Hail, Tornado)
-  Showing the 25 highest-consequence areas; all 630 are retained in /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 709 are retained in /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alabama/eo_storm_severity_summary.csv.tmp.
 
-AL: 62 actions, 103 federal declarations; 2004-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2004-2009 ones from dated news coverage (Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav, the March 2009 floods); no state declaration has been found for the May 2009 floods (DR-1842) or the January 2012 tornadoes (DR-4052), and 2000-2003 is not compared yet
+AL: 67 actions, 103 federal declarations; 2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the January 2012 tornadoes (DR-4052), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)
 {"actions": 556, "declarations": 6, "relationships": 6, "overrides": 3, "review": 146}
 
-Applied 3 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alaska/hazard_overrides.csv
+Applied 28 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/alaska/hazard_overrides.csv
 AK-PROC-50F8F77DB45624B9: no matching storm events found in the date window.
 AK-PROC-A6A9E065F2B06307: no matching storm events found in the date window.
 AK-PROC-A6D583FF9DAEC3EC: no matching storm events found in the date window.
+AK-PROC-2009-11-06: searching around the reviewed event date 2009-10-09 (signed 2009-11-06)
+AK-PROC-2011-12-06: searching around the reviewed event date 2011-11-08 (signed 2011-12-06)
 AK-PROC-2016-08-22: no matching storm events found in the date window.
-AK-PROC-2005-10-24: no matching storm events found in the date window.
-AK-PROC-2006-08-29: no matching storm events found in the date window.
-AK-PROC-2013-11-18: no matching storm events found in the date window.
+AK-PROC-2005-01-15: searching around the reviewed event date 2005-01-07 (signed 2005-01-15)
+AK-PROC-2005-10-24: searching around the reviewed event date 2005-09-22 (signed 2005-10-24)
+AK-PROC-2006-06-27: searching around the reviewed event date 2006-05-05 (signed 2006-06-27)
+AK-PROC-2006-06-27: no matching storm events found in the date window.
+AK-PROC-2006-08-06: searching around the reviewed event date 2006-08-03 (signed 2006-08-06)
+AK-PROC-2006-08-06: no matching storm events found in the date window.
+AK-PROC-2006-08-29: searching around the reviewed event date 2006-08-18 (signed 2006-08-29)
+AK-PROC-2006-10-14: searching around the reviewed event date 2006-10-08 (signed 2006-10-14)
+AK-PROC-2011-05-17: searching around the reviewed event date 2011-05-08 (signed 2011-05-17)
+AK-PROC-2013-11-18: searching around the reviewed event date 2013-10-27 (signed 2013-11-18)
+AK-PROC-2015-10-14: searching around the reviewed event date 2015-08-27 (signed 2015-10-14)
+AK-PROC-2016-01-29: searching around the reviewed event date 2015-12-12 (signed 2016-01-29)
+AK-PROC-2016-01-29: no matching storm events found in the date window.
+AK-PROC-2017-11-14: searching around the reviewed event date 2017-09-28 (signed 2017-11-14)
+AK-PROC-2018-01-19: searching around the reviewed event date 2017-12-04 (signed 2018-01-19)
 AK-PROC-2018-01-19: no matching storm events found in the date window.
+AK-PROC-2022-05-07: searching around the reviewed event date 2022-05-07 (signed 2022-05-07)
+AK-PROC-2022-05-13: searching around the reviewed event date 2022-05-07 (signed 2022-05-13)
+AK-PROC-2023-11-21: searching around the reviewed event date 2023-11-20 (signed 2023-11-21)
+AK-PROC-2024-08-25: no matching storm events found in the date window.
+AK-PROC-2025-10-09: searching around the reviewed event date 2025-10-08 (signed 2025-10-09)
 AK-PROC-2025-12-10: no matching storm events found in the date window.
 AK-PROC-2002-05-29: no matching storm events found in the date window.
 AK-PROC-2002-11-06: no matching storm events found in the date window.
 AK-FMCSA-37AAC2E9134E: no matching storm events found in the date window.
 AK-FMCSA-3C431CB2B933: no matching storm events found in the date window.
-
-1 declaration(s) had no recognized hazard keyword in their description and were skipped (no NCEI search attempted): AK-PROC-2006-08-06
-Re-run with --unmatched-hazard-policy all if these should instead be matched against every event type - but check their real titles first; that setting is what previously let unrelated NCEI events flood the severity summary for generically-titled declarations.
-Wrote 314 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_matches.csv.tmp
-Wrote severity summary (231 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp
+Wrote 273 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_matches.csv.tmp
+Wrote severity summary (206 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
-  AK-PROC-2023-11-21 WRANGELL CHANNELS [county/county-equivalent]: deaths=6, injuries=1, damage=$1,600,000 (Debris Flow)
   AK-PROC-2020-12-04 HAINES BOROUGH [county/county-equivalent]: deaths=2, injuries=0, damage=$20,300,000 (Debris Flow)
   AK-PROC-2008-08-04 EASTERN BEAUFORT SEA COAST [NWS forecast zone]: deaths=2, injuries=0, damage=$0 (Coastal Flood)
-  AK-PROC-2024-08-25 KETCHIKAN GATEWAY BOROUGH [county/county-equivalent]: deaths=1, injuries=3, damage=$4,010,000 (Debris Flow)
-  AK-PROC-2025-10-09 KUSKOKWIM DELTA COAST AND NUNIVAK ISLAND [NWS forecast zone]: deaths=1, injuries=1, damage=$0 (Coastal Flood, High Wind)
   AK-PROC-2012-09-21 SUSITNA VALLEY [county/county-equivalent]: deaths=1, injuries=0, damage=$10,370,000 (Flood)
-  AK-PROC-2005-01-15 INNER CHANNELS FROM KUPREANOF ISLAND TO ETOLIN ISLAND [NWS forecast zone]: deaths=0, injuries=3, damage=$60,000 (Ice Storm)
-  AK-PROC-2005-01-15 JUNEAU BOROUGH AND NORTHERN ADMIRALTY ISLAND [NWS forecast zone]: deaths=0, injuries=2, damage=$90,000 (Heavy Snow)
+  AK-PROC-2011-12-06 ST LAWRENCE IS. BERING STRAIT [NWS forecast zone]: deaths=1, injuries=0, damage=$0 (Coastal Flood)
+  AK-PROC-2015-10-14 DENALI [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Heavy Rain)
+  AK-PROC-2005-01-15 EASTERN BEAUFORT SEA COAST [NWS forecast zone]: deaths=0, injuries=2, damage=$7,700,000 (Blizzard, Cold/Wind Chill, High Wind)
+  AK-PROC-2006-10-14 NERN P.W. SND [county/county-equivalent]: deaths=0, injuries=0, damage=$26,500,000 (Flood)
+  AK-PROC-2011-12-06 SRN SEWARD PENINSULA COAST [NWS forecast zone]: deaths=0, injuries=0, damage=$24,000,000 (Coastal Flood)
+  AK-PROC-2006-08-29 SUSITNA VALLEY [county/county-equivalent]: deaths=0, injuries=0, damage=$20,000,000 (Flood)
   AK-PROC-2009-05-06 YUKON FLATS NEARBY UPLANDS [county/county-equivalent]: deaths=0, injuries=0, damage=$11,215,000 (Flood)
+  AK-PROC-2006-10-14 COPPER RIVER BASIN [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000,000 (Flood)
   AK-PROC-2025-10-09 INLAND KUSKOKWIM DELTA [county/county-equivalent]: deaths=0, injuries=0, damage=$10,000,000 (Flood)
   AK-PROC-2020-12-04 JUNEAU BOROUGH [county/county-equivalent]: deaths=0, injuries=0, damage=$8,100,000 (Flood)
   AK-PROC-2024-08-06 JUNEAU BOROUGH [county/county-equivalent]: deaths=0, injuries=0, damage=$6,660,000 (Flood)
@@ -98,19 +118,17 @@ Areas with reported deaths, injuries, or damage:
   AK-PROC-2012-09-21 ANCHORAGE MUNI TO BIRD CREEK [county/county-equivalent]: deaths=0, injuries=0, damage=$3,590,000 (Flood)
   AK-PROC-2012-09-21 WRN P.W. SND & KENAI MTNS [county/county-equivalent]: deaths=0, injuries=0, damage=$3,310,000 (Flood)
   AK-PROC-2009-05-06 KUSKOKWIM DELTA [county/county-equivalent]: deaths=0, injuries=0, damage=$3,100,000 (Flood)
+  AK-PROC-2006-10-14 SUSITNA VALLEY [county/county-equivalent]: deaths=0, injuries=0, damage=$2,900,000 (Flood)
   AK-PROC-6D8DA06E66F93EEE MATANUSKA VALLEY [NWS forecast zone]: deaths=0, injuries=0, damage=$2,000,000 (High Wind)
   AK-PROC-2025-10-09 KUSKOKWIM DELTA COAST AND NUNIVAK ISLAND [county/county-equivalent]: deaths=0, injuries=0, damage=$2,000,000 (Flood)
-  AK-PROC-2011-12-06 ANCHORAGE MUNI TO BIRD CREEK [NWS forecast zone]: deaths=0, injuries=0, damage=$1,500,000 (High Wind)
+  AK-PROC-2011-05-17 LOWER KUSKOKWIM VALLEY [county/county-equivalent]: deaths=0, injuries=0, damage=$1,500,000 (Flood)
   AK-PROC-2020-12-04 TAIYA INLET [county/county-equivalent]: deaths=0, injuries=0, damage=$1,400,000 (Debris Flow)
   AK-PROC-2012-09-21 KENAI PENINSULA [county/county-equivalent]: deaths=0, injuries=0, damage=$1,380,000 (Flood)
-  AK-PROC-2025-10-09 BALDWIN PENINSULA [NWS forecast zone]: deaths=0, injuries=0, damage=$1,200,000 (Coastal Flood, High Wind)
-  AK-PROC-2009-11-06 CAPE FAIRWEATHER TO CAPE SUCKLING COASTAL AREA [NWS forecast zone]: deaths=0, injuries=0, damage=$1,000,000 (Coastal Flood)
-  AK-PROC-2025-10-09 KIVALINA AND RED DOG DOCK [NWS forecast zone]: deaths=0, injuries=0, damage=$800,000 (Coastal Flood)
-  Showing the 25 highest-consequence areas; all 63 are retained in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 57 are retained in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/alaska/eo_storm_severity_summary.csv.tmp.
 
-AK: 46 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster-release proxies; no complete 2000-present signed proclamation archive verified; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+AK: 46 actions, 95 federal declarations; Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 Arizona news releases: read 5 page(s), 55 release(s) since 2023-01-02; 0 new emergency declaration(s), 8 in all
 
 Applied 8 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/arizona/hazard_overrides.csv
@@ -417,12 +435,9 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/connecticut/eo_storm_severity_summary.csv.tmp.
 
-CT: 20 actions, 43 federal declarations; 1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
-Delaware: 0 actions, 0 relationships, 0 weather declarations
+CT: 20 actions, 43 federal declarations; 1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 6 declarations added by hand from official announcements, order text and dated news coverage; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+Delaware: 6 actions, 3 relationships, 2 weather declarations
 
-DE: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 2 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/delaware/hazard_overrides.csv
 Wrote 162 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_matches.csv.tmp
 Wrote severity summary (79 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp
@@ -457,7 +472,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/delaware/eo_storm_severity_summary.csv.tmp.
 
-DE: 17 actions, 26 federal declarations; 2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage; 2 saved records kept that this refresh's check of the state source did not return
+DE: 17 actions, 26 federal declarations; 2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage
 Applied 38 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/florida/hazard_overrides.csv
 FL-EO-2026-227: no matching storm events found in the date window.
 FL-EO-2026-202: no matching storm events found in the date window.
@@ -553,15 +568,16 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 GA: 55 actions, 82 federal declarations; 2000-present: structured Governor archives from 2011, plus 2000-2009 states of emergency added by hand from Governor Perdue's archived executive order list and, for 2000, dated FEMA and news reports of Governor Barnes's declarations; no state declaration has been found for Hurricane Zeta in October 2020 (DR-4579)
 {"actions": 226, "declarations": 8, "relationships": 102, "overrides": 4, "review": 15}
 
-Applied 4 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/hawaii/hazard_overrides.csv
+Applied 6 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/hawaii/hazard_overrides.csv
 HI-PROC-B6022CFEC43CFC7D: no matching storm events found in the date window.
 HI-PROC-04FC3E513925FF07: no matching storm events found in the date window.
 HI-PROC-8A2442F4F464D477: no matching storm events found in the date window.
-HI-SOE-2020-04-21: no matching storm events found in the date window.
+HI-SOE-2020-04-21: searching around the reviewed event date 2020-03-27 (signed 2020-04-21)
 HI-SOE-2026-06-04: no matching storm events found in the date window.
 HI-SOE-2026-09-03: no matching storm events found in the date window.
-Wrote 339 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_matches.csv.tmp
-Wrote severity summary (142 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp
+HI-SOE-2004-10-31: searching around the reviewed event date 2004-10-30 (signed 2004-10-31)
+Wrote 348 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_matches.csv.tmp
+Wrote severity summary (147 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   HI-PROC-0716FAFE28103EE1 MAUI LEEWARD WEST [NWS forecast zone]: deaths=102, injuries=32, damage=$5,500,000,000 (Drought, High Wind, Wildfire)
@@ -571,6 +587,7 @@ Areas with reported deaths, injuries, or damage:
   HI-SOE-2004-10-31 HONOLULU [county/county-equivalent]: deaths=0, injuries=0, damage=$80,000,000 (Flash Flood, Heavy Rain)
   HI-PROC-0716FAFE28103EE1 SOUTH MAUI/UPCOUNTRY [NWS forecast zone]: deaths=0, injuries=0, damage=$54,600,000 (Drought, High Wind, Wildfire)
   HI-SOE-2021-03-09 KAUAI [county/county-equivalent]: deaths=0, injuries=0, damage=$34,000,000 (Debris Flow, Flash Flood, Heavy Rain)
+  HI-SOE-2020-04-21 KAUAI [county/county-equivalent]: deaths=0, injuries=0, damage=$30,600,000 (Flash Flood, Heavy Rain)
   HI-SOE-2018-04-15 KAUAI [county/county-equivalent]: deaths=0, injuries=0, damage=$17,600,000 (Debris Flow, Flash Flood)
   HI-SOE-2021-03-09 MAUI [county/county-equivalent]: deaths=0, injuries=0, damage=$14,300,000 (Debris Flow, Flash Flood, Heavy Rain)
   HI-SOE-2024-04-12 KAUAI [county/county-equivalent]: deaths=0, injuries=0, damage=$13,500,000 (Flash Flood)
@@ -588,12 +605,11 @@ Areas with reported deaths, injuries, or damage:
   HI-PROC-C7BB430F897FB068 KOOLAU LEEWARD [NWS forecast zone]: deaths=0, injuries=0, damage=$25,000 (High Wind)
   HI-PROC-EB785861DDB8467E WINDWARD HALEAKALA [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (High Wind)
   HI-SOE-2025-01-30 KAUAI MOUNTAINS [NWS forecast zone]: deaths=0, injuries=0, damage=$20,000 (High Wind)
-  HI-PROC-EB785861DDB8467E KONA [NWS forecast zone]: deaths=0, injuries=0, damage=$10,000 (Tropical Storm)
-  Showing the 25 highest-consequence areas; all 34 are retained in /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 35 are retained in /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/hawaii/eo_storm_severity_summary.csv.tmp.
 
-HI: 38 actions, 77 federal declarations; Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+HI: 38 actions, 77 federal declarations; Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 {"actions": 412, "declarations": 208, "relationships": 21, "overrides": 1, "review": 6}
 
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/idaho/hazard_overrides.csv
@@ -851,7 +867,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/illinois/eo_storm_severity_summary.csv.tmp.
 
-IL: 15 actions, 68 federal declarations; 2000-present numbered EO archive; separate disaster-proclamation listings yield weather records from 2023; earlier proclamation backfill remains pending
+IL: 15 actions, 68 federal declarations; 2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; other pre-2023 proclamations are not listed
 Indiana: 130 orders read from the current governor's page (https://www.in.gov/gov/newsroom/executive-orders/).
 Indiana: 453 actions scraped, 35 routed to join CSV, 34 with a resolved date_signed (1 via OCR).
 Indiana signing dates: 33 kept from earlier runs; 1 from the confirmed-date list; 1 read, but no signing date found (OCR)
@@ -897,7 +913,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/indiana/eo_storm_severity_summary.csv.tmp.
 
-IN: 35 actions, 56 federal declarations; 2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified
+IN: 35 actions, 56 federal declarations; 2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified
 {"actions": 100, "declarations": 54, "relationships": 26, "overrides": 0, "review": 1}
 
 Applied 65 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/iowa/hazard_overrides.csv
@@ -1060,7 +1076,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/kansas/eo_storm_severity_summary.csv.tmp.
 
-KS: 78 actions, 96 federal declarations; 2000-present: KDEM Kansas Disaster Declarations archive from 2011; earlier and unlabeled declarations added by hand from KDEM's scanned proclamations, the Kansas Register, archived Adjutant General releases and dated news coverage; the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read; 12 saved records kept that this refresh's check of the state source did not return
+KS: 78 actions, 96 federal declarations; 2000-present: KDEM disaster-declarations page from 2011, plus 27 declarations added by hand: seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 declarations cited by executive orders and legislation printed in the Kansas Register, and 2006-2021 declarations dated from Adjutant General releases (archived on the Wayback Machine) and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1402 (January 2002 ice storm), DR-1535 and DR-1562 (2004), DR-1579, DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (September 2008), DR-1849 (April-May 2009), DR-1932 (June 2010), DR-4654 (March 2022) or DR-4747 (summer 2023).; the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read; 12 saved records kept that this refresh's check of the state source did not return
 Kentucky: 1001 newsroom releases read, 0 orders found by PDF link (0 routed to join CSV), 11 weather state-of-emergency releases.
 
 KY: ky_emergency_actions_all.csv: kept 10 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1208,7 +1224,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/maine/eo_storm_severity_summary.csv.tmp.
 
 ME: 36 actions, 71 federal declarations; 2000-present: 2011-present Governor executive-order archives (LePage and Mills), plus storm emergency proclamations from 2013-2024 taken from the Governor's proclamations and news releases; the adapter does not yet read the Mills proclamations listing. Plus declarations added by hand from official announcements, order text and dated news coverage, including Governor Baldacci's 2004-2010 weather emergency proclamations from the Maine State Library's yearly archives of his press releases. No state declaration has been found for Governor King's years: DR-1326 (spring 2000 flooding and ice jams), EM-3164 and DR-1371 (March 2001 snow and flooding) and DR-1468 (2002-2003 winter cold and frost); the State Archives' 1975-2000 proclamation collection on Digital Maine did not return his items. Nor for EM-3174, EM-3190 and EM-3194 (2003 snowstorms), EM-3209, EM-3210 and DR-1591 (March 2005 snow), EM-3265 (December 2005), DR-1716 (Oxford County, July 2007: declared, but no date found), DR-1788 (July 2008), DR-1852 (June 2009), DR-4367 (March 2018), DR-4647 (October 2021), DR-4696 (December 2022) or DR-4719 (spring 2023); Governor Mills's request letters for the last two describe activating the State Emergency Operations Center and mention no declaration
-Maryland: 112 actions, 21 relationships, 11 weather declarations
+Maryland: 113 actions, 22 relationships, 11 weather declarations
 
 Applied 17 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/maryland/hazard_overrides.csv
 MD-SOE-1972-06-26: no matching storm events found in the date window.
@@ -1253,10 +1269,10 @@ Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data
 MD: 47 actions, 38 federal declarations; 2000-present: the Governor's executive order archive from 2023, plus 2000-2022 weather declarations added by hand: 2000-2018 executive orders from the Department of Legislative Services' yearly compilations, and others from official announcements, order text and dated news coverage; no state declaration was found for the June 2006 flooding (DR-1652) or Tropical Storm Isaias in 2020 (DR-4583)
 Massachusetts scraper: collecting State Library executive-order records...
 Massachusetts scraper: fetching official text for 465 candidate record(s)...
-Done. 762 action(s), 93 relationship(s), 6 original weather declaration(s).
+Done. 762 action(s), 72 relationship(s), 6 original weather declaration(s).
 
-MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 8 blank and 0 garbled field set(s)
-MA: ma_order_relationships.csv: kept 79 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+MA: ma_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 14 blank and 0 garbled field set(s)
+MA: ma_order_relationships.csv: kept 100 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 MA: ma_emergency_actions_all.csv: left off 169 declaration(s) signed before 1970
 Applied 1 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/massachusetts/hazard_overrides.csv
 MA-EO-366: no matching storm events found in the date window.
@@ -1296,7 +1312,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/massachusetts/eo_storm_severity_summary.csv.tmp.
 
-MA: 21 actions, 59 federal declarations; 1970-present from the official State Library executive-order collection (orders before 1970 left off); unnumbered proclamation backfill pending; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+MA: 21 actions, 59 federal declarations; 1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2008-2015 storm states of emergency (Patrick and Baker) from news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 Michigan: 275 executive orders processed
 
 Applied 15 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/michigan/hazard_overrides.csv
@@ -1669,13 +1685,13 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-hampshire/eo_storm_severity_summary.csv.tmp.
 
-NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
+NH: 14 actions, 64 federal declarations; 1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)
 New Jersey adapter: collecting executive orders (1962-present, structured from 1990)...
   running: /opt/hostedtoolcache/Python/3.11.18/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/nj_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/new-jersey/declarations_for_join.csv
 New Jersey scraper: discovering administration pages...
   found 14 administration page(s)
   parsing Sherrill [057sherrill] (https://www.nj.gov/infobank/eo/057sherrill/approved/eo_archive.shtml)
-    27 order(s) found
+    28 order(s) found
   parsing Murphy [056murphy] (https://www.nj.gov/infobank/eo/056murphy/approved/eo_archive.shtml)
     415 order(s) found
   parsing Christie [055christie] (https://www.nj.gov/infobank/eo/055christie/index.shtml)
@@ -1709,9 +1725,9 @@ New Jersey scraper: fetching document text for classification (this is the slow 
 New Jersey scraper: extracting order relationships...
   416 relationship(s) extracted (after global dedup)
 
-Done. 1258 total order(s), 175 weather-related, 86 original declarations written to the join file (excludes extensions, amendments, terminations, administrative orders, and undated rows).
+Done. 1259 total order(s), 175 weather-related, 86 original declarations written to the join file (excludes extensions, amendments, terminations, administrative orders, and undated rows).
 
-New Jersey adapter: coverage = 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
+New Jersey adapter: coverage = 1990-present provisional structured coverage; 1962-1989 selectively represented
 NJ: nj_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 163 blank and 0 garbled field set(s)
 NJ: nj_order_relationships.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 NJ: nj_emergency_actions_all.csv: left off 5 declaration(s) signed before 1970
@@ -1766,8 +1782,8 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-jersey/eo_storm_severity_summary.csv.tmp.
 
-NJ: 83 actions, 59 federal declarations; 1990-present (structured, provisional start date - see adapter notes); 1962-1989 selectively represented only, not systematically collected
-New Mexico: 1298 actions scraped, 1256 read via OCR (1285 from earlier runs), 0 still image-only with no usable text.
+NJ: 83 actions, 59 federal declarations; 1990-present provisional structured coverage; 1962-1989 selectively represented
+New Mexico: 1298 actions scraped, 1256 read via OCR (1298 from earlier runs), 0 still image-only with no usable text.
 
 NM: nm_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 1 garbled field set(s)
 NM: nm_order_relationships.csv: kept 7 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
@@ -1848,7 +1864,7 @@ New York scraper: fetching linked documents...
     fetched 300/335
 Done. 335 total row(s): 238 complete current, 97 selected prior; 52 weather-related; 28 written to join file.
 
-New York adapter: coverage = 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
+New York adapter: coverage = 2000-present: comprehensive Governor archive from August 24, 2021, and selected earlier orders still in force from the Past Executive Orders page; plus 49 weather disaster orders added by hand: 9 Pataki orders (2000-2006), 1 Spitzer order (2007) and 5 Paterson orders (2008-2010) from 9 NYCRR Parts 5, 6 and 7, and 34 Cuomo orders, 29 of them (2011-2019) from 9 NYCRR Part 8 and 5 (2017-2020) from the New York State Register (manual_declarations.csv). Every federal declaration from 2011 on has a matching state order. No state order is kept for 13 federal declarations from 2000-2010: DR-1335, EM-3173, DR-1486, EM-3195, DR-1534, DR-1564, DR-1565 and DR-1670 (Pataki, 2000-2006); DR-1692, DR-1710 and DR-1724 (Spitzer, 2007); DR-1869 and DR-1957 (Paterson, 2009-2010). 9 NYCRR Parts 5, 6 and 7 print these governors' executive orders and were read in full; none declares a disaster for any of the 13, so the state appears to have relied on the federal declaration alone. Four more match only by date, to orders for other storms: DR-1899 (the March 2010 nor'easter) to 9 NYCRR 7.37 (February 24-26, 2010), DR-1943 (the September 16, 2010 storms) to 7.40 (September 29 to October 1, 2010), and DR-4031 and EM-3341 (Tropical Storm Lee, September 2011) to 8.17 (Hurricane Irene).
 Applied 63 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/new-york/hazard_overrides.csv
 NY-KATHYHOCHUL-EO-63: no matching storm events found in the date window.
 NY-KATHYHOCHUL-EO-39: no matching storm events found in the date window.
@@ -1896,7 +1912,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/new-york/eo_storm_severity_summary.csv.tmp.
 
-NY: 76 actions, 118 federal declarations; 2021-08-24-present comprehensive current archive; earlier official records are selected continuing orders only and are explicitly labeled
+NY: 76 actions, 118 federal declarations; 2000-present: comprehensive Governor archive from August 24, 2021, and selected earlier orders still in force from the Past Executive Orders page; plus 49 weather disaster orders added by hand: 9 Pataki orders (2000-2006), 1 Spitzer order (2007) and 5 Paterson orders (2008-2010) from 9 NYCRR Parts 5, 6 and 7, and 34 Cuomo orders, 29 of them (2011-2019) from 9 NYCRR Part 8 and 5 (2017-2020) from the New York State Register. Every federal declaration from 2011 on has a matching state order. No state order is kept for 13 federal declarations from 2000-2010: DR-1335, EM-3173, DR-1486, EM-3195, DR-1534, DR-1564, DR-1565 and DR-1670 (Pataki, 2000-2006); DR-1692, DR-1710 and DR-1724 (Spitzer, 2007); DR-1869 and DR-1957 (Paterson, 2009-2010). 9 NYCRR Parts 5, 6 and 7 print these governors' executive orders and were read in full; none declares a disaster for any of the 13, so the state appears to have relied on the federal declaration alone. Four more match only by date, to orders for other storms: DR-1899 (the March 2010 nor'easter) to 9 NYCRR 7.37 (February 24-26, 2010), DR-1943 (the September 16, 2010 storms) to 7.40 (September 29 to October 1, 2010), and DR-4031 and EM-3341 (Tropical Storm Lee, September 2011) to 8.17 (Hurricane Irene)
 North Carolina adapter: collecting official Executive Orders...
   running: /opt/hostedtoolcache/Python/3.11.18/x64/bin/python /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_eo_scraper.py --actions-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_emergency_actions_all.csv --relationships-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/nc_order_relationships.csv --join-out /home/runner/work/disaster-data/disaster-data/plus/north-carolina/declarations_for_join.csv
 North Carolina scraper: walking official Executive Orders archive...
@@ -2500,8 +2516,8 @@ SD-EO-2026-01: no matching storm events found in the date window.
 SD-EO-2026-08: no matching storm events found in the date window.
 SD-EO-2023-14: no matching storm events found in the date window.
 SD-EO-2020-27: no matching storm events found in the date window.
-SD-EO-2019-19: searching around the reviewed event date 2019-06-30 (signed 2019-08-13)
 SD-EO-2019-13: no matching storm events found in the date window.
+SD-EO-2019-19: searching around the reviewed event date 2019-06-30 (signed 2019-08-13)
 SD-EO-2019-28: searching around the reviewed event date 2019-09-10 (signed 2019-11-05)
 SD-EO-2018-06: searching around the reviewed event date 2018-05-17 (signed 2018-06-14)
 SD-EO-2017-03: searching around the reviewed event date 2016-12-24 (signed 2017-01-23)
@@ -2609,9 +2625,20 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/tennessee/eo_storm_severity_summary.csv.tmp.
 
 TN: 51 actions, 97 federal declarations; 2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet
-Texas: read 143 of 143 monthly archive pages (0 not read), 635 proclamation posts, 446 parsed (0 not read), 58 weather declarations.
+Texas: read 132 of 143 monthly archive pages (11 not read), 570 proclamation posts, 390 parsed (6 not read), 55 weather declarations.
 
-TX: tx_emergency_actions_all.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas archive page not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: 6 more Texas archive pages not read
+  WARNING: Texas proclamation post not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas proclamation post not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+  WARNING: Texas proclamation post not read: HTTPSConnectionPool(host='gov.texas.gov', port=443): Read timed out. (read timeout=30)
+
+TX: declarations_for_join.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+TX: tx_emergency_actions_all.csv: kept 59 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 42 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/texas/hazard_overrides.csv
 TX-SOE-2000-03-29: searching around the reviewed event date 2000-03-28 (signed 2000-03-29)
 TX-SOE-2001-06-09: searching around the reviewed event date 2001-06-05 (signed 2001-06-09)
@@ -2670,7 +2697,7 @@ Areas with reported deaths, injuries, or damage:
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/texas/eo_storm_severity_summary.csv.tmp.
 
-TX: 94 actions, 392 federal declarations; 2000-present: current-Governor proclamation archive from 2015; 2000-2014 weather disaster proclamations added by hand from archived copies of the Governor's proclamation pages and dated news coverage
+TX: 94 actions, 392 federal declarations; 2000-present: current-Governor proclamation archive from January 2015, plus 36 weather declarations added by hand: 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2015 and 2025 declarations from dated news and TDEM coverage. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1425 (2002 floods), DR-1479 (Claudette, 2003), DR-1658 (El Paso flooding, 2006), DR-1709 (June 2007 floods), DR-1730 and EM-3277 (Erin and Dean, 2007); DR-1999 and DR-4029 (2011 wildfires) fell under the December 2010 wildfire proclamation, which was renewed month by month and is not counted as a new declaration; 3 saved records kept that this refresh's check of the state source did not return
 {"actions": 561, "declarations": 33, "relationships": 19, "overrides": 5, "review": 16}
 
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/utah/hazard_overrides.csv
@@ -2795,7 +2822,7 @@ Timothy M. Kaine         12
 Review 3 weather-related modifications, extensions, or terminations in /home/runner/work/disaster-data/disaster-data/plus/virginia/va_weather_emergency_actions_2002_2026.csv; they are not treated as new incidents.
 Review 4 interstate-assistance declarations in /home/runner/work/disaster-data/disaster-data/plus/virginia/va_weather_emergency_actions_2002_2026.csv; they are excluded from Virginia locality matching.
 
-Virginia adapter: coverage = 2000-present (2000-2001 Gilmore orders added by hand)
+Virginia adapter: coverage = Virginia structured archive coverage begins in 2002, plus Gilmore's 2000-2001 weather emergency orders added by hand from the Virginia Register of Regulations; the current administration is collected separately
 Applied 5 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/virginia/hazard_overrides.csv
 VA-WARNER-EO-31-2002: no matching storm events found in the date window.
 VA-WARNER-EO-33-2002: no matching storm events found in the date window.
@@ -2866,8 +2893,8 @@ Resolution status:
   PRINCE WILLIAM
   PRINCE WILLIAM / MANASSAS
 
-VA: 85 actions, 77 federal declarations; 2000-present (2000-2001 Gilmore orders added by hand)
-WA: wa_order_relationships.csv: kept 8 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+VA: 85 actions, 77 federal declarations; Virginia structured archive coverage begins in 2002, plus Gilmore's 2000-2001 weather emergency orders added by hand from the Virginia Register of Regulations; the current administration is collected separately
+WA: wa_order_relationships.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
 Applied 16 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/washington/hazard_overrides.csv
 WA-PROC-26-06: no matching storm events found in the date window.
 WA-PROC-26-04: no matching storm events found in the date window.
@@ -3117,16 +3144,7 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 14 actions, 45 federal declarations; 2000-present: the Governor CMS executive-order archive from 2019, plus declarations added by hand from official announcements, order text and dated news coverage: Governor Freudenthal's June 2010 Fremont County flood disaster declaration and Governor Mead's flood declarations (2011, 2015, February 2017). No archive of earlier Wyoming governors' orders exists, and no state declaration has been found for the November 2000 winter storm (DR-1351), the August 2005 Wright tornado (DR-1599), the June 2017 floods (DR-4327) or the June 2023 Casper flood (DR-4739)
-
-Retrying 1 state(s) whose source failed or returned nothing, after 60s: DE
-Delaware: 0 actions, 0 relationships, 0 weather declarations
-
-DE: declarations_for_join.csv: kept 2 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_emergency_actions_all.csv: kept 6 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-DE: de_order_relationships.csv: kept 3 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-RETRY DE: still empty
-DE: 17 actions, 26 federal declarations; 2000-present: the Governor's state of emergency archive from October 2025, plus earlier storm states of emergency added by hand from the Governor's news releases (news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from the Delaware Public Archives; no state declaration has been found for the February 2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the date of the Hurricane Isabel declaration is taken from news coverage; 2 saved records kept that this refresh's check of the state source did not return
-TIME total: collect 2197s, storm join 91s. Slowest: NJ 313s+7s, NC 270s+1s, TX 244s+2s, CT 228s+0s, SC 88s+2s, LA 89s+1s, WA 72s+1s, MI 70s+1s, VT 68s+0s, CO 60s+3s
-WARNING kept saved records the state source did not return: DE (2), KS (12)
+TIME total: collect 3817s, storm join 106s. Slowest: TX 1410s+1s, NJ 495s+12s, NC 393s+1s, CT 318s+0s, SC 105s+4s, MA 103s+3s, NY 90s+1s, VT 88s+0s, LA 80s+1s, MI 73s+0s
+WARNING kept saved records the state source did not return: KS (12), TX (3)
 Row-loss check: no saved rows lost.
 Plus health: 48 green, 2 yellow, 0 red.

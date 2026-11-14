@@ -419,7 +419,7 @@
       "title": "State disaster proclamation for the October 30, 2004 Manoa Valley flash flood on Oahu"
     }
   ],
-  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-09-03",
@@ -814,11 +814,25 @@
     {
       "date_signed": "2020-04-21",
       "declaration_id": "HI-SOE-2020-04-21",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "federal_declaration": {
+        "begin": "2020-03-27",
+        "date": "2020-07-09",
+        "end": "2020-03-28",
+        "id": "DR-4549",
+        "incidentType": "Severe Storm",
+        "number": 4549,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "HAWAII",
+        "HONOLULU",
+        "KAUAI",
+        "MAUI"
+      ],
+      "noaa_match_count": 8,
+      "noaa_status": "matched",
       "title": "Kauai flooding, April 2020"
     },
     {
@@ -1185,9 +1199,10 @@
       "noaa_areas": [
         "HAWAII",
         "HONOLULU",
+        "KAUAI",
         "MAUI"
       ],
-      "noaa_match_count": 5,
+      "noaa_match_count": 6,
       "noaa_status": "matched",
       "title": "State disaster proclamation for the October 30, 2004 Manoa Valley flash flood on Oahu"
     }
@@ -1197,16 +1212,6 @@
     "compared": 23,
     "covered_by_extension": [],
     "declarations": [
-      {
-        "begin": "2020-03-27",
-        "date": "2020-07-09",
-        "end": "2020-03-28",
-        "id": "DR-4549",
-        "incidentType": "Severe Storm",
-        "number": 4549,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
       {
         "begin": "2000-10-28",
         "date": "2000-11-09",
@@ -1221,13 +1226,13 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-08",
+  "generated_on": "2026-11-14",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 38,
     "federal_declaration_count": 77,
-    "severity_rows": 142,
-    "storm_match_rows": 339
+    "severity_rows": 147,
+    "storm_match_rows": 348
   },
   "name": "Hawaii",
   "noaa_data_through": "2026-07-30",
@@ -1237,10 +1242,10 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 27,
-    "federal_matched": 24,
+    "federal_matched": 25,
     "fmcsa_archive": 3,
-    "noaa_matched": 32,
-    "noaa_none": 3,
+    "noaa_matched": 33,
+    "noaa_none": 2,
     "noaa_pending": 3,
     "reviewed_not_weather": 0,
     "state_archive": 8
