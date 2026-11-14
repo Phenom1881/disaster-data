@@ -34,4 +34,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Missouri adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", '2000-present Secretary of State year indexes and legal order text.'
+    return workdir / "declarations_for_join.csv", "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day."

@@ -70,5 +70,19 @@ class ReviewedDecisionTests(unittest.TestCase):
         self.assertEqual(links, [('MO-EO-04-10', 'amends')])
 
 
+class LateOrderTests(unittest.TestCase):
+    def test_a_refresh_keeps_the_storm_date_of_executive_order_14_12(self):
+        import csv
+        from _adapter_support import merge_overrides
+        here = Path(__file__).parent
+        reviews = json.loads((here / 'review_decisions.json').read_text())
+        generated = [dict(declaration_id=k, hazard_category_override=v['hazard_category_override'],
+                          review_note=v.get('reason', ''), source_url=v.get('source_url', ''))
+                     for k, v in reviews.items() if v.get('hazard_category_override')]
+        with open(here / 'declarations_for_join.csv', newline='', encoding='utf-8') as handle:
+            collected = {r['declaration_id'] for r in csv.DictReader(handle)}
+        rows, _ = merge_overrides(here / 'hazard_overrides.csv', generated, collected)
+        self.assertEqual({r['declaration_id']: r.get('event_date') for r in rows}.get('MO-EO-14-12'), '2014-09-09')
+
 if __name__ == '__main__':
     unittest.main()
