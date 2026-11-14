@@ -12,12 +12,12 @@ STATE = "NC"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 "
-    'weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State '
-    "Archives of North Carolina's executive orders and Governor's press releases and dated "
-    'news coverage; declarations for the February 2003 ice storm, the September 2010 floods, '
-    'the late July 2013 mountain floods and the March 2014 ice storm have not been found, and'
-    ' some 2000-2016 orders that do not name their hazard are not listed'
+    "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 wea"
+    "ther declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives"
+    " of North Carolina's executive orders and Governor's press releases and dated news coverag"
+    "e; declarations for the February 2003 ice storm, the September 2010 floods and the late Ju"
+    "ly 2013 mountain floods have not been found, and some 2000-2016 orders that do not name th"
+    "eir hazard are not listed"
 )
 
 CAPABILITIES = {
