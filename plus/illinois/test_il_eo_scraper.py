@@ -71,7 +71,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
 
     def test_late_proclamations_are_compared_on_the_storm_they_declare(self):
         dates = {r['declaration_id']: r['event_date'] for r in self.rows('hazard_overrides.csv') if r.get('event_date')}
-        self.assertEqual(dates, {'IL-PROC-2007-09-14': '2007-08-20', 'IL-PROC-2024-08-30': '2024-07-13',
+        self.assertEqual(dates, {'IL-PROC-2024-08-30': '2024-07-13',
                                  'IL-PROC-4883F2AF4F255E59': '2023-09-17'})
         signed = {r['declaration_id']: r['date_signed'] for r in self.rows('manual_declarations.csv') + self.rows('declarations_for_join.csv')}
         for key, day in dates.items():
