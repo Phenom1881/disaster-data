@@ -8,8 +8,12 @@ STATE = 'IL'
 # same text for builds without collection.
 COVERAGE_NOTE = (
     "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, p"
-    "lus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; oth"
-    "er pre-2023 proclamations are not listed"
+    "lus proclamations added by hand: 2006-2011 (Blagojevich, Quinn) from the Governor's releases, Illino"
+    "is delegation releases and dated news coverage, 2013-2022 (Quinn, Rauner, Pritzker) from IEMA news r"
+    "eleases and news coverage, and the August 2024 proclamation from IEMA-OHS; other pre-2023 proclamati"
+    "ons are not listed. Proclamations signed weeks after the storm they declare are compared on the stor"
+    "m's first day. Federal declarations since 2000 with no state record yet: EM-3161, DR-1368, DR-1416, "
+    "DR-1469, DR-1513, EM-3199, DR-1747, EM-3283, DR-1771."
 )
 
 CAPABILITIES = {'structured_archive_coverage_start': '2003-06-11',
