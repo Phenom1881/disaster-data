@@ -62,6 +62,8 @@ def collect(workdir=".", scripts_dir=None):
         "2000-present: Oklahoma Emergency Management's emergencies-and-disasters "
         "archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor"
         " declarations back to 2006 reviewed by hand from OEM event pages and the "
-        "Governor's releases, and 2000-2008 disaster emergency orders added by hand "
-        "from Oklahoma Administrative Code Title 1 (Executive Orders)",
+        "Governor's releases, and disaster emergency orders added by hand "
+        "from Oklahoma Administrative Code Title 1 (Executive Orders): 2000-2008, "
+        "plus 2015-55, 2022-8, 2024-7 and its amendment 2024-7C, which added the "
+        "counties hit by the May 2024 storms",
     )
