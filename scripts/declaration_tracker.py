@@ -56,6 +56,9 @@ LEDGER_PATH = BRIEF_DIR / "declaration-tracker.json"          # what the page re
 CACHE_PATH = BRIEF_DIR / "declaration-tracker-cache.json"     # parsed briefings + FEMA snapshot
 SOURCES_PATH = BRIEF_DIR / "declaration-sources.csv"           # official releases linked to requests
 REVIEW_PATH = BRIEF_DIR / "declaration-sources-review.csv"     # releases waiting for a person
+# Briefing PDFs are kept as release assets, one release per month
+# (scripts/upload_ops_briefings.py), not in the repository.
+PDF_REPO = os.environ.get("DD_PDF_REPO", "Phenom1881/disaster-data")
 
 OPENFEMA = "https://www.fema.gov/api/open"
 USER_AGENT = "DisasterData.IO declaration tracker (+https://www.disasterdata.io/declaration-tracker.html)"
@@ -598,6 +601,31 @@ def brief_pdfs() -> dict[str, Path]:
     return found
 
 
+def archived_briefs() -> list[str]:
+    """Every briefing the archive holds, from history.csv, as YYYY-MM-DD.pdf names."""
+    history = BRIEF_DIR / "history.csv"
+    if not history.exists():
+        return []
+    import csv
+
+    with history.open(newline="", encoding="utf-8") as handle:
+        names = [row.get("filename", "") for row in csv.DictReader(handle)]
+    return sorted(n for n in names if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.pdf", n))
+
+
+def release_pdf_url(name: str) -> str:
+    return f"https://github.com/{PDF_REPO}/releases/download/ops-briefings-{name[:7]}/{name}"
+
+
+def download_brief(name: str, dest: Path) -> None:
+    """Fetch one briefing PDF from its month's release into dest."""
+    import urllib.request
+
+    request = urllib.request.Request(release_pdf_url(name), headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(request, timeout=60) as response:
+        dest.write_bytes(response.read())
+
+
 def build(today: str | None = None, fema_override: dict | None = None, scrape: bool | None = None,
           fetcher=None) -> dict:
     today = today or os.environ.get("DD_TRACKER_TODAY") or datetime.now(timezone.utc).date().isoformat()
@@ -605,12 +633,29 @@ def build(today: str | None = None, fema_override: dict | None = None, scrape: b
     cache: dict[str, dict] = old.get("briefs", {})
     briefs: dict[str, dict] = {}
     parsed_now = 0
-    for name, pdf in brief_pdfs().items():
+    local = brief_pdfs()
+    # A briefing is read once and kept in the cache. Its PDF is needed only
+    # when it is not cached yet (or the parser changed): the copy on disk if
+    # there is one, otherwise the release copy. A briefing whose PDF cannot
+    # be fetched is left out this run and tried again on the next.
+    for name in sorted(set(local) | set(archived_briefs())):
         if name in cache:
             briefs[name] = cache[name]
+            continue
+        if name in local:
+            briefs[name] = parse_pdf(local[name], name[:-4])
         else:
-            briefs[name] = parse_pdf(pdf, pdf.stem)
-            parsed_now += 1
+            import tempfile
+
+            with tempfile.TemporaryDirectory() as tmp:
+                pdf = Path(tmp) / name
+                try:
+                    download_brief(name, pdf)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"WARNING: briefing {name} not read: {type(exc).__name__}: {exc}")
+                    continue
+                briefs[name] = parse_pdf(pdf, name[:-4])
+        parsed_now += 1
 
     requests, last_table = fold_requests(briefs)
     table_dates = sorted(b["date"] for b in briefs.values() if b["has_table"])

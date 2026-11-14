@@ -37,7 +37,10 @@ HISTORY_CSV = OUT_ROOT / "ops-briefings" / "history.csv"
 SITE_DIR = Path("ops-briefings")
 ARCHIVE_HUB_DIR = SITE_DIR / "archive"
 
-PDF_BASE_PATH = "/archive/ops-briefings"  # where fetch_ops_briefing.py puts PDFs
+# The PDFs are kept as release assets (scripts/upload_ops_briefings.py), one
+# release per month, so they do not count against the Pages size limit.
+PDF_REPO = os.environ.get("DD_PDF_REPO", "Phenom1881/disaster-data")
+SITE_URL = "https://disasterdata.io"
 SUBSCRIBE_URL = "https://public.govdelivery.com/accounts/USDHSFEMA/subscriber/new"
 
 LAST_N_DAYS_SHOWN = 30
@@ -50,6 +53,11 @@ def load_history() -> list[dict]:
         rows = list(csv.DictReader(f))
     rows.sort(key=lambda r: r["date"])
     return rows
+
+
+def pdf_url(filename: str) -> str:
+    """Where a briefing PDF is downloaded: its month's release (ops-briefings-YYYY-MM)."""
+    return f"https://github.com/{PDF_REPO}/releases/download/ops-briefings-{filename[:7]}/{filename}"
 
 
 def fmt_date_long(date_str: str) -> str:
@@ -183,7 +191,7 @@ def build_index(rows: list[dict]) -> None:
     last_30 = newest_first[:LAST_N_DAYS_SHOWN]
 
     items = "\n".join(
-        f'''<li><a href="{PDF_BASE_PATH}/{r["filename"]}">
+        f'''<li><a href="{pdf_url(r["filename"])}">
               <span>{fmt_date_long(r["date"])}</span>
               <span class="arrow">View briefing &rarr;</span>
             </a></li>'''
@@ -234,15 +242,17 @@ def build_day_pages(rows: list[dict]) -> None:
             else "<span></span>"
         )
 
-        pdf_url = f'{PDF_BASE_PATH}/{row["filename"]}'
+        pdf_link = pdf_url(row["filename"])
+        page_link = f"{SITE_URL}/ops-briefings/{date_str}.html"
 
         body = f"""<div class="kicker">FEMA Daily Operations Briefing</div>
 <h1 class="headline">{fmt_date_long(date_str)}</h1>
 <p class="meta">Archived {row.get("archived_at", "")[:10]}</p>
 
-<p style="margin-top:24px;"><a class="btn" href="{pdf_url}">Open the PDF &rarr;</a></p>
+<p style="margin-top:24px;"><a class="btn" href="{pdf_link}">Open the PDF &rarr;</a></p>
 
-<p class="cite">Cite this page: <a href="{pdf_url}">{pdf_url}</a></p>
+<p class="cite">Cite this page: <a href="{page_link}">{page_link}</a><br>
+PDF: <a href="{pdf_link}">{pdf_link}</a></p>
 
 <div class="day-nav">
   {prev_link}
@@ -292,7 +302,7 @@ def build_archive_hub(rows: list[dict]) -> None:
     for mk in month_keys_desc:
         month_rows = sorted(by_month[mk], key=lambda r: r["date"], reverse=True)
         items = "\n".join(
-            f'''<li><a href="{PDF_BASE_PATH}/{r["filename"]}">
+            f'''<li><a href="{pdf_url(r["filename"])}">
                   <span>{fmt_date_long(r["date"])}</span>
                   <span class="arrow">View briefing &rarr;</span>
                 </a></li>'''

@@ -306,6 +306,64 @@ class BuildTests(unittest.TestCase):
             self.assertEqual(ledger["requests"][0]["declaration"]["id"], "DR-1-IN")
 
 
+class ReleaseCopyTests(unittest.TestCase):
+    """The PDFs live in monthly releases; the tracker works from its cache and history.csv."""
+
+    def run_build(self, out, downloader):
+        old = (dt.BRIEF_DIR, dt.LEDGER_PATH, dt.CACHE_PATH, dt.download_brief, dt.parse_pdf)
+        dt.BRIEF_DIR, dt.LEDGER_PATH, dt.CACHE_PATH = out, out / "t.json", out / "c.json"
+        dt.download_brief = downloader
+        dt.parse_pdf = lambda path, day: brief(day, [r(day, "IN", "DR", "2026-08-06")]) if Path(path).exists() else self.fail(path)
+        try:
+            return dt.build(today="2026-11-04", fema_override={"declarations": [], "denials": []}, scrape=False)
+        finally:
+            dt.BRIEF_DIR, dt.LEDGER_PATH, dt.CACHE_PATH, dt.download_brief, dt.parse_pdf = old
+
+    def write_history(self, out, *days):
+        lines = ["date,filename,source_url,archived_at"] + [f"{d},{d}.pdf,https://example.test/{d}.pdf,{d}T12:00:00+00:00" for d in days]
+        (out / "history.csv").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    def test_release_url_matches_the_upload_script(self):
+        spec = importlib.util.spec_from_file_location("upload_ops_briefings", HERE / "upload_ops_briefings.py")
+        up = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(up)
+        self.assertEqual(dt.release_pdf_url("2026-11-09.pdf"), up.release_url(dt.PDF_REPO, "2026-11-09.pdf"))
+
+    def test_cached_briefs_are_kept_without_their_pdf(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            self.write_history(out, "2026-10-29")
+            (out / "c.json").write_text(json.dumps({"parser_version": dt.PARSER_VERSION, "briefs": {
+                "2026-10-29.pdf": brief("2026-10-29", [r("2026-10-29", "IN", "DR", "2026-08-06")])}}), encoding="utf-8")
+            ledger = self.run_build(out, lambda name, dest: self.fail("downloaded a cached brief"))
+        self.assertEqual(ledger["briefs_read"], 1)
+        self.assertEqual(ledger["_parsed_now"], 0)
+
+    def test_an_uncached_brief_is_read_from_its_release_copy(self):
+        fetched = []
+
+        def download(name, dest):
+            fetched.append(name)
+            dest.write_bytes(b"%PDF")
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            self.write_history(out, "2026-10-29", "2026-10-30")
+            (out / "2026-10-30.pdf").write_bytes(b"%PDF")
+            ledger = self.run_build(out, download)
+        self.assertEqual(fetched, ["2026-10-29.pdf"])
+        self.assertEqual((ledger["briefs_read"], ledger["_parsed_now"]), (2, 2))
+
+    def test_a_brief_that_cannot_be_fetched_is_skipped_and_not_cached(self):
+        def down(name, dest):
+            raise OSError("offline")
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            self.write_history(out, "2026-10-29")
+            ledger = self.run_build(out, down)
+        self.assertEqual(ledger["briefs_read"], 0)
+        self.assertNotIn("2026-10-29.pdf", ledger["_cache"]["briefs"])
+
+
 class WiringTests(unittest.TestCase):
     def test_nav_links_the_page_and_the_page_reads_the_ledger(self):
         nav = (ROOT / "nav.js").read_text(encoding="utf-8")

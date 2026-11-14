@@ -109,6 +109,29 @@ class UploadTests(unittest.TestCase):
         with folder_with("2026-11-01.pdf") as tmp, self.assertRaises(RuntimeError):
             up.sync(REPO, Path(tmp), runner=broken)
 
+    def test_briefing_pages_link_the_release_copy_and_cite_the_page(self):
+        spec = importlib.util.spec_from_file_location("build_ops_pages", HERE / "build ops pages.py")
+        pages = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(pages)
+        rows = [{"date": "2026-10-31", "filename": "2026-10-31.pdf", "archived_at": "2026-10-31T12:00:00+00:00"},
+                {"date": "2026-11-09", "filename": "2026-11-09.pdf", "archived_at": "2026-11-09T12:00:00+00:00"}]
+        with tempfile.TemporaryDirectory() as tmp:
+            pages.SITE_DIR = Path(tmp) / "ops-briefings"
+            pages.ARCHIVE_HUB_DIR = pages.SITE_DIR / "archive"
+            pages.SITE_DIR.mkdir()
+            pages.build_index(rows)
+            pages.build_day_pages(rows)
+            pages.build_archive_hub(rows)
+            built = {p.relative_to(tmp).as_posix(): p.read_text(encoding="utf-8") for p in Path(tmp).rglob("*.html")}
+        pdf = up.release_url(pages.PDF_REPO, "2026-11-09.pdf")
+        day = built["ops-briefings/2026-11-09.html"]
+        self.assertIn(f'<a class="btn" href="{pdf}">Open the PDF', day)
+        self.assertIn('Cite this page: <a href="https://disasterdata.io/ops-briefings/2026-11-09.html">', day)
+        self.assertIn(pdf, built["ops-briefings/index.html"])
+        self.assertIn(up.release_url(pages.PDF_REPO, "2026-10-31.pdf"), built["ops-briefings/archive/2026-10.html"])
+        for html in built.values():
+            self.assertNotIn("/archive/ops-briefings/20", html)
+
     def test_no_long_dashes(self):
         for path in (HERE / "upload_ops_briefings.py", Path(__file__)):
             text = path.read_text(encoding="utf-8")
