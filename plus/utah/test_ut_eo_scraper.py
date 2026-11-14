@@ -55,3 +55,35 @@ class ArchiveTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class HandReviewedDeclarationTests(unittest.TestCase):
+    """Orders the scraper misses or misfiles, and late orders dated by their storm."""
+
+    @staticmethod
+    def rows(name):
+        import csv
+        with open(Path(__file__).parent / name, newline='', encoding='utf-8') as handle:
+            return list(csv.DictReader(handle))
+
+    def test_event_dates_come_from_the_orders_and_precede_signing(self):
+        dates = {r['declaration_id']: r['event_date'] for r in self.rows('hazard_overrides.csv') if r.get('event_date')}
+        self.assertEqual(dates, {'UT-PROC-FE412163A3B81B99': '2010-12-20', 'UT-PROC-0913AB6026A8A313': '2011-11-30',
+                                 'UT-EO-2017-2': '2017-02-07'})
+        signed = {r['declaration_id']: r['date_signed'] for r in self.rows('manual_declarations.csv') + self.rows('declarations_for_join.csv')}
+        for key, day in dates.items():
+            self.assertLess(day, signed[key], key)
+
+    def test_a_refresh_keeps_the_reviewed_rows(self):
+        from _adapter_support import merge_overrides
+        reviews = json.loads((Path(__file__).parent / 'review_decisions.json').read_text())
+        self.assertEqual(reviews['UT-EO-2020-61']['decision'], 'include')
+        generated = [dict(declaration_id=k, hazard_category_override=v['hazard_category_override'],
+                          review_note=v.get('reason', ''), source_url=v.get('source_url', ''))
+                     for k, v in reviews.items() if v.get('hazard_category_override')]
+        collected = {r['declaration_id'] for r in self.rows('declarations_for_join.csv')} | {'UT-EO-2020-61'}
+        rows, _ = merge_overrides(Path(__file__).parent / 'hazard_overrides.csv', generated, collected)
+        kept = {r['declaration_id']: r.get('event_date') for r in rows}
+        for key in ('UT-PROC-FE412163A3B81B99', 'UT-PROC-0913AB6026A8A313', 'UT-EO-2017-2', 'UT-EO-2020-61'):
+            self.assertIn(key, kept)
+        self.assertEqual(kept['UT-PROC-0913AB6026A8A313'], '2011-11-30')
