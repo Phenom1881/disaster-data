@@ -5,6 +5,19 @@ from pathlib import Path
 
 STATE = "KS"
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2000-present: KDEM disaster-declarations page from 2011, plus 27 declarations added by hand (manual_"
+    "declarations.csv): seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 dec"
+    "larations cited by executive orders and legislation printed in the Kansas Register, and 2006-2021 de"
+    "clarations dated from Adjutant General releases (archived on the Wayback Machine) and news coverage."
+    " No state declaration was found for DR-1327 (April 2000), DR-1402 (January 2002 ice storm), DR-1535 "
+    "and DR-1562 (2004), DR-1579, DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (Sep"
+    "tember 2008), DR-1849 (April-May 2009), DR-1932 (June 2010), DR-4654 (March 2022) or DR-4747 (summer"
+    " 2023)."
+)
+
 CAPABILITIES = {
     "structured_archive_coverage_start": "2009-03-26",
     "structured_archive_coverage_end": None,
@@ -49,9 +62,7 @@ def collect(workdir=".", scripts_dir=None):
     # scraper failed outright, so an empty week looked like a quiet one.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Kansas adapter: scrape failed")
-    note = ("2000-present: KDEM Kansas Disaster Declarations archive from 2011; earlier and unlabeled "
-            "declarations added by hand from KDEM's scanned proclamations, the Kansas Register, archived "
-            "Adjutant General releases and dated news coverage, kept in manual_declarations.csv")
+    note = COVERAGE_NOTE
     if "read from the KDEM News Flash" in (result.stdout or ""):
         # The declarations page was not understood this run; new declarations
         # came from KDEM's News Flash feed instead (see ks_eo_scraper.py).

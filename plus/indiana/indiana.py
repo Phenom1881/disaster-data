@@ -5,6 +5,13 @@ import sys
 from pathlib import Path
 
 STATE = "IN"
+
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-"
+    "2017) and pre-2005 pages not yet independently re-verified"
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Indiana Governor's Office Executive Orders and Reports (https://www.in.gov/gov/newsroom/executive-orders/) plus per-governor historical archives (Holcomb 2017-2025, Daniels 2005-2013) and the Indiana Register's Historical List of Executive Orders (https://iar.iga.in.gov/Historical-List-of-EOs.pdf)",
@@ -26,4 +33,4 @@ def collect(workdir=".", scripts_dir=None):
     # plus_build.log and a whole governor's orders could vanish without a trace.
     if result.stderr: print(result.stderr, file=sys.stderr)
     if result.returncode: raise RuntimeError("Indiana adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2000-present via current + historical governor archives; Pence-era (2013-2017) page structure not yet independently re-verified"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE

@@ -53,6 +53,12 @@ from pathlib import Path
 
 STATE = "NJ"
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "1990-present provisional structured coverage; 1962-1989 selectively represented"
+)
+
 CAPABILITIES = {
     "state": STATE,
     "structured_archive_available": True,
@@ -154,11 +160,7 @@ def collect(workdir=".", scripts_dir=None):
             "Check nj_eo_scraper.py output above for the specific failure."
         )
 
-    coverage = (
-        "1990-present (structured, provisional start date - see adapter "
-        "notes); 1962-1989 selectively represented only, not systematically "
-        "collected"
-    )
+    coverage = COVERAGE_NOTE
     print("New Jersey adapter: coverage = " + coverage)
     return join_out, coverage
 

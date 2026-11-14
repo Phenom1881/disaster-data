@@ -5,6 +5,13 @@ import sys
 from pathlib import Path
 
 STATE = "NH"
+
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emerg"
+    "encies declared without an executive order are added by hand from news coverage (NH-PROC ids)."
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "New Hampshire Secretary of State Executive Order Registry (https://www.sos.nh.gov/executive-orders)",
@@ -27,7 +34,7 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         reason = (result.stderr or "").strip().splitlines()
         raise RuntimeError("New Hampshire adapter: " + (reason[-1] if reason else "scrape failed"))
-    note = "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR"
+    note = COVERAGE_NOTE
     archived = next((line for line in (result.stdout or "").splitlines() if "Internet Archive copy from" in line), "")
     if archived:
         note += "; this run read the " + archived.split("read from the ", 1)[-1]

@@ -118,10 +118,7 @@ def collect(workdir=".", scripts_dir=None):
             "Review ny_eo_scraper.py output for the failing source."
         )
 
-    coverage = (
-        "2021-08-24-present comprehensive current archive; earlier official "
-        "records are selected continuing orders only and are explicitly labeled"
-    )
+    coverage = COVERAGE_NOTE
     print("New York adapter: coverage = " + coverage)
     return join_out, coverage
 

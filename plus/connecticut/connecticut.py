@@ -5,6 +5,14 @@ import sys
 from pathlib import Path
 
 STATE = "CT"
+
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration ta"
+    "ble. Plus 6 declarations added by hand from official announcements, order text and dated news covera"
+    "ge (manual_declarations.csv)."
+)
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Connecticut Governor Executive Orders (https://portal.ct.gov/governor/governors-actions/executive-orders)",
@@ -21,4 +29,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Connecticut adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table"
+    return workdir / "declarations_for_join.csv", COVERAGE_NOTE
