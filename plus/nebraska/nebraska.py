@@ -4,6 +4,18 @@ from pathlib import Path
 
 STATE = "NE"
 
+# Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
+# same text for builds without collection.
+COVERAGE_NOTE = (
+    "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executi"
+    "ve Orders index, rows kept only when a hazard or emergency keyword matched, plus Governor declaratio"
+    "ns made outside that index, added by hand from NEMA announcements, the Governor's proclamations as k"
+    "ept by FMCSA and dated news coverage (manual_declarations.csv); no state declaration has been found "
+    "yet for DR-1373, DR-1394, DR-1590, DR-1627, DR-1674, DR-1706, DR-1714, DR-1721, DR-1779, DR-1853, DR"
+    "-1864, DR-1878, DR-1902, DR-1945, DR-4013, DR-4014, EM-3323, DR-4179, DR-4321 or DR-4662; some 2021-"
+    "2026 fuel-supply orders left unclassified pending individual PDF review"
+)
+
 CAPABILITIES = {
     "structured_archive_coverage_start": "1965-08-13",
     "structured_archive_coverage_end": None,
@@ -28,6 +40,13 @@ CAPABILITIES = {
         "The index is tried at both of its addresses (eoindex.html and EOIndex.html) with two "
         "User-Agents; if none answers with a full index, the Internet Archive's latest copy is read "
         "and the coverage note says so. If that fails too the adapter exits with the reasons.",
+        "Before 2017 Nebraska governors declared most weather emergencies outside the executive order "
+        "index, so those declarations are added by hand in manual_declarations.csv: NEMA announcements, "
+        "the Governor's proclamations as kept by FMCSA (May 7, 2015 and June 28, 2018), and dated news "
+        "coverage for 2003-2024, each quoted in its hazard_overrides.csv note. Where a report gives no "
+        "signing day, its own date is used. No state declaration was found for 20 federal declarations, "
+        "most from the 2001-2011 Johanns and Heineman years, when the searches turned up only requests "
+        "for federal aid; the coverage note names them.",
     ],
 }
 
@@ -51,9 +70,6 @@ def collect(workdir=".", scripts_dir=None):
         raise RuntimeError("Nebraska adapter: " + (reason[-1][:300] if reason else "scrape failed"))
     return (
         workdir / "declarations_for_join.csv",
-        "2000-present from the Nebraska Library Commission mirror of the full "
-        "1965-present Governor's Executive Orders index, rows kept only when a hazard "
-        "or emergency keyword matched; some 2021-2026 fuel-supply orders left "
-        "unclassified pending individual PDF review"
+        COVERAGE_NOTE
         + ("; this run read the Internet Archive copy of the index" if "Internet Archive copy" in (result.stdout or "") else ""),
     )
