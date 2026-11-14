@@ -12,8 +12,8 @@ COVERAGE_NOTE = (
     "ns made outside that index, added by hand from NEMA announcements, the Governor's proclamations as k"
     "ept by FMCSA and dated news coverage (manual_declarations.csv); no state declaration has been found "
     "yet for DR-1373, DR-1394, DR-1590, DR-1627, DR-1674, DR-1706, DR-1714, DR-1721, DR-1779, DR-1853, DR"
-    "-1864, DR-1878, DR-1902, DR-1945, DR-4013, DR-4014, EM-3323, DR-4179, DR-4321 or DR-4662; some 2021-"
-    "2026 fuel-supply orders left unclassified pending individual PDF review"
+    "-1864, DR-1878, DR-1902, DR-1945, DR-4013, DR-4014, EM-3323, DR-4321 or DR-4662; some 2021-2026 fuel"
+    "-supply orders left unclassified pending individual PDF review"
 )
 
 CAPABILITIES = {
