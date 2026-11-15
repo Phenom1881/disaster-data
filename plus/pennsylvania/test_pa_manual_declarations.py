@@ -18,7 +18,7 @@ GOVERNORS = [
     ("1995-01-17", "Tom Ridge"), ("2001-10-05", "Mark Schweiker"), ("2003-01-21", "Ed Rendell"),
     ("2011-01-18", "Tom Corbett"), ("2015-01-20", "Tom Wolf"),
 ]
-GAP_DECLARATIONS = ["DR-1684", "DR-4003", "DR-4149", "DR-1538"]
+GAP_DECLARATIONS = ["DR-1684", "DR-4003", "DR-1538"]
 
 
 def csv_rows(name):
@@ -42,7 +42,7 @@ class HandAddedProclamationTests(unittest.TestCase):
             "PA-PROC-2003-08-06": "2003-08-06", "PA-PROC-2003-09-18": "2003-09-18",
             "PA-PROC-2004-09-15": "2004-09-15", "PA-PROC-2004-09-17": "2004-09-17",
             "PA-PROC-2005-04-03": "2005-04-03", "PA-PROC-2006-06-28": "2006-06-28",
-            "PA-PROC-2010-02-06": "2010-02-06",
+            "PA-PROC-2010-02-06": "2010-02-06", "PA-PROC-2013-07-24": "2013-07-24",
         }
         self.assertEqual({k: dates.get(k) for k in expected}, expected)
 

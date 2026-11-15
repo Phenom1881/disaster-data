@@ -10,12 +10,12 @@ from pathlib import Path
 STATE = "PA"
 
 COVERAGE_NOTE = (
-    "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm "
-    "disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the "
-    "Pennsylvania Bulletin, PEMA records and press coverage; no dated proclamation has "
-    "been found yet for November 2006, April 2011 or summer 2013 (DR-1684, DR-4003, "
-    "DR-4149), and the August 2004 storms (DR-1538) match only through the September 2004"
-    " Frances proclamation"
+    "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm disaster "
+    "proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the Pennsylvania Bulle"
+    "tin, PEMA records and press coverage; the July 24, 2013 June-storms proclamation (DR-4149)"
+    " is compared on the storms' first day; no dated proclamation has been found yet for Novemb"
+    "er 2006 or April 2011 (DR-1684, DR-4003), and the August 2004 storms (DR-1538) match only "
+    "through the September 2004 Frances proclamation"
 )
 
 CAPABILITIES = {
