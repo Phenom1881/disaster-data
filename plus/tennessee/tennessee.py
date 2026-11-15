@@ -9,12 +9,21 @@ STATE = "TN"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: the Governor's executive orders from the Secretary of State catalog "
-    "(through the University of Memphis mirror), the Governor's state of emergency "
-    'proclamations from 2012, and declarations added by hand from TEMA reports, official '
-    'announcements, order text and dated news coverage; most emergencies TEMA declared by '
-    'activating the state emergency plan, without an order or proclamation, have no dated '
-    'record yet'
+    "2000-present: the Governor's executive orders from the Secretary of State "
+    "catalog (through the University of Memphis mirror), the Governor's state of "
+    "emergency proclamations from 2012, and declarations added by hand from TEMA "
+    "reports, official announcements, order text and dated news coverage; most "
+    "emergencies TEMA declared by activating the state emergency plan, without an "
+    "order or proclamation, have no dated record yet. Under the Tennessee Emergency "
+    "Management Plan, a signed executive order of the Governor, a state of emergency "
+    "occurs automatically when TEMA activates at Level 3 or above; such an emergency "
+    "is listed when a dated TEMA release shows Level 3 or a state of emergency for "
+    "that event. Federal declarations since 2000 with no dated state record yet: "
+    "DR-1331, DR-1387, DR-1408, DR-1441, DR-1456, DR-1464, DR-1482, DR-1568, DR-1634, "
+    "DR-1839, DR-1851, DR-1856, DR-1937, DR-1965, DR-1978, DR-4005, DR-4189, DR-4471, "
+    "DR-4541, DR-4550, DR-4601, DR-4712, DR-4701, DR-4729, DR-4735, DR-4742. DR-4541 "
+    "and DR-4601 fell inside the Level 3 emergency already running for COVID-19, "
+    "which is not counted as a declaration for those storms."
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
