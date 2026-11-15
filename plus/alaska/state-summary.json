@@ -4,14 +4,13 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-  "coverage_base": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638)",
+  "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; the late November 2021 Kenai Peninsula declaration for the fall 2021 Southcentral storm (DR-4638) is dated by a January 3, 2022 report; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage_base": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; the late November 2021 Kenai Peninsula declaration for the fall 2021 Southcentral storm (DR-4638) is dated by a January 3, 2022 report; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391)",
   "federal_without_state": {
     "compared": 39,
-    "count": 2,
+    "count": 1,
     "covered_by_extension": [],
     "ids": [
-      "DR-4638",
       "DR-4391"
     ],
     "no_state_declaration": [],
@@ -21,7 +20,7 @@
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 46,
+    "action_count": 47,
     "federal_declaration_count": 95,
     "severity_rows": 206,
     "storm_match_rows": 273
@@ -33,11 +32,11 @@
   "source_records_saved_before": 6,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 37,
-    "federal_matched": 41,
+    "added_by_hand": 38,
+    "federal_matched": 42,
     "fmcsa_archive": 3,
     "noaa_matched": 32,
-    "noaa_none": 13,
+    "noaa_none": 14,
     "noaa_pending": 1,
     "reviewed_not_weather": 0,
     "state_archive": 6
@@ -45,7 +44,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 67.7,
-    "storm_join_seconds": 4.2
+    "collect_seconds": 45.1,
+    "storm_join_seconds": 2.7
   }
 }

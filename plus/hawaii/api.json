@@ -417,9 +417,20 @@
       "source_url": "https://archives.starbulletin.com/2004/11/01/news/story1.html",
       "state": "HI",
       "title": "State disaster proclamation for the October 30, 2004 Manoa Valley flash flood on Oahu"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2000-11-04",
+      "declaration_id": "HI-SOE-2000-11-04",
+      "governor": "Ben Cayetano",
+      "origin": "hand",
+      "source_url": "https://archives.starbulletin.com/2000/11/04/news/story1.html",
+      "state": "HI",
+      "title": "State of emergency for the entire Big Island after the late October to early November 2000 flooding (dated report of November 4, 2000)"
     }
   ],
-  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 28 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-09-03",
@@ -1205,14 +1216,11 @@
       "noaa_match_count": 6,
       "noaa_status": "matched",
       "title": "State disaster proclamation for the October 30, 2004 Manoa Valley flash flood on Oahu"
-    }
-  ],
-  "federal_match_window_days": 21,
-  "federal_without_state": {
-    "compared": 23,
-    "covered_by_extension": [],
-    "declarations": [
-      {
+    },
+    {
+      "date_signed": "2000-11-04",
+      "declaration_id": "HI-SOE-2000-11-04",
+      "federal_declaration": {
         "begin": "2000-10-28",
         "date": "2000-11-09",
         "end": "2000-11-02",
@@ -1221,18 +1229,35 @@
         "number": 1348,
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
-      }
-    ],
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "HAWAII",
+        "HONOLULU",
+        "KAUAI",
+        "MAUI",
+        "NORTH AND EAST HAWAII"
+      ],
+      "noaa_match_count": 9,
+      "noaa_status": "matched",
+      "title": "State of emergency for the entire Big Island after the late October to early November 2000 flooding (dated report of November 4, 2000)"
+    }
+  ],
+  "federal_match_window_days": 21,
+  "federal_without_state": {
+    "compared": 23,
+    "covered_by_extension": [],
+    "declarations": [],
     "no_state_declaration": [],
     "since": 2000
   },
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 38,
+    "action_count": 39,
     "federal_declaration_count": 77,
-    "severity_rows": 147,
-    "storm_match_rows": 348
+    "severity_rows": 152,
+    "storm_match_rows": 357
   },
   "name": "Hawaii",
   "noaa_data_through": "2026-07-30",
@@ -1241,10 +1266,10 @@
   "slug": "hawaii",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 27,
-    "federal_matched": 25,
+    "added_by_hand": 28,
+    "federal_matched": 26,
     "fmcsa_archive": 3,
-    "noaa_matched": 33,
+    "noaa_matched": 34,
     "noaa_none": 2,
     "noaa_pending": 3,
     "reviewed_not_weather": 0,

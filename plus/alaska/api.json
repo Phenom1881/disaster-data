@@ -201,6 +201,17 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2022-01-03",
+      "declaration_id": "AK-PROC-2022-01-03",
+      "governor": "Mike Dunleavy",
+      "origin": "hand",
+      "source_url": "https://www.ktoo.org/2022/01/03/southcentral-alaska-rain-storm-disaster-girdwood/",
+      "state": "AK",
+      "title": "State disaster for the Kenai Peninsula Borough after the late October 2021 storm and landslides, declared in late November 2021 (dated report of January 3, 2022; the day is not given)."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2020-12-04",
       "declaration_id": "AK-PROC-2020-12-04",
       "governor": "Mike Dunleavy",
@@ -507,7 +518,7 @@
       "title": "DCI 02-200, 2002 Interior Floods: state disaster for flooding in interior and western communities."
     }
   ],
-  "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; the late November 2021 Kenai Peninsula declaration for the fall 2021 Southcentral storm (DR-4638) is dated by a January 3, 2022 report; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-08-18",
@@ -940,6 +951,25 @@
       "noaa_match_count": 30,
       "noaa_status": "matched",
       "title": "Governor Dunleavy Declares a Disaster Emergency Due to Severe Winter Storms"
+    },
+    {
+      "date_signed": "2022-01-03",
+      "declaration_id": "AK-PROC-2022-01-03",
+      "federal_declaration": {
+        "begin": "2021-10-29",
+        "date": "2022-01-15",
+        "end": "2021-11-01",
+        "id": "DR-4638",
+        "incidentType": "Severe Storm",
+        "number": 4638,
+        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, FLOODING, LANDSLIDES, AND MUDSLIDES",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
+      "title": "State disaster for the Kenai Peninsula Borough after the late October 2021 storm and landslides, declared in late November 2021 (dated report of January 3, 2022; the day is not given)."
     },
     {
       "date_signed": "2020-12-04",
@@ -1581,16 +1611,6 @@
     "covered_by_extension": [],
     "declarations": [
       {
-        "begin": "2021-10-29",
-        "date": "2022-01-15",
-        "end": "2021-11-01",
-        "id": "DR-4638",
-        "incidentType": "Severe Storm",
-        "number": 4638,
-        "title": "SEVERE STORMS, STRAIGHT-LINE WINDS, FLOODING, LANDSLIDES, AND MUDSLIDES",
-        "type": "DR"
-      },
-      {
         "begin": "2018-05-11",
         "date": "2018-09-05",
         "end": "2018-05-13",
@@ -1607,7 +1627,7 @@
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 46,
+    "action_count": 47,
     "federal_declaration_count": 95,
     "severity_rows": 206,
     "storm_match_rows": 273
@@ -1619,11 +1639,11 @@
   "slug": "alaska",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 37,
-    "federal_matched": 41,
+    "added_by_hand": 38,
+    "federal_matched": 42,
     "fmcsa_archive": 3,
     "noaa_matched": 32,
-    "noaa_none": 13,
+    "noaa_none": 14,
     "noaa_pending": 1,
     "reviewed_not_weather": 0,
     "state_archive": 6

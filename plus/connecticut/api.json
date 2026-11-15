@@ -45,6 +45,17 @@
       "title": "Connecticut Declaration of Civil Preparedness Emergency 08192024. From FMCSA's copy: Yesterday, August 18, Connecticut experienced historic flooding due to severe rainstorms in portions of the state."
     },
     {
+      "action_number": "24-1",
+      "action_type": "declaration",
+      "date_signed": "2024-01-10",
+      "declaration_id": "CT-NEDLAMONT-EO-24-1",
+      "governor": "Ned Lamont",
+      "origin": "hand",
+      "source_url": "https://portal.ct.gov/governor/governors-actions/executive-orders/governor-lamonts-executive-orders",
+      "state": "CT",
+      "title": "Executive Order 24-1: emergency actions for severe weather and flooding on the Yantic River, requiring emergency work at the Fitchville Pond Dam in Bozrah"
+    },
+    {
       "action_number": "",
       "action_type": "declaration",
       "date_signed": "2021-09-02",
@@ -219,9 +230,20 @@
       "source_url": "https://portal.ct.gov/malloy-archive/press-room/press-releases/2011/01-2011/gov-malloy-signs-declaration-of-civil-preparedness-emergency-all-nonessential-state-workers-should-n",
       "state": "CT",
       "title": "Statewide civil preparedness emergency for a major snowstorm"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2010-03-30",
+      "declaration_id": "CT-PROC-2010-03-30",
+      "governor": "M. Jodi Rell",
+      "origin": "hand",
+      "source_url": "https://www.nbcconnecticut.com/news/local/governor-activates-150-national-guard-troops/1879088/",
+      "state": "CT",
+      "title": "State of emergency put in place after the March 13 to 14, 2010 nor'easter and still in force during the late March flooding (dated report of March 30, 2010; the signing day is not given)."
     }
   ],
-  "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 6 declarations added by hand from official announcements, order text and dated news coverage; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 8 declarations added by hand from official announcements, order text and dated news coverage; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-02-22",
@@ -313,6 +335,33 @@
       "noaa_match_count": 49,
       "noaa_status": "matched",
       "title": "Connecticut Declaration of Civil Preparedness Emergency 08192024. From FMCSA's copy: Yesterday, August 18, Connecticut experienced historic flooding due to severe rainstorms in portions of the state."
+    },
+    {
+      "date_signed": "2024-01-10",
+      "declaration_id": "CT-NEDLAMONT-EO-24-1",
+      "federal_declaration": {
+        "begin": "2024-01-10",
+        "date": "2024-01-13",
+        "end": "2024-01-13",
+        "id": "EM-3604",
+        "incidentType": "Severe Storm",
+        "number": 3604,
+        "title": "SEVERE STORMS, FLOODING, AND A POTENTIAL DAM BREACH",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "FAIRFIELD",
+        "LITCHFIELD",
+        "NEW LONDON",
+        "SOUTHERN FAIRFIELD",
+        "SOUTHERN MIDDLESEX",
+        "SOUTHERN NEW HAVEN",
+        "SOUTHERN NEW LONDON"
+      ],
+      "noaa_match_count": 10,
+      "noaa_status": "matched",
+      "title": "Executive Order 24-1: emergency actions for severe weather and flooding on the Yantic River, requiring emergency work at the Fitchville Pond Dam in Bozrah"
     },
     {
       "date_signed": "2021-09-02",
@@ -739,6 +788,32 @@
       "noaa_match_count": 13,
       "noaa_status": "matched",
       "title": "Statewide civil preparedness emergency for a major snowstorm"
+    },
+    {
+      "date_signed": "2010-03-30",
+      "declaration_id": "CT-PROC-2010-03-30",
+      "federal_declaration": {
+        "begin": "2010-03-12",
+        "date": "2010-04-23",
+        "end": "2010-05-17",
+        "id": "DR-1904",
+        "incidentType": "Severe Storm",
+        "number": 1904,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "FAIRFIELD",
+        "LITCHFIELD",
+        "MIDDLESEX",
+        "NEW HAVEN",
+        "NEW LONDON",
+        "WINDHAM"
+      ],
+      "noaa_match_count": 25,
+      "noaa_status": "matched",
+      "title": "State of emergency put in place after the March 13 to 14, 2010 nor'easter and still in force during the late March flooding (dated report of March 30, 2010; the signing day is not given)."
     }
   ],
   "federal_match_window_days": 21,
@@ -747,32 +822,12 @@
     "covered_by_extension": [],
     "declarations": [
       {
-        "begin": "2024-01-10",
-        "date": "2024-01-13",
-        "end": "2024-01-13",
-        "id": "EM-3604",
-        "incidentType": "Severe Storm",
-        "number": 3604,
-        "title": "SEVERE STORMS, FLOODING, AND A POTENTIAL DAM BREACH",
-        "type": "EM"
-      },
-      {
         "begin": "2018-09-25",
         "date": "2018-12-05",
         "end": "2018-09-26",
         "id": "DR-4410",
         "incidentType": "Severe Storm",
         "number": 4410,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2010-03-12",
-        "date": "2010-04-23",
-        "end": "2010-05-17",
-        "id": "DR-1904",
-        "incidentType": "Severe Storm",
-        "number": 1904,
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
       },
@@ -953,10 +1008,10 @@
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 20,
+    "action_count": 22,
     "federal_declaration_count": 43,
-    "severity_rows": 195,
-    "storm_match_rows": 411
+    "severity_rows": 208,
+    "storm_match_rows": 446
   },
   "name": "Connecticut",
   "noaa_data_through": "2026-07-30",
@@ -965,10 +1020,10 @@
   "slug": "connecticut",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 6,
-    "federal_matched": 12,
+    "added_by_hand": 8,
+    "federal_matched": 14,
     "fmcsa_archive": 4,
-    "noaa_matched": 19,
+    "noaa_matched": 21,
     "noaa_none": 1,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,

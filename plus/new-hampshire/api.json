@@ -135,6 +135,39 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2008-07-25",
+      "declaration_id": "NH-PROC-2008-07-25",
+      "governor": "John H. Lynch",
+      "origin": "state",
+      "source_url": "https://www.claimsjournal.com/news/east/2008/07/25/92228.htm",
+      "state": "NH",
+      "title": "State of emergency in Belknap, Carroll, Merrimack, Strafford and Rockingham counties for the July 24, 2008 severe storms and tornado"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2007-04-16",
+      "declaration_id": "NH-PROC-2007-04-16",
+      "governor": "John H. Lynch",
+      "origin": "state",
+      "source_url": "https://history.lanememoriallibrary.org/node/6261",
+      "state": "NH",
+      "title": "State of emergency for the April 2007 nor'easter flooding"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2006-05-15",
+      "declaration_id": "NH-PROC-2006-05-15",
+      "governor": "John H. Lynch",
+      "origin": "state",
+      "source_url": "https://amp.claimsjournal.com/news/east/2006/05/15/68348.htm",
+      "state": "NH",
+      "title": "State of emergency for the May 2006 flooding in southern New Hampshire"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2005-10-09",
       "declaration_id": "NH-PROC-2005-10-09",
       "governor": "John H. Lynch",
@@ -155,7 +188,7 @@
       "title": "An order declaring a limited state of emergency."
     }
   ],
-  "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids). Four federal declarations that Governor Sununu's own request letters say had no state declaration (DR-4624, DR-4693, DR-4740, DR-4771) are shown with that statement instead of as gaps (no_state_declaration.csv).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2025-12-12",
@@ -479,6 +512,93 @@
       "title": "An Order Declaring a State of Emergency Due to Severe Weather and Ice Storm."
     },
     {
+      "date_signed": "2008-07-25",
+      "declaration_id": "NH-PROC-2008-07-25",
+      "federal_declaration": {
+        "begin": "2008-07-24",
+        "date": "2008-09-05",
+        "end": "2008-08-14",
+        "id": "DR-1787",
+        "incidentType": "Severe Storm",
+        "number": 1787,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BELKNAP",
+        "CARROLL",
+        "CHESHIRE",
+        "HILLSBOROUGH",
+        "MERRIMACK",
+        "ROCKINGHAM",
+        "STRAFFORD"
+      ],
+      "noaa_match_count": 12,
+      "noaa_status": "matched",
+      "title": "State of emergency in Belknap, Carroll, Merrimack, Strafford and Rockingham counties for the July 24, 2008 severe storms and tornado"
+    },
+    {
+      "date_signed": "2007-04-16",
+      "declaration_id": "NH-PROC-2007-04-16",
+      "federal_declaration": {
+        "begin": "2007-04-15",
+        "date": "2007-04-27",
+        "end": "2007-04-23",
+        "id": "DR-1695",
+        "incidentType": "Severe Storm",
+        "number": 1695,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BELKNAP",
+        "CARROLL",
+        "CHESHIRE",
+        "COASTAL ROCKINGHAM",
+        "COOS",
+        "GRAFTON",
+        "HILLSBOROUGH",
+        "MERRIMACK",
+        "ROCKINGHAM",
+        "STRAFFORD",
+        "SULLIVAN"
+      ],
+      "noaa_match_count": 21,
+      "noaa_status": "matched",
+      "title": "State of emergency for the April 2007 nor'easter flooding"
+    },
+    {
+      "date_signed": "2006-05-15",
+      "declaration_id": "NH-PROC-2006-05-15",
+      "federal_declaration": {
+        "begin": "2006-05-12",
+        "date": "2006-05-25",
+        "end": "2006-05-23",
+        "id": "DR-1643",
+        "incidentType": "Severe Storm",
+        "number": 1643,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BELKNAP",
+        "CARROLL",
+        "COASTAL ROCKINGHAM",
+        "GRAFTON",
+        "HILLSBOROUGH",
+        "MERRIMACK",
+        "ROCKINGHAM",
+        "STRAFFORD",
+        "SULLIVAN"
+      ],
+      "noaa_match_count": 17,
+      "noaa_status": "matched",
+      "title": "State of emergency for the May 2006 flooding in southern New Hampshire"
+    },
+    {
       "date_signed": "2005-10-09",
       "declaration_id": "NH-PROC-2005-10-09",
       "federal_declaration": {
@@ -561,52 +681,12 @@
         "type": "DR"
       },
       {
-        "begin": "2024-01-09",
-        "date": "2024-04-19",
-        "end": "2024-01-14",
-        "id": "DR-4771",
-        "incidentType": "Severe Storm",
-        "number": 4771,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
         "begin": "2023-12-17",
         "date": "2024-02-27",
         "end": "2023-12-21",
         "id": "DR-4761",
         "incidentType": "Severe Storm",
         "number": 4761,
-        "title": "SEVERE STORM AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2023-07-09",
-        "date": "2023-09-14",
-        "end": "2023-07-17",
-        "id": "DR-4740",
-        "incidentType": "Flood",
-        "number": 4740,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2022-12-22",
-        "date": "2023-03-15",
-        "end": "2022-12-25",
-        "id": "DR-4693",
-        "incidentType": "Severe Storm",
-        "number": 4693,
-        "title": "SEVERE STORM AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2021-07-29",
-        "date": "2021-10-04",
-        "end": "2021-08-02",
-        "id": "DR-4624",
-        "incidentType": "Flood",
-        "number": 4624,
         "title": "SEVERE STORM AND FLOODING",
         "type": "DR"
       },
@@ -737,46 +817,6 @@
         "id": "DR-1799",
         "incidentType": "Severe Storm",
         "number": 1799,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2008-07-24",
-        "date": "2008-09-05",
-        "end": "2008-08-14",
-        "id": "DR-1787",
-        "incidentType": "Severe Storm",
-        "number": 1787,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2008-07-24",
-        "date": "2008-08-11",
-        "end": "2008-07-24",
-        "id": "DR-1782",
-        "incidentType": "Severe Storm",
-        "number": 1782,
-        "title": "SEVERE STORMS, TORNADO, AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2007-04-15",
-        "date": "2007-04-27",
-        "end": "2007-04-23",
-        "id": "DR-1695",
-        "incidentType": "Severe Storm",
-        "number": 1695,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2006-05-12",
-        "date": "2006-05-25",
-        "end": "2006-05-23",
-        "id": "DR-1643",
-        "incidentType": "Severe Storm",
-        "number": 1643,
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
       },
@@ -931,16 +971,45 @@
         "type": "DR"
       }
     ],
-    "no_state_declaration": [],
+    "no_state_declaration": [
+      {
+        "fema_url": "https://www.fema.gov/disaster/4771",
+        "id": "DR-4771",
+        "source_title": "Governor Sununu's request for a major disaster declaration for the January 9 to 14, 2024 severe storms and flooding, March 28, 2024",
+        "source_url": "https://www.test-wcm.nh.gov/sites/g/files/ehbemt696/files/inline-documents/20242803-disaster-request.pdf",
+        "statement": "While I did not declare a State of Emergency in New Hampshire"
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4740",
+        "id": "DR-4740",
+        "source_title": "Governor Sununu's request for a major disaster declaration for the July 9 to 17, 2023 severe storms and flooding, August 30, 2023",
+        "source_url": "https://www.governor.nh.gov/sites/g/files/ehbemt336/files/inline-documents/sonh/20230830-july-storm-declaration-request.pdf",
+        "statement": "While I did not declare a State of Emergency in New Hampshire"
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4693",
+        "id": "DR-4693",
+        "source_title": "Governor Sununu's request for a major disaster declaration for the December 22 to 25, 2022 severe storm and flooding, February 17, 2023",
+        "source_url": "https://www.governor.nh.gov/sites/g/files/ehbemt336/files/inline-documents/sonh/20230217-disaster.pdf",
+        "statement": "While I did not declare a State of Emergency in NH"
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4624",
+        "id": "DR-4624",
+        "source_title": "Governor Sununu's request for a major disaster declaration for the July 29 to August 2, 2021 severe storms and flooding, September 20, 2021",
+        "source_url": "https://www.governor.nh.gov/sites/g/files/ehbemt336/files/documents/20210920-disaster-request.pdf",
+        "statement": "While I did not declare a State of Emergency in NH"
+      }
+    ],
     "since": 1990
   },
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 14,
+    "action_count": 17,
     "federal_declaration_count": 64,
-    "severity_rows": 139,
-    "storm_match_rows": 173
+    "severity_rows": 166,
+    "storm_match_rows": 223
   },
   "name": "New Hampshire",
   "noaa_data_through": "2026-07-30",
@@ -950,13 +1019,13 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 10,
+    "federal_matched": 13,
     "fmcsa_archive": 6,
-    "noaa_matched": 11,
+    "noaa_matched": 14,
     "noaa_none": 3,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
-    "state_archive": 8
+    "state_archive": 11
   },
   "state": "NH"
 }

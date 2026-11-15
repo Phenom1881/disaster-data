@@ -153,9 +153,20 @@
       "source_url": "https://www.reviewjournal.com/news/levee-break-floods-fernley/",
       "state": "NV",
       "title": "State of emergency for Lyon County after the Truckee Canal levee broke and flooded Fernley during a winter storm."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2006-01-03",
+      "declaration_id": "NV-SOE-2006-01-03",
+      "governor": "Kenny Guinn",
+      "origin": "hand",
+      "source_url": "https://www.recordcourier.com/news/2006/jan/04/nice-weather-for-a-disaster/",
+      "state": "NV",
+      "title": "Disaster declaration for most of western Nevada, including Carson Valley, after the New Year's 2006 flooding"
     }
   ],
-  "coverage": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire, the winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, DR-1583, DR-1629) have no state declaration; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus Guinn's January 3, 2006 flood disaster declaration and 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire and the winter 2004-2005 storms (DR-1540, EM-3202, EM-3204, DR-1583) have no state declaration; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2026-08-23",
@@ -448,14 +459,11 @@
       "noaa_match_count": 23,
       "noaa_status": "matched",
       "title": "State of emergency for Lyon County after the Truckee Canal levee broke and flooded Fernley during a winter storm."
-    }
-  ],
-  "federal_match_window_days": 21,
-  "federal_without_state": {
-    "compared": 11,
-    "covered_by_extension": [],
-    "declarations": [
-      {
+    },
+    {
+      "date_signed": "2006-01-03",
+      "declaration_id": "NV-SOE-2006-01-03",
+      "federal_declaration": {
         "begin": "2005-12-31",
         "date": "2006-02-03",
         "end": "2006-01-04",
@@ -465,6 +473,24 @@
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
       },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CARSON CITY (C)",
+        "DOUGLAS",
+        "LYON",
+        "STOREY",
+        "WASHOE"
+      ],
+      "noaa_match_count": 10,
+      "noaa_status": "matched",
+      "title": "Disaster declaration for most of western Nevada, including Carson Valley, after the New Year's 2006 flooding"
+    }
+  ],
+  "federal_match_window_days": 21,
+  "federal_without_state": {
+    "compared": 11,
+    "covered_by_extension": [],
+    "declarations": [
       {
         "begin": "2005-01-07",
         "date": "2005-03-07",
@@ -512,10 +538,10 @@
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 14,
+    "action_count": 15,
     "federal_declaration_count": 116,
-    "severity_rows": 62,
-    "storm_match_rows": 141
+    "severity_rows": 67,
+    "storm_match_rows": 151
   },
   "name": "Nevada",
   "noaa_data_through": "2026-07-30",
@@ -524,10 +550,10 @@
   "slug": "nevada",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 6,
-    "federal_matched": 9,
+    "added_by_hand": 7,
+    "federal_matched": 10,
     "fmcsa_archive": 2,
-    "noaa_matched": 10,
+    "noaa_matched": 11,
     "noaa_none": 2,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,

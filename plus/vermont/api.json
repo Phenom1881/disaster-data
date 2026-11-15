@@ -133,7 +133,7 @@
       "title": "State of emergency for flooding in Addison, Bennington, Windham and Windsor counties"
     }
   ],
-  "coverage": "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage. No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4178, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380, DR-4445, DR-4474, DR-4621, EM-3567 and DR-4695 (2017-2022), which are not in the Governor's numbered order list; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage": "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage. No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380 and EM-3567 (2017-2021), which are not in the Governor's numbered order list. For DR-4178 (April 2014), DR-4445 (April 2019), DR-4474 (October 2019), DR-4621 (July 2021) and DR-4695 (December 2022) the Governor's request letter says no gubernatorial State of Emergency was declared (no_state_declaration.csv); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
   "crosswalk": [
     {
       "date_signed": "2024-07-10",
@@ -524,26 +524,6 @@
     ],
     "declarations": [
       {
-        "begin": "2022-12-22",
-        "date": "2023-03-20",
-        "end": "2022-12-24",
-        "id": "DR-4695",
-        "incidentType": "Severe Storm",
-        "number": 4695,
-        "title": "SEVERE STORM AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2021-07-29",
-        "date": "2021-09-29",
-        "end": "2021-07-30",
-        "id": "DR-4621",
-        "incidentType": "Flood",
-        "number": 4621,
-        "title": "SEVERE STORM AND FLOODING",
-        "type": "DR"
-      },
-      {
         "begin": "2021-08-22",
         "date": "2021-08-22",
         "end": "2021-08-29",
@@ -552,26 +532,6 @@
         "number": 3567,
         "title": "TROPICAL STORM HENRI",
         "type": "EM"
-      },
-      {
-        "begin": "2019-10-31",
-        "date": "2020-01-17",
-        "end": "2019-11-01",
-        "id": "DR-4474",
-        "incidentType": "Severe Storm",
-        "number": 4474,
-        "title": "SEVERE STORM AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2019-04-15",
-        "date": "2019-06-14",
-        "end": "2019-04-15",
-        "id": "DR-4445",
-        "incidentType": "Flood",
-        "number": 4445,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
       },
       {
         "begin": "2018-05-04",
@@ -621,16 +581,6 @@
         "incidentType": "Severe Storm",
         "number": 4207,
         "title": "SEVERE WINTER STORM",
-        "type": "DR"
-      },
-      {
-        "begin": "2014-04-15",
-        "date": "2014-06-11",
-        "end": "2014-04-18",
-        "id": "DR-4178",
-        "incidentType": "Flood",
-        "number": 4178,
-        "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
       },
       {
@@ -764,7 +714,43 @@
         "type": "DR"
       }
     ],
-    "no_state_declaration": [],
+    "no_state_declaration": [
+      {
+        "fema_url": "https://www.fema.gov/disaster/4695",
+        "id": "DR-4695",
+        "source_title": "Governor Scott's request for a major disaster declaration for the December 22 to 24, 2022 storm, February 21, 2023",
+        "source_url": "https://governor.vermont.gov/sites/scott/files/documents/Major%20Disaster%20Declaration%20Request%20Vermont%2012.22.22-12.24.22.pdf",
+        "statement": "While a gubernatorial State of Emergency was not declared, the Vermont State Emergency Management Plan (SEMP) was implemented for this storm event."
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4621",
+        "id": "DR-4621",
+        "source_title": "Governor Scott's request for a major disaster declaration for the July 29 to 30, 2021 storm, September 13, 2021 (Joint Fiscal Office grant packet JFO 3095)",
+        "source_url": "https://ljfo.vermont.gov/assets/grants-documents/7be4b72c66/JFO-3095-packet.pdf",
+        "statement": "While a gubernatorial State of Emergency was not declared, the Towns of Putney and Townshend activated Local Emergency Operations Centers (EOCs)."
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4474",
+        "id": "DR-4474",
+        "source_title": "Governor Scott's request for a major disaster declaration for the October 31 to November 1, 2019 storm, December 20, 2019 (Joint Fiscal Office grant packet JFO 3009)",
+        "source_url": "https://ljfo.vermont.gov/assets/grants-documents/0f9d1769ae/JFO-3009-packet.pdf",
+        "statement": "While a gubernatorial State of Emergency was not declared, the towns of Fairfax and Montgomery in Franklin County and Johnson and Hyde Park in Lamoille County each declared a local State of Emergency."
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4445",
+        "id": "DR-4445",
+        "source_title": "Governor Scott's request for a major disaster declaration for the April 15, 2019 storm, May 29, 2019 (Joint Fiscal Office grant packet JFO 2973)",
+        "source_url": "https://ljfo.vermont.gov/assets/grants-documents/d04356d56c/JFO-2973-packet.pdf",
+        "statement": "While a gubernatorial State of Emergency was not declared, the Town of Pittsfield in Rutland County, pursuant to their Local Emergency Management Plan, submitted a Local Jurisdiction Request for Emergency Declaration ..."
+      },
+      {
+        "fema_url": "https://www.fema.gov/disaster/4178",
+        "id": "DR-4178",
+        "source_title": "Governor Shumlin's request for a major disaster declaration for the April 15 to 18, 2014 storms, May 21, 2014 (Joint Fiscal Office grant packet JFO 2705)",
+        "source_url": "https://ljfo.vermont.gov/assets/grants-documents/e5788730fb/JFO-2705-packet.pdf",
+        "statement": "Based on an on-the-ground assessment, I did not declare a State of Emergency but activated the State Emergency Operations Plan (SEOP) to facilitate the provision of state resources to support local response and recovery operations through the state multi-agency coordination system."
+      }
+    ],
     "since": 2000
   },
   "generated_on": "2026-11-15",

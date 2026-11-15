@@ -1248,18 +1248,42 @@
     {
       "date_signed": "2023-06-02",
       "declaration_id": "SD-EO-2023-08",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2023-04-09",
+        "date": "2023-07-06",
+        "end": "2023-05-05",
+        "id": "DR-4718",
+        "incidentType": "Flood",
+        "number": 4718,
+        "title": "FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
         "BEADLE",
+        "BROOKINGS",
         "BROWN",
-        "DAVISON",
-        "HANSON",
-        "HUTCHINSON",
-        "SANBORN",
-        "SPINK"
+        "CLARK",
+        "CODINGTON",
+        "CORSON",
+        "DAY",
+        "EDMUNDS",
+        "FAULK",
+        "GRANT",
+        "HAMLIN",
+        "HAND",
+        "HYDE",
+        "LINCOLN",
+        "MARSHALL",
+        "MCPHERSON",
+        "MINNEHAHA",
+        "MOODY",
+        "POTTER",
+        "ROBERTS",
+        "SPINK",
+        "UNION"
       ],
-      "noaa_match_count": 9,
+      "noaa_match_count": 54,
       "noaa_status": "matched",
       "title": "Emergency Disaster Declaration"
     },
@@ -4425,16 +4449,6 @@
     "covered_by_extension": [],
     "declarations": [
       {
-        "begin": "2023-04-09",
-        "date": "2023-07-06",
-        "end": "2023-05-05",
-        "id": "DR-4718",
-        "incidentType": "Flood",
-        "number": 4718,
-        "title": "FLOODING",
-        "type": "DR"
-      },
-      {
         "begin": "2005-06-07",
         "date": "2005-07-22",
         "end": "2005-06-08",
@@ -4483,8 +4497,8 @@
   "metrics": {
     "action_count": 85,
     "federal_declaration_count": 98,
-    "severity_rows": 2059,
-    "storm_match_rows": 4443
+    "severity_rows": 2074,
+    "storm_match_rows": 4488
   },
   "name": "South Dakota",
   "noaa_data_through": "2026-07-30",
@@ -4494,7 +4508,7 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 59,
+    "federal_matched": 60,
     "fmcsa_archive": 0,
     "noaa_matched": 71,
     "noaa_none": 13,

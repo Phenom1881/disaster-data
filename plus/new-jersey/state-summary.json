@@ -4,18 +4,17 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented",
-  "coverage_base": "1990-present provisional structured coverage; 1962-1989 selectively represented",
+  "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acting Governor Codey's Executive Order 28 (April 2005 flooding) added by hand, since the order index the scraper reads does not reach his 2004-2006 orders",
+  "coverage_base": "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acting Governor Codey's Executive Order 28 (April 2005 flooding) added by hand (manual_declarations.csv), since the order index the scraper reads does not reach his 2004-2006 orders",
   "federal_without_state": {
     "compared": 37,
-    "count": 5,
+    "count": 4,
     "covered_by_extension": [],
     "ids": [
       "DR-4231",
       "DR-4070",
       "DR-4039",
-      "DR-1873",
-      "DR-1588"
+      "DR-1873"
     ],
     "no_state_declaration": [],
     "since": 1990
@@ -24,10 +23,10 @@
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 83,
+    "action_count": 84,
     "federal_declaration_count": 59,
-    "severity_rows": 1380,
-    "storm_match_rows": 2131
+    "severity_rows": 1397,
+    "storm_match_rows": 2148
   },
   "name": "New Jersey",
   "retried": false,
@@ -36,10 +35,10 @@
   "source_records_saved_before": 86,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 32,
+    "added_by_hand": 1,
+    "federal_matched": 33,
     "fmcsa_archive": 0,
-    "noaa_matched": 70,
+    "noaa_matched": 71,
     "noaa_none": 12,
     "noaa_pending": 1,
     "reviewed_not_weather": 3,
@@ -48,7 +47,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 537.9,
-    "storm_join_seconds": 12.9
+    "collect_seconds": 370.5,
+    "storm_join_seconds": 6.5
   }
 }

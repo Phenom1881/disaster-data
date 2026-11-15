@@ -628,6 +628,17 @@
       "title": "Declares a State of Emergency presently exists throughout the State of New Jersey."
     },
     {
+      "action_number": "28",
+      "action_type": "declaration",
+      "date_signed": "2005-04-03",
+      "declaration_id": "NJ-CODEY-EO-28",
+      "governor": "Richard J. Codey",
+      "origin": "hand",
+      "source_url": "https://www.nj.gov/infobank/circular/eoc28.htm",
+      "state": "NJ",
+      "title": "Declares a State of Emergency throughout the State of New Jersey for the severe weather, heavy rain, high winds and river flooding beginning April 2, 2005"
+    },
+    {
       "action_number": "131",
       "action_type": "declaration",
       "date_signed": "2004-09-18",
@@ -914,7 +925,7 @@
       "title": "Ratifies verbal declaration by Acting Governor John Lynch of a limited State of Emergency."
     }
   ],
-  "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented",
+  "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acting Governor Codey's Executive Order 28 (April 2005 flooding) added by hand, since the order index the scraper reads does not reach his 2004-2006 orders",
   "crosswalk": [
     {
       "date_signed": "2026-09-25",
@@ -2732,6 +2743,42 @@
       "title": "Declares a State of Emergency presently exists throughout the State of New Jersey."
     },
     {
+      "date_signed": "2005-04-03",
+      "declaration_id": "NJ-CODEY-EO-28",
+      "federal_declaration": {
+        "begin": "2005-04-01",
+        "date": "2005-04-19",
+        "end": "2005-04-03",
+        "id": "DR-1588",
+        "incidentType": "Severe Storm",
+        "number": 1588,
+        "title": "SEVERE STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BERGEN",
+        "CAMDEN",
+        "EASTERN PASSAIC",
+        "ESSEX",
+        "GLOUCESTER",
+        "HUDSON",
+        "HUNTERDON",
+        "MERCER",
+        "MORRIS",
+        "NORTHWESTERN BURLINGTON",
+        "SALEM",
+        "SOMERSET",
+        "SUSSEX",
+        "UNION",
+        "WARREN",
+        "WESTERN PASSAIC"
+      ],
+      "noaa_match_count": 17,
+      "noaa_status": "matched",
+      "title": "Declares a State of Emergency throughout the State of New Jersey for the severe weather, heavy rain, high winds and river flooding beginning April 2, 2005"
+    },
+    {
       "date_signed": "2004-09-18",
       "declaration_id": "NJ-MCGREEVEY-EO-131",
       "federal_declaration": {
@@ -3452,16 +3499,6 @@
         "number": 1873,
         "title": "SNOWSTORM",
         "type": "DR"
-      },
-      {
-        "begin": "2005-04-01",
-        "date": "2005-04-19",
-        "end": "2005-04-03",
-        "id": "DR-1588",
-        "incidentType": "Severe Storm",
-        "number": 1588,
-        "title": "SEVERE STORMS AND FLOODING",
-        "type": "DR"
       }
     ],
     "no_state_declaration": [],
@@ -3470,10 +3507,10 @@
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 83,
+    "action_count": 84,
     "federal_declaration_count": 59,
-    "severity_rows": 1380,
-    "storm_match_rows": 2131
+    "severity_rows": 1397,
+    "storm_match_rows": 2148
   },
   "name": "New Jersey",
   "noaa_data_through": "2026-07-30",
@@ -3482,10 +3519,10 @@
   "slug": "new-jersey",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 32,
+    "added_by_hand": 1,
+    "federal_matched": 33,
     "fmcsa_archive": 0,
-    "noaa_matched": 70,
+    "noaa_matched": 71,
     "noaa_none": 12,
     "noaa_pending": 1,
     "reviewed_not_weather": 3,

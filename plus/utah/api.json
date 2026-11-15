@@ -144,6 +144,17 @@
       "title": "Declaring a State of Emergency Due to Drought Conditions"
     },
     {
+      "action_number": "2020-61",
+      "action_type": "declaration",
+      "date_signed": "2020-09-09",
+      "declaration_id": "UT-EO-2020-61",
+      "governor": "Gary R. Herbert",
+      "origin": "hand",
+      "source_url": "https://rules.utah.gov/wp-content/uploads/Utah-Executive-Order-No.-61.pdf",
+      "state": "UT",
+      "title": "Declaring a State of Emergency Due to Severe Weather (the September 8, 2020 windstorm)"
+    },
+    {
       "action_number": "2019-7",
       "action_type": "declaration",
       "date_signed": "2019-10-09",
@@ -175,6 +186,17 @@
       "source_url": "https://rules.utah.gov/wp-content/uploads/ExecDoc160647.pdf",
       "state": "UT",
       "title": "Declaring a State of Emergency Due to Potential Flooding"
+    },
+    {
+      "action_number": "2017-2",
+      "action_type": "declaration",
+      "date_signed": "2017-03-31",
+      "declaration_id": "UT-EO-2017-2",
+      "governor": "Gary R. Herbert",
+      "origin": "hand",
+      "source_url": "https://rules.utah.gov/wp-content/uploads/ExecDoc158666.pdf",
+      "state": "UT",
+      "title": "Declaring a State of Emergency Due to Flooding and Potential Additional Flooding in Box Elder and Cache Counties"
     },
     {
       "action_number": "",
@@ -353,7 +375,7 @@
       "title": "Declaring a State of Emergency Because of Drought in San Juan County"
     }
   ],
-  "coverage": "2000-present Office of Administrative Rules executive-document indexes and legal texts",
+  "coverage": "2000-present Office of Administrative Rules executive-document indexes and legal texts, plus Executive Order 2017-2 (missing from the index) and Executive Order 2020-61 (a windstorm order the scraper took for a COVID-19 one) added by hand. Orders signed weeks after the storm they declare are compared on the storm's first day",
   "crosswalk": [
     {
       "date_signed": "2026-07-22",
@@ -596,6 +618,36 @@
       "title": "Declaring a State of Emergency Due to Drought Conditions"
     },
     {
+      "date_signed": "2020-09-09",
+      "declaration_id": "UT-EO-2020-61",
+      "federal_declaration": {
+        "begin": "2020-09-07",
+        "date": "2021-01-12",
+        "end": "2020-09-08",
+        "id": "DR-4578",
+        "incidentType": "Severe Storm",
+        "number": 4578,
+        "title": "STRAIGHT-LINE WINDS",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "CACHE VALLEY/UTAH",
+        "CANYONLANDS / NATURAL BRIDGES",
+        "EASTERN UINTA BASIN",
+        "GREAT SALT LAKE DESERT AND MOUNTAINS",
+        "NORTHERN WASATCH FRONT",
+        "SALT LAKE AND TOOELE VALLEYS",
+        "UTAHS DIXIE AND ZION NATIONAL PARK",
+        "WASATCH MOUNTAIN VALLEYS",
+        "WASATCH MOUNTAINS I-80 NORTH",
+        "WASATCH MOUNTAINS SOUTH OF I-80"
+      ],
+      "noaa_match_count": 20,
+      "noaa_status": "matched",
+      "title": "Declaring a State of Emergency Due to Severe Weather (the September 8, 2020 windstorm)"
+    },
+    {
       "date_signed": "2019-10-09",
       "declaration_id": "UT-EO-2019-7",
       "federal_declaration": null,
@@ -655,6 +707,30 @@
       "title": "Declaring a State of Emergency Due to Potential Flooding"
     },
     {
+      "date_signed": "2017-03-31",
+      "declaration_id": "UT-EO-2017-2",
+      "federal_declaration": {
+        "begin": "2017-02-07",
+        "date": "2017-04-21",
+        "end": "2017-02-27",
+        "id": "DR-4311",
+        "incidentType": "Flood",
+        "number": 4311,
+        "title": "SEVERE WINTER STORMS AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BOX ELDER",
+        "CACHE",
+        "RICH",
+        "WEBER"
+      ],
+      "noaa_match_count": 4,
+      "noaa_status": "matched",
+      "title": "Declaring a State of Emergency Due to Flooding and Potential Additional Flooding in Box Elder and Cache Counties"
+    },
+    {
       "date_signed": "2012-09-20",
       "declaration_id": "UT-PROC-FCB9D6FCA25AD52C",
       "federal_declaration": {
@@ -676,30 +752,30 @@
     {
       "date_signed": "2012-01-20",
       "declaration_id": "UT-PROC-0913AB6026A8A313",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
+      "federal_declaration": {
+        "begin": "2011-11-30",
+        "date": "2012-02-01",
+        "end": "2011-12-01",
+        "id": "DR-4053",
+        "incidentType": "Severe Storm",
+        "number": 4053,
+        "title": "SEVERE STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
       "noaa_areas": [
-        "CACHE VALLEY/UTAH",
-        "CANYONLANDS / NATURAL BRIDGES",
+        "CASTLE COUNTRY",
         "CENTRAL MOUNTAINS",
         "EASTERN UINTA MOUNTAINS",
-        "GLEN CANYON RECREATION AREA/LAKE POWELL",
         "GREAT SALT LAKE DESERT AND MOUNTAINS",
         "LA SAL & ABAJO MOUNTAINS",
         "NORTHERN WASATCH FRONT",
         "SALT LAKE AND TOOELE VALLEYS",
-        "SOUTH CENTRAL UTAH",
-        "SOUTHEAST UTAH",
         "SOUTHERN MOUNTAINS",
         "TAVAPUTS PLATEAU",
-        "WASATCH MOUNTAIN VALLEYS",
-        "WASATCH MOUNTAINS I-80 NORTH",
-        "WASATCH MOUNTAINS SOUTH OF I-80",
-        "WASATCH PLATEAU/BOOK CLIFFS",
-        "WEST CENTRAL UTAH",
-        "WESTERN UINTA MOUNTAINS"
+        "UTAHS DIXIE AND ZION NATIONAL PARK"
       ],
-      "noaa_match_count": 23,
+      "noaa_match_count": 14,
       "noaa_status": "matched",
       "title": "Declaring a State of Emergency Due to Winter Storm in Davis County"
     },
@@ -742,11 +818,23 @@
     {
       "date_signed": "2011-01-19",
       "declaration_id": "UT-PROC-FE412163A3B81B99",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "federal_declaration": {
+        "begin": "2010-12-20",
+        "date": "2011-02-11",
+        "end": "2010-12-24",
+        "id": "DR-1955",
+        "incidentType": "Flood",
+        "number": 1955,
+        "title": "SEVERE WINTER STORM AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "KANE",
+        "WASHINGTON"
+      ],
+      "noaa_match_count": 2,
+      "noaa_status": "matched",
       "title": "Declaring a State of Emergency due to Flooding and Runoff in Washington and Kane Counties."
     },
     {
@@ -934,58 +1022,17 @@
   "federal_without_state": {
     "compared": 10,
     "covered_by_extension": [],
-    "declarations": [
-      {
-        "begin": "2020-09-07",
-        "date": "2021-01-12",
-        "end": "2020-09-08",
-        "id": "DR-4578",
-        "incidentType": "Severe Storm",
-        "number": 4578,
-        "title": "STRAIGHT-LINE WINDS",
-        "type": "DR"
-      },
-      {
-        "begin": "2017-02-07",
-        "date": "2017-04-21",
-        "end": "2017-02-27",
-        "id": "DR-4311",
-        "incidentType": "Flood",
-        "number": 4311,
-        "title": "SEVERE WINTER STORMS AND FLOODING",
-        "type": "DR"
-      },
-      {
-        "begin": "2011-11-30",
-        "date": "2012-02-01",
-        "end": "2011-12-01",
-        "id": "DR-4053",
-        "incidentType": "Severe Storm",
-        "number": 4053,
-        "title": "SEVERE STORM",
-        "type": "DR"
-      },
-      {
-        "begin": "2010-12-20",
-        "date": "2011-02-11",
-        "end": "2010-12-24",
-        "id": "DR-1955",
-        "incidentType": "Flood",
-        "number": 1955,
-        "title": "SEVERE WINTER STORM AND FLOODING",
-        "type": "DR"
-      }
-    ],
+    "declarations": [],
     "no_state_declaration": [],
     "since": 2000
   },
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 32,
+    "action_count": 34,
     "federal_declaration_count": 62,
-    "severity_rows": 125,
-    "storm_match_rows": 172
+    "severity_rows": 142,
+    "storm_match_rows": 189
   },
   "name": "Utah",
   "noaa_data_through": "2026-07-30",
@@ -994,11 +1041,11 @@
   "slug": "utah",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 0,
-    "federal_matched": 12,
+    "added_by_hand": 2,
+    "federal_matched": 16,
     "fmcsa_archive": 0,
-    "noaa_matched": 21,
-    "noaa_none": 11,
+    "noaa_matched": 24,
+    "noaa_none": 10,
     "noaa_pending": 0,
     "reviewed_not_weather": 1,
     "state_archive": 32

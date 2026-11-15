@@ -7,16 +7,15 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the January 2012 tornadoes (DR-4052), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)",
-      "coverage_base": "2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the January 2012 tornadoes (DR-4052), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)",
+      "coverage": "2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods and the January 2012 tornadoes); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)",
+      "coverage_base": "2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods and the January 2012 tornadoes); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)",
       "federal_without_state": {
         "compared": 48,
-        "count": 8,
+        "count": 7,
         "covered_by_extension": [],
         "ids": [
           "EM-3618",
           "DR-4632",
-          "DR-4052",
           "DR-1842",
           "DR-1399",
           "DR-1362",
@@ -30,10 +29,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 67,
+        "action_count": 68,
         "federal_declaration_count": 103,
-        "severity_rows": 1809,
-        "storm_match_rows": 3739
+        "severity_rows": 1835,
+        "storm_match_rows": 3794
       },
       "name": "Alabama",
       "retried": false,
@@ -42,10 +41,10 @@
       "source_records_saved_before": 31,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 36,
-        "federal_matched": 36,
+        "added_by_hand": 37,
+        "federal_matched": 37,
         "fmcsa_archive": 0,
-        "noaa_matched": 64,
+        "noaa_matched": 65,
         "noaa_none": 2,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
@@ -54,8 +53,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.7,
-        "storm_join_seconds": 45.9
+        "collect_seconds": 0.5,
+        "storm_join_seconds": 28.8
       }
     },
     {
@@ -64,14 +63,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638)",
+      "coverage": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; the late November 2021 Kenai Peninsula declaration for the fall 2021 Southcentral storm (DR-4638) is dated by a January 3, 2022 report; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster declarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State Hazard Mitigation Plans), DHS&EM releases and news coverage; the late November 2021 Kenai Peninsula declaration for the fall 2021 Southcentral storm (DR-4638) is dated by a January 3, 2022 report; no dated state declaration has been found for the May 2018 Susitna River flood (DR-4391)",
       "federal_without_state": {
         "compared": 39,
-        "count": 2,
+        "count": 1,
         "covered_by_extension": [],
         "ids": [
-          "DR-4638",
           "DR-4391"
         ],
         "no_state_declaration": [],
@@ -81,7 +79,7 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 46,
+        "action_count": 47,
         "federal_declaration_count": 95,
         "severity_rows": 206,
         "storm_match_rows": 273
@@ -93,11 +91,11 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 37,
-        "federal_matched": 41,
+        "added_by_hand": 38,
+        "federal_matched": 42,
         "fmcsa_archive": 3,
         "noaa_matched": 32,
-        "noaa_none": 13,
+        "noaa_none": 14,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
         "state_archive": 6
@@ -105,8 +103,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 67.7,
-        "storm_join_seconds": 4.2
+        "collect_seconds": 45.1,
+        "storm_join_seconds": 2.7
       }
     },
     {
@@ -115,15 +113,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
-      "coverage_base": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
+      "coverage": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's October 24, 2000 storm and flood emergency (Wenden, Hurricane Olivia) is dated from a FEMA release; her other 2000-2001 weather emergencies (Mohave County windstorm, August 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
+      "coverage_base": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's October 24, 2000 storm and flood emergency (Wenden, Hurricane Olivia) is dated from a FEMA release; her other 2000-2001 weather emergencies (Mohave County windstorm, August 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
       "federal_without_state": {
         "compared": 12,
-        "count": 1,
+        "count": 0,
         "covered_by_extension": [],
-        "ids": [
-          "DR-1347"
-        ],
+        "ids": [],
         "no_state_declaration": [],
         "since": 2000
       },
@@ -131,10 +127,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 61,
+        "action_count": 62,
         "federal_declaration_count": 120,
-        "severity_rows": 426,
-        "storm_match_rows": 1338
+        "severity_rows": 437,
+        "storm_match_rows": 1351
       },
       "name": "Arizona",
       "retried": false,
@@ -143,10 +139,10 @@
       "source_records_saved_before": 8,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 53,
-        "federal_matched": 39,
+        "added_by_hand": 54,
+        "federal_matched": 40,
         "fmcsa_archive": 0,
-        "noaa_matched": 54,
+        "noaa_matched": 55,
         "noaa_none": 5,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
@@ -155,8 +151,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 43.3,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 55.4,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -165,18 +161,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for February and May 2008, December 2009, May 2011 and June 2019 still have no dated state declaration",
-      "coverage_base": "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for February and May 2008, December 2009, May 2011 and June 2019 still have no dated state declaration",
+      "coverage": "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for December 2009, May 2011 and June 2019 still have no dated state declaration",
+      "coverage_base": "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for December 2009, May 2011 and June 2019 still have no dated state declaration",
       "federal_without_state": {
         "compared": 46,
-        "count": 13,
+        "count": 11,
         "covered_by_extension": [],
         "ids": [
           "DR-4460",
           "DR-4000",
           "DR-1872",
-          "DR-1758",
-          "DR-1744",
           "DR-1528",
           "DR-1516",
           "DR-1472",
@@ -193,10 +187,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 56,
+        "action_count": 58,
         "federal_declaration_count": 89,
-        "severity_rows": 1803,
-        "storm_match_rows": 3608
+        "severity_rows": 1887,
+        "storm_match_rows": 3761
       },
       "name": "Arkansas",
       "retried": false,
@@ -205,10 +199,10 @@
       "source_records_saved_before": 10,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 46,
-        "federal_matched": 39,
+        "added_by_hand": 48,
+        "federal_matched": 41,
         "fmcsa_archive": 0,
-        "noaa_matched": 51,
+        "noaa_matched": 53,
         "noaa_none": 4,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
@@ -217,8 +211,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.2,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 1.9,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -265,8 +259,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 35.1,
-        "storm_join_seconds": 1.7
+        "collect_seconds": 33.5,
+        "storm_join_seconds": 1.1
       }
     },
     {
@@ -317,8 +311,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 73.6,
-        "storm_join_seconds": 2.8
+        "collect_seconds": 42.7,
+        "storm_join_seconds": 1.7
       }
     },
     {
@@ -327,16 +321,14 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 6 declarations added by hand from official announcements, order text and dated news coverage; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 6 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
+      "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 8 declarations added by hand from official announcements, order text and dated news coverage; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 8 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
       "federal_without_state": {
         "compared": 37,
-        "count": 20,
+        "count": 18,
         "covered_by_extension": [],
         "ids": [
-          "EM-3604",
           "DR-4410",
-          "DR-1904",
           "DR-1700",
           "EM-3266",
           "DR-1619",
@@ -362,10 +354,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 20,
+        "action_count": 22,
         "federal_declaration_count": 43,
-        "severity_rows": 195,
-        "storm_match_rows": 411
+        "severity_rows": 208,
+        "storm_match_rows": 446
       },
       "name": "Connecticut",
       "retried": false,
@@ -374,10 +366,10 @@
       "source_records_saved_before": 10,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 6,
-        "federal_matched": 12,
+        "added_by_hand": 8,
+        "federal_matched": 14,
         "fmcsa_archive": 4,
-        "noaa_matched": 19,
+        "noaa_matched": 21,
         "noaa_none": 1,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -386,8 +378,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 271.2,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 188.0,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -439,8 +431,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.8,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 0.6,
+        "storm_join_seconds": 0.3
       }
     },
     {
@@ -449,15 +441,14 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: structured Governor archive from 2020, plus 35 weather emergency orders added by hand: 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001), DR-1595 (Dennis, 2005) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period",
-      "coverage_base": "2000-present: structured Governor archive from 2020, plus 35 weather emergency orders added by hand (manual_declarations.csv): 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001), DR-1595 (Dennis, 2005) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period.",
+      "coverage": "2000-present: structured Governor archive from 2020, plus 36 weather emergency orders added by hand: 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, the Florida State Agricultural Response Team's Hurricane Dennis newsletter, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period",
+      "coverage_base": "2000-present: structured Governor archive from 2020, plus 36 weather emergency orders added by hand (manual_declarations.csv): 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, the Florida State Agricultural Response Team's Hurricane Dennis newsletter, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period.",
       "federal_without_state": {
         "compared": 59,
-        "count": 3,
+        "count": 2,
         "covered_by_extension": [],
         "ids": [
           "DR-4138",
-          "DR-1595",
           "DR-1381"
         ],
         "no_state_declaration": [],
@@ -467,10 +458,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 62,
+        "action_count": 63,
         "federal_declaration_count": 190,
-        "severity_rows": 1461,
-        "storm_match_rows": 2444
+        "severity_rows": 1519,
+        "storm_match_rows": 2537
       },
       "name": "Florida",
       "retried": false,
@@ -479,10 +470,10 @@
       "source_records_saved_before": 27,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 35,
-        "federal_matched": 49,
+        "added_by_hand": 36,
+        "federal_matched": 50,
         "fmcsa_archive": 0,
-        "noaa_matched": 54,
+        "noaa_matched": 55,
         "noaa_none": 6,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
@@ -491,8 +482,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 50.6,
-        "storm_join_seconds": 1.0
+        "collect_seconds": 55.8,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -541,8 +532,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 18.0,
-        "storm_join_seconds": 1.0
+        "collect_seconds": 8.5,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -551,15 +542,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348); plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 27 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv); compared from 2000, with no dated proclamation found for the November 2000 Big Island floods (DR-1348)",
+      "coverage": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 28 declarations added by hand from official announcements, order text and dated news coverage; compared from 2000; plus 3 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified joining coverage is narrower. Plus 28 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv); compared from 2000",
       "federal_without_state": {
         "compared": 23,
-        "count": 1,
+        "count": 0,
         "covered_by_extension": [],
-        "ids": [
-          "DR-1348"
-        ],
+        "ids": [],
         "no_state_declaration": [],
         "since": 2000
       },
@@ -567,10 +556,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 38,
+        "action_count": 39,
         "federal_declaration_count": 77,
-        "severity_rows": 147,
-        "storm_match_rows": 348
+        "severity_rows": 152,
+        "storm_match_rows": 357
       },
       "name": "Hawaii",
       "retried": false,
@@ -579,10 +568,10 @@
       "source_records_saved_before": 8,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 27,
-        "federal_matched": 25,
+        "added_by_hand": 28,
+        "federal_matched": 26,
         "fmcsa_archive": 3,
-        "noaa_matched": 33,
+        "noaa_matched": 34,
         "noaa_none": 2,
         "noaa_pending": 3,
         "reviewed_not_weather": 0,
@@ -591,8 +580,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 53.3,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 43.1,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -645,8 +634,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 87.2,
-        "storm_join_seconds": 1.1
+        "collect_seconds": 74.2,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -655,29 +644,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; other pre-2023 proclamations are not listed",
-      "coverage_base": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; other pre-2023 proclamations are not listed",
+      "coverage": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus proclamations added by hand: 2006-2011 (Blagojevich, Quinn) from the Governor's releases, Illinois delegation releases and dated news coverage, 2013-2022 (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage, and the August 2024 proclamation from IEMA-OHS; other pre-2023 proclamations are not listed. Proclamations signed weeks after the storm they declare are compared on the storm's first day. Federal declarations since 2000 with no state record yet: EM-3161, DR-1368, DR-1416, DR-1469, DR-1513, EM-3199, DR-1747, EM-3283, DR-1771",
+      "coverage_base": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus proclamations added by hand: 2006-2011 (Blagojevich, Quinn) from the Governor's releases, Illinois delegation releases and dated news coverage, 2013-2022 (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage, and the August 2024 proclamation from IEMA-OHS; other pre-2023 proclamations are not listed. Proclamations signed weeks after the storm they declare are compared on the storm's first day. Federal declarations since 2000 with no state record yet: EM-3161, DR-1368, DR-1416, DR-1469, DR-1513, EM-3199, DR-1747, EM-3283, DR-1771.",
       "federal_without_state": {
         "compared": 28,
-        "count": 22,
+        "count": 9,
         "covered_by_extension": [],
         "ids": [
-          "DR-4819",
-          "DR-4749",
-          "DR-1991",
-          "DR-1960",
-          "DR-1935",
-          "DR-1850",
-          "DR-1826",
-          "DR-1800",
           "DR-1771",
           "EM-3283",
           "DR-1747",
-          "DR-1729",
-          "DR-1722",
-          "DR-1681",
-          "EM-3269",
-          "DR-1633",
           "EM-3199",
           "DR-1513",
           "DR-1469",
@@ -688,33 +664,27 @@
         "no_state_declaration": [],
         "since": 2000
       },
-      "first_attempt": {
-        "error": "Collection failed: Illinois adapter: scrape failed (RuntimeError: www.illinois.gov: Max retries exceeded with url: /government/disaster-proclamations.html (Caused by NameResolutionError(\"HTTPSConnection(host='www.illinois.gov', port=443): Failed to resolve 'www.illinois.gov' ([Errno -3] T...)",
-        "seconds": 28.4,
-        "status": "failed"
-      },
       "generated_on": "2026-11-15",
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 16,
+        "action_count": 27,
         "federal_declaration_count": 68,
-        "severity_rows": 404,
-        "storm_match_rows": 1155
+        "severity_rows": 753,
+        "storm_match_rows": 1980
       },
       "name": "Illinois",
-      "retried": true,
-      "retry_status": "ok",
+      "retried": false,
       "slug": "illinois",
       "source_records_returned": 8,
-      "source_records_saved_before": 7,
+      "source_records_saved_before": 8,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 8,
-        "federal_matched": 6,
+        "added_by_hand": 19,
+        "federal_matched": 18,
         "fmcsa_archive": 0,
-        "noaa_matched": 13,
-        "noaa_none": 1,
+        "noaa_matched": 25,
+        "noaa_none": 0,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
         "state_archive": 8
@@ -722,8 +692,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 26.8,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 23.6,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -732,21 +702,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified",
-      "coverage_base": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified",
+      "coverage": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified; plus 5 declarations added by hand: Kernan's May 2004 storm emergency and Pence's January 2014 winter storm order from dated news, Daniels's Executive Orders 06-15 and 08-16 read from the scanned orders (the archive lists only their year), and Braun's April 11, 2025 declaration from the Governor's release",
+      "coverage_base": "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-2017) and pre-2005 pages not yet independently re-verified; plus 5 declarations added by hand (manual_declarations.csv): Kernan's May 2004 storm emergency and Pence's January 2014 winter storm order from dated news, Daniels's Executive Orders 06-15 and 08-16 read from the scanned orders (the archive lists only their year), and Braun's April 11, 2025 declaration from the Governor's release",
       "federal_without_state": {
         "compared": 27,
-        "count": 13,
+        "count": 8,
         "covered_by_extension": [],
         "ids": [
-          "DR-4882",
-          "DR-4173",
-          "DR-1795",
-          "DR-1662",
           "DR-1573",
           "EM-3197",
           "DR-1542",
-          "DR-1520",
           "DR-1487",
           "DR-1476",
           "DR-1433",
@@ -760,10 +725,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 35,
+        "action_count": 40,
         "federal_declaration_count": 56,
-        "severity_rows": 884,
-        "storm_match_rows": 1798
+        "severity_rows": 1127,
+        "storm_match_rows": 2440
       },
       "name": "Indiana",
       "retried": false,
@@ -772,10 +737,10 @@
       "source_records_saved_before": 35,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 22,
+        "added_by_hand": 5,
+        "federal_matched": 27,
         "fmcsa_archive": 0,
-        "noaa_matched": 27,
+        "noaa_matched": 32,
         "noaa_none": 7,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
@@ -784,8 +749,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 6.4,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 6.3,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -794,14 +759,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: HSEMD proclamation tables from 2024, plus the Governor's weather disaster proclamations added by hand: 39 from 2020-2023 from the Governor's press releases (governor.iowa.gov), plus 26 from 2000-2019 from dated news coverage, mostly Radio Iowa, since no list of the earlier proclamations has been found. No state proclamation was found for DR-1854 (July 2009 storm), DR-1928 (May 2010 storms and flooding) or DR-4135 (June 2013 storms and flooding). DR-4018 (July 27-29, 2011 storms and flooding) counts as matched only because the proclamations for the July 9-14 storms fall within three weeks of it, and DR-4114 (April 2013 winter storm) only because the April 19 flooding proclamation does",
-      "coverage_base": "2000-present: HSEMD proclamation tables from 2024, plus the Governor's weather disaster proclamations added by hand (manual_declarations.csv): 39 from 2020-2023 from the Governor's press releases (governor.iowa.gov), plus 26 from 2000-2019 from dated news coverage, mostly Radio Iowa, since no list of the earlier proclamations has been found. No state proclamation was found for DR-1854 (July 2009 storm), DR-1928 (May 2010 storms and flooding) or DR-4135 (June 2013 storms and flooding). DR-4018 (July 27-29, 2011 storms and flooding) counts as matched only because the proclamations for the July 9-14 storms fall within three weeks of it, and DR-4114 (April 2013 winter storm) only because the April 19 flooding proclamation does.",
+      "coverage": "2000-present: HSEMD proclamation tables from 2024, plus the Governor's weather disaster proclamations added by hand: 39 from 2020-2023 from the Governor's press releases (governor.iowa.gov), plus 27 from 2000-2019 from dated news coverage, mostly Radio Iowa, since no list of the earlier proclamations has been found. No state proclamation was found for DR-1854 (July 2009 storm) or DR-1928 (May 2010 storms and flooding). DR-4018 (July 27-29, 2011 storms and flooding) counts as matched only because the proclamations for the July 9-14 storms fall within three weeks of it, and DR-4114 (April 2013 winter storm) only because the April 19 flooding proclamation does",
+      "coverage_base": "2000-present: HSEMD proclamation tables from 2024, plus the Governor's weather disaster proclamations added by hand (manual_declarations.csv): 39 from 2020-2023 from the Governor's press releases (governor.iowa.gov), plus 27 from 2000-2019 from dated news coverage, mostly Radio Iowa, since no list of the earlier proclamations has been found. No state proclamation was found for DR-1854 (July 2009 storm) or DR-1928 (May 2010 storms and flooding). DR-4018 (July 27-29, 2011 storms and flooding) counts as matched only because the proclamations for the July 9-14 storms fall within three weeks of it, and DR-4114 (April 2013 winter storm) only because the April 19 flooding proclamation does.",
       "federal_without_state": {
         "compared": 40,
-        "count": 3,
+        "count": 2,
         "covered_by_extension": [],
         "ids": [
-          "DR-4135",
           "DR-1928",
           "DR-1854"
         ],
@@ -812,22 +776,22 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 124,
+        "action_count": 125,
         "federal_declaration_count": 79,
-        "severity_rows": 4247,
-        "storm_match_rows": 12484
+        "severity_rows": 4299,
+        "storm_match_rows": 12621
       },
       "name": "Iowa",
       "retried": false,
       "slug": "iowa",
       "source_records_returned": 59,
-      "source_records_saved_before": 54,
+      "source_records_saved_before": 59,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 65,
-        "federal_matched": 79,
+        "added_by_hand": 66,
+        "federal_matched": 80,
         "fmcsa_archive": 0,
-        "noaa_matched": 114,
+        "noaa_matched": 115,
         "noaa_none": 5,
         "noaa_pending": 5,
         "reviewed_not_weather": 0,
@@ -836,8 +800,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 12.3,
-        "storm_join_seconds": 1.7
+        "collect_seconds": 10.7,
+        "storm_join_seconds": 1.0
       }
     },
     {
@@ -846,15 +810,14 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: KDEM disaster-declarations page from 2011, plus 27 declarations added by hand: seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 declarations cited by executive orders and legislation printed in the Kansas Register, and 2006-2021 declarations dated from Adjutant General releases (archived on the Wayback Machine) and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1402 (January 2002 ice storm), DR-1535 and DR-1562 (2004), DR-1579, DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (September 2008), DR-1849 (April-May 2009), DR-1932 (June 2010), DR-4654 (March 2022) or DR-4747 (summer 2023).; the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read; 12 saved records kept that this refresh's check of the state source did not return",
-      "coverage_base": "2000-present: KDEM disaster-declarations page from 2011, plus 27 declarations added by hand (manual_declarations.csv): seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 declarations cited by executive orders and legislation printed in the Kansas Register, and 2006-2021 declarations dated from Adjutant General releases (archived on the Wayback Machine) and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1402 (January 2002 ice storm), DR-1535 and DR-1562 (2004), DR-1579, DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (September 2008), DR-1849 (April-May 2009), DR-1932 (June 2010), DR-4654 (March 2022) or DR-4747 (summer 2023).; the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read",
+      "coverage": "2000-present: KDEM disaster-declarations page from 2011, plus 30 declarations added by hand: seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 declarations cited by executive orders and legislation printed in the Kansas Register, and 2002-2022 declarations dated from Adjutant General releases (archived on the Wayback Machine), the Governor's releases and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1535 and DR-1562 (2004), DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (September 2008), DR-1849 (April-May 2009), DR-1932 (June 2010) or DR-4747 (summer 2023).; the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read; 12 saved records kept that this refresh's check of the state source did not return",
+      "coverage_base": "2000-present: KDEM disaster-declarations page from 2011, plus 30 declarations added by hand (manual_declarations.csv): seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 declarations cited by executive orders and legislation printed in the Kansas Register, and 2002-2022 declarations dated from Adjutant General releases (archived on the Wayback Machine), the Governor's releases and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1535 and DR-1562 (2004), DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (September 2008), DR-1849 (April-May 2009), DR-1932 (June 2010) or DR-4747 (summer 2023).; the live page could not be read this run, so the Internet Archive copy from 2025-10-21 was read",
       "federal_without_state": {
         "compared": 53,
-        "count": 14,
+        "count": 11,
         "covered_by_extension": [],
         "ids": [
           "DR-4747",
-          "DR-4654",
           "DR-1932",
           "DR-1849",
           "DR-1808",
@@ -862,10 +825,8 @@
           "DR-1626",
           "DR-1615",
           "DR-1600",
-          "DR-1579",
           "DR-1562",
           "DR-1535",
-          "DR-1402",
           "DR-1327"
         ],
         "no_state_declaration": [],
@@ -875,10 +836,10 @@
       "kept_saved_records": 12,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 78,
+        "action_count": 81,
         "federal_declaration_count": 96,
-        "severity_rows": 2637,
-        "storm_match_rows": 6487
+        "severity_rows": 2859,
+        "storm_match_rows": 6734
       },
       "name": "Kansas",
       "retried": false,
@@ -887,10 +848,10 @@
       "source_records_saved_before": 53,
       "source_status": "partial",
       "sources": {
-        "added_by_hand": 27,
-        "federal_matched": 51,
+        "added_by_hand": 30,
+        "federal_matched": 54,
         "fmcsa_archive": 0,
-        "noaa_matched": 72,
+        "noaa_matched": 75,
         "noaa_none": 4,
         "noaa_pending": 2,
         "reviewed_not_weather": 2,
@@ -899,8 +860,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.6,
-        "storm_join_seconds": 1.3
+        "collect_seconds": 21.7,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -909,19 +870,15 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the Governor's newsroom releases and executive orders, plus states of emergency added by hand: 2000-2007 ones (Governors Patton and Fletcher) from Appendix A of Beshear v. Acree (Ky. 2020), which lists every declaration of emergency filed in the Executive Journal by filing date and order number, and 2008-2024 ones from executive orders, official releases and dated news coverage; the Secretary of State's Executive Journal (authoritative) blocks automated requests, and no dated declaration has been found for April 2008, May and August 2009, June 2011, August 2014 or Helene in 2024 (DR-1757, DR-1841, DR-1855, DR-4008, DR-4196, DR-4848)",
-      "coverage_base": "manual_only - 2000-present: the Governor's newsroom releases and executive orders, plus states of emergency added by hand: 2000-2007 ones (Governors Patton and Fletcher) from Appendix A of Beshear v. Acree (Ky. 2020), which lists every declaration of emergency filed in the Executive Journal by filing date and order number, and 2008-2024 ones from executive orders, official releases and dated news coverage; the Secretary of State's Executive Journal (authoritative) blocks automated requests, and no dated declaration has been found for April 2008, May and August 2009, June 2011, August 2014 or Helene in 2024 (DR-1757, DR-1841, DR-1855, DR-4008, DR-4196, DR-4848)",
+      "coverage": "2000-present: the Governor's newsroom releases and executive orders, plus states of emergency added by hand: 2000-2007 ones (Governors Patton and Fletcher) from Appendix A of Beshear v. Acree (Ky. 2020), which lists every declaration of emergency filed in the Executive Journal by filing date and order number, and 2008-2024 ones from executive orders, official releases and dated news coverage; the Secretary of State's Executive Journal (authoritative) blocks automated requests, so four 2008-2011 declarations of emergency (April 2008, May and August 2009, June 2011) were read from it by hand and are dated by their filing dates; a search of its Declarations of Emergency finds none filed in 2014 or between August 8 and October 1, 2024, so no state declaration is listed for the August 2014 storms or Helene in 2024 (DR-4196, DR-4848)",
+      "coverage_base": "manual_only - 2000-present: the Governor's newsroom releases and executive orders, plus states of emergency added by hand: 2000-2007 ones (Governors Patton and Fletcher) from Appendix A of Beshear v. Acree (Ky. 2020), which lists every declaration of emergency filed in the Executive Journal by filing date and order number, and 2008-2024 ones from executive orders, official releases and dated news coverage; the Secretary of State's Executive Journal (authoritative) blocks automated requests, so four 2008-2011 declarations of emergency (April 2008, May and August 2009, June 2011) were read from it by hand and are dated by their filing dates; a search of its Declarations of Emergency finds none filed in 2014 or between August 8 and October 1, 2024, so no state declaration is listed for the August 2014 storms or Helene in 2024 (DR-4196, DR-4848)",
       "federal_without_state": {
         "compared": 54,
-        "count": 6,
+        "count": 2,
         "covered_by_extension": [],
         "ids": [
           "DR-4848",
-          "DR-4196",
-          "DR-4008",
-          "DR-1855",
-          "DR-1841",
-          "DR-1757"
+          "DR-4196"
         ],
         "no_state_declaration": [],
         "since": 2000
@@ -930,10 +887,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 65,
+        "action_count": 69,
         "federal_declaration_count": 99,
-        "severity_rows": 3109,
-        "storm_match_rows": 6564
+        "severity_rows": 3264,
+        "storm_match_rows": 6932
       },
       "name": "Kentucky",
       "retried": false,
@@ -942,11 +899,11 @@
       "source_records_saved_before": 11,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 54,
-        "federal_matched": 47,
+        "added_by_hand": 58,
+        "federal_matched": 51,
         "fmcsa_archive": 0,
-        "noaa_matched": 58,
-        "noaa_none": 7,
+        "noaa_matched": 61,
+        "noaa_none": 8,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
         "state_archive": 11
@@ -954,8 +911,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.3,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 1.2,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -1008,8 +965,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 96.8,
-        "storm_join_seconds": 1.0
+        "collect_seconds": 57.4,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -1090,8 +1047,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.2,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 21.6,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -1141,8 +1098,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 6.3,
-        "storm_join_seconds": 2.6
+        "collect_seconds": 3.7,
+        "storm_join_seconds": 1.6
       }
     },
     {
@@ -1151,18 +1108,15 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2008-2015 storm states of emergency (Patrick and Baker) from news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2008-2015 storm states of emergency (Patrick and Baker) from news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed",
+      "coverage": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2005 and 2008-2015 storm states of emergency (Romney, Patrick and Baker) from dated news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2005 and 2008-2015 storm states of emergency (Romney, Patrick and Baker) from dated news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed",
       "federal_without_state": {
         "compared": 42,
-        "count": 21,
+        "count": 18,
         "covered_by_extension": [],
         "ids": [
           "DR-4651",
           "DR-1701",
-          "DR-1614",
-          "EM-3264",
-          "EM-3201",
           "DR-1512",
           "EM-3191",
           "EM-3175",
@@ -1187,10 +1141,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 21,
+        "action_count": 23,
         "federal_declaration_count": 59,
-        "severity_rows": 301,
-        "storm_match_rows": 475
+        "severity_rows": 340,
+        "storm_match_rows": 533
       },
       "name": "Massachusetts",
       "retried": false,
@@ -1199,10 +1153,10 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 11,
-        "federal_matched": 16,
+        "added_by_hand": 13,
+        "federal_matched": 18,
         "fmcsa_archive": 4,
-        "noaa_matched": 18,
+        "noaa_matched": 20,
         "noaa_none": 3,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -1211,8 +1165,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 93.1,
-        "storm_join_seconds": 2.7
+        "collect_seconds": 99.7,
+        "storm_join_seconds": 1.9
       }
     },
     {
@@ -1264,8 +1218,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 82.5,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 68.7,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -1278,12 +1232,11 @@
       "coverage_base": "2000-present Legislative Reference Library executive order database (Ventura from 2000, Pawlenty, Dayton and Walz); weather orders that only provide assistance, without declaring an emergency, are not counted as declarations",
       "federal_without_state": {
         "compared": 30,
-        "count": 3,
+        "count": 2,
         "covered_by_extension": [],
         "ids": [
           "DR-4722",
-          "DR-4414",
-          "DR-4113"
+          "DR-4414"
         ],
         "no_state_declaration": [],
         "since": 2000
@@ -1292,10 +1245,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 49,
+        "action_count": 50,
         "federal_declaration_count": 81,
-        "severity_rows": 1669,
-        "storm_match_rows": 2914
+        "severity_rows": 1755,
+        "storm_match_rows": 3004
       },
       "name": "Minnesota",
       "retried": false,
@@ -1304,10 +1257,10 @@
       "source_records_saved_before": 49,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 33,
+        "added_by_hand": 1,
+        "federal_matched": 34,
         "fmcsa_archive": 0,
-        "noaa_matched": 45,
+        "noaa_matched": 46,
         "noaa_none": 4,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -1316,8 +1269,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 4.3,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 2.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1326,19 +1279,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour), most of them National Guard call-outs for storms; plus 18 state of emergency proclamations (2003-2026) added by hand from MEMA's newsroom and dated news coverage, since Mississippi declares states of emergency by proclamation and no index of proclamations is published. No state declaration was found for DR-1443 (November 2002 tornadoes), DR-4470 (October 2019 storm), DR-4478 (January 2020 storms), DR-4727 (June 2023 storms), DR-4790 (April 2024 storms) or DR-4922 (May 2026 storms). DR-1470 (May 2003) counts as matched only because the April 2003 proclamation falls within three weeks of it, DR-4551 (April 22-23, 2020) only because the Easter 2020 proclamation does, and DR-1753 (March to May 2008 flooding) through the April 2008 tornado proclamation inside its incident period; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2000-present: January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour), most of them National Guard call-outs for storms; plus 18 state of emergency proclamations (2003-2026) added by hand from MEMA's newsroom and dated news coverage, since Mississippi declares states of emergency by proclamation and no index of proclamations is published. No state declaration was found for DR-1443 (November 2002 tornadoes), DR-4470 (October 2019 storm), DR-4478 (January 2020 storms), DR-4727 (June 2023 storms), DR-4790 (April 2024 storms) or DR-4922 (May 2026 storms). DR-1470 (May 2003) counts as matched only because the April 2003 proclamation falls within three weeks of it, DR-4551 (April 22-23, 2020) only because the Easter 2020 proclamation does, and DR-1753 (March to May 2008 flooding) through the April 2008 tornado proclamation inside its incident period.",
+      "coverage": "2000-present: January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour), most of them National Guard call-outs for storms; plus 21 state of emergency proclamations (2002-2026) added by hand from MEMA's newsroom, the Mississippi congressional delegation's releases on the Governor's federal requests and dated news coverage, since Mississippi declares states of emergency by proclamation and no index of proclamations is published. No state declaration was found for DR-4727 (June 2023 storms), DR-4790 (April 2024 storms) or DR-4922 (May 2026 storms). DR-1470 (May 2003) counts as matched only because the April 2003 proclamation falls within three weeks of it, DR-4551 (April 22-23, 2020) only because the Easter 2020 proclamation does, and DR-1753 (March to May 2008 flooding) through the April 2008 tornado proclamation inside its incident period; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: January 2020-present structured Governor archive; 2008-2019 weather emergency orders read from the Secretary of State's order PDFs; 2000-2010 orders from the Secretary of State's executive order compilations (Musgrove and Barbour), most of them National Guard call-outs for storms; plus 21 state of emergency proclamations (2002-2026) added by hand from MEMA's newsroom, the Mississippi congressional delegation's releases on the Governor's federal requests and dated news coverage, since Mississippi declares states of emergency by proclamation and no index of proclamations is published. No state declaration was found for DR-4727 (June 2023 storms), DR-4790 (April 2024 storms) or DR-4922 (May 2026 storms). DR-1470 (May 2003) counts as matched only because the April 2003 proclamation falls within three weeks of it, DR-4551 (April 22-23, 2020) only because the Easter 2020 proclamation does, and DR-1753 (March to May 2008 flooding) through the April 2008 tornado proclamation inside its incident period.",
       "federal_without_state": {
         "compared": 57,
-        "count": 6,
+        "count": 3,
         "covered_by_extension": [],
         "ids": [
           "DR-4922",
           "DR-4790",
-          "DR-4727",
-          "DR-4478",
-          "DR-4470",
-          "DR-1443"
+          "DR-4727"
         ],
         "no_state_declaration": [],
         "since": 2000
@@ -1347,10 +1297,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 61,
+        "action_count": 64,
         "federal_declaration_count": 99,
-        "severity_rows": 1874,
-        "storm_match_rows": 3690
+        "severity_rows": 1979,
+        "storm_match_rows": 3929
       },
       "name": "Mississippi",
       "retried": false,
@@ -1359,10 +1309,10 @@
       "source_records_saved_before": 23,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 34,
-        "federal_matched": 47,
+        "added_by_hand": 37,
+        "federal_matched": 50,
         "fmcsa_archive": 4,
-        "noaa_matched": 60,
+        "noaa_matched": 63,
         "noaa_none": 1,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -1371,8 +1321,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 6.7,
-        "storm_join_seconds": 1.0
+        "collect_seconds": 12.3,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -1381,11 +1331,11 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present Secretary of State year indexes and legal order text",
-      "coverage_base": "2000-present Secretary of State year indexes and legal order text.",
+      "coverage": "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day",
+      "coverage_base": "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day.",
       "federal_without_state": {
         "compared": 54,
-        "count": 4,
+        "count": 3,
         "covered_by_extension": [
           {
             "declaration": "MO-EO-25-19",
@@ -1427,8 +1377,7 @@
         "ids": [
           "DR-4636",
           "DR-4612",
-          "DR-4552",
-          "DR-4200"
+          "DR-4552"
         ],
         "no_state_declaration": [],
         "since": 2000
@@ -1439,8 +1388,8 @@
       "metrics": {
         "action_count": 69,
         "federal_declaration_count": 88,
-        "severity_rows": 2494,
-        "storm_match_rows": 7037
+        "severity_rows": 2510,
+        "storm_match_rows": 7079
       },
       "name": "Missouri",
       "retried": false,
@@ -1450,10 +1399,10 @@
       "source_status": "ok",
       "sources": {
         "added_by_hand": 0,
-        "federal_matched": 48,
+        "federal_matched": 49,
         "fmcsa_archive": 0,
-        "noaa_matched": 63,
-        "noaa_none": 6,
+        "noaa_matched": 64,
+        "noaa_none": 5,
         "noaa_pending": 0,
         "reviewed_not_weather": 15,
         "state_archive": 69
@@ -1461,8 +1410,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 24.1,
-        "storm_join_seconds": 1.1
+        "collect_seconds": 16.1,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -1471,16 +1420,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; four orders whose archive copies leave the signing day blank are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled",
-      "coverage_base": "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; four orders whose archive copies leave the signing day blank are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled",
+      "coverage": "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; six orders whose archive copies leave the signing day blank or illegible are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled",
+      "coverage_base": "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and Bullock (2013-2020) weather orders added by hand from the order texts, governor's press releases and dated news reports; six orders whose archive copies leave the signing day blank or illegible are compared with FEMA on their effective dates, and other orders with no readable signing date are still to be backfilled",
       "federal_without_state": {
         "compared": 25,
-        "count": 4,
+        "count": 1,
         "covered_by_extension": [],
         "ids": [
-          "DR-4275",
-          "DR-4271",
-          "DR-4198",
           "DR-1767"
         ],
         "no_state_declaration": [],
@@ -1490,7 +1436,7 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 46,
+        "action_count": 49,
         "federal_declaration_count": 113,
         "severity_rows": 579,
         "storm_match_rows": 987
@@ -1502,11 +1448,11 @@
       "source_records_saved_before": 18,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 31,
-        "federal_matched": 37,
+        "added_by_hand": 34,
+        "federal_matched": 40,
         "fmcsa_archive": 0,
         "noaa_matched": 38,
-        "noaa_none": 7,
+        "noaa_none": 10,
         "noaa_pending": 1,
         "reviewed_not_weather": 3,
         "state_archive": 15
@@ -1514,8 +1460,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.9,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 23.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1524,47 +1470,30 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
-      "coverage_base": "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+      "coverage": "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched, plus Governor declarations made outside that index, added by hand from NEMA announcements, the Governor's proclamations as kept by FMCSA and dated news coverage; no state declaration has been found yet for DR-1373, DR-1394, DR-1590, DR-1627, DR-1674, DR-1706, DR-1714, DR-1721, DR-1779, DR-1853, DR-1864, DR-1878, DR-1902, DR-1945, DR-4013, DR-4014, EM-3323, DR-4321 or DR-4662; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
+      "coverage_base": "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executive Orders index, rows kept only when a hazard or emergency keyword matched, plus Governor declarations made outside that index, added by hand from NEMA announcements, the Governor's proclamations as kept by FMCSA and dated news coverage (manual_declarations.csv); no state declaration has been found yet for DR-1373, DR-1394, DR-1590, DR-1627, DR-1674, DR-1706, DR-1714, DR-1721, DR-1779, DR-1853, DR-1864, DR-1878, DR-1902, DR-1945, DR-4013, DR-4014, EM-3323, DR-4321 or DR-4662; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review",
       "federal_without_state": {
         "compared": 45,
-        "count": 36,
+        "count": 19,
         "covered_by_extension": [],
         "ids": [
-          "DR-4786",
-          "DR-4778",
           "DR-4662",
-          "DR-4616",
-          "DR-4387",
-          "DR-4375",
-          "DR-4325",
           "DR-4321",
-          "DR-4225",
-          "DR-4185",
-          "DR-4183",
-          "DR-4179",
-          "DR-4156",
           "DR-4014",
           "DR-4013",
           "EM-3323",
           "DR-1945",
-          "DR-1924",
           "DR-1902",
           "DR-1878",
           "DR-1864",
           "DR-1853",
           "DR-1779",
-          "DR-1770",
-          "DR-1765",
-          "DR-1739",
           "DR-1721",
           "DR-1714",
           "DR-1706",
           "DR-1674",
           "DR-1627",
           "DR-1590",
-          "DR-1517",
-          "DR-1480",
           "DR-1394",
           "DR-1373"
         ],
@@ -1575,10 +1504,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 34,
+        "action_count": 49,
         "federal_declaration_count": 88,
-        "severity_rows": 860,
-        "storm_match_rows": 1446
+        "severity_rows": 1441,
+        "storm_match_rows": 2860
       },
       "name": "Nebraska",
       "retried": false,
@@ -1587,10 +1516,10 @@
       "source_records_saved_before": 33,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 15,
-        "federal_matched": 25,
+        "added_by_hand": 30,
+        "federal_matched": 40,
         "fmcsa_archive": 0,
-        "noaa_matched": 27,
+        "noaa_matched": 42,
         "noaa_none": 7,
         "noaa_pending": 0,
         "reviewed_not_weather": 14,
@@ -1599,8 +1528,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.5,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 0.4,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -1609,14 +1538,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire, the winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, DR-1583, DR-1629) have no state declaration; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire, the winter 2004-2005 storms and the December 2005 floods (DR-1540, EM-3202, EM-3204, DR-1583, DR-1629) have no state declaration",
+      "coverage": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus Guinn's January 3, 2006 flood disaster declaration and 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire and the winter 2004-2005 storms (DR-1540, EM-3202, EM-3204, DR-1583) have no state declaration; plus 2 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: the current Governor's executive and emergency-order archives from January 2023, plus Guinn's January 3, 2006 flood disaster declaration and 2008-2021 storm, flood and wildfire declarations (Gibbons, Sandoval and Sisolak) from news coverage and FMCSA's copy of the Tamarack order; no archive of earlier declarations was found, so the July 2004 Waterfall Fire and the winter 2004-2005 storms (DR-1540, EM-3202, EM-3204, DR-1583) have no state declaration",
       "federal_without_state": {
         "compared": 11,
-        "count": 5,
+        "count": 4,
         "covered_by_extension": [],
         "ids": [
-          "DR-1629",
           "DR-1583",
           "EM-3204",
           "EM-3202",
@@ -1629,10 +1557,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 14,
+        "action_count": 15,
         "federal_declaration_count": 116,
-        "severity_rows": 62,
-        "storm_match_rows": 141
+        "severity_rows": 67,
+        "storm_match_rows": 151
       },
       "name": "Nevada",
       "retried": false,
@@ -1641,10 +1569,10 @@
       "source_records_saved_before": 6,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 6,
-        "federal_matched": 9,
+        "added_by_hand": 7,
+        "federal_matched": 10,
         "fmcsa_archive": 2,
-        "noaa_matched": 10,
+        "noaa_matched": 11,
         "noaa_none": 2,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
@@ -1653,8 +1581,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 5.5,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 10.2,
+        "storm_join_seconds": 0.3
       }
     },
     {
@@ -1663,20 +1591,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner)",
+      "coverage": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids). Four federal declarations that Governor Sununu's own request letters say had no state declaration (DR-4624, DR-4693, DR-4740, DR-4771) are shown with that statement instead of as gaps (no_state_declaration.csv).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner); plus 6 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emergencies declared without an executive order are added by hand from news coverage (NH-PROC ids). Four federal declarations that Governor Sununu's own request letters say had no state declaration (DR-4624, DR-4693, DR-4740, DR-4771) are shown with that statement instead of as gaps (no_state_declaration.csv).; this run read the Internet Archive copy from 2025-11-15 (the live registry refused this runner)",
       "federal_without_state": {
         "compared": 52,
-        "count": 39,
+        "count": 31,
         "covered_by_extension": [],
         "ids": [
           "DR-4947",
           "DR-4812",
-          "DR-4771",
           "DR-4761",
-          "DR-4740",
-          "DR-4693",
-          "DR-4624",
           "DR-4622",
           "DR-4457",
           "DR-4371",
@@ -1690,10 +1614,6 @@
           "EM-3333",
           "DR-4006",
           "DR-1799",
-          "DR-1787",
-          "DR-1782",
-          "DR-1695",
-          "DR-1643",
           "EM-3211",
           "EM-3208",
           "EM-3207",
@@ -1710,39 +1630,68 @@
           "DR-917",
           "DR-876"
         ],
-        "no_state_declaration": [],
+        "no_state_declaration": [
+          {
+            "fema_url": "https://www.fema.gov/disaster/4771",
+            "id": "DR-4771",
+            "source_title": "Governor Sununu's request for a major disaster declaration for the January 9 to 14, 2024 severe storms and flooding, March 28, 2024",
+            "source_url": "https://www.test-wcm.nh.gov/sites/g/files/ehbemt696/files/inline-documents/20242803-disaster-request.pdf",
+            "statement": "While I did not declare a State of Emergency in New Hampshire"
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4740",
+            "id": "DR-4740",
+            "source_title": "Governor Sununu's request for a major disaster declaration for the July 9 to 17, 2023 severe storms and flooding, August 30, 2023",
+            "source_url": "https://www.governor.nh.gov/sites/g/files/ehbemt336/files/inline-documents/sonh/20230830-july-storm-declaration-request.pdf",
+            "statement": "While I did not declare a State of Emergency in New Hampshire"
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4693",
+            "id": "DR-4693",
+            "source_title": "Governor Sununu's request for a major disaster declaration for the December 22 to 25, 2022 severe storm and flooding, February 17, 2023",
+            "source_url": "https://www.governor.nh.gov/sites/g/files/ehbemt336/files/inline-documents/sonh/20230217-disaster.pdf",
+            "statement": "While I did not declare a State of Emergency in NH"
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4624",
+            "id": "DR-4624",
+            "source_title": "Governor Sununu's request for a major disaster declaration for the July 29 to August 2, 2021 severe storms and flooding, September 20, 2021",
+            "source_url": "https://www.governor.nh.gov/sites/g/files/ehbemt336/files/documents/20210920-disaster-request.pdf",
+            "statement": "While I did not declare a State of Emergency in NH"
+          }
+        ],
         "since": 1990
       },
       "generated_on": "2026-11-15",
       "kept_saved_records": 0,
       "kept_saved_values": 6,
       "metrics": {
-        "action_count": 14,
+        "action_count": 17,
         "federal_declaration_count": 64,
-        "severity_rows": 139,
-        "storm_match_rows": 173
+        "severity_rows": 166,
+        "storm_match_rows": 223
       },
       "name": "New Hampshire",
       "retried": false,
       "slug": "new-hampshire",
-      "source_records_returned": 8,
-      "source_records_saved_before": 8,
+      "source_records_returned": 11,
+      "source_records_saved_before": 11,
       "source_status": "ok",
       "sources": {
         "added_by_hand": 0,
-        "federal_matched": 10,
+        "federal_matched": 13,
         "fmcsa_archive": 6,
-        "noaa_matched": 11,
+        "noaa_matched": 14,
         "noaa_none": 3,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
-        "state_archive": 8
+        "state_archive": 11
       },
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 24.4,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 24.6,
+        "storm_join_seconds": 0.3
       }
     },
     {
@@ -1751,18 +1700,17 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented",
-      "coverage_base": "1990-present provisional structured coverage; 1962-1989 selectively represented",
+      "coverage": "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acting Governor Codey's Executive Order 28 (April 2005 flooding) added by hand, since the order index the scraper reads does not reach his 2004-2006 orders",
+      "coverage_base": "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acting Governor Codey's Executive Order 28 (April 2005 flooding) added by hand (manual_declarations.csv), since the order index the scraper reads does not reach his 2004-2006 orders",
       "federal_without_state": {
         "compared": 37,
-        "count": 5,
+        "count": 4,
         "covered_by_extension": [],
         "ids": [
           "DR-4231",
           "DR-4070",
           "DR-4039",
-          "DR-1873",
-          "DR-1588"
+          "DR-1873"
         ],
         "no_state_declaration": [],
         "since": 1990
@@ -1771,10 +1719,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 83,
+        "action_count": 84,
         "federal_declaration_count": 59,
-        "severity_rows": 1380,
-        "storm_match_rows": 2131
+        "severity_rows": 1397,
+        "storm_match_rows": 2148
       },
       "name": "New Jersey",
       "retried": false,
@@ -1783,10 +1731,10 @@
       "source_records_saved_before": 86,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 32,
+        "added_by_hand": 1,
+        "federal_matched": 33,
         "fmcsa_archive": 0,
-        "noaa_matched": 70,
+        "noaa_matched": 71,
         "noaa_none": 12,
         "noaa_pending": 1,
         "reviewed_not_weather": 3,
@@ -1795,8 +1743,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 537.9,
-        "storm_join_seconds": 12.9
+        "collect_seconds": 370.5,
+        "storm_join_seconds": 6.5
       }
     },
     {
@@ -1805,17 +1753,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 7 weather declarations added by hand by Governors Richardson (2006-2010) and Martinez (2011-2013), from executive orders reprinted in the press and dated news coverage. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000), DR-1514 (April 2004 storms and flooding), DR-4047 (August 2011 flooding), DR-4079 (June 2012 flooding), DR-4197 (July 2014 storms and flooding) or DR-4199 (September 2014 storms and flooding); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 7 weather declarations added by hand (manual_declarations.csv) by Governors Richardson (2006-2010) and Martinez (2011-2013), from executive orders reprinted in the press and dated news coverage. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000), DR-1514 (April 2004 storms and flooding), DR-4047 (August 2011 flooding), DR-4079 (June 2012 flooding), DR-4197 (July 2014 storms and flooding) or DR-4199 (September 2014 storms and flooding).",
+      "coverage": "2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 11 weather declarations added by hand by Governors Richardson (2006-2010) and Martinez (2011-2014), from executive orders reprinted in the press, the Martinez-era executive order list as captured by the End of Term web archive in 2016, and dated news coverage. Executive Order 2012-018, a statewide emergency for flood potential after wildfires signed four days before the June 2012 flooding, is counted for DR-4079 because it names the flood hazard and was in force when the flooding began. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000) or DR-1514 (April 2004 storms and flooding); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: current-Governor index from January 2019 (many migrated document links are unavailable and are disclosed record-by-record), plus 11 weather declarations added by hand (manual_declarations.csv) by Governors Richardson (2006-2010) and Martinez (2011-2014), from executive orders reprinted in the press, the Martinez-era executive order list as captured by the End of Term web archive in 2016, and dated news coverage. Executive Order 2012-018, a statewide emergency for flood potential after wildfires signed four days before the June 2012 flooding, is counted for DR-4079 because it names the flood hazard and was in force when the flooding began. No state declaration was found for DR-1329 and EM-3154 (Cerro Grande Fire, May 2000) or DR-1514 (April 2004 storms and flooding).",
       "federal_without_state": {
         "compared": 20,
-        "count": 7,
+        "count": 3,
         "covered_by_extension": [],
         "ids": [
-          "DR-4199",
-          "DR-4197",
-          "DR-4079",
-          "DR-4047",
           "DR-1514",
           "DR-1329",
           "EM-3154"
@@ -1827,10 +1771,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 54,
+        "action_count": 58,
         "federal_declaration_count": 128,
-        "severity_rows": 619,
-        "storm_match_rows": 1009
+        "severity_rows": 632,
+        "storm_match_rows": 1036
       },
       "name": "New Mexico",
       "retried": false,
@@ -1839,11 +1783,11 @@
       "source_records_saved_before": 49,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 7,
-        "federal_matched": 30,
+        "added_by_hand": 11,
+        "federal_matched": 34,
         "fmcsa_archive": 1,
-        "noaa_matched": 41,
-        "noaa_none": 5,
+        "noaa_matched": 44,
+        "noaa_none": 6,
         "noaa_pending": 8,
         "reviewed_not_weather": 3,
         "state_archive": 46
@@ -1851,8 +1795,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 2.1,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 1.9,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -1913,8 +1857,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 66.3,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 52.0,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -1923,14 +1867,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
-      "coverage_base": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
+      "coverage": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods and the late July 2013 mountain floods have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
+      "coverage_base": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods and the late July 2013 mountain floods have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
       "federal_without_state": {
         "compared": 38,
-        "count": 4,
+        "count": 3,
         "covered_by_extension": [],
         "ids": [
-          "DR-4167",
           "DR-4153",
           "DR-1942",
           "DR-1457"
@@ -1942,10 +1885,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 81,
+        "action_count": 82,
         "federal_declaration_count": 85,
-        "severity_rows": 3399,
-        "storm_match_rows": 5452
+        "severity_rows": 3440,
+        "storm_match_rows": 5496
       },
       "name": "North Carolina",
       "retried": false,
@@ -1954,10 +1897,10 @@
       "source_records_saved_before": 56,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 25,
-        "federal_matched": 38,
+        "added_by_hand": 26,
+        "federal_matched": 39,
         "fmcsa_archive": 0,
-        "noaa_matched": 78,
+        "noaa_matched": 79,
         "noaa_none": 2,
         "noaa_pending": 1,
         "reviewed_not_weather": 0,
@@ -1966,8 +1909,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 444.0,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 262.4,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -1976,27 +1919,21 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled",
-      "coverage_base": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies and August 2007 Northwood tornado emergency are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled",
+      "coverage": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies, June 2005 storm emergency, August 2007 Northwood tornado emergency and January 2010 snow emergency order are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled. Orders signed weeks after the storm they declare (2020-41, 2021-14, 2022-09, 2025-06) are compared on the storm's first day, as the Governor's release for each states. Federal declarations since 2000 with no state record yet: DR-1334, DR-1353, DR-1376, DR-1431, DR-1483, EM-3196, DR-1616, DR-1621, DR-1645, DR-1713, DR-1725, DR-1907, EM-3309, DR-1901",
+      "coverage_base": "2000-present: the Governor's executive order archive, with Dalrymple's orders read by date and title from December 2010 and numbered orders from 2017, plus the current-EOs page (dates confirmed per order against news releases); Schafer's and Hoeven's 2000-2010 orders are not on the archive, so Hoeven's March 2004 and March 2009 flood emergencies, June 2005 storm emergency, August 2007 Northwood tornado emergency and January 2010 snow emergency order are added by hand from dated news reports and the Governor's release, and his other orders and undated 2024-2026 orders are still to be backfilled. Orders signed weeks after the storm they declare (2020-41, 2021-14, 2022-09, 2025-06) are compared on the storm's first day, as the Governor's release for each states. Federal declarations since 2000 with no state record yet: DR-1334, DR-1353, DR-1376, DR-1431, DR-1483, EM-3196, DR-1616, DR-1621, DR-1645, DR-1713, DR-1725, DR-1907, EM-3309, DR-1901.",
       "federal_without_state": {
         "compared": 41,
-        "count": 20,
+        "count": 14,
         "covered_by_extension": [],
         "ids": [
-          "DR-4895",
-          "DR-4686",
-          "DR-4613",
-          "DR-4565",
           "DR-1907",
           "DR-1901",
           "EM-3309",
-          "DR-1879",
           "DR-1725",
           "DR-1713",
           "DR-1645",
           "DR-1621",
           "DR-1616",
-          "DR-1597",
           "EM-3196",
           "DR-1483",
           "DR-1431",
@@ -2011,10 +1948,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 61,
+        "action_count": 63,
         "federal_declaration_count": 76,
-        "severity_rows": 622,
-        "storm_match_rows": 1169
+        "severity_rows": 806,
+        "storm_match_rows": 1672
       },
       "name": "North Dakota",
       "retried": false,
@@ -2023,11 +1960,11 @@
       "source_records_saved_before": 58,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 3,
-        "federal_matched": 33,
+        "added_by_hand": 5,
+        "federal_matched": 39,
         "fmcsa_archive": 0,
-        "noaa_matched": 34,
-        "noaa_none": 25,
+        "noaa_matched": 37,
+        "noaa_none": 24,
         "noaa_pending": 2,
         "reviewed_not_weather": 0,
         "state_archive": 58
@@ -2035,8 +1972,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 9.0,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 5.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2087,8 +2024,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.8,
-        "storm_join_seconds": 0.8
+        "collect_seconds": 2.0,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2097,20 +2034,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and 2000-2008 disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and 2000-2008 disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders)",
+      "coverage": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders): 2000-2008, plus 2015-55, 2022-8, 2024-7 and its amendment 2024-7C, which added the counties hit by the May 2024 storms; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders): 2000-2008, plus 2015-55, 2022-8, 2024-7 and its amendment 2024-7C, which added the counties hit by the May 2024 storms",
       "federal_without_state": {
         "compared": 65,
-        "count": 6,
+        "count": 0,
         "covered_by_extension": [],
-        "ids": [
-          "DR-4950",
-          "DR-4862",
-          "DR-4791",
-          "DR-4776",
-          "DR-4657",
-          "DR-4256"
-        ],
+        "ids": [],
         "no_state_declaration": [],
         "since": 2000
       },
@@ -2118,10 +2048,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 1,
       "metrics": {
-        "action_count": 70,
+        "action_count": 76,
         "federal_declaration_count": 260,
-        "severity_rows": 2771,
-        "storm_match_rows": 6694
+        "severity_rows": 3019,
+        "storm_match_rows": 7621
       },
       "name": "Oklahoma",
       "retried": false,
@@ -2130,10 +2060,10 @@
       "source_records_saved_before": 3,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 63,
-        "federal_matched": 57,
+        "added_by_hand": 69,
+        "federal_matched": 63,
         "fmcsa_archive": 4,
-        "noaa_matched": 68,
+        "noaa_matched": 74,
         "noaa_none": 2,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -2142,8 +2072,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 20.1,
-        "storm_join_seconds": 1.1
+        "collect_seconds": 15.8,
+        "storm_join_seconds": 0.8
       }
     },
     {
@@ -2195,8 +2125,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 0.9,
-        "storm_join_seconds": 1.7
+        "collect_seconds": 0.7,
+        "storm_join_seconds": 1.0
       }
     },
     {
@@ -2205,14 +2135,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the Pennsylvania Bulletin, PEMA records and press coverage; no dated proclamation has been found yet for November 2006, April 2011 or summer 2013 (DR-1684, DR-4003, DR-4149), and the August 2004 storms (DR-1538) match only through the September 2004 Frances proclamation",
-      "coverage_base": "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the Pennsylvania Bulletin, PEMA records and press coverage; no dated proclamation has been found yet for November 2006, April 2011 or summer 2013 (DR-1684, DR-4003, DR-4149), and the August 2004 storms (DR-1538) match only through the September 2004 Frances proclamation",
+      "coverage": "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the Pennsylvania Bulletin, PEMA records and press coverage; the July 24, 2013 June-storms proclamation (DR-4149) is compared on the storms' first day; no dated proclamation has been found yet for November 2006 or April 2011 (DR-1684, DR-4003), and the August 2004 storms (DR-1538) match only through the September 2004 Frances proclamation",
+      "coverage_base": "2000-present: PEMA's linked proclamation history from 2018, plus 2001-2017 storm disaster proclamations (Ridge, Rendell, Corbett and Wolf) added by hand from the Pennsylvania Bulletin, PEMA records and press coverage; the July 24, 2013 June-storms proclamation (DR-4149) is compared on the storms' first day; no dated proclamation has been found yet for November 2006 or April 2011 (DR-1684, DR-4003), and the August 2004 storms (DR-1538) match only through the September 2004 Frances proclamation",
       "federal_without_state": {
         "compared": 25,
-        "count": 3,
+        "count": 2,
         "covered_by_extension": [],
         "ids": [
-          "DR-4149",
           "DR-4003",
           "DR-1684"
         ],
@@ -2223,10 +2152,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 26,
+        "action_count": 27,
         "federal_declaration_count": 64,
-        "severity_rows": 1095,
-        "storm_match_rows": 1700
+        "severity_rows": 1153,
+        "storm_match_rows": 1988
       },
       "name": "Pennsylvania",
       "retried": false,
@@ -2235,10 +2164,10 @@
       "source_records_saved_before": 10,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 16,
-        "federal_matched": 17,
+        "added_by_hand": 17,
+        "federal_matched": 18,
         "fmcsa_archive": 0,
-        "noaa_matched": 26,
+        "noaa_matched": 27,
         "noaa_none": 0,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -2247,8 +2176,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 17.2,
-        "storm_join_seconds": 0.7
+        "collect_seconds": 13.0,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2299,8 +2228,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 10.0,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 17.5,
+        "storm_join_seconds": 0.4
       }
     },
     {
@@ -2352,8 +2281,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 98.2,
-        "storm_join_seconds": 3.7
+        "collect_seconds": 83.9,
+        "storm_join_seconds": 2.3
       }
     },
     {
@@ -2366,10 +2295,9 @@
       "coverage_base": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders",
       "federal_without_state": {
         "compared": 36,
-        "count": 5,
+        "count": 4,
         "covered_by_extension": [],
         "ids": [
-          "DR-4718",
           "DR-1596",
           "DR-1531",
           "DR-1375",
@@ -2384,8 +2312,8 @@
       "metrics": {
         "action_count": 85,
         "federal_declaration_count": 98,
-        "severity_rows": 2059,
-        "storm_match_rows": 4443
+        "severity_rows": 2074,
+        "storm_match_rows": 4488
       },
       "name": "South Dakota",
       "retried": false,
@@ -2395,7 +2323,7 @@
       "source_status": "ok",
       "sources": {
         "added_by_hand": 0,
-        "federal_matched": 59,
+        "federal_matched": 60,
         "fmcsa_archive": 0,
         "noaa_matched": 71,
         "noaa_none": 13,
@@ -2406,8 +2334,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 36.5,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 36.8,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -2416,14 +2344,13 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet",
-      "coverage_base": "2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet",
+      "coverage": "2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet. Under the Tennessee Emergency Management Plan, a signed executive order of the Governor, a state of emergency occurs automatically when TEMA activates at Level 3 or above; such an emergency is listed when a dated TEMA release shows Level 3 or a state of emergency for that event. Federal declarations since 2000 with no dated state record yet: DR-1331, DR-1387, DR-1408, DR-1441, DR-1456, DR-1464, DR-1482, DR-1568, DR-1634, DR-1839, DR-1851, DR-1856, DR-1937, DR-1965, DR-1978, DR-4005, DR-4189, DR-4471, DR-4541, DR-4550, DR-4601, DR-4712, DR-4701, DR-4729, DR-4735, DR-4742. DR-4541 and DR-4601 fell inside the Level 3 emergency already running for COVID-19, which is not counted as a declaration for those storms",
+      "coverage_base": "2000-present: the Governor's executive orders from the Secretary of State catalog (through the University of Memphis mirror), the Governor's state of emergency proclamations from 2012, and declarations added by hand from TEMA reports, official announcements, order text and dated news coverage; most emergencies TEMA declared by activating the state emergency plan, without an order or proclamation, have no dated record yet. Under the Tennessee Emergency Management Plan, a signed executive order of the Governor, a state of emergency occurs automatically when TEMA activates at Level 3 or above; such an emergency is listed when a dated TEMA release shows Level 3 or a state of emergency for that event. Federal declarations since 2000 with no dated state record yet: DR-1331, DR-1387, DR-1408, DR-1441, DR-1456, DR-1464, DR-1482, DR-1568, DR-1634, DR-1839, DR-1851, DR-1856, DR-1937, DR-1965, DR-1978, DR-4005, DR-4189, DR-4471, DR-4541, DR-4550, DR-4601, DR-4712, DR-4701, DR-4729, DR-4735, DR-4742. DR-4541 and DR-4601 fell inside the Level 3 emergency already running for COVID-19, which is not counted as a declaration for those storms.",
       "federal_without_state": {
         "compared": 53,
-        "count": 28,
+        "count": 26,
         "covered_by_extension": [],
         "ids": [
-          "DR-4751",
           "DR-4742",
           "DR-4735",
           "DR-4729",
@@ -2441,7 +2368,6 @@
           "DR-1856",
           "DR-1851",
           "DR-1839",
-          "DR-1821",
           "DR-1634",
           "DR-1568",
           "DR-1482",
@@ -2459,10 +2385,10 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 51,
+        "action_count": 53,
         "federal_declaration_count": 97,
-        "severity_rows": 1436,
-        "storm_match_rows": 3009
+        "severity_rows": 1479,
+        "storm_match_rows": 3072
       },
       "name": "Tennessee",
       "retried": false,
@@ -2471,10 +2397,10 @@
       "source_records_saved_before": 29,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 22,
-        "federal_matched": 25,
+        "added_by_hand": 24,
+        "federal_matched": 27,
         "fmcsa_archive": 0,
-        "noaa_matched": 35,
+        "noaa_matched": 37,
         "noaa_none": 16,
         "noaa_pending": 0,
         "reviewed_not_weather": 0,
@@ -2483,8 +2409,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 7.7,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 8.8,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2493,75 +2419,16 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: current-Governor proclamation archive from January 2015, plus 36 weather declarations added by hand: 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2015 and 2025 declarations from dated news and TDEM coverage. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1425 (2002 floods), DR-1479 (Claudette, 2003), DR-1658 (El Paso flooding, 2006), DR-1709 (June 2007 floods), DR-1730 and EM-3277 (Erin and Dean, 2007); DR-1999 and DR-4029 (2011 wildfires) fell under the December 2010 wildfire proclamation, which was renewed month by month and is not counted as a new declaration; 1 saved record kept that this refresh's check of the state source did not return",
-      "coverage_base": "2000-present: current-Governor proclamation archive from January 2015, plus 36 weather declarations added by hand (manual_declarations.csv): 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2015 and 2025 declarations from dated news and TDEM coverage. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1425 (2002 floods), DR-1479 (Claudette, 2003), DR-1658 (El Paso flooding, 2006), DR-1709 (June 2007 floods), DR-1730 and EM-3277 (Erin and Dean, 2007); DR-1999 and DR-4029 (2011 wildfires) fell under the December 2010 wildfire proclamation, which was renewed month by month and is not counted as a new declaration.",
+      "coverage": "2000-present: current-Governor proclamation archive from January 2015, plus 41 weather declarations added by hand: 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2002, 2007, 2011, 2015 and 2025 declarations from dated news, National Guard and TDEM coverage. The December 2010 statewide wildfire proclamation, renewed month by month, is counted for DR-1999 through its dated April 15, 2011 renewal and for DR-4029 through the September 6, 2011 release saying it had been reissued nine times and was in force; DR-1730 (Tropical Storm Erin, August 2007) counts as matched only because the Hurricane Dean proclamation of August 17 falls within three weeks of it. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1479 (Claudette, 2003) or DR-1658 (El Paso flooding, 2006)",
+      "coverage_base": "2000-present: current-Governor proclamation archive from January 2015, plus 41 weather declarations added by hand (manual_declarations.csv): 2001-2014 proclamations from archived copies of the Governor's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2002, 2007, 2011, 2015 and 2025 declarations from dated news, National Guard and TDEM coverage. The December 2010 statewide wildfire proclamation, renewed month by month, is counted for DR-1999 through its dated April 15, 2011 renewal and for DR-4029 through the September 6, 2011 release saying it had been reissued nine times and was in force; DR-1730 (Tropical Storm Erin, August 2007) counts as matched only because the Hurricane Dean proclamation of August 17 falls within three weeks of it. No state declaration was found for DR-1356 (December 2000 ice storm), DR-1479 (Claudette, 2003) or DR-1658 (El Paso flooding, 2006).",
       "federal_without_state": {
         "compared": 48,
-        "count": 9,
+        "count": 3,
         "covered_by_extension": [],
         "ids": [
-          "DR-4029",
-          "DR-1999",
-          "DR-1730",
-          "EM-3277",
-          "DR-1709",
           "DR-1658",
           "DR-1479",
-          "DR-1425",
           "DR-1356"
-        ],
-        "no_state_declaration": [],
-        "since": 2000
-      },
-      "generated_on": "2026-11-15",
-      "kept_saved_records": 1,
-      "kept_saved_values": 0,
-      "metrics": {
-        "action_count": 94,
-        "federal_declaration_count": 392,
-        "severity_rows": 5332,
-        "storm_match_rows": 9175
-      },
-      "name": "Texas",
-      "retried": false,
-      "slug": "texas",
-      "source_records_returned": 57,
-      "source_records_saved_before": 58,
-      "source_status": "partial",
-      "sources": {
-        "added_by_hand": 37,
-        "federal_matched": 54,
-        "fmcsa_archive": 0,
-        "noaa_matched": 94,
-        "noaa_none": 0,
-        "noaa_pending": 0,
-        "reviewed_not_weather": 1,
-        "state_archive": 57
-      },
-      "storm_pipeline_failed": false,
-      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
-      "timing": {
-        "collect_seconds": 773.1,
-        "storm_join_seconds": 1.7
-      }
-    },
-    {
-      "abbreviation": "UT",
-      "action_file": "declarations_for_join.csv",
-      "adapter_status": "implemented",
-      "collection_error": "",
-      "collection_failed": false,
-      "coverage": "2000-present Office of Administrative Rules executive-document indexes and legal texts",
-      "coverage_base": "2000-present Office of Administrative Rules executive-document indexes and legal texts.",
-      "federal_without_state": {
-        "compared": 10,
-        "count": 4,
-        "covered_by_extension": [],
-        "ids": [
-          "DR-4578",
-          "DR-4311",
-          "DR-4053",
-          "DR-1955"
         ],
         "no_state_declaration": [],
         "since": 2000
@@ -2570,23 +2437,71 @@
       "kept_saved_records": 0,
       "kept_saved_values": 0,
       "metrics": {
-        "action_count": 32,
+        "action_count": 99,
+        "federal_declaration_count": 392,
+        "severity_rows": 5819,
+        "storm_match_rows": 10016
+      },
+      "name": "Texas",
+      "retried": false,
+      "slug": "texas",
+      "source_records_returned": 58,
+      "source_records_saved_before": 58,
+      "source_status": "ok",
+      "sources": {
+        "added_by_hand": 42,
+        "federal_matched": 59,
+        "fmcsa_archive": 0,
+        "noaa_matched": 99,
+        "noaa_none": 0,
+        "noaa_pending": 0,
+        "reviewed_not_weather": 1,
+        "state_archive": 57
+      },
+      "storm_pipeline_failed": false,
+      "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
+      "timing": {
+        "collect_seconds": 592.1,
+        "storm_join_seconds": 1.1
+      }
+    },
+    {
+      "abbreviation": "UT",
+      "action_file": "declarations_for_join.csv",
+      "adapter_status": "implemented",
+      "collection_error": "",
+      "collection_failed": false,
+      "coverage": "2000-present Office of Administrative Rules executive-document indexes and legal texts, plus Executive Order 2017-2 (missing from the index) and Executive Order 2020-61 (a windstorm order the scraper took for a COVID-19 one) added by hand. Orders signed weeks after the storm they declare are compared on the storm's first day",
+      "coverage_base": "2000-present Office of Administrative Rules executive-document indexes and legal texts, plus Executive Order 2017-2 (missing from the index) and Executive Order 2020-61 (a windstorm order the scraper took for a COVID-19 one) added by hand (manual_declarations.csv). Orders signed weeks after the storm they declare are compared on the storm's first day.",
+      "federal_without_state": {
+        "compared": 10,
+        "count": 0,
+        "covered_by_extension": [],
+        "ids": [],
+        "no_state_declaration": [],
+        "since": 2000
+      },
+      "generated_on": "2026-11-15",
+      "kept_saved_records": 0,
+      "kept_saved_values": 0,
+      "metrics": {
+        "action_count": 34,
         "federal_declaration_count": 62,
-        "severity_rows": 125,
-        "storm_match_rows": 172
+        "severity_rows": 142,
+        "storm_match_rows": 189
       },
       "name": "Utah",
       "retried": false,
       "slug": "utah",
-      "source_records_returned": 33,
+      "source_records_returned": 34,
       "source_records_saved_before": 33,
       "source_status": "ok",
       "sources": {
-        "added_by_hand": 0,
-        "federal_matched": 12,
+        "added_by_hand": 2,
+        "federal_matched": 16,
         "fmcsa_archive": 0,
-        "noaa_matched": 21,
-        "noaa_none": 11,
+        "noaa_matched": 24,
+        "noaa_none": 10,
         "noaa_pending": 0,
         "reviewed_not_weather": 1,
         "state_archive": 32
@@ -2594,8 +2509,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 27.2,
-        "storm_join_seconds": 0.6
+        "collect_seconds": 18.9,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2604,11 +2519,11 @@
       "adapter_status": "implemented",
       "collection_error": "",
       "collection_failed": false,
-      "coverage": "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage. No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4178, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380, DR-4445, DR-4474, DR-4621, EM-3567 and DR-4695 (2017-2022), which are not in the Governor's numbered order list; plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
-      "coverage_base": "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv). No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4178, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380, DR-4445, DR-4474, DR-4621, EM-3567 and DR-4695 (2017-2022), which are not in the Governor's numbered order list.",
+      "coverage": "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage. No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380 and EM-3567 (2017-2021), which are not in the Governor's numbered order list. For DR-4178 (April 2014), DR-4445 (April 2019), DR-4474 (October 2019), DR-4621 (July 2021) and DR-4695 (December 2022) the Governor's request letter says no gubernatorial State of Emergency was declared (no_state_declaration.csv); plus 1 weather declaration from FMCSA's archive of state emergency declarations (2017-present)",
+      "coverage_base": "2000-present: structured Governor archive from 2017, plus 2011-2015 emergency orders from the Vermont Statutes appendix (3 V.S.A. App. ch. 20); orders from 2000-2010 were rescinded in 2015 and dropped from the current appendix, but the four still in force in 2011 (July 2000 and June 2002 floods, the April 2007 nor'easter, the December 2008 ice storm) are kept from the 2011-2014 editions. Plus 5 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv). No state emergency order was found for DR-1358, EM-3167, DR-1488, DR-1559, DR-1715, DR-1778, DR-1784, DR-1790 or DR-1951 (2000-2010; orders rescinded before 2011 are not published), nor for DR-4066, DR-4120, DR-4140, DR-4163, DR-4207 and DR-4232 (2012-2015), which are not among the orders in the statutes appendix, or for DR-4330, DR-4356, DR-4380 and EM-3567 (2017-2021), which are not in the Governor's numbered order list. For DR-4178 (April 2014), DR-4445 (April 2019), DR-4474 (October 2019), DR-4621 (July 2021) and DR-4695 (December 2022) the Governor's request letter says no gubernatorial State of Emergency was declared (no_state_declaration.csv).",
       "federal_without_state": {
         "compared": 42,
-        "count": 24,
+        "count": 19,
         "covered_by_extension": [
           {
             "declaration": "VT-EO-03-23",
@@ -2636,17 +2551,12 @@
           }
         ],
         "ids": [
-          "DR-4695",
-          "DR-4621",
           "EM-3567",
-          "DR-4474",
-          "DR-4445",
           "DR-4380",
           "DR-4356",
           "DR-4330",
           "DR-4232",
           "DR-4207",
-          "DR-4178",
           "DR-4163",
           "DR-4140",
           "DR-4120",
@@ -2661,7 +2571,43 @@
           "EM-3167",
           "DR-1358"
         ],
-        "no_state_declaration": [],
+        "no_state_declaration": [
+          {
+            "fema_url": "https://www.fema.gov/disaster/4695",
+            "id": "DR-4695",
+            "source_title": "Governor Scott's request for a major disaster declaration for the December 22 to 24, 2022 storm, February 21, 2023",
+            "source_url": "https://governor.vermont.gov/sites/scott/files/documents/Major%20Disaster%20Declaration%20Request%20Vermont%2012.22.22-12.24.22.pdf",
+            "statement": "While a gubernatorial State of Emergency was not declared, the Vermont State Emergency Management Plan (SEMP) was implemented for this storm event."
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4621",
+            "id": "DR-4621",
+            "source_title": "Governor Scott's request for a major disaster declaration for the July 29 to 30, 2021 storm, September 13, 2021 (Joint Fiscal Office grant packet JFO 3095)",
+            "source_url": "https://ljfo.vermont.gov/assets/grants-documents/7be4b72c66/JFO-3095-packet.pdf",
+            "statement": "While a gubernatorial State of Emergency was not declared, the Towns of Putney and Townshend activated Local Emergency Operations Centers (EOCs)."
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4474",
+            "id": "DR-4474",
+            "source_title": "Governor Scott's request for a major disaster declaration for the October 31 to November 1, 2019 storm, December 20, 2019 (Joint Fiscal Office grant packet JFO 3009)",
+            "source_url": "https://ljfo.vermont.gov/assets/grants-documents/0f9d1769ae/JFO-3009-packet.pdf",
+            "statement": "While a gubernatorial State of Emergency was not declared, the towns of Fairfax and Montgomery in Franklin County and Johnson and Hyde Park in Lamoille County each declared a local State of Emergency."
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4445",
+            "id": "DR-4445",
+            "source_title": "Governor Scott's request for a major disaster declaration for the April 15, 2019 storm, May 29, 2019 (Joint Fiscal Office grant packet JFO 2973)",
+            "source_url": "https://ljfo.vermont.gov/assets/grants-documents/d04356d56c/JFO-2973-packet.pdf",
+            "statement": "While a gubernatorial State of Emergency was not declared, the Town of Pittsfield in Rutland County, pursuant to their Local Emergency Management Plan, submitted a Local Jurisdiction Request for Emergency Declaration ..."
+          },
+          {
+            "fema_url": "https://www.fema.gov/disaster/4178",
+            "id": "DR-4178",
+            "source_title": "Governor Shumlin's request for a major disaster declaration for the April 15 to 18, 2014 storms, May 21, 2014 (Joint Fiscal Office grant packet JFO 2705)",
+            "source_url": "https://ljfo.vermont.gov/assets/grants-documents/e5788730fb/JFO-2705-packet.pdf",
+            "statement": "Based on an on-the-ground assessment, I did not declare a State of Emergency but activated the State Emergency Operations Plan (SEOP) to facilitate the provision of state resources to support local response and recovery operations through the state multi-agency coordination system."
+          }
+        ],
         "since": 2000
       },
       "generated_on": "2026-11-15",
@@ -2692,8 +2638,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 96.9,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 135.5,
+        "storm_join_seconds": 0.3
       }
     },
     {
@@ -2740,8 +2686,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join and forecast-zone resolution completed",
       "timing": {
-        "collect_seconds": 21.7,
-        "storm_join_seconds": 2.3
+        "collect_seconds": 15.0,
+        "storm_join_seconds": 1.4
       }
     },
     {
@@ -2788,8 +2734,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 109.4,
-        "storm_join_seconds": 0.9
+        "collect_seconds": 50.1,
+        "storm_join_seconds": 0.5
       }
     },
     {
@@ -2838,8 +2784,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 3.1,
-        "storm_join_seconds": 1.2
+        "collect_seconds": 2.4,
+        "storm_join_seconds": 0.7
       }
     },
     {
@@ -2886,8 +2832,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 1.2,
-        "storm_join_seconds": 1.1
+        "collect_seconds": 0.5,
+        "storm_join_seconds": 0.6
       }
     },
     {
@@ -2939,8 +2885,8 @@
       "storm_pipeline_failed": false,
       "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
       "timing": {
-        "collect_seconds": 21.1,
-        "storm_join_seconds": 0.5
+        "collect_seconds": 20.1,
+        "storm_join_seconds": 0.3
       }
     }
   ]

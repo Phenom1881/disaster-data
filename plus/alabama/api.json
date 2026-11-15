@@ -498,6 +498,17 @@
     {
       "action_number": "",
       "action_type": "declaration",
+      "date_signed": "2012-01-23",
+      "declaration_id": "AL-SOE-2012-01-23",
+      "governor": "Robert Bentley",
+      "origin": "hand",
+      "source_url": "https://enewscourier.com/2012/01/24/little-damage-here-but-two-killed-100-hurt-near-bham/",
+      "state": "AL",
+      "title": "State of emergency for all 67 counties after the January 23, 2012 tornadoes"
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
       "date_signed": "2011-09-06",
       "declaration_id": "AL-SOS-13-1237",
       "governor": "Robert Bentley",
@@ -738,7 +749,7 @@
       "title": "State of Emergency for Jefferson County for drought conditions"
     }
   ],
-  "coverage": "2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the January 2012 tornadoes (DR-4052), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)",
+  "coverage": "2000-present: the Governor's newsroom from 2017, plus November 2009 to April 2017 states of emergency from the Secretary of State's Record of Proclamations and 2000-2009 ones from dated news coverage and a Jefferson County order (among them the December 2000 Tuscaloosa tornado, Isidore, the November 2002 Abbeville tornado, the May 2003 storms, Ivan, Dennis, Katrina, the Enterprise tornado, Fay, Gustav and the March 2009 floods and the January 2012 tornadoes); no state declaration has been found for the January 2000 winter storms (DR-1317), the March 2000 storms (DR-1322), the February 2001 floods (DR-1362), the November 2001 tornadoes (DR-1399), the May 2009 floods (DR-1842), the October 2021 storms (DR-4632) or Hurricane Helene in 2024 (EM-3618)",
   "crosswalk": [
     {
       "date_signed": "2026-10-07",
@@ -2439,6 +2450,52 @@
       "title": "State of Emergency for Hurricane Isaac (declared August 26, 2012)"
     },
     {
+      "date_signed": "2012-01-23",
+      "declaration_id": "AL-SOE-2012-01-23",
+      "federal_declaration": {
+        "begin": "2012-01-22",
+        "date": "2012-02-01",
+        "end": "2012-01-23",
+        "id": "DR-4052",
+        "incidentType": "Severe Storm",
+        "number": 4052,
+        "title": "SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "BUTLER",
+        "CHILTON",
+        "CHOCTAW",
+        "COFFEE",
+        "DALE",
+        "ELMORE",
+        "ETOWAH",
+        "GENEVA",
+        "HALE",
+        "JACKSON",
+        "JEFFERSON",
+        "LAUDERDALE",
+        "LAWRENCE",
+        "LIMESTONE",
+        "LOWNDES",
+        "MACON",
+        "MADISON",
+        "MARION",
+        "MARSHALL",
+        "PERRY",
+        "RANDOLPH",
+        "ST. CLAIR",
+        "SUMTER",
+        "TALLADEGA",
+        "TALLAPOOSA",
+        "TUSCALOOSA"
+      ],
+      "noaa_match_count": 55,
+      "noaa_status": "matched",
+      "title": "State of emergency for all 67 counties after the January 23, 2012 tornadoes"
+    },
+    {
       "date_signed": "2011-09-06",
       "declaration_id": "AL-SOS-13-1237",
       "federal_declaration": null,
@@ -3527,16 +3584,6 @@
         "type": "DR"
       },
       {
-        "begin": "2012-01-22",
-        "date": "2012-02-01",
-        "end": "2012-01-23",
-        "id": "DR-4052",
-        "incidentType": "Severe Storm",
-        "number": 4052,
-        "title": "SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING",
-        "type": "DR"
-      },
-      {
         "begin": "2009-05-06",
         "date": "2009-06-03",
         "end": "2009-05-08",
@@ -3593,10 +3640,10 @@
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 67,
+    "action_count": 68,
     "federal_declaration_count": 103,
-    "severity_rows": 1809,
-    "storm_match_rows": 3739
+    "severity_rows": 1835,
+    "storm_match_rows": 3794
   },
   "name": "Alabama",
   "noaa_data_through": "2026-07-30",
@@ -3605,10 +3652,10 @@
   "slug": "alabama",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 36,
-    "federal_matched": 36,
+    "added_by_hand": 37,
+    "federal_matched": 37,
     "fmcsa_archive": 0,
-    "noaa_matched": 64,
+    "noaa_matched": 65,
     "noaa_none": 2,
     "noaa_pending": 1,
     "reviewed_not_weather": 0,

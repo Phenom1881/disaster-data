@@ -760,7 +760,7 @@
       "title": "Gov. Mel Carnahan declares a State of Emergency in the South Central Region of Missouri in response to wildfires and directs the Missouri State Emergency Operations Plan be activated. (Mar. 10)"
     }
   ],
-  "coverage": "2000-present Secretary of State year indexes and legal order text",
+  "coverage": "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day",
   "crosswalk": [
     {
       "date_signed": "2026-07-10",
@@ -2113,11 +2113,37 @@
     {
       "date_signed": "2014-10-22",
       "declaration_id": "MO-EO-14-12",
-      "federal_declaration": null,
-      "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "none",
+      "federal_declaration": {
+        "begin": "2014-09-09",
+        "date": "2014-10-31",
+        "end": "2014-09-10",
+        "id": "DR-4200",
+        "incidentType": "Severe Storm",
+        "number": 4200,
+        "title": "SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ADAIR",
+        "ANDREW",
+        "ATCHISON",
+        "DAVIESS",
+        "DE KALB",
+        "GRUNDY",
+        "HOLT",
+        "KNOX",
+        "LEWIS",
+        "LINN",
+        "MACON",
+        "NODAWAY",
+        "OZARK",
+        "PHELPS",
+        "RALLS",
+        "ST. CHARLES"
+      ],
+      "noaa_match_count": 42,
+      "noaa_status": "matched",
       "title": "Gov. Jay Nixon declares a State of Emergency and directs the Missouri State Emergency Operation Plan be activated in response to severe weather that began on September 9, 2014. (Oct. 22)"
     },
     {
@@ -4513,16 +4539,6 @@
         "number": 4552,
         "title": "SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING",
         "type": "DR"
-      },
-      {
-        "begin": "2014-09-09",
-        "date": "2014-10-31",
-        "end": "2014-09-10",
-        "id": "DR-4200",
-        "incidentType": "Severe Storm",
-        "number": 4200,
-        "title": "SEVERE STORMS, TORNADOES, STRAIGHT-LINE WINDS, AND FLOODING",
-        "type": "DR"
       }
     ],
     "no_state_declaration": [],
@@ -4533,8 +4549,8 @@
   "metrics": {
     "action_count": 69,
     "federal_declaration_count": 88,
-    "severity_rows": 2494,
-    "storm_match_rows": 7037
+    "severity_rows": 2510,
+    "storm_match_rows": 7079
   },
   "name": "Missouri",
   "noaa_data_through": "2026-07-30",
@@ -4544,10 +4560,10 @@
   "source_status": "ok",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 48,
+    "federal_matched": 49,
     "fmcsa_archive": 0,
-    "noaa_matched": 63,
-    "noaa_none": 6,
+    "noaa_matched": 64,
+    "noaa_none": 5,
     "noaa_pending": 0,
     "reviewed_not_weather": 15,
     "state_archive": 69

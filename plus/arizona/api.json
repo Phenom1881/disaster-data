@@ -670,9 +670,20 @@
       "source_url": "https://dema.az.gov/sites/default/files/2022-11/DEMA_Annual_Report_2011.pdf",
       "state": "AZ",
       "title": "Rodeo/Chedeski Fire Emergency. Wildfire emergency. State emergency account 22006."
+    },
+    {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2000-10-24",
+      "declaration_id": "AZ-DECL-2000-10-24-la-paz-maricopa-county-storm-emergency",
+      "governor": "Jane Dee Hull",
+      "origin": "hand",
+      "source_url": "https://webarchive.library.unt.edu/eot2008/20090117215311id_/https://www.fema.gov/news/newsrelease.fema?id=7755",
+      "state": "AZ",
+      "title": "La Paz / Maricopa County Storm Emergency. State of Emergency for widespread damage from the October 2000 storms and flooding (Wenden)."
     }
   ],
-  "coverage": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's 2000-2001 weather emergencies (Mohave County windstorm, August 2000; Wenden flood and rain from Hurricane Olivia, October 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
+  "coverage": "2000-present: 2002-2022 weather emergencies from the Department of Emergency and Military Affairs annual and State Emergency Council reports, with 2014 and 2021-2022 dates from news coverage of each declaration; January 2023-present from the Governor's news releases (dated by release) and executive orders. Governor Hull's October 24, 2000 storm and flood emergency (Wenden, Hurricane Olivia) is dated from a FEMA release; her other 2000-2001 weather emergencies (Mohave County windstorm, August 2000; southwest Arizona monsoon, August 2001) are known only by month from the Auditor General's 2004 report and are not listed, and some 2014-2017 and 2021-2023 declarations named in Governor's Emergency Fund reports have no published date and are not listed",
   "crosswalk": [
     {
       "date_signed": "2026-11-02",
@@ -2114,14 +2125,11 @@
       "noaa_match_count": 2,
       "noaa_status": "matched",
       "title": "Rodeo/Chedeski Fire Emergency. Wildfire emergency. State emergency account 22006."
-    }
-  ],
-  "federal_match_window_days": 21,
-  "federal_without_state": {
-    "compared": 12,
-    "covered_by_extension": [],
-    "declarations": [
-      {
+    },
+    {
+      "date_signed": "2000-10-24",
+      "declaration_id": "AZ-DECL-2000-10-24-la-paz-maricopa-county-storm-emergency",
+      "federal_declaration": {
         "begin": "2000-10-21",
         "date": "2000-10-27",
         "end": "2000-11-08",
@@ -2130,18 +2138,41 @@
         "number": 1347,
         "title": "SEVERE STORMS AND FLOODING",
         "type": "DR"
-      }
-    ],
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "COCHISE COUNTY",
+        "COCONINO",
+        "LA PAZ",
+        "MARICOPA",
+        "MOHAVE",
+        "PINAL",
+        "SANTA CRUZ COUNTY",
+        "TOHONO OODHAM NATION",
+        "TUCSON METRO/MARANA/GREEN VALLEY",
+        "UPPER GILA RIVER VALLEY",
+        "YUMA"
+      ],
+      "noaa_match_count": 13,
+      "noaa_status": "matched",
+      "title": "La Paz / Maricopa County Storm Emergency. State of Emergency for widespread damage from the October 2000 storms and flooding (Wenden)."
+    }
+  ],
+  "federal_match_window_days": 21,
+  "federal_without_state": {
+    "compared": 12,
+    "covered_by_extension": [],
+    "declarations": [],
     "no_state_declaration": [],
     "since": 2000
   },
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 61,
+    "action_count": 62,
     "federal_declaration_count": 120,
-    "severity_rows": 426,
-    "storm_match_rows": 1338
+    "severity_rows": 437,
+    "storm_match_rows": 1351
   },
   "name": "Arizona",
   "noaa_data_through": "2026-07-30",
@@ -2150,10 +2181,10 @@
   "slug": "arizona",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 53,
-    "federal_matched": 39,
+    "added_by_hand": 54,
+    "federal_matched": 40,
     "fmcsa_archive": 0,
-    "noaa_matched": 54,
+    "noaa_matched": 55,
     "noaa_none": 5,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,

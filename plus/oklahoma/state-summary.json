@@ -4,20 +4,13 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and 2000-2008 disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders); plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-  "coverage_base": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and 2000-2008 disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders)",
+  "coverage": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders): 2000-2008, plus 2015-55, 2022-8, 2024-7 and its amendment 2024-7C, which added the counties hit by the May 2024 storms; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage_base": "2000-present: Oklahoma Emergency Management's emergencies-and-disasters archive from 2016 (a proxy for the robots-blocked SOS EO index), with governor declarations back to 2006 reviewed by hand from OEM event pages and the Governor's releases, and disaster emergency orders added by hand from Oklahoma Administrative Code Title 1 (Executive Orders): 2000-2008, plus 2015-55, 2022-8, 2024-7 and its amendment 2024-7C, which added the counties hit by the May 2024 storms",
   "federal_without_state": {
     "compared": 65,
-    "count": 6,
+    "count": 0,
     "covered_by_extension": [],
-    "ids": [
-      "DR-4950",
-      "DR-4862",
-      "DR-4791",
-      "DR-4776",
-      "DR-4657",
-      "DR-4256"
-    ],
+    "ids": [],
     "no_state_declaration": [],
     "since": 2000
   },
@@ -25,10 +18,10 @@
   "kept_saved_records": 0,
   "kept_saved_values": 1,
   "metrics": {
-    "action_count": 70,
+    "action_count": 76,
     "federal_declaration_count": 260,
-    "severity_rows": 2771,
-    "storm_match_rows": 6694
+    "severity_rows": 3019,
+    "storm_match_rows": 7621
   },
   "name": "Oklahoma",
   "retried": false,
@@ -37,10 +30,10 @@
   "source_records_saved_before": 3,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 63,
-    "federal_matched": 57,
+    "added_by_hand": 69,
+    "federal_matched": 63,
     "fmcsa_archive": 4,
-    "noaa_matched": 68,
+    "noaa_matched": 74,
     "noaa_none": 2,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
@@ -49,7 +42,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 20.1,
-    "storm_join_seconds": 1.1
+    "collect_seconds": 15.8,
+    "storm_join_seconds": 0.8
   }
 }

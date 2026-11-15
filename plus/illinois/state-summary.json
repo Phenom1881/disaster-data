@@ -4,29 +4,16 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; other pre-2023 proclamations are not listed",
-  "coverage_base": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus 2013-2022 proclamations (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage; other pre-2023 proclamations are not listed",
+  "coverage": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus proclamations added by hand: 2006-2011 (Blagojevich, Quinn) from the Governor's releases, Illinois delegation releases and dated news coverage, 2013-2022 (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage, and the August 2024 proclamation from IEMA-OHS; other pre-2023 proclamations are not listed. Proclamations signed weeks after the storm they declare are compared on the storm's first day. Federal declarations since 2000 with no state record yet: EM-3161, DR-1368, DR-1416, DR-1469, DR-1513, EM-3199, DR-1747, EM-3283, DR-1771",
+  "coverage_base": "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, plus proclamations added by hand: 2006-2011 (Blagojevich, Quinn) from the Governor's releases, Illinois delegation releases and dated news coverage, 2013-2022 (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage, and the August 2024 proclamation from IEMA-OHS; other pre-2023 proclamations are not listed. Proclamations signed weeks after the storm they declare are compared on the storm's first day. Federal declarations since 2000 with no state record yet: EM-3161, DR-1368, DR-1416, DR-1469, DR-1513, EM-3199, DR-1747, EM-3283, DR-1771.",
   "federal_without_state": {
     "compared": 28,
-    "count": 22,
+    "count": 9,
     "covered_by_extension": [],
     "ids": [
-      "DR-4819",
-      "DR-4749",
-      "DR-1991",
-      "DR-1960",
-      "DR-1935",
-      "DR-1850",
-      "DR-1826",
-      "DR-1800",
       "DR-1771",
       "EM-3283",
       "DR-1747",
-      "DR-1729",
-      "DR-1722",
-      "DR-1681",
-      "EM-3269",
-      "DR-1633",
       "EM-3199",
       "DR-1513",
       "DR-1469",
@@ -37,33 +24,27 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "first_attempt": {
-    "error": "Collection failed: Illinois adapter: scrape failed (RuntimeError: www.illinois.gov: Max retries exceeded with url: /government/disaster-proclamations.html (Caused by NameResolutionError(\"HTTPSConnection(host='www.illinois.gov', port=443): Failed to resolve 'www.illinois.gov' ([Errno -3] T...)",
-    "seconds": 28.4,
-    "status": "failed"
-  },
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 16,
+    "action_count": 27,
     "federal_declaration_count": 68,
-    "severity_rows": 404,
-    "storm_match_rows": 1155
+    "severity_rows": 753,
+    "storm_match_rows": 1980
   },
   "name": "Illinois",
-  "retried": true,
-  "retry_status": "ok",
+  "retried": false,
   "slug": "illinois",
   "source_records_returned": 8,
-  "source_records_saved_before": 7,
+  "source_records_saved_before": 8,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 8,
-    "federal_matched": 6,
+    "added_by_hand": 19,
+    "federal_matched": 18,
     "fmcsa_archive": 0,
-    "noaa_matched": 13,
-    "noaa_none": 1,
+    "noaa_matched": 25,
+    "noaa_none": 0,
     "noaa_pending": 2,
     "reviewed_not_weather": 0,
     "state_archive": 8
@@ -71,7 +52,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 26.8,
-    "storm_join_seconds": 0.6
+    "collect_seconds": 23.6,
+    "storm_join_seconds": 0.5
   }
 }

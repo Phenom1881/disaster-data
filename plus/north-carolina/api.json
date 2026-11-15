@@ -694,6 +694,17 @@
       "title": "Executive Order No. 51, disaster declaration for the February 2014 winter storm for ten municipalities in southeastern North Carolina."
     },
     {
+      "action_number": "",
+      "action_type": "declaration",
+      "date_signed": "2014-03-07",
+      "declaration_id": "NC-SOE-2014-03-07",
+      "governor": "Pat McCrory",
+      "origin": "hand",
+      "source_url": "https://m.washingtontimes.com/news/2014/mar/7/winter-weather-closes-delays-schools-in-nc/",
+      "state": "NC",
+      "title": "Statewide state of emergency after the March 6 to 7, 2014 ice storm and power outages, declared Friday, March 7, 2014 (AP via the Washington Times)."
+    },
+    {
       "action_number": "43",
       "action_type": "declaration",
       "date_signed": "2014-02-11",
@@ -892,7 +903,7 @@
       "title": "Statewide state of emergency for the record January 2000 snowstorm, declared January 25, 2000 (NPR that day; Hunt told CNN that morning he was prepared to call one)."
     }
   ],
-  "coverage": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods, the late July 2013 mountain floods and the March 2014 ice storm have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
+  "coverage": "2000-present: the Governor's executive order archive from January 2017, plus 2000-2016 weather declarations (Hunt, Easley, Perdue and McCrory) added by hand from the State Archives of North Carolina's executive orders and Governor's press releases and dated news coverage; declarations for the February 2003 ice storm, the September 2010 floods and the late July 2013 mountain floods have not been found, and some 2000-2016 orders that do not name their hazard are not listed",
   "crosswalk": [
     {
       "date_signed": "2026-10-22",
@@ -4196,6 +4207,67 @@
       "title": "Executive Order No. 51, disaster declaration for the February 2014 winter storm for ten municipalities in southeastern North Carolina."
     },
     {
+      "date_signed": "2014-03-07",
+      "declaration_id": "NC-SOE-2014-03-07",
+      "federal_declaration": {
+        "begin": "2014-03-06",
+        "date": "2014-03-31",
+        "end": "2014-03-07",
+        "id": "DR-4167",
+        "incidentType": "Severe Ice Storm",
+        "number": 4167,
+        "title": "SEVERE WINTER STORM",
+        "type": "DR"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [
+        "ALAMANCE",
+        "ALEXANDER",
+        "ALLEGHANY",
+        "ASHE",
+        "AVERY",
+        "BUNCOMBE",
+        "BURKE MOUNTAINS",
+        "CALDWELL MOUNTAINS",
+        "CASWELL",
+        "CATAWBA",
+        "COASTAL NEW HANOVER",
+        "DAVIDSON",
+        "DAVIE",
+        "DURHAM",
+        "EASTERN MCDOWELL",
+        "FORSYTH",
+        "GRANVILLE",
+        "GREATER BURKE",
+        "GREATER CALDWELL",
+        "GUILFORD",
+        "HAYWOOD",
+        "HENDERSON",
+        "IREDELL",
+        "MCDOWELL MOUNTAINS",
+        "MITCHELL",
+        "ORANGE",
+        "PERSON",
+        "POLK MOUNTAINS",
+        "RANDOLPH",
+        "ROCKINGHAM",
+        "ROWAN",
+        "RUTHERFORD MOUNTAINS",
+        "STOKES",
+        "SURRY",
+        "TRANSYLVANIA",
+        "VANCE",
+        "WARREN",
+        "WATAUGA",
+        "WILKES",
+        "YADKIN",
+        "YANCEY"
+      ],
+      "noaa_match_count": 44,
+      "noaa_status": "matched",
+      "title": "Statewide state of emergency after the March 6 to 7, 2014 ice storm and power outages, declared Friday, March 7, 2014 (AP via the Washington Times)."
+    },
+    {
       "date_signed": "2014-02-11",
       "declaration_id": "NC-PATMCCRORY-EO-43",
       "federal_declaration": null,
@@ -5403,16 +5475,6 @@
     "covered_by_extension": [],
     "declarations": [
       {
-        "begin": "2014-03-06",
-        "date": "2014-03-31",
-        "end": "2014-03-07",
-        "id": "DR-4167",
-        "incidentType": "Severe Ice Storm",
-        "number": 4167,
-        "title": "SEVERE WINTER STORM",
-        "type": "DR"
-      },
-      {
         "begin": "2013-07-27",
         "date": "2013-10-29",
         "end": "2013-07-27",
@@ -5449,10 +5511,10 @@
   "generated_on": "2026-11-15",
   "kept_saved_records": 0,
   "metrics": {
-    "action_count": 81,
+    "action_count": 82,
     "federal_declaration_count": 85,
-    "severity_rows": 3399,
-    "storm_match_rows": 5452
+    "severity_rows": 3440,
+    "storm_match_rows": 5496
   },
   "name": "North Carolina",
   "noaa_data_through": "2026-07-30",
@@ -5461,10 +5523,10 @@
   "slug": "north-carolina",
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 25,
-    "federal_matched": 38,
+    "added_by_hand": 26,
+    "federal_matched": 39,
     "fmcsa_archive": 0,
-    "noaa_matched": 78,
+    "noaa_matched": 79,
     "noaa_none": 2,
     "noaa_pending": 1,
     "reviewed_not_weather": 0,
