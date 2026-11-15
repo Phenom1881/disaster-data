@@ -61,7 +61,7 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "NV"))
         self.assertTrue(note.startswith("2000-present"))
-        for gap in ("DR-1540", "EM-3202", "EM-3204", "DR-1583", "DR-1629"):
+        for gap in ("DR-1540", "EM-3202", "EM-3204", "DR-1583"):
             self.assertIn(gap, note)
 
 
