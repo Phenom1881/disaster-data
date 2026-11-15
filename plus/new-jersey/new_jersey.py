@@ -56,7 +56,9 @@ STATE = "NJ"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "1990-present provisional structured coverage; 1962-1989 selectively represented"
+    "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acti"
+    "ng Governor Codey's Executive Order 28 (April 2005 flooding) added by hand (manual_declara"
+    "tions.csv), since the order index the scraper reads does not reach his 2004-2006 orders"
 )
 
 CAPABILITIES = {
