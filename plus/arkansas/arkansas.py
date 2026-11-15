@@ -9,12 +9,11 @@ STATE = "AR"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: the current Governor's executive order archive from January 2023, plus earli"
-    "er weather declarations added by hand from the Governor's disaster proclamations catalogue"
-    'd by the Arkansas State Library (2006-2011 and 2021) and dated news coverage; no declarati'
-    "ons from 2000-2005 have been found yet, and FEMA's 2000-2004 declarations and those for Fe"
-    'bruary and May 2008, December 2009, May 2011 and June 2019 still have no dated state decla'
-    'ration'
+    "2000-present: the current Governor's executive order archive from January 2023, plus earlier weather"
+    " declarations added by hand from the Governor's disaster proclamations catalogued by the Arkansas St"
+    "ate Library (2006-2011 and 2021) and dated news coverage; no declarations from 2000-2005 have been f"
+    "ound yet, and FEMA's 2000-2004 declarations and those for December 2009, May 2011 and June 2019 stil"
+    "l have no dated state declaration"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
