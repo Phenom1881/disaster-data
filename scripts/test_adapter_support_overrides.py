@@ -93,5 +93,100 @@ class MergeOverridesTests(unittest.TestCase):
             self.assertFalse((before & hand) - kept, state.name)
 
 
+class FetchFailureTests(unittest.TestCase):
+    """Colorado's 2000-2006 library PDFs began returning 404 on 2026-11-15.
+    That refresh reclassified 120 Owens orders from blank text and dropped
+    the two reviewed out-of-state exclusions (D-2005-008, D-2005-010)."""
+
+    URL = "https://example.test/order.pdf"
+
+    def setUp(self):
+        self.support = load(COPIES[0])
+        self.dir = tempfile.TemporaryDirectory()
+        self.base = Path(self.dir.name)
+
+    def tearDown(self):
+        self.dir.cleanup()
+        self.support._PREVIOUS.clear()
+
+    def record(self, title="Order"):
+        return self.support.make_record("XX", title, self.URL, number="D-2005-008")
+
+    def write_previous(self, **extra):
+        row = dict.fromkeys(self.support.ACTION_FIELDS, "")
+        row.update(declaration_id=self.record()["declaration_id"], document_url=self.URL,
+                   full_text="Executive Order sending Colorado National Guard to Louisiana after Hurricane Katrina " * 2,
+                   date_signed="2005-09-02", date_evidence="signature line", governor="Bill Owens")
+        row.update(extra)
+        with open(self.base / "xx_emergency_actions_all.csv", "w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=self.support.ACTION_FIELDS, lineterminator="\n")
+            writer.writeheader()
+            writer.writerow(row)
+
+    def test_a_failed_fetch_keeps_the_previous_text_and_date(self):
+        self.write_previous()
+        self.support.load_previous_records(self.base)
+        r = self.record()
+        self.assertTrue(self.support.keep_previous_text(r))
+        self.assertIn("Katrina", r["full_text"])
+        self.assertEqual(r["date_signed"], "2005-09-02")
+        self.assertEqual(r["governor"], "Bill Owens")
+        self.assertIn("previous refresh", r["date_evidence"])
+
+    def test_enrich_record_falls_back_when_the_fetch_fails(self):
+        self.write_previous()
+        self.support.load_previous_records(self.base)
+        original = self.support.fetch
+
+        def refuse(url):
+            raise RuntimeError("404 Client Error: Not Found for url: " + url)
+
+        self.support.fetch = refuse
+        try:
+            r = self.support.enrich_record(self.record())
+        finally:
+            self.support.fetch = original
+        self.assertIn("404", r["fetch_error"])
+        self.assertEqual(r["date_signed"], "2005-09-02")
+
+    def test_previous_text_is_not_reused_for_a_different_document(self):
+        self.write_previous(document_url="https://example.test/other.pdf")
+        self.support.load_previous_records(self.base)
+        r = self.record()
+        self.assertFalse(self.support.keep_previous_text(r))
+        self.assertEqual(r["full_text"], "")
+
+    def test_a_previous_failure_is_not_a_source(self):
+        self.write_previous(fetch_error="404 Client Error")
+        self.support.load_previous_records(self.base)
+        self.assertFalse(self.support.keep_previous_text(self.record()))
+
+    def test_a_reviewed_exclusion_keeps_its_override_without_a_readable_date(self):
+        (self.base / "review_decisions.json").write_text(json.dumps({self.record()["declaration_id"]: {
+            "decision": "override_exclude", "hazard_category_override": "exclude",
+            "reason": "Sends assistance to another state", "source_url": self.URL}}))
+        records, _, overrides = self.support.finalize([self.record()], self.base)
+        self.assertEqual(records[0]["decision"], "override_exclude")
+        self.assertEqual([o["hazard_category_override"] for o in overrides], ["exclude"])
+
+    def test_an_undated_reviewed_exclusion_stays_out_of_the_join_file(self):
+        import sys
+        from unittest import mock
+        (self.base / "review_decisions.json").write_text(json.dumps({self.record()["declaration_id"]: {
+            "decision": "override_exclude", "hazard_category_override": "exclude",
+            "reason": "Sends assistance to another state", "source_url": self.URL}}))
+        argv = ["x", "--actions-out", str(self.base / "a.csv"), "--relationships-out", str(self.base / "r.csv"),
+                "--join-out", str(self.base / "declarations_for_join.csv")]
+        with mock.patch.object(sys, "argv", argv), mock.patch("builtins.print"):
+            self.support.run(lambda: [self.record()], self.base)
+        self.assertEqual(read(self.base / "declarations_for_join.csv"), [])
+        self.assertEqual([r["hazard_category_override"] for r in read(self.base / "hazard_overrides.csv")], ["exclude"])
+
+    def test_an_undated_declaration_still_goes_to_review(self):
+        (self.base / "review_decisions.json").write_text(json.dumps({self.record()["declaration_id"]: {"decision": "include"}}))
+        records, _, overrides = self.support.finalize([self.record()], self.base)
+        self.assertEqual(records[0]["decision"], "review")
+
+
 if __name__ == "__main__":
     unittest.main()
