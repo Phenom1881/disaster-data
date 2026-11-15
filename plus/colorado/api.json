@@ -1112,6 +1112,28 @@
       "title": "E X E C U T I V E O R D E R Declaring a Disaster Emergency Due to a Wildfire in Las Animas and Huerfano Counties"
     },
     {
+      "action_number": "D-2005-010",
+      "action_type": "declaration",
+      "date_signed": "2005-09-03",
+      "declaration_id": "CO-EO-D-2005-010",
+      "governor": "Bill Owens",
+      "origin": "state",
+      "source_url": "https://spl.cde.state.co.us/artemis/goserials/go4013internet/go4013d01005internet.pdf",
+      "state": "CO",
+      "title": "EXECUTIVE ORDER Directing State Agencies to Prepare Temporary Housing For Evacuees Displaced by Hurricane Katrina"
+    },
+    {
+      "action_number": "D-2005-008",
+      "action_type": "declaration",
+      "date_signed": "2005-09-01",
+      "declaration_id": "CO-EO-D-2005-008",
+      "governor": "Bill Owens",
+      "origin": "state",
+      "source_url": "https://spl.cde.state.co.us/artemis/goserials/go4013internet/go4013d00805internet.pdf",
+      "state": "CO",
+      "title": "EXECUTIVE ORDER Calling Certain Elements of the Colorado National Guard to Active Duty to Assist with Emergency Response Efforts Related to Hurricane Katrina"
+    },
+    {
       "action_number": "D-2005-006",
       "action_type": "declaration",
       "date_signed": "2005-07-14",
@@ -1233,7 +1255,7 @@
       "title": "E X E C U T I V E O R D E R Declaring a Disaster Emergency Due to a Large Wildfire in Montezuma County and Ordering to State Active Duty Certain Elements of the Colorado National Guard"
     }
   ],
-  "coverage": "2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending",
+  "coverage": "2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending; 22 saved records kept that this refresh's check of the state source did not return",
   "crosswalk": [
     {
       "date_signed": "2025-11-10",
@@ -4518,6 +4540,44 @@
       "title": "E X E C U T I V E O R D E R Declaring a Disaster Emergency Due to a Wildfire in Las Animas and Huerfano Counties"
     },
     {
+      "date_signed": "2005-09-03",
+      "declaration_id": "CO-EO-D-2005-010",
+      "federal_declaration": {
+        "begin": "2005-08-29",
+        "date": "2005-09-05",
+        "end": "2005-10-01",
+        "id": "EM-3224",
+        "incidentType": "Coastal Storm",
+        "number": 3224,
+        "title": "HURRICANE KATRINA EVACUATION",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
+      "title": "EXECUTIVE ORDER Directing State Agencies to Prepare Temporary Housing For Evacuees Displaced by Hurricane Katrina"
+    },
+    {
+      "date_signed": "2005-09-01",
+      "declaration_id": "CO-EO-D-2005-008",
+      "federal_declaration": {
+        "begin": "2005-08-29",
+        "date": "2005-09-05",
+        "end": "2005-10-01",
+        "id": "EM-3224",
+        "incidentType": "Coastal Storm",
+        "number": 3224,
+        "title": "HURRICANE KATRINA EVACUATION",
+        "type": "EM"
+      },
+      "federal_status": "matched",
+      "noaa_areas": [],
+      "noaa_match_count": 0,
+      "noaa_status": "none",
+      "title": "EXECUTIVE ORDER Calling Certain Elements of the Colorado National Guard to Active Duty to Assist with Emergency Response Efforts Related to Hurricane Katrina"
+    },
+    {
       "date_signed": "2005-07-14",
       "declaration_id": "CO-EO-D-2005-006",
       "federal_declaration": {
@@ -4921,10 +4981,10 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-14",
-  "kept_saved_records": 0,
+  "generated_on": "2026-11-15",
+  "kept_saved_records": 22,
   "metrics": {
-    "action_count": 112,
+    "action_count": 114,
     "federal_declaration_count": 112,
     "severity_rows": 1883,
     "storm_match_rows": 2440
@@ -4934,16 +4994,16 @@
   "official_source_url": "https://spl.cde.state.co.us/artemis/goserials/",
   "schema_version": 1,
   "slug": "colorado",
-  "source_status": "ok",
+  "source_status": "partial",
   "sources": {
     "added_by_hand": 0,
-    "federal_matched": 61,
+    "federal_matched": 63,
     "fmcsa_archive": 0,
     "noaa_matched": 94,
-    "noaa_none": 18,
+    "noaa_none": 20,
     "noaa_pending": 0,
-    "reviewed_not_weather": 8,
-    "state_archive": 112
+    "reviewed_not_weather": 6,
+    "state_archive": 114
   },
   "state": "CO"
 }
