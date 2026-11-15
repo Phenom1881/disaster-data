@@ -283,8 +283,9 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((here.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "AZ"))
         self.assertTrue(note.startswith("2000-present"))
-        # The month-only 2000-2001 emergencies are named, not silently dropped.
-        for name in ("Wenden flood", "Hurricane Olivia", "Mohave County windstorm", "monsoon, August 2001"):
+        # The month-only 2000-2001 emergencies are named, not silently dropped;
+        # the October 2000 Wenden flood emergency is dated and listed.
+        for name in ("October 24, 2000", "Wenden", "Hurricane Olivia", "Mohave County windstorm", "monsoon, August 2001"):
             self.assertIn(name, note)
 
 
