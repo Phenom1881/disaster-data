@@ -1,5 +1,6 @@
-"""2000-2008 disaster emergency orders added by hand from Oklahoma
-Administrative Code Title 1 (Executive Orders).
+"""Disaster emergency orders added by hand from Oklahoma Administrative
+Code Title 1 (Executive Orders): 2000-2008, plus 2015-55, 2022-8, 2024-7
+and its May 26, 2024 amendment 2024-7C.
 
 Each row's date is the signing date Title 1 gives for the order, and its
 record URL is that order's section of Title 1.
@@ -20,9 +21,10 @@ EXPECTED = {
     "2003-10": "2003-05-09", "2005-31": "2005-11-28", "2006-7": "2006-03-14",
     "2007-26": "2007-06-12", "2007-36": "2007-08-20", "2007-49": "2007-12-10",
     "2008-19": "2008-05-11", "2008-24": "2008-06-11", "2008-38": "2008-09-15",
+    "2015-55": "2015-12-28", "2022-8": "2022-05-12", "2024-7": "2024-04-28", "2024-7C": "2024-05-26",
 }
 # Lieutenant Governors signed some orders as acting Governor.
-SIGNERS = {"Frank Keating", "Brad Henry", "Mary Fallin", "Jari Askins"}
+SIGNERS = {"Frank Keating", "Brad Henry", "Mary Fallin", "Jari Askins", "Kevin Stitt"}
 
 
 def csv_rows(name):
