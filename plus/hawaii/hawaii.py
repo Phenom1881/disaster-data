@@ -8,9 +8,8 @@ STATE = 'HI'
 # same text for builds without collection.
 COVERAGE_NOTE = (
     "Current Governor emergency proclamations plus partial 2014-2022 State Procurement mirror; verified j"
-    "oining coverage is narrower. Plus 27 declarations added by hand from official announcements, order t"
-    "ext and dated news coverage (manual_declarations.csv); compared from 2000, with no dated proclamatio"
-    "n found for the November 2000 Big Island floods (DR-1348)"
+    "oining coverage is narrower. Plus 28 declarations added by hand from official announcements, order t"
+    "ext and dated news coverage (manual_declarations.csv); compared from 2000"
 )
 
 CAPABILITIES = {'structured_archive_coverage_start': '2022-11-28',
@@ -22,9 +21,9 @@ CAPABILITIES = {'structured_archive_coverage_start': '2022-11-28',
  'current_governor_source_start': None,
  'manual_only': False,
  'known_gaps': ['2000-2013 is not supplied by these sources; the procurement mirror is partial and '
-                'some historical PDF links fail. Declarations from 2004 on are added by hand in '
-                'manual_declarations.csv; no dated proclamation has been found for the November 2000 '
-                'Big Island floods (DR-1348).',
+                'some historical PDF links fail. Declarations from 2000 on are added by hand in '
+                'manual_declarations.csv, the November 2000 Big Island flood emergency (DR-1348) from '
+                'dated news coverage.',
                 'Posted dates are not substituted for unreadable signing dates. Scanned or '
                 'malformed signature dates remain listed for review.']}
 

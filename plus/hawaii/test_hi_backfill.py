@@ -39,7 +39,8 @@ class BackfillTests(unittest.TestCase):
         manifest = json.loads((ROOT / "scripts" / "plus" / "state-manifest.json").read_text(encoding="utf-8"))
         note = next(s for s in manifest["states"] if s["abbreviation"] == "HI")["coverage_note"]
         self.assertEqual(build.coverage_start_year("HI", note), 2000)
-        self.assertIn("DR-1348", note)
+        self.assertIn("compared from 2000", note)
+        self.assertEqual(csv_rows("manual_declarations.csv")["HI-SOE-2000-11-04"]["governor"], "Ben Cayetano")
         self.assertIn("Plus %d declarations" % len(csv_rows("manual_declarations.csv")), note)
 
 
