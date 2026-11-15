@@ -346,3 +346,34 @@ class EventDateTests(unittest.TestCase):
         for number, day in in_eo_scraper.EVENT_DATES.items():
             self.assertEqual(day[2:4], number[:2], number)
         self.assertNotIn("12-04", in_eo_scraper.EVENT_DATES)   # 2011 floods, signed in 2012
+
+
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv: declarations the archives do not date."""
+
+    @staticmethod
+    def rows(name):
+        import csv
+        import os
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name), newline="", encoding="utf-8") as handle:
+            return list(csv.DictReader(handle))
+
+    def test_dates_and_ids(self):
+        rows = self.rows("manual_declarations.csv")
+        self.assertEqual({r["declaration_id"]: r["date_signed"] for r in rows},
+                         {"IN-SOE-2004-05-28": "2004-05-28", "IN-EO-06-15": "2006-09-14", "IN-EO-08-16": "2008-09-16",
+                          "IN-SOE-2014-01-06": "2014-01-06", "IN-SOE-2025-04-11": "2025-04-11"})
+        for row in rows:
+            if row["eo_number"]:
+                self.assertEqual(row["declaration_id"], "IN-EO-" + row["eo_number"])
+            else:
+                self.assertEqual(row["declaration_id"], "IN-SOE-" + row["date_signed"])
+
+    def test_each_has_a_reviewed_override_quoting_its_source(self):
+        notes = {r["declaration_id"]: r for r in self.rows("hazard_overrides.csv")}
+        for row in self.rows("manual_declarations.csv"):
+            note = notes[row["declaration_id"]]
+            self.assertEqual(note["source_url"], row["archive_record_url"])
+            self.assertRegex(note["review_note"], r"(?i)'[^']*declar")
+            if note["event_date"]:
+                self.assertLessEqual(note["event_date"], row["date_signed"])

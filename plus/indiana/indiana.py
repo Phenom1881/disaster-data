@@ -10,7 +10,10 @@ STATE = "IN"
 # same text for builds without collection.
 COVERAGE_NOTE = (
     "2000-present via current + historical governor archives (Braun, Holcomb 2017-2025); Pence-era (2013-"
-    "2017) and pre-2005 pages not yet independently re-verified"
+    "2017) and pre-2005 pages not yet independently re-verified; plus 5 declarations added by hand (manua"
+    "l_declarations.csv): Kernan's May 2004 storm emergency and Pence's January 2014 winter storm order f"
+    "rom dated news, Daniels's Executive Orders 06-15 and 08-16 read from the scanned orders (the archive"
+    " lists only their year), and Braun's April 11, 2025 declaration from the Governor's release"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
