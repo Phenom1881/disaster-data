@@ -197,7 +197,8 @@ class HandAddedDeclarationTests(unittest.TestCase):
         event_dates = self.event_dates()
         undated = [row for row in self.rows() if not row["date_signed"]]
         self.assertEqual({row["declaration_id"] for row in undated},
-                         {"MT-EO-31-00", "MT-EO-16-01", "MT-EO-13-02", "MT-EO-5-2019"})
+                         {"MT-EO-31-00", "MT-EO-16-01", "MT-EO-13-02", "MT-EO-5-2019",
+                          "MT-EO-8-2016", "MT-EO-11-2016"})
         for row in undated:
             self.assertRegex(row["event_description"], r"signing day (?:is )?blank", row["declaration_id"])
             self.assertRegex(event_dates.get(row["declaration_id"], ""), r"^20\d\d-\d\d-\d\d$",
