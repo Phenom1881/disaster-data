@@ -340,12 +340,11 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/california/eo_storm_severity_summary.csv.tmp.
 
 CA: 177 actions, 398 federal declarations; 2000-present: the current Governor archive from January 2019, plus weather states of emergency added by hand: the Brown administration's 2011-2018 ones from its archived proclamations (archive.gov.ca.gov/archive/gov39), Governor Schwarzenegger's 2004-2010 ones from Governor Brown's May 18, 2011 proclamation ending those still in force, and Governor Davis's October 2003 fire declaration from his own account on CNN; that 2011 list leaves out states of emergency already ended by May 2011, and no other Davis proclamation from 2000-2003 has been added
-{"actions": 1028, "declarations": 98, "relationships": 646, "overrides": 74, "review": 53}
+{"actions": 1028, "declarations": 121, "relationships": 665, "overrides": 77, "review": 61}
 
-CO: declarations_for_join.csv: kept 22 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-CO: co_emergency_actions_all.csv: kept 0 saved record(s) this run's scrape did not return, kept saved values for 120 blank and 0 garbled field set(s)
-CO: co_order_relationships.csv: kept 20 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
-Applied 74 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/colorado/hazard_overrides.csv
+CO: co_order_relationships.csv: kept 1 saved record(s) this run's scrape did not return, kept saved values for 0 blank and 0 garbled field set(s)
+Applied 80 sidecar override(s) from /home/runner/work/disaster-data/disaster-data/plus/colorado/hazard_overrides.csv
+CO-EO-D-2001-003: no matching storm events found in the date window.
 CO-EO-D-2007-009: no matching storm events found in the date window.
 CO-EO-D-2009-009: no matching storm events found in the date window.
 CO-EO-D-2011-009: no matching storm events found in the date window.
@@ -356,6 +355,7 @@ CO-EO-D-2017-024: no matching storm events found in the date window.
 CO-EO-D-2017-025: no matching storm events found in the date window.
 CO-EO-D-2019-018: no matching storm events found in the date window.
 CO-EO-D-2023-010: no matching storm events found in the date window.
+CO-EO-D-2023-011: searching around the reviewed event date 2023-06-22 (signed 2023-07-21)
 CO-EO-D-2023-021: no matching storm events found in the date window.
 CO-EO-D-2024-010: no matching storm events found in the date window.
 CO-EO-D-2024-011: no matching storm events found in the date window.
@@ -363,13 +363,13 @@ CO-EO-D-2024-012: no matching storm events found in the date window.
 CO-EO-D-2024-013: no matching storm events found in the date window.
 CO-EO-D-2024-014: no matching storm events found in the date window.
 CO-EO-D-2025-021: no matching storm events found in the date window.
-CO-EO-D-2001-003: no matching storm events found in the date window.
-CO-EO-D-2005-008: no matching storm events found in the date window.
-CO-EO-D-2005-010: no matching storm events found in the date window.
+CO-EO-D-2023-011: searching around the reviewed event date 2023-06-22 (signed 2023-07-21)
+CO-SOE-2026-06-28: no matching storm events found in the date window.
+CO-SOE-2026-06-29: no matching storm events found in the date window.
 
-6 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): CO-EO-D-2007-027, CO-EO-D-2011-019, CO-EO-D-2015-010, CO-EO-D-2017-028, CO-EO-D-2017-029, CO-EO-D-2024-017
-Wrote 2440 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_matches.csv.tmp
-Wrote severity summary (1883 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp
+8 declaration(s) were excluded entirely via a reviewed override (non-weather, dropped before matching): CO-EO-D-2005-008, CO-EO-D-2005-010, CO-EO-D-2007-027, CO-EO-D-2011-019, CO-EO-D-2015-010, CO-EO-D-2017-028, CO-EO-D-2017-029, CO-EO-D-2024-017
+Wrote 2865 matched NCEI event rows to /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_matches.csv.tmp
+Wrote severity summary (1973 reported areas) to /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp
 
 Areas with reported deaths, injuries, or damage:
   CO-EO-D-2013-026 BOULDER [county/county-equivalent]: deaths=4, injuries=5, damage=$297,250,000 (Flash Flood, Flood)
@@ -378,6 +378,12 @@ Areas with reported deaths, injuries, or damage:
   CO-EO-D-2013-026 LARIMER [county/county-equivalent]: deaths=2, injuries=0, damage=$109,000,000 (Flash Flood, Flood)
   CO-EO-D-2013-026 EL PASO [county/county-equivalent]: deaths=2, injuries=0, damage=$10,100,000 (Flash Flood, Flood)
   CO-EO-D-2008-011 WELD [county/county-equivalent]: deaths=1, injuries=79, damage=$147,000,000 (Hail, Thunderstorm Wind, Tornado)
+  CO-EO-D-2023-011 ARAPAHOE [county/county-equivalent]: deaths=1, injuries=0, damage=$100,000 (Flash Flood, Hail)
+  CO-EO-D-2023-011 ARAPAHOE [county/county-equivalent]: deaths=1, injuries=0, damage=$100,000 (Flash Flood, Hail)
+  CO-EO-D-2023-011 EAGLE [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flood)
+  CO-EO-D-2023-011 EAGLE [county/county-equivalent]: deaths=1, injuries=0, damage=$0 (Flood)
+  CO-EO-D-2023-011 JEFFERSON [county/county-equivalent]: deaths=0, injuries=90, damage=$0 (Hail)
+  CO-EO-D-2023-011 JEFFERSON [county/county-equivalent]: deaths=0, injuries=90, damage=$0 (Hail)
   CO-EO-D-2008-016 LARIMER COUNTY BELOW 6000 FEET / NW WELD COUNTY [NWS forecast zone]: deaths=0, injuries=6, damage=$0 (High Wind)
   CO-EO-D-2002-014 TELLER [county/county-equivalent]: deaths=0, injuries=2, damage=$6,000,000 (Wildfire)
   CO-EO-D-2008-011 MORGAN [county/county-equivalent]: deaths=0, injuries=1, damage=$0 (Thunderstorm Wind)
@@ -391,17 +397,11 @@ Areas with reported deaths, injuries, or damage:
   CO-EO-D-2013-026 MORGAN [county/county-equivalent]: deaths=0, injuries=0, damage=$30,950,000 (Flood)
   CO-EO-D-2012-007 JEFFERSON & W DOUGLAS COUNTIES ABOVE 6000 FEET / GILPIN / CLEAR CREEK / NE PARK COUNTIES BELOW 9000 FEET [NWS forecast zone]: deaths=0, injuries=0, damage=$11,000,000 (Wildfire)
   CO-EO-D-2013-026 WASHINGTON [county/county-equivalent]: deaths=0, injuries=0, damage=$10,250,000 (Flood)
-  CO-EO-D-2013-026 JEFFERSON [county/county-equivalent]: deaths=0, injuries=0, damage=$8,000,000 (Flash Flood, Flood)
-  CO-EO-D-2013-026 LOGAN [county/county-equivalent]: deaths=0, injuries=0, damage=$5,750,000 (Flood)
-  CO-EO-D-2008-009 CROWLEY COUNTY [NWS forecast zone]: deaths=0, injuries=0, damage=$5,000,000 (Wildfire)
-  CO-EO-D-2018-016 GORE AND ELK MOUNTAINS/CENTRAL MOUNTAIN VALLEYS [NWS forecast zone]: deaths=0, injuries=0, damage=$3,500,000 (Drought, Wildfire)
-  CO-EO-D-2018-017 GORE AND ELK MOUNTAINS/CENTRAL MOUNTAIN VALLEYS [NWS forecast zone]: deaths=0, injuries=0, damage=$3,500,000 (Drought, Wildfire)
-  CO-EO-D-2013-026 ARAPAHOE [county/county-equivalent]: deaths=0, injuries=0, damage=$3,300,000 (Flash Flood, Flood)
-  Showing the 25 highest-consequence areas; all 64 are retained in /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp.
+  Showing the 25 highest-consequence areas; all 77 are retained in /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp.
 
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/colorado/eo_storm_severity_summary.csv.tmp.
 
-CO: 114 actions, 112 federal declarations; 2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending; 22 saved records kept that this refresh's check of the state source did not return
+CO: 116 actions, 112 federal declarations; 2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending. Plus 4 declarations added by hand: Executive Order D 026 06 for the second December 2006 blizzard, from the Division of Emergency Management's after-action report; D 2023 011, which memorializes the June 22, 2023 verbal flood declaration and is compared on that day; and the June 2026 Gold Mountain and Aspen Acres fire declarations, from the Governor's update
 Connecticut scraper: fetching 241 official document(s)...
     fetched 50/241
     fetched 100/241
@@ -3184,12 +3184,13 @@ Areas with reported deaths, injuries, or damage:
 Complete matched-area lists are in /home/runner/work/disaster-data/disaster-data/plus/wyoming/eo_storm_severity_summary.csv.tmp.
 
 WY: 14 actions, 45 federal declarations; 2000-present: the Governor CMS executive-order archive from 2019, plus declarations added by hand from official announcements, order text and dated news coverage: Governor Freudenthal's June 2010 Fremont County flood disaster declaration and Governor Mead's flood declarations (2011, 2015, February 2017). No archive of earlier Wyoming governors' orders exists, and no state declaration has been found for the November 2000 winter storm (DR-1351), the August 2005 Wright tornado (DR-1599), the June 2017 floods (DR-4327) or the June 2023 Casper flood (DR-4739)
-TIME total: collect 2658s, storm join 71s. Slowest: TX 592s+1s, NJ 370s+6s, NC 262s+1s, CT 188s+0s, VT 136s+0s, MA 100s+2s, SC 84s+2s, ID 74s+1s, MI 69s+0s, LA 57s+1s
-WARNING kept saved records the state source did not return: CO (22), KS (12)
+TIME total: collect 3086s, storm join 108s. Slowest: NJ 570s+10s, NC 454s+1s, TX 424s+2s, CT 271s+0s, VT 104s+1s, LA 98s+1s, MA 90s+3s, SC 82s+4s, ID 82s+1s, WA 75s+1s
+WARNING kept saved records the state source did not return: KS (12)
 Row-loss check: no saved rows lost.
-Plus health: 46 green, 4 yellow, 0 red.
-Changes since the last run (2026-11-15 14:24 UTC):
+Plus health: 48 green, 2 yellow, 0 red.
+Changes since the last run (2026-11-15 18:23 UTC):
 
-- **Montana** went from green to yellow. 6 of 49 declarations have no signing date.
+- **Colorado** went from yellow to green.
+- **Delaware** went from yellow to green.
 
-Now 46 green, 4 yellow, 0 red.
+Now 48 green, 2 yellow, 0 red.
