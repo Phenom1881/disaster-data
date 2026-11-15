@@ -10,7 +10,10 @@ STATE = "NH"
 # same text for builds without collection.
 COVERAGE_NOTE = (
     "1990-present official Secretary of State registry; older non-ADA PDFs may require OCR. Weather emerg"
-    "encies declared without an executive order are added by hand from news coverage (NH-PROC ids)."
+    "encies declared without an executive order are added by hand from news coverage (NH-PROC ids). Four "
+    "federal declarations that Governor Sununu's own request letters say had no state declaration (DR-462"
+    "4, DR-4693, DR-4740, DR-4771) are shown with that statement instead of as gaps (no_state_declaration"
+    ".csv)."
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
