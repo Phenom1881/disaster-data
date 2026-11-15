@@ -66,6 +66,9 @@ class RhodeIslandScraperTests(unittest.TestCase):
         # The release says "Although signed today" on 10-17-2005; the order covers actions since October 15.
         self.assertEqual(dates["RI-SOE-2005-10-17"], "2005-10-17")
         self.assertNotIn("RI-SOE-2005-10-15", dates)
+        # The Brown Daily Herald (January 26, 2005): Carcieri "declared a state of emergency Sunday morning".
+        self.assertEqual(dates["RI-SOE-2005-01-23"], "2005-01-23")
+        self.assertNotIn("RI-SOE-2005-01-24", dates)
         for row in rows:
             self.assertRegex(row["date_signed"], r"^\d{4}-\d{2}-\d{2}$")
             self.assertTrue(row["declaration_id"].endswith(row["date_signed"]) or row["eo_number"], row["declaration_id"])
