@@ -9,14 +9,16 @@ STATE = "TX"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: current-Governor proclamation archive from January 2015, plus 36 weather declarations "
+    "2000-present: current-Governor proclamation archive from January 2015, plus 41 weather declarations "
     "added by hand (manual_declarations.csv): 2001-2014 proclamations from archived copies of the Governo"
-    "r's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2015 and 2025"
-    " declarations from dated news and TDEM coverage. No state declaration was found for DR-1356 (Decembe"
-    "r 2000 ice storm), DR-1425 (2002 floods), DR-1479 (Claudette, 2003), DR-1658 (El Paso flooding, 2006"
-    "), DR-1709 (June 2007 floods), DR-1730 and EM-3277 (Erin and Dean, 2007); DR-1999 and DR-4029 (2011 "
-    "wildfires) fell under the December 2010 wildfire proclamation, which was renewed month by month and "
-    "is not counted as a new declaration."
+    "r's proclamation pages (governor.state.tx.us, via the Wayback Machine) and 2000, 2001, 2002, 2007, 2"
+    "011, 2015 and 2025 declarations from dated news, National Guard and TDEM coverage. The December 2010"
+    " statewide wildfire proclamation, renewed month by month, is counted for DR-1999 through its dated A"
+    "pril 15, 2011 renewal and for DR-4029 through the September 6, 2011 release saying it had been reiss"
+    "ued nine times and was in force; DR-1730 (Tropical Storm Erin, August 2007) counts as matched only b"
+    "ecause the Hurricane Dean proclamation of August 17 falls within three weeks of it. No state declara"
+    "tion was found for DR-1356 (December 2000 ice storm), DR-1479 (Claudette, 2003) or DR-1658 (El Paso "
+    "flooding, 2006)."
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,

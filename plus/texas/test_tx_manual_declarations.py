@@ -75,7 +75,13 @@ class ManualDeclarationTests(unittest.TestCase):
             self.assertTrue(join.compatible_event_types(row["event_description"]), row["declaration_id"])
 
     def test_no_row_is_a_renewal_or_extension(self):
+        # A dated renewal counts only for an event that began while it was in
+        # force, and its reviewed note says so ("Continuing order:").
+        notes = {row["declaration_id"]: row["review_note"] for row in read(OVERRIDES)}
         for row in hand_rows():
+            if notes.get(row["declaration_id"], "").startswith("Continuing order: "):
+                self.assertIn("renewed", notes[row["declaration_id"]], row["declaration_id"])
+                continue
             self.assertNotRegex(row["event_description"], r"(?i)\b(?:renew|extend|extension|amend|re-issue|rescind|terminat)")
 
     def test_every_hand_row_has_a_reviewed_override(self):
