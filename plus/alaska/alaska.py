@@ -9,8 +9,9 @@ STATE = 'AK'
 COVERAGE_NOTE = (
     "Governor administrative orders plus Governor/DHSEM disaster releases, and 2002-2025 state disaster d"
     "eclarations (Knowles through Dunleavy) dated from DHS&EM's Disaster Cost Index (2013 and 2018 State "
-    "Hazard Mitigation Plans), DHS&EM releases and news coverage; no dated state declaration has been fou"
-    "nd for the May 2018 Susitna River flood (DR-4391) or the fall 2021 Southcentral storm (DR-4638)"
+    "Hazard Mitigation Plans), DHS&EM releases and news coverage; the late November 2021 Kenai Peninsula "
+    "declaration for the fall 2021 Southcentral storm (DR-4638) is dated by a January 3, 2022 report; no "
+    "dated state declaration has been found for the May 2018 Susitna River flood (DR-4391)"
 )
 
 CAPABILITIES = {'structured_archive_coverage_start': '2001-07-03',
@@ -26,8 +27,8 @@ CAPABILITIES = {'structured_archive_coverage_start': '2001-07-03',
                 'and 2018 State Hazard Mitigation Plans (Wayback Machine copies) and the 2023 plan, '
                 'and from DHS&EM releases. The legislative journals that list every declaration '
                 '(akleg.gov) and alaskapublic.org disallow Claude\'s crawlers, so they were not '
-                'used. No dated declaration has been found for DR-4391 (May 2018) or DR-4638 '
-                '(fall 2021).',
+                'used. No dated declaration has been found for DR-4391 (May 2018); '
+                'the DR-4638 declaration (late November 2021) is dated by KTOO\'s January 3, 2022 report.',
                 'DHSEM Operations documents page supplies local declaration templates, not a '
                 'complete signed state archive.',
                 'Governor and DHSEM releases are proxies; only explicit same-day or explicitly '
