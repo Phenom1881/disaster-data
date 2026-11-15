@@ -53,5 +53,42 @@ class ArchiveTests(unittest.TestCase):
             write_csv(path, JOIN_FIELDS, [])
             self.assertEqual(path.read_bytes(), (','.join(JOIN_FIELDS)+'\n').encode())
 
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv and the reviewed event dates in hazard_overrides.csv."""
+
+    @staticmethod
+    def rows(name):
+        import csv
+        with open(BASE / name, newline='', encoding='utf-8') as handle:
+            return list(csv.DictReader(handle))
+
+    def test_each_row_is_dated_and_sourced(self):
+        rows = self.rows('manual_declarations.csv')
+        self.assertEqual(len({r['declaration_id'] for r in rows}), len(rows))
+        for row in rows:
+            self.assertEqual(row['declaration_id'], 'IL-PROC-' + row['date_signed'])
+            self.assertTrue(row['archive_record_url'].startswith('https://'), row['declaration_id'])
+
+    def test_late_proclamations_are_compared_on_the_storm_they_declare(self):
+        dates = {r['declaration_id']: r['event_date'] for r in self.rows('hazard_overrides.csv') if r.get('event_date')}
+        self.assertEqual(dates, {'IL-PROC-2024-08-30': '2024-07-13',
+                                 'IL-PROC-4883F2AF4F255E59': '2023-09-17'})
+        signed = {r['declaration_id']: r['date_signed'] for r in self.rows('manual_declarations.csv') + self.rows('declarations_for_join.csv')}
+        for key, day in dates.items():
+            self.assertLess(day, signed[key], key)
+
+    def test_a_refresh_keeps_the_event_date_of_a_collected_proclamation(self):
+        # The Cook County proclamation is collected, so its override row survives
+        # a refresh only through review_decisions.json.
+        from _adapter_support import merge_overrides
+        reviews = json.loads((BASE / 'review_decisions.json').read_text())
+        generated = [dict(declaration_id=k, hazard_category_override=v['hazard_category_override'],
+                          review_note=v.get('reason', ''), source_url=v.get('source_url', ''))
+                     for k, v in reviews.items() if v.get('hazard_category_override')]
+        collected = {r['declaration_id'] for r in self.rows('declarations_for_join.csv')}
+        rows, _ = merge_overrides(BASE / 'hazard_overrides.csv', generated, collected)
+        kept = {r['declaration_id']: r.get('event_date') for r in rows}
+        self.assertEqual(kept.get('IL-PROC-4883F2AF4F255E59'), '2023-09-17')
+
 if __name__ == '__main__':
     unittest.main()
