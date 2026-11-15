@@ -34,4 +34,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Utah adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", '2000-present Office of Administrative Rules executive-document indexes and legal texts.'
+    return workdir / "declarations_for_join.csv", "2000-present Office of Administrative Rules executive-document indexes and legal texts, plus Executive Order 2017-2 (missing from the index) and Executive Order 2020-61 (a windstorm order the scraper took for a COVID-19 one) added by hand (manual_declarations.csv). Orders signed weeks after the storm they declare are compared on the storm's first day."
