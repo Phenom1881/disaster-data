@@ -374,8 +374,10 @@ class HandAddedDeclarationTests(unittest.TestCase):
     def test_dates_read_from_the_sources(self):
         self.assertEqual({r["declaration_id"]: r["date_signed"] for r in self.rows()},
                          {"ND-SOE-2004-03-29": "2004-03-29",
+                          "ND-SOE-2005-06-09": "2005-06-09",
                           "ND-SOE-2007-08-27": "2007-08-27",
-                          "ND-SOE-2009-03-16": "2009-03-16"})
+                          "ND-SOE-2009-03-16": "2009-03-16",
+                          "ND-SOE-2010-01-26": "2010-01-26"})
 
     def test_ids_carry_the_date_and_the_governor_in_office(self):
         for row in self.rows():
@@ -385,7 +387,19 @@ class HandAddedDeclarationTests(unittest.TestCase):
 
     def test_each_names_its_weather_hazard(self):
         for row in self.rows():
-            self.assertRegex(row["event_description"].lower(), r"\bflood|\btornado", row["declaration_id"])
+            self.assertRegex(row["event_description"].lower(), r"\bflood|\btornado|\bthunderstorm|\bsnow", row["declaration_id"])
+
+    def test_late_orders_are_compared_on_the_storm_they_declare(self):
+        # Each order was signed weeks after the storm; the Governor's release
+        # of the signing day names the storm's dates.
+        dates = {r["declaration_id"]: r.get("event_date") for r in self.rows("hazard_overrides.csv")}
+        self.assertEqual({k: dates.get(k) for k in ("ND-EO-2020-41", "ND-EO-2021-14", "ND-EO-2022-09", "ND-EO-2025-06")},
+                         {"ND-EO-2020-41": "2020-06-29", "ND-EO-2021-14": "2021-06-07",
+                          "ND-EO-2022-09": "2022-11-09", "ND-EO-2025-06": "2025-08-07"})
+        signed = {r["declaration_id"]: r["date_signed"] for r in self.rows("declarations_for_join.csv")}
+        for key, day in dates.items():
+            if day:
+                self.assertLess(day, signed[key], key)
 
     def test_they_only_fill_the_years_before_the_archive(self):
         archive = self.rows("declarations_for_join.csv")
