@@ -53,6 +53,9 @@ class HandAddedDeclarationTests(unittest.TestCase):
             "KY-SOE-2011-04-25": "2011-04-25", "KY-SOE-2012-03-02": "2012-03-02",
             "KY-EO-2017-138": "2017-03-03", "KY-SOE-2023-02-24": "2023-02-24",
             "KY-EO-2024-379": "2024-05-26",
+            # Executive Journal, read by hand; dated by filing date.
+            "KY-EO-2008-332": "2008-04-16", "KY-EO-2009-432": "2009-05-11",
+            "KY-EO-2009-756": "2009-08-11", "KY-EO-2011-474": "2011-06-21",
         }
         self.assertEqual({k: dates.get(k) for k in expected}, expected)
 
@@ -124,7 +127,7 @@ class CoverageStartTests(unittest.TestCase):
         self.assertEqual(build.coverage_start_year("KY", note), 2000)
         self.assertTrue(note.startswith("manual_only - 2000-present: "), note)
         self.assertIn("Beshear v. Acree", note)
-        for gap in ("DR-1757", "DR-1841", "DR-1855", "DR-4008", "DR-4196", "DR-4848"):
+        for gap in ("DR-4196", "DR-4848"):
             self.assertIn(gap, note)
 
 
