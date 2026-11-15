@@ -118,10 +118,44 @@ def enrich_record(r):
             if r['date_signed'] and d!=r['date_signed']:r['date_evidence']+='; signature differs from listing: '+r['date_signed']
             r['date_signed']=d;r['date_evidence']+='; PDF/legal signature: '+e
         return r
-    except Exception as e:r['fetch_error']=str(e);return r
+    except Exception as e:
+        r['fetch_error']=str(e)
+        keep_previous_text(r)
+        return r
+
+_PREVIOUS={}
+def load_previous_records(folder=None):
+    """The last committed audit records that carry usable text, by id.
+
+    A refresh fetches each order's document again. When a document that was
+    read before now fails (Colorado's 2000-2006 library PDFs began returning
+    404 on 2026-11-15, after the scraper cache stopped being committed), the
+    record would come back with no text or signing date and be reclassified,
+    and reviewed overrides keyed to it would be dropped. The previous audit
+    file holds what was read last time."""
+    _PREVIOUS.clear()
+    csv.field_size_limit(10**9)
+    folders=[Path(folder)] if folder else [Path(__file__).parent,Path.cwd()]
+    for p in sorted({p.resolve() for d in folders for p in d.glob('*_emergency_actions_all.csv')}):
+        with p.open(newline='',encoding='utf-8',errors='replace') as f:
+            for row in csv.DictReader(f):
+                if len(clean(row.get('full_text','')))>=80 and not row.get('fetch_error'):_PREVIOUS[row.get('declaration_id','')]=row
+    return _PREVIOUS
+
+def keep_previous_text(r):
+    """Fill a record whose document could not be fetched from the previous
+    refresh's reading of the same document, and say so in date_evidence."""
+    old=_PREVIOUS.get(r['declaration_id'])
+    if not old or old.get('document_url')!=r['document_url'] or len(r['full_text'])>=80:return False
+    r['full_text']=old['full_text']
+    for field in ('date_signed','governor'):
+        if old.get(field):r[field]=old[field]
+    r['date_evidence']=(old.get('date_evidence') or r['date_evidence'])+'; text and date kept from the previous refresh because the document could not be fetched'
+    return True
 
 def enrich(records,predicate=lambda r:True):
     targets=[r for r in records if predicate(r)]
+    if not _PREVIOUS:load_previous_records()
     with ThreadPoolExecutor(max_workers=6) as ex:list(ex.map(enrich_record,targets))
     return records
 
@@ -162,7 +196,8 @@ def finalize(records,base):
             if field in review:r[field]=review[field]
         if r['decision']=='include' and re.search(r'\bfires?\b',r['event_description'],re.I) and not re.search(r'wildfire|forest fire|brush fire',r['event_description'],re.I) and not review.get('hazard_category_override'):
             r['decision']='review';r['reason']='Bare Fire/Fires title requires a source-supported hazard override before joining.'
-        if r['decision'] in ['include','override_exclude'] and not valid_date(r['date_signed']):r['decision']='review';r['reason']='Signing date unconfirmed or outside 2000-present'
+        # A reviewed exclusion needs no readable date; only a declaration that joins does.
+        if r['decision']=='include' and not valid_date(r['date_signed']):r['decision']='review';r['reason']='Signing date unconfirmed or outside 2000-present'
         if review.get('hazard_category_override') and r['decision'] in ('include','override_exclude'):
             overrides.append(dict(declaration_id=r['declaration_id'],hazard_category_override=review['hazard_category_override'],review_note=review['reason'],source_url=review.get('source_url',r['archive_record_url'])))
         for rel in review.get('relationships',[]):
@@ -210,7 +245,9 @@ def merge_overrides(path,generated,collected_ids):
 def run(collector,base):
     p=argparse.ArgumentParser();p.add_argument('--actions-out',required=True);p.add_argument('--relationships-out',required=True);p.add_argument('--join-out',required=True)
     a=p.parse_args();records,rels,overrides=finalize(collector(),base)
-    joins=[r for r in records if r['decision'] in ('include','override_exclude')]
+    # A reviewed exclusion without a readable date still writes its override row
+    # but stays out of the join file, which needs a signing date.
+    joins=[r for r in records if r['decision']=='include' or r['decision']=='override_exclude' and valid_date(r['date_signed'])]
     if not records:raise RuntimeError('Archive parser produced no audit records; refusing empty success')
     write_csv(a.actions_out,ACTION_FIELDS,records);write_csv(a.relationships_out,REL_FIELDS,rels);write_csv(a.join_out,JOIN_FIELDS,joins)
     path=Path(a.join_out).parent/'hazard_overrides.csv'
