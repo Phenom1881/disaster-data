@@ -10,8 +10,8 @@ STATE = "MA"
 # same text for builds without collection.
 COVERAGE_NOTE = (
     "1970-present from the official State Library executive-order collection (orders before 1970 left off"
-    "), plus 2008-2015 storm states of emergency (Patrick and Baker) from news coverage and FMCSA's copy "
-    "of the 2015 declaration; other unnumbered declarations are not listed"
+    "), plus 2005 and 2008-2015 storm states of emergency (Romney, Patrick and Baker) from dated news cov"
+    "erage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
