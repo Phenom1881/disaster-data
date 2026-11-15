@@ -84,7 +84,7 @@ class HandAddedProclamationTests(unittest.TestCase):
 class NewsCoverageRowTests(unittest.TestCase):
     def test_rows_span_2000_to_2019_within_their_governors_term(self):
         rows = news_rows()
-        self.assertEqual(len(rows), 26)
+        self.assertEqual(len(rows), 27)
         ids = [r["declaration_id"] for r in csv_rows("manual_declarations.csv")]
         self.assertEqual(len(ids), len(set(ids)))
         for row in rows:
