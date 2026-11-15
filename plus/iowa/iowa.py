@@ -6,7 +6,7 @@ STATE = 'IA'
 
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
-COVERAGE_NOTE = "2000-present: HSEMD proclamation tables from 2024, plus the Governor's weather disaster proclamations added by hand (manual_declarations.csv): 39 from 2020-2023 from the Governor's press releases (governor.iowa.gov), plus 26 from 2000-2019 from dated news coverage, mostly Radio Iowa, since no list of the earlier proclamations has been found. No state proclamation was found for DR-1854 (July 2009 storm), DR-1928 (May 2010 storms and flooding) or DR-4135 (June 2013 storms and flooding). DR-4018 (July 27-29, 2011 storms and flooding) counts as matched only because the proclamations for the July 9-14 storms fall within three weeks of it, and DR-4114 (April 2013 winter storm) only because the April 19 flooding proclamation does."
+COVERAGE_NOTE = "2000-present: HSEMD proclamation tables from 2024, plus the Governor's weather disaster proclamations added by hand (manual_declarations.csv): 39 from 2020-2023 from the Governor's press releases (governor.iowa.gov), plus 27 from 2000-2019 from dated news coverage, mostly Radio Iowa, since no list of the earlier proclamations has been found. No state proclamation was found for DR-1854 (July 2009 storm) or DR-1928 (May 2010 storms and flooding). DR-4018 (July 27-29, 2011 storms and flooding) counts as matched only because the proclamations for the July 9-14 storms fall within three weeks of it, and DR-4114 (April 2013 winter storm) only because the April 19 flooding proclamation does."
 
 CAPABILITIES = {'structured_archive_coverage_start': '2024-01-08',
  'structured_archive_coverage_end': None,
