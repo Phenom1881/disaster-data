@@ -35,4 +35,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Colorado adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", '2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending.'
+    return workdir / "declarations_for_join.csv", "2000-2025 State Publications Library D-series; current Governor page blocked; 2026 backfill pending. Plus 4 declarations added by hand (manual_declarations.csv): Executive Order D 026 06 for the second December 2006 blizzard, from the Division of Emergency Management's after-action report; D 2023 011, which memorializes the June 22, 2023 verbal flood declaration and is compared on that day; and the June 2026 Gold Mountain and Aspen Acres fire declarations, from the Governor's update."

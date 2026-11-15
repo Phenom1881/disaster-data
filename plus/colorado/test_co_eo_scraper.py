@@ -53,5 +53,33 @@ class ArchiveTests(unittest.TestCase):
             write_csv(path, JOIN_FIELDS, [])
             self.assertEqual(path.read_bytes(), (','.join(JOIN_FIELDS)+'\n').encode())
 
+class HandAddedDeclarationTests(unittest.TestCase):
+    @staticmethod
+    def rows(name):
+        import csv
+        with open(Path(__file__).parent / name, newline='', encoding='utf-8') as handle:
+            return list(csv.DictReader(handle))
+
+    def test_dates_and_quoted_sources(self):
+        rows = self.rows('manual_declarations.csv')
+        self.assertEqual({r['declaration_id']: r['date_signed'] for r in rows},
+                         {'CO-EO-D-2006-026': '2006-12-28', 'CO-EO-D-2023-011': '2023-07-21',
+                          'CO-SOE-2026-06-28': '2026-06-28', 'CO-SOE-2026-06-29': '2026-06-29'})
+        notes = {r['declaration_id']: r for r in self.rows('hazard_overrides.csv')}
+        for row in rows:
+            self.assertEqual(notes[row['declaration_id']]['source_url'], row['archive_record_url'])
+            self.assertIn("'", notes[row['declaration_id']]['review_note'])
+
+    def test_a_refresh_keeps_the_memorializing_order_and_its_date(self):
+        from _adapter_support import merge_overrides
+        reviews = json.loads((Path(__file__).parent / 'review_decisions.json').read_text())
+        self.assertEqual(reviews['CO-EO-D-2023-011']['decision'], 'include')
+        generated = [dict(declaration_id=k, hazard_category_override=v['hazard_category_override'],
+                          review_note=v.get('reason', ''), source_url=v.get('source_url', ''))
+                     for k, v in reviews.items() if v.get('hazard_category_override')]
+        collected = {r['declaration_id'] for r in self.rows('declarations_for_join.csv')} | {'CO-EO-D-2023-011'}
+        rows, _ = merge_overrides(Path(__file__).parent / 'hazard_overrides.csv', generated, collected)
+        self.assertEqual({r['declaration_id']: r.get('event_date') for r in rows}.get('CO-EO-D-2023-011'), '2023-06-22')
+
 if __name__ == '__main__':
     unittest.main()
