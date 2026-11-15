@@ -63,10 +63,11 @@ COVERAGE_NOTE = (
     "2000-present: dated Gianforte-era gov.mt.gov listing from 2021, "
     "plus Racicot (2000), Martz (2001-2002), Schweitzer (2006-2012) and "
     "Bullock (2013-2020) weather orders added by hand from the order "
-    "texts, governor's press releases and dated news reports; four "
-    "orders whose archive copies leave the signing day blank are "
-    "compared with FEMA on their effective dates, and other orders with "
-    "no readable signing date are still to be backfilled"
+    "texts, governor's press releases and dated news reports; six "
+    "orders whose archive copies leave the signing day blank or "
+    "illegible are compared with FEMA on their effective dates, and "
+    "other orders with no readable signing date are still to be "
+    "backfilled"
 )
 
 
