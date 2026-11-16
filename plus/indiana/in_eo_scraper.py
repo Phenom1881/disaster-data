@@ -105,12 +105,17 @@ GOVERNORS = (
 )
 
 
-# Signing dates confirmed from dated coverage, used only when the order's own
-# PDF yields no date. A date read from the order wins.
+# Signing dates confirmed from dated coverage. A confirmed date is used
+# without reading the order's PDF and replaces a date saved by earlier runs.
 CONFIRMED_DATES = {
     # Flooding, 11 counties. 95.3 MNC, Feb 24 2018: "Gov. Holcomb declares
     # disaster emergency for 11 counties"; the PDF is named "..._2-24-18.pdf".
     "18-01": "2018-02-24",
+    # 35-county disaster emergency for the spring 2025 storms and flooding.
+    # Earlier runs saved 2025-02-27, before the storms began on March 30.
+    # 103 GBF, Apr 16 2025, linking 25-61.pdf: "In the order signed by
+    # Governor Braun on Tuesday, April 15, 2025". The scan reads "this 15th day".
+    "25-61": "2025-04-15",
 }
 
 # Daniels-era orders whose scans carry no readable signing date. Each order
