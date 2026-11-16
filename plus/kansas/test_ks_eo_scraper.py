@@ -396,6 +396,65 @@ class PageFetchTests(unittest.TestCase):
             self.assertIn("403", str(caught.exception))
             self.assertIn("no usable Internet Archive copy", str(caught.exception))
 
+    def test_a_refusal_is_described_in_the_log(self):
+        refused = _Response(403, text="<html><body><h1>Access Denied</h1> Request blocked.</body></html>")
+        refused.headers = {"Server": "cloudflare", "CF-RAY": "8abc-ORD", "Set-Cookie": "x"}
+        session = _Session(lambda agent: refused, archive_html=TABS_HTML)
+        err = io.StringIO()
+        with mock.patch("sys.stdout", io.StringIO()), mock.patch("sys.stderr", err):
+            scraper.fetch_page(session, sleep=lambda seconds: None)
+        self.assertIn("HTTP 403; Server=cloudflare, CF-RAY=8abc-ORD; body: Access Denied Request blocked.", err.getvalue())
+        self.assertNotIn("Set-Cookie", err.getvalue())
+        self.assertEqual(scraper.PAGE_COPY_DATE, "2026-10-20")
+
+    def test_with_the_archive_copy_the_news_flash_adds_newer_declarations(self):
+        # 2026-11-15: the only copy was from 2025-10-21, so nothing Kansas
+        # declared after that could be collected.
+        import csv as _csv, tempfile
+        feed = b"""<?xml version="1.0"?><rss version="2.0"><channel><title>News Flash</title>
+<item><title>Governor Kelly issues state of disaster emergency for severe storms and flooding</title>
+<link>https://www.kansastag.gov/CivicAlerts.aspx?AID=874</link>
+<description>&lt;a href="/DocumentCenter/View/4370/Storms-Oct-2026"&gt;Declaration&lt;/a&gt;</description>
+<pubDate>Fri, 02 Oct 2026 20:00:00 GMT</pubDate></item></channel></rss>"""
+
+        def live(agent):
+            return _Response(403)
+
+        session = _Session(live, archive_html=TABS_HTML)
+        real_get = session.get
+
+        def get(url, headers=None, timeout=None, params=None):
+            if url == scraper.NEWS_FEED:
+                r = _Response(text=feed.decode()); r.content = feed
+                return r
+            return real_get(url, headers=headers, timeout=timeout, params=params)
+
+        session.get = get
+        with tempfile.TemporaryDirectory() as tmp:
+            join = os.path.join(tmp, "j.csv")
+            with mock.patch.object(scraper.requests, "Session", return_value=session), \
+                 mock.patch.object(scraper, "RETRY_WAIT", 0), mock.patch("sys.stdout", io.StringIO()) as out, \
+                 mock.patch("sys.stderr", io.StringIO()):
+                scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), join)
+            with open(join, encoding="utf-8") as f:
+                rows = {r["declaration_id"]: r for r in _csv.DictReader(f)}
+        self.assertIn("KS-PROC-4370", rows)
+        self.assertEqual(rows["KS-PROC-4370"]["date_signed"], "2026-10-02")
+        self.assertGreater(len(rows), 1)                       # the copy's own records are still there
+        self.assertIn("newer than the 2026-10-20 copy", out.getvalue())
+
+    def test_a_refused_news_flash_does_not_fail_the_run(self):
+        import tempfile
+        session = _Session(lambda agent: _Response(403), archive_html=TABS_HTML)
+        with tempfile.TemporaryDirectory() as tmp:
+            err = io.StringIO()
+            with mock.patch.object(scraper.requests, "Session", return_value=session), \
+                 mock.patch.object(scraper, "RETRY_WAIT", 0), mock.patch("sys.stdout", io.StringIO()), \
+                 mock.patch("sys.stderr", err):
+                n = scraper.collect(os.path.join(tmp, "a.csv"), os.path.join(tmp, "r.csv"), os.path.join(tmp, "j.csv"))
+        self.assertGreater(n, 0)
+        self.assertIn("News Flash feed not read either: HTTP 403", err.getvalue())
+
     def test_the_page_note_says_the_archive_copy_was_read(self):
         import kansas
         done = mock.Mock(returncode=0, stdout="Kansas: declarations page read from the Internet Archive copy "
