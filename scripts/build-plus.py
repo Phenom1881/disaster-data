@@ -191,6 +191,52 @@ def clean(value) -> str:
     return str(value or "").strip()
 
 
+# What kind of state declaration a record is. Every kind counts the same
+# for matching against FEMA and NOAA, but a page labels the ones that are
+# not a state of emergency or disaster emergency, so a reader can tell a
+# Maryland or West Virginia "State of Preparedness", an energy or heating
+# fuel emergency, a Missouri drought alert or a Tennessee EOC Level 3
+# activation from a governor's emergency declaration.
+KIND_EMERGENCY = "emergency"
+KIND_LABELS = {
+    "preparedness": "State of preparedness",
+    "energy": "Energy emergency",
+    "drought_alert": "Drought alert",
+    "activation": "EOC activation",
+}
+KIND_NOTE = ("Labeled records are counted for matching with FEMA and NOAA, but they are not a "
+             "governor's state of emergency or disaster emergency.")
+_EMERGENCY_RE = re.compile(r"\b(?:state of (?:civil |disaster )?emergency|civil emergency|disaster emergency|"
+                           r"disaster declaration|declaration of (?:a )?disaster|declares? (?:a )?disaster)\b", re.I)
+_KIND_PATTERNS = (
+    ("preparedness", re.compile(r"\bstate of preparedness\b", re.I)),
+    ("drought_alert", re.compile(r"\bdrought alert\b", re.I)),
+    ("activation", re.compile(r"\bactivated (?:to|at) level 3\b", re.I)),
+    ("energy", re.compile(r"\b(?:energy|heating fuel|fuel) emergency\b", re.I)),
+)
+
+
+def declaration_kind(title: str) -> str:
+    """KIND_EMERGENCY unless the title names a lesser kind. A title that names
+    an energy emergency together with a state of emergency is an emergency
+    (Maine's January 2024 civil and energy emergency); a preparedness
+    declaration, a drought alert or a Level 3 activation is labeled even when
+    the title also says "state of emergency" (TEMA calls Level 3 "State of
+    Emergency")."""
+    text = title or ""
+    for kind, pattern in _KIND_PATTERNS:
+        if pattern.search(text):
+            if kind == "energy" and _EMERGENCY_RE.search(text):
+                return KIND_EMERGENCY
+            return kind
+    return KIND_EMERGENCY
+
+
+def kind_tag(action: dict) -> str:
+    label = KIND_LABELS.get(action.get("declaration_kind") or KIND_EMERGENCY)
+    return f' <span class="kind-tag">{esc(label)}</span>' if label else ""
+
+
 def normalized_action(row: dict, abbreviation: str) -> dict:
     action_number = clean(
         row.get("action_number")
@@ -227,6 +273,7 @@ def normalized_action(row: dict, abbreviation: str) -> dict:
         "title": title,
         "date_signed": signed,
         "action_type": clean(row.get("action_type") or "declaration"),
+        "declaration_kind": declaration_kind(title),
         "governor": clean(row.get("governor")),
         "source_url": source_url,
     }
@@ -1510,7 +1557,7 @@ def action_rows(actions: list[dict]) -> str:
     for action in actions:
         source = esc(action["source_url"])
         title = esc(action["title"] or "Untitled action")
-        title_cell = f'<a href="{source}">{title}</a>' if source else title
+        title_cell = (f'<a href="{source}">{title}</a>' if source else title) + kind_tag(action)
         origin = ORIGIN_LABELS.get(action.get("origin") or ORIGIN_STATE, ORIGIN_LABELS[ORIGIN_STATE])
         output.append(
             "<tr>"
@@ -1712,7 +1759,7 @@ def crosswalk_rows(crosswalk: list[dict]) -> str:
             federal_cell = '<span class="empty">No corresponding federal declaration found</span>'
         output.append(
             "<tr>"
-            f"<td>{esc(action['date_signed'])} &middot; {title}</td>"
+            f"<td>{esc(action['date_signed'])} &middot; {title}{kind_tag(action)}</td>"
             f"<td>{count_cell}</td>"
             f"<td>{esc(areas)}</td>"
             f"<td>{federal_cell}</td>"
@@ -1855,6 +1902,8 @@ def shared_css(prefix: str = "") -> str:
     details.layer[open] > summary {{ border-bottom:1px solid var(--line); }}
     details.layer > .details-body {{ padding:0 1rem 1rem; }}
     .count-badge {{ color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }}
+    .kind-tag {{ display:inline-block; margin-left:.35rem; padding:.05rem .45rem; border:1px solid var(--ember);
+      border-radius:999px; color:var(--ember); font-size:.75rem; font-weight:600; white-space:nowrap; }}
     ul.sources {{ list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
       padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }}
     ul.sources strong {{ color:var(--accent); }}
@@ -1903,6 +1952,13 @@ def noaa_through_note() -> str:
             "until NOAA publishes those months.")
 
 
+def kind_note(actions: list[dict]) -> str:
+    labeled = sum(1 for a in actions if (a.get("declaration_kind") or KIND_EMERGENCY) != KIND_EMERGENCY)
+    if not labeled:
+        return ""
+    return f'<p class="note">{labeled:,} labeled {"record" if labeled == 1 else "records"}. {esc(KIND_NOTE)}</p>'
+
+
 def render_state_page(
     state: dict,
     actions: list[dict],
@@ -1949,7 +2005,7 @@ def render_state_page(
 
 <div class="layer primary">
 <h2>State weather declarations</h2>
-<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
+<p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>{kind_note(actions)}
 {sources_html(sources)}
 {table_filter('state-weather-table', 'state declarations')}
 <div class="actions"><table id="state-weather-table" class="sortable"><thead><tr>{sortable_header('Date', 0)}{sortable_header('Number', 1)}{sortable_header('Action', 2)}{sortable_header('Type', 3)}{sortable_header('Governor', 4)}{sortable_header('Source', 5)}</tr></thead>
