@@ -142,4 +142,29 @@ class CollectTests(unittest.TestCase):
         self.assertEqual([r["declaration_id"] for r in rows], ["SC-EO-2016-26"])
 
 
+class HandAddedDeclarationTests(unittest.TestCase):
+    """manual_declarations.csv: declarations the State Library collection lacks.
+    The library has Executive Orders 98-21, 98-23, 98-25 and 98-26 for
+    Hurricane Bonnie but not 98-22, the order that recites the state of
+    emergency declared at 12:30 p.m. on August 25, 1998 (DR-1243)."""
+
+    def rows(self):
+        import os
+        here = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(here, "manual_declarations.csv"), newline="", encoding="utf-8") as h:
+            return list(csv.DictReader(h))
+
+    def test_bonnie_order_is_dated_from_its_signature(self):
+        rows = {r["declaration_id"]: r for r in self.rows()}
+        self.assertEqual(rows["SC-EO-1998-22"]["date_signed"], "1998-08-25")
+        self.assertEqual(rows["SC-EO-1998-22"]["governor"], "David Beasley")
+        self.assertIn("declared that a state of emergency exists", rows["SC-EO-1998-22"]["event_description"])
+
+    def test_each_row_names_its_order_and_links_the_statehouse_copy(self):
+        for r in self.rows():
+            self.assertEqual(r["declaration_id"], "SC-EO-19" + r["eo_number"])     # 98-22 -> SC-EO-1998-22
+            self.assertIn("Executive Order No. " + r["eo_number"], r["event_description"])
+            self.assertTrue(r["archive_record_url"].startswith("https://www.scstatehouse.gov/Archives/ExecutiveOrders/"))
+
+
 if __name__=="__main__": unittest.main()
