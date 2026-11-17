@@ -17,8 +17,9 @@ COVERAGE_NOTE = (
     "EM-3193, EM-3207, EM-3208, EM-3211), the September 2008 floods (DR-1799), the 2011 storms (DR-4006, "
     "Irene DR-4026 and EM-3333, the October snowstorm DR-4049 and EM-3344), the May 2012 Cheshire County "
     "floods (DR-4065) or the 2017 to 2026 storms (DR-4316, DR-4329, DR-4370, DR-4371, DR-4457, DR-4622, D"
-    "R-4761, DR-4812, DR-4947); FERC's report on the October 2011 snowstorm says New Hampshire declared a"
-    " state of emergency but gives no date, and the 1990 to 1999 gaps have not been searched."
+    "R-4761, DR-4812, DR-4947); FERC's report on the October 2011 snowstorm lists New Hampshire among the"
+    " states that declared, but its source for that is Governor Lynch's request to FEMA, not a state orde"
+    "r, and the 1990 to 1999 gaps have not been searched."
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
