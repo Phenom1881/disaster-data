@@ -47,11 +47,14 @@ CAPABILITIES = {
 # note, not the manifest's, so the two must say the same thing; the
 # state's tests check that they do.
 COVERAGE_NOTE = (
-    "2000-present SD Secretary of State executive order registry: 2020-present "
-    "from its yearly tables and 2000-2019 through its prior-years search, with "
-    "the hazard for each older order read from the signed copy; it lists no "
-    "weather emergency declarations for 2000-2004, only waivers for hay and "
-    "fuel hauling and fire-season orders"
+    "2000-present SD Secretary of State executive order registry: 2020-present from its yearly "
+    "tables and 2000-2019 through its prior-years search, with the hazard for each older order "
+    "read from the signed copy; it lists no weather emergency declarations for 2000-2004, only "
+    "waivers for hay and fuel hauling and fire-season orders, so no state declaration has been "
+    "found for the April 2000 western winter storm (DR-1330), the spring 2001 floods and ice ja"
+    "ms (DR-1375) or the May to June 2004 storms and floods (DR-1531); its 2005 orders before t"
+    "he November blizzard are not weather declarations either, and none has been found for the "
+    "June 7 to 8, 2005 storms (DR-1596)"
 )
 
 
