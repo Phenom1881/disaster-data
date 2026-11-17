@@ -193,6 +193,17 @@ class TestCurrentGovernorPage(unittest.TestCase):
         self.assertEqual([a.eo_number for a in routed], ["26-21"])
         self.assertEqual(routed[0].date_signed, "")
 
+    def test_a_confirmed_date_replaces_a_saved_one(self):
+        # 2026-11-16: EO 25-61 kept a saved 2025-02-27, six weeks before the
+        # 35-county order was signed on April 15, 2025.
+        snippet = """<ul><li>Executive Order 25-61 <a href="/dA/3661db35fe/25-61.pdf">DECLARING A DISASTER
+        EMERGENCY IN BARTHOLOMEW AND OTHER COUNTIES DUE TO SEVERE WEATHER, TORNADIC ACTIVITY AND FLOODING</a></li></ul>"""
+        session = _FakeSession(in_eo_scraper.CURRENT_EO_PAGES[0])
+        session.get = lambda url, headers=None, timeout=None: _FakeResponse(200, snippet) if url == session.listing_url else _FakeResponse(404)
+        actions = {a.eo_number: a for a in in_eo_scraper.scrape(session, saved_dates={"25-61": "2025-02-27"})}
+        self.assertTrue(actions["25-61"].is_original_weather_declaration)
+        self.assertEqual(actions["25-61"].date_signed, "2025-04-15")
+
     def test_no_current_page_is_survivable(self):
         session = _FakeSession("https://nowhere.invalid/")
         self.assertEqual(in_eo_scraper.scrape(session), [])
