@@ -242,7 +242,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
             "NC-SOE-2000-01-25": "2000-01-25", "NC-SOE-2002-12-05": "2002-12-05",
             "NC-SOE-2003-09-16": "2003-09-16", "NC-SOE-2004-09-07": "2004-09-07",
             "NC-SOE-2004-09-17": "2004-09-17", "NC-MIKEEASLEY-EO-88": "2005-09-11",
-            "NC-MIKEEASLEY-EO-144": "2008-09-04", "NC-BEVPERDUE-EO-62": "2010-09-01",
+            "NC-MIKEEASLEY-EO-144": "2008-09-04", "NC-BEVPERDUE-EO-62": "2010-09-01", "NC-SOE-2010-09-29": "2010-09-29",
             "NC-SOE-2011-04-17": "2011-04-17", "NC-SOE-2011-08-25": "2011-08-25",
             # McCrory's are the State Archives identifiers (McCrory_EO_NNN_YYYYMMDD).
             "NC-PATMCCRORY-EO-16": "2013-07-11", "NC-PATMCCRORY-EO-17": "2013-07-16",
