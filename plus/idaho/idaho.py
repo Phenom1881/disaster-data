@@ -36,4 +36,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Idaho adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", '2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage.'
+    return workdir / "declarations_for_join.csv", "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage; no state declaration has been found for the December 2005 to January 2006 Owyhee County storms (DR-1630), the May to June 2008 floods in Kootenai and Shoshone counties (DR-1781), the January 13, 2021 north Idaho windstorm (DR-4589), the April 2024 storms and flooding (DR-4789) or the December 16 to 18, 2025 windstorm (DR-4905)"
