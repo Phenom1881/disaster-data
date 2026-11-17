@@ -21,4 +21,4 @@ def collect(workdir=".", scripts_dir=None):
     result = subprocess.run(cmd, cwd=str(workdir), capture_output=True, text=True)
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("South Carolina adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "1970-present from the official State Library collection (orders before 1970 left off), enriched from the 2017-present Governor archive"
+    return workdir / "declarations_for_join.csv", "1970-present from the official State Library collection (orders before 1970 left off), enriched from the 2017-present Governor archive; plus Executive Order 98-22 (Hurricane Bonnie, August 25, 1998), added by hand from the Statehouse's executive order archive because the library's copy is missing; no state declaration has been found for the August 1977 drought (EM-3047), the December 2005 ice storm (DR-1625) or the February 2020 storms (DR-4479)"
