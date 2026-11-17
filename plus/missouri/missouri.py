@@ -34,4 +34,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Missouri adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day."
+    return workdir / "declarations_for_join.csv", "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day. No state declaration has been found for the May 2020 storms (DR-4552), the June and July 2021 storms and flooding (DR-4612) or the December 10, 2021 tornadoes (DR-4636): the year indexes list no weather order for them, and the only state of emergency then in force was the COVID-19 one (Executive Orders 20-02 and 21-09), which does not name them."
