@@ -22,7 +22,9 @@ COVERAGE_NOTE = (
     "2000-present Legislative Reference Library executive order database "
     "(Ventura from 2000, Pawlenty, Dayton and Walz); weather orders that "
     "only provide assistance, without declaring an emergency, are not "
-    "counted as declarations"
+    "counted as declarations; no state declaration has been found for the October 2018 St. Louis County storms and flooding (DR-4414) "
+    "or the April 2023 snowmelt flooding (DR-4722): the database lists no order declaring them, and the Governor's request "
+    "release (2018) and the congressional delegation's support letter (2023) mention none"
 )
 
 def collect(workdir=".", scripts_dir=None):
