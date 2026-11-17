@@ -58,7 +58,12 @@ STATE = "NJ"
 COVERAGE_NOTE = (
     "1990-present provisional structured coverage; 1962-1989 selectively represented; plus Acti"
     "ng Governor Codey's Executive Order 28 (April 2005 flooding) added by hand (manual_declara"
-    "tions.csv), since the order index the scraper reads does not reach his 2004-2006 orders"
+    "tions.csv), since the order index the scraper reads does not reach his 2004-2006 orders; n"
+    "o state declaration has been found for the December 19 to 20, 2009 snowstorm (DR-1873), th"
+    "e remnants of Tropical Storm Lee in September 2011 (DR-4039), the June 30, 2012 derecho (D"
+    "R-4070) or the June 23, 2015 storm (DR-4231): the executive order index lists no weather o"
+    "rder for any of them (Corzine's 160, Nor'Ida, then 161 on December 22, 2009; Christie's 73"
+    ", Irene, then 80, the October 2011 snowstorm; none in June or July 2012 or 2015)"
 )
 
 CAPABILITIES = {
