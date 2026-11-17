@@ -9,11 +9,13 @@ STATE = "RI"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: the Governor's executive order archive from 2015, plus 2003-2013 weather "
-    "declarations (Carcieri and Chafee) from the State Archives' scanned executive orders, "
-    "the Governor's press releases on ri.gov and FMCSA's copy of Executive Order 13-02; the "
-    'Archives hold no executive order for the February 2003 snowstorm or the April 2007 '
-    "nor'easter, and Almond's 2000-2002 orders have not been read"
+    "2000-present: the Governor's executive order archive from 2015, plus 2003-2013 weather dec"
+    "larations (Carcieri and Chafee) from the State Archives' scanned executive orders, the Gov"
+    "ernor's press releases on ri.gov and FMCSA's copy of Executive Order 13-02; the Archives h"
+    "old no executive order for the February 2003 snowstorm or the April 2007 nor'easter, and A"
+    "lmond's 2000-2002 orders have not been read; no state declaration has been found for the S"
+    "eptember 10 to 13, 2023 flooding in Providence County (DR-4753): the Governor's 2023 order"
+    "s go from Executive Order 23-09 (July 24) to 23-10 (December 20, a later storm)"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
