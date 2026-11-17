@@ -129,6 +129,25 @@ def wayback_copy(url, session):
         return None, ""
 
 
+# Set by fetch_page: the date of the Internet Archive copy read in place of
+# the live page, or "" when the live page was read.
+PAGE_COPY_DATE = ""
+REFUSAL_HEADERS = ("Server", "Via", "CF-RAY", "cf-mitigated", "X-Iinfo", "X-CDN", "X-Akamai-Request-ID", "X-Amz-Cf-Id")
+
+
+def describe_refusal(exc):
+    """One line on who refused a request: the status, the response headers
+    that name a CDN or firewall, and the start of the body. Printed so the
+    log shows what kind of block it is; nothing here is used to get past it."""
+    resp = getattr(exc, "response", None)
+    if resp is None:
+        return type(exc).__name__
+    headers = getattr(resp, "headers", None) or {}
+    named = ["%s=%s" % (h, headers[h]) for h in REFUSAL_HEADERS if headers.get(h)]
+    body = re.sub(r"\s+", " ", BeautifulSoup(getattr(resp, "text", "") or "", "html.parser").get_text(" "))[:160].strip()
+    return "HTTP %s; %s; body: %s" % (getattr(resp, "status_code", "?"), ", ".join(named) or "no CDN headers", body or "(empty)")
+
+
 def fetch_page(session, sleep=time.sleep):
     """The declarations page, from kansastag.gov or, failing that, the
     Internet Archive's latest copy.
@@ -140,6 +159,8 @@ def fetch_page(session, sleep=time.sleep):
     past a refusal. If neither try answers, the Internet Archive's latest
     copy is read and the run says so; the build keeps saved records the
     copy does not list."""
+    global PAGE_COPY_DATE
+    PAGE_COPY_DATE = ""
     problems = []
     for round_number in range(2):
         if round_number:
@@ -149,8 +170,10 @@ def fetch_page(session, sleep=time.sleep):
         except requests.RequestException as exc:
             status = getattr(getattr(exc, "response", None), "status_code", "") or ""
             problems.append(f"{type(exc).__name__} {status}".strip())
+            print(f"Kansas: {SOURCE_URL} refused: {describe_refusal(exc)}", file=sys.stderr)
     html, copy_date = wayback_copy(SOURCE_URL, session)
     if html and parse_declarations_page(html):
+        PAGE_COPY_DATE = copy_date
         print(f"Kansas: declarations page read from the Internet Archive copy from {copy_date} "
               f"(the live page could not be read: {', '.join(dict.fromkeys(problems))})")
         return html
@@ -589,6 +612,17 @@ def collect(actions_out, relationships_out, join_out):
             "date_signed": date_signed,
             "archive_record_url": rec["pdf_url"],
         })
+
+    if PAGE_COPY_DATE:
+        # The archive copy cannot list declarations made after it was taken,
+        # so the News Flash is read for those, as when the page is not understood.
+        try:
+            listed = {d["declaration_id"] for d in declarations}
+            news_rows = [r for r in collect_from_news(session, join_out) if r["declaration_id"] not in listed]
+            declarations.extend(news_rows)
+            print(f"Kansas: {len(news_rows)} declaration(s) newer than the {PAGE_COPY_DATE} copy read from the KDEM News Flash")
+        except Exception as exc:
+            print(f"Kansas: News Flash feed not read either: {describe_refusal(exc)}", file=sys.stderr)
 
     with open(actions_out, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["year", "heading", "pdf_url"])
