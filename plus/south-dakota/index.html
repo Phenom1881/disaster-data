@@ -69,6 +69,8 @@
     details.layer[open] > summary { border-bottom:1px solid var(--line); }
     details.layer > .details-body { padding:0 1rem 1rem; }
     .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    .kind-tag { display:inline-block; margin-left:.35rem; padding:.05rem .45rem; border:1px solid var(--ember);
+      border-radius:999px; color:var(--ember); font-size:.75rem; font-weight:600; white-space:nowrap; }
     ul.sources { list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
       padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }
     ul.sources strong { color:var(--accent); }
@@ -86,10 +88,10 @@
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>South Dakota: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> 2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<div class="notice"><strong>Coverage:</strong> 2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders, so no state declaration has been found for the April 2000 western winter storm (DR-1330), the spring 2001 floods and ice jams (DR-1375) or the May to June 2004 storms and floods (DR-1531); its 2005 orders before the November blizzard are not weather declarations either, and none has been found for the June 7 to 8, 2005 storms (DR-1596). Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>98</strong>federal FEMA declarations</div>
-  <div class="metric"><strong>85</strong>original state weather declarations</div>
+  <div class="metric"><strong>86</strong>original state weather declarations</div>
   <div class="metric"><strong>4,488</strong>matched NOAA event rows</div>
 </section>
 <p><a href="/states/south-dakota.html">Federal declaration overview</a> &middot; <a href="https://sdsos.gov/general-information/executive-actions/executive-orders/search/Default.aspx">Official state source</a></p>
@@ -97,10 +99,11 @@
 <div class="layer primary">
 <h2>State weather declarations</h2>
 <p class="note">Original weather-related declarations only. Administrative orders, public-health orders, extensions, amendments, and terminations are excluded from this incident list.</p>
-<ul class="sources"><li><strong>85</strong> from the state's own archive</li><li>4 records from these sources were reviewed as not weather emergencies and left off</li></ul>
+<ul class="sources"><li><strong>86</strong> from the state's own archive</li><li>4 records from these sources were reviewed as not weather emergencies and left off</li></ul>
 <div class="table-tools"><label for="filter-state-weather-table">Filter state declarations</label><input id="filter-state-weather-table" class="table-search" data-table="state-weather-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="state-weather-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by Date">Date <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by Number">Number <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Action">Action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Type">Type <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="4" aria-label="Sort by Governor">Governor <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="5" aria-label="Sort by Source">Source <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-08-06</td><td>2026-08</td><td><a href="https://sdsos.gov/general-information/executive-actions/executive-orders/assets/2026%20Executive%20Orders/2026-08Amended.pdf">Drought Declaration Amended</a></td><td>declaration</td><td>Rhoden</td><td>State archive</td></tr>
+<tbody><tr><td>2026-11-17</td><td>2026-12</td><td><a href="https://sdsos.gov/general-information/executive-actions/executive-orders/assets/2026%20Executive%20Orders/2026-12.pdf">Extend Emergency</a></td><td>declaration</td><td>Rhoden</td><td>State archive</td></tr>
+<tr><td>2026-08-06</td><td>2026-08</td><td><a href="https://sdsos.gov/general-information/executive-actions/executive-orders/assets/2026%20Executive%20Orders/2026-08Amended.pdf">Drought Declaration Amended</a></td><td>declaration</td><td>Rhoden</td><td>State archive</td></tr>
 <tr><td>2026-07-27</td><td>2026-09</td><td><a href="https://sdsos.gov/general-information/executive-actions/executive-orders/assets/2026%20Executive%20Orders/2026-09.pdf">Wind Disaster Declaration</a></td><td>declaration</td><td>Rhoden</td><td>State archive</td></tr>
 <tr><td>2026-07-01</td><td>2026-07</td><td><a href="https://sdsos.gov/general-information/executive-actions/executive-orders/assets/2026%20Executive%20Orders/2026-07.pdf">Wind Disaster Declaration</a></td><td>declaration</td><td>Rhoden</td><td>State archive</td></tr>
 <tr><td>2026-04-13</td><td>2026-06</td><td><a href="https://sdsos.gov/general-information/executive-actions/executive-orders/assets/2026%20Executive%20Orders/2026-06.pdf">Fire Disaster Declaration</a></td><td>declaration</td><td>Rhoden</td><td>State archive</td></tr>
@@ -190,10 +193,11 @@
 <div class="layer">
 <h2>Combined event crosswalk</h2>
 <p class="note">Each state action, its matched NOAA evidence, and the closest federal declaration within 21 days of its incident window, if one exists. A federal match is an automated date-proximity candidate, not a confirmed legal link.</p>
-<p class="note">71 of the 85 declarations on this page have NOAA storm reports nearby, and 1 is too recent for NOAA's published data. 60 have a FEMA declaration within 21 days.</p>
+<p class="note">71 of the 86 declarations on this page have NOAA storm reports nearby, and 2 are too recent for NOAA's published data. 60 have a FEMA declaration within 21 days.</p>
 <div class="table-tools"><label for="filter-crosswalk-table">Filter crosswalk</label><input id="filter-crosswalk-table" class="table-search" data-table="crosswalk-table" type="search" placeholder="Search this table…"></div>
 <div class="actions"><table id="crosswalk-table" class="sortable"><thead><tr><th><button class="sort-button" type="button" data-column="0" aria-label="Sort by State action">State action <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="1" aria-label="Sort by NOAA matches">NOAA matches <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="2" aria-label="Sort by Matched areas">Matched areas <span aria-hidden="true">↕</span></button></th><th><button class="sort-button" type="button" data-column="3" aria-label="Sort by Federal declaration">Federal declaration <span aria-hidden="true">↕</span></button></th></tr></thead>
-<tbody><tr><td>2026-08-06 &middot; Drought Declaration Amended</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tbody><tr><td>2026-11-17 &middot; Extend Emergency</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
+<tr><td>2026-08-06 &middot; Drought Declaration Amended</td><td><span class="empty">Pending</span></td><td>NOAA has not published storm data for this date yet</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2026-07-27 &middot; Wind Disaster Declaration</td><td>151</td><td>AURORA, BEADLE, BENNETT, BROWN, BUTTE, CHARLES MIX, CORSON, CUSTER</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
 <tr><td>2026-07-01 &middot; Wind Disaster Declaration</td><td>151</td><td>AURORA, BEADLE, BENNETT, BON HOMME, BROWN, BRULE, BUFFALO, CHARLES MIX</td><td>4938</td></tr>
 <tr><td>2026-04-13 &middot; Fire Disaster Declaration</td><td>26</td><td>AURORA, BEADLE, BON HOMME, BROOKINGS, BRULE, BUFFALO, CHARLES MIX, CLAY</td><td><span class="empty">No corresponding federal declaration found</span></td></tr>
@@ -700,7 +704,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-07-30; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-11-15 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-11-18 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {

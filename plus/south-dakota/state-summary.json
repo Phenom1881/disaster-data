@@ -4,8 +4,8 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders",
-  "coverage_base": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders",
+  "coverage": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders, so no state declaration has been found for the April 2000 western winter storm (DR-1330), the spring 2001 floods and ice jams (DR-1375) or the May to June 2004 storms and floods (DR-1531); its 2005 orders before the November blizzard are not weather declarations either, and none has been found for the June 7 to 8, 2005 storms (DR-1596)",
+  "coverage_base": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders, so no state declaration has been found for the April 2000 western winter storm (DR-1330), the spring 2001 floods and ice jams (DR-1375) or the May to June 2004 storms and floods (DR-1531); its 2005 orders before the November blizzard are not weather declarations either, and none has been found for the June 7 to 8, 2005 storms (DR-1596)",
   "federal_without_state": {
     "compared": 36,
     "count": 4,
@@ -19,11 +19,11 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-15",
+  "generated_on": "2026-11-18",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 85,
+    "action_count": 86,
     "federal_declaration_count": 98,
     "severity_rows": 2074,
     "storm_match_rows": 4488
@@ -31,7 +31,7 @@
   "name": "South Dakota",
   "retried": false,
   "slug": "south-dakota",
-  "source_records_returned": 89,
+  "source_records_returned": 90,
   "source_records_saved_before": 89,
   "source_status": "ok",
   "sources": {
@@ -40,14 +40,14 @@
     "fmcsa_archive": 0,
     "noaa_matched": 71,
     "noaa_none": 13,
-    "noaa_pending": 1,
+    "noaa_pending": 2,
     "reviewed_not_weather": 4,
-    "state_archive": 85
+    "state_archive": 86
   },
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 36.7,
-    "storm_join_seconds": 1.1
+    "collect_seconds": 231.7,
+    "storm_join_seconds": 0.8
   }
 }

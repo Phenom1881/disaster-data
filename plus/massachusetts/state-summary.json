@@ -4,11 +4,11 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2005 and 2008-2015 storm states of emergency (Romney, Patrick and Baker) from dated news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-  "coverage_base": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 2005 and 2008-2015 storm states of emergency (Romney, Patrick and Baker) from dated news coverage and FMCSA's copy of the 2015 declaration; other unnumbered declarations are not listed",
+  "coverage": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 19 storm states of emergency added by hand from dated news coverage and FMCSA's copy of the 2015 declaration, among them Governor Dukakis's for Hurricane Gloria (1985), Acting Governor Cellucci's for Hurricane Bob (1991), Governor Weld's for the October 1991 and December 1992 coastal storms and the October 1996 floods, and Governor Cellucci's for the March 2001 snowstorm. No state declaration has been found for EM-3175 and EM-3191 (the February and December 2003 snowstorms), DR-1512 (April 2004 floods), DR-1701 (April 2007 nor'easter) or DR-4651 (January 2022 blizzard), nor for DR-325 (March 1972 storms), EM-3103 (March 1993 blizzard), DR-1090 (January 1996 blizzard) or DR-1224 (June 1998 floods). A 1987 report says the Governor declared an emergency for the April 1987 floods (DR-790) but not on which day, so it is not listed; other unnumbered declarations are not listed; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage_base": "1970-present from the official State Library executive-order collection (orders before 1970 left off), plus 19 storm states of emergency added by hand from dated news coverage and FMCSA's copy of the 2015 declaration (manual_declarations.csv), among them Governor Dukakis's for Hurricane Gloria (1985), Acting Governor Cellucci's for Hurricane Bob (1991), Governor Weld's for the October 1991 and December 1992 coastal storms and the October 1996 floods, and Governor Cellucci's for the March 2001 snowstorm. No state declaration has been found for EM-3175 and EM-3191 (the February and December 2003 snowstorms), DR-1512 (April 2004 floods), DR-1701 (April 2007 nor'easter) or DR-4651 (January 2022 blizzard), nor for DR-325 (March 1972 storms), EM-3103 (March 1993 blizzard), DR-1090 (January 1996 blizzard) or DR-1224 (June 1998 floods). A 1987 report says the Governor declared an emergency for the April 1987 floods (DR-790) but not on which day, so it is not listed; other unnumbered declarations are not listed.",
   "federal_without_state": {
     "compared": 42,
-    "count": 18,
+    "count": 10,
     "covered_by_extension": [],
     "ids": [
       "DR-4651",
@@ -16,31 +16,23 @@
       "DR-1512",
       "EM-3191",
       "EM-3175",
-      "DR-1364",
-      "EM-3165",
       "DR-1224",
-      "DR-1142",
-      "EM-3119",
       "DR-1090",
       "EM-3103",
-      "DR-975",
-      "DR-920",
-      "DR-914",
       "DR-790",
-      "DR-751",
       "DR-325"
     ],
     "no_state_declaration": [],
     "since": 1970
   },
-  "generated_on": "2026-11-15",
+  "generated_on": "2026-11-18",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 23,
+    "action_count": 29,
     "federal_declaration_count": 59,
-    "severity_rows": 340,
-    "storm_match_rows": 533
+    "severity_rows": 383,
+    "storm_match_rows": 601
   },
   "name": "Massachusetts",
   "retried": false,
@@ -49,11 +41,11 @@
   "source_records_saved_before": 6,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 13,
-    "federal_matched": 18,
+    "added_by_hand": 19,
+    "federal_matched": 24,
     "fmcsa_archive": 4,
-    "noaa_matched": 20,
-    "noaa_none": 3,
+    "noaa_matched": 24,
+    "noaa_none": 5,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 6
@@ -61,7 +53,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 90.3,
+    "collect_seconds": 53.8,
     "storm_join_seconds": 2.6
   }
 }

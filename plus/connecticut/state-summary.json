@@ -4,11 +4,11 @@
   "adapter_status": "implemented",
   "collection_error": "",
   "collection_failed": false,
-  "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 8 declarations added by hand from official announcements, order text and dated news coverage; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
-  "coverage_base": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 8 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv).",
+  "coverage": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 11 declarations added by hand from official announcements, order text and dated news coverage, among them Governor Grasso's February 1978 blizzard emergency and Governor O'Neill's June 1982 flood and July 1989 tornado emergencies. The Governor's archive keeps only 22 orders from before 2011, and no state declaration has been found for EM-3176 and EM-3192 (the February and December 2003 snowstorms), EM-3200 (January 2005 blizzard), DR-1619 (October 2005 floods), EM-3266 (February 2006 snowstorm), DR-1700 (April 2007 nor'easter) or DR-4410 (September 2018 floods), nor for DR-608 (1979 Windsor Locks tornado), DR-711 (1984 floods), DR-747 (Hurricane Gloria, 1985), DR-916 (Hurricane Bob, 1991), DR-972 (December 1992 nor'easter), EM-3098 (March 1993 blizzard), DR-1092 (January 1996 blizzard) or DR-1302 (Tropical Storm Floyd, 1999). The congressional delegation's letters backing Governor Rell's 2006 and 2007 requests say she activated the State Emergency Operations Center and, in 2007, executed the State Emergency Plan, and mention no declaration; Governor Malloy's 2018 request release mentions none; plus 4 weather declarations from FMCSA's archive of state emergency declarations (2017-present)",
+  "coverage_base": "1971-present Governor executive-order archive plus 2005-2020 DEMHS civil-preparedness declaration table. Plus 11 declarations added by hand from official announcements, order text and dated news coverage (manual_declarations.csv), among them Governor Grasso's February 1978 blizzard emergency and Governor O'Neill's June 1982 flood and July 1989 tornado emergencies. The Governor's archive keeps only 22 orders from before 2011, and no state declaration has been found for EM-3176 and EM-3192 (the February and December 2003 snowstorms), EM-3200 (January 2005 blizzard), DR-1619 (October 2005 floods), EM-3266 (February 2006 snowstorm), DR-1700 (April 2007 nor'easter) or DR-4410 (September 2018 floods), nor for DR-608 (1979 Windsor Locks tornado), DR-711 (1984 floods), DR-747 (Hurricane Gloria, 1985), DR-916 (Hurricane Bob, 1991), DR-972 (December 1992 nor'easter), EM-3098 (March 1993 blizzard), DR-1092 (January 1996 blizzard) or DR-1302 (Tropical Storm Floyd, 1999). The congressional delegation's letters backing Governor Rell's 2006 and 2007 requests say she activated the State Emergency Operations Center and, in 2007, executed the State Emergency Plan, and mention no declaration; Governor Malloy's 2018 request release mentions none.",
   "federal_without_state": {
     "compared": 37,
-    "count": 18,
+    "count": 15,
     "covered_by_extension": [],
     "ids": [
       "DR-4410",
@@ -23,24 +23,21 @@
       "EM-3098",
       "DR-972",
       "DR-916",
-      "DR-837",
       "DR-747",
       "DR-711",
-      "DR-661",
-      "DR-608",
-      "EM-3060"
+      "DR-608"
     ],
     "no_state_declaration": [],
     "since": 1971
   },
-  "generated_on": "2026-11-15",
+  "generated_on": "2026-11-18",
   "kept_saved_records": 0,
   "kept_saved_values": 0,
   "metrics": {
-    "action_count": 22,
+    "action_count": 25,
     "federal_declaration_count": 43,
-    "severity_rows": 208,
-    "storm_match_rows": 446
+    "severity_rows": 211,
+    "storm_match_rows": 455
   },
   "name": "Connecticut",
   "retried": false,
@@ -49,11 +46,11 @@
   "source_records_saved_before": 10,
   "source_status": "ok",
   "sources": {
-    "added_by_hand": 8,
-    "federal_matched": 14,
+    "added_by_hand": 11,
+    "federal_matched": 17,
     "fmcsa_archive": 4,
-    "noaa_matched": 21,
-    "noaa_none": 1,
+    "noaa_matched": 22,
+    "noaa_none": 3,
     "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 10
@@ -61,7 +58,7 @@
   "storm_pipeline_failed": false,
   "storm_pipeline_note": "Storm join completed; forecast-zone resolution skipped because its script or crosswalk was unavailable",
   "timing": {
-    "collect_seconds": 271.1,
-    "storm_join_seconds": 0.5
+    "collect_seconds": 177.3,
+    "storm_join_seconds": 1.2
   }
 }

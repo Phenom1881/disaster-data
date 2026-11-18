@@ -69,6 +69,8 @@
     details.layer[open] > summary { border-bottom:1px solid var(--line); }
     details.layer > .details-body { padding:0 1rem 1rem; }
     .count-badge { color:var(--muted); font-size:.85rem; font-weight:600; white-space:nowrap; }
+    .kind-tag { display:inline-block; margin-left:.35rem; padding:.05rem .45rem; border:1px solid var(--ember);
+      border-radius:999px; color:var(--ember); font-size:.75rem; font-weight:600; white-space:nowrap; }
     ul.sources { list-style:none; display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; margin:.25rem 0 .75rem;
       padding:0; color:var(--muted); font-size:.9rem; max-width:860px; }
     ul.sources strong { color:var(--accent); }
@@ -86,7 +88,7 @@
 <main><div class="eyebrow">DisasterData Plus</div>
 <h1>Florida: Weather Emergency Declarations</h1>
 <p class="lede">Original state weather-emergency declarations, compared with federal FEMA declarations and nearby NOAA/NWS Storm Events evidence.</p>
-<div class="notice"><strong>Coverage:</strong> 2000-present: structured Governor archive from 2020, plus 36 weather emergency orders added by hand: 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, the Florida State Agricultural Response Team&#x27;s Hurricane Dennis newsletter, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period. Absence from this page must not be interpreted as absence of a state emergency.</div>
+<div class="notice"><strong>Coverage:</strong> 2000-present: structured Governor archive from 2020, plus 36 weather emergency orders added by hand: 7 Bush orders from 2000-2003 read one at a time from the State Library order archive (edocs.dos.fl.gov), which disallows crawlers and is not crawled; Bush and Crist orders from 2004-2010 catalogued with their dates by the FSU College of Law collection on Florida Government Documents; and 2005-2019 declarations dated from the order copies kept by FMCSA, the Division of Emergency Management and DEP, archived Governor pages, the Florida State Agricultural Response Team&#x27;s Hurricane Dennis newsletter, and news coverage. No state declaration was found for DR-1381 (Tropical Storm Allison, 2001) or DR-4138 (July 2013 flooding). EM-3259 (Rita, 2005) counts as matched only because its incident period runs into the Wilma declaration, and DR-1481 (June to August 2003 flooding) only because the August 2003 Palm Beach County tornado order falls inside its incident period; 27 saved records kept that this refresh&#x27;s check of the state source did not return. Absence from this page must not be interpreted as absence of a state emergency.</div>
 <section class="metrics">
   <div class="metric"><strong>190</strong>federal FEMA declarations</div>
   <div class="metric"><strong>63</strong>original state weather declarations</div>
@@ -746,7 +748,7 @@
 <details class="layer"><summary><span>Methodology and coverage</span></summary><div class="details-body">
 <p class="note">Federal declarations are sourced from OpenFEMA via this site's national build. State declarations are limited by the coverage statement above. NOAA proximity matches identify potentially related observed events within a configured window of each state declaration's signing date; they do not independently prove operational impacts or legal causation. NOAA's published Storm Events data used here runs through about 2026-07-30; declarations signed after that show as pending until NOAA publishes those months. The federal crosswalk match uses a wider 21 day window than the NOAA match, since a federal declaration is often filed weeks after the state action that preceded it.</p>
 </div></details>
-<footer>Generated 2026-11-15 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
+<footer>Generated 2026-11-18 &middot; DisasterData.IO &middot; State and federal records remain subject to source verification. &middot; <a href="https://forms.gle/NZ6bSadoXrKYHjjH8" target="_blank" rel="noopener">Report a Data Issue</a></footer>
 </main>
 <script>
 document.querySelectorAll('.table-search').forEach((input) => {
