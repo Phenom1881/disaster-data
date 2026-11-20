@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "release": "2026.11.18.1",
+  "release": "2026.11.20.1",
   "status": "passed",
-  "builtAt": "2026-11-18T11:44:01Z",
-  "dataDate": "2026-11-15",
-  "fingerprint": "d572ff998d469ccdc296",
+  "builtAt": "2026-11-20T13:45:44Z",
+  "dataDate": "2026-11-20",
+  "fingerprint": "3443f1c07b723b3bc892",
   "metrics": {
-    "dataDate": "2026-11-15",
-    "ageDays": 3,
+    "dataDate": "2026-11-20",
+    "ageDays": 0,
     "declarationsCurrent": 3555,
     "declarationsCompletedFY": 3536,
     "denials": 363,
@@ -20,10 +20,10 @@
     "statewideOnlyEvents": 1,
     "declIndexStates": 59,
     "jurisdictionPages": 3590,
-    "paJurisdictions": 3231,
-    "paTotalObligated": 284218567773.06,
-    "paProjects": 824950,
-    "paTimingJurisdictions": 3287,
+    "paJurisdictions": 3232,
+    "paTotalObligated": 284499111827.85,
+    "paProjects": 825256,
+    "paTimingJurisdictions": 3288,
     "hmaJurisdictions": 2996,
     "iaJurisdictions": 3266,
     "sviCounties": 3144,
@@ -46,7 +46,7 @@
       "file": "data.js",
       "records": 3555,
       "release": "OpenFEMA v2",
-      "hash": "57426bf8ec788886",
+      "hash": "d7f00699a825e287",
       "note": "Federal declaration history and jurisdiction assignments."
     },
     {
@@ -55,25 +55,25 @@
       "file": "data.js",
       "records": 363,
       "release": "OpenFEMA v1",
-      "hash": "57426bf8ec788886",
+      "hash": "d7f00699a825e287",
       "note": "Turndown/denial records; the build can continue if the upstream endpoint is unavailable."
     },
     {
       "name": "FEMA Public Assistance",
       "status": "current",
       "file": "data.js",
-      "records": 3231,
+      "records": 3232,
       "release": "OpenFEMA v2",
-      "hash": "57426bf8ec788886",
+      "hash": "d7f00699a825e287",
       "note": "Public Assistance project and county rollups."
     },
     {
       "name": "FEMA PA Grant Award Activities",
       "status": "current",
       "file": "pa-timing.json",
-      "records": 3287,
+      "records": 3288,
       "release": "OpenFEMA v2",
-      "hash": "c34599f652dc6199",
+      "hash": "4d0b7d8b10ea29ba",
       "note": "Obligation timing used on jurisdiction profiles."
     },
     {
@@ -91,7 +91,7 @@
       "file": "ia.json",
       "records": 3266,
       "release": "OpenFEMA v2",
-      "hash": "489779fb110917d1",
+      "hash": "1fff21608667f0be",
       "note": "Housing Assistance owner/renter rollups."
     },
     {
@@ -172,7 +172,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date: 2026-11-15",
+        "detail": "Data date: 2026-11-20",
         "metrics": {}
       },
       {
@@ -319,7 +319,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Homepage contains build date 2026-11-15",
+        "detail": "Homepage contains build date 2026-11-20",
         "metrics": {}
       },
       {
@@ -335,7 +335,7 @@
         "category": "Assistance",
         "status": "pass",
         "severity": "error",
-        "detail": "3,231 PA jurisdiction rollups; 0 invalid",
+        "detail": "3,232 PA jurisdiction rollups; 0 invalid",
         "metrics": {}
       },
       {
@@ -343,7 +343,7 @@
         "category": "Assistance",
         "status": "pass",
         "severity": "warning",
-        "detail": "3,287 jurisdiction rollups",
+        "detail": "3,288 jurisdiction rollups",
         "metrics": {}
       },
       {
@@ -447,7 +447,7 @@
         "category": "Freshness",
         "status": "pass",
         "severity": "error",
-        "detail": "Data date is 3 day(s) old; weekly target is <= 8 days",
+        "detail": "Data date is 0 day(s) old; weekly target is <= 8 days",
         "metrics": {}
       }
     ]
