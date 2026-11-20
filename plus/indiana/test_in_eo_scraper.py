@@ -372,7 +372,8 @@ class HandAddedDeclarationTests(unittest.TestCase):
     def test_dates_and_ids(self):
         rows = self.rows("manual_declarations.csv")
         self.assertEqual({r["declaration_id"]: r["date_signed"] for r in rows},
-                         {"IN-SOE-2004-05-28": "2004-05-28", "IN-EO-06-15": "2006-09-14", "IN-EO-08-16": "2008-09-16",
+                         {"IN-SOE-2003-07-08": "2003-07-08", "IN-SOE-2004-05-28": "2004-05-28",
+                          "IN-SOE-2004-12-23": "2004-12-23", "IN-EO-06-15": "2006-09-14", "IN-EO-08-16": "2008-09-16",
                           "IN-SOE-2014-01-06": "2014-01-06", "IN-SOE-2025-04-11": "2025-04-11"})
         for row in rows:
             if row["eo_number"]:
