@@ -581,9 +581,12 @@
         "type": "FM"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "EASTERN ALASKA RANGE NORTH OF TRIMS CAMP",
+        "UPPER TANANA VALLEY"
+      ],
+      "noaa_match_count": 2,
+      "noaa_status": "matched",
       "title": "Press Release - Governor Dunleavy Activates Disaster Assistance Programs for Mukluk Fire 081826 (8/18/2026)"
     },
     {
@@ -592,11 +595,13 @@
       "federal_declaration": null,
       "federal_status": "no_federal_declaration_found",
       "noaa_areas": [
+        "INLAND KUSKOKWIM DELTA",
+        "KUSKOKWIM VALLEY WEST",
         "LOWER KOYUKUK VALLEY",
         "MIDDLE YUKON VALLEY",
         "YUKON FLATS"
       ],
-      "noaa_match_count": 3,
+      "noaa_match_count": 9,
       "noaa_status": "matched",
       "title": "Press Release - Governor Dunleavy issues Disaster Declaration for 2026 Spring Floods (5/11/2026)"
     },
@@ -1671,13 +1676,13 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-18",
+  "generated_on": "2026-11-20",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 47,
     "federal_declaration_count": 95,
-    "severity_rows": 206,
-    "storm_match_rows": 273
+    "severity_rows": 210,
+    "storm_match_rows": 281
   },
   "name": "Alaska",
   "noaa_data_through": "2026-07-30",
@@ -1689,9 +1694,9 @@
     "added_by_hand": 38,
     "federal_matched": 42,
     "fmcsa_archive": 3,
-    "noaa_matched": 32,
+    "noaa_matched": 33,
     "noaa_none": 14,
-    "noaa_pending": 1,
+    "noaa_pending": 0,
     "reviewed_not_weather": 0,
     "state_archive": 6
   },

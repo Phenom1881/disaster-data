@@ -216,9 +216,12 @@
         "type": "FM"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "CLARK",
+        "MINERAL"
+      ],
+      "noaa_match_count": 8,
+      "noaa_status": "matched",
       "title": "Nevada Declaration of Emergency 08-10-2026. From FMCSA's copy: the State of Nevada is experiencing widespread fire activity, which has been exacerbated by dry conditions, high temperatures, and severe winds"
     },
     {
@@ -550,13 +553,13 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-18",
+  "generated_on": "2026-11-20",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 15,
     "federal_declaration_count": 116,
-    "severity_rows": 67,
-    "storm_match_rows": 151
+    "severity_rows": 69,
+    "storm_match_rows": 159
   },
   "name": "Nevada",
   "noaa_data_through": "2026-07-30",
@@ -568,9 +571,9 @@
     "added_by_hand": 7,
     "federal_matched": 10,
     "fmcsa_archive": 2,
-    "noaa_matched": 11,
+    "noaa_matched": 12,
     "noaa_none": 2,
-    "noaa_pending": 2,
+    "noaa_pending": 1,
     "reviewed_not_weather": 0,
     "state_archive": 6
   },

@@ -1033,7 +1033,7 @@
       "title": "Blizzard-Emergency Management"
     }
   ],
-  "coverage": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders, so no state declaration has been found for the April 2000 western winter storm (DR-1330), the spring 2001 floods and ice jams (DR-1375) or the May to June 2004 storms and floods (DR-1531); its 2005 orders before the November blizzard are not weather declarations either, and none has been found for the June 7 to 8, 2005 storms (DR-1596)",
+  "coverage": "2000-present SD Secretary of State executive order registry: 2020-present from its yearly tables and 2000-2019 through its prior-years search, with the hazard for each older order read from the signed copy; it lists no weather emergency declarations for 2000-2004, only waivers for hay and fuel hauling and fire-season orders, so no state declaration has been found for the April 2000 western winter storm (DR-1330), the spring 2001 floods and ice jams (DR-1375) or the May to June 2004 storms and floods (DR-1531); its 2005 orders before the November blizzard are not weather declarations either, and none has been found for the June 7 to 8, 2005 storms (DR-1596); Collection failed: South Dakota adapter: scrape failed (South Dakota: 0 orders parsed from the registry page: 67107 bytes, title 'South Dakota Secretary of State', 0 table(s), 0 table row(s), starts ' <!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <meta name=\"HandheldFriendly\"...)",
   "crosswalk": [
     {
       "date_signed": "2026-11-17",
@@ -1050,9 +1050,37 @@
       "declaration_id": "SD-EO-2026-08",
       "federal_declaration": null,
       "federal_status": "no_federal_declaration_found",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "AURORA",
+        "BON HOMME",
+        "BROOKINGS",
+        "BRULE",
+        "CHARLES MIX",
+        "CLAY",
+        "CORSON",
+        "DAVISON",
+        "DEWEY",
+        "DOUGLAS",
+        "FAULK",
+        "GREGORY",
+        "HANSON",
+        "HUTCHINSON",
+        "JERAULD",
+        "LAKE",
+        "MCCOOK",
+        "MINER",
+        "MINNEHAHA",
+        "MOODY",
+        "POTTER",
+        "SANBORN",
+        "SULLY",
+        "TURNER",
+        "UNION",
+        "WALWORTH",
+        "YANKTON"
+      ],
+      "noaa_match_count": 27,
+      "noaa_status": "matched",
       "title": "Drought Declaration Amended"
     },
     {
@@ -4599,27 +4627,27 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-18",
+  "generated_on": "2026-11-20",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 86,
     "federal_declaration_count": 98,
-    "severity_rows": 2074,
-    "storm_match_rows": 4488
+    "severity_rows": 2101,
+    "storm_match_rows": 4515
   },
   "name": "South Dakota",
   "noaa_data_through": "2026-07-30",
   "official_source_url": "https://sdsos.gov/general-information/executive-actions/executive-orders/search/Default.aspx",
   "schema_version": 1,
   "slug": "south-dakota",
-  "source_status": "ok",
+  "source_status": "failed",
   "sources": {
     "added_by_hand": 0,
     "federal_matched": 60,
     "fmcsa_archive": 0,
-    "noaa_matched": 71,
+    "noaa_matched": 72,
     "noaa_none": 13,
-    "noaa_pending": 2,
+    "noaa_pending": 1,
     "reviewed_not_weather": 4,
     "state_archive": 86
   },

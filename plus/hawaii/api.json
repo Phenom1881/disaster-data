@@ -523,9 +523,23 @@
         "type": "DR"
       },
       "federal_status": "matched",
-      "noaa_areas": [],
-      "noaa_match_count": 0,
-      "noaa_status": "pending",
+      "noaa_areas": [
+        "CENTRAL OAHU",
+        "EAST HONOLULU",
+        "HALEAKALA SUMMIT",
+        "HAWAII",
+        "HONOLULU",
+        "KAUAI",
+        "KAUAI SOUTH",
+        "KIPAHULU",
+        "MAUI",
+        "MAUI CENTRAL VALLEY NORTH",
+        "SOUTH HALEAKALA",
+        "SOUTH MAUI/UPCOUNTRY",
+        "WINDWARD HALEAKALA"
+      ],
+      "noaa_match_count": 13,
+      "noaa_status": "matched",
       "title": "Proclamation Relating to Tropical Storm Lala"
     },
     {
@@ -1290,13 +1304,13 @@
     "no_state_declaration": [],
     "since": 2000
   },
-  "generated_on": "2026-11-18",
+  "generated_on": "2026-11-20",
   "kept_saved_records": 0,
   "metrics": {
     "action_count": 39,
     "federal_declaration_count": 77,
-    "severity_rows": 152,
-    "storm_match_rows": 357
+    "severity_rows": 165,
+    "storm_match_rows": 370
   },
   "name": "Hawaii",
   "noaa_data_through": "2026-07-30",
@@ -1308,9 +1322,9 @@
     "added_by_hand": 28,
     "federal_matched": 26,
     "fmcsa_archive": 3,
-    "noaa_matched": 34,
+    "noaa_matched": 35,
     "noaa_none": 2,
-    "noaa_pending": 3,
+    "noaa_pending": 2,
     "reviewed_not_weather": 0,
     "state_archive": 8
   },
