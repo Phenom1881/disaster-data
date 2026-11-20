@@ -139,7 +139,9 @@ def load_previous_records(folder=None):
     for p in sorted({p.resolve() for d in folders for p in d.glob('*_emergency_actions_all.csv')}):
         with p.open(newline='',encoding='utf-8',errors='replace') as f:
             for row in csv.DictReader(f):
-                if len(clean(row.get('full_text','')))>=80 and not row.get('fetch_error'):_PREVIOUS[row.get('declaration_id','')]=row
+                # A record kept from an earlier refresh carries both the text and that
+                # refresh's fetch_error; it is still the last good reading.
+                if len(clean(row.get('full_text','')))>=80:_PREVIOUS[row.get('declaration_id','')]=row
     return _PREVIOUS
 
 def keep_previous_text(r):
@@ -150,7 +152,9 @@ def keep_previous_text(r):
     r['full_text']=old['full_text']
     for field in ('date_signed','governor'):
         if old.get(field):r[field]=old[field]
-    r['date_evidence']=(old.get('date_evidence') or r['date_evidence'])+'; text and date kept from the previous refresh because the document could not be fetched'
+    note='; text and date kept from the previous refresh because the document could not be fetched'
+    evidence=old.get('date_evidence') or r['date_evidence']
+    r['date_evidence']=evidence if note in evidence else evidence+note
     return True
 
 def enrich(records,predicate=lambda r:True):
