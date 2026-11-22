@@ -110,7 +110,7 @@ def enrich_record(r):
                         item=json.loads(tp.read_text()).get(pdfmeta['sha256'])
                         if item:text=item['text'];r['date_evidence']+='; hash-matched OCR transcription'
         r['full_text']=clean(text)
-        m=re.search(r'\bI,\s+([A-Za-z .]+?),\s*(?:Governor|as Governor)',r['full_text'],re.I)
+        m=_GOVERNOR_RE.search(r['full_text'])
         if m:r['governor']=clean(m[1]).title()
         if len(r['full_text'])<80:r['fetch_error']='No usable embedded text; OCR/manual review required'
         d,e=signed_date(text)
@@ -157,10 +157,61 @@ def keep_previous_text(r):
     r['date_evidence']=evidence if note in evidence else evidence+note
     return True
 
-def enrich(records,predicate=lambda r:True):
+# Reading each order's document only until it has been read once. Until
+# 2026-11-22 every refresh downloaded every document again, about 2,900 across
+# the nine states on this file, so six refreshes in one week sent some 17,000
+# requests for documents that had not changed, and Missouri's archive refused
+# the runner with 403 on the run and on the retry 35 minutes later
+# (2026-11-18). A document already read cleanly is now read again only if its
+# order is recent, if this is its week in an 8-week rotation, or when
+# DDPLUS_REREAD_ALL=1. run() turns this on; tests and direct calls to enrich()
+# read every document, as before.
+REUSE_READINGS=False
+REREAD_RECENT_DAYS=60
+REREAD_WEEKS=8
+_GOVERNOR_RE=re.compile(r'\bI,\s+([A-Za-z .]+?),\s*(?:Governor|as Governor)',re.I)
+
+def reread_due(r,old,today=None):
+    """True when this record's document should be downloaded again."""
+    if os.environ.get('DDPLUS_REREAD_ALL')=='1':return True
+    today=today or date.today()
+    signed=old.get('date_signed') or r.get('date_signed') or ''
+    try:
+        if (today-date.fromisoformat(signed)).days<REREAD_RECENT_DAYS:return True
+    except ValueError:
+        # Most undated records are orders whose text has no signing date; an
+        # unchanged document will not have one next time either. A scan with
+        # no text is never reused (see reuse_previous_reading), so a new OCR
+        # transcription applies on the next refresh.
+        pass
+    slot=int(hashlib.sha256(r['declaration_id'].encode()).hexdigest(),16)%REREAD_WEEKS
+    return slot==today.isocalendar()[1]%REREAD_WEEKS
+
+def reuse_previous_reading(r,today=None):
+    """Fill a record from the previous refresh's clean reading of the same
+    document instead of downloading it again. Returns True when it did."""
+    if not REUSE_READINGS:return False
+    old=_PREVIOUS.get(r['declaration_id'])
+    if not old or old.get('fetch_error') or old.get('document_url')!=r['document_url']:return False
+    if len(clean(old.get('full_text','')))<80 or reread_due(r,old,today):return False
+    r['full_text']=old['full_text']
+    m=_GOVERNOR_RE.search(r['full_text'])
+    if m:r['governor']=clean(m[1]).title()
+    evidence=old.get('date_evidence') or ''
+    if 'PDF/legal signature' in evidence:
+        # The date was read from the document itself, so it is unchanged.
+        r['date_signed']=old['date_signed'];r['date_evidence']=evidence
+    elif 'hash-matched OCR transcription' in evidence and 'hash-matched OCR transcription' not in r['date_evidence']:
+        r['date_evidence']+='; hash-matched OCR transcription'
+    return True
+
+def enrich(records,predicate=lambda r:True,today=None):
     targets=[r for r in records if predicate(r)]
     if not _PREVIOUS:load_previous_records()
-    with ThreadPoolExecutor(max_workers=6) as ex:list(ex.map(enrich_record,targets))
+    fetch_now=[r for r in targets if not reuse_previous_reading(r,today)]
+    if REUSE_READINGS:
+        print('reused %d document reading(s) from the previous refresh; read %d'%(len(targets)-len(fetch_now),len(fetch_now)))
+    with ThreadPoolExecutor(max_workers=6) as ex:list(ex.map(enrich_record,fetch_now))
     return records
 
 def write_csv(path,fields,rows):
@@ -247,8 +298,9 @@ def merge_overrides(path,generated,collected_ids):
     return rows,fields
 
 def run(collector,base):
+    global REUSE_READINGS
     p=argparse.ArgumentParser();p.add_argument('--actions-out',required=True);p.add_argument('--relationships-out',required=True);p.add_argument('--join-out',required=True)
-    a=p.parse_args();records,rels,overrides=finalize(collector(),base)
+    a=p.parse_args();REUSE_READINGS=True;records,rels,overrides=finalize(collector(),base)
     # A reviewed exclusion without a readable date still writes its override row
     # but stays out of the join file, which needs a signing date.
     joins=[r for r in records if r['decision']=='include' or r['decision']=='override_exclude' and valid_date(r['date_signed'])]

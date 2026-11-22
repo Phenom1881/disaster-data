@@ -12,8 +12,11 @@ import csv
 import hashlib
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
+from datetime import date
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -198,6 +201,141 @@ class FetchFailureTests(unittest.TestCase):
         (self.base / "review_decisions.json").write_text(json.dumps({self.record()["declaration_id"]: {"decision": "include"}}))
         records, _, overrides = self.support.finalize([self.record()], self.base)
         self.assertEqual(records[0]["decision"], "review")
+
+
+class ReuseReadingTests(unittest.TestCase):
+    """2026-11-22: every refresh downloaded every document again (about 2,900
+    across these nine states), and Missouri's archive refused the runner on
+    the run and on the retry. A clean earlier reading is now reused."""
+
+    URL = "https://example.test/order.pdf"
+    TODAY = date(2026, 11, 22)
+
+    def setUp(self):
+        self.support = load(COPIES[0])
+        self.dir = tempfile.TemporaryDirectory()
+        self.base = Path(self.dir.name)
+        self.calls = []
+        self.original_fetch = self.support.fetch
+
+        def counting_fetch(url, payload=None, headers=None):
+            self.calls.append(url)
+            raise RuntimeError("network not used in this test")
+
+        self.support.fetch = counting_fetch
+        self.support.REUSE_READINGS = True
+        os.environ.pop("DDPLUS_REREAD_ALL", None)
+
+    def tearDown(self):
+        self.support.fetch = self.original_fetch
+        self.support.REUSE_READINGS = False
+        self.support._PREVIOUS.clear()
+        os.environ.pop("DDPLUS_REREAD_ALL", None)
+        self.dir.cleanup()
+
+    def number_off_rotation(self):
+        for n in range(1, 400):
+            rid = self.support.make_record("XX", "Order", self.URL, number="D-2005-%03d" % n)["declaration_id"]
+            slot = int(hashlib.sha256(rid.encode()).hexdigest(), 16) % self.support.REREAD_WEEKS
+            if slot != self.TODAY.isocalendar()[1] % self.support.REREAD_WEEKS:
+                return "D-2005-%03d" % n
+        raise AssertionError("no number off this week's rotation")
+
+    def number_on_rotation(self):
+        for n in range(1, 400):
+            rid = self.support.make_record("XX", "Order", self.URL, number="D-2005-%03d" % n)["declaration_id"]
+            slot = int(hashlib.sha256(rid.encode()).hexdigest(), 16) % self.support.REREAD_WEEKS
+            if slot == self.TODAY.isocalendar()[1] % self.support.REREAD_WEEKS:
+                return "D-2005-%03d" % n
+        raise AssertionError("no number on this week's rotation")
+
+    def previous(self, number, **extra):
+        r = self.support.make_record("XX", "Order", self.URL, number=number)
+        row = dict.fromkeys(self.support.ACTION_FIELDS, "")
+        row.update(declaration_id=r["declaration_id"], document_url=self.URL,
+                   full_text="I, Bill Owens, Governor of the State of Colorado, order assistance after the flood " * 2,
+                   date_signed="2005-09-02", date_evidence="listing; PDF/legal signature: this 2nd day of September, 2005")
+        row.update(extra)
+        with open(self.base / "xx_emergency_actions_all.csv", "w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=self.support.ACTION_FIELDS, lineterminator="\n")
+            writer.writeheader()
+            writer.writerow(row)
+        self.support.load_previous_records(self.base)
+        return self.support.make_record("XX", "Order", self.URL, number=number)
+
+    def test_a_clean_old_reading_is_reused_without_a_download(self):
+        r = self.previous(self.number_off_rotation())
+        with mock.patch("builtins.print"):
+            self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [])
+        self.assertIn("order assistance after the flood", r["full_text"])
+        self.assertEqual(r["date_signed"], "2005-09-02")
+        self.assertEqual(r["governor"], "Bill Owens")
+        self.assertEqual(r["fetch_error"], "")
+
+    def test_an_undated_reading_follows_the_rotation(self):
+        r = self.previous(self.number_off_rotation(), date_signed="", date_evidence="listing")
+        with mock.patch("builtins.print"):
+            self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [])
+        self.assertIn("order assistance after the flood", r["full_text"])
+        self.calls.clear()
+        r = self.previous(self.number_on_rotation(), date_signed="", date_evidence="listing")
+        with mock.patch("builtins.print"):
+            self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [self.URL])
+
+    def test_a_scan_without_text_is_always_read(self):
+        r = self.previous(self.number_off_rotation(), full_text="EXECUTIVE ORDER")
+        with mock.patch("builtins.print"):
+            self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [self.URL])
+
+    def test_a_listing_date_is_not_carried_over(self):
+        r = self.previous(self.number_off_rotation(), date_evidence="listing date", date_signed="2005-09-02")
+        r["date_signed"] = "2005-09-03"
+        with mock.patch("builtins.print"):
+            self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(r["date_signed"], "2005-09-03")
+
+    def test_documents_are_read_again_when_due(self):
+        cases = {
+            "recent order": dict(number=self.number_off_rotation(), date_signed="2026-11-01"),
+            "earlier failure": dict(number=self.number_off_rotation(), fetch_error="404 Client Error"),
+            "this week's rotation": dict(number=self.number_on_rotation()),
+        }
+        for name, extra in cases.items():
+            self.calls.clear()
+            number = extra.pop("number")
+            r = self.previous(number, **extra)
+            with mock.patch("builtins.print"):
+                self.support.enrich([r], today=self.TODAY)
+            self.assertEqual(self.calls, [self.URL], name)
+
+    def test_reread_all_and_direct_calls_read_every_document(self):
+        number = self.number_off_rotation()
+        os.environ["DDPLUS_REREAD_ALL"] = "1"
+        r = self.previous(number)
+        with mock.patch("builtins.print"):
+            self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [self.URL])
+        os.environ.pop("DDPLUS_REREAD_ALL")
+        self.calls.clear()
+        self.support.REUSE_READINGS = False
+        r = self.previous(number)
+        self.support.enrich([r], today=self.TODAY)
+        self.assertEqual(self.calls, [self.URL])
+
+    def test_run_turns_reuse_on(self):
+        import sys
+        argv = ["x", "--actions-out", str(self.base / "a.csv"), "--relationships-out", str(self.base / "r.csv"),
+                "--join-out", str(self.base / "j.csv")]
+        self.support.REUSE_READINGS = False
+        seen = []
+        with mock.patch.object(sys, "argv", argv), mock.patch("builtins.print"):
+            self.support.run(lambda: seen.append(self.support.REUSE_READINGS) or [self.support.make_record("XX", "Order", self.URL, number="D-2005-001")], self.base)
+        self.assertEqual(seen, [True])
 
 
 if __name__ == "__main__":
