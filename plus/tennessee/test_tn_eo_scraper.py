@@ -74,6 +74,7 @@ class StateOfEmergencyRowTests(unittest.TestCase):
     def test_dates_and_sources(self):
         rows = self.rows()
         expected = {"TN-SOE-2012-02-29": ("2012-02-29", "Bill Haslam", "104.pdf"),
+                    "TN-SOE-2019-10-26": ("2019-10-26", "Bill Lee", "2019/11/12/tema-seeks-joint-damage-assessment"),
                     "TN-SOE-2022-01-06": ("2022-01-06", "Bill Lee", "2022/1/6/"),
                     "TN-SOE-2022-02-03": ("2022-02-03", "Bill Lee", "2022/2/3/"),
                     "TN-SOE-2022-12-23": ("2022-12-23", "Bill Lee", "2022/12/23/")}
