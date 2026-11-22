@@ -69,9 +69,10 @@ class HandAddedDeclarationTests(unittest.TestCase):
             self.assertEqual(row['declaration_id'], 'IL-PROC-' + row['date_signed'])
             self.assertTrue(row['archive_record_url'].startswith('https://'), row['declaration_id'])
 
-    def test_2002_to_2008_proclamations_and_their_sources(self):
+    def test_2001_to_2008_proclamations_and_their_sources(self):
         rows = {r['declaration_id']: r for r in self.rows('manual_declarations.csv')}
         expected = {
+            'IL-PROC-2001-04-25': 'waterworld.com/home/article/16208952/davenport-endures-mississippi-river-crest-downstream-towns-vigilant',
             'IL-PROC-2002-04-29': 'illinois.gov/news/press-release.1765.html',
             'IL-PROC-2003-05-12': 'illinois.gov/news/press-release.2127.html',
             'IL-PROC-2004-04-21': 'washingtontimes.com/news/2004/apr/21/20040421-104334-2843r/',

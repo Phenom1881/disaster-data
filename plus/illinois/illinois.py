@@ -8,14 +8,13 @@ STATE = 'IL'
 # same text for builds without collection.
 COVERAGE_NOTE = (
     "2000-present numbered EO archive; disaster proclamations from 2023 on from the Governor's listing, p"
-    "lus proclamations added by hand: 2002-2011 (Ryan, Blagojevich, Quinn) from the Governor's releases, "
+    "lus proclamations added by hand: 2001-2011 (Ryan, Blagojevich, Quinn) from the Governor's releases, "
     "Illinois delegation releases, the State Water Survey's 2008 flood report and dated news coverage, 20"
     "13-2022 (Quinn, Rauner, Pritzker) from IEMA news releases and news coverage, and the August 2024 pro"
     "clamation from IEMA-OHS; other pre-2023 proclamations are not listed. Proclamations signed weeks aft"
     "er the storm they declare are compared on the storm's first day. Federal declarations since 2000 wit"
-    "h no state record yet: EM-3161 and DR-1368. DR-1747 (January 2008 flooding in Iroquois and Livingsto"
-    "n counties) matches only by date, to the February 2008 snow and March 2008 southern Illinois flood d"
-    "eclarations."
+    "h no state record yet: EM-3161. DR-1747 (January 2008 flooding in Iroquois and Livingston counties) "
+    "matches only by date, to the February 2008 snow and March 2008 southern Illinois flood declarations."
 )
 
 CAPABILITIES = {'structured_archive_coverage_start': '2003-06-11',
