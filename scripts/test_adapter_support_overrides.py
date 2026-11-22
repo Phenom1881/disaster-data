@@ -338,5 +338,46 @@ class ReuseReadingTests(unittest.TestCase):
         self.assertEqual(seen, [True])
 
 
+
+class RefusalTests(unittest.TestCase):
+    """A refused request fails at once, and the error names who refused."""
+
+    def setUp(self):
+        self.support = load(COPIES[0])
+        self.dir = tempfile.TemporaryDirectory()
+        self.support.CACHE = Path(self.dir.name)
+
+    def tearDown(self):
+        self.dir.cleanup()
+
+    def refuse(self, status, headers, text):
+        import requests
+        response = requests.Response()
+        response.status_code = status
+        response.headers.update(headers)
+        response._content = text.encode()
+        response.url = "https://example.gov/orders"
+        return response
+
+    def test_a_403_names_the_firewall_and_is_not_tried_again(self):
+        response = self.refuse(403, {"Server": "AkamaiGHost", "Content-Type": "text/html"},
+                               "<html><body><h1>Access Denied</h1> Reference #18.abc</body></html>")
+        with mock.patch.object(self.support.requests, "get", return_value=response) as get:
+            with self.assertRaises(RuntimeError) as failure:
+                self.support.fetch("https://example.gov/orders")
+        self.assertEqual(get.call_count, 1)
+        message = str(failure.exception)
+        self.assertIn("403", message)
+        self.assertIn("Server=AkamaiGHost", message)
+        self.assertIn("Access Denied", message)
+
+    def test_a_404_is_reported_without_refusal_details(self):
+        response = self.refuse(404, {"Server": "nginx"}, "Not Found")
+        with mock.patch.object(self.support.requests, "get", return_value=response) as get:
+            with self.assertRaises(RuntimeError) as failure:
+                self.support.fetch("https://example.gov/missing")
+        self.assertEqual(get.call_count, 1)
+        self.assertNotIn("Server=", str(failure.exception))
+
 if __name__ == "__main__":
     unittest.main()

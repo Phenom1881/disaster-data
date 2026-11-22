@@ -16,6 +16,20 @@ CACHE=Path(os.environ.get('DDPLUS_CACHE', '.ddplus-cache'))
 
 def clean(s):return ' '.join(str(s or '').split())
 def soup(s):return BeautifulSoup(s,'html.parser')
+# Response headers that name a CDN or firewall, for the run log.
+REFUSAL_HEADERS=('Server','Via','CF-RAY','cf-mitigated','X-Iinfo','X-CDN','X-Akamai-Request-ID','X-Amz-Cf-Id')
+
+def describe_refusal(resp):
+    """One line on who refused a request: the status, the response headers
+    that name a CDN or firewall, and the start of the body. It goes into the
+    error so the run log shows what kind of block it is; nothing here is used
+    to get past a refusal."""
+    if resp is None:return 'no response'
+    headers=getattr(resp,'headers',None) or {}
+    named=['%s=%s'%(h,headers[h]) for h in REFUSAL_HEADERS if headers.get(h)]
+    body=clean(soup(getattr(resp,'text','') or '').get_text(' '))[:160]
+    return 'HTTP %s; %s; body: %s'%(getattr(resp,'status_code','?'),', '.join(named) or 'no CDN headers',body or '(empty)')
+
 def fetch(url, payload=None, headers=None):
     url=urldefrag(url)[0]; key=hashlib.sha256((url+json.dumps(payload,sort_keys=True)).encode()).hexdigest()
     CACHE.mkdir(parents=True,exist_ok=True); body=CACHE/(key+'.bin'); meta=CACHE/(key+'.json')
@@ -32,7 +46,10 @@ def fetch(url, payload=None, headers=None):
             body.write_bytes(r.content);meta.write_text(json.dumps(m,indent=2));return r.content,m
         except (requests.RequestException,RuntimeError) as e:
             error=e
-            if isinstance(e,requests.HTTPError) and e.response.status_code in (400,401,403,404):break
+            if isinstance(e,requests.HTTPError) and e.response is not None and e.response.status_code in (400,401,403,404):
+                # A refusal is not tried again here; the log says who refused.
+                if e.response.status_code in (401,403):error=RuntimeError('%s (%s)'%(e,describe_refusal(e.response)))
+                break
             time.sleep(.4*(attempt+1))
     raise RuntimeError(str(error))
 
