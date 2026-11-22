@@ -56,6 +56,14 @@ NO_DECLARATION_EVENT_FIXTURE = """
 
 
 class TestOklahomaScraper(unittest.TestCase):
+    def test_year_pages_run_through_the_current_year(self):
+        from datetime import datetime
+        pages = scraper.year_pages(datetime(2027, 1, 5))
+        self.assertEqual(pages[0], (2016, "https://oklahoma.gov/oem/emergencies-and-disasters/2016.html"))
+        self.assertEqual(pages[-2], (2027, "https://oklahoma.gov/oem/emergencies-and-disasters/2027.html"))
+        self.assertEqual(pages[-1], ("2003-2015", scraper.ARCHIVE_URL))
+        self.assertEqual(scraper.year_pages(datetime(2026, 11, 22))[-2][0], 2026)
+
     def test_parse_year_index_finds_event_pages(self):
         events = scraper.parse_year_index(YEAR_INDEX_FIXTURE, "https://oklahoma.gov/oem/emergencies-and-disasters/2025.html")
         urls = [u for _, u in events]
