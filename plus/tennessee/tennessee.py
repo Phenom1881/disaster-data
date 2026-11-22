@@ -20,8 +20,8 @@ COVERAGE_NOTE = (
     "is listed when a dated TEMA release shows Level 3 or a state of emergency for "
     "that event. Federal declarations since 2000 with no dated state record yet: "
     "DR-1331, DR-1387, DR-1408, DR-1441, DR-1456, DR-1464, DR-1482, DR-1568, DR-1634, "
-    "DR-1839, DR-1851, DR-1856, DR-1937, DR-1965, DR-1978, DR-4005, DR-4189, DR-4471, "
-    "DR-4541, DR-4550, DR-4601, DR-4712, DR-4701, DR-4729, DR-4735, DR-4742. DR-4541 "
+    "DR-1839, DR-1851, DR-1856, DR-1937, DR-1965, DR-1978, DR-4005, DR-4189, DR-4541, "
+    "DR-4550, DR-4601, DR-4712, DR-4701, DR-4729, DR-4735, DR-4742. DR-4541 "
     "and DR-4601 fell inside the Level 3 emergency already running for COVID-19, "
     "which is not counted as a declaration for those storms."
 )
