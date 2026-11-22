@@ -43,7 +43,10 @@ GOVERNOR = "Kevin Stitt"
 BASE = "https://oklahoma.gov"
 INDEX_URL = f"{BASE}/oem/emergencies-and-disasters.html"
 ARCHIVE_URL = f"{BASE}/oem/emergencies-and-disasters/archive-emer-disasters.html"
-YEARS = list(range(2016, 2027))
+# OEM's year index pages start in 2016. The list runs through the current
+# year; until November 2026 it stopped at a fixed 2026, so orders from 2027
+# on would not have been read.
+FIRST_YEAR = 2016
 SCOPE_START = datetime(2000, 1, 1)
 
 # A page is a candidate "declaration" page if its own link text (as shown
@@ -164,16 +167,24 @@ def _absolutize(href):
     return BASE + href
 
 
+def year_pages(today=None):
+    """[(label, url)] for OEM's year index pages from 2016 through the current
+    year, then the combined 2003-2015 archive page. A year page OEM has not
+    posted yet answers 404, which is logged and skipped."""
+    today = today or datetime.now()
+    pages = [(y, f"{BASE}/oem/emergencies-and-disasters/{y}.html")
+             for y in range(FIRST_YEAR, today.year + 1)]
+    pages.append(("2003-2015", ARCHIVE_URL))
+    return pages
+
+
 def collect(actions_out, relationships_out, join_out):
     session = requests.Session()
     actions = []
     relationships = []
     declarations = []
 
-    year_pages = [(y, f"{BASE}/oem/emergencies-and-disasters/{y}.html") for y in YEARS]
-    year_pages.append(("2003-2015", ARCHIVE_URL))
-
-    for label, year_url in year_pages:
+    for label, year_url in year_pages():
         try:
             html = fetch(year_url, session)
         except requests.RequestException as exc:
