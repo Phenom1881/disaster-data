@@ -82,6 +82,15 @@ MODIFIER_RE = re.compile(r"\b(?:extend\w*|extension|amend\w*|renew\w*|rescind\w*
                          r"modif\w*|supplement\w*|continu\w*)\b", re.I)
 NOT_STATEWIDE_RE = re.compile(r"\b(?:county|counties of|city of|mayor|manager|parish president|"
                               r"regional emergency declaration|fmcsa|service center)\b", re.I)
+# A state DOT's or safety department's waiver of hours-of-service or weight
+# rules is relief issued during an emergency, not the Governor's declaration
+# of one (Connecticut's 2017 and 2021 hours-of-service exemption notices, New
+# Hampshire's January 2019 exemption waiver, Louisiana DOTD's March 2021 weight
+# waiver). A title that also declares or proclaims an emergency is kept.
+WAIVER_ONLY_RE = re.compile(r"\b(?:exemptions?|exempt|waivers?|waive[sd]?|weight restrictions?|"
+                            r"hours[- ]of[- ]service|HOS)\b", re.I)
+DECLARES_RE = re.compile(r"\b(?:declar\w*|proclamation|proclaim\w*|state of (?:civil |disaster )?emergency|"
+                         r"disaster emergency|civil preparedness emergency|executive order)\b", re.I)
 NOT_WEATHER_RE = re.compile(r"\b(?:covid|coronavirus|pandemic|pipeline|propane|heating (?:fuel|oil)|"
                             r"fuel (?:shortage|supply|supplies)|gasoline|diesel|cyber|opioid|"
                             r"election|infrastructure failure|water system|bridge|protest|civil unrest)\b",
@@ -283,6 +292,8 @@ def supplement_rows(state: dict, own_rows: list[dict], entries: dict[str, dict])
             continue
         title = entry["title"]
         if MODIFIER_RE.search(title) or NOT_STATEWIDE_RE.search(title) or NOT_WEATHER_RE.search(title):
+            continue
+        if WAIVER_ONLY_RE.search(title) and not DECLARES_RE.search(title):
             continue
         description = title
         if not hazard_types(title):

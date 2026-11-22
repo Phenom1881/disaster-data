@@ -117,6 +117,37 @@ class RefreshAndSupplementTests(unittest.TestCase):
                                             [{"date_signed": "2023-09-16"}], entries), [])
 
 
+class WaiverTests(unittest.TestCase):
+    """2026-11-20: four FMCSA rows were a state agency's hours-of-service or
+    weight waiver, not a Governor's declaration, and were counted as
+    declarations (Connecticut 2017 and 2021, New Hampshire 2019, Louisiana
+    2021)."""
+
+    @staticmethod
+    def entry(title, state="Connecticut", effective="2021-02-12"):
+        return {"entry_id": title[:12], "state": state, "title": title, "effective": effective,
+                "url": "https://www.fmcsa.dot.gov/emergency/x", "hazard_text": "a severe winter storm with heavy snow",
+                "archive_page": ""}
+
+    def rows(self, *titles, state="Connecticut"):
+        entries = {t: self.entry(t, state) for t in titles}
+        return [r["event_description"].split(". From FMCSA")[0]
+                for r in fm.supplement_rows({"name": state, "abbreviation": "XX"}, [], entries)]
+
+    def test_a_bare_waiver_or_exemption_is_left_out(self):
+        self.assertEqual(self.rows("Connecticut HOS Notice of Emergency Exemption 2-12-2021"), [])
+        self.assertEqual(self.rows("Notice Of Emergency Exemption From Hours Of Service Of Drivers"), [])
+        self.assertEqual(self.rows("NH 2019-01-17 Emergency Exemption Waiver", state="New Hampshire"), [])
+        self.assertEqual(self.rows("Louisiana Emergency Order- DOTD Waiver of Weight Restrictions 3-10-20",
+                                   state="Louisiana"), [])
+
+    def test_a_declaration_that_also_waives_rules_is_kept(self):
+        title = "Connecticut Declaration of Civil Preparedness Emergency and Waiver of Hours of Service"
+        self.assertEqual(self.rows(title), [title])
+        title = "Connecticut Executive Order 7 Snowstorm"
+        self.assertEqual(self.rows(title), [title])
+
+
 class BuilderTests(unittest.TestCase):
     def test_supplement_is_shown_joined_and_kept_apart_from_the_state_source(self):
         root = Path(tempfile.mkdtemp(prefix="fmcsa_build_"))
