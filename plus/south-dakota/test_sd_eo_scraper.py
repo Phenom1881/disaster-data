@@ -8,6 +8,7 @@ import io
 import os
 import tempfile
 import unittest
+from unittest import mock
 
 import sd_eo_scraper as scraper
 
@@ -93,15 +94,21 @@ ERROR_PAGE = "<html><head><title>South Dakota Secretary of State</title></head><
 class FakeSession:
     """Answers the GET with FORM_PAGE and each POST with that year's
     results. A year in fail_years raises like a network error every time;
-    a year in flaky_years gets the registry's error page the first time."""
+    a year in flaky_years gets the registry's error page the first time.
+    get_pages, when given, are the pages the GETs return in turn, the last
+    one repeating."""
 
-    def __init__(self, fail_years=(), flaky_years=()):
+    def __init__(self, fail_years=(), flaky_years=(), get_pages=None):
         self.posts = []
+        self.gets = 0
         self.fail_years = set(fail_years)
         self.flaky_years = set(flaky_years)
+        self.get_pages = list(get_pages or [FORM_PAGE])
 
     def get(self, url, **kwargs):
-        return FakeResponse(FORM_PAGE)
+        self.gets += 1
+        page = self.get_pages.pop(0) if len(self.get_pages) > 1 else self.get_pages[0]
+        return FakeResponse(page)
 
     def post(self, url, data=None, **kwargs):
         self.posts.append(dict(data))
@@ -213,7 +220,47 @@ class PriorYearsSearchTests(unittest.TestCase):
         session = FakeSession()
         orders = scraper.collect_orders(session=session, pause=0)
         self.assertEqual(session.posts, [])
+        self.assertEqual(session.gets, 1)
         self.assertEqual([o["eo_number"] for o in orders], ["2020-27"])
+
+
+class RegistryPageRetryTests(unittest.TestCase):
+    def test_a_load_sent_to_the_error_page_is_tried_again(self):
+        session = FakeSession(get_pages=[ERROR_PAGE, ERROR_PAGE, FORM_PAGE])
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            orders = scraper.collect_orders(include_prior_years=True, session=session, pause=0)
+        self.assertEqual(session.gets, 3)
+        self.assertIn("2020-27", [o["eo_number"] for o in orders])
+        self.assertIn("2013-05", [o["eo_number"] for o in orders])
+        self.assertIn("registry page load 1 listed no orders", out.getvalue())
+        self.assertIn("registry page load 2 listed no orders", out.getvalue())
+
+    def test_a_page_that_never_lists_orders_gives_up_after_the_waits(self):
+        session = FakeSession(get_pages=[ERROR_PAGE])
+        with contextlib.redirect_stdout(io.StringIO()):
+            orders = scraper.collect_orders(include_prior_years=True, session=session, pause=0)
+        self.assertEqual(orders, [])
+        self.assertEqual(session.gets, 1 + len(scraper.CURRENT_PAGE_RETRY_WAITS))
+        self.assertEqual(session.posts, [])
+        self.assertIn("An Error Occurred", scraper.LAST_PAGE["html"])
+
+    def test_the_retries_wait_between_loads(self):
+        session = FakeSession(get_pages=[ERROR_PAGE, ERROR_PAGE, FORM_PAGE])
+        with mock.patch.object(scraper.time, "sleep") as sleep, \
+                contextlib.redirect_stdout(io.StringIO()):
+            scraper.fetch_current_page(session)
+        self.assertEqual([c.args[0] for c in sleep.call_args_list], [15, 45])
+
+    def test_a_refused_request_is_not_retried(self):
+        class Refusing(FakeSession):
+            def get(self, url, **kwargs):
+                self.gets += 1
+                raise scraper.requests.HTTPError("403 Forbidden")
+        session = Refusing()
+        with self.assertRaises(scraper.requests.HTTPError):
+            scraper.collect_orders(session=session, pause=0)
+        self.assertEqual(session.gets, 1)
 
 
 class ClassificationTests(unittest.TestCase):
