@@ -197,8 +197,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
         event_dates = self.event_dates()
         undated = [row for row in self.rows() if not row["date_signed"]]
         self.assertEqual({row["declaration_id"] for row in undated},
-                         {"MT-EO-31-00", "MT-EO-16-01", "MT-EO-13-02", "MT-EO-5-2019",
-                          "MT-EO-8-2016", "MT-EO-11-2016"})
+                         {"MT-EO-31-00", "MT-EO-16-01", "MT-EO-13-02"})
         for row in undated:
             self.assertRegex(row["event_description"], r"signing day (?:is )?blank", row["declaration_id"])
             self.assertRegex(event_dates.get(row["declaration_id"], ""), r"^20\d\d-\d\d-\d\d$",
@@ -212,12 +211,17 @@ class HandAddedDeclarationTests(unittest.TestCase):
             "MT-EO-11-2012": "2012-09-17", "MT-EO-4-2013": "2013-06-05", "MT-EO-8-2013": "2013-08-19",
             "MT-EO-3-2014": "2014-03-10", "MT-EO-9-2014": "2014-09-08", "MT-EO-7-2015": "2015-07-08", "MT-EO-5-2018": "2018-02-26",
             "MT-EO-11-2018": "2018-04-18", "MT-EO-12-2018": "2018-05-02", "MT-EO-15-2019": "2019-09-29",
+            # The day is handwritten on each signed scan; no text layer carries it.
+            "MT-EO-8-2016": "2016-05-12", "MT-EO-11-2016": "2016-07-18", "MT-EO-5-2019": "2019-04-18",
         }
         for key, day in expected.items():
             self.assertEqual(by_id.get(key), day, key)
         event_dates = self.event_dates()
         self.assertEqual(event_dates["MT-EO-9-01"], "2001-04-02")
         self.assertEqual(event_dates["MT-EO-5-2019"], "2019-03-20")
+        # Signed weeks after the storm, so compared with FEMA on the effective date.
+        self.assertEqual(event_dates["MT-EO-8-2016"], "2016-04-15")
+        self.assertEqual(event_dates["MT-EO-11-2016"], "2016-06-09")
 
     def test_schweitzer_rows_link_the_order_itself(self):
         for row in self.rows():
