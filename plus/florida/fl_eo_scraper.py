@@ -11,6 +11,12 @@ from bs4 import BeautifulSoup
 ARCHIVE_URL = "https://www.flgov.com/eog/news/executive-orders"
 TIMEOUT = 60
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DisasterDataPlusBot/1.0)"}
+# The archive's year filter. Its values are read from the page, so a year the
+# Governor's office adds is picked up. In 2026 the filter offered 2020 to 2026
+# as values 1 to 7, which are read when the filter cannot be found.
+YEAR_FILTER = "field_date_value"
+FALLBACK_YEAR_VALUES = tuple(str(v) for v in range(1, 8))
+LAST_PAGE = {}
 ACTION_FIELDS = ("declaration_id","state","governor","eo_number","action_kind","action_type","event_description","date_signed","end_date","weather_related","source_scope","document_format","detail_url","archive_record_url")
 REL_FIELDS = ("source_order_id","target_order_id","relationship_type","relationship_text","relationship_source","confidence")
 JOIN_FIELDS = ("declaration_id","governor","eo_number","event_description","date_signed","archive_record_url")
@@ -53,11 +59,27 @@ def classify(a):
     if re.search(r"\b(state of emergency|emergency management)\b",a.title,re.I): return "declaration"
     return "administrative"
 
+def year_filter_values(html):
+    """The values of the archive's year filter in page order, without the
+    "- Any -" choice; () when the page has no such filter."""
+    select=BeautifulSoup(html or "","html.parser").find("select",attrs={"name":YEAR_FILTER})
+    if select is None: return ()
+    return tuple(o.get("value","") for o in select.find_all("option") if o.get("value","") not in ("","All"))
+
+def describe_page(html):
+    """A short account of a page that listed no orders, for the run log."""
+    soup=BeautifulSoup(html or "","html.parser"); title=soup.title.get_text(strip=True) if soup.title else "(no title)"
+    return "%d bytes, title %r, %d table row(s), starts %r"%(len(html or ""),title[:80],len(soup.select("table tbody tr")),re.sub(r"\s+"," ",(html or "")[:160]))
+
 def collect():
+    first=fetch(ARCHIVE_URL); LAST_PAGE["html"]=first.text
+    years=year_filter_values(first.text)
+    if not years:
+        print("Florida: the archive's year filter was not found; reading filter values "+", ".join(FALLBACK_YEAR_VALUES),file=sys.stderr); years=FALLBACK_YEAR_VALUES
     out=[]
-    for year_value in range(1,8):
+    for year_value in years:
         for page in range(100):
-            r=fetch(ARCHIVE_URL,{"field_date_value":year_value,"page":page}); batch=parse_page(r.text)
+            r=fetch(ARCHIVE_URL,{YEAR_FILTER:year_value,"page":page}); batch=parse_page(r.text)
             if not batch: break
             out.extend(batch)
             if not BeautifulSoup(r.text,"html.parser").select_one('a[rel="next"]'): break
@@ -94,5 +116,10 @@ def write_outputs(actions,actions_out,relationships_out,join_out):
 
 def main():
     p=argparse.ArgumentParser(); p.add_argument("--actions-out",required=True); p.add_argument("--relationships-out",required=True); p.add_argument("--join-out",required=True); a=p.parse_args()
-    write_outputs(collect(),a.actions_out,a.relationships_out,a.join_out)
+    actions=collect()
+    if not actions:
+        # The archive lists every order since 2020, so an empty result is never
+        # a real finding: stop before writing empty files and say what came back.
+        print("Florida: 0 orders parsed from the archive: "+describe_page(LAST_PAGE.get("html","")),file=sys.stderr); sys.exit(2)
+    write_outputs(actions,a.actions_out,a.relationships_out,a.join_out)
 if __name__=="__main__": main()
