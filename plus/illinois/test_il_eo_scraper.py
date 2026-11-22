@@ -69,9 +69,24 @@ class HandAddedDeclarationTests(unittest.TestCase):
             self.assertEqual(row['declaration_id'], 'IL-PROC-' + row['date_signed'])
             self.assertTrue(row['archive_record_url'].startswith('https://'), row['declaration_id'])
 
+    def test_2004_to_2008_proclamations_and_their_sources(self):
+        rows = {r['declaration_id']: r for r in self.rows('manual_declarations.csv')}
+        expected = {
+            'IL-PROC-2004-04-21': 'washingtontimes.com/news/2004/apr/21/20040421-104334-2843r/',
+            'IL-PROC-2005-01-06': 'archives.lincolndailynews.com/2005/Jan/07/News_new/today_e.shtml',
+            'IL-PROC-2008-02-26': 'obama.senate.gov/press/080226-durbin_obama_ca_2',
+            'IL-PROC-2008-03-20': 'idph.illinois.gov/public/press08/3.21.08GovFlood.htm',
+            'IL-PROC-2008-06-10': 'climate.isws.illinois.edu/statecli/2008/flood2008/flood.htm',
+        }
+        for key, source in expected.items():
+            self.assertIn(key, rows)
+            self.assertTrue(rows[key]['archive_record_url'].endswith(source), key)
+            self.assertEqual(rows[key]['governor'], 'Rod Blagojevich', key)
+
     def test_late_proclamations_are_compared_on_the_storm_they_declare(self):
         dates = {r['declaration_id']: r['event_date'] for r in self.rows('hazard_overrides.csv') if r.get('event_date')}
-        self.assertEqual(dates, {'IL-PROC-2024-08-30': '2024-07-13',
+        self.assertEqual(dates, {'IL-PROC-2008-02-26': '2008-02-05',
+                                 'IL-PROC-2024-08-30': '2024-07-13',
                                  'IL-PROC-4883F2AF4F255E59': '2023-09-17'})
         signed = {r['declaration_id']: r['date_signed'] for r in self.rows('manual_declarations.csv') + self.rows('declarations_for_join.csv')}
         for key, day in dates.items():
