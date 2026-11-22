@@ -71,6 +71,14 @@ PRIOR_YEAR_PAUSE = 1.0
 # minutes (seen on 2026-10-29), so a failed year is tried again after these
 # waits before it is reported.
 PRIOR_YEAR_RETRY_WAITS = (10, 30)
+# The registry page itself does the same: some loads are sent to the error
+# page (error.aspx) and later ones load normally, and the page asks readers
+# to "refresh the page until the issue is resolved". In a browser on
+# 2026-11-22, three loads four seconds apart came back with the orders and
+# the next three were sent to the error page; the refresh of 2026-11-20 got
+# the error page on its run and on its retry a minute later. A load that
+# lists no orders is tried again after these waits.
+CURRENT_PAGE_RETRY_WAITS = (15, 45)
 
 # (first day in office, governor), newest first.
 GOVERNOR_TERMS = (
@@ -128,10 +136,26 @@ def fetch(session, url, data=None):
     return resp.text
 
 
-def fetch_current_page(session):
-    """GET the registry page. Years 2020-present render directly in HTML."""
-    html = fetch(session, BASE_URL)
-    LAST_PAGE["html"] = html
+def fetch_current_page(session, pause=PRIOR_YEAR_PAUSE):
+    """GET the registry page. Years 2020-present render directly in HTML.
+
+    A load that lists no orders (the registry's error page) is tried again
+    after CURRENT_PAGE_RETRY_WAITS (waits skipped when pause is 0, as in the
+    tests). Returns the last page read, which is also kept in LAST_PAGE for
+    the failure message. A refused request (an HTTP error) is not retried
+    here; it fails the run, and the build tries the state once more later."""
+    html = ""
+    waits = (0,) + CURRENT_PAGE_RETRY_WAITS
+    for attempt, wait in enumerate(waits, start=1):
+        if wait and pause:
+            time.sleep(wait)
+        html = fetch(session, BASE_URL)
+        LAST_PAGE["html"] = html
+        if parse_orders(html):
+            return html
+        if attempt < len(waits):
+            print(f"South Dakota: registry page load {attempt} listed no orders "
+                  f"({describe_page(html)}); trying again in {waits[attempt]}s")
     return html
 
 
@@ -290,7 +314,7 @@ def collect_orders(include_prior_years=False, session=None, pause=PRIOR_YEAR_PAU
     if requests is None:
         raise RuntimeError("requests/bs4 not installed - pip install requests beautifulsoup4")
     session = session or requests.Session()
-    html = fetch_current_page(session)
+    html = fetch_current_page(session, pause)
     all_orders = parse_orders(html)
     if include_prior_years:
         try:
