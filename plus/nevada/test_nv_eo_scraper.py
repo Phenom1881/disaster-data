@@ -11,6 +11,13 @@ class NevadaTests(unittest.TestCase):
     def test_signature_date_beats_recital(self):
         text="August 10, 2026 fire began. IN WITNESS WHEREOF, this 27th day of August, in the year two thousand twenty-six."
         self.assertEqual(nv.extract_date(text,"2026"),"2026-08-27")
+    def test_years_in_words_after_2026_are_read(self):
+        text="On January 2, 2027 heavy snow fell. IN WITNESS WHEREOF, this 5th day of January, in the year two thousand twenty-seven."
+        self.assertEqual(nv.extract_date(text),"2027-01-05")
+        self.assertEqual(nv.extract_date("this 1st day of March, in the year two thousand thirty"),"2030-03-01")
+        self.assertEqual(nv.extract_date("this 9th day of July, in the year two thousand twenty three"),"2023-07-09")
+        self.assertEqual(nv.word_year("Two Thousand Twenty-Nine"),"2029")
+        self.assertEqual(nv.word_year("2026"),"2026")
     def test_original_join_amendment_excluded(self):
         original=nv.Action("EMERGENCY-DAVIS","Declaration of Emergency The Davis Fire","2024-09-08","https://example.gov/davis","state of emergency due to the Davis wildfire","emergency_order")
         amended=nv.Action("EMERGENCY-DAVIS-AMENDED","Declaration of Emergency The Davis Fire (Amended)","2024-09-08","https://example.gov/amended","state of emergency due to the Davis wildfire","emergency_order")

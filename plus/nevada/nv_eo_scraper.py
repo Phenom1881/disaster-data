@@ -56,6 +56,18 @@ def parse_listing(html,base_url,collection):
         seen.add(href); out.append((number,title,href,collection))
     return out
 
+# Years the Governor's signature clause writes in words ("in the year two
+# thousand twenty-six"), 2020 through 2039. Until November 2026 only 2023 to
+# 2026 were read, so a 2027 proclamation would have lost its signing date.
+YEAR_UNITS={"one":1,"two":2,"three":3,"four":4,"five":5,"six":6,"seven":7,"eight":8,"nine":9}
+WORD_YEAR=r"two\s+thousand\s+(?:twenty|thirty)(?:[- ]+(?:"+"|".join(YEAR_UNITS)+r"))?"
+
+def word_year(raw):
+    """'two thousand twenty-seven' -> '2027'; any other text is returned as is."""
+    m=re.fullmatch(r"two\s+thousand\s+(twenty|thirty)(?:[- ]+(\w+))?",raw.strip(),re.I)
+    if not m or (m.group(2) and m.group(2).lower() not in YEAR_UNITS): return raw
+    return str(2000+(20 if m.group(1).lower()=="twenty" else 30)+YEAR_UNITS.get((m.group(2) or "").lower(),0))
+
 def extract_date(text,year=""):
     # Proclamation pages often display an event-style date range near the top
     # (and migrated pages sometimes display the wrong range). Prefer the date
@@ -63,13 +75,11 @@ def extract_date(text,year=""):
     signed_any=re.search(
         r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+"
         r"(January|February|March|April|May|June|July|August|September|October|November|December)"
-        r"\b.{0,140}?\b(20\d{2}|two thousand twenty[- ](?:three|four|five|six))\b",
+        r"\b.{0,140}?\b(20\d{2}|"+WORD_YEAR+r")\b",
         text,re.I,
     )
     if signed_any:
-        raw_year=signed_any.group(3).lower()
-        word_years={"two thousand twenty-three":"2023","two thousand twenty three":"2023","two thousand twenty-four":"2024","two thousand twenty four":"2024","two thousand twenty-five":"2025","two thousand twenty five":"2025","two thousand twenty-six":"2026","two thousand twenty six":"2026"}
-        signed_year=word_years.get(raw_year,raw_year)
+        signed_year=word_year(signed_any.group(3))
         return datetime.strptime(f"{signed_any.group(2)} {signed_any.group(1)} {signed_year}","%B %d %Y").strftime("%Y-%m-%d")
     if year:
         signed=list(re.finditer(r"\bthis\s+(\d{1,2})(?:st|nd|rd|th)?\s+day\s+of\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b",text,re.I))
