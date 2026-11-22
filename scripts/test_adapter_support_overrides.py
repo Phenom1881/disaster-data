@@ -156,10 +156,22 @@ class FetchFailureTests(unittest.TestCase):
         self.assertFalse(self.support.keep_previous_text(r))
         self.assertEqual(r["full_text"], "")
 
-    def test_a_previous_failure_is_not_a_source(self):
-        self.write_previous(fetch_error="404 Client Error")
+    def test_a_previous_failure_with_no_text_is_not_a_source(self):
+        self.write_previous(fetch_error="404 Client Error", full_text="")
         self.support.load_previous_records(self.base)
         self.assertFalse(self.support.keep_previous_text(self.record()))
+
+    def test_text_kept_once_is_kept_again_on_the_next_refresh(self):
+        # 2026-11-18 and 2026-11-20: the rows kept on 2026-11-15 carried both
+        # the text and that refresh's fetch_error, were skipped as failures,
+        # and 120 Colorado orders came back blank a second time.
+        note = "; text and date kept from the previous refresh because the document could not be fetched"
+        self.write_previous(fetch_error="404 Client Error", date_evidence="signature line" + note)
+        self.support.load_previous_records(self.base)
+        r = self.record()
+        self.assertTrue(self.support.keep_previous_text(r))
+        self.assertIn("Katrina", r["full_text"])
+        self.assertEqual(r["date_evidence"].count(note), 1)
 
     def test_a_reviewed_exclusion_keeps_its_override_without_a_readable_date(self):
         (self.base / "review_decisions.json").write_text(json.dumps({self.record()["declaration_id"]: {
