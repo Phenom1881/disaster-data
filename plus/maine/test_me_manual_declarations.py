@@ -81,6 +81,16 @@ class ManualDeclarationTests(unittest.TestCase):
             if note["event_date"]:
                 self.assertLessEqual(note["event_date"], row["date_signed"], row["declaration_id"])
 
+    def test_rows_dated_by_a_report_say_so(self):
+        notes = {row["declaration_id"]: row for row in read(OVERRIDES)}
+        dated = [row for row in read(MANUAL) if "the signing day is not given" in row["event_description"]]
+        self.assertEqual([row["declaration_id"] for row in dated], ["ME-SOE-2007-07-19"])
+        for row in dated:
+            note = notes[row["declaration_id"]]
+            self.assertEqual(note["source_url"], row["archive_record_url"], row["declaration_id"])
+            self.assertIn("so the row carries the date of the report", note["review_note"], row["declaration_id"])
+        self.assertEqual(notes["ME-SOE-2007-07-19"]["event_date"], "2007-07-11")
+
     def test_no_row_is_a_renewal_or_extension(self):
         for row in read(MANUAL):
             self.assertNotRegex(row["event_description"], r"(?i)\b(?:renew|extension of|extends the|amend|rescind|terminat)")

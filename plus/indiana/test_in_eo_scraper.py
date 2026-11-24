@@ -372,7 +372,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
     def test_dates_and_ids(self):
         rows = self.rows("manual_declarations.csv")
         self.assertEqual({r["declaration_id"]: r["date_signed"] for r in rows},
-                         {"IN-SOE-2003-07-08": "2003-07-08", "IN-SOE-2004-05-28": "2004-05-28",
+                         {"IN-SOE-2003-07-08": "2003-07-08", "IN-SOE-2003-09-04": "2003-09-04", "IN-SOE-2004-05-28": "2004-05-28",
                           "IN-SOE-2004-12-23": "2004-12-23", "IN-EO-06-15": "2006-09-14", "IN-EO-08-16": "2008-09-16",
                           "IN-SOE-2014-01-06": "2014-01-06", "IN-SOE-2025-04-11": "2025-04-11"})
         for row in rows:
@@ -389,3 +389,11 @@ class HandAddedDeclarationTests(unittest.TestCase):
             self.assertRegex(note["review_note"], r"(?i)'[^']*declar")
             if note["event_date"]:
                 self.assertLessEqual(note["event_date"], row["date_signed"])
+
+    def test_the_labor_day_2003_emergency_is_dated_by_the_report(self):
+        row = {r["declaration_id"]: r for r in self.rows("manual_declarations.csv")}["IN-SOE-2003-09-04"]
+        note = {r["declaration_id"]: r for r in self.rows("hazard_overrides.csv")}["IN-SOE-2003-09-04"]
+        self.assertEqual(row["governor"], "Frank O'Bannon")
+        self.assertIn("the signing day is not given", row["event_description"])
+        self.assertIn("so the row carries the date of the report", note["review_note"])
+        self.assertIn("Executive Order 03-21", note["review_note"])

@@ -84,7 +84,7 @@ class HandAddedProclamationTests(unittest.TestCase):
 class NewsCoverageRowTests(unittest.TestCase):
     def test_rows_span_2000_to_2019_within_their_governors_term(self):
         rows = news_rows()
-        self.assertEqual(len(rows), 27)
+        self.assertEqual(len(rows), 28)
         ids = [r["declaration_id"] for r in csv_rows("manual_declarations.csv")]
         self.assertEqual(len(ids), len(set(ids)))
         for row in rows:
@@ -117,6 +117,15 @@ class NewsCoverageRowTests(unittest.TestCase):
                 found = RADIO_IOWA.fullmatch(signed[did]["archive_record_url"])
                 if found:
                     self.assertEqual("-".join(found.groups()), signed[did]["date_signed"], did)
+
+    def test_newsletter_row_names_the_federal_storm_it_is_matched_to(self):
+        rows = {r["declaration_id"]: r for r in news_rows()}
+        notes = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        did = "IA-GOV-2009-07-17-adair-black-hawk"
+        self.assertEqual(rows[did]["archive_record_url"], "https://publications.iowa.gov/8891/1/Secure%26Prepared081309i.pdf")
+        self.assertIn("FEMA-1854-DR", rows[did]["event_description"])
+        self.assertIn("names no event", notes[did]["review_note"])
+        self.assertEqual(notes[did]["event_date"], "2009-07-10")
 
     def test_every_row_names_a_hazard_the_storm_join_reads(self):
         spec = importlib.util.spec_from_file_location("ia_storm_join", HERE / "eo_storm_join.py")
