@@ -1,8 +1,10 @@
-"""West Virginia's 2001-2024 weather declarations, added by hand.
+"""West Virginia's 2000-2024 weather declarations, added by hand.
 
 The Governor's news archive starts in 2025. Earlier declarations are the
 Governor's state of emergency proclamations in the Secretary of State's
-Executive Journal, each read from its scan. Only the original declaration for
+Executive Journal, each read from its scan. The Journal holds nothing from
+Governor Underwood, so his February 2000 flood emergency comes from NOAA's
+Storm Data for that month. Only the original declaration for
 an event is kept: amendments that add counties, extensions, terminations and
 States of Preparedness are left out, as are non-weather emergencies (the 2014
 chemical spill, the 2015 train derailment, COVID-19).
@@ -19,9 +21,12 @@ from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 JOURNAL = "https://apps.sos.wv.gov/adlaw/executivejournal/readpdf.aspx?DocID="
+# Declarations known from a source other than their own proclamation.
+RECITED = {"WV-SOE-2001-07-08": JOURNAL + "24121",  # Executive Order 14-01
+           "WV-SOE-2000-02-19": "https://www.weather.gov/media/pub/pdf/sdata/022000.pdf"}
 
 # Governors and the day each took office.
-GOVERNORS = [("2001-01-15", "Bob Wise"), ("2005-01-17", "Joe Manchin III"),
+GOVERNORS = [("1997-01-13", "Cecil H. Underwood"), ("2001-01-15", "Bob Wise"), ("2005-01-17", "Joe Manchin III"),
              ("2010-11-15", "Earl Ray Tomblin"), ("2017-01-16", "Jim Justice")]
 
 
@@ -43,6 +48,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
         dates = {r["declaration_id"]: r["date_signed"] for r in csv_rows("manual_declarations.csv")}
         expected = {
             "WV-SOE-2001-07-08": "2001-07-08",  # recited in Executive Order 14-01
+            "WV-SOE-2000-02-19": "2000-02-19",  # Storm Data, February 2000: no signing day
             "WV-PROC-16524": "2002-05-02", "WV-PROC-16655": "2003-02-16",
             "WV-PROC-16730": "2003-09-18", "WV-PROC-16926": "2004-09-17",
             "WV-PROC-17941": "2009-12-21", "WV-PROC-32324": "2012-02-07",
@@ -74,7 +80,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
             did = row["declaration_id"]
             if did.startswith("WV-SOE-"):
                 self.assertEqual(did, "WV-SOE-" + row["date_signed"])
-                self.assertEqual(row["archive_record_url"], JOURNAL + "24121")
+                self.assertEqual(row["archive_record_url"], RECITED[did])
                 continue
             match = re.fullmatch(r"WV-PROC-(\d+)", did)
             self.assertTrue(match, did)
@@ -82,7 +88,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
 
     def test_rows_stop_where_the_news_archive_starts(self):
         for row in csv_rows("manual_declarations.csv"):
-            self.assertTrue("2001-01-01" <= row["date_signed"] < "2025-01-01", row["declaration_id"])
+            self.assertTrue("2000-01-01" <= row["date_signed"] < "2025-01-01", row["declaration_id"])
 
     def test_governor_in_office_on_each_date(self):
         for row in csv_rows("manual_declarations.csv"):
@@ -113,7 +119,7 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "WV"))
         self.assertTrue(note.startswith("2000-present"))
-        self.assertIn("DR-1319", note)
+        self.assertIn("February 2000 floods (DR-1319) is taken from NOAA's monthly Storm Data", note)
 
 
 if __name__ == "__main__":

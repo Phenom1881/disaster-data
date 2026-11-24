@@ -77,7 +77,10 @@ class StateOfEmergencyRowTests(unittest.TestCase):
                     "TN-SOE-2019-10-26": ("2019-10-26", "Bill Lee", "2019/11/12/tema-seeks-joint-damage-assessment"),
                     "TN-SOE-2022-01-06": ("2022-01-06", "Bill Lee", "2022/1/6/"),
                     "TN-SOE-2022-02-03": ("2022-02-03", "Bill Lee", "2022/2/3/"),
-                    "TN-SOE-2022-12-23": ("2022-12-23", "Bill Lee", "2022/12/23/")}
+                    "TN-SOE-2022-12-23": ("2022-12-23", "Bill Lee", "2022/12/23/"),
+                    # FEMA's daily situation reports of TEMA's activation.
+                    "TN-SOE-2006-04-04": ("2006-04-04", "Phil Bredesen", "reports/2006/nat040406.shtm"),
+                    "TN-SOE-2009-04-11": ("2009-04-11", "Phil Bredesen", "reports/2009/nat041109.shtm")}
         for key, (day, governor, source) in expected.items():
             self.assertEqual((rows[key]["date_signed"], rows[key]["governor"]), (day, governor), key)
             self.assertIn(source, rows[key]["archive_record_url"], key)

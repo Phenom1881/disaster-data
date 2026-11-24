@@ -11,11 +11,11 @@ STATE = "DE"
 COVERAGE_NOTE = (
     "2000-present: the Governor's state of emergency archive from October 2025, plus "
     "earlier storm states of emergency added by hand from the Governor's news releases "
-    "(news.delaware.gov) and dated news coverage, and Minner's 2002 drought order from "
-    'the Delaware Public Archives; no state declaration has been found for the February '
-    '2003 snowstorm (EM-3183), the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021'
-    ' (DR-4627), and the date of the Hurricane Isabel declaration is taken from news '
-    'coverage'
+    "(news.delaware.gov), dated news coverage and NOAA's monthly Storm Data, and Minner's "
+    "2002 drought order from the Delaware Public Archives; the February 2003 snowstorm "
+    "declaration (EM-3183) is dated from Storm Data, no state declaration has been found "
+    "for the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the "
+    "date of the Hurricane Isabel declaration is taken from news coverage"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,

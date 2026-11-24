@@ -375,6 +375,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
         self.assertEqual({r["declaration_id"]: r["date_signed"] for r in self.rows()},
                          {"ND-SOE-2004-03-29": "2004-03-29",
                           "ND-SOE-2005-06-09": "2005-06-09",
+                          "ND-SOE-2006-03-30": "2006-03-30",
                           "ND-SOE-2007-08-27": "2007-08-27",
                           "ND-SOE-2009-03-16": "2009-03-16",
                           "ND-SOE-2010-01-26": "2010-01-26"})

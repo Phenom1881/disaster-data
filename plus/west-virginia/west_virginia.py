@@ -12,8 +12,10 @@ COVERAGE_NOTE = (
     "2000-present: the Governor's news archive from 2025, plus 2001-2024 weather "
     "declarations added by hand from the Governor's state of emergency proclamations in "
     "the Secretary of State's Executive Journal (and Executive Order 14-01 for the July "
-    '2001 flooding); the Journal holds no proclamations from Governor Underwood, so '
-    'DR-1319 (February 2000) has no state declaration'
+    "2001 flooding); the Journal holds no proclamations from Governor Underwood, so his "
+    "state of emergency for the February 2000 floods (DR-1319) is taken from NOAA's "
+    "monthly Storm Data, which gives no signing day, and is dated by the flooding it "
+    "answered"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
@@ -22,7 +24,7 @@ CAPABILITIES = {
     "pdf_text_available": False, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://governor.wv.gov/allnews/all",
     "current_governor_source_start": "2025-01-13", "manual_only": False,
-    "known_gaps": ["Emergency declarations are Governor proclamations indexed in the news archive rather than the separate Executive Orders page; the package supplements the January 5, 2025 transition-period storm declaration from a later official Governor article that expressly identifies it.", "Emergency declarations from 2001 to 2024 are added by hand in manual_declarations.csv from the Governor's proclamations in the Secretary of State's Executive Journal (https://apps.sos.wv.gov/adlaw/executivejournal/searchproclamations.aspx), one row for each original weather declaration; amendments, extensions, terminations, States of Preparedness and non-weather emergencies are left out. The July 8, 2001 flooding declaration is known from Executive Order 14-01, which recites it. The Journal holds no proclamations or weather executive orders from Governor Underwood, so DR-1319 (February 2000) shows as a gap."],
+    "known_gaps": ["Emergency declarations are Governor proclamations indexed in the news archive rather than the separate Executive Orders page; the package supplements the January 5, 2025 transition-period storm declaration from a later official Governor article that expressly identifies it.", "Emergency declarations from 2001 to 2024 are added by hand in manual_declarations.csv from the Governor's proclamations in the Secretary of State's Executive Journal (https://apps.sos.wv.gov/adlaw/executivejournal/searchproclamations.aspx), one row for each original weather declaration; amendments, extensions, terminations, States of Preparedness and non-weather emergencies are left out. The July 8, 2001 flooding declaration is known from Executive Order 14-01, which recites it. The Journal holds no proclamations or weather executive orders from Governor Underwood, so his February 2000 flood emergency (DR-1319) is added from NOAA's Storm Data for February 2000, which reports it without a signing day; the row carries the date of the flooding it answered."],
 }
 
 def collect(workdir=".", scripts_dir=None):
