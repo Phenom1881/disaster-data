@@ -8,13 +8,13 @@ STATE = "KS"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: KDEM disaster-declarations page from 2011, plus 30 declarations added by hand (manual_"
+    "2000-present: KDEM disaster-declarations page from 2011, plus 32 declarations added by hand (manual_"
     "declarations.csv): seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 dec"
     "larations cited by executive orders and legislation printed in the Kansas Register, and 2002-2022 de"
     "clarations dated from Adjutant General releases (archived on the Wayback Machine), the Governor's re"
     "leases and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1535 and DR-15"
-    "62 (2004), DR-1600, DR-1615 and DR-1626 (2005), DR-1638 (March 2006), DR-1808 (September 2008), DR-1"
-    "849 (April-May 2009), DR-1932 (June 2010) or DR-4747 (summer 2023)."
+    "62 (2004), DR-1600, DR-1615 and DR-1626 (2005), DR-1849 (April-May 2009), DR-1932 (June 2010) or DR-"
+    "4747 (summer 2023)."
 )
 
 CAPABILITIES = {
