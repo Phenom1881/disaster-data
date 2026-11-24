@@ -69,9 +69,12 @@ class HandAddedDeclarationTests(unittest.TestCase):
             self.assertEqual(row['declaration_id'], 'IL-PROC-' + row['date_signed'])
             self.assertTrue(row['archive_record_url'].startswith('https://'), row['declaration_id'])
 
-    def test_2004_to_2008_proclamations_and_their_sources(self):
+    def test_2001_to_2008_proclamations_and_their_sources(self):
         rows = {r['declaration_id']: r for r in self.rows('manual_declarations.csv')}
         expected = {
+            'IL-PROC-2001-04-25': 'waterworld.com/home/article/16208952/davenport-endures-mississippi-river-crest-downstream-towns-vigilant',
+            'IL-PROC-2002-04-29': 'illinois.gov/news/press-release.1765.html',
+            'IL-PROC-2003-05-12': 'illinois.gov/news/press-release.2127.html',
             'IL-PROC-2004-04-21': 'washingtontimes.com/news/2004/apr/21/20040421-104334-2843r/',
             'IL-PROC-2005-01-06': 'archives.lincolndailynews.com/2005/Jan/07/News_new/today_e.shtml',
             'IL-PROC-2008-02-26': 'obama.senate.gov/press/080226-durbin_obama_ca_2',
@@ -81,7 +84,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
         for key, source in expected.items():
             self.assertIn(key, rows)
             self.assertTrue(rows[key]['archive_record_url'].endswith(source), key)
-            self.assertEqual(rows[key]['governor'], 'Rod Blagojevich', key)
+            self.assertEqual(rows[key]['governor'], 'George H. Ryan' if key < 'IL-PROC-2003' else 'Rod Blagojevich', key)
 
     def test_late_proclamations_are_compared_on_the_storm_they_declare(self):
         dates = {r['declaration_id']: r['event_date'] for r in self.rows('hazard_overrides.csv') if r.get('event_date')}
