@@ -1,8 +1,9 @@
 """Delaware's pre-2025 declarations, added by hand.
 
 The Governor's state of emergency archive starts in October 2025. Earlier
-storm declarations come from the Governor's news releases and dated news
-coverage; Minner's 2002 drought order comes from the Delaware Public Archives.
+storm declarations come from the Governor's news releases, dated news
+coverage and NOAA's monthly Storm Data; Minner's 2002 drought order comes from
+the Delaware Public Archives.
 """
 import csv
 import importlib.util
@@ -39,6 +40,18 @@ class HandAddedDeclarationTests(unittest.TestCase):
         self.assertIn("Isabel", rows["DE-SOE-2003-09-18"]["event_description"])
         self.assertEqual(rows["DE-SOE-2010-02-10"]["governor"], "Jack Markell")
         self.assertIn("blizzard", rows["DE-SOE-2010-02-10"]["event_description"])
+
+    def test_february_2003_snowstorm_is_dated_from_storm_data(self):
+        # Storm Data's Delaware winter storm entry: "Governor Ruth Ann Minner
+        # declared a state of emergency during the morning of the 16th."
+        rows = {r["declaration_id"]: r for r in csv_rows("manual_declarations.csv")}
+        overrides = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        row = rows["DE-SOE-2003-02-16"]
+        self.assertEqual((row["date_signed"], row["governor"]), ("2003-02-16", "Ruth Ann Minner"))
+        self.assertEqual(row["archive_record_url"], "https://www.weather.gov/media/pub/pdf/sdata/022003.pdf")
+        self.assertEqual(overrides["DE-SOE-2003-02-16"]["hazard_category_override"], "winter")
+        self.assertIn("declared a state of emergency during the morning of the 16th",
+                      overrides["DE-SOE-2003-02-16"]["review_note"])
 
     def test_ids_carry_the_date_and_are_unique(self):
         rows = csv_rows("manual_declarations.csv")
@@ -77,8 +90,9 @@ class CoverageNoteTests(unittest.TestCase):
         manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text())
         self.assertEqual(note, next(st["coverage_note"] for st in manifest["states"] if st["abbreviation"] == "DE"))
         self.assertTrue(note.startswith("2000-present"))
-        for gap in ("EM-3183", "DR-1572", "DR-1654", "DR-4627"):
+        for gap in ("DR-1572", "DR-1654", "DR-4627"):
             self.assertIn(gap, note)
+        self.assertIn("snowstorm declaration (EM-3183) is dated from Storm Data", note)
 
 
 if __name__ == "__main__":
