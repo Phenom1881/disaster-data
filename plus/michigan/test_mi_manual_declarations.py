@@ -22,6 +22,7 @@ JOIN = HERE / "declarations_for_join.csv"
 JOIN_FIELDS = ["declaration_id", "governor", "eo_number", "event_description", "date_signed", "archive_record_url"]
 HAZARDS = {"fire", "flood", "winter", "severe_storm", "tropical", "storm_general", "wind", "drought"}
 TERMS = {
+    "John Engler": ("1991-01-01", "2003-01-01"),
     "Jennifer Granholm": ("2003-01-01", "2011-01-01"),
     "Rick Snyder": ("2011-01-01", "2019-01-01"),
 }
@@ -83,6 +84,34 @@ class ManualDeclarationTests(unittest.TestCase):
                 found = re.search(r"/(\d{4})/(\d{2})/(\d{2})/", row["archive_record_url"])
                 self.assertEqual("-".join(found.groups()), row["date_signed"], row["declaration_id"])
 
+    def test_engler_rows_are_dated_by_the_detroit_plan_and_the_noaa_release(self):
+        # The archive keeps no Engler records, so each of his rows quotes the
+        # source that dates it, and the NOAA row says which weekday it means.
+        rows = {row["declaration_id"]: row for row in read(MANUAL) if row["governor"] == "John Engler"}
+        self.assertEqual(sorted(rows), ["MI-SOE-2000-09-20", "MI-SOE-2002-04-17"])
+        notes = {row["declaration_id"]: row for row in read(OVERRIDES)}
+        detroit = notes["MI-SOE-2000-09-20"]
+        self.assertTrue(rows["MI-SOE-2000-09-20"]["archive_record_url"].startswith("https://detroitmi.gov/"))
+        self.assertIn("'a Governor's Disaster Declaration was granted to Wayne County on September 20.'",
+                      detroit["review_note"])
+        self.assertEqual(detroit["event_date"], "2000-09-10")
+        noaa = notes["MI-SOE-2002-04-17"]
+        self.assertIn("'In Gogebic County, Gov. John Engler declared a state of emergency on Wednesday.'",
+                      noaa["review_note"])
+        self.assertIn("Wednesday was April 17, 2002.", noaa["review_note"])
+        self.assertIn("NOAA news release of April 18, 2002", noaa["review_note"])
+        self.assertEqual(noaa["event_date"], "2002-04-10")
+
+    def test_the_december_2000_snow_emergency_is_shown_as_the_state_said(self):
+        # EM-3160 is not a gap: the House Fiscal Agency's appendix lists the
+        # December 2000 storm with no state declaration.
+        rows = read(HERE / "no_state_declaration.csv")
+        self.assertEqual([row["fema_declaration"] for row in rows], ["EM-3160"])
+        self.assertEqual(rows[0]["statement"],
+                         "two federal declarations were issued without a corresponding state declaration")
+        self.assertEqual(rows[0]["source_url"], "https://www.house.mi.gov/HFA/Archives/PDF/Alpha/emergen.pdf")
+        self.assertIn("December 2000 severe winter storm", rows[0]["source_title"])
+
     def test_the_coverage_note_starts_in_2000_and_matches_the_manifest(self):
         spec = importlib.util.spec_from_file_location("mi_adapter", HERE / "michigan.py")
         adapter = importlib.util.module_from_spec(spec)
@@ -94,7 +123,7 @@ class ManualDeclarationTests(unittest.TestCase):
         self.assertIn(f"plus {len(read(MANUAL))} weather declarations added by hand", note)
 
     def test_no_long_dashes(self):
-        for path in (MANUAL, OVERRIDES, Path(__file__), HERE / "michigan.py"):
+        for path in (MANUAL, OVERRIDES, HERE / "no_state_declaration.csv", Path(__file__), HERE / "michigan.py"):
             text = path.read_text(encoding="utf-8")
             self.assertNotIn("\u2013", text)
             self.assertNotIn("\u2014", text)
