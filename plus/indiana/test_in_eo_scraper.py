@@ -372,7 +372,8 @@ class HandAddedDeclarationTests(unittest.TestCase):
     def test_dates_and_ids(self):
         rows = self.rows("manual_declarations.csv")
         self.assertEqual({r["declaration_id"]: r["date_signed"] for r in rows},
-                         {"IN-SOE-2003-07-08": "2003-07-08", "IN-SOE-2003-09-04": "2003-09-04", "IN-SOE-2004-05-28": "2004-05-28",
+                         {"IN-SOE-2002-10-07": "2002-10-07",
+                          "IN-SOE-2003-07-08": "2003-07-08", "IN-SOE-2003-09-04": "2003-09-04", "IN-SOE-2004-05-28": "2004-05-28",
                           "IN-SOE-2004-12-23": "2004-12-23", "IN-EO-06-15": "2006-09-14", "IN-EO-08-16": "2008-09-16",
                           "IN-SOE-2014-01-06": "2014-01-06", "IN-SOE-2025-04-11": "2025-04-11"})
         for row in rows:
@@ -397,3 +398,16 @@ class HandAddedDeclarationTests(unittest.TestCase):
         self.assertIn("the signing day is not given", row["event_description"])
         self.assertIn("so the row carries the date of the report", note["review_note"])
         self.assertIn("Executive Order 03-21", note["review_note"])
+
+    def test_the_september_2002_tornado_emergency_is_dated_by_the_report(self):
+        row = {r["declaration_id"]: r for r in self.rows("manual_declarations.csv")}["IN-SOE-2002-10-07"]
+        note = {r["declaration_id"]: r for r in self.rows("hazard_overrides.csv")}["IN-SOE-2002-10-07"]
+        self.assertEqual(row["governor"], "Frank O'Bannon")
+        self.assertIn("the signing day is not given", row["event_description"])
+        # HUD's daily page carries its date in its address.
+        self.assertTrue(row["archive_record_url"].endswith("/focus/" + row["date_signed"] + ".cfm"))
+        self.assertIn("'Governor O'Bannon declared a state disaster condition", note["review_note"])
+        self.assertIn("so the row carries the date of the report", note["review_note"])
+        self.assertIn("Executive Orders 02-14 and 02-19", note["review_note"])
+        self.assertEqual(note["hazard_category_override"], "severe_storm")
+        self.assertEqual(note["event_date"], "2002-09-20")
