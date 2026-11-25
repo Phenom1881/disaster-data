@@ -78,13 +78,28 @@ class HandAddedDeclarationTests(unittest.TestCase):
             "AR-SOE-2011-02-01": "2011-02-01",
             # Dated news reports.
             "AR-SOE-2008-02-07": "2008-02-07", "AR-SOE-2008-05-14": "2008-05-14",
-            "AR-SOE-2009-11-07": "2009-11-07", "AR-SOE-2011-01-01": "2011-01-01",
+            "AR-SOE-2009-11-07": "2009-11-07", "AR-SOE-2010-01-06": "2010-01-06",
+            "AR-SOE-2011-01-01": "2011-01-01",
             "AR-SOE-2013-08-16": "2013-08-16", "AR-SOE-2015-12-29": "2015-12-29",
             "AR-SOE-2016-03-10": "2016-03-10", "AR-SOE-2017-04-30": "2017-04-30",
             "AR-SOE-2020-03-29": "2020-03-29", "AR-SOE-2020-04-24": "2020-04-24",
             "AR-SOE-2020-08-26": "2020-08-26", "AR-SOE-2021-06-10": "2021-06-10",
         }
         self.assertEqual({k: dates.get(k) for k in expected}, expected)
+
+    def test_rows_dated_by_a_report_carry_the_reports_date(self):
+        # A report that gives no signing day dates the row; the description
+        # says so, and the date is the one in the report's address.
+        dated = [r for r in csv_rows("manual_declarations.csv") if "dated report of" in r["event_description"]]
+        self.assertEqual(sorted(r["declaration_id"] for r in dated), ["AR-SOE-2008-05-14", "AR-SOE-2010-01-06"])
+        for row in dated:
+            found = re.search(r"/(\d{4})/(\d{2})/(\d{2})/", row["archive_record_url"])
+            self.assertEqual("-".join(found.groups()), row["date_signed"], row["declaration_id"])
+        notes = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        december = notes["AR-SOE-2010-01-06"]
+        self.assertIn("'In Arkansas, Gov. Mike Beebe declared 27 counties as disaster areas", december["review_note"])
+        self.assertIn("so the row carries the date of the report", december["review_note"])
+        self.assertEqual(december["event_date"], "2009-12-22")
 
     def test_ids_are_unique_and_carry_the_date_or_number(self):
         rows = csv_rows("manual_declarations.csv")
