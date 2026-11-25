@@ -110,4 +110,31 @@ class LinkTextTests(unittest.TestCase):
         self.assertIn("https://nathandeal.georgia.gov/2011-executive-orders",seen)
         self.assertIn("https://nathandeal.georgia.gov/executive-orders/2019",seen)
         self.assertIn("https://gov.georgia.gov/executive-action/executive-orders/2019-executive-orders",seen)
+
+class NewYearTests(unittest.TestCase):
+    """The current year's page is posted with its first order; until then it answers 404."""
+    def run_collect(self,missing,status=404):
+        seen=[]; original=ga.fetch
+        def fake(url):
+            seen.append(url)
+            if url in missing:
+                response=ga.requests.Response(); response.status_code=status
+                raise ga.requests.HTTPError(f"{status} Client Error for url: {url}",response=response)
+            return ""
+        ga.fetch=fake
+        try: ga.collect(today=ga.datetime(2027,1,2))
+        finally: ga.fetch=original
+        return seen
+    def test_a_new_year_page_not_posted_yet_is_skipped(self):
+        new_year="https://gov.georgia.gov/executive-action/executive-orders/2027"
+        seen=self.run_collect({new_year})
+        self.assertIn(new_year,seen)
+        self.assertIn("https://gov.georgia.gov/executive-action/executive-orders/2026",seen)
+        self.assertIn("https://nathandeal.georgia.gov/executive-orders/2019",seen)
+    def test_a_missing_earlier_year_still_stops_the_collection(self):
+        with self.assertRaises(ga.requests.HTTPError):
+            self.run_collect({"https://gov.georgia.gov/executive-action/executive-orders/2026"})
+    def test_a_refused_new_year_page_still_stops_the_collection(self):
+        with self.assertRaises(ga.requests.HTTPError):
+            self.run_collect({"https://gov.georgia.gov/executive-action/executive-orders/2027"},status=403)
 if __name__=="__main__": unittest.main()

@@ -1,6 +1,6 @@
 """Collect Georgia executive orders from official current and preserved archives."""
 from __future__ import annotations
-import argparse,csv,re
+import argparse,csv,re,sys
 from dataclasses import dataclass
 from datetime import datetime
 from urllib.parse import urljoin
@@ -101,10 +101,18 @@ def collect_year(url,get=None):
         seen.update(a.number for a in new); out.extend(new)
     return out
 
-def collect():
-    out=[]
-    for y in range(2019,datetime.now().year+1):
-        suffix=f"{y}" if y>=2022 else f"{y}-executive-orders"; u=f"{CURRENT_ROOT}/executive-action/executive-orders/{suffix}"; out.extend(collect_year(u))
+# In the first days of January the current year's page may not be posted yet,
+# and every refresh would fail on its 404 until it is. Only that page may be
+# missing: a missing page for an earlier year, or any other refusal, still
+# stops the collection.
+def collect(today=None):
+    out=[]; this_year=(today or datetime.now()).year
+    for y in range(2019,this_year+1):
+        suffix=f"{y}" if y>=2022 else f"{y}-executive-orders"; u=f"{CURRENT_ROOT}/executive-action/executive-orders/{suffix}"
+        try: out.extend(collect_year(u))
+        except requests.HTTPError as exc:
+            if y!=this_year or getattr(exc.response,"status_code",None)!=404: raise
+            print(f"Georgia: the {y} order page is not posted yet (404); no {y} orders read",file=sys.stderr)
     # Deal's pages run through 2019: four orders from January 1 and 2, 2019.
     for y in range(2011,2020):
         u=f"{DEAL_ROOT}/{'2011-executive-orders' if y==2011 else 'executive-orders/'+str(y)}"; out.extend(parse_deal(fetch(u),u))
