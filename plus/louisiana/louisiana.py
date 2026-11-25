@@ -6,7 +6,7 @@ from pathlib import Path
 
 STATE = "LA"
 # Kept identical to the coverage_note in scripts/plus/state-manifest.json.
-COVERAGE_NOTE = "2000-present: official State Register web indexes from January 2016, plus 36 weather declarations added by hand (manual_declarations.csv): 4 by Governor Foster (2000-2003), from his executive order printed in the Louisiana Register and dated news coverage, 13 by Governors Blanco and Jindal (2004-2015), from proclamations cited in the Louisiana Register and dated news coverage, and 19 by Governor Edwards (2016-2023). No state declaration was found for DR-1357 (December 2000 ice storm), DR-1521 (May 2004), DR-1601 (Cindy, 2005), DR-1668 (October 2006) or DR-4228 (Red River flooding, 2015)."
+COVERAGE_NOTE = "2000-present: official State Register web indexes from January 2016, plus 37 weather declarations added by hand (manual_declarations.csv): 4 by Governor Foster (2000-2003), from his executive order printed in the Louisiana Register and dated news coverage, 14 by Governors Blanco and Jindal (2004-2015), from proclamations cited in the Louisiana Register and dated news coverage, and 19 by Governor Edwards (2016-2023). No state declaration was found for DR-1357 (December 2000 ice storm), DR-1521 (May 2004), DR-1668 (October 2006) or DR-4228 (Red River flooding, 2015). DR-1601 (Tropical Storm Cindy, July 5 to 6, 2005) matches only by date, to the statewide state of emergency declared on July 8, 2005 for Hurricane Dennis; none was found for Cindy itself."
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
     "structured_archive_source": "Louisiana Division of Administration, Office of State Register Executive Orders (https://www.doa.la.gov/doa/osr/executive-orders/)",
