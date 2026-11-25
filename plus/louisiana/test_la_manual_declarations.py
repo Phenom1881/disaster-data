@@ -114,6 +114,21 @@ class ManualDeclarationTests(unittest.TestCase):
         self.assertTrue(note.startswith("2000-present: "), note)
         self.assertIn(f"plus {len(rows())} weather declarations added by hand", note)
 
+    def test_the_2015_red_river_emergency_is_dated_by_the_gohsep_minutes(self):
+        # The minutes report the state of emergency without the day it was
+        # declared, so the row carries the meeting's date.
+        row = next(r for r in rows() if r["declaration_id"] == "LA-SOE-2015-06-02")
+        with open(HERE / "hazard_overrides.csv", newline="", encoding="utf-8") as handle:
+            note = next(r for r in csv.DictReader(handle) if r["declaration_id"] == "LA-SOE-2015-06-02")
+        self.assertEqual(row["governor"], "Bobby Jindal")
+        self.assertIn("Red River flooding (dated report of June 2, 2015; the signing day is not given)", row["event_description"])
+        self.assertIn("/348_June%202015%20Regional%20Directors%20Monthly%20Meeting%20Minutes.pdf", row["archive_record_url"])
+        self.assertIn("meeting of June 2, 2015", note["review_note"])
+        self.assertIn("'Kevin stated a State of Emergency was declared for Northern Louisiana parishes", note["review_note"])
+        self.assertIn("'Governor Jindal last week issued an emergency declaration", note["review_note"])
+        self.assertIn("so the row carries the date of the minutes", note["review_note"])
+        self.assertEqual(note["hazard_category_override"], "flood")
+
     def test_no_long_dashes(self):
         text = MANUAL.read_text(encoding="utf-8")
         self.assertNotIn("\u2013", text)
