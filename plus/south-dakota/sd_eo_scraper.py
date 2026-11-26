@@ -61,7 +61,13 @@ except ImportError:  # pragma: no cover
     BeautifulSoup = None
 
 BASE_URL = "https://sdsos.gov/general-information/executive-actions/executive-orders/search/Default.aspx"
-HEADERS = {"User-Agent": "DisasterDataIO-Plus/1.0"}
+HEADERS = {
+    "User-Agent": "DisasterDataIO-Plus/1.0",
+    # Standard content and language headers, so the registry's ASP.NET page
+    # is not left to guess them. The scraper still names itself above.
+    "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 # Years read through the "Search for Prior Years Orders" form.
 PRIOR_YEARS = range(2000, 2020)
@@ -133,7 +139,28 @@ def fetch(session, url, data=None):
     else:
         resp = session.post(url, data=data, timeout=60, headers=HEADERS)
     resp.raise_for_status()
+    # Where the request landed, for the run log: the refreshes of November
+    # 20 and 22, 2026 got a page with no orders on every load, and the log
+    # did not say whether it had been redirected to the error page.
+    LAST_PAGE["url"] = getattr(resp, "url", None) or url
+    LAST_PAGE["status"] = getattr(resp, "status_code", None)
+    LAST_PAGE["redirects"] = [getattr(r, "url", "") for r in (getattr(resp, "history", None) or [])]
     return resp.text
+
+
+def landing_note():
+    """Where the last request landed ("landed on <url>, HTTP 200, after 1
+    redirect"), or "" when nothing was fetched."""
+    url = LAST_PAGE.get("url")
+    if not url:
+        return ""
+    parts = ["landed on %s" % url]
+    if LAST_PAGE.get("status"):
+        parts.append("HTTP %s" % LAST_PAGE["status"])
+    redirects = LAST_PAGE.get("redirects") or []
+    if redirects:
+        parts.append("after %d redirect(s)" % len(redirects))
+    return ", ".join(parts)
 
 
 def fetch_current_page(session, pause=PRIOR_YEAR_PAUSE):
@@ -155,7 +182,7 @@ def fetch_current_page(session, pause=PRIOR_YEAR_PAUSE):
             return html
         if attempt < len(waits):
             print(f"South Dakota: registry page load {attempt} listed no orders "
-                  f"({describe_page(html)}); trying again in {waits[attempt]}s")
+                  f"({describe_page(html, landing_note())}); trying again in {waits[attempt]}s")
     return html
 
 
@@ -265,13 +292,19 @@ def absolute_url(href):
     return urljoin(BASE_URL, href.strip()).replace(" ", "%20")
 
 
-def describe_page(html):
-    """A short account of a page that yielded no orders, for the run log."""
+def describe_page(html, landed=""):
+    """A short account of a page that yielded no orders, for the run log.
+    landed, when given, says where the request ended up (landing_note())."""
     soup = BeautifulSoup(html or "", "html.parser")
     title = soup.title.get_text(strip=True) if soup.title else "(no title)"
-    return ("%d bytes, title %r, %d table(s), %d table row(s), starts %r"
+    note = ("%d bytes, title %r, %d table(s), %d table row(s), starts %r"
             % (len(html or ""), title[:80], len(soup.find_all("table")),
                len(soup.find_all("tr")), re.sub(r"\s+", " ", (html or "")[:160])))
+    if re.search(r"an error occurred", soup.get_text(" "), re.I):
+        note += ", says 'An Error Occurred'"
+    if landed:
+        note += ", " + landed
+    return note
 
 
 def is_declaration(title):
@@ -415,7 +448,7 @@ def main():
         # every order since 2020), so stop before writing empty files and
         # fail loudly with what the page actually returned.
         print("South Dakota: 0 orders parsed from the registry page: "
-              + describe_page(LAST_PAGE.get("html", "")), file=sys.stderr)
+              + describe_page(LAST_PAGE.get("html", ""), landing_note()), file=sys.stderr)
         sys.exit(2)
     declarations = write_csv(orders, args.actions_out, args.relationships_out, args.join_out)
     prior = sum(1 for o in orders if o["eo_number"][:4] < "2020")

@@ -252,6 +252,35 @@ class RegistryPageRetryTests(unittest.TestCase):
             scraper.fetch_current_page(session)
         self.assertEqual([c.args[0] for c in sleep.call_args_list], [15, 45])
 
+    def test_the_log_says_where_a_load_without_orders_landed(self):
+        class Redirected(FakeSession):
+            def get(self, url, **kwargs):
+                self.gets += 1
+                self.headers = kwargs.get("headers")
+                first = FakeResponse("")
+                first.url = url
+                response = FakeResponse(ERROR_PAGE)
+                response.url = ("https://sdsos.gov/error.aspx?aspxerrorpath=/general-information/"
+                                "executive-actions/executive-orders/search/Default.aspx")
+                response.status_code = 200
+                response.history = [first]
+                return response
+        session = Redirected()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            scraper.fetch_current_page(session, pause=0)
+        log = out.getvalue()
+        self.assertIn("landed on https://sdsos.gov/error.aspx", log)
+        self.assertIn("HTTP 200, after 1 redirect(s)", log)
+        self.assertIn("says 'An Error Occurred'", log)
+        self.assertIs(session.headers, scraper.HEADERS)
+
+    def test_the_scraper_names_itself_and_asks_for_an_english_html_page(self):
+        self.assertTrue(scraper.HEADERS["User-Agent"].startswith("DisasterDataIO-Plus/"))
+        self.assertNotIn("Mozilla", scraper.HEADERS["User-Agent"])
+        self.assertIn("text/html", scraper.HEADERS["Accept"])
+        self.assertTrue(scraper.HEADERS["Accept-Language"].startswith("en"))
+
     def test_a_refused_request_is_not_retried(self):
         class Refusing(FakeSession):
             def get(self, url, **kwargs):
