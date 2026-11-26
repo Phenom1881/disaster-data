@@ -77,7 +77,7 @@ class HandAddedDeclarationTests(unittest.TestCase):
             "AR-DR-09-17": "2009-05-13", "AR-DR-09-35": "2009-10-20", "AR-DR-21-17": "2021-12-11",
             "AR-SOE-2011-02-01": "2011-02-01",
             # Dated news reports.
-            "AR-SOE-2008-02-07": "2008-02-07", "AR-SOE-2008-05-14": "2008-05-14",
+            "AR-SOE-2000-12-28": "2000-12-28", "AR-SOE-2008-02-07": "2008-02-07", "AR-SOE-2008-05-14": "2008-05-14",
             "AR-SOE-2009-11-07": "2009-11-07", "AR-SOE-2010-01-06": "2010-01-06",
             "AR-SOE-2011-01-01": "2011-01-01",
             "AR-SOE-2013-08-16": "2013-08-16", "AR-SOE-2015-12-29": "2015-12-29",
@@ -89,13 +89,23 @@ class HandAddedDeclarationTests(unittest.TestCase):
 
     def test_rows_dated_by_a_report_carry_the_reports_date(self):
         # A report that gives no signing day dates the row; the description
-        # says so, and the date is the one in the report's address.
+        # says so, and the date is the one in the report's address, or, for
+        # the December 2000 report, whose address has none, its dateline.
         dated = [r for r in csv_rows("manual_declarations.csv") if "dated report of" in r["event_description"]]
-        self.assertEqual(sorted(r["declaration_id"] for r in dated), ["AR-SOE-2008-05-14", "AR-SOE-2010-01-06"])
+        self.assertEqual(sorted(r["declaration_id"] for r in dated),
+                         ["AR-SOE-2000-12-28", "AR-SOE-2008-05-14", "AR-SOE-2010-01-06"])
         for row in dated:
+            if row["declaration_id"] == "AR-SOE-2000-12-28":
+                continue
             found = re.search(r"/(\d{4})/(\d{2})/(\d{2})/", row["archive_record_url"])
             self.assertEqual("-".join(found.groups()), row["date_signed"], row["declaration_id"])
         notes = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        ice = notes["AR-SOE-2000-12-28"]
+        self.assertIn("(dated report of December 28, 2000;", next(r for r in dated if r["declaration_id"] == "AR-SOE-2000-12-28")["event_description"])
+        self.assertIn("under the dateline December 28, 2000", ice["review_note"])
+        self.assertIn("where Gov. Huckabee has declared a state of emergency.'", ice["review_note"])
+        self.assertIn("so the row carries the date of the report", ice["review_note"])
+        self.assertEqual(ice["hazard_category_override"], "winter")
         december = notes["AR-SOE-2010-01-06"]
         self.assertIn("'In Arkansas, Gov. Mike Beebe declared 27 counties as disaster areas", december["review_note"])
         self.assertIn("so the row carries the date of the report", december["review_note"])
