@@ -8,13 +8,14 @@ STATE = "KS"
 # Shown on the page after a refresh; scripts/plus/state-manifest.json carries the
 # same text for builds without collection.
 COVERAGE_NOTE = (
-    "2000-present: KDEM disaster-declarations page from 2011, plus 32 declarations added by hand (manual_"
+    "2000-present: KDEM disaster-declarations page from 2011, plus 34 declarations added by hand (manual_"
     "declarations.csv): seven 2011-2016 proclamations from scanned PDFs on that page, seven 2001-2007 dec"
-    "larations cited by executive orders and legislation printed in the Kansas Register, and 2002-2022 de"
-    "clarations dated from Adjutant General releases (archived on the Wayback Machine), the Governor's re"
-    "leases and news coverage. No state declaration was found for DR-1327 (April 2000), DR-1535 and DR-15"
-    "62 (2004), DR-1600, DR-1615 and DR-1626 (2005), DR-1849 (April-May 2009), DR-1932 (June 2010) or DR-"
-    "4747 (summer 2023)."
+    "larations cited by executive orders and legislation printed in the Kansas Register, two 2005 declara"
+    "tions named in the Adjutant General's Department's 2005 annual report, which gives no signing days, "
+    "so each carries the date of the storm it answered, and 2002-2022 declarations dated from Adjutant Ge"
+    "neral releases (archived on the Wayback Machine), the Governor's releases and news coverage. No stat"
+    "e declaration was found for DR-1327 (April 2000), DR-1535 and DR-1562 (2004), DR-1626 (November 2005"
+    "), DR-1849 (April-May 2009), DR-1932 (June 2010) or DR-4747 (summer 2023)."
 )
 
 CAPABILITIES = {
@@ -34,11 +35,11 @@ CAPABILITIES = {
         "label, are kept in manual_declarations.csv: scanned KDEM proclamations read by eye; "
         "proclamation dates cited by executive orders and legislation printed in the Kansas Register "
         "(rules.ks.gov, 2000-2010 issues searched in full); Adjutant General news releases for "
-        "2006-2013 from archived copies of kansastag.gov; and dated news coverage.",
+        "2006-2013 from archived copies of kansastag.gov; the Adjutant General's Department's 2005 annual "
+        "report, which names two 2005 declarations without their signing days; and dated news coverage.",
         "The Kansas Register does not print disaster proclamations themselves, only executive orders "
         "that cite some of them, so the 2000-2006 record is thin. No state declaration was found for "
-        "DR-1327, DR-1402, DR-1535, DR-1562, DR-1579, DR-1600, DR-1615, DR-1626, DR-1638, DR-1808, "
-        "DR-1849, DR-1932, DR-4654 or DR-4747.",
+        "DR-1327, DR-1535, DR-1562, DR-1626, DR-1849, DR-1932 or DR-4747.",
     ],
 }
 
