@@ -292,4 +292,32 @@ class ReviewedDateTests(unittest.TestCase):
             self.assertEqual(date.fromisoformat(day).year, int(number[:4]), number)
 
 
+class HandRowTests(unittest.TestCase):
+    """Weather emergencies declared without an executive order, kept by hand
+    in declarations_for_join.csv (NH-PROC ids) with a reviewed note."""
+
+    @staticmethod
+    def rows(name):
+        import csv
+        from pathlib import Path
+        with open(Path(__file__).resolve().parent / name, newline="", encoding="utf-8") as handle:
+            return {row["declaration_id"]: row for row in csv.DictReader(handle)}
+
+    def test_the_irene_state_of_emergency_carries_the_date_of_the_cnn_report(self):
+        cnn = "https://www.cnn.com/2011/US/08/27/irene.state.by.state/"
+        row = self.rows("declarations_for_join.csv")["NH-PROC-2011-08-27"]
+        note = self.rows("hazard_overrides.csv")["NH-PROC-2011-08-27"]
+        self.assertEqual(row["governor"], "John H. Lynch")
+        self.assertEqual(row["date_signed"], "2011-08-27")
+        self.assertEqual(row["archive_record_url"], cnn)
+        self.assertIn("Hurricane Irene", row["event_description"])
+        self.assertIn("the signing day is not given", row["event_description"])
+        self.assertEqual(note["source_url"], cnn)
+        self.assertEqual(note["hazard_category_override"], "tropical")
+        self.assertIn("'Governor John Lynch said New Hampshire was in a state of emergency'", note["review_note"])
+        self.assertIn("so its own date is used", note["review_note"])
+        self.assertIn("082611-state-of-emergency.htm", note["review_note"])
+        self.assertIn("EM-3333 and DR-4026", note["review_note"])
+
+
 if __name__ == "__main__": unittest.main()

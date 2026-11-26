@@ -148,6 +148,35 @@ class WaiverTests(unittest.TestCase):
         self.assertEqual(self.rows(title), [title])
 
 
+class SavedEntryTests(unittest.TestCase):
+    """Entries added by hand to plus/_fmcsa/entries.csv from FMCSA's 2013 to
+    2017 archive page (archive-emergency-declarations), which the yearly
+    harvest does not read."""
+    SAVED = HERE.parent / "plus" / "_fmcsa" / "entries.csv"
+    GENERAL_ARCHIVE = "https://www.fmcsa.dot.gov/emergency/archive-emergency-declarations"
+
+    def test_the_march_2017_new_hampshire_snow_storm_notice_is_supplied(self):
+        # The Department of Safety's notice of March 14, 2017, signed by the
+        # Commissioner of Safety as the Governor's designee, for the blizzard
+        # of March 14 to 15, 2017 (DR-4316); in effect through March 28.
+        url = "https://www.fmcsa.dot.gov/emergency/nh-emergency-conditions-result-heavy-snow-storm"
+        notice = fm.load_entries(self.SAVED)[url]
+        self.assertEqual(notice["entry_id"], fm.entry_id(url))
+        self.assertEqual(notice["state"], "New Hampshire")
+        self.assertEqual(notice["title"], "NH Emergency Conditions as a Result of a Heavy Snow Storm")
+        self.assertEqual(notice["effective"], "2017-03-14")
+        self.assertEqual(notice["archive_page"], self.GENERAL_ARCHIVE)
+        self.assertEqual(notice["hazard_text"], "The emergency exemption is issued in connection with emergency "
+                                                "conditions as a result of a heavy snow storm.")
+        state = {"name": "New Hampshire", "abbreviation": "NH"}
+        rows = fm.supplement_rows(state, [], {url: notice})
+        self.assertEqual([(r["declaration_id"], r["date_signed"]) for r in rows],
+                         [("NH-FMCSA-" + fm.entry_id(url), "2017-03-14")])
+        with (HERE.parent / "plus" / "new-hampshire" / "fmcsa_declarations.csv").open(newline="", encoding="utf-8") as handle:
+            supplied = {row["declaration_id"]: row for row in csv.DictReader(handle)}
+        self.assertEqual(supplied["NH-FMCSA-" + fm.entry_id(url)]["date_signed"], "2017-03-14")
+
+
 class BuilderTests(unittest.TestCase):
     def test_supplement_is_shown_joined_and_kept_apart_from_the_state_source(self):
         root = Path(tempfile.mkdtemp(prefix="fmcsa_build_"))

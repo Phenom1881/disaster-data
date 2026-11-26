@@ -57,6 +57,26 @@ class ManualDeclarationTests(unittest.TestCase):
             self.assertIn("so the row carries the date of the report", note["review_note"], row["declaration_id"])
             self.assertEqual(row["governor"], "Michael Dukakis", row["declaration_id"])
 
+    def test_the_january_2022_fuel_notice_is_flagged_as_a_date_only_match(self):
+        # Governor Baker's Declaration of Emergency Notice of January 13, 2022
+        # (49 CFR 390.23) eased rules for fuel deliveries in the cold from
+        # January 11 to February 6, 2022. It names no storm, so it matches
+        # DR-4651 (the January 28 to 29, 2022 blizzard) only by date, and the
+        # COVID-19 staffing shortages it also cites stay on the record.
+        source = "https://www.fmcsa.dot.gov/emergency/massachusetts-declaration-emergency-notice-title-49-cfr-part-39023"
+        row = {r["declaration_id"]: r for r in read(MANUAL)}["MA-PROC-2022-01-13"]
+        note = {r["declaration_id"]: r for r in read(OVERRIDES)}["MA-PROC-2022-01-13"]
+        self.assertEqual(row["governor"], "Charlie Baker")
+        self.assertEqual(row["archive_record_url"], source)
+        self.assertIn("below average cold temperatures and COVID-19 Omicron workforce shortages", row["event_description"])
+        self.assertIn("but does not name it", row["event_description"])
+        self.assertEqual(note["source_url"], source)
+        self.assertEqual(note["hazard_category_override"], "winter")
+        self.assertEqual(note["event_date"], "")
+        self.assertIn("'workforce shortages, caused by the COVID-19 Omicron variant'", note["review_note"])
+        self.assertIn("not a state of emergency", note["review_note"])
+        self.assertIn("DR-4651 (the January 28 to 29, 2022 blizzard) matches it only by date", note["review_note"])
+
     def test_no_long_dashes(self):
         for path in (MANUAL, OVERRIDES):
             text = path.read_text(encoding="utf-8")
