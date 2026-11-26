@@ -1,7 +1,7 @@
 """New Mexico's hand-added declarations (manual_declarations.csv).
 
 The current Governor's archive starts in 2019 and no public index of earlier
-executive orders was found, so 2006-2013 weather declarations by Governors
+executive orders was found, so 2004-2014 weather declarations by Governors
 Richardson and Martinez are kept by hand from executive orders reprinted in
 the press and dated news coverage. Each row has to reach the storm join and
 the page the way a collected declaration does.
@@ -92,6 +92,21 @@ class ManualDeclarationTests(unittest.TestCase):
             note = notes[row["declaration_id"]]
             if "does not give the day" in note:
                 self.assertIn("carries the date of the report", note, row["declaration_id"])
+
+    def test_the_april_2004_declaration_is_dated_by_the_report_and_compared_on_the_storms(self):
+        # The May 4, 2004 report of the federal declaration says the Governor
+        # had already made the four counties eligible for state disaster
+        # assistance, without the day he did it.
+        row = next(r for r in read(MANUAL) if r["declaration_id"] == "NM-SOE-2004-05-04")
+        note = next(r for r in read(OVERRIDES) if r["declaration_id"] == "NM-SOE-2004-05-04")
+        self.assertEqual(row["governor"], "Bill Richardson")
+        self.assertEqual(row["archive_record_url"], "https://www.claimsjournal.com/news/west/2004/05/04/41877.htm")
+        self.assertIn("(dated report of May 4, 2004; the signing day is not given)", row["event_description"])
+        self.assertIn("'The Governor previously had declared these counties eligible for state disaster assistance.'", note["review_note"])
+        self.assertIn("so the row carries the date of the report", note["review_note"])
+        self.assertIn("DR-1514", note["review_note"])
+        self.assertEqual(note["event_date"], "2004-04-02")
+        self.assertEqual(note["hazard_category_override"], "flood")
 
     def test_no_row_is_a_renewal_or_funding_only_order(self):
         for row in read(MANUAL):

@@ -375,10 +375,23 @@ class HandAddedDeclarationTests(unittest.TestCase):
         self.assertEqual({r["declaration_id"]: r["date_signed"] for r in self.rows()},
                          {"ND-SOE-2004-03-29": "2004-03-29",
                           "ND-SOE-2005-06-09": "2005-06-09",
+                          "ND-SOE-2005-11-30": "2005-11-30",
                           "ND-SOE-2006-03-30": "2006-03-30",
                           "ND-SOE-2007-08-27": "2007-08-27",
                           "ND-SOE-2009-03-16": "2009-03-16",
                           "ND-SOE-2010-01-26": "2010-01-26"})
+
+    def test_the_november_2005_snow_emergency_carries_the_date_of_the_ap_report(self):
+        # The AP's November 30, 2005 blizzard story says Hoeven declared a
+        # snow emergency for the southeast (DR-1621: Cass, Ransom, Richland
+        # and Sargent counties) but not the day he did it.
+        row = next(r for r in self.rows() if r["declaration_id"] == "ND-SOE-2005-11-30")
+        self.assertEqual(row["governor"], "Hoeven")
+        self.assertEqual(row["archive_record_url"],
+                         "https://vindyarchives.com/news/2005/nov/30/utilities-being-restored-after-plains-blizzard")
+        self.assertIn("Snow emergency declared for the southeast part of the state", row["event_description"])
+        self.assertIn("(AP report of November 30, 2005; the signing day is not given, so the row carries the date of the report)",
+                      row["event_description"])
 
     def test_ids_carry_the_date_and_the_governor_in_office(self):
         for row in self.rows():

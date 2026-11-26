@@ -89,6 +89,29 @@ class ManualDeclarationTests(unittest.TestCase):
             if row["archive_record_url"].startswith("https://rules.ks.gov/browse/collections/"):
                 self.assertIn("Kansas Register", notes[row["declaration_id"]]["review_note"], row["declaration_id"])
 
+    def test_the_2005_annual_report_rows_carry_the_storm_they_answered(self):
+        # The Adjutant General's 2005 annual report names both declarations
+        # without a signing day, so each row carries the last day of the storm
+        # it answered and is compared on the first.
+        report = "https://media.defense.gov/2022/Feb/11/2002937782/-1/-1/0/ANNUAL%20REPORT%202005.PDF"
+        manual = {row["declaration_id"]: row for row in read(MANUAL)}
+        notes = {row["declaration_id"]: row for row in read(OVERRIDES)}
+        expected = {"KS-SOE-2005-07-01": ("2005-06-30", "DR-1600"), "KS-SOE-2005-10-02": ("2005-10-01", "DR-1615")}
+        for key, (first_day, federal) in expected.items():
+            row, note = manual[key], notes[key]
+            self.assertEqual(row["governor"], "Kathleen Sebelius", key)
+            self.assertEqual(row["archive_record_url"], report, key)
+            self.assertIn("2005 annual report; the signing day is not given, so the date of the", row["event_description"], key)
+            self.assertEqual(note["event_date"], first_day, key)
+            self.assertEqual(note["hazard_category_override"], "severe_storm,flood", key)
+            self.assertIn("2005 annual report", note["review_note"], key)
+            self.assertIn(federal, note["review_note"], key)
+            self.assertRegex(note["review_note"], r"The (?:signing day is not given|report gives neither the signing day)", key)
+        self.assertIn("'Gov. Sebelius issued a declaration of a State of Disaster Emergency for 10 Kansas counties due to the storms of June 30 and July 1",
+                      notes["KS-SOE-2005-07-01"]["review_note"])
+        self.assertIn("'Several counties were named in a State of Disaster Emergency declared by Gov. Sebelius",
+                      notes["KS-SOE-2005-10-02"]["review_note"])
+
     def test_no_long_dashes(self):
         for path in (MANUAL, OVERRIDES):
             text = path.read_text(encoding="utf-8")
