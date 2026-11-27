@@ -213,6 +213,36 @@ class HandAddedDeclarationTests(unittest.TestCase):
             self.assertEqual(row["governor"], scraper.governor_for(datetime.strptime(row["date_signed"], "%Y-%m-%d")),
                              row["declaration_id"])
 
+    def test_the_february_2010_ice_jam_emergency_is_compared_on_the_first_day_of_dr_1902(self):
+        # An anticipatory declaration that names the hazard, made 29 days before
+        # the federal incident period began. Its reviewed event_date compares it
+        # on March 6, 2010, and the row, its note and the coverage note flag it.
+        import importlib.util
+        url = "https://cropwatch.unl.edu/cropwatch-feb-5-2010-ice-jam-emergency-lead-ash-dusting-mid-february"
+        row = next(r for r in self.rows("manual_declarations.csv") if r["declaration_id"] == "NE-SOE-2010-02-05")
+        note = next(r for r in self.rows("hazard_overrides.csv") if r["declaration_id"] == "NE-SOE-2010-02-05")
+        self.assertEqual(row["governor"], "Dave Heineman")
+        self.assertEqual(row["date_signed"], "2010-02-05")
+        self.assertEqual(row["archive_record_url"], url)
+        self.assertIn("ice jam flooding along the lower Platte River", row["event_description"])
+        self.assertIn("compared with federal declarations on March 6, 2010", row["event_description"])
+        self.assertEqual(note["hazard_category_override"], "flood")
+        self.assertEqual(note["event_date"], "2010-03-06")
+        gap = datetime.strptime(note["event_date"], "%Y-%m-%d") - datetime.strptime(row["date_signed"], "%Y-%m-%d")
+        self.assertEqual(gap.days, 29)
+        self.assertIn("'Gov. Dave Heineman has declared a state of emergency due to the potential for ice jam-related "
+                      "flooding along the lower Platte River and its tributaries.'", note["review_note"])
+        self.assertIn("begins 29 days after the declaration, outside the three-week window", note["review_note"])
+        self.assertIn("the 29-day gap is flagged", note["review_note"])
+        spec = importlib.util.spec_from_file_location(
+            "ne_adapter_note", os.path.join(os.path.dirname(os.path.abspath(__file__)), "nebraska.py"))
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        self.assertIn("is compared on March 6, 2010, the first day of DR-1902 (severe storms, ice jams and flooding), "
+                      "which begins 29 days after it, outside the three-week window", adapter.COVERAGE_NOTE)
+        unmatched = adapter.COVERAGE_NOTE.split("no state declaration has been found yet for")[1].split(";")[0]
+        self.assertNotIn("DR-1902", unmatched)
+
     def test_every_override_names_a_declaration_the_page_can_hold(self):
         ids = {row["declaration_id"] for row in self.rows("manual_declarations.csv")}
         ids |= {row["declaration_id"] for row in self.rows("declarations_for_join.csv")}
