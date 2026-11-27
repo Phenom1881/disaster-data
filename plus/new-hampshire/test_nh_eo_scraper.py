@@ -319,5 +319,34 @@ class HandRowTests(unittest.TestCase):
         self.assertIn("082611-state-of-emergency.htm", note["review_note"])
         self.assertIn("EM-3333 and DR-4026", note["review_note"])
 
+    def test_the_hurricane_bob_emergency_is_dated_by_the_hampton_union_and_flagged_as_passive(self):
+        # Governor Gregg was in Seattle on Monday, August 19, 1991 and State
+        # Senator Edward Dupont was acting for him. The Hampton Union does not
+        # say who called the state of emergency, so the row says so.
+        clipping = "https://history.lanememoriallibrary.org/node/6253"
+        row = self.rows("declarations_for_join.csv")["NH-PROC-1991-08-19"]
+        note = self.rows("hazard_overrides.csv")["NH-PROC-1991-08-19"]
+        self.assertEqual(row["governor"], "Edward Dupont (acting for Governor Judd Gregg)")
+        self.assertEqual(row["date_signed"], "1991-08-19")
+        self.assertEqual(row["archive_record_url"], clipping)
+        self.assertIn("Hurricane Bob", row["event_description"])
+        self.assertIn("the report does not say who called it", row["event_description"])
+        self.assertEqual(note["source_url"], clipping)
+        self.assertEqual(note["hazard_category_override"], "tropical")
+        self.assertIn("'The governor was in Seattle Monday. State Sen. Edward Dupont assumed duties at the "
+                      "state-house. A state of emergency was called Monday at 1 p.m. and was lifted early Tuesday "
+                      "morning.'", note["review_note"])
+        self.assertIn("Monday was August 19, 1991", note["review_note"])
+        self.assertIn("flagged for its passive wording", note["review_note"])
+        self.assertIn("DR-917 (August 18 to 20, 1991)", note["review_note"])
+        import importlib.util
+        from pathlib import Path
+        spec = importlib.util.spec_from_file_location("nh_adapter_note", Path(__file__).resolve().parent / "new_hampshire.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        self.assertIn("The August 19, 1991 state of emergency for Hurricane Bob (DR-917), called while State "
+                      "Senator Edward Dupont was acting for Governor Gregg, is dated by the Hampton Union of "
+                      "August 23, 1991, whose sentence does not say who called it.", adapter.COVERAGE_NOTE)
+
 
 if __name__ == "__main__": unittest.main()
