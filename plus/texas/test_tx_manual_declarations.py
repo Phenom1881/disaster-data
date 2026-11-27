@@ -3,13 +3,16 @@
 The current Governor's proclamation archive starts in January 2015. Weather
 disaster proclamations from 2001 to 2014 come from archived copies of the
 Governor's proclamation pages (governor.state.tx.us) on the Wayback Machine,
-and a few others are dated from news and TDEM coverage. Each row has to reach
-the storm join and the page the way a collected declaration does.
+one (Hurricane Claudette, July 15, 2003) from the Legislative Reference
+Library's governors' documents database, and a few others are dated from news,
+National Guard and TDEM coverage. Each row has to reach the storm join and the
+page the way a collected declaration does.
 
 Run:  python -m unittest test_tx_manual_declarations
 """
 import csv
 import importlib.util
+import json
 import re
 import unittest
 from datetime import date
@@ -93,6 +96,35 @@ class ManualDeclarationTests(unittest.TestCase):
             self.assertEqual(note["source_url"], row["archive_record_url"], row["declaration_id"])
             if note["event_date"]:
                 self.assertLessEqual(note["event_date"], row["date_signed"], row["declaration_id"])
+
+    def test_the_claudette_proclamation_is_dated_by_the_legislative_reference_library(self):
+        # The Governor's archived proclamation index does not list the July 15,
+        # 2003 Hurricane Claudette proclamation; the Legislative Reference
+        # Library's governors' documents database does (DR-1479).
+        source = ("https://lrl.texas.gov/legeleaders/governors/searchProc.cfm?govDocCaption=disaster"
+                  "&beginGovDocDate=01%2F01%2F2001&govDocType=2%2C3%2C5%2C6%2C7")
+        row = next(r for r in read(MANUAL) if r["declaration_id"] == "TX-SOE-2003-07-15")
+        note = next(r for r in read(OVERRIDES) if r["declaration_id"] == "TX-SOE-2003-07-15")
+        self.assertEqual(row["governor"], "Rick Perry")
+        self.assertEqual(row["date_signed"], "2003-07-15")
+        self.assertEqual(row["archive_record_url"], source)
+        self.assertIn("Hurricane Claudette poses a threat of imminent disaster", row["event_description"])
+        self.assertEqual(note["hazard_category_override"], "tropical")
+        self.assertEqual(note["event_date"], "")
+        self.assertIn("'Declaring that Hurricane Claudette poses a threat of imminent disaster along the Texas Coast "
+                      "beginning July 15, 2003', Rick Perry, 07/15/2003, General proclamation", note["review_note"])
+        self.assertIn("proc071503.pdf", note["review_note"])
+        self.assertIn("DR-1479", note["review_note"])
+
+    def test_the_coverage_note_counts_the_hand_rows_and_matches_the_manifest(self):
+        spec = importlib.util.spec_from_file_location("tx_adapter", HERE / "texas.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        manifest = json.loads((HERE.parents[1] / "scripts" / "plus" / "state-manifest.json").read_text(encoding="utf-8"))
+        note = next(s["coverage_note"] for s in manifest["states"] if s["abbreviation"] == "TX")
+        self.assertEqual(adapter.COVERAGE_NOTE, note)
+        self.assertIn(f"plus {len(hand_rows())} weather declarations added by hand", note)
+        self.assertNotIn("DR-1479 (Claudette", note.split("No state declaration was found")[-1])
 
     def test_no_long_dashes(self):
         for path in (MANUAL, OVERRIDES):
