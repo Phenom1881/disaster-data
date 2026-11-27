@@ -84,5 +84,56 @@ class LateOrderTests(unittest.TestCase):
         rows, _ = merge_overrides(here / 'hazard_overrides.csv', generated, collected)
         self.assertEqual({r['declaration_id']: r.get('event_date') for r in rows}.get('MO-EO-14-12'), '2014-09-09')
 
+class CovidEmergencyRowTests(unittest.TestCase):
+    """The COVID-19 state of emergency was in force for three storms that have
+    no order of their own; each hand row is a match by date only."""
+
+    @staticmethod
+    def rows(name):
+        import csv
+        with (BASE / name).open(newline='', encoding='utf-8') as handle:
+            return {row['declaration_id']: row for row in csv.DictReader(handle)}
+
+    def test_each_row_is_dated_by_its_order_register_issue_or_release(self):
+        rows, notes = self.rows('manual_declarations.csv'), self.rows('hazard_overrides.csv')
+        expected = {
+            'MO-SOE-2020-04-24': ('20-09', 'DR-4552', 'https://www.sos.mo.gov/library/reference/orders/2020/eo9'),
+            'MO-SOE-2021-06-15': ('21-07', 'DR-4612',
+                                  'https://www.sos.mo.gov/CMSImages/AdRules/moreg/2021/v46n12June15/v46n12.pdf'),
+            'MO-SOE-2021-12-30': ('21-09', 'DR-4636', 'https://governor.mo.gov/press-releases/archive/'
+                                  'governor-parson-announces-covid-19-related-state-emergency-expire-december'),
+        }
+        self.assertEqual(set(rows), set(expected))
+        collected = self.rows('mo_emergency_actions_all.csv')
+        for key, (number, fema, url) in expected.items():
+            row, note = rows[key], notes[key]
+            self.assertEqual(row['declaration_id'], 'MO-SOE-' + row['date_signed'])
+            self.assertNotIn(key, collected)
+            self.assertEqual((row['governor'], row['eo_number'], row['archive_record_url']),
+                             ('Michael L. Parson', number, url), key)
+            self.assertIn('matches %s only by date' % fema, row['event_description'])
+            self.assertEqual(note['source_url'], url, key)
+            self.assertIn('flagged as a date-only match for a different hazard', note['review_note'], key)
+        self.assertEqual(collected['MO-EO-20-09']['date_signed'], '2020-04-24')
+        self.assertIn("'21-07 Extends Executive Order 20-02", notes['MO-SOE-2021-06-15']['review_note'])
+        self.assertIn("until August 31, 2021'", notes['MO-SOE-2021-06-15']['review_note'])
+        self.assertIn("'Missouri's COVID-19 related State of Emergency will expire and not be renewed on December "
+                      "31, 2021'", notes['MO-SOE-2021-12-30']['review_note'])
+        for key in ('MO-SOE-2021-06-15', 'MO-SOE-2021-12-30'):
+            self.assertIn('No renewal falls within three weeks of them', notes[key]['review_note'], key)
+            self.assertIn('dated by a report', notes[key]['review_note'], key)
+
+    def test_the_coverage_note_says_why_the_three_count(self):
+        import subprocess
+        done = subprocess.CompletedProcess(args=[], returncode=0, stdout='', stderr='')
+        with tempfile.TemporaryDirectory() as tmp, patch.object(wrapper.subprocess, 'run', return_value=done):
+            _, note = wrapper.collect(workdir=tmp, scripts_dir=tmp)
+        manifest = json.loads((BASE.parents[1] / 'scripts' / 'plus' / 'state-manifest.json').read_text(encoding='utf-8'))
+        self.assertEqual(note, next(s['coverage_note'] for s in manifest['states'] if s['abbreviation'] == 'MO'))
+        self.assertIn('They count as matched only because the COVID-19 state of emergency (Executive Orders 20-02 '
+                      'and 21-09) was in force for each, though it does not name them', note)
+        self.assertIn('the Missouri Register of June 15, 2021, which lists its extension to August 31, 2021', note)
+
+
 if __name__ == '__main__':
     unittest.main()
