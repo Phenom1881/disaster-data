@@ -17,6 +17,7 @@ CAPABILITIES = {
         "The web archive starts with Governor Nathan Deal in 2011. Georgia Archives permanently retains older Executive Minutes and unbound executive orders, but does not expose them through the structured Governor pages.",
         "Deal's 2011 page lists orders from January 10 through September 9, 2011 (330 orders collected in October 2026); his orders from later in 2011 are not on it.",
         "The 2011 orders are scanned PDFs without text. Two declare a state of emergency for one county without naming the hazard (06.14.11.02, Charlton County; 06.16.11.01, Ware County), so they are not on the page.",
+        "Zeta (DR-4579, October 29, 2020) has no order of its own in the Governor's 2020 list. Executive Order 10.30.20.01, renewing the COVID-19 Public Health State of Emergency on October 30, 2020, the next day, is added by hand (GA-SOE-2020-10-30) as a match by date only, for a different hazard.",
         "01.10.11.02 reinstitutes the winter storm emergency Governor Sonny Perdue declared on January 9, 2011. Perdue's order is on his own archive site, which is not collected, so the January 2011 winter storm is not on the page.",
     ],
 }
@@ -28,6 +29,8 @@ def collect(workdir=".", scripts_dir=None):
     if result.stdout: print(result.stdout)
     if result.returncode: print(result.stderr, file=sys.stderr); raise RuntimeError("Georgia adapter: scrape failed")
     return workdir / "declarations_for_join.csv", ("2000-present: structured Governor archives from 2011, plus 2000-2009 states of emergency "
-            "added by hand from Governor Perdue's archived executive order list and, for 2000, dated "
-            "FEMA and news reports of Governor Barnes's declarations; no state declaration has been "
-            "found for Hurricane Zeta in October 2020 (DR-4579)")
+            "added by hand from Governor Perdue's archived executive order list and, for 2000, dated FEMA "
+            "and news reports of Governor Barnes's declarations; no state declaration has been found for "
+            "Zeta itself in October 2020 (DR-4579), which counts as matched only because Governor Kemp "
+            "renewed the COVID-19 Public Health State of Emergency the next day, October 30, 2020 "
+            "(Executive Order 10.30.20.01)")
