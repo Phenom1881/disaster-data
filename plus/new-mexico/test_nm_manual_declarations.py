@@ -1,9 +1,9 @@
 """New Mexico's hand-added declarations (manual_declarations.csv).
 
 The current Governor's archive starts in 2019 and no public index of earlier
-executive orders was found, so 2004-2014 weather declarations by Governors
-Richardson and Martinez are kept by hand from executive orders reprinted in
-the press and dated news coverage. Each row has to reach the storm join and
+executive orders was found, so 2000-2014 weather declarations by Governors
+Johnson, Richardson and Martinez are kept by hand from executive orders
+reprinted in the press and dated news coverage. Each row has to reach the storm join and
 the page the way a collected declaration does.
 
 Run:  python -m unittest test_nm_manual_declarations
@@ -107,6 +107,28 @@ class ManualDeclarationTests(unittest.TestCase):
         self.assertIn("DR-1514", note["review_note"])
         self.assertEqual(note["event_date"], "2004-04-02")
         self.assertEqual(note["hazard_category_override"], "flood")
+
+    def test_the_may_2000_fire_emergency_carries_the_monday_named_in_the_report(self):
+        # The Associated Press story of Tuesday, May 9, 2000 says Governor
+        # Johnson declared the state of emergency "Monday", May 8, during the
+        # Cerro Grande fire at Los Alamos (DR-1329, EM-3154).
+        source = "https://www.deseret.com/2000/5/9/19505627/wildfires-force-hundreds-in-n-m-to-flee"
+        row = next(r for r in read(MANUAL) if r["declaration_id"] == "NM-SOE-2000-05-08")
+        note = next(r for r in read(OVERRIDES) if r["declaration_id"] == "NM-SOE-2000-05-08")
+        self.assertEqual(row["governor"], "Gary Johnson")
+        self.assertEqual(row["date_signed"], "2000-05-08")
+        self.assertEqual(row["archive_record_url"], source)
+        self.assertIn("declared Monday, May 8, 2000", row["event_description"])
+        self.assertIn("Cerro Grande fire", row["event_description"])
+        self.assertEqual(note["source_url"], source)
+        self.assertEqual(note["hazard_category_override"], "fire")
+        self.assertEqual(note["event_date"], "")
+        self.assertIn("'The state is a tinderbox,' Gov. Gary Johnson said in declaring a state of emergency Monday.",
+                      note["review_note"])
+        self.assertIn("Monday was May 8, 2000", note["review_note"])
+        self.assertIn("does not say whether the emergency covered the whole state", note["review_note"])
+        self.assertIn("DR-1329", note["review_note"])
+        self.assertIn("EM-3154", note["review_note"])
 
     def test_no_row_is_a_renewal_or_funding_only_order(self):
         for row in read(MANUAL):
