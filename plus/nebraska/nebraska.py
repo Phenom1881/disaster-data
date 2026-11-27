@@ -10,10 +10,13 @@ COVERAGE_NOTE = (
     "2000-present from the Nebraska Library Commission mirror of the full 1965-present Governor's Executi"
     "ve Orders index, rows kept only when a hazard or emergency keyword matched, plus Governor declaratio"
     "ns made outside that index, added by hand from NEMA announcements, the Governor's proclamations as k"
-    "ept by FMCSA, FEMA's daily situation reports and dated news coverage (manual_declarations.csv); no s"
-    "tate declaration has been found yet for DR-1373, DR-1394, DR-1590, DR-1627, DR-1706, DR-1714, DR-172"
-    "1, DR-1779, DR-1853, DR-1864, DR-1878, DR-1902, DR-1945, DR-4013, DR-4014, EM-3323, DR-4321 or DR-46"
-    "62; some 2021-2026 fuel-supply orders left unclassified pending individual PDF review"
+    "ept by FMCSA, FEMA's daily situation reports and dated news coverage (manual_declarations.csv); Gove"
+    "rnor Heineman's February 5, 2010 state of emergency for possible ice jam flooding along the lower Pl"
+    "atte River is compared on March 6, 2010, the first day of DR-1902 (severe storms, ice jams and flood"
+    "ing), which begins 29 days after it, outside the three-week window; no state declaration has been fo"
+    "und yet for DR-1373, DR-1394, DR-1590, DR-1627, DR-1706, DR-1714, DR-1721, DR-1779, DR-1853, DR-1864"
+    ", DR-1878, DR-1945, DR-4013, DR-4014, EM-3323, DR-4321 or DR-4662; some 2021-2026 fuel-supply orders"
+    " left unclassified pending individual PDF review"
 )
 
 CAPABILITIES = {
@@ -45,9 +48,14 @@ CAPABILITIES = {
         "the Governor's proclamations as kept by FMCSA (May 7, 2015 and June 28, 2018), FEMA's daily "
         "situation report of January 3, 2007 (the December 29, 2006 winter storm declaration) and dated news "
         "coverage for 2003-2024, each quoted in its hazard_overrides.csv note. Where a report gives no "
-        "signing day, its own date is used. No state declaration was found for 18 federal declarations, "
+        "signing day, its own date is used. No state declaration was found for 17 federal declarations, "
         "most from the 2001-2011 Johanns and Heineman years, when the searches turned up only requests "
         "for federal aid; the coverage note names them.",
+        "Governor Heineman's February 5, 2010 state of emergency for possible ice jam flooding along the "
+        "lower Platte River and its tributaries (CropWatch, February 5, 2010) is an anticipatory declaration "
+        "that names the hazard. It came 29 days before DR-1902 (severe storms, ice jams and flooding, March 6 "
+        "to April 3, 2010), outside the three-week window, so its reviewed event_date compares it on March 6, "
+        "2010, the first day of DR-1902, and the match is flagged.",
     ],
 }
 

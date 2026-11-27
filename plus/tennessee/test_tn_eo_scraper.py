@@ -78,6 +78,9 @@ class StateOfEmergencyRowTests(unittest.TestCase):
                     "TN-SOE-2022-01-06": ("2022-01-06", "Bill Lee", "2022/1/6/"),
                     "TN-SOE-2022-02-03": ("2022-02-03", "Bill Lee", "2022/2/3/"),
                     "TN-SOE-2022-12-23": ("2022-12-23", "Bill Lee", "2022/12/23/"),
+                    # The Level 3 emergency running for COVID-19, still in force.
+                    "TN-SOE-2020-04-24": ("2020-04-24", "Bill Lee", "2020/4/24/federal-disaster-declaration-will-provide"),
+                    "TN-SOE-2021-03-29": ("2021-03-29", "Bill Lee", "2021/3/29/flash-report--2---severe-weather"),
                     # FEMA's daily situation reports of TEMA's activation.
                     "TN-SOE-2006-04-04": ("2006-04-04", "Phil Bredesen", "reports/2006/nat040406.shtm"),
                     "TN-SOE-2009-04-11": ("2009-04-11", "Phil Bredesen", "reports/2009/nat041109.shtm")}
@@ -85,6 +88,35 @@ class StateOfEmergencyRowTests(unittest.TestCase):
             self.assertEqual((rows[key]["date_signed"], rows[key]["governor"]), (day, governor), key)
             self.assertIn(source, rows[key]["archive_record_url"], key)
             self.assertTrue(rows[key]["archive_record_url"].startswith("https://"), key)
+
+    def test_the_covid_19_emergency_rows_match_only_by_date(self):
+        # The Level 3 state of emergency that began for COVID-19 was still in
+        # force during the April 2020 tornadoes and the March 2021 storms. Each
+        # row carries the date of the TEMA report that says so and is flagged
+        # as a match by date only.
+        import importlib.util, os
+        from pathlib import Path
+        rows = self.rows()
+        easter = rows["TN-SOE-2020-04-24"]["event_description"]
+        self.assertIn("Tennessee remains in a State of Emergency", easter)
+        self.assertIn("the COVID-19 outbreak and the Easter Sunday tornadoes", easter)
+        self.assertIn("matches DR-4541, and DR-4550 (May 3 to 4, 2020), only by date", easter)
+        march = rows["TN-SOE-2021-03-29"]["event_description"]
+        self.assertIn("Level 3, State of Emergency (COVID-19)", march)
+        self.assertIn("matches DR-4601 only by date", march)
+        for key in ("TN-SOE-2020-04-24", "TN-SOE-2021-03-29"):
+            self.assertTrue(tn.HAZARD_RE.search(rows[key]["event_description"]), key)
+        here = Path(os.path.dirname(os.path.abspath(__file__)))
+        spec = importlib.util.spec_from_file_location("tennessee_adapter_note", here / "tennessee.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        unmatched = adapter.COVERAGE_NOTE.split("with no dated state record yet:")[1].split(".")[0]
+        for number in ("DR-4541", "DR-4550", "DR-4601"):
+            self.assertNotIn(number, unmatched, number)
+        self.assertIn("count as matched only because the Level 3 state of emergency already running for "
+                      "COVID-19 was still in force", adapter.COVERAGE_NOTE)
+        self.assertIn("DR-4550 (May 3 to 4, 2020 storms) counts only because that April 24, 2020 release "
+                      "falls within three weeks of it", adapter.COVERAGE_NOTE)
 
     def test_coverage_note_matches_the_manifest(self):
         import importlib.util, json, os, subprocess, tempfile
