@@ -79,6 +79,33 @@ class HandAddedDeclarationTests(unittest.TestCase):
                 self.assertLessEqual(row["event_date"], signed[row["declaration_id"]])
 
 
+class PublicHealthEmergencyRowTests(unittest.TestCase):
+    """Delaware's COVID-19 state of emergency ended July 13, 2021; the narrower
+    Public Health Emergency order, extended September 8, 2021, was in force
+    when the remnants of Ida struck. It is a lesser declaration and a match by
+    date only."""
+
+    def test_the_september_8_2021_extension_matches_ida_only_by_date(self):
+        url = "https://news.delaware.gov/2021/09/08/governor-carney-formally-extends-public-health-emergency/"
+        rows = {r["declaration_id"]: r for r in csv_rows("manual_declarations.csv")}
+        notes = {r["declaration_id"]: r for r in csv_rows("hazard_overrides.csv")}
+        row, note = rows["DE-SOE-2021-09-08"], notes["DE-SOE-2021-09-08"]
+        self.assertEqual((row["governor"], row["date_signed"], row["archive_record_url"]), ("John Carney", "2021-09-08", url))
+        self.assertIn("It is a public health emergency, not a state of emergency", row["event_description"])
+        self.assertIn("a lesser declaration that matches DR-4627 only by date", row["event_description"])
+        self.assertEqual((note["hazard_category_override"], note["source_url"], note["event_date"]),
+                         ("tropical,flood", url, ""))
+        self.assertIn("'Governor John Carney on Wednesday formally extended the Public Health Emergency order "
+                      "another 30 days'", note["review_note"])
+        self.assertIn("flagged as a lesser declaration and a date-only match for a different hazard", note["review_note"])
+        spec = importlib.util.spec_from_file_location("delaware_adapter_ida", HERE / "delaware.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        self.assertIn("Ida in 2021 (DR-4627) counts as matched only because Governor Carney's COVID-19 Public Health "
+                      "Emergency order, a lesser declaration, was extended on September 8, 2021", adapter.COVERAGE_NOTE)
+        self.assertIn("(DE-SOE-2021-09-08) as a match by date only", adapter.CAPABILITIES["known_gaps"][1])
+
+
 class CoverageNoteTests(unittest.TestCase):
     def test_refresh_note_matches_the_manifest_and_starts_in_2000(self):
         spec = importlib.util.spec_from_file_location("delaware_adapter", HERE / "delaware.py")

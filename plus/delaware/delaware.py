@@ -14,8 +14,10 @@ COVERAGE_NOTE = (
     "(news.delaware.gov), dated news coverage and NOAA's monthly Storm Data, and Minner's "
     "2002 drought order from the Delaware Public Archives; the February 2003 snowstorm "
     "declaration (EM-3183) is dated from Storm Data, no state declaration has been found "
-    "for the 2004 and 2006 floods (DR-1572, DR-1654) or Ida in 2021 (DR-4627), and the "
-    "date of the Hurricane Isabel declaration is taken from news coverage"
+    "for the 2004 and 2006 floods (DR-1572, DR-1654), Ida in 2021 (DR-4627) counts as "
+    "matched only because Governor Carney's COVID-19 Public Health Emergency order, a "
+    "lesser declaration, was extended on September 8, 2021, and the date of the Hurricane "
+    "Isabel declaration is taken from news coverage"
 )
 CAPABILITIES = {
     "state": STATE, "structured_archive_available": True,
@@ -24,7 +26,7 @@ CAPABILITIES = {
     "pdf_text_available": True, "ocr_required": False,
     "current_governor_source_available": True, "current_governor_source": "https://governor.delaware.gov/state-of-emergency/",
     "current_governor_source_start": "2025-10-29", "manual_only": False,
-    "known_gaps": ["The dedicated Governor State of Emergency archive begins October 29, 2025; earlier administrations' emergency declarations are not exposed through this structured page.", "Pre-2025 storm declarations are added by hand in manual_declarations.csv. Minner's states of emergency were not issued as numbered executive orders (the Delaware Public Archives list of her orders has none for storms), and the February 2010 archive on news.delaware.gov holds only Department of Justice releases, so 2001-2010 relies on dated news coverage. No state declaration was found for the February 2003 snowstorm (EM-3183), Tropical Storm Henri's flooding of September 15, 2003 (DR-1494; the Isabel declaration three days later falls in its comparison window), the September 2004 Jeanne flooding (DR-1572), the June 2006 flooding (DR-1654) or Ida (DR-4627, 2021). For February 2010 only the second declaration (effective February 10) was found, and a January 2015 storm declaration could not be confirmed."],
+    "known_gaps": ["The dedicated Governor State of Emergency archive begins October 29, 2025; earlier administrations' emergency declarations are not exposed through this structured page.", "Pre-2025 storm declarations are added by hand in manual_declarations.csv. Minner's states of emergency were not issued as numbered executive orders (the Delaware Public Archives list of her orders has none for storms), and the February 2010 archive on news.delaware.gov holds only Department of Justice releases, so 2001-2010 relies on dated news coverage. No state declaration was found for the February 2003 snowstorm (EM-3183), Tropical Storm Henri's flooding of September 15, 2003 (DR-1494; the Isabel declaration three days later falls in its comparison window), the September 2004 Jeanne flooding (DR-1572), or the June 2006 flooding (DR-1654). Ida (DR-4627, 2021) has none of its own: Governor Carney's COVID-19 Public Health Emergency order, a lesser declaration extended September 8, 2021, is added by hand (DE-SOE-2021-09-08) as a match by date only, for a different hazard. For February 2010 only the second declaration (effective February 10) was found, and a January 2015 storm declaration could not be confirmed."],
 }
 
 def collect(workdir=".", scripts_dir=None):
