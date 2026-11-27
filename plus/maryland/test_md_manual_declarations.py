@@ -98,6 +98,31 @@ class CompiledOrderTests(unittest.TestCase):
         self.assertEqual(overrides["MD-EO-01-01-2002-06"]["event_date"], "2002-04-28")
 
 
+class CovidEmergencyRowTests(unittest.TestCase):
+    """The COVID-19 state of emergency, renewed July 30, 2020, was in force
+    when Tropical Storm Isaias struck; no declaration for the storm itself
+    has been found, so the row is a match by date only."""
+
+    def test_the_july_30_2020_renewal_matches_isaias_only_by_date(self):
+        url = "https://conduitstreet.mdcounties.org/2020/09/08/hogan-renews-state-of-emergency/"
+        row = next(r for r in csv_rows("manual_declarations.csv") if r["declaration_id"] == "MD-SOE-2020-07-30")
+        note = next(r for r in csv_rows("hazard_overrides.csv") if r["declaration_id"] == "MD-SOE-2020-07-30")
+        self.assertEqual((row["governor"], row["date_signed"], row["archive_record_url"]),
+                         (governor_on("2020-07-30"), "2020-07-30", url))
+        self.assertIn("Tropical Storm Isaias", row["event_description"])
+        self.assertIn("matches DR-4583 only by date", row["event_description"])
+        self.assertEqual((note["hazard_category_override"], note["source_url"], note["event_date"]), ("tropical", url, ""))
+        self.assertIn("'was renewed on March 17, 2020, April 10, 2020, May 6, 2020, June 3, 2020, July 1, 2020, "
+                      "July 30, 2020, and August 10, 2020.'", note["review_note"])
+        self.assertIn("flagged as a date-only match for a different hazard", note["review_note"])
+        spec = importlib.util.spec_from_file_location("maryland_adapter_isaias", HERE / "maryland.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        self.assertIn("Tropical Storm Isaias in 2020 (DR-4583) counts as matched only because Governor Hogan's "
+                      "COVID-19 state of emergency, renewed on July 30, 2020, was in force when it struck",
+                      adapter.COVERAGE_NOTE)
+
+
 class CoverageNoteTests(unittest.TestCase):
     def test_refresh_note_matches_the_manifest_and_starts_in_2000(self):
         spec = importlib.util.spec_from_file_location("maryland_adapter", HERE / "maryland.py")
