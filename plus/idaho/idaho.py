@@ -17,7 +17,11 @@ CAPABILITIES = {'structured_archive_coverage_start': '2000-06-28',
                 'IDWR Date Declared is used for historical orders; detected conflicts with a '
                 'readable Governor approval clause are withheld.',
                 'Other disaster proclamations are limited to individually verified Governor/IOEM '
-                'releases.']}
+                'releases.',
+                'The January 13, 2021 north Idaho windstorm (DR-4589) has no declaration of its own. The '
+                'COVID-19 emergency declaration, extended December 31, 2020 (the Legislative Services '
+                "Office's list of the Governor's COVID-19 proclamations), is added by hand "
+                '(ID-SOE-2020-12-31) as a match by date only, for a different hazard.']}
 
 def collect(workdir=".", scripts_dir=None):
     workdir = Path(workdir).resolve()
@@ -36,4 +40,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Idaho adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage; no state declaration has been found for the December 2005 to January 2006 Owyhee County storms (DR-1630), the May to June 2008 floods in Kootenai and Shoshone counties (DR-1781), the January 13, 2021 north Idaho windstorm (DR-4589), the April 2024 storms and flooding (DR-4789) or the December 16 to 18, 2025 windstorm (DR-4905)"
+    return workdir / "declarations_for_join.csv", "2000-present OARC EO metadata plus IDWR drought orders; non-drought proclamations have incomplete coverage; no state declaration has been found for the December 2005 to January 2006 Owyhee County storms (DR-1630), the May to June 2008 floods in Kootenai and Shoshone counties (DR-1781), the April 2024 storms and flooding (DR-4789) or the December 16 to 18, 2025 windstorm (DR-4905), and the January 13, 2021 north Idaho windstorm (DR-4589) counts as matched only because the Governor's COVID-19 emergency declaration, extended on December 31, 2020, was in force"
