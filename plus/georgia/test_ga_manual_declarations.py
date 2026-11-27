@@ -51,6 +51,29 @@ class ManualDeclarationTests(unittest.TestCase):
             if override["event_date"]:
                 self.assertLessEqual(override["event_date"], row["date_signed"])
 
+    def test_the_covid_19_renewal_after_zeta_matches_only_by_date(self):
+        # The Public Health State of Emergency was in force when Zeta crossed
+        # Georgia on October 29, 2020, and was renewed the next day; the list
+        # has no order for the storm itself.
+        url = "https://gov.georgia.gov/document/2020-executive-order/10302001/download"
+        row = next(r for r in self.rows if r["declaration_id"] == "GA-SOE-2020-10-30")
+        note = self.overrides["GA-SOE-2020-10-30"]
+        self.assertEqual((row["governor"], row["eo_number"], row["date_signed"]),
+                         ("Brian P. Kemp", "10.30.20.01", "2020-10-30"))
+        self.assertEqual(row["archive_record_url"], url)
+        self.assertIn("matches DR-4579 only by date", row["event_description"])
+        self.assertEqual(note["hazard_category_override"], "tropical")
+        self.assertIn("'Renewing the Public Health State of Emergency last renewed on September 30, 2020, in "
+                      "response to COVID-19'", note["review_note"])
+        self.assertIn("flagged as a date-only match for a different hazard", note["review_note"])
+        collected = {r["declaration_id"]: r for r in csv_rows("ga_emergency_actions_all.csv")}
+        self.assertEqual(collected["GA-EO-10-30-20-01"]["date_signed"], row["date_signed"])
+        # The adapter's note equals the manifest's (CoverageStartTests).
+        manifest = json.loads((ROOT / "scripts" / "plus" / "state-manifest.json").read_text(encoding="utf-8"))
+        coverage = next(s for s in manifest["states"] if s["abbreviation"] == "GA")["coverage_note"]
+        self.assertIn("(DR-4579), which counts as matched only because Governor Kemp renewed the COVID-19 "
+                      "Public Health State of Emergency the next day, October 30, 2020", coverage)
+
     def test_not_already_collected(self):
         collected = {r["declaration_id"] for r in csv_rows("ga_emergency_actions_all.csv")}
         for row in self.rows:

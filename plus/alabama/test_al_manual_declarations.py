@@ -114,6 +114,34 @@ class NewsCoverageRowTests(unittest.TestCase):
                 self.assertEqual(overrides[row["declaration_id"]]["source_url"], row["archive_record_url"])
 
 
+class CovidEmergencyRowTests(unittest.TestCase):
+    """The COVID-19 state of emergency of August 13, 2021 was in force during
+    the October 6 to 7, 2021 storms, and the October 8 proclamation ran it on
+    to October 31; no proclamation for the storms has been found."""
+
+    def test_the_october_8_2021_proclamation_matches_the_storms_only_by_date(self):
+        url = "https://alreporter.com/2021/10/11/ivey-extends-covid-19-state-of-emergency-to-end-of-october"
+        row = next(r for r in csv_rows("manual_declarations.csv") if r["declaration_id"] == "AL-SOE-2021-10-08")
+        note = next(r for r in csv_rows("hazard_overrides.csv") if r["declaration_id"] == "AL-SOE-2021-10-08")
+        self.assertEqual((row["governor"], row["date_signed"], row["archive_record_url"]), ("Kay Ivey", "2021-10-08", url))
+        self.assertIn("matches DR-4632 only by date", row["event_description"])
+        self.assertEqual((note["hazard_category_override"], note["source_url"], note["event_date"]),
+                         ("severe_storm,flood", url, ""))
+        self.assertIn("'Governor Kay Ivey has extended Alabama's state of emergency for COVID-19, scheduled to "
+                      "expire Tuesday, to the end of October.'", note["review_note"])
+        self.assertIn("flagged as a date-only match for a different hazard", note["review_note"])
+        newsroom = {r["declaration_id"]: r for r in csv_rows("al_emergency_actions_all.csv")}
+        self.assertEqual(newsroom["AL-SOE-2021-10-08-termination-of-state-of-emergency-covid-19"]["date_signed"],
+                         row["date_signed"])
+        spec = importlib.util.spec_from_file_location("alabama_adapter_october_2021", HERE / "alabama.py")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        self.assertIn("the October 2021 storms (DR-4632) count as matched only because Governor Ivey's COVID-19 state "
+                      "of emergency of August 13, 2021 was in force, run on to October 31 by her October 8, 2021 "
+                      "proclamation", adapter.COVERAGE_NOTE)
+        self.assertIn("(AL-SOE-2021-10-08) as a match by date only", adapter.CAPABILITIES["known_gaps"][-1])
+
+
 class CoverageNoteTests(unittest.TestCase):
     def test_refresh_note_matches_the_manifest(self):
         spec = importlib.util.spec_from_file_location("alabama_adapter", HERE / "alabama.py")

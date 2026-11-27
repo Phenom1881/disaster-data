@@ -71,8 +71,37 @@ class HandAddedDeclarationTests(unittest.TestCase):
             date.fromisoformat(row['date_signed'])
             self.assertNotIn(row['declaration_id'], collected)
             self.assertTrue(row['governor'])
-            self.assertTrue(row['archive_record_url'].startswith(('https://ioem.idaho.gov/', 'https://kivitv.com/')),
+            # IOEM and news releases, and the Legislative Services Office's list
+            # of the Governor's COVID-19 proclamations.
+            self.assertTrue(row['archive_record_url'].startswith(('https://ioem.idaho.gov/', 'https://kivitv.com/',
+                                                                  'https://legislature.idaho.gov/')),
                             row['declaration_id'])
+
+    def test_the_covid_19_extension_matches_the_january_2021_windstorm_only_by_date(self):
+        # The COVID-19 emergency declaration, extended December 31, 2020, was in
+        # force when straight-line winds struck north Idaho on January 13, 2021.
+        import csv
+        import importlib.util
+        here = Path(__file__).resolve().parent
+        url = ('https://legislature.idaho.gov/wp-content/uploads/sessioninfo/2025/interim/'
+               '251001_covid_05_Covid%20Emerg%20Orders%20Extensions.pdf')
+        with (here / 'manual_declarations.csv').open(encoding='utf-8') as handle:
+            row = next(r for r in csv.DictReader(handle) if r['declaration_id'] == 'ID-SOE-2020-12-31')
+        with (here / 'hazard_overrides.csv').open(encoding='utf-8') as handle:
+            note = next(r for r in csv.DictReader(handle) if r['declaration_id'] == 'ID-SOE-2020-12-31')
+        self.assertEqual((row['governor'], row['date_signed'], row['archive_record_url']), ('Brad Little', '2020-12-31', url))
+        self.assertIn('straight-line windstorm', row['event_description'])
+        self.assertIn('matches DR-4589 only by date', row['event_description'])
+        self.assertEqual((note['hazard_category_override'], note['source_url']), ('wind', url))
+        self.assertIn("'12/31/2020', 'Emergency Declaration Extension'", note['review_note'])
+        self.assertIn('flagged as a date-only match for a different hazard', note['review_note'])
+        spec = importlib.util.spec_from_file_location('idaho_adapter_windstorm', here / 'idaho.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        source = (here / 'idaho.py').read_text(encoding='utf-8')
+        self.assertIn('the January 13, 2021 north Idaho windstorm (DR-4589) counts as matched only because the '
+                      "Governor's COVID-19 emergency declaration, extended on December 31, 2020, was in force", source)
+        self.assertIn('ID-SOE-2020-12-31', adapter.CAPABILITIES['known_gaps'][-1])
 
 
 if __name__ == '__main__':

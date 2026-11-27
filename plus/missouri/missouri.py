@@ -15,7 +15,12 @@ CAPABILITIES = {'structured_archive_coverage_start': '2000-01-20',
  'known_gaps': ['Operational waivers are retained separately; unresolved primary declarations are '
                 'listed in the relationship ledger.',
                 'Some source descriptions or dates need manual reconciliation; exclusions and '
-                'unresolved records are individually listed.']}
+                'unresolved records are individually listed.',
+                'The May 2020, June to July 2021 and December 2021 storms (DR-4552, DR-4612, DR-4636) '
+                'have no order of their own. The COVID-19 state of emergency in force for each is added by '
+                'hand in manual_declarations.csv (MO-SOE-2020-04-24, MO-SOE-2021-06-15, MO-SOE-2021-12-30) '
+                'as matches by date only, for a different hazard; the last two are dated by the Missouri '
+                "Register and the Governor's release, since no renewal falls within three weeks of them."]}
 
 def collect(workdir=".", scripts_dir=None):
     workdir = Path(workdir).resolve()
@@ -34,4 +39,4 @@ def collect(workdir=".", scripts_dir=None):
     if result.returncode:
         print(result.stderr, file=sys.stderr)
         raise RuntimeError("Missouri adapter: scrape failed")
-    return workdir / "declarations_for_join.csv", "2000-present Secretary of State year indexes and legal order text. Orders signed weeks after the storm they declare are compared on the storm's first day. No state declaration has been found for the May 2020 storms (DR-4552), the June and July 2021 storms and flooding (DR-4612) or the December 10, 2021 tornadoes (DR-4636): the year indexes list no weather order for them, and the only state of emergency then in force was the COVID-19 one (Executive Orders 20-02 and 21-09), which does not name them."
+    return workdir / "declarations_for_join.csv", "2000-present Secretary of State year indexes and legal order text, plus three hand-added rows for the COVID-19 state of emergency (manual_declarations.csv). Orders signed weeks after the storm they declare are compared on the storm's first day. No weather order has been found for the May 2020 storms (DR-4552), the June and July 2021 storms and flooding (DR-4612) or the December 10, 2021 tornadoes (DR-4636): the year indexes list none. They count as matched only because the COVID-19 state of emergency (Executive Orders 20-02 and 21-09) was in force for each, though it does not name them: the rows are dated by Executive Order 20-09 of April 24, 2020, which extended it to June 15, 2020, the Missouri Register of June 15, 2021, which lists its extension to August 31, 2021, and the Governor's release of December 30, 2021 that it would expire on December 31."
