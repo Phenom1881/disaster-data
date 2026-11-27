@@ -240,6 +240,8 @@ class HandAddedDeclarationTests(unittest.TestCase):
         dates = {r["declaration_id"]: r["date_signed"] for r in csv_rows("manual_declarations.csv")}
         expected = {
             "NC-SOE-2000-01-25": "2000-01-25", "NC-SOE-2002-12-05": "2002-12-05",
+            # The Daily Tar Heel of February 17, 2003 gives no day for the declaration.
+            "NC-SOE-2003-02-17": "2003-02-17",
             "NC-SOE-2003-09-16": "2003-09-16", "NC-SOE-2004-09-07": "2004-09-07",
             "NC-SOE-2004-09-17": "2004-09-17", "NC-MIKEEASLEY-EO-88": "2005-09-11",
             "NC-MIKEEASLEY-EO-144": "2008-09-04", "NC-BEVPERDUE-EO-62": "2010-09-01", "NC-SOE-2010-09-29": "2010-09-29",
@@ -253,6 +255,23 @@ class HandAddedDeclarationTests(unittest.TestCase):
             "NC-PATMCCRORY-EO-107": "2016-10-03", "NC-PATMCCRORY-EO-115": "2016-11-10",
         }
         self.assertEqual({k: dates.get(k) for k in expected}, expected)
+
+    def test_the_february_2003_storm_emergency_carries_the_date_of_the_report(self):
+        # The Daily Tar Heel of Monday, February 17, 2003 says Governor Easley
+        # declared a state of emergency for Sunday's storm, without the day; the
+        # February 27-28 ice storm (DR-1457) matches it only by date.
+        source = "https://newspapers.digitalnc.org/lccn/sn92068245/2003-02-17/ed-1/seq-1/"
+        row = next(r for r in csv_rows("manual_declarations.csv") if r["declaration_id"] == "NC-SOE-2003-02-17")
+        note = next(r for r in csv_rows("hazard_overrides.csv") if r["declaration_id"] == "NC-SOE-2003-02-17")
+        self.assertEqual(row["governor"], "Mike Easley")
+        self.assertEqual(row["archive_record_url"], source)
+        self.assertIn("so the row carries the date of the report", row["event_description"])
+        self.assertEqual(note["hazard_category_override"], "winter")
+        self.assertEqual(note["event_date"], "2003-02-16")
+        self.assertEqual(note["source_url"], source)
+        self.assertIn("'Gov. Mike Easley declared a state of emergency for Sunday's storm.'", note["review_note"])
+        self.assertIn("DR-1457", note["review_note"])
+        self.assertIn("matches this emergency only by date", note["review_note"])
 
     def test_ids_carry_the_date_or_the_governor_and_number(self):
         rows = csv_rows("manual_declarations.csv")
