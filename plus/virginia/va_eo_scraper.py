@@ -55,8 +55,32 @@ WEATHER_KEYWORDS = [
     "tornado",
     "freezing rain",
     "wind",
+    # Drought emergencies are weather declarations in the historical pipeline
+    # too (Warner's EO 31 and 33 of 2002, Kaine's EO 57 of 2007).
+    "drought",
 ]
 PROCEDURAL_MARKERS = ["delegat", "authority to declare", "succession"]
+# "Declaring State of Emergency", "Declaration of a State of Emergency ...",
+# and EO 21 (2026), "Declaration of Emergency Due to Severe Drought ...".
+DECLARATION_PATTERN = re.compile(
+    r"\bstate of emergency\b|\bdeclar(?:ation|ing)\s+(?:of\s+)?(?:an?\s+)?emergency\b",
+    re.I,
+)
+# An order that amends, extends, renews or ends an earlier declaration is not
+# a new one; the historical scraper files these as modification_or_extension
+# or termination. "Extended" and "continued" are left out, so a cause such as
+# "extended drought" still reads as a declaration.
+FOLLOW_ON_PATTERN = re.compile(
+    r"\b(?:amend(?:s|ed|ing|ment)?|extend(?:s|ing)?|extension|"
+    r"modif(?:y|ies|ied|ying|ication)|continu(?:e|es|ing|ation)|renew(?:s|ed|ing|al)?|"
+    r"rescind(?:s|ed|ing)?|rescission|terminat(?:e|es|ed|ing|ion)|expir(?:e|es|ed|ation))\b",
+    re.I,
+)
+# The listing's whole title when the cause is only in the PDF filename
+# (EO 11 of 2026: "Declaring State of Emergency").
+GENERIC_TITLE = re.compile(
+    r"^\s*(?:declaring|declaration of)\s+(?:a\s+)?state of emergency\s*$", re.I
+)
 
 
 def fetch_soup(url):
@@ -127,7 +151,8 @@ def parse_listing(url):
 def is_declaration_candidate(short_title):
     lowered = short_title.lower()
     return (
-        "state of emergency" in lowered
+        bool(DECLARATION_PATTERN.search(lowered))
+        and not FOLLOW_ON_PATTERN.search(lowered)
         and not any(marker in lowered for marker in PROCEDURAL_MARKERS)
     )
 
@@ -146,9 +171,12 @@ def declaration_metadata(short_title, detail_url):
     weather = any(keyword in classification_text for keyword in WEATHER_KEYWORDS)
 
     description = short_title
-    if weather:
+    if weather and GENERIC_TITLE.match(short_title):
         # The current listing uses the generic label "Declaring State of
-        # Emergency", while the PDF filename contains the omitted cause.
+        # Emergency" for some orders, while the PDF filename contains the
+        # omitted cause. A title that already names its cause is kept as it
+        # is, so the cause is not repeated (EO 23 of 2026: "Declaration of a
+        # State of Emergency Due to Severe Coastal Storm").
         cause_match = re.search(
             r"state of emergency(?: due to)?\s+(.*)$", filename_text, flags=re.I
         )
